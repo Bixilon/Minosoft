@@ -49,12 +49,13 @@ class RenderWindowInputHandler(
     val interactionManager = InteractionManager(renderWindow)
 
     init {
-        registerKeyCallback("minosoft:debug_mouse_catch".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_M),
-            ),
-        )) {
+        registerKeyCallback("minosoft:debug_mouse_catch".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_M),
+                ),
+            )) {
             renderWindow.window.cursorMode = it.decide(CursorModes.DISABLED, CursorModes.NORMAL)
             renderWindow.sendDebugMessage("Toggled mouse catch!")
         }
@@ -140,25 +141,17 @@ class RenderWindowInputHandler(
                 checksRun++
             }
 
-            fun checkSticky(keys: MutableSet<KeyCodes>) {
+            pair.keyBinding.action[KeyAction.STICKY]?.let {
                 checksRun++
-                if (!keys.contains(keyCode)) {
+                if (!it.contains(keyCode)) {
                     thisIsChange = false
-                    return
+                    return@let
                 }
                 if (!keyDown) {
                     thisIsChange = false
-                    return
+                    return@let
                 }
                 thisKeyBindingDown = !keyBindingsDown.contains(resourceLocation)
-            }
-
-            pair.keyBinding.action[KeyAction.STICKY]?.let {
-                checkSticky(it)
-            }
-
-            pair.keyBinding.action[KeyAction.STICKY_INVERTED]?.let {
-                checkSticky(it)
             }
 
             pair.keyBinding.action[KeyAction.DOUBLE_PRESS]?.let {
@@ -220,7 +213,7 @@ class RenderWindowInputHandler(
         //currentKeyConsumer?.charInput(char.toChar())
     }
 
-    fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, callback: ((keyDown: Boolean) -> Unit)) {
+    fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
         val keyBinding = Minosoft.config.config.game.controls.keyBindings.entries.getOrPut(resourceLocation) { defaultKeyBinding } // ToDo (Performance): Should the defaultKeyBinding be a lambda parameter?
         val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding) }
         if (keyBinding.ignoreConsumer) {
@@ -233,12 +226,9 @@ class RenderWindowInputHandler(
                 callback(it)
             }
         }
-        // Instant fire
-        if (keyBinding.action.containsKey(KeyAction.STICKY)) {
-            callback(false)
-        } else if (keyBinding.action.containsKey(KeyAction.STICKY_INVERTED)) {
+
+        if (keyBinding.action.containsKey(KeyAction.STICKY) && defaultPressed) {
             keyBindingsDown += resourceLocation
-            callback(true)
         }
     }
 

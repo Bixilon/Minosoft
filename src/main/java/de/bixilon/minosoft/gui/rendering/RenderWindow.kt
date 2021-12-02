@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
+import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -136,9 +136,7 @@ class RenderWindow(
         if (!connection.profiles.particle.skipLoading) {
             registerRenderer(ParticleRenderer)
         }
-        if (Minosoft.config.config.game.entities.hitBox.enabled) {
-            registerRenderer(EntityHitBoxRenderer)
-        }
+        registerRenderer(EntityHitboxRenderer)
         if (Minosoft.config.config.game.world.chunkBorders.enabled) {
             registerRenderer(ChunkBorderRenderer)
         }
@@ -168,12 +166,7 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
-        WHITE_TEXTURE = TextureLikeTexture(
-            texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")),
-            uvStart = Vec2(0.0f, 0.0f),
-            uvEnd = Vec2(0.001f, 0.001f),
-            size = Vec2i(16, 16)
-        )
+        WHITE_TEXTURE = TextureLikeTexture(texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
         font = FontLoader.load(this)
 
 
@@ -226,48 +219,53 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
-            ),
-        )) {
+        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
+                ),
+            )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderSystem.polygonMode = nextMode
             sendDebugMessage("Set polygon to: $nextMode")
         }
 
-        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_ESCAPE),
-            ),
-        )) { window.close() }
+        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_ESCAPE),
+                ),
+            )) { window.close() }
 
-        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2),
-            ),
-            ignoreConsumer = true,
-        )) { screenshotTaker.takeScreenshot() }
+        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2),
+                ),
+                ignoreConsumer = true,
+            )) { screenshotTaker.takeScreenshot() }
 
-        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_I),
-            ),
-            ignoreConsumer = true,
-        )) {
+        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_I),
+                ),
+                ignoreConsumer = true,
+            )) {
             sendDebugMessage("Pausing incoming packets: $it")
             connection.network.pauseReceiving(it)
         }
 
-        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
-            ),
-            ignoreConsumer = true,
-        )) {
+        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
+                ),
+                ignoreConsumer = true,
+            )) {
             sendDebugMessage("Pausing outgoing packets: $it")
             connection.network.pauseSending(it)
         }

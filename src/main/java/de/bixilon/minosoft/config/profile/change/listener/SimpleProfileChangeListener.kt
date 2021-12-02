@@ -32,10 +32,12 @@ class SimpleProfileChangeListener<T>(
 
     companion object {
 
+        @JvmOverloads
         fun <T> KProperty<T>.listen(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
             ProfilesChangeManager.register(reference, SimpleProfileChangeListener(this, javaField!!, profile, instant, callback))
         }
 
+        @JvmOverloads
         fun <T> KProperty<T>.listenFX(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
             ProfilesChangeManager.register(reference, SimpleProfileChangeListener(this, javaField!!, profile, instant) { JavaFXUtil.runLater { callback(it) } })
         }

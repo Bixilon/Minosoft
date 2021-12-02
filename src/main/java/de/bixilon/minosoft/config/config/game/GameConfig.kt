@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.config.config.game
 
 import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
-import de.bixilon.minosoft.config.config.game.entities.EntitiesConfig
 import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
 import de.bixilon.minosoft.config.config.game.hud.HUDGameConfig
 import de.bixilon.minosoft.config.config.game.world.WorldConfig
@@ -25,7 +24,6 @@ data class GameConfig(
     var hud: HUDGameConfig = HUDGameConfig(),
     var controls: ControlsGameConfig = ControlsGameConfig(),
     var camera: CameraGameConfig = CameraGameConfig(),
-    var entities: EntitiesConfig = EntitiesConfig(),
     var world: WorldConfig = WorldConfig(),
     var light: LightConfig = LightConfig(),
     var skin: SkinConfig = SkinConfig(),

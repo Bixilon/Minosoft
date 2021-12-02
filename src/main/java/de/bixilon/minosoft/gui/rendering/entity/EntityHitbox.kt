@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
@@ -28,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-class EntityHitBox(
-    val renderWindow: RenderWindow,
+class EntityHitbox(
+    val renderer: EntityHitboxRenderer,
     val entity: Entity,
     val frustum: Frustum,
 ) {
@@ -58,7 +56,7 @@ class EntityHitBox(
 
         this.checkVisibility = false
 
-        val visible = ((entity.isInvisible && Minosoft.config.config.game.entities.hitBox.invisibleEntities) || !entity.isInvisible) && frustum.containsAABB(aabb)
+        val visible = ((entity.isInvisible && renderer.profile.showInvisible) || !entity.isInvisible) && frustum.containsAABB(aabb)
         if (checkVisibility && equals && this::mesh.isInitialized) {
             // only visibility changed
             this.visible = visible
@@ -68,8 +66,8 @@ class EntityHitBox(
             this.mesh.unload()
         }
         if (visible) {
-            val mesh = LineMesh(renderWindow)
-            if (Minosoft.config.config.game.entities.hitBox.lazyHitBoxes) {
+            val mesh = LineMesh(renderer.renderWindow)
+            if (renderer.profile.lazy) {
                 mesh.drawLazyAABB(aabb, color = hitBoxColor)
             } else {
                 mesh.drawAABB(aabb = aabb, color = hitBoxColor, margin = 0.1f)

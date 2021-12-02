@@ -59,8 +59,9 @@ interface ProfileManager<T : Profile> {
         return profile
     }
 
-
-    fun <V> delegate(value: V, checkEquals: Boolean = true, verify: ((V) -> Unit)? = null): ProfileDelegate<V>
+    fun <V> delegate(value: V, checkEquals: Boolean = true, verify: ((V) -> Unit)? = null): ProfileDelegate<V> {
+        return ProfileDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
+    }
 
     fun selectDefault() {
         selected = profiles[DEFAULT_PROFILE_NAME] ?: createDefaultProfile()

@@ -130,9 +130,9 @@ class HUDRenderer(
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:enable_hud".toResourceLocation(), KeyBinding(
             mutableMapOf(
-                KeyAction.STICKY_INVERTED to mutableSetOf(KeyCodes.KEY_F1),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_F1),
             ),
-        )) { enabled = it }
+        ), defaultPressed = enabled) { enabled = it }
     }
 
     override fun postInit() {
