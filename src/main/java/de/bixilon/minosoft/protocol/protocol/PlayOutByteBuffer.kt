@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import glm_.vec3.Vec3i
 
 class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer(connection) {
@@ -30,15 +31,11 @@ class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer
     }
 
     fun writePosition(position: Vec3i?) {
-        if (position == null) {
-            writeLong(0L)
-            return
+        when {
+            position == null -> writeLong(0L) // 0,0,0
+            versionId < V_18W43A -> writeLong(position.x.toLong() and 0x3FFFFFF shl 38 or (position.z.toLong() and 0x3FFFFFF) or (position.y.toLong() and 0xFFF shl 26))
+            else -> writeLong((position.x.toLong() and 0x3FFFFFF shl 38) or ((position.z).toLong() and 0x3FFFFFF shl 12) or (position.y.toLong() and 0xFFF))
         }
-        if (versionId < ProtocolVersions.V_18W43A) {
-            writeLong(position.x.toLong() shl 38 or (position.z.toLong()) or (position.y.toLong() shl 26))
-            return
-        }
-        writeLong((position.x).toLong() shl 38 or ((position.z).toLong() shl 12) or (position.y).toLong())
     }
 
     fun writeItemStack(itemStack: ItemStack?) {
