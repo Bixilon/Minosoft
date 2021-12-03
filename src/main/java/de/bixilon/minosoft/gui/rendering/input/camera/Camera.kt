@@ -58,6 +58,7 @@ class Camera(
     val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) {
+    private val profile = connection.profiles.rendering.camera
     var fogColor = Previous(ChatColors.GREEN)
     var fogStart = Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
@@ -83,9 +84,9 @@ class Camera(
 
     private val fov: Double
         get() {
-            val fov = Minosoft.config.config.game.camera.fov / (zoom + 1.0)
+            val fov = profile.fov / (zoom + 1.0)
 
-            if (!Minosoft.config.config.game.camera.dynamicFov) {
+            if (!profile.dynamicFOV) {
                 return fov
             }
             return fov * connection.player.fovMultiplier.interpolate()

@@ -4,6 +4,8 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.rendering.advanced.AdvancedC
+import de.bixilon.minosoft.config.profile.profiles.rendering.camera.CameraC
+import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 
 /**
  * Profile for general rendering
@@ -17,13 +19,9 @@ class RenderingProfile(
     override val version: Int = latestVersion
     override val description by delegate(description ?: "")
 
-    /**
-     * Enabled or disables the whole rendering subsystem
-     * Does skip the loading of audio. Exits the rendering if disabled
-     */
-    var enabled by delegate(true)
-
+    val camera = CameraC()
     val advanced = AdvancedC()
+    val movement = MovementC()
 
 
     override fun toString(): String {

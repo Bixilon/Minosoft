@@ -44,27 +44,18 @@ class UpdateServerDialog(
     val onUpdate: (name: String, address: String, forcedVersion: Version?) -> Unit,
 ) : DialogController() {
     @FXML private lateinit var descriptionFX: TextFlow
-
     @FXML private lateinit var serverNameLabelFX: TextFlow
-
     @FXML private lateinit var serverNameFX: TextField
-
     @FXML private lateinit var serverAddressLabelFX: TextFlow
-
     @FXML private lateinit var serverAddressFX: TextField
 
-
     @FXML private lateinit var forcedVersionLabelFX: TextFlow
-
     @FXML private lateinit var forcedVersionFX: ComboBox<Version>
-
     @FXML private lateinit var showReleasesFX: CheckBox
-
     @FXML private lateinit var showSnapshotsFX: CheckBox
 
 
     @FXML private lateinit var updateServerButtonFX: Button
-
     @FXML private lateinit var cancelButtonFX: Button
 
 

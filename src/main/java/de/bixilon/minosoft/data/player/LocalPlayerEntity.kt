@@ -216,7 +216,7 @@ class LocalPlayerEntity(
         get() = inventory.equipment
 
     private fun sendMovementPackets() {
-        if (Minosoft.config.config.game.camera.disableMovementSending) {
+        if (connection.profiles.rendering.movement.disablePacketSending) {
             return
         }
         val currentTime = KUtil.time

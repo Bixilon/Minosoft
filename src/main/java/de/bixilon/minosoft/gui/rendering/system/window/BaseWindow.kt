@@ -55,8 +55,6 @@ interface BaseWindow {
         size = DEFAULT_WINDOW_SIZE
         minSize = DEFAULT_MINIMUM_WINDOW_SIZE
         maxSize = DEFAULT_MAXIMUM_WINDOW_SIZE
-
-
     }
 
     fun destroy()

@@ -159,6 +159,7 @@ object Minosoft {
         while (true) {
             RENDERING_LATCH.waitForChange()
             rendering?.start() ?: continue
+            this.rendering = null
         }
     }
 
