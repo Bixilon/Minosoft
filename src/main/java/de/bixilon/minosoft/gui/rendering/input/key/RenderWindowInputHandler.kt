@@ -50,7 +50,7 @@ class RenderWindowInputHandler(
     val interactionManager = InteractionManager(renderWindow)
 
     init {
-        registerKeyCallback("minosoft:debug_mouse_catch".toResourceLocation(),
+        registerKeyCallback("minosoft:debug_change_cursor_mode".toResourceLocation(),
             KeyBinding(
                 mutableMapOf(
                     KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
@@ -64,7 +64,7 @@ class RenderWindowInputHandler(
                 CursorModes.HIDDEN -> CursorModes.NORMAL
             }
             renderWindow.window.cursorMode = nextMode
-            renderWindow.sendDebugMessage("Mouse catch: ${nextMode.format()}")
+            renderWindow.sendDebugMessage("Cursor mode: ${nextMode.format()}")
         }
     }
 

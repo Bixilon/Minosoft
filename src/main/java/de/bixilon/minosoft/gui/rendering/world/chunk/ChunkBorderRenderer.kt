@@ -38,11 +38,11 @@ class ChunkBorderRenderer(
 ) : Renderer, OpaqueDrawable {
     private val profile = connection.profiles.rendering
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private var lastChunkPosition: Vec2i? = null
-    private var lastMesh: LineMesh? = null
+    private var chunkPosition: Vec2i? = null
+    private var mesh: LineMesh? = null
 
     override val skipOpaque: Boolean
-        get() = !profile.chunkBorder.enabled
+        get() = mesh == null || !profile.chunkBorder.enabled
 
     override fun init() {
         renderWindow.inputHandler.registerKeyCallback(CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
@@ -59,14 +59,15 @@ class ChunkBorderRenderer(
 
     override fun prepareDraw() {
         if (!profile.chunkBorder.enabled) {
-            lastMesh?.unload()
+            mesh?.unload()
+            this.mesh = null
             return
         }
         val chunkPosition = renderWindow.connection.player.positionInfo.chunkPosition
-        if (chunkPosition == lastChunkPosition && lastMesh != null) {
+        if (chunkPosition == this.chunkPosition && mesh != null) {
             return
         }
-        lastMesh?.unload()
+        mesh?.unload()
         val mesh = LineMesh(renderWindow)
 
         val dimension = renderWindow.connection.world.dimension ?: return
@@ -133,8 +134,8 @@ class ChunkBorderRenderer(
         }
 
         mesh.load()
-        this.lastMesh = mesh
-        this.lastChunkPosition = chunkPosition
+        this.mesh = mesh
+        this.chunkPosition = chunkPosition
     }
 
     override fun setupOpaque() {
@@ -143,7 +144,7 @@ class ChunkBorderRenderer(
     }
 
     override fun drawOpaque() {
-        lastMesh?.draw()
+        mesh?.draw()
     }
 
 
