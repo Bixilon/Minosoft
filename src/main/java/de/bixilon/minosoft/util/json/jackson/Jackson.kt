@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.util.json.jackson
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.type.MapType
@@ -9,6 +10,7 @@ object Jackson {
     val MAPPER = ObjectMapper()
         .registerModule(KotlinModule())
         .registerModule(ResourceLocationSerializer)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 
     val JSON_MAP_TYPE: MapType = MAPPER.typeFactory.constructMapType(HashMap::class.java, Any::class.java, Any::class.java)
