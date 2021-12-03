@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenRendering
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.matthiasmann.twl.utils.PNGDecoder
@@ -44,9 +45,9 @@ interface BaseWindow {
 
     val time: Double
 
-    fun init() {
+    fun init(profile: RenderingProfile) {
         resizable = true
-        swapInterval = Minosoft.config.config.game.other.swapInterval
+        profile.advanced::swapInterval.listenRendering(this, true, profile) { swapInterval = it }
 
         if (!StaticConfiguration.DEBUG_MODE) {
             cursorMode = CursorModes.DISABLED
@@ -54,6 +55,8 @@ interface BaseWindow {
         size = DEFAULT_WINDOW_SIZE
         minSize = DEFAULT_MINIMUM_WINDOW_SIZE
         maxSize = DEFAULT_MAXIMUM_WINDOW_SIZE
+
+
     }
 
     fun destroy()

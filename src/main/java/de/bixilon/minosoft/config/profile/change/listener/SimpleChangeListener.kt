@@ -3,6 +3,7 @@ package de.bixilon.minosoft.config.profile.change.listener
 import de.bixilon.minosoft.config.profile.change.ProfilesChangeManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import java.lang.reflect.Field
 import kotlin.reflect.KProperty
@@ -40,6 +41,19 @@ class SimpleChangeListener<T>(
         @JvmOverloads
         fun <T> KProperty<T>.listenFX(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
             ProfilesChangeManager.register(reference, SimpleChangeListener(this, javaField!!, profile, instant) { JavaFXUtil.runLater { callback(it) } })
+        }
+
+        @JvmOverloads
+        fun <T> KProperty<T>.listenRendering(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
+            val context = Rendering.currentContext ?: throw IllegalStateException("Can only be registered in a render context!")
+            ProfilesChangeManager.register(reference, SimpleChangeListener(this, javaField!!, profile, instant) {
+                val changeContext = Rendering.currentContext
+                if (changeContext === context) {
+                    callback(it)
+                } else {
+                    context.queue += { callback(it) }
+                }
+            })
         }
     }
 }

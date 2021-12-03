@@ -20,5 +20,4 @@ data class OtherGameConfig(
     @Json(name = "flower_random_offset") var flowerRandomOffset: Boolean = true,
     @Json(name = "block_outline") var blockOutline: BlockOutline = BlockOutline(),
     @Json(name = "experimental_fps") var experimentalFPS: Boolean = false,
-    @Json(name = "super_dumb_advanced_setting_leave_at_1") var swapInterval: Int = 1,
 )

@@ -26,15 +26,9 @@ class AccountProfile(
     var entries: MutableMap<String, Account> by mapDelegate()
         private set
 
-    @get:JsonProperty("selected")
-    private var _selected: String? by delegate(null)
+    @get:JsonProperty("selected") private var _selected: String? by delegate(null)
 
-    @get:JsonIgnore
-    var selected: Account? by backingDelegate(getter = {
-        entries[_selected]
-    }, setter = {
-        _selected = it?.id
-    })
+    @get:JsonIgnore var selected: Account? by backingDelegate(getter = { entries[_selected] }, setter = { _selected = it?.id })
 
 
     override fun toString(): String {

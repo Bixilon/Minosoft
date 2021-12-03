@@ -149,7 +149,7 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
 
-        window.init()
+        window.init(connection.profiles.rendering)
         window.setDefaultIcon(connection.assetsManager)
 
         inputHandler.camera.init(this)

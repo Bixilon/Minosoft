@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowFocusChangeEvent
@@ -127,7 +128,7 @@ class GLFWWindow(
             field = value
         }
 
-    override fun init() {
+    override fun init(profile: RenderingProfile) {
         GLFWErrorCallback.createPrint(System.err).set()
         check(glfwInit()) { "Unable to initialize GLFW" }
 
@@ -148,7 +149,7 @@ class GLFWWindow(
 
         glfwMakeContextCurrent(window)
 
-        super.init()
+        super.init(profile)
 
         val primaryMonitor = glfwGetPrimaryMonitor()
         if (primaryMonitor != MemoryUtil.NULL) {
