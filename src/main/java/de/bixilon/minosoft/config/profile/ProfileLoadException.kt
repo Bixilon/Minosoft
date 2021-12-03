@@ -11,10 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.world
+package de.bixilon.minosoft.config.profile
 
-import com.squareup.moshi.Json
-
-data class WorldConfig(
-    @Json(name = "chunk_borders") var chunkBorders: ChunkBorderConfig = ChunkBorderConfig(),
-)
+class ProfileLoadException(
+    val path: String,
+    val exception: Throwable? = null,
+) : Exception(exception) {
+    override val message: String
+        get() = "Could not load profile ($path): ${exception?.message}"
+}

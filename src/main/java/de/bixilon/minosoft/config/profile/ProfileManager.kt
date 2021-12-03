@@ -32,8 +32,7 @@ interface ProfileManager<T : Profile> {
     val profiles: HashBiMap<String, T>
     var selected: T
 
-    @Deprecated("Should not be accessed")
-    var currentLoadingPath: String?
+    @Deprecated("Should not be accessed") var currentLoadingPath: String?
 
     val baseDirectory: File
         get() = File(RunConfiguration.HOME_DIRECTORY + "config/" + namespace.namespace + "/")
@@ -159,7 +158,12 @@ interface ProfileManager<T : Profile> {
                 saveFile = true
             }
 
-            val profile = load(profileName, json)
+            val profile: T
+            try {
+                profile = load(profileName, json)
+            } catch (exception: Throwable) {
+                throw ProfileLoadException(path, exception)
+            }
             if (saveFile) {
                 profile.saved = false
                 save(profile)

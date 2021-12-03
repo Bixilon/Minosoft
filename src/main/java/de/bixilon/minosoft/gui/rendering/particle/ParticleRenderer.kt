@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
@@ -152,7 +151,7 @@ class ParticleRenderer(
             try {
                 val time = KUtil.time
                 for (particle in particles) {
-                    if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+                    if (particle.position.length() - cameraLength >= connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
                         particle.dead = true
                         toRemove += particle
                     } else if (particle.dead) {
@@ -194,7 +193,7 @@ class ParticleRenderer(
         }
         val cameraLength = connection.player.position.length()
 
-        if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+        if (particle.position.length() - cameraLength >= connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
             particle.dead = true
             return
         }

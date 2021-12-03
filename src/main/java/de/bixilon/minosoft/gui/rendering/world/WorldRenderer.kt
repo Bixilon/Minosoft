@@ -558,7 +558,7 @@ class WorldRenderer(
     }
 
     private fun isChunkVisible(chunkPosition: Vec2i): Boolean {
-        return chunkPosition.isInRenderDistance(cameraChunkPosition)
+        return chunkPosition.isInRenderDistance(connection.world.viewDistance, cameraChunkPosition)
     }
 
     private fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i, checkChunk: Boolean): Boolean {

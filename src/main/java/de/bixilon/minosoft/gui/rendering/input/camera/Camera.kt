@@ -60,7 +60,7 @@ class Camera(
 ) {
     private val profile = connection.profiles.rendering.camera
     var fogColor = Previous(ChatColors.GREEN)
-    var fogStart = Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
+    var fogStart = connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
     private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
@@ -136,7 +136,7 @@ class Camera(
         fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
-            Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
+            connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
         }
     }
 

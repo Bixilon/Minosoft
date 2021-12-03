@@ -5,6 +5,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileMan
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.rendering.advanced.AdvancedC
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.CameraC
+import de.bixilon.minosoft.config.profile.profiles.rendering.chunkborder.ChunkBorderC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 
 /**
@@ -22,6 +23,7 @@ class RenderingProfile(
     val camera = CameraC()
     val advanced = AdvancedC()
     val movement = MovementC()
+    val chunkBorder = ChunkBorderC()
 
 
     override fun toString(): String {

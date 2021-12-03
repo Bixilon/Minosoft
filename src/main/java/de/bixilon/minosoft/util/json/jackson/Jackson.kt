@@ -10,6 +10,7 @@ object Jackson {
     val MAPPER = ObjectMapper()
         .registerModule(KotlinModule())
         .registerModule(ResourceLocationSerializer)
+        .registerModule(RGBColorSerializer)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
 

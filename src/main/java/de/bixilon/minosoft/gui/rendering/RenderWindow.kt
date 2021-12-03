@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -138,9 +137,7 @@ class RenderWindow(
             registerRenderer(ParticleRenderer)
         }
         registerRenderer(EntityHitboxRenderer)
-        if (Minosoft.config.config.game.world.chunkBorders.enabled) {
-            registerRenderer(ChunkBorderRenderer)
-        }
+        registerRenderer(ChunkBorderRenderer)
         registerRenderer(HUDRenderer)
     }
 

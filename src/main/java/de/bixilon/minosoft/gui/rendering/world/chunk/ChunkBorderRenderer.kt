@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.world.chunk
 
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -24,6 +27,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 
@@ -31,12 +36,32 @@ class ChunkBorderRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OpaqueDrawable {
+    private val profile = connection.profiles.rendering
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var lastChunkPosition: Vec2i? = null
     private var lastMesh: LineMesh? = null
 
+    override val skipOpaque: Boolean
+        get() = !profile.chunkBorder.enabled
+
+    override fun init() {
+        renderWindow.inputHandler.registerKeyCallback(CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
+                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_G),
+                ),
+            ), defaultPressed = profile.chunkBorder.enabled) {
+            profile.chunkBorder.enabled = it
+            renderWindow.sendDebugMessage("Chunk borders: ${it.format()}")
+        }
+    }
 
     override fun prepareDraw() {
+        if (!profile.chunkBorder.enabled) {
+            lastMesh?.unload()
+            return
+        }
         val chunkPosition = renderWindow.connection.player.positionInfo.chunkPosition
         if (chunkPosition == lastChunkPosition && lastMesh != null) {
             return
@@ -124,6 +149,8 @@ class ChunkBorderRenderer(
 
     companion object : RendererBuilder<ChunkBorderRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:chunk_borders")
+        private val CHUNK_BORDER_TOGGLE_KEY_COMBINATION = "minosoft:toggle_chunk_borders".toResourceLocation()
+
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): ChunkBorderRenderer {
             return ChunkBorderRenderer(connection, renderWindow)

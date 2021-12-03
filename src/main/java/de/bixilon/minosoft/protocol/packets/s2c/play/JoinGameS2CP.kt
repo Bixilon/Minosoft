@@ -169,7 +169,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
         }
 
-        connection.sendPacket(ClientSettingsC2SP(viewDistance = Minosoft.config.config.game.camera.viewDistance))
+        connection.sendPacket(ClientSettingsC2SP(viewDistance = connection.profiles.block.viewDistance)) // ToDo: This should not be here
 
         val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
         val buffer = PlayOutByteBuffer(connection)

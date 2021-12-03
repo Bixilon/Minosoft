@@ -72,6 +72,7 @@ class World(
     var raining = false
     var rainGradient = 0.0f
     var thunderGradient = 0.0f
+    var viewDistance = connection.profiles.block.viewDistance // ToDo: Calculate view distance by chunks sent from the server Limited by clientViewDistance in profile
     private val random = Random
 
     var audioPlayer: AbstractAudioPlayer? = null
