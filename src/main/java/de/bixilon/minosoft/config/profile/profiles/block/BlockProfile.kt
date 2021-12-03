@@ -4,6 +4,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
+import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
 
 /**
  * Profile for block rendering
@@ -29,6 +30,7 @@ class BlockProfile(
     var viewDistance by delegate(10) { check(it in 0..128) { "Invalid view distance $it" } }
 
     val outline = OutlineC()
+    val rendering = RenderingC()
 
     override fun toString(): String {
         return BlockProfileManager.getName(this)

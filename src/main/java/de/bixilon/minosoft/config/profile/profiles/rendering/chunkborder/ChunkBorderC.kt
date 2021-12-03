@@ -17,5 +17,8 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileMan
 
 class ChunkBorderC {
 
+    /**
+     * Enables or disables chunk border lines
+     */
     var enabled by delegate(false)
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
@@ -31,6 +32,8 @@ import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
+import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
+import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -70,12 +73,14 @@ class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
+    private val profile = connection.profiles.rendering
     val window: BaseWindow = GLFWWindow(connection)
     val renderSystem: RenderSystem = OpenGLRenderSystem(this)
     var initialized = false
         private set
     private lateinit var renderThread: Thread
-    val renderStats: AbstractRenderStats = AbstractRenderStats.createInstance()
+    lateinit var renderStats: AbstractRenderStats
+        private set
 
     val inputHandler = RenderWindowInputHandler(this)
 
@@ -128,6 +133,13 @@ class RenderWindow(
                 initialPositionReceived = true
             }
         })
+        profile.experimental::fps.listen(this, true, profile) {
+            renderStats = if (it) {
+                ExperimentalRenderStats()
+            } else {
+                RenderStats()
+            }
+        }
 
         // order dependent (from back to front)
         registerRenderer(SkyRenderer)

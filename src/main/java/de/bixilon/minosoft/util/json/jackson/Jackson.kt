@@ -19,5 +19,4 @@ object Jackson {
     init {
         MAPPER.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
     }
-
 }

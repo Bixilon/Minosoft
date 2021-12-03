@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
@@ -224,7 +223,7 @@ object VecUtil {
     }
 
     fun Vec3i.getWorldOffset(block: Block): Vec3 {
-        if (block.randomOffsetType == null || !Minosoft.config.config.game.other.flowerRandomOffset) {
+        if (block.randomOffsetType == null) {
             return Vec3.EMPTY
         }
 

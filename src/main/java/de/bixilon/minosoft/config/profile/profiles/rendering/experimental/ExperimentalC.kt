@@ -11,8 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.config.profile.profiles.rendering.experimental
 
-data class LightConfig(
-    var gamma: Float = 1.0f,
-)
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+
+class ExperimentalC {
+
+    /**
+     * Does some weird magic to improve your fps by 1-4 times.
+     * Recommended way to disable vsync
+     */
+    // For further information take a look into the code at ExperimentalRenderStats
+    var fps by delegate(false)
+}

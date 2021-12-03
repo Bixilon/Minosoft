@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
@@ -82,6 +83,7 @@ class WorldRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
+    private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val frustum = renderWindow.inputHandler.camera.frustum
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
@@ -243,15 +245,20 @@ class WorldRenderer(
             }
         })
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_A),
-            ),
-        )) {
-            unloadWorld()
-            prepareWorld()
-        }
+        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(),
+            KeyBinding(
+                mutableMapOf(
+                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
+                    KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_A),
+                ),
+            )) { clearChunkCache() }
+
+        profile.rendering::antiMoirePattern.listen(this, false, profile) { clearChunkCache() }
+    }
+
+    private fun clearChunkCache() {
+        unloadWorld()
+        prepareWorld()
     }
 
     private fun prepareWorld() {

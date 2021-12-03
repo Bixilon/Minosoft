@@ -28,6 +28,7 @@ import java.util.*
 class SolidCullSectionPreparer(
     val renderWindow: RenderWindow,
 ) : SolidSectionPreparer {
+    private val profile = renderWindow.connection.profiles.block.rendering
     private val bedrock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.BEDROCK]?.defaultState
     private val someFullBlock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
     private val tintColorCalculator = renderWindow.tintManager
@@ -36,6 +37,7 @@ class SolidCullSectionPreparer(
     override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val random = Random(0L)
 
+        val randomBlockModels = profile.antiMoirePattern
         val isLowestSection = sectionHeight == chunk.lowestSection
         val isHighestSection = sectionHeight == chunk.highestSection
         val blocks = section.blocks
@@ -124,7 +126,11 @@ class SolidCullSectionPreparer(
                     }
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
+                    if (randomBlockModels) {
+                        random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
+                    } else {
+                        random.setSeed(0L)
+                    }
                     tints = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
                     rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
 

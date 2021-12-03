@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.config.profile.profiles.rendering.light
 
-import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
-import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
-import de.bixilon.minosoft.config.config.game.hud.HUDGameConfig
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 
-data class GameConfig(
-    var graphics: GraphicsGameConfig = GraphicsGameConfig(),
-    var hud: HUDGameConfig = HUDGameConfig(),
-    var controls: ControlsGameConfig = ControlsGameConfig(),
-    var skin: SkinConfig = SkinConfig(),
-)
+class LightC {
+
+    /**
+     * Changes the gamma value of the light map
+     * In original minecraft this setting is called brightness
+     * Must be non-negative and may not exceed 1
+     */
+    var gamma by delegate(0.0f) { check(it in 0.0f..1.0f) { "Gama must be non negative and < 1" } }
+}

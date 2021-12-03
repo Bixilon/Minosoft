@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.config.profile.profiles.block.rendering
 
-import com.squareup.moshi.Json
+import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.delegate
 
-data class OtherGameConfig(
-    @Json(name = "anti_moire_pattern") var antiMoirePattern: Boolean = true,
-    @Json(name = "flower_random_offset") var flowerRandomOffset: Boolean = true,
-    @Json(name = "experimental_fps") var experimentalFPS: Boolean = false,
-)
+class RenderingC {
+
+    /**
+     * This option tries to do its best to fix any occurring [Moiré Patterns](https://en.wikipedia.org/wiki/Moir%C3%A9_pattern)
+     * If set position based random block models are disabled
+     */
+    var antiMoirePattern by delegate(true)
+}
