@@ -27,7 +27,7 @@ object BlockProfileManager : ProfileManager<BlockProfile> {
 
     override fun createDefaultProfile(name: String): BlockProfile {
         currentLoadingPath = name
-        val profile = BlockProfile("Default block  profile")
+        val profile = BlockProfile("Default block profile")
         currentLoadingPath = null
         profiles[name] = profile
 

@@ -258,23 +258,27 @@ class WorldRenderer(
 
         connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> {
             // Unload all chunks(-sections) that are out of view distance
+
+            queueLock.lock()
+            culledQueueLock.lock()
+            meshesToLoadLock.lock()
             meshesToUnloadLock.lock()
+            loadedMeshesLock.lock()
+            val loadedMeshesToRemove: MutableSet<Vec2i> = mutableSetOf()
             for ((chunkPosition, sections) in loadedMeshes) {
                 if (isChunkVisible(chunkPosition)) {
                     continue
                 }
+                loadedMeshesToRemove += chunkPosition
                 for (mesh in sections.values) {
+                    if (mesh in meshesToUnload) {
+                        continue
+                    }
                     meshesToUnload += mesh
                 }
             }
-            meshesToUnloadLock.unlock()
+            loadedMeshes -= loadedMeshesToRemove
 
-
-            queueLock.lock()
-            queue.removeAll { !isChunkVisible(it.chunkPosition) }
-            queueLock.unlock()
-
-            culledQueueLock.lock()
             val toRemove: MutableSet<Vec2i> = mutableSetOf()
             for ((chunkPosition, _) in culledQueue) {
                 if (isChunkVisible(chunkPosition)) {
@@ -283,7 +287,22 @@ class WorldRenderer(
                 toRemove += chunkPosition
             }
             culledQueue -= toRemove
+
+            queue.removeAll { !isChunkVisible(it.chunkPosition) }
+
+            meshesToLoad.removeAll { !isChunkVisible(it.chunkPosition) }
+
+            for (task in preparingTasks.toMutableSet()) {
+                if (!isChunkVisible(task.chunkPosition)) {
+                    task.runnable.interrupt()
+                }
+            }
+
+            loadedMeshesLock.unlock()
+            queueLock.unlock()
             culledQueueLock.unlock()
+            meshesToLoadLock.unlock()
+            meshesToUnloadLock.unlock()
         })
     }
 
@@ -354,6 +373,7 @@ class WorldRenderer(
             for (mesh in meshes.values) {
                 meshesToUnload += mesh
             }
+            loadedMeshes -= chunkPosition
         }
 
         loadedMeshesLock.unlock()
