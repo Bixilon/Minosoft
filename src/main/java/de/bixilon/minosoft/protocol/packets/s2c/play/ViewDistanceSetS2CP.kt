@@ -23,7 +23,7 @@ class ViewDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val viewDistance: Int = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {
-        connection.world.view.serverViewDistance = viewDistance
+        // connection.world.view.serverViewDistance = viewDistance
     }
 
     override fun log() {

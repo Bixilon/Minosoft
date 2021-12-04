@@ -191,10 +191,10 @@ interface ProfileManager<T : Profile> {
     fun watchProfile(profileName: String, path: File) {
         FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { _, it ->
             val profile = profiles[profileName] ?: return@FileWatcher
-            val data = readAndMigrate(path.path).second
-            val dataString = Jackson.MAPPER.writeValueAsString(data)
-            profile.reloading = true
             try {
+                val data = readAndMigrate(path.path).second
+                val dataString = Jackson.MAPPER.writeValueAsString(data)
+                profile.reloading = true
                 Jackson.MAPPER.readerForUpdating(profile).readValue<T>(dataString)
             } catch (exception: Exception) {
                 exception.printStackTrace()

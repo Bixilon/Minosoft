@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.C
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.KUtil.fullName
 
 class ClientSettingsManager(
@@ -71,6 +72,9 @@ class ClientSettingsManager(
     }
 
     fun sendClientSettings() {
+        if (connection.protocolState != ProtocolStates.PLAY) {
+            return
+        }
         connection.sendPacket(ClientSettingsC2SP(
             locale = language.fullName,
             chatColors = connection.profiles.hud.chat.chatColors,

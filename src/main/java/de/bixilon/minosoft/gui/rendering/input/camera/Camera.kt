@@ -137,7 +137,7 @@ class Camera(
         fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
-            connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
+            connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
         }
     }
 
