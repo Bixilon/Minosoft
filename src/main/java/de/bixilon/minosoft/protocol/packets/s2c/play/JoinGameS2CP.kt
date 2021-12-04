@@ -28,7 +28,6 @@ import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PluginMessageC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -169,7 +168,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
         }
 
-        connection.sendPacket(ClientSettingsC2SP(viewDistance = connection.profiles.block.viewDistance)) // ToDo: This should not be here
+        connection.settingsManager.sendClientSettings()
 
         val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
         val buffer = PlayOutByteBuffer(connection)

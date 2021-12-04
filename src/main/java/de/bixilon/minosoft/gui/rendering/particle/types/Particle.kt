@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import kotlin.math.abs
@@ -42,6 +43,8 @@ abstract class Particle(
         val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
         connection.registries.particleTypeRegistry[resourceLocation]!!.default()
     }
+    var chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
+        private set
     protected val random = Random
     private var lastTickTime = -1L
 
@@ -147,6 +150,7 @@ abstract class Particle(
             return
         }
         tick()
+        chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
 
         if (dead) {
             return

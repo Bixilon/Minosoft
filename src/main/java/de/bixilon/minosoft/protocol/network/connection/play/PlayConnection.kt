@@ -45,6 +45,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionSt
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -69,6 +70,7 @@ class PlayConnection(
     val version: Version,
     val profiles: ProfileCollection = ProfileCollection(),
 ) : Connection() {
+    val settingsManager = ClientSettingsManager(this)
     val registries = Registries()
     val recipes = Recipes()
     val world = World(this)

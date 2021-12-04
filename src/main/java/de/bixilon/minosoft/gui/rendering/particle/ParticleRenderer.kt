@@ -30,6 +30,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.ReadWriteLock
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.task.time.TimeWorker
 import de.bixilon.minosoft.util.task.time.TimeWorkerTask
@@ -143,21 +144,23 @@ class ParticleRenderer(
             if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
                 return@TimeWorkerTask
             }
+            val cameraPosition = connection.player.positionInfo.chunkPosition
+            val particleViewDistance = connection.world.view.particleViewDistance
 
-            val cameraLength = connection.player.position.length()
             val toRemove: MutableSet<Particle> = mutableSetOf()
 
             particlesLock.acquire()
             try {
                 val time = KUtil.time
                 for (particle in particles) {
-                    if (particle.position.length() - cameraLength >= connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+                    if (!particle.chunkPosition.isInRenderDistance(particleViewDistance, cameraPosition)) {
                         particle.dead = true
                         toRemove += particle
                     } else if (particle.dead) {
                         toRemove += particle
+                    } else {
+                        particle.tryTick(time)
                     }
-                    particle.tryTick(time)
                 }
             } finally {
                 particlesLock.release()
@@ -191,9 +194,8 @@ class ParticleRenderer(
         if (particleCount >= maxAmount) {
             return
         }
-        val cameraLength = connection.player.position.length()
 
-        if (particle.position.length() - cameraLength >= connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+        if (!particle.chunkPosition.isInRenderDistance(connection.world.view.particleViewDistance, connection.player.positionInfo.chunkPosition)) {
             particle.dead = true
             return
         }

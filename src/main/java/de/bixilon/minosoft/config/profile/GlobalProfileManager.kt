@@ -5,6 +5,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
+import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
@@ -34,6 +35,7 @@ object GlobalProfileManager {
         AccountProfileManager,
         RenderingProfileManager,
         BlockProfileManager,
+        ConnectionProfileManager,
     )
     private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
     val CLASS_MAPPING: Map<Class<out Profile>, ProfileManager<*>>

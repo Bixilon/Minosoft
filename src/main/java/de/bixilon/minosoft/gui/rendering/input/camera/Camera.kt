@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.camera.frustum.Frustum
@@ -60,7 +61,7 @@ class Camera(
 ) {
     private val profile = connection.profiles.rendering.camera
     var fogColor = Previous(ChatColors.GREEN)
-    var fogStart = connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
+    var fogStart = connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
     private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
@@ -136,7 +137,7 @@ class Camera(
         fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
-            connection.world.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
+            connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
         }
     }
 
@@ -215,6 +216,8 @@ class Camera(
         )
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
+
+        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { it.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() }) // ToDo
 
         fun dropItem(stack: Boolean) {
             val time = KUtil.time

@@ -238,7 +238,7 @@ class RenderWindow(
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderSystem.polygonMode = nextMode
-            sendDebugMessage("Set polygon to: $nextMode")
+            sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
 
         inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),

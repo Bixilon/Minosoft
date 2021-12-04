@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -21,7 +22,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class SimulationDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val simulationDistance: Int = buffer.readVarInt()
 
+    override fun handle(connection: PlayConnection) {
+        connection.world.view.serverSimulationDistance = simulationDistance
+    }
+
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Simulation distance set (viewDistance=$simulationDistance)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Simulation distance set (simulationDistance=$simulationDistance)" }
     }
 }

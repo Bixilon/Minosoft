@@ -29,6 +29,16 @@ class BlockProfile(
      */
     var viewDistance by delegate(10) { check(it in 0..128) { "Invalid view distance $it" } }
 
+    /**
+     * Ticking (entity, block, particle) is just applied in this distance.
+     *
+     * Starting from 1.18 the server can set this value per connection.
+     * The lower value will be used in that case
+     * For calculation see viewDistance
+     * @see viewDistance
+     */
+    var simulationDistance by delegate(8) { check(it in 0..viewDistance) { "Simulation distance must not be negative or exceed the view distance" } }
+
     val outline = OutlineC()
     val rendering = RenderingC()
 

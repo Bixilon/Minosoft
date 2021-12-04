@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -41,6 +42,7 @@ import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import de.bixilon.minosoft.util.collections.LockMap
 import glm_.func.common.clamp
@@ -72,7 +74,7 @@ class World(
     var raining = false
     var rainGradient = 0.0f
     var thunderGradient = 0.0f
-    var viewDistance = connection.profiles.block.viewDistance // ToDo: Calculate view distance by chunks sent from the server Limited by clientViewDistance in profile
+    val view = WorldView(connection)
     private val random = Random
 
     var audioPlayer: AbstractAudioPlayer? = null
@@ -159,7 +161,13 @@ class World(
     }
 
     fun tick() {
+        val simulationDistance = view.simulationDistance
+        val cameraPosition = connection.player.positionInfo.chunkPosition
         for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
+            // ToDo: Cache (improve performance)
+            if (!chunkPosition.isInRenderDistance(simulationDistance, cameraPosition)) {
+                continue
+            }
             chunk.tick(connection, chunkPosition)
         }
     }

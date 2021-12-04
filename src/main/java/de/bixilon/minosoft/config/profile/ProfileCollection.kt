@@ -4,6 +4,8 @@ import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
+import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
+import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
@@ -23,4 +25,5 @@ data class ProfileCollection(
     val resources: ResourcesProfile = ResourcesProfileManager.selected,
     val rendering: RenderingProfile = RenderingProfileManager.selected,
     val block: BlockProfile = BlockProfileManager.selected,
+    val connection: ConnectionProfile = ConnectionProfileManager.selected,
 )

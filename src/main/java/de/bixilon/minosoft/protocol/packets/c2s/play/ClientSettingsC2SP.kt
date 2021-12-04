@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -25,10 +25,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ClientSettingsC2SP(
     val locale: String = "en_us",
+    var chatColors: Boolean = true,
     val viewDistance: Int = 10,
     val chatMode: ChatModes = ChatModes.EVERYTHING,
-    val skinParts: Set<SkinParts> = setOf(*SkinParts.VALUES),
-    val mainHand: Hands = Hands.MAIN,
+    val skinParts: Array<SkinParts> = SkinParts.VALUES,
+    val mainArm: Arms = Arms.RIGHT,
     val disableTextFiltering: Boolean = true,
     val allowListing: Boolean = true,
 ) : PlayC2SPacket {
@@ -37,10 +38,10 @@ class ClientSettingsC2SP(
         buffer.writeString(locale) // locale
         buffer.writeByte(viewDistance) // render Distance
         buffer.writeByte(chatMode.ordinal) // chat settings
-        buffer.writeBoolean(true) // chat colors
+        buffer.writeBoolean(chatColors) // chat colors
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             buffer.writeByte(Difficulties.NORMAL.ordinal.toByte()) // difficulty
-            buffer.writeBoolean(true) // cape
+            buffer.writeBoolean(skinParts.contains(SkinParts.CAPE)) // cape
         } else {
             var skinParts = 0
             for (skinPart in this.skinParts) {
@@ -49,7 +50,7 @@ class ClientSettingsC2SP(
             buffer.writeByte(skinParts)
         }
         if (buffer.versionId >= ProtocolVersions.V_15W31A) {
-            buffer.writeVarInt(mainHand.ordinal)
+            buffer.writeVarInt(mainArm.ordinal)
         }
         if (buffer.versionId >= ProtocolVersions.V_21W07A) {
             buffer.writeBoolean(disableTextFiltering)
@@ -60,7 +61,7 @@ class ClientSettingsC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, viewDistance=$viewDistance)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, viewDistance=$viewDistance, chatMode=$chatMode, chatColors=$chatColors, skinParts=${skinParts.joinToString()}, mainHand=$mainArm, disableTextFiltering=$disableTextFiltering, allowListing=$allowListing)" }
     }
 
     enum class SkinParts {

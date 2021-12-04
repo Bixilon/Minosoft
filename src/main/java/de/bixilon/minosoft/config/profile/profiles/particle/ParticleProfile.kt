@@ -30,6 +30,14 @@ class ParticleProfile(
     var enabled by delegate(true)
 
     /**
+     * View distance for particles
+     * This is limited by the block simulation distance
+     *
+     * @see de.bixilon.minosoft.config.profile.profiles.block.BlockProfile.viewDistance
+     */
+    var viewDistance by delegate(10) { check(it in 0..128) { "Distance must be non-negative and must not exceed 128" } }
+
+    /**
      * Limits the number of particles.
      * Particles that exceed that count will be ignored
      * Must not be negative or exceed $RenderConstants.MAXIMUM_PARTICLE_AMOUNT
