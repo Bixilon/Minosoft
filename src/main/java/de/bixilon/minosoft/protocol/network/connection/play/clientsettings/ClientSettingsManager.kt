@@ -32,6 +32,13 @@ class ClientSettingsManager(
 
         blocks::simulationDistance.listen(this, profile = blocks) { connection.world.view.simulationDistance = it }
 
+
+        val hud = connection.profiles.hud
+        val chat = hud.chat
+        chat::chatMode.listen(this, profile = hud) { sendClientSettings() }
+        chat::textFiltering.listen(this, profile = hud) { sendClientSettings() }
+        chat::chatColors.listen(this, profile = hud) { sendClientSettings() }
+
         profile::mainArm.listen(this, profile = profile) { sendClientSettings() }
         profile::playerListing.listen(this, profile = profile) { sendClientSettings() }
 
@@ -46,6 +53,8 @@ class ClientSettingsManager(
 
         profile::language.listen(this, profile = profile) { sendLanguage() }
         connection.profiles.eros.general::language.listen(this, profile = connection.profiles.eros) { sendLanguage() }
+
+        // ToDo: Load new language files
     }
 
     @Synchronized
@@ -60,13 +69,13 @@ class ClientSettingsManager(
 
     fun sendClientSettings() {
         connection.sendPacket(ClientSettingsC2SP(
-            locale = (language).toLanguageTag(),
-            chatColors = true, // ToDo
+            locale = language.toString(),
+            chatColors = connection.profiles.hud.chat.chatColors,
             viewDistance = connection.profiles.block.viewDistance,
-            chatMode = ClientSettingsC2SP.ChatModes.EVERYTHING,  // ToDo
+            chatMode = connection.profiles.hud.chat.chatMode,
             skinParts = profile.skin.skinParts,
             mainArm = profile.mainArm,
-            disableTextFiltering = true, // ToDo
+            disableTextFiltering = !connection.profiles.hud.chat.textFiltering,
             allowListing = profile.playerListing,
         ))
     }

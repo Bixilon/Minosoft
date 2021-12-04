@@ -11,13 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.hud
+package de.bixilon.minosoft.config.profile.profiles.hud.chat.internal
 
-import com.squareup.moshi.Json
+import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
 
-data class HUDGameConfig(
-    var scale: Float = 2.0f,
-    var crosshair: CrosshairConfig = CrosshairConfig(),
-    var chat: ChatConfig = ChatConfig(),
-    @Json(name = "internal_messages") var internalMessages: InternalMessagesConfig = InternalMessagesConfig(),
-)
+class InternalC {
+
+    /**
+     * Hides the internal chat
+     */
+    var hidden by delegate(false)
+
+    /**
+     * The width of the internal chat in scaled pixels
+     */
+    var width by delegate(320)
+
+    /**
+     * The height of the internal chat in scaled pixels
+     */
+    var height by delegate(180)
+}

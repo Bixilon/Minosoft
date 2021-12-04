@@ -8,6 +8,7 @@ import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
@@ -36,6 +37,7 @@ object GlobalProfileManager {
         RenderingProfileManager,
         BlockProfileManager,
         ConnectionProfileManager,
+        HUDProfileManager,
     )
     private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
     val CLASS_MAPPING: Map<Class<out Profile>, ProfileManager<*>>

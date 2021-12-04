@@ -11,10 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.hud
+package de.bixilon.minosoft.config.profile.profiles.eros.text
 
-data class ChatConfig(
-    var enabled: Boolean = true,
-    var width: Int = 320,
-    var height: Int = 180,
-)
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+
+class TextC {
+
+    /**
+     * Displays colored text
+     * If disables it displays the css defined language (defaults to white)
+     */
+    var colored by delegate(true)
+
+    /**
+     * Enables the obfuscated formatting style
+     * If false, the text will just blink
+     */
+    var obfuscated by delegate(true)
+}

@@ -170,6 +170,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         connection.settingsManager.sendClientSettings()
 
+        // ToDo: This has nothing to do here!
         val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
         val buffer = PlayOutByteBuffer(connection)
         buffer.writeString("vanilla") // ToDo: Remove prefix

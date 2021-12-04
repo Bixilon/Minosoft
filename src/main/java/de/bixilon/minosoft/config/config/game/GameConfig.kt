@@ -15,11 +15,8 @@ package de.bixilon.minosoft.config.config.game
 
 import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
 import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
-import de.bixilon.minosoft.config.config.game.hud.HUDGameConfig
 
 data class GameConfig(
     var graphics: GraphicsGameConfig = GraphicsGameConfig(),
-    var hud: HUDGameConfig = HUDGameConfig(),
     var controls: ControlsGameConfig = ControlsGameConfig(),
-    var skin: SkinConfig = SkinConfig(),
 )

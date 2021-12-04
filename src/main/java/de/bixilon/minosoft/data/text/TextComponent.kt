@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
@@ -131,7 +131,7 @@ open class TextComponent(
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
         this.color?.let {
-            if (Minosoft.config.config.chat.colored) {
+            if (ErosProfileManager.selected.text.colored) {
                 text.fill = Color.rgb(it.red, it.green, it.blue)
             }
         } ?: let {
@@ -140,8 +140,8 @@ open class TextComponent(
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
                 PreChatFormattingCodes.OBFUSCATED -> {
-                    // ToDo: potential memory/performance leak: Stop timeline, when TextComponent isn't shown anymore
-                    val obfuscatedTimeline = if (Minosoft.config.config.chat.obfuscated) {
+                    // ToDo: This is just slow
+                    val obfuscatedTimeline = if (ErosProfileManager.selected.text.obfuscated) {
                         Timeline(
                             KeyFrame(Duration.millis(50.0), {
                                 val chars = text.text.toCharArray()

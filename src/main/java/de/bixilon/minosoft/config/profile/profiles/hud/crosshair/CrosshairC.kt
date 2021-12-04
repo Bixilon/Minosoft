@@ -11,14 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.hud
+package de.bixilon.minosoft.config.profile.profiles.hud.crosshair
 
-import com.squareup.moshi.Json
+import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
 import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
 
-data class CrosshairConfig(
-    var enabled: Boolean = true,
-    @Json(name = "complementary_color") var complementaryColor: Boolean = true,
-    var color: RGBColor = ChatColors.WHITE,
-)
+class CrosshairC {
+    /**
+     * Inverts the color of the crosshair according to the background color
+     */
+    var complementaryColor by delegate(true)
+
+    /**
+     * The color of the crosshair
+     */
+    var color by delegate(ChatColors.WHITE)
+}
