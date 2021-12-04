@@ -17,12 +17,15 @@ import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.toStackTrace
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.KUtil.tryCatch
 import de.bixilon.minosoft.util.UnitFormatter.formatBytes
+import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -121,14 +124,17 @@ class ErosCrashReport : JavaFXWindowController() {
 
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
-
-            try {
+            tryCatch(executor = { FileWatcherService.stop() })
+            tryCatch(executor = {
                 for (window in Window.getWindows()) {
                     JavaFXUtil.runLater { window.hide() }
                 }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
+            })
+            tryCatch(executor = {
+                for (connection in PlayConnection.ACTIVE_CONENCTIONS.toSynchronizedSet()) {
+                    connection.disconnect()
+                }
+            })
 
             val details = createCrashText(this)
 

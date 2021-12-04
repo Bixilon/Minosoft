@@ -57,6 +57,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -128,6 +129,7 @@ class PlayConnection(
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = PlayConnectionStates.HANDSHAKING
+                    ACTIVE_CONENCTIONS += this
                     for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
                         var valid = false
                         for (serverAddress in validators) {
@@ -204,6 +206,7 @@ class PlayConnection(
                         TimeWorker.removeTask(randomTickTask)
                     }
                     state = PlayConnectionStates.DISCONNECTED
+                    ACTIVE_CONENCTIONS -= this
                 }
                 else -> {
                 }
@@ -293,5 +296,9 @@ class PlayConnection(
                 return it.entries.contains(`object`)
             }
         }
+    }
+
+    companion object {
+        val ACTIVE_CONENCTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
     }
 }

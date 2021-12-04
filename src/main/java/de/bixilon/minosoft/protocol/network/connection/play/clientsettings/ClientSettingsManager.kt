@@ -56,8 +56,6 @@ class ClientSettingsManager(
 
         profile::language.listen(this, profile = profile) { sendLanguage() }
         connection.profiles.eros.general::language.listen(this, profile = connection.profiles.eros) { sendLanguage() }
-
-        // ToDo: Load new language files
     }
 
     @Synchronized

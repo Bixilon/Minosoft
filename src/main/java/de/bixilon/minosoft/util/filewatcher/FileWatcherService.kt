@@ -14,21 +14,26 @@ import kotlin.io.path.pathString
 
 object FileWatcherService {
     private val WATCHERS: SynchronizedMap<WatchKey, SynchronizedMap<String, FileWatcher>> = synchronizedMapOf()
-    private var running = false
+    private var stop = false
     private var service: WatchService? = null
+    private lateinit var thread: Thread
 
     fun start() {
-        if (running) {
+        if (service != null) {
             throw IllegalStateException("Already running!")
         }
+        this.stop = false
         val latch = CountUpAndDownLatch(1)
-        Thread({
+        this.thread = Thread({
             try {
                 val service = FileSystems.getDefault().newWatchService()
                 this.service = service
                 latch.dec()
                 while (true) {
                     val watchKey: WatchKey = service.take()
+                    if (stop) {
+                        break
+                    }
                     for (event in watchKey.pollEvents()) {
                         val path = event.context().nullCast<Path>() ?: continue
 
@@ -43,7 +48,8 @@ object FileWatcherService {
                 }
                 this.service = null
             }
-        }, "FileWatcherService").start()
+        }, "FileWatcherService")
+        thread.start()
 
 
         latch.await()
@@ -82,5 +88,13 @@ object FileWatcherService {
             WATCHERS.remove(watchKey)
             throw exception
         }
+    }
+
+    fun stop() {
+        if (service == null) {
+            return
+        }
+        stop = true
+        thread.interrupt()
     }
 }

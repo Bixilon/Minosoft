@@ -76,7 +76,6 @@ class ClientSettingsC2SP(
 
         val bitmask = 1 shl ordinal
 
-
         companion object : ValuesEnum<SkinParts> {
             override val VALUES: Array<SkinParts> = values()
             override val NAME_MAP: Map<String, SkinParts> = KUtil.getEnumValues(VALUES)

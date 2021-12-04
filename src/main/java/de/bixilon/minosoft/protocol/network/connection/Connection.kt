@@ -27,7 +27,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 
 abstract class Connection : AbstractEventMaster {
@@ -36,10 +35,6 @@ abstract class Connection : AbstractEventMaster {
     val connectionId = lastConnectionId++
     var wasConnected = false
     abstract var protocolState: ProtocolStates
-
-    init {
-        CONNECTIONS += this
-    }
 
     open var error: Throwable? = null
         set(value) {
@@ -103,7 +98,5 @@ abstract class Connection : AbstractEventMaster {
 
     companion object {
         var lastConnectionId: Int = 0
-
-        val CONNECTIONS: MutableSet<Connection> = synchronizedSetOf() // ToDo: Only connected connections?
     }
 }
