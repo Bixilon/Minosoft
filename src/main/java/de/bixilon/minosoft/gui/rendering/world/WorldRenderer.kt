@@ -116,6 +116,7 @@ class WorldRenderer(
     private var clearVisibleNextFrame = false
     private var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
 
+private var previousViewDistance = connection.world.view.viewDistance
 
     private var cameraPosition = Vec3.EMPTY
     private var cameraChunkPosition = Vec2i.EMPTY
@@ -256,53 +257,59 @@ class WorldRenderer(
 
         profile.rendering::antiMoirePattern.listen(this, false, profile) { clearChunkCache() }
 
-        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> {
-            // Unload all chunks(-sections) that are out of view distance
+        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
+            if (event.viewDistance < this.previousViewDistance) {
+                // Unload all chunks(-sections) that are out of view distance
+                queueLock.lock()
+                culledQueueLock.lock()
+                meshesToLoadLock.lock()
+                meshesToUnloadLock.lock()
+                loadedMeshesLock.lock()
 
-            queueLock.lock()
-            culledQueueLock.lock()
-            meshesToLoadLock.lock()
-            meshesToUnloadLock.lock()
-            loadedMeshesLock.lock()
-            val loadedMeshesToRemove: MutableSet<Vec2i> = mutableSetOf()
-            for ((chunkPosition, sections) in loadedMeshes) {
-                if (isChunkVisible(chunkPosition)) {
-                    continue
-                }
-                loadedMeshesToRemove += chunkPosition
-                for (mesh in sections.values) {
-                    if (mesh in meshesToUnload) {
+                val loadedMeshesToRemove: MutableSet<Vec2i> = mutableSetOf()
+                for ((chunkPosition, sections) in loadedMeshes) {
+                    if (isChunkVisible(chunkPosition)) {
                         continue
                     }
-                    meshesToUnload += mesh
+                    loadedMeshesToRemove += chunkPosition
+                    for (mesh in sections.values) {
+                        if (mesh in meshesToUnload) {
+                            continue
+                        }
+                        meshesToUnload += mesh
+                    }
                 }
-            }
-            loadedMeshes -= loadedMeshesToRemove
+                loadedMeshes -= loadedMeshesToRemove
 
-            val toRemove: MutableSet<Vec2i> = mutableSetOf()
-            for ((chunkPosition, _) in culledQueue) {
-                if (isChunkVisible(chunkPosition)) {
-                    continue
+                val toRemove: MutableSet<Vec2i> = mutableSetOf()
+                for ((chunkPosition, _) in culledQueue) {
+                    if (isChunkVisible(chunkPosition)) {
+                        continue
+                    }
+                    toRemove += chunkPosition
                 }
-                toRemove += chunkPosition
-            }
-            culledQueue -= toRemove
+                culledQueue -= toRemove
 
-            queue.removeAll { !isChunkVisible(it.chunkPosition) }
+                queue.removeAll { !isChunkVisible(it.chunkPosition) }
 
-            meshesToLoad.removeAll { !isChunkVisible(it.chunkPosition) }
+                meshesToLoad.removeAll { !isChunkVisible(it.chunkPosition) }
 
-            for (task in preparingTasks.toMutableSet()) {
-                if (!isChunkVisible(task.chunkPosition)) {
-                    task.runnable.interrupt()
+                for (task in preparingTasks.toMutableSet()) {
+                    if (!isChunkVisible(task.chunkPosition)) {
+                        task.runnable.interrupt()
+                    }
                 }
+
+                loadedMeshesLock.unlock()
+                queueLock.unlock()
+                culledQueueLock.unlock()
+                meshesToLoadLock.unlock()
+                meshesToUnloadLock.unlock()
+            } else {
+                prepareWorld()
             }
 
-            loadedMeshesLock.unlock()
-            queueLock.unlock()
-            culledQueueLock.unlock()
-            meshesToLoadLock.unlock()
-            meshesToUnloadLock.unlock()
+            this.previousViewDistance = event.viewDistance
         })
     }
 
@@ -498,6 +505,9 @@ class WorldRenderer(
 
     private fun queueChunk(chunkPosition: Vec2i, chunk: Chunk = world.chunks[chunkPosition]!!) {
         if (!chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
+            return
+        }
+        if (this.loadedMeshes.containsKey(chunkPosition)) {
             return
         }
 

@@ -194,11 +194,16 @@ interface ProfileManager<T : Profile> {
             val data = readAndMigrate(path.path).second
             val dataString = Jackson.MAPPER.writeValueAsString(data)
             profile.reloading = true
-            Jackson.MAPPER.readerForUpdating(profile).readValue<T>(dataString)
-            profile.reloading = false
+            try {
+                Jackson.MAPPER.readerForUpdating(profile).readValue<T>(dataString)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+                exception.crash()
+            } finally {
+                profile.reloading = false
+            }
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Reloaded profile: $profileName ($it)" }
         })
-
     }
 
     companion object {
