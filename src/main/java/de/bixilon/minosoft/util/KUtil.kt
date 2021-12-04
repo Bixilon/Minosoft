@@ -555,4 +555,7 @@ object KUtil {
             throw IOException("Could not move $tempFile to $destination!")
         }
     }
+
+    val Locale.fullName: String
+        get() = language + "_" + country.ifEmpty { language.uppercase() }
 }

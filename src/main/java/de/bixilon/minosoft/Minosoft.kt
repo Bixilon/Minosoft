@@ -15,7 +15,9 @@ package de.bixilon.minosoft
 
 import de.bixilon.minosoft.config.Configuration
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.JarAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
@@ -106,9 +108,12 @@ object Minosoft {
             Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Profiles loaded!" }
         })
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = {
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${config.config.general.language})" }
-            LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(config.config.general.language, null, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
+        taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
+            val language = ErosProfileManager.selected.general.language
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
+            ErosProfileManager.selected.general::language.listen(this, true) {
+                LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
+            }
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
         })
 

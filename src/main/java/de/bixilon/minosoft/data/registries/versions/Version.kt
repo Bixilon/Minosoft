@@ -14,10 +14,8 @@ package de.bixilon.minosoft.data.registries.versions
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.mbf.MBFBinaryReader
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
-import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
@@ -45,7 +43,6 @@ data class Version(
     var isLoaded = false
     val registries: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
-    lateinit var language: LanguageManager
 
     fun getPacketById(state: ProtocolStates, command: Int): S2C? {
         return s2CPacketMapping[state]?.inverse()?.get(command)
@@ -65,12 +62,10 @@ data class Version(
         }
         if (!isFlattened() && versionId != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
             assetsManager = Versions.PRE_FLATTENING_VERSION.assetsManager
-            language = Versions.PRE_FLATTENING_VERSION.language
             return
         }
         assetsManager = MinecraftAssetsManager(Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
         assetsManager.downloadAllAssets(latch)
-        language = LanguageManager.load(Minosoft.config.config.general.language, this)
     }
 
     @Synchronized
@@ -141,13 +136,13 @@ data class Version(
         if (super.equals(other)) {
             return true
         }
-        if (other == null) {
+        if (other !is Version) {
             return false
         }
         return if (hashCode() != other.hashCode()) {
             false
         } else {
-            name == name
+            this.name == other.name
         }
     }
 

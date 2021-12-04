@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
+import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
@@ -84,6 +85,7 @@ class PlayConnection(
     lateinit var assetsManager: MultiAssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
+    lateinit var language: LanguageManager
 
     var commandRootNode: CommandRootNode? = null
 
@@ -215,6 +217,7 @@ class PlayConnection(
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER)
+            language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version)
             registries.parentRegistries = version.registries
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
