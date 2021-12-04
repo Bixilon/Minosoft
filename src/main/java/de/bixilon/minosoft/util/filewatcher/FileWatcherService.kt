@@ -41,6 +41,7 @@ object FileWatcherService {
                     }
                     watchKey.reset()
                 }
+            } catch (ignored: InterruptedException) {
             } finally {
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Stopping file watcher service" }
                 if (latch.count > 0) {
