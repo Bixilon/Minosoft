@@ -47,9 +47,7 @@ class MainErosController : JavaFXWindowController() {
     @FXML private lateinit var exitIconFX: FontIcon
 
     @FXML private lateinit var contentFX: Pane
-
     @FXML private lateinit var accountImageFX: ImageView
-
     @FXML private lateinit var accountNameFX: Label
 
     private lateinit var iconMap: Map<ErosMainActivities, FontIcon>

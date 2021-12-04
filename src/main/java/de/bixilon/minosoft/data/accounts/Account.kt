@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type") // or PROPERTY_NAME_PRESENCE
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
     JsonSubTypes.Type(value = MojangAccount::class, name = "minosoft:mojang_account"),
     JsonSubTypes.Type(value = OfflineAccount::class, name = "minosoft:offline_account"),

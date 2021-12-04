@@ -25,9 +25,7 @@ import org.kordamp.ikonli.javafx.FontIcon
 
 class ServerTypeCardController : AbstractCard<ServerTypes>() {
     @FXML private lateinit var iconFX: FontIcon
-
     @FXML private lateinit var headerFX: TextFlow
-
     @FXML private lateinit var textFX: TextFlow
 
     override fun updateItem(item: ServerTypes?, empty: Boolean) {

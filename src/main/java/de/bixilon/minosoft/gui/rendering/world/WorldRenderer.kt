@@ -116,7 +116,7 @@ class WorldRenderer(
     private var clearVisibleNextFrame = false
     private var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
 
-private var previousViewDistance = connection.world.view.viewDistance
+    private var previousViewDistance = connection.world.view.viewDistance
 
     private var cameraPosition = Vec3.EMPTY
     private var cameraChunkPosition = Vec2i.EMPTY

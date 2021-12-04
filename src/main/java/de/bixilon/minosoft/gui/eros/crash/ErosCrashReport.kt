@@ -49,9 +49,7 @@ import java.text.SimpleDateFormat
 
 class ErosCrashReport : JavaFXWindowController() {
     @FXML private lateinit var crashReportPathDescriptionFX: TextFlow
-
     @FXML private lateinit var crashReportPathFX: Hyperlink
-
     @FXML private lateinit var detailsFX: TextArea
 
 

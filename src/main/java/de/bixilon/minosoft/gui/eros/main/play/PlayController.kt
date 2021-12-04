@@ -36,15 +36,11 @@ import javafx.scene.text.TextFlow
 
 class PlayController : EmbeddedJavaFXController<Pane>() {
     @FXML private lateinit var playTypeContentFX: Pane
-
     @FXML private lateinit var playTypeListViewFX: ListView<ServerTypes>
 
     @FXML private lateinit var refreshPaneFX: GridPane
-
     @FXML private lateinit var refreshHeaderFX: TextFlow
-
     @FXML private lateinit var refreshText1FX: TextFlow
-
     @FXML private lateinit var refreshText2FX: TextFlow
 
 

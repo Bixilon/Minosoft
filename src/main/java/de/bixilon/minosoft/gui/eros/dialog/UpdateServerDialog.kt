@@ -54,7 +54,6 @@ class UpdateServerDialog(
     @FXML private lateinit var showReleasesFX: CheckBox
     @FXML private lateinit var showSnapshotsFX: CheckBox
 
-
     @FXML private lateinit var updateServerButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
 
