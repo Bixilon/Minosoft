@@ -47,6 +47,7 @@ import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
+import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -107,6 +108,13 @@ object Minosoft {
             GlobalProfileManager.initialize()
             Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Profiles loaded!" }
         })
+
+        taskWorker += Task(identifier = StartupTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = {
+            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Starting file watcher service..." }
+            FileWatcherService.start()
+            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "File watcher service started!" }
+        })
+
 
         taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
             val language = ErosProfileManager.selected.general.language

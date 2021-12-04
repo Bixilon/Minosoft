@@ -293,7 +293,7 @@ object ChunkUtil {
         }
     }
 
-    fun Vec2i.isInRenderDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
+    fun Vec2i.isInViewDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
         val delta = (this - cameraPosition).abs
 
         return delta.x <= viewDistance && delta.y <= viewDistance

@@ -30,7 +30,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.ReadWriteLock
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.task.time.TimeWorker
 import de.bixilon.minosoft.util.task.time.TimeWorkerTask
@@ -153,7 +153,7 @@ class ParticleRenderer(
             try {
                 val time = KUtil.time
                 for (particle in particles) {
-                    if (!particle.chunkPosition.isInRenderDistance(particleViewDistance, cameraPosition)) {
+                    if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) {
                         particle.dead = true
                         toRemove += particle
                     } else if (particle.dead) {
@@ -195,7 +195,7 @@ class ParticleRenderer(
             return
         }
 
-        if (!particle.chunkPosition.isInRenderDistance(connection.world.view.particleViewDistance, connection.player.positionInfo.chunkPosition)) {
+        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.positionInfo.chunkPosition)) {
             particle.dead = true
             return
         }

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -20,6 +21,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ViewDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val viewDistance: Int = buffer.readVarInt()
+
+    override fun handle(connection: PlayConnection) {
+        connection.world.view.serverViewDistance = viewDistance
+    }
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "View distance set (viewDistance=$viewDistance)" }

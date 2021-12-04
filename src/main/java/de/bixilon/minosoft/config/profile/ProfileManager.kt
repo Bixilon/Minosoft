@@ -11,6 +11,8 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.filewatcher.FileWatcher
+import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.json.jackson.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -20,6 +22,7 @@ import javafx.collections.MapChangeListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.nio.file.StandardWatchEventKinds
 import java.util.concurrent.locks.ReentrantLock
 
 
@@ -134,33 +137,15 @@ interface ProfileManager<T : Profile> {
         if (selected == null || profileNames.isEmpty()) {
             initDefaultProfile()
         }
-        var saveFile = false
         for (profileName in profileNames) {
             val path = getPath(profileName, baseDirectory)
-            val json: MutableMap<String, Any?>?
-            val jsonString = KUtil.tryCatch(FileNotFoundException::class.java) { Util.readFile(path) }
-            if (jsonString != null) {
-                json = Jackson.MAPPER.readValue(jsonString, Jackson.JSON_MAP_TYPE)!!
-                val version = json["version"]?.toInt() ?: throw IllegalArgumentException("Can not find version attribute in profile: $path")
-                if (version > latestVersion) {
-                    throw IllegalStateException("Your profile ($path) was created with a newer version of minosoft. Expected $version <= $latestVersion!")
-                }
-                if (version < latestVersion) {
-                    for (toMigrate in version until latestVersion) {
-                        migrate(toMigrate, json)
-                    }
-                    Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Migrated profile ($path) from version $version to $latestVersion" }
-                    json["version"] = latestVersion
-                    saveFile = true
-                }
-            } else {
-                json = null
-                saveFile = true
-            }
-
+            val (saveFile, json) = readAndMigrate(path)
             val profile: T
             try {
                 profile = load(profileName, json)
+                if (RunConfiguration.PROFILES_HOT_RELOADING) {
+                    watchProfile(profileName, File(path))
+                }
             } catch (exception: Throwable) {
                 throw ProfileLoadException(path, exception)
             }
@@ -175,6 +160,45 @@ interface ProfileManager<T : Profile> {
         }
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
+    }
+
+    fun readAndMigrate(path: String): Pair<Boolean, MutableMap<String, Any?>?> {
+        var saveFile = false
+        val json: MutableMap<String, Any?>?
+        val jsonString = KUtil.tryCatch(FileNotFoundException::class.java) { Util.readFile(path) }
+        if (jsonString != null) {
+            json = Jackson.MAPPER.readValue(jsonString, Jackson.JSON_MAP_TYPE)!!
+            val version = json["version"]?.toInt() ?: throw IllegalArgumentException("Can not find version attribute in profile: $path")
+            if (version > latestVersion) {
+                throw IllegalStateException("Your profile ($path) was created with a newer version of minosoft. Expected $version <= $latestVersion!")
+            }
+            if (version < latestVersion) {
+                for (toMigrate in version until latestVersion) {
+                    migrate(toMigrate, json)
+                }
+                Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Migrated profile ($path) from version $version to $latestVersion" }
+                json["version"] = latestVersion
+                saveFile = true
+            }
+        } else {
+            json = null
+            saveFile = true
+        }
+
+        return Pair(saveFile, json)
+    }
+
+    fun watchProfile(profileName: String, path: File) {
+        FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { _, it ->
+            val profile = profiles[profileName] ?: return@FileWatcher
+            val data = readAndMigrate(path.path).second
+            val dataString = Jackson.MAPPER.writeValueAsString(data)
+            profile.reloading = true
+            Jackson.MAPPER.readerForUpdating(profile).readValue<T>(dataString)
+            profile.reloading = false
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Reloaded profile: $profileName ($it)" }
+        })
+
     }
 
     companion object {

@@ -37,7 +37,9 @@ abstract class BackingDelegate<V>(
         }
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${get()} to $value" }
-        profileManager.profiles[profileName]?.saved = false
+        if (!profile.reloading) {
+            profileManager.profiles[profileName]?.saved = false
+        }
         set(value)
 
         ProfilesChangeManager.onChange(profile, property.javaField ?: return, previous, value)

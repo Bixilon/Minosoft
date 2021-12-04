@@ -11,7 +11,8 @@ object Jackson {
         .registerModule(KotlinModule())
         .registerModule(ResourceLocationSerializer)
         .registerModule(RGBColorSerializer)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
+        .setDefaultMergeable(true)
 
 
     val JSON_MAP_TYPE: MapType = MAPPER.typeFactory.constructMapType(HashMap::class.java, Any::class.java, Any::class.java)

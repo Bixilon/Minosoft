@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
@@ -67,7 +68,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.LOW
@@ -254,6 +255,36 @@ class WorldRenderer(
             )) { clearChunkCache() }
 
         profile.rendering::antiMoirePattern.listen(this, false, profile) { clearChunkCache() }
+
+        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> {
+            // Unload all chunks(-sections) that are out of view distance
+            meshesToUnloadLock.lock()
+            for ((chunkPosition, sections) in loadedMeshes) {
+                if (isChunkVisible(chunkPosition)) {
+                    continue
+                }
+                for (mesh in sections.values) {
+                    meshesToUnload += mesh
+                }
+            }
+            meshesToUnloadLock.unlock()
+
+
+            queueLock.lock()
+            queue.removeAll { !isChunkVisible(it.chunkPosition) }
+            queueLock.unlock()
+
+            culledQueueLock.lock()
+            val toRemove: MutableSet<Vec2i> = mutableSetOf()
+            for ((chunkPosition, _) in culledQueue) {
+                if (isChunkVisible(chunkPosition)) {
+                    continue
+                }
+                toRemove += chunkPosition
+            }
+            culledQueue -= toRemove
+            culledQueueLock.unlock()
+        })
     }
 
     private fun clearChunkCache() {
@@ -565,7 +596,7 @@ class WorldRenderer(
     }
 
     private fun isChunkVisible(chunkPosition: Vec2i): Boolean {
-        return chunkPosition.isInRenderDistance(connection.world.view.viewDistance, cameraChunkPosition)
+        return chunkPosition.isInViewDistance(connection.world.view.viewDistance, cameraChunkPosition)
     }
 
     private fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i, checkChunk: Boolean): Boolean {

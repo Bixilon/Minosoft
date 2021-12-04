@@ -42,7 +42,7 @@ import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import de.bixilon.minosoft.util.collections.LockMap
 import glm_.func.common.clamp
@@ -165,7 +165,7 @@ class World(
         val cameraPosition = connection.player.positionInfo.chunkPosition
         for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
             // ToDo: Cache (improve performance)
-            if (!chunkPosition.isInRenderDistance(simulationDistance, cameraPosition)) {
+            if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 continue
             }
             chunk.tick(connection, chunkPosition)

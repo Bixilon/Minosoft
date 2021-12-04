@@ -25,5 +25,6 @@ enum class StartupTasks {
     INITIALIZE_CLI,
     INITIALIZE_JAVAFX,
     X_START_ON_FIRST_THREAD_WARNING,
+    FILE_WATCHER,
     ;
 }

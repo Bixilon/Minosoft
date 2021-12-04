@@ -34,6 +34,8 @@ object RunConfiguration {
     var DISABLE_EROS = false // if true, the whole javafx eros part is disabled
     var DISABLE_RENDERING = false // if true, rendering is disabled
 
+    var PROFILES_HOT_RELOADING = true
+
     var AUTO_CONNECT_TO: String? = null
 
     var HOME_DIRECTORY: String = let {

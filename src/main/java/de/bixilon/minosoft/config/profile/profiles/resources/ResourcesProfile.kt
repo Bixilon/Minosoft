@@ -13,9 +13,10 @@ class ResourcesProfile(
 ) : Profile {
     override var initializing: Boolean = true
         private set
+    override var reloading: Boolean = false
     override var saved: Boolean = true
     override val version: Int = latestVersion
-    override val description by delegate(description ?: "")
+    override var description by delegate(description ?: "")
 
     val source = SourceC()
 
