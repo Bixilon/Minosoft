@@ -63,7 +63,42 @@ open class MapDelegate<K, V>(
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableMap<K, V>) {
         checkLateinitValues(property)
-        this.value = FXCollections.synchronizedObservableMap(FXCollections.observableMap(value))
-        initListener()
+        if (!this::profile.isInitialized || profile.initializing || !profile.reloading) {
+            this.value = FXCollections.synchronizedObservableMap(FXCollections.observableMap(value))
+            initListener()
+            return
+        }
+        val checked: MutableSet<K> = mutableSetOf()
+        for ((key, mapValue) in value) {
+            checked += key
+            val previous = this.value[key]
+            val next = value[key]
+            if (previous == next) {
+                continue
+            }
+            this.value[key] = mapValue
+        }
+        val toRemove: MutableSet<K> = mutableSetOf()
+        for (key in this.value.keys) {
+            if (key in checked) {
+                continue
+            }
+            toRemove += key
+        }
+        this.value -= toRemove
+    }
+
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is MapDelegate<*, *>) {
+            return false
+        }
+        if (other.hashCode() != hashCode()) {
+            return false
+        }
+        return this.value == other.value
     }
 }

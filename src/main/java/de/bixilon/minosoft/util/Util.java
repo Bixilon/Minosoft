@@ -180,7 +180,9 @@ public final class Util {
             stringBuilder.append(line);
             stringBuilder.append(LINE_SEPARATOR);
         }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        if (stringBuilder.length() > 0) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
         if (closeStream) {
             reader.close();
         }

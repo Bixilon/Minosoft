@@ -231,9 +231,9 @@ class RenderWindow(
     private fun registerGlobalKeyCombinations() {
         inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
             KeyBinding(
-                mutableMapOf(
-                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to setOf(KeyCodes.KEY_P),
                 ),
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
@@ -243,24 +243,24 @@ class RenderWindow(
 
         inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),
             KeyBinding(
-                mutableMapOf(
-                    KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_ESCAPE),
+                mapOf(
+                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
                 ),
             )) { window.close() }
 
         inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
             KeyBinding(
-                mutableMapOf(
-                    KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2),
+                mapOf(
+                    KeyAction.PRESS to setOf(KeyCodes.KEY_F2),
                 ),
                 ignoreConsumer = true,
             )) { screenshotTaker.takeScreenshot() }
 
         inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
             KeyBinding(
-                mutableMapOf(
-                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_I),
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to setOf(KeyCodes.KEY_I),
                 ),
                 ignoreConsumer = true,
             )) {
@@ -270,9 +270,9 @@ class RenderWindow(
 
         inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
             KeyBinding(
-                mutableMapOf(
-                    KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to setOf(KeyCodes.KEY_O),
                 ),
                 ignoreConsumer = true,
             )) {

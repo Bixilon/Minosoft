@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
@@ -45,7 +44,7 @@ open class ShovelItem(
 
 
     override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
-        if (!Minosoft.config.config.game.controls.enableFlattening) {
+        if (!connection.profiles.controls.interaction.flattening) {
             return InteractionResults.CONSUME
         }
 

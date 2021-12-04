@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -41,7 +40,7 @@ open class AxeItem(
     }
 
     override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
-        if (!Minosoft.config.config.game.controls.enableStripping) {
+        if (!connection.profiles.controls.interaction.stripping) {
             return InteractionResults.CONSUME
         }
 

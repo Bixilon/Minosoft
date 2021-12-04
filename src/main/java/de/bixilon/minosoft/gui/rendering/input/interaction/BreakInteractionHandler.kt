@@ -248,8 +248,8 @@ class BreakInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(DESTROY_BLOCK_KEYBINDING to KeyBinding(
-            mutableMapOf(
-                KeyAction.CHANGE to mutableSetOf(KeyCodes.MOUSE_BUTTON_LEFT),
+            mapOf(
+                KeyAction.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
             ),
         ))
 

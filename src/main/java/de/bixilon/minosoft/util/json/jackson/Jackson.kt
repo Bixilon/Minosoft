@@ -11,7 +11,7 @@ object Jackson {
         .registerModule(KotlinModule())
         .registerModule(ResourceLocationSerializer)
         .registerModule(RGBColorSerializer)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setDefaultMergeable(true)
 
 

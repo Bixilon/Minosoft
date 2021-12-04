@@ -70,8 +70,8 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListEl
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
-            mutableMapOf(
-                KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_TAB),
+            mapOf(
+                KeyAction.CHANGE to setOf(KeyCodes.KEY_TAB),
             ),
         )
 

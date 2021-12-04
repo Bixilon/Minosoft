@@ -287,8 +287,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
         override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
-            mutableMapOf(
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_F3),
+            mapOf(
+                KeyAction.STICKY to setOf(KeyCodes.KEY_F3),
             ),
         )
 

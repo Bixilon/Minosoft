@@ -13,10 +13,8 @@
 
 package de.bixilon.minosoft.config.config.game
 
-import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
 import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
 
 data class GameConfig(
     var graphics: GraphicsGameConfig = GraphicsGameConfig(),
-    var controls: ControlsGameConfig = ControlsGameConfig(),
 )
