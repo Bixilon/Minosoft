@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
@@ -29,7 +29,7 @@ class NoiseBiomeAccessor(
 
     init {
         val profile = connection.profiles.rendering
-        profile.performance::fastBiomeNoise.listen(this, true, profile = profile) { fastNoise = it }
+        profile.performance::fastBiomeNoise.profileWatch(this, true, profile = profile) { fastNoise = it }
     }
 
     fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {

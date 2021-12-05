@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import java.net.InetAddress
 
 class LANServerDiscoverEvent(

@@ -1,10 +1,12 @@
 package de.bixilon.minosoft.config.profile
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.minosoft.config.profile.delegate.delegate.BackingDelegate
+import de.bixilon.minosoft.config.profile.delegate.delegate.ProfileDelegate
+import de.bixilon.minosoft.config.profile.delegate.delegate.entry.ListDelegateProfile
+import de.bixilon.minosoft.config.profile.delegate.delegate.entry.MapDelegateProfile
+import de.bixilon.minosoft.config.profile.delegate.delegate.entry.SetDelegateProfile
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.util.delegate.BackingDelegate
-import de.bixilon.minosoft.config.profile.util.delegate.MapDelegate
-import de.bixilon.minosoft.config.profile.util.delegate.ProfileDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -19,7 +21,9 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.collections.FXCollections
+import javafx.collections.ListChangeListener
 import javafx.collections.MapChangeListener
+import javafx.collections.SetChangeListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -65,20 +69,28 @@ interface ProfileManager<T : Profile> {
         return profile
     }
 
-    fun <V> delegate(value: V, checkEquals: Boolean = true, verify: ((V) -> Unit)? = null): ProfileDelegate<V> {
-        return ProfileDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
+    fun <V> delegate(value: V, verify: ((V) -> Unit)? = null): ProfileDelegate<V> {
+        return ProfileDelegate(value, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
     }
 
-    fun <V> backingDelegate(checkEquals: Boolean = true, verify: ((V) -> Unit)? = null, getter: () -> V, setter: (V) -> Unit): BackingDelegate<V> {
-        return object : BackingDelegate<V>(checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify) {
+    fun <V> backingDelegate(verify: ((V) -> Unit)? = null, getter: () -> V, setter: (V) -> Unit): BackingDelegate<V> {
+        return object : BackingDelegate<V>(this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify) {
             override fun get(): V = getter()
 
             override fun set(value: V) = setter(value)
         }
     }
 
-    fun <K, V> mapDelegate(default: MutableMap<K, V> = mutableMapOf(), checkEquals: Boolean = true, verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegate<K, V> {
-        return MapDelegate(FXCollections.synchronizedObservableMap(FXCollections.observableMap(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
+    fun <K, V> mapDelegate(default: MutableMap<K, V> = mutableMapOf(), verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegateProfile<K, V> {
+        return MapDelegateProfile(FXCollections.synchronizedObservableMap(FXCollections.observableMap(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
+    }
+
+    fun <V> listDelegate(default: MutableList<V> = mutableListOf(), verify: ((ListChangeListener.Change<out V>) -> Unit)? = null): ListDelegateProfile<V> {
+        return ListDelegateProfile(FXCollections.synchronizedObservableList(FXCollections.observableList(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
+    }
+
+    fun <V> setDelegate(default: MutableSet<V> = mutableSetOf(), verify: ((SetChangeListener.Change<out V>) -> Unit)? = null): SetDelegateProfile<V> {
+        return SetDelegateProfile(FXCollections.synchronizedObservableSet(FXCollections.observableSet(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
     fun selectDefault() {

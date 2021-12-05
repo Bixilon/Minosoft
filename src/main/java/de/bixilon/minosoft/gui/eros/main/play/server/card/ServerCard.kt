@@ -13,49 +13,89 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.card
 
-import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.collections.SynchronizedMap
+import javafx.scene.image.Image
 
 class ServerCard(
     val server: Server,
 ) {
+    var ping: StatusConnection? = null
+    val connections: MutableSet<PlayConnection> = synchronizedSetOf()
+
+    var rawFavicon: ByteArray? = null
+    val favicon: Image? = null // ToDo: Image(ByteArrayInputStream(it))
+
     var statusReceiveInvoker: EventInvoker? = null
         set(value) {
             field = value
-            server.ping?.registerEvent(value ?: return)
+            ping?.registerEvent(value ?: return)
         }
     var statusUpdateInvoker: EventInvoker? = null
         set(value) {
             field = value
-            server.ping?.registerEvent(value ?: return)
+            ping?.registerEvent(value ?: return)
         }
     var statusErrorInvoker: EventInvoker? = null
         set(value) {
             field = value
-            server.ping?.registerEvent(value ?: return)
+            ping?.registerEvent(value ?: return)
         }
     var pongInvoker: EventInvoker? = null
         set(value) {
             field = value
-            server.ping?.registerEvent(value ?: return)
+            ping?.registerEvent(value ?: return)
         }
 
     var serverListStatusInvoker: EventInvoker? = null
         set(value) {
             field = value
-            server.ping?.registerEvent(value ?: return)
+            ping?.registerEvent(value ?: return)
         }
 
     init {
-        server.card = this
+        CARDS[server] = this
     }
 
 
     fun unregister() {
-        val ping = server.ping ?: return
+        val ping = ping ?: return
         statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregisterEvent(it) }
         statusUpdateInvoker?.let { statusUpdateInvoker = null; ping.unregisterEvent(it) }
         statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregisterEvent(it) }
         pongInvoker?.let { pongInvoker = null; ping.unregisterEvent(it) }
+    }
+
+
+    @Synchronized
+    fun ping(): StatusConnection {
+        var ping = ping
+        if (ping == null) {
+            ping = StatusConnection(server.address)
+            this.ping = ping
+            serverListStatusInvoker?.let { ping.registerEvent(it) }
+            ping.ping()
+        }
+
+        return ping
+    }
+
+
+    fun canConnect(account: Account): Boolean {
+        return (ping?.state === StatusConnectionStates.PING_DONE
+                && ((server.forcedVersion ?: ping?.serverVersion) != null))
+                && server !in account.connections
+    }
+
+
+    companion object {
+        val CARDS: SynchronizedMap<Server, ServerCard> = synchronizedMapOf()
     }
 }

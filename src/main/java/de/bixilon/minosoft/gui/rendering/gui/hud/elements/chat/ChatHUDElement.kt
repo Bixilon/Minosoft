@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenRendering
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
@@ -43,8 +43,8 @@ class ChatHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextFlowElem
 
     init {
         layout.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.listenRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(it, layout.prefMaxSize.y) }
-        chatProfile::height.listenRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(layout.prefMaxSize.x, it) }
+        chatProfile::width.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(it, layout.prefMaxSize.y) }
+        chatProfile::height.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(layout.prefMaxSize.x, it) }
     }
 
 

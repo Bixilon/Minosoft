@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.outline
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -53,10 +53,10 @@ class BlockOutlineRenderer(
 
     override fun init() {
         val profile = connection.profiles.block
-        this.profile::enabled.listen(this, profile = profile) { reload = true }
-        this.profile::showCollisionBoxes.listen(this, profile = profile) { reload = true }
-        this.profile::outlineColor.listen(this, profile = profile) { reload = true }
-        this.profile::collisionColor.listen(this, profile = profile) { reload = true }
+        this.profile::enabled.profileWatch(this, profile = profile) { reload = true }
+        this.profile::showCollisionBoxes.profileWatch(this, profile = profile) { reload = true }
+        this.profile::outlineColor.profileWatch(this, profile = profile) { reload = true }
+        this.profile::collisionColor.profileWatch(this, profile = profile) { reload = true }
     }
 
 

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.accounts
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.OfflineAccount

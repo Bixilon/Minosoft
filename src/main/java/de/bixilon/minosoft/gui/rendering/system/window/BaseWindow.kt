@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenRendering
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -47,7 +47,7 @@ interface BaseWindow {
 
     fun init(profile: RenderingProfile) {
         resizable = true
-        profile.advanced::swapInterval.listenRendering(this, true, profile) { swapInterval = it }
+        profile.advanced::swapInterval.profileWatchRendering(this, true, profile) { swapInterval = it }
 
         if (!StaticConfiguration.DEBUG_MODE) {
             cursorMode = CursorModes.DISABLED

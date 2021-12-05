@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.minosoft.ShutdownReasons
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
@@ -111,7 +111,7 @@ class MainErosController : JavaFXWindowController() {
         }
 
         val profile = ErosProfileManager.selected.general.accountProfile
-        profile::selected.listenFX(this, true, profile) {
+        profile::selected.profileWatchFX(this, true) {
             accountImageFX.image = it?.avatar
             accountNameFX.ctext = it?.username ?: NO_ACCOUNT_SELECTED
         }

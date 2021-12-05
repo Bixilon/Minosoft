@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenRendering
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -116,7 +116,7 @@ class HUDRenderer(
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
-        profile::scale.listenRendering(this, profile = profile) { recalculateMatrices(scale = it) }
+        profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
         atlasManager.init()
 
         registerDefaultElements()

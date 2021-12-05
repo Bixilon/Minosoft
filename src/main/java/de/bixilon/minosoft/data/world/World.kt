@@ -45,6 +45,7 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import de.bixilon.minosoft.util.collections.LockMap
+import de.bixilon.minosoft.util.delegate.DelegateManager.delegate
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -64,7 +65,7 @@ class World(
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
     val entities = WorldEntities()
-    var hardcore = false
+    var hardcore by delegate(false)
     var dimension: DimensionProperties? = null
     var difficulty: Difficulties? = null
     var difficultyLocked = false

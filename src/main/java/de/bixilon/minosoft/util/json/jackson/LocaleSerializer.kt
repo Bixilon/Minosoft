@@ -11,6 +11,7 @@ import de.bixilon.minosoft.util.KUtil.fullName
 import java.util.*
 
 object LocaleSerializer : SimpleModule() {
+
     init {
         addDeserializer(Locale::class.java, Deserializer)
         addSerializer(Locale::class.java, Serializer)

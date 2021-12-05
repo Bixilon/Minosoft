@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entity
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -81,10 +81,10 @@ class EntityHitboxRenderer(
             meshes.lock.release()
         })
 
-        profile::enabled.listen(this, profile = connection.profiles.entity) { this.setAvailable = it }
+        profile::enabled.profileWatch(this, profile = connection.profiles.entity) { this.setAvailable = it }
 
         this.localHitbox = EntityHitbox(this, connection.player, frustum)
-        profile::showLocal.listen(this, true, connection.profiles.entity) {
+        profile::showLocal.profileWatch(this, true, connection.profiles.entity) {
             if (it) {
                 meshes[connection.player] = localHitbox
             } else {

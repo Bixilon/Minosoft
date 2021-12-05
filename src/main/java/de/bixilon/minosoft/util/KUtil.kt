@@ -44,6 +44,13 @@ import kotlin.random.Random
 
 
 object KUtil {
+    val UNSAFE: Unsafe
+
+    init {
+        val unsafeField = Unsafe::class.java.getDeclaredField("theUnsafe")
+        unsafeField.isAccessible = true
+        UNSAFE = unsafeField[null] as Unsafe
+    }
 
     fun <T : Enum<*>> getEnumValues(values: Array<T>): Map<String, T> {
         val ret: MutableMap<String, T> = mutableMapOf()
@@ -374,9 +381,9 @@ object KUtil {
     fun Any?.toInt(): Int {
         return when (this) {
             is Int -> this
+            is Long -> this.toInt()
             is Number -> this.toInt()
             is String -> Integer.valueOf(this)
-            is Long -> this.toInt()
             else -> TODO()
         }
     }
@@ -488,7 +495,7 @@ object KUtil {
 
     fun Any?.autoType(): Any? {
         if (this == null) {
-            return this
+            return null
         }
         if (this is Number) {
             return this

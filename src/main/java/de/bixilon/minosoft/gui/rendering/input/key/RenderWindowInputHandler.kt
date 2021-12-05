@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.change.listener.MapProfileChangeListener.Companion.listenMap
+import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMap
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -83,8 +83,8 @@ class RenderWindowInputHandler(
             camera.mouseCallback(it.delta)
         })
 
-        profile::keyBindings.listenMap(this, profile = profile) {
-            val keyBinding = keyBindingCallbacks[it.key] ?: return@listenMap
+        profile::keyBindings.profileWatchMap(this, profile = profile) {
+            val keyBinding = keyBindingCallbacks[it.key] ?: return@profileWatchMap
             if (it.wasRemoved() && it.wasAdded()) {
                 keyBinding.keyBinding = it.valueAdded
             } else if (it.wasRemoved()) {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenRendering
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -41,8 +41,8 @@ class InternalMessagesHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<
 
     init {
         layout.prefMaxSize = Vec2i(internalChatProfile.width, internalChatProfile.height)
-        internalChatProfile::width.listenRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(it, layout.prefMaxSize.y) }
-        internalChatProfile::height.listenRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(layout.prefMaxSize.x, it) }
+        internalChatProfile::width.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(it, layout.prefMaxSize.y) }
+        internalChatProfile::height.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(layout.prefMaxSize.x, it) }
     }
 
 

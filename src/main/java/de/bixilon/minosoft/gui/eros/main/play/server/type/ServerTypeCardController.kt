@@ -16,19 +16,20 @@ package de.bixilon.minosoft.gui.eros.main.play.server.type
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
-import de.bixilon.minosoft.gui.eros.main.play.ServerTypes
+import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.watcher.entry.ListDelegateWatcher.Companion.watchListFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 
-class ServerTypeCardController : AbstractCard<ServerTypes>() {
+class ServerTypeCardController : AbstractCard<ServerType>() {
     @FXML private lateinit var iconFX: FontIcon
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var textFX: TextFlow
 
-    override fun updateItem(item: ServerTypes?, empty: Boolean) {
+    override fun updateItem(item: ServerType?, empty: Boolean) {
         super.updateItem(item, empty)
         item ?: return
 
@@ -38,7 +39,12 @@ class ServerTypeCardController : AbstractCard<ServerTypes>() {
         iconFX.iconCode = item.icon
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
 
-        textFX.text = "${item.count} servers" // ToDo: Update on the fly
+        recalculate(item)
+        item::servers.watchListFX(this) { recalculate(item) }
+    }
+
+    private fun recalculate(item: ServerType) {
+        textFX.text = "${item.servers.size} servers"
     }
 
 

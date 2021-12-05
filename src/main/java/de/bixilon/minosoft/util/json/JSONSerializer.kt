@@ -17,7 +17,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.bixilon.minosoft.config.config.Config
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 @Deprecated("Moshi is deprecated, use klaxon or mbf instead")
@@ -34,7 +33,6 @@ object JSONSerializer {
         .build()!!
 
     val ANY_ADAPTER = MOSHI.adapter(Any::class.java)!!
-    val CONFIG_ADAPTER = MOSHI.adapter(Config::class.java)!!
     val MUTABLE_MAP_ADAPTER: JsonAdapter<MutableMap<String, Any>> = MOSHI.adapter(Types.newParameterizedType(MutableMap::class.java, String::class.java, Any::class.java))
     val MAP_ADAPTER: JsonAdapter<Map<String, Any>> = MOSHI.adapter(Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java))
 

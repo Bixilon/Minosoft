@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.eros.main.play.server
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.eros.dialog.UpdateServerDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
+import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.KickEvent
@@ -36,12 +37,12 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnecti
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.watcher.entry.ListDelegateWatcher.Companion.watchListFX
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.geometry.HPos
@@ -61,9 +62,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML private lateinit var serverListViewFX: ListView<ServerCard>
     @FXML private lateinit var serverInfoFX: AnchorPane
 
-    var customRefresh: (() -> Unit)? = null
-
-    var servers: MutableCollection<Server> = mutableListOf()
+    lateinit var serverType: ServerType
 
     var readOnly: Boolean = false
         set(value) {
@@ -74,9 +73,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     override fun init() {
         val erosProfile = ErosProfileManager.selected
         val serverConfig = erosProfile.server.list
-        serverConfig::hideOffline.listenFX(this, true) { hideOfflineFX.isSelected = it }
-        serverConfig::hideFull.listenFX(this, true) { hideFullFX.isSelected = it }
-        serverConfig::hideEmpty.listenFX(this, true) { hideEmptyFX.isSelected = it }
+        serverConfig::hideOffline.profileWatchFX(this, true) { hideOfflineFX.isSelected = it }
+        serverConfig::hideFull.profileWatchFX(this, true) { hideFullFX.isSelected = it }
+        serverConfig::hideEmpty.profileWatchFX(this, true) { hideEmptyFX.isSelected = it }
 
         hideOfflineFX.setOnAction { ErosProfileManager.selected.server.list.hideOffline = hideOfflineFX.isSelected }
         hideFullFX.setOnAction { ErosProfileManager.selected.server.list.hideFull = hideFullFX.isSelected }
@@ -91,39 +90,39 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 if (it.clickCount != 2) {
                     return@setOnMouseClicked
                 }
-                val server = controller.lastServerCard?.server ?: return@setOnMouseClicked
-                if (!server.canConnect(accountProfile.selected ?: return@setOnMouseClicked)) {
+                val card = controller.lastServerCard ?: return@setOnMouseClicked
+                if (!card.canConnect(accountProfile.selected ?: return@setOnMouseClicked)) {
                     return@setOnMouseClicked
                 }
 
-                connect(server)
+                connect(card)
             }
             return@setCellFactory controller
         }
-
-        refreshList()
 
         serverListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setServerInfo(new)
         }
     }
 
-    fun connect(server: Server, ping: StatusConnection? = server.ping) {
-        val pingVersion = ping?.serverVersion ?: return
+    fun connect(serverCard: ServerCard) {
+        val server = serverCard.server
+        val ping = serverCard.ping ?: return
+        val pingVersion = serverCard.ping?.serverVersion ?: return
         Eros.mainErosController.verifyAccount { account ->
             DefaultThreadPool += {
                 val connection = PlayConnection(
-                    address = server.ping?.realAddress ?: DNSUtil.getServerAddress(server.address),
+                    address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
                     account = account,
-                    version = server.forcedVersion ?: pingVersion,
+                    version = serverCard.server.forcedVersion ?: pingVersion,
                 )
                 account.connections[server] = connection
-                server.connections += connection
+                serverCard.connections += connection
 
                 connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { event ->
                     if (event.state.disconnected) {
                         account.connections -= server
-                        server.connections -= connection
+                        serverCard.connections -= connection
                     }
                     JavaFXUtil.runLater { updateServer(server) }
                 })
@@ -153,12 +152,26 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         root.setOnKeyPressed { serverListViewFX.selectionModel.select(null) } // ToDo: Only on escape; not working
     }
 
+    fun initWatch() {
+        serverType::servers.watchListFX(this) {
+            while (it.next()) {
+                for (removed in it.removed) {
+                    serverListViewFX.items -= ServerCard.CARDS.remove(removed)
+                    serverListViewFX.refresh()
+                }
+                for (added in it.addedSubList) {
+                    updateServer(added)
+                }
+            }
+        }
+    }
+
     @FXML
     fun refreshList() {
         val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
-        for (server in servers) {
+        for (server in serverType.servers) {
             updateServer(server)
         }
 
@@ -170,7 +183,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     private fun updateServer(server: Server) {
-        val card = server.card ?: let {
+        val card = ServerCard.CARDS[server] ?: let {
             val card = ServerCard(server)
             card.serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
             card
@@ -178,7 +191,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         val wasSelected = serverListViewFX.selectionModel.selectedItem === card
         // Platform.runLater {serverListViewFX.items.remove(card)}
 
-        server.ping?.let {
+        card.ping?.let {
             if (hideOfflineFX.isSelected && it.error != null) {
                 return
             }
@@ -199,7 +212,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         if (!serverListViewFX.items.contains(card)) {
             serverListViewFX.items.add(card)
         }
-        serverListViewFX.items.sortBy { it.server.id } // ToDo (Performance): Do not sort, add before/after other server
+        // serverListViewFX.items.sortBy { it.server.id } // ToDo (Performance): Do not sort, add before/after other server
 
 
         if (wasSelected) {
@@ -213,9 +226,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             serverInfoFX.children.clear()
             return
         }
-        val profile = ErosProfileManager.selected.general.accountProfile
+        val serverType = serverType
+        val account = ErosProfileManager.selected.general.accountProfile
 
-        val ping = serverCard.server.ping
+        val ping = serverCard.ping
 
         val pane = GridPane()
 
@@ -227,7 +241,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             var row = 0
 
             for ((key, property) in SERVER_INFO_PROPERTIES) {
-                val propertyValue = property(serverCard.server) ?: continue
+                val propertyValue = property(serverCard) ?: continue
 
                 it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
                 it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
@@ -250,9 +264,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 it.add(Button("Delete").apply {
                     setOnAction {
                         SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
-                            Minosoft.config.config.server.entries.remove(serverCard.server.id)
-                            Minosoft.config.saveToFile()
-                            JavaFXUtil.runLater { refreshList() }
+                            serverType.servers -= serverCard.server
                         }).show()
                     }
                 }, 1, 0)
@@ -263,7 +275,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             server.name = ChatComponent.of(name)
                             server.forcedVersion = forcedVersion
                             if (server.address != address) {
-                                server.favicon = null
+                                serverCard.rawFavicon = null
 
                                 server.address = address
 
@@ -271,11 +283,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                 // ToDo: server.connections.clear()
 
                                 serverCard.unregister()
-                                server.ping?.disconnect()
-                                server.ping = null
-                                server.ping()
+                                serverCard.ping?.disconnect()
+                                serverCard.ping = null
+                                serverCard.ping()
                             }
-                            Minosoft.config.saveToFile()
                             JavaFXUtil.runLater { refreshList() }
                         }).show()
                     }
@@ -284,17 +295,17 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             it.add(Button("Refresh").apply {
                 setOnAction {
-                    serverCard.server.ping().ping()
+                    serverCard.ping().ping()
                 }
-                isDisable = serverCard.server.ping != null && serverCard.server.ping?.state != StatusConnectionStates.PING_DONE && serverCard.server.ping?.state != StatusConnectionStates.ERROR
+                isDisable = serverCard.ping != null && serverCard.ping?.state != StatusConnectionStates.PING_DONE && serverCard.ping?.state != StatusConnectionStates.ERROR
             }, 3, 0)
             it.add(Button("Connect").apply {
                 setOnAction {
                     isDisable = true
-                    connect(serverCard.server, ping)
+                    connect(serverCard)
                 }
-                val selected = profile.selected
-                isDisable = selected == null || !serverCard.server.canConnect(selected)
+                val selected = account.selected
+                isDisable = selected == null || !serverCard.canConnect(selected)
                 // ToDo: Also disable, if currently connecting
             }, 4, 0)
 
@@ -312,38 +323,23 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML
     fun addServer() {
         UpdateServerDialog(onUpdate = { name, address, forcedVersion ->
-            val server = Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
-            Minosoft.config.config.server.entries[server.id] = server // ToDo
-            Minosoft.config.saveToFile()
-            JavaFXUtil.runLater { refreshList() }
+            serverType.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
         }).show()
     }
 
     override fun refresh() {
-        customRefresh?.let {
-            it()
-            return
-        }
-
-        for (serverCard in serverListViewFX.items) {
-            serverCard.server.ping?.let {
-                if (it.state != StatusConnectionStates.PING_DONE && it.state != StatusConnectionStates.ERROR) {
-                    return@let
-                }
-                it.ping()
-            }
-        }
+        serverType.refresh(serverListViewFX.items)
     }
 
 
     companion object {
         val LAYOUT = "minosoft:eros/main/play/server/server_list.fxml".toResourceLocation()
 
-        private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (server: Server) -> Any?>> = listOf(
-            "minosoft:server_info.server_name".toResourceLocation() to { it.name },
-            "minosoft:server_info.server_address".toResourceLocation() to { it.address },
+        private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (ServerCard) -> Any?>> = listOf(
+            "minosoft:server_info.server_name".toResourceLocation() to { it.server.name },
+            "minosoft:server_info.server_address".toResourceLocation() to { it.server.address },
             "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping?.realAddress },
-            "minosoft:server_info.forced_version".toResourceLocation() to { it.forcedVersion },
+            "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
             "minosoft:general.empty".toResourceLocation() to { " " },
 

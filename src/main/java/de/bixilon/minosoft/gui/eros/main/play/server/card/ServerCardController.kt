@@ -67,11 +67,11 @@ class ServerCardController : AbstractCard<ServerCard>() {
 
         serverNameFX.text = card.server.name
 
-        card.server.ping()
+        card.ping()
 
         card.unregister()
 
-        card.server.favicon?.let { faviconFX.image = Image(ByteArrayInputStream(it)) }
+        card.favicon?.let { faviconFX.image = it }
 
         card.statusReceiveInvoker = JavaFXEventInvoker.of<ServerStatusReceiveEvent> {
             if (lastServerCard != card || it.connection.error != null) {
@@ -84,10 +84,7 @@ class ServerCardController : AbstractCard<ServerCard>() {
 
             faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
 
-            it.status.favicon?.let { favicon ->
-                card.server.favicon = favicon
-                Minosoft.config.saveToFile()
-            } // ToDo: Should not be part of the gui
+            it.status.favicon?.let { favicon -> card.rawFavicon = favicon }
         }
 
         card.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent> {

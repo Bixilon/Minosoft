@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
@@ -255,9 +255,9 @@ class WorldRenderer(
                 ),
             )) { clearChunkCache() }
 
-        profile.rendering::antiMoirePattern.listen(this, false, profile) { clearChunkCache() }
+        profile.rendering::antiMoirePattern.profileWatch(this, false, profile) { clearChunkCache() }
         val rendering = connection.profiles.rendering
-        rendering.performance::fastBedrock.listen(this, false, rendering) { clearChunkCache() }
+        rendering.performance::fastBedrock.profileWatch(this, false, rendering) { clearChunkCache() }
 
         connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
             if (event.viewDistance < this.previousViewDistance) {

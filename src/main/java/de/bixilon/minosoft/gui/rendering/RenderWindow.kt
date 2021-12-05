@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
@@ -135,7 +135,7 @@ class RenderWindow(
                 initialPositionReceived = true
             }
         })
-        profile.experimental::fps.listen(this, true, profile) {
+        profile.experimental::fps.profileWatch(this, true, profile) {
             renderStats = if (it) {
                 ExperimentalRenderStats()
             } else {
@@ -212,7 +212,7 @@ class RenderWindow(
         connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
             renderingState = it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING)
         })
-        profile.animations::sprites.listen(this, true, profile = profile) { textureManager.staticTextures.animator.enabled = it }
+        profile.animations::sprites.profileWatch(this, true, profile = profile) { textureManager.staticTextures.animator.enabled = it }
 
 
         inputHandler.init()

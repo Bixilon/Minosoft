@@ -12,6 +12,7 @@ import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
 import de.bixilon.minosoft.data.text.RGBColor
 
 object RGBColorSerializer : SimpleModule() {
+
     init {
         addDeserializer(RGBColor::class.java, Deserializer)
         addSerializer(RGBColor::class.java, Serializer)

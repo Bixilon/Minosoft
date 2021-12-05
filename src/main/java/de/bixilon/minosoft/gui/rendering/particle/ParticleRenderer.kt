@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
@@ -97,8 +97,8 @@ class ParticleRenderer(
         get() = particles.size
 
     override fun init() {
-        profile::maxAmount.listen(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
-        profile::enabled.listen(this, true, profile) { enabled = it }
+        profile::maxAmount.profileWatch(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
+        profile::enabled.profileWatch(this, true, profile) { enabled = it }
 
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {

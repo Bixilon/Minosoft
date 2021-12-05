@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
@@ -91,7 +91,7 @@ class AudioPlayer(
         val volumeConfig = connection.profiles.audio.volume
 
         listener.masterVolume = volumeConfig.masterVolume
-        volumeConfig::masterVolume.listen(this) { queue += { listener.masterVolume = it } }
+        volumeConfig::masterVolume.profileWatch(this) { queue += { listener.masterVolume = it } }
 
         connection.registerEvent(CallbackEventInvoker.of<CameraPositionChangeEvent> {
             queue += {
@@ -104,10 +104,10 @@ class AudioPlayer(
 
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
 
-        profile::enabled.listen(this, false, profile) {
+        profile::enabled.profileWatch(this, false, profile) {
             if (it) {
                 enabled = true
-                return@listen
+                return@profileWatch
             }
             queue += {
                 for (source in sources) {

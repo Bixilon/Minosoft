@@ -16,8 +16,6 @@ package de.bixilon.minosoft.generator;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.data.assets.AssetVersion;
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
@@ -35,8 +33,6 @@ public class JarHashGenerator {
             return;
         }
         try {
-            Minosoft.config = new Configuration();
-
 
             Version version = new Version(args[0], -1, -1, Collections.emptyMap(), Collections.emptyMap());
 

@@ -11,6 +11,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ResourceLocationSerializer : SimpleModule() {
+
     init {
         addDeserializer(ResourceLocation::class.java, Deserializer)
         addSerializer(ResourceLocation::class.java, Serializer)

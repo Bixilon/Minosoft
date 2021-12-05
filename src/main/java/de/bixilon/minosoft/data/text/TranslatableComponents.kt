@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

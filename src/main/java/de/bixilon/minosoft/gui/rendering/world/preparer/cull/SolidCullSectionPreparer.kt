@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_EAST
@@ -37,7 +37,7 @@ class SolidCullSectionPreparer(
 
     init {
         val profile = renderWindow.connection.profiles.rendering
-        profile.performance::fastBedrock.listen(this, true, profile) { this.fastBedrock = it }
+        profile.performance::fastBedrock.profileWatch(this, true, profile) { this.fastBedrock = it }
     }
 
     override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {

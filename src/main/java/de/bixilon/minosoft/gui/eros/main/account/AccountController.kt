@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.change.listener.MapProfileChangeListener.Companion.listenMapFX
+import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
@@ -85,12 +85,12 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             }
             accountListViewFX.items += account
         }
-        profile::entries.listenMapFX(this, profile) {
+        profile::entries.profileWatchMapFX(this, profile) {
             if (it.wasRemoved()) {
                 accountListViewFX.items.remove(it.valueRemoved)
             } else if (it.wasAdded()) {
                 if (it.valueAdded.type != type.resourceLocation) {
-                    return@listenMapFX
+                    return@profileWatchMapFX
                 }
                 accountListViewFX.items += it.valueAdded
             }

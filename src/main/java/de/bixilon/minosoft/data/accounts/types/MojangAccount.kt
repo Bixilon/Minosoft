@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.accounts.types
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.AccountType
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -89,7 +89,7 @@ class MojangAccount(
         return "MojangAccount{$username}"
     }
 
-    companion object : AccountType(MojangAccount::class) {
+    companion object : CompanionResourceLocation {
         private const val MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate"
         private const val MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh"
         private const val MOJANG_URL_INVALIDATE = "https://authserver.mojang.com/invalidate"

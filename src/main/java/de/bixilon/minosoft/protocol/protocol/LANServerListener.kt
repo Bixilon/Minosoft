@@ -13,15 +13,15 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
-import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.eros.main.play.server.type.types.LANServerType
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -43,7 +43,7 @@ object LANServerListener {
         get() = listeningThread != null
 
     fun listen() {
-        OtherProfileManager.selected::listenLAN.listen(this) {
+        OtherProfileManager.selected::listenLAN.profileWatch(this) {
             if (it && listeningThread == null) {
                 startListener()
             } else if (!it && listeningThread != null) {
@@ -93,8 +93,9 @@ object LANServerListener {
                         if (GlobalEventMaster.fireEvent(LANServerDiscoverEvent(packet.address, server))) {
                             continue
                         }
-                        SERVERS[sender] = server
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.INFO) { "Discovered LAN servers: $server" }
+                        SERVERS[sender] = server
+                        LANServerType.servers += server
                     } catch (ignored: Throwable) {
                     }
                     if (stop) {
@@ -132,9 +133,7 @@ object LANServerListener {
 
 
     fun clear() {
-        for (server in SERVERS.toSynchronizedMap().values) {
-            server.favicon = null
-        }
         SERVERS.clear()
+        LANServerType.servers.clear()
     }
 }
