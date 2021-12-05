@@ -21,6 +21,7 @@ import org.kordamp.ikonli.Ikon
 interface ServerType : Translatable {
     val icon: Ikon
     val hidden: Boolean
+    var readOnly: Boolean
 
     val servers: MutableList<Server>
 

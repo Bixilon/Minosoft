@@ -64,12 +64,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML private lateinit var serverListViewFX: ListView<ServerCard>
     @FXML private lateinit var serverInfoFX: AnchorPane
 
-    lateinit var serverType: ServerType
-
-    var readOnly: Boolean = false
+    var serverType: ServerType? = null
         set(value) {
+            check(value != null)
             field = value
-            addServerButtonFX.isVisible = !value
+
+            addServerButtonFX.isVisible = !value.readOnly
         }
 
     override fun init() {
@@ -157,7 +157,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     fun initWatch() {
-        serverType::servers.watchListFX(this) {
+        serverType!!::servers.watchListFX(this) {
             while (it.next()) {
                 for (removed in it.removed) {
                     serverListViewFX.items -= ServerCard.CARDS.remove(removed)
@@ -165,6 +165,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 }
                 for (added in it.addedSubList) {
                     updateServer(added)
+                    serverListViewFX.refresh()
                 }
             }
         }
@@ -172,13 +173,13 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun refreshList() {
-        if (!this::serverType.isInitialized) {
+        if (serverType == null) {
             return
         }
         val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
-        for (server in serverType.servers) {
+        for (server in serverType!!.servers) {
             updateServer(server)
         }
 
@@ -251,7 +252,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             it.columnConstraints += ColumnConstraints()
             it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
 
-            if (!readOnly) {
+            if (!serverType!!.readOnly) {
                 it.add(Button("Delete").apply {
                     setOnAction {
                         SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
@@ -344,12 +345,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML
     fun addServer() {
         UpdateServerDialog(onUpdate = { name, address, forcedVersion ->
-            serverType.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
+            serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
         }).show()
     }
 
     override fun refresh() {
-        serverType.refresh(serverListViewFX.items)
+        serverType!!.refresh(serverListViewFX.items)
     }
 
 

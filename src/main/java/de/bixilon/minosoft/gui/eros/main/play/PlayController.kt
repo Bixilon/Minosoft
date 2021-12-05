@@ -53,16 +53,22 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
 
         playTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
-            if (this::currentController.isInitialized) {
-                currentController.terminate()
-            }
             new ?: return@addListener // Should not happen
+            if (this::currentController.isInitialized) {
+                val currentController = this.currentController
+                if (currentController is ServerListController) {
+                    currentController.serverType = new
+                    currentController.initWatch()
+                    currentController.refreshList()
+                }
+                return@addListener
+            }
             currentController = JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
                 serverType = new
                 initWatch()
                 refreshList()
+                playTypeContentFX.children.setAll(this.root)
             }
-            playTypeContentFX.children.setAll(currentController.root)
         }
 
         playTypeListViewFX.selectionModel.select(0)
@@ -81,8 +87,6 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
     companion object {
         val LAYOUT = "minosoft:eros/main/play/play.fxml".toResourceLocation()
-        private val CUSTOM_SERVER_TYPE = "minosoft:server_type.custom".toResourceLocation()
-        private val LAN_SERVER_TYPE = "minosoft:server_type.lan".toResourceLocation()
         private val REFRESH_HEADER = "minosoft:server_list.refresh.header".toResourceLocation()
         private val REFRESH_TEXT1 = "minosoft:server_list.refresh.text1".toResourceLocation()
         private val REFRESH_TEXT2 = "minosoft:server_list.refresh.text2".toResourceLocation()

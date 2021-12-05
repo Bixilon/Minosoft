@@ -24,8 +24,10 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.ShutdownManager
+import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -52,11 +54,12 @@ class MainErosController : JavaFXWindowController() {
 
     private lateinit var iconMap: Map<ErosMainActivities, FontIcon>
 
+    private val controllers: SynchronizedMap<ErosMainActivities, EmbeddedJavaFXController<*>> = synchronizedMapOf()
 
     private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (just not the default)
         set(value) {
             field = value
-            contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<EmbeddedJavaFXController<*>>(field.layout).root)
+            contentFX.children.setAll(controllers.getOrPut(value) { JavaFXUtil.loadEmbeddedController(field.layout) }.root)
 
             highlightIcon(iconMap[value])
         }
@@ -76,7 +79,7 @@ class MainErosController : JavaFXWindowController() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
         versionTextFX.text = RunConfiguration.VERSION_STRING
         iconMap = mapOf(
-            ErosMainActivities.PlAY to playIconFX,
+            ErosMainActivities.PLAY to playIconFX,
             ErosMainActivities.SETTINGS to settingsIconFX,
             ErosMainActivities.HELP to helpIconFX,
             ErosMainActivities.ABOUT to aboutIconFX,
@@ -89,7 +92,7 @@ class MainErosController : JavaFXWindowController() {
         highlightIcon(playIconFX)
 
         playIconFX.setOnMouseClicked {
-            activity = ErosMainActivities.PlAY
+            activity = ErosMainActivities.PLAY
         }
         settingsIconFX.setOnMouseClicked {
             // ToDo: activity = ErosMainActivities.SETTINGS
@@ -118,7 +121,7 @@ class MainErosController : JavaFXWindowController() {
         accountImageFX.clickable()
         accountNameFX.clickable()
 
-        activity = ErosMainActivities.PlAY
+        activity = ErosMainActivities.PLAY
     }
 
     override fun postInit() {

@@ -13,6 +13,7 @@ object LANServerType : ServerType {
     override val icon: Ikon = FontAwesomeSolid.NETWORK_WIRED
     override val hidden: Boolean
         get() = !LANServerListener.listening
+    override var readOnly: Boolean = true
     override val servers: MutableList<Server> by listDelegate()
     override val translationKey: ResourceLocation = "minosoft:server_type.lan".toResourceLocation()
 

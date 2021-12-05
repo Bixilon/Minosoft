@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 enum class ErosMainActivities(
     val layout: ResourceLocation,
 ) {
-    PlAY(PlayController.LAYOUT),
+    PLAY(PlayController.LAYOUT),
     SETTINGS("".toResourceLocation()),
     HELP("".toResourceLocation()),
     ABOUT("".toResourceLocation()),
