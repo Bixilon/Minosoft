@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -271,7 +271,7 @@ open class InByteBuffer {
 
 
     fun readJson(): Map<String, Any> {
-        return JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(readString())!!
+        return Jackson.MAPPER.readValue(readString(), Jackson.JSON_MAP_TYPE)
     }
 
     fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {

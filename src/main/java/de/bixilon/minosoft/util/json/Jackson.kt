@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.util.json.jackson
+package de.bixilon.minosoft.util.json
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper

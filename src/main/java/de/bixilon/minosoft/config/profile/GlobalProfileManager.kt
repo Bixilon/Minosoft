@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.lockMapOf
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.collections.LockMap
-import de.bixilon.minosoft.util.json.jackson.Jackson
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.time.TimeWorker
 import de.bixilon.minosoft.util.task.time.TimeWorkerTask

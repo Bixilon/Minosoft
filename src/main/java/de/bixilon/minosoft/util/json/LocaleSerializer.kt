@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.util.json.jackson
+package de.bixilon.minosoft.util.json
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser

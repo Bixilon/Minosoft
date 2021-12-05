@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.util
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -28,11 +26,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.LockMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
-import okio.Buffer
 import sun.misc.Unsafe
 import java.io.*
 import java.lang.reflect.Field
@@ -362,20 +359,16 @@ object KUtil {
         return this.unsafeCast()
     }
 
-    fun Any.toJson(beautiful: Boolean = false, adapter: JsonAdapter<Any> = JSONSerializer.ANY_ADAPTER): String {
-        val buffer = Buffer()
-        val jsonWriter: JsonWriter = JsonWriter.of(buffer)
-        if (beautiful) {
-            jsonWriter.indent = "  "
+    fun Any.toJson(beautiful: Boolean = false): String {
+        return if (beautiful) {
+            Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(this)
+        } else {
+            Jackson.MAPPER.writeValueAsString(this)
         }
-        synchronized(this) {
-            adapter.toJson(jsonWriter, this)
-        }
-        return buffer.readUtf8()
     }
 
     fun String.fromJson(): Any {
-        return JSONSerializer.ANY_ADAPTER.fromJson(this)!!
+        return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
     }
 
     fun Any?.toInt(): Int {

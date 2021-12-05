@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import com.squareup.moshi.Json
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.util.KUtil.toInt
 
@@ -21,15 +22,17 @@ data class AnimationProperties(
     val interpolate: Boolean = false,
     var width: Int = -1,
     var height: Int = -1,
-    @Json(name = "frametime") private val frameTime: Int = 1,
-    @Json(name = "frames") private val _frames: List<Any> = listOf(),
+    @JsonProperty("frametime") private val frameTime: Int = 1,
+    @JsonProperty("frames") private val _frames: List<Any> = listOf(),
 ) {
+    @JsonIgnore
     private var initialized = false
 
-    @Transient
+    @JsonIgnore
     lateinit var frames: Array<AnimationFrame>
         private set
 
+    @JsonIgnore
     var frameCount = -1
         private set
 

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.util.*
 
@@ -31,13 +31,13 @@ class EntityHoverData(
     companion object {
         fun deserialize(data: Any): EntityHoverData {
             var json: Map<String, Any> = if (data is String) {
-                JSONSerializer.MAP_ADAPTER.fromJson(data)
+                Jackson.MAPPER.readValue(data, Jackson.JSON_MAP_TYPE)
             } else {
                 data
             }.asCompound()
             json["text"]?.let {
                 // 1.14.3.... lol
-                json = JSONSerializer.MAP_ADAPTER.fromJson(it.unsafeCast<String>())!!
+                json = Jackson.MAPPER.readValue(it.unsafeCast<String>(), Jackson.JSON_MAP_TYPE)
             }
             var type: ResourceLocation? = null
             json["type"]?.nullCast<String>()?.let {

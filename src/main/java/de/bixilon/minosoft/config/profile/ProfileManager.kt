@@ -15,7 +15,7 @@ import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.filewatcher.FileWatcher
 import de.bixilon.minosoft.util.filewatcher.FileWatcherService
-import de.bixilon.minosoft.util.json.jackson.Jackson
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
