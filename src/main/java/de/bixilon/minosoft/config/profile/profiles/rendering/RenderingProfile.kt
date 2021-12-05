@@ -20,6 +20,7 @@ class RenderingProfile(
         private set
     override var reloading: Boolean = false
     override var saved: Boolean = true
+    override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
     override var description by delegate(description ?: "")
 

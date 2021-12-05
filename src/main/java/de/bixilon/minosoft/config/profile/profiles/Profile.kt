@@ -12,4 +12,5 @@ interface Profile {
     @get:JsonIgnore var saved: Boolean
     @get:JsonIgnore val initializing: Boolean
     @get:JsonIgnore var reloading: Boolean
+    @get:JsonIgnore var ignoreNextReload: Boolean // used for saving and not instantly reloading
 }
