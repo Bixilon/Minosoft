@@ -5,22 +5,23 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 [![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
 [![](https://jitpack.io/v/de.bixilon.gitlab.bixilon/minosoft.svg)](https://jitpack.io/#de.bixilon.gitlab.bixilon/minosoft)
 
-<h2><span style="color:red">Notice: I am not responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
+<h2><span style="color:red">Notice: I am **not** responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
 
 ## Feature overview
 
 - Rendering
 - Multi protocol support (1.7 - latest)
-- Stable modding API + Unstable modding API
+- Modding
 - Bleeding edge performance (incredible start time of 3 - 5 seconds on modern hardware)
 - Free (as far as we consider original minecraft as free) and open source
-- Multi accounting (also multiple account vendors: Offline, Mojang, Microsoft)
-- Multi "sessions" (Connections to a server)
+- Multi accounting (Offline, Mojang, Microsoft)
+- Multi connections
 - Multi threading and asynchronous loading
 - Debugging on protocol layer
 - LAN servers
 - Independent, I'd accept almost all types of patches (except explicit server support)
 - Way more stuff
+- Multiple profiles (just choose it per server or in eros)
 
 ## System requirements
 
@@ -28,7 +29,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - RAM: Minimum 300 MiB, 1 GiB recommended
 - Disk space: Minosoft itself is pretty small (2-3 MiB), the libraries are a bit bigger (~80 MiB). You also need to have the "normal" minecraft assets (~ 300 MiB per minecraft version).
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
-- Java 11+, 16+ recommended (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
+- Java 11+, 16+ recommended (This is really important, Minosoft uses features that are only available in this version. Java 8 is currently **not** supported).
 
 ## Rendering
 
@@ -81,8 +82,7 @@ Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data sou
 
 ## Modding
 
-Minosoft is modding friendly. A decent and stable API was introduced with !17. It is pretty final, but some things might still change. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc, so adding custom blocks, etc is easily possible. Spoiler: Forge mods are NOT compatible. Feel free to write a compatibility layer (This is a really hard thing, we do things
-completely different).
+Minosoft is modding friendly. A decent and stable API was introduced with !17. It is pretty final, but some things might still change. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc, so adding custom blocks, etc is easily possible. Spoiler: Forge mods are NOT compatible.
 
 ## Botting
 
@@ -94,7 +94,7 @@ I'd love it. Currently, it is pretty much work for me, so please help out if you
 
 ## Tools and generators
 
-We wrote some tools to help out, see [Utility](util/ReadMe.md).
+I wrote some tools to help out, see [Utility](util/ReadMe.md).
 
 ## Credits
 
@@ -104,12 +104,12 @@ See [Credits](Credits.md).
 
 I invested (until now!) a couple of thousand hours in this project: https://www.reddit.com/r/git/comments/np9yo7/finally_i_can_say_that_i_have_no_life/
 
-I'll push a beta, once I think Minosoft is ready. It will still take some time, but I don't want to make a release and get a thousand issues. We know there are a ton of bugs, and I want to solve at least a couple of them. Also, a big topic is code quality. Before Minosoft, I just had a barely networking experience, no clue about the internals of minecraft, nor of kotlin or opengl. I learned so much, and you can see much code as "first draft". I'll need to do a ton of refactoring, otherwise I
+I'll push a beta, once I think Minosoft is ready. It will still take some time, but I don't want to make a release and get a thousand issues. I know there are a ton of bugs, and I want to solve at least a couple of them. Also, a big topic is code quality. Before Minosoft, I just had a barely networking experience, no clue about the internals of minecraft, nor of kotlin or opengl. I learned so much, and you can see much code as "first draft". I'll need to do a ton of refactoring, otherwise I
 can't think of PRs (they are still welcome). If you want to get current developer news, take a look in our telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews).
 
 ## Downloads / Installation
 
-Because we have no releases or tags yet, we don't build any versions ourselves. This will change soon™.
+Because there are no releases or tags yet, I don't build any versions. This will change soon™.
 
 ### Linux
 
@@ -119,7 +119,7 @@ TBA
 
 #### Arch
 
-Thanks to @jugendhacker we are in the arch user repository (AUR): https://aur.archlinux.org/packages/minosoft-git/
+Thanks to @jugendhacker you can get minosoft directly from the arch user repository (AUR): https://aur.archlinux.org/packages/minosoft-git/
 
 ### Windows
 
