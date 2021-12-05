@@ -34,7 +34,7 @@ class VibrationSignalS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
     val arrivalTicks: Int = buffer.readVarInt()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Vibration signal (sourcePosition=$sourcePosition, targetType=$targetType, targetData=$targetData, arrivalTicks=$arrivalTicks)" }
     }
 }

@@ -35,7 +35,7 @@ class EncryptionResponseC2SP(
         buffer.writeByteArray(token)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Encryption response (secret=${secret.toBase64()}, token=${token.toBase64()})" }
     }
 }

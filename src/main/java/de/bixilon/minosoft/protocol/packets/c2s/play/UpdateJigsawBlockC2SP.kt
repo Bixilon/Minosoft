@@ -45,7 +45,7 @@ class UpdateJigsawBlockC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Jigsaw block (position=$position, targetPool=$targetPool, finalState=$finalState, attachmentType=$attachmentType, name=$name, target=$target, jointType=$jointType)" }
     }
 }

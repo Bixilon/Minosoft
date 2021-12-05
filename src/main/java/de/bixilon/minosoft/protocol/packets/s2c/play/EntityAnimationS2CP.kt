@@ -25,7 +25,7 @@ class EntityAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val animation: EntityAnimations = buffer.connection.registries.entityAnimationRegistry[buffer.readVarInt()]!!
 
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity animation (entityId=$entityId, animation=$animation)" }
     }
 

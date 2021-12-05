@@ -46,7 +46,7 @@ class ServerStatusResponseS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
         connection.sendPacket(StatusPingC2SP(pingQuery.pingId))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Server status response (status=$status)" }
     }
 }

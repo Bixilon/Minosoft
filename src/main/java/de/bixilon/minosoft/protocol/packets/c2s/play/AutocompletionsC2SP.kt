@@ -41,7 +41,7 @@ class AutocompletionsC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Tab complete (text=\"$text\", assumeCommand=$assumeCommand, position=$position)" }
     }
 }

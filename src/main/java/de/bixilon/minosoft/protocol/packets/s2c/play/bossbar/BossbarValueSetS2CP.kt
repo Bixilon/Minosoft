@@ -44,7 +44,7 @@ class BossbarValueSetS2CP(
         check(value in 0.0f..1.0f) { "Value of of bounds!" }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar value set (uuid=$uuid, value=$value)" }
     }
 }

@@ -42,7 +42,7 @@ class ContainerSlotClickC2SP(
         buffer.writeItemStack(clickedItem)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container slot click (containerId=$containerId, todo1=$revision, slot=$slot, action=$action, actionNumber=$actionNumber, clickedItem=$clickedItem)" }
     }
 }

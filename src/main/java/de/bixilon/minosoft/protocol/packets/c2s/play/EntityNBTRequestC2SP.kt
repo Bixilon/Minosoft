@@ -27,7 +27,7 @@ class EntityNBTRequestC2SP(
         buffer.writeVarInt(entityId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity NBT request (entityId=$entityId, transactionId=$transactionId)" }
     }
 }

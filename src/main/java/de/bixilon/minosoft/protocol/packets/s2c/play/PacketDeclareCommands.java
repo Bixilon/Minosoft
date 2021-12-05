@@ -38,7 +38,7 @@ public class PacketDeclareCommands extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol("Received declare commands packets");
     }
 }

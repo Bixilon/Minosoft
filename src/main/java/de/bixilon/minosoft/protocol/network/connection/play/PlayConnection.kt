@@ -269,7 +269,7 @@ class PlayConnection(
             return
         }
         try {
-            packet.log()
+            packet.log(profiles.other.log.reducedProtocolLog)
             val event = PacketReceiveEvent(this, packet)
             if (fireEvent(event)) {
                 return

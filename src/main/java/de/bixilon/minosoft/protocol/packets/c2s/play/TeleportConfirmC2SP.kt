@@ -26,7 +26,7 @@ class TeleportConfirmC2SP(
         buffer.writeVarInt(teleportId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Confirm teleport (teleportId=$teleportId)" }
     }
 }

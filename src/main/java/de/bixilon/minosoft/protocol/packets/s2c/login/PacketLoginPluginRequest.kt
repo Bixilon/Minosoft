@@ -29,7 +29,7 @@ class PacketLoginPluginRequest(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         // ToDo:    connection.fireEvent(LoginPluginMessageRequestEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login plugin request (messageId=$messageId, channel=$channel, data=${data.readRest()})" }
     }
 

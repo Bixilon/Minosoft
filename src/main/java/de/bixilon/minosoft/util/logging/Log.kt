@@ -13,12 +13,14 @@
 package de.bixilon.minosoft.util.logging
 
 import com.google.errorprone.annotations.DoNotCall
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
@@ -35,6 +37,7 @@ object Log {
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
     private val SYSTEM_OUT_STREAM = System.out
+    private var levels: Map<LogMessageType, LogLevels>? = null
 
     val FATAL_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.FATAL)
     val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.WARN)
@@ -97,14 +100,17 @@ object Log {
                 }
             }
         }, "Log").start()
+
+        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
     }
 
     @DoNotCall
     @JvmOverloads
     @JvmStatic
     fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
-        if (Minosoft.configInitialized) {
-            Minosoft.config.config.general.log[logMessageType]?.let {
+        val levels = levels
+        if (levels != null) {
+            levels[logMessageType]?.let {
                 if (it.ordinal < level.ordinal) {
                     return
                 }
@@ -144,8 +150,9 @@ object Log {
 
     @JvmStatic
     fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
-        if (Minosoft.configInitialized) {
-            Minosoft.config.config.general.log[logMessageType]?.let {
+        val levels = levels
+        if (levels != null) {
+            levels[logMessageType]?.let {
                 if (it.ordinal < level.ordinal) {
                     return
                 }
@@ -162,30 +169,6 @@ object Log {
     @JvmStatic
     fun log(logMessageType: LogMessageType, messageBuilder: () -> Any) {
         log(logMessageType, additionalPrefix = null, messageBuilder = messageBuilder)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun printException(exception: Throwable, logMessageType: LogMessageType, level: LogLevels) {
-        log(logMessageType, level = level, message = exception)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun printException(exception: Throwable, logMessageType: LogMessageType) {
-        log(logMessageType, message = exception)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun fatal(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.FATAL, message = message, formatting = formatting)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun error(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.WARN, message = message, formatting = formatting)
     }
 
     @Deprecated(message = "Java only")
@@ -216,17 +199,5 @@ object Log {
     @JvmStatic
     fun warn(message: Any, vararg formatting: Any) {
         log(LogMessageType.OTHER, level = LogLevels.WARN, message = message, formatting = formatting)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun game(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun mojang(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
     }
 }

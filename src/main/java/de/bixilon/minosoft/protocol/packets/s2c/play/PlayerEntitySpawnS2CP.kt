@@ -91,7 +91,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.entities.add(entityId, entityUUID, entity)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
     }
 }

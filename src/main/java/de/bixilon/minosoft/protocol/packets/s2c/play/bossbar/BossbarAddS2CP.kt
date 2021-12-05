@@ -67,7 +67,7 @@ class BossbarAddS2CP(
         connection.fireEvent(BossbarAddEvent(connection, EventInitiators.SERVER, uuid, bossbar))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar add (uuid=$uuid, title=\"$title\", health=$value, color=$color, notches=$notches, shouldDarkenSky=$shouldDarkenSky, dragonBar=$dragonBar, fog=$fog)" }
     }
 }

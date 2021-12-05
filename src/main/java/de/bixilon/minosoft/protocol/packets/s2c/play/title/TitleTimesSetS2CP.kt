@@ -30,7 +30,7 @@ class TitleTimesSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(TitleTimesSetEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title times set (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)" }
     }
 }

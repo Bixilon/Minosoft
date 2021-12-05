@@ -30,7 +30,7 @@ public class PacketSelectAdvancementTab extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol(String.format("[IN] Received select advancement tab (tab=%s)", this.tab));
     }
 

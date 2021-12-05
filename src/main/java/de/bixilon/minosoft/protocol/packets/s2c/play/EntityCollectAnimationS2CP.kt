@@ -40,7 +40,7 @@ class EntityCollectAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity collect animation (itemEntityId=$itemEntityId, collectorEntityId=$collectorEntityId, count=$collectorEntityId)" }
     }
 }

@@ -30,7 +30,7 @@ class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val data: Int = buffer.readInt()
     val isGlobal: Boolean = buffer.readBoolean()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World event packet (position=$position, eventId=$eventId, data=$data, isGlobal=$isGlobal)" }
     }
 }

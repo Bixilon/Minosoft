@@ -60,7 +60,7 @@ class ClientSettingsC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, viewDistance=$viewDistance, chatMode=$chatMode, chatColors=$chatColors, skinParts=${skinParts.joinToString()}, mainHand=$mainArm, disableTextFiltering=$disableTextFiltering, allowListing=$allowListing)" }
     }
 

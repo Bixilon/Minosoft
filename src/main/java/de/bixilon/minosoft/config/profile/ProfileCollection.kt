@@ -14,6 +14,8 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfile
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfile
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfile
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
@@ -32,4 +34,5 @@ data class ProfileCollection(
     val connection: ConnectionProfile = ConnectionProfileManager.selected,
     val hud: HUDProfile = HUDProfileManager.selected,
     val controls: ControlsProfile = ControlsProfileManager.selected,
+    val other: OtherProfile = OtherProfileManager.selected,
 )

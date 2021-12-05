@@ -89,7 +89,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(MassBlockSetEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Multi block change (chunkPosition=${chunkPosition}, count=${blocks.size})" }
     }
 }

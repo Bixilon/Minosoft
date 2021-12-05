@@ -29,7 +29,7 @@ class ItemCooldownSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.player.itemCooldown[item] = ItemCooldown(KUtil.time, time)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Item cooldown set (item=$item, time=$time)" }
     }
 }

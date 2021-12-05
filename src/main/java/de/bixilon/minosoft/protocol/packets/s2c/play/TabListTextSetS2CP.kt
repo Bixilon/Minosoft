@@ -32,7 +32,7 @@ class TabListTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(TabListInfoChangeEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tab list text set (header=$header, footer=$footer)" }
     }
 }

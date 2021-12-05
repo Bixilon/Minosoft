@@ -34,7 +34,7 @@ class FlyToggleC2SP(val flying: Boolean) : PlayC2SPacket {
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Fly toggle (flying=$flying)" }
     }
 }

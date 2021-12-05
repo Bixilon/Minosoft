@@ -48,7 +48,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(ExplosionEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, radius=$power, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
     }
 }

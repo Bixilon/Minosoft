@@ -24,7 +24,7 @@ class CombatEventKillS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val deadEntityId = buffer.readInt()
     val message = buffer.readChatComponent()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat event kill (killerEntityId=$killerEntityId, deadEntityId=$deadEntityId, message=$message )" }
     }
 }

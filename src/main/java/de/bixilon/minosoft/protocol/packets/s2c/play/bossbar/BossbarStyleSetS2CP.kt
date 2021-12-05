@@ -52,7 +52,7 @@ class BossbarStyleSetS2CP(
         connection.fireEvent(BossbarStyleSetEvent(connection, EventInitiators.SERVER, uuid, bossbar))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar style set (uuid=$uuid, color=$color, notches=$notches)" }
     }
 }

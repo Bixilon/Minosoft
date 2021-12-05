@@ -40,7 +40,7 @@ class BlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world[blockPosition] = blockState
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block set (position=${blockPosition}, blockState=$blockState)" }
     }
 }

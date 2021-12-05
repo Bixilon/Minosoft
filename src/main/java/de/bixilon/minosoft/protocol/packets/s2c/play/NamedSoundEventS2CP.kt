@@ -67,7 +67,7 @@ class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(PlaySoundEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Named sound event (sound=$soundEvent, volume=$volume, pitch=$pitch, position=$position, category=$category)" }
     }
 }

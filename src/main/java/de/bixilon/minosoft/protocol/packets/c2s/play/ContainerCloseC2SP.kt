@@ -26,7 +26,7 @@ class ContainerCloseC2SP(
         buffer.writeByte(containerId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container close (containerId=$containerId)" }
     }
 }

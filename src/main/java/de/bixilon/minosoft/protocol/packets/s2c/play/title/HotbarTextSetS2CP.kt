@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class HotbarTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val text = buffer.readChatComponent()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar text set (text=$text)" }
     }
 

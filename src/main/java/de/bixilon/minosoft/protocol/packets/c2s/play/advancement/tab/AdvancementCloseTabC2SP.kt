@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class AdvancementCloseTabC2SP : AdvancementTabC2SP(AdvancementTabStatus.CLOSE_TAB) {
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Close advancement tab" }
     }
 }

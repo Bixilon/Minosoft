@@ -38,7 +38,7 @@ class ObjectivePositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(ObjectivePositionSetEvent(connection, position, objective))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Scoreboard position set (position=$position, objective=$name)" }
     }
 

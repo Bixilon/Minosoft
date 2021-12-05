@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class SizeSetWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val radius = buffer.readDouble()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Size set world border (radius=$radius)" }
     }
 }

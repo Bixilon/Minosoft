@@ -44,7 +44,7 @@ class VehicleSteerC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Vehicle steer complete (sideways=$sideways, forward=$forward, jump=$jump, unmount=$unmount)" }
     }
 }

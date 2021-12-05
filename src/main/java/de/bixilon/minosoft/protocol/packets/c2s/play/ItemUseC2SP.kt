@@ -25,7 +25,7 @@ class ItemUseC2SP(val hand: Hands) : PlayC2SPacket {
         buffer.writeVarInt(hand.ordinal)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Use item (hand=$hand)" }
     }
 }

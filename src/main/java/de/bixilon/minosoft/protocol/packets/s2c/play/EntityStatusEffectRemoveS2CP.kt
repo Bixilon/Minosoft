@@ -28,7 +28,7 @@ class EntityStatusEffectRemoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.entities[entityId]?.removeEffect(effect)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Entity status effect remove (entityId=$entityId, effect=$effect)" }
     }
 }

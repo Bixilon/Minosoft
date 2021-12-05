@@ -201,7 +201,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         return dimensionMap
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Join game (entityId=$entityId, gamemode=$gamemode, dimensionType=$dimensionProperties, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 

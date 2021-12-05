@@ -41,7 +41,7 @@ class PluginMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(PluginMessageReceiveEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Plugin message (channel=$channel, size=${data.size})" }
     }
 }

@@ -44,7 +44,7 @@ class SignTextSetC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Set sign text (position=$position)" }
     }
 }

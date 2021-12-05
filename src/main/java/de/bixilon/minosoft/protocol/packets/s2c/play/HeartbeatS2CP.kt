@@ -36,7 +36,7 @@ class HeartbeatS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.sendPacket(HeartbeatC2SP(id))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Heartbeat (id=$id)" }
     }
 

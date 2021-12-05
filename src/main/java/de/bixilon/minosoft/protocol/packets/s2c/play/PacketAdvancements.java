@@ -98,7 +98,7 @@ public class PacketAdvancements extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol(String.format("[IN] Receiving advancements (reset=%s, advancements=%s, progresses=%s)", this.reset, this.advancements.size(), this.progresses.size()));
     }
 

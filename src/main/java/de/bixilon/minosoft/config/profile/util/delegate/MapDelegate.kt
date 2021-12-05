@@ -15,7 +15,7 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 
 open class MapDelegate<K, V>(
-    private var value: ObservableMap<K, V> = FXCollections.synchronizedObservableMap(FXCollections.observableHashMap()),
+    private var value: ObservableMap<K, V>,
     private val profileManager: ProfileManager<*>,
     private val profileName: String,
     private val verify: ((MapChangeListener.Change<out K, out V>) -> Unit)?,

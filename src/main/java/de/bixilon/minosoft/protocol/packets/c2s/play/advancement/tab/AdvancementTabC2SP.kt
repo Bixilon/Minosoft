@@ -28,7 +28,7 @@ abstract class AdvancementTabC2SP(
         buffer.writeVarInt(action.ordinal)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Advancement tab (action=$action)" }
     }
 

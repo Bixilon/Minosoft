@@ -14,5 +14,7 @@ package de.bixilon.minosoft.protocol.packets.c2s
 
 import de.bixilon.minosoft.protocol.packets.Packet
 
-// packet to send to server
+/**
+ * **C**lient to **S**erver packet
+ */
 interface C2SPacket : Packet

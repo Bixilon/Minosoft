@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class RemoveScoreboardObjectiveS2CP(val objective: String, buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Remove scoreboard objective (objective=$objective)" }
     }
 

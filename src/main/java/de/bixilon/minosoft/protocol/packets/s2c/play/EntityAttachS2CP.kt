@@ -35,7 +35,7 @@ class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         // ToDo leash support
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
     }
 }

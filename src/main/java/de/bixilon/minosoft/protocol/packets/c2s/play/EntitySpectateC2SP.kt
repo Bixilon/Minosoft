@@ -27,7 +27,7 @@ class EntitySpectateC2SP(
         buffer.writeUUID(entityUUID)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Spectate entity (entityUUID=$entityUUID)" }
     }
 }

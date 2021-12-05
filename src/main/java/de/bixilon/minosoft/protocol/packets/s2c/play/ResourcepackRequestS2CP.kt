@@ -50,7 +50,7 @@ class ResourcepackRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.sendPacket(ResourcePackStatusC2SP(hash, ResourcePackStatusC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Resourcepack request (url=$url, hash=$hash, forced=$forced, promptText=$promptText)" }
     }
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PongC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -30,8 +29,8 @@ class PingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.sendPacket(PongC2SP(id))
     }
 
-    override fun log() {
-        if (Minosoft.config.config.general.reduceProtocolLog) {
+    override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
             return
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Ping (id=$id)" }

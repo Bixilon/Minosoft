@@ -56,7 +56,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         blockEntity.setBlockActionData(data1, data2)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block action (position=$position, data1=$data1, data2=$data2, block=$block)" }
     }
 }

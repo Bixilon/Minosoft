@@ -13,11 +13,14 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
@@ -25,28 +28,50 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.*
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.CountDownLatch
 
 object LANServerListener {
-    var active: Boolean = false
-        private set
     val SERVERS: HashBiMap<InetAddress, Server> = HashBiMap.create()
     private const val MOTD_START_STRING = "[MOTD]"
     private const val MOTD_END_STRING = "[/MOTD]"
     private const val PORT_START_STRING = "[AD]"
     private const val PORT_END_STRING = "[/AD]"
     private val BROADCAST_MUST_CONTAIN = arrayOf(MOTD_START_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING)
+    private var listeningThread: Thread? = null
+    private var stop = false
+
+    val listening: Boolean
+        get() = listeningThread != null
 
     fun listen() {
-        val latch = CountDownLatch(1)
-        Thread({
+        OtherProfileManager.selected::listenLAN.listen(this) {
+            if (it && listeningThread == null) {
+                startListener()
+            } else if (!it && listeningThread != null) {
+                stopListening()
+            }
+        }
+        if (OtherProfileManager.selected.listenLAN) {
+            val latch = CountUpAndDownLatch(1)
+            startListener(latch)
+            latch.await()
+        }
+    }
+
+    fun stopListening() {
+        val listeningThread = listeningThread ?: throw IllegalStateException("Not running!")
+        stop = true
+        listeningThread.interrupt()
+    }
+
+    private fun startListener(latch: CountUpAndDownLatch? = null) {
+        stop = false
+        val thread = Thread({
             try {
                 val socket = MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT)
                 socket.joinGroup(InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS))
                 val buffer = ByteArray(256) // this should be enough, if the packet is longer, it is probably invalid
                 Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Listening for LAN servers..." }
-                latch.countDown()
-                active = true
+                latch?.dec()
                 while (true) {
                     try {
                         val packet = DatagramPacket(buffer, buffer.size)
@@ -72,16 +97,21 @@ object LANServerListener {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.INFO) { "Discovered LAN servers: $server" }
                     } catch (ignored: Throwable) {
                     }
+                    if (stop) {
+                        break
+                    }
                 }
             } catch (exception: Exception) {
                 exception.printStackTrace()
-                latch.countDown()
+                latch?.dec()
+            } finally {
+                this.listeningThread = null
+                SERVERS.clear()
+                Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Stop listening for LAN servers..." }
             }
-            SERVERS.clear()
-            active = false
-            Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Stop listening for LAN servers..." }
-        }, "LAN Server Listener").start()
-        latch.await()
+        }, "LAN Server Listener")
+        thread.start()
+        this.listeningThread = thread
     }
 
     private fun getServerByBroadcast(address: InetAddress, broadcast: String): Server {

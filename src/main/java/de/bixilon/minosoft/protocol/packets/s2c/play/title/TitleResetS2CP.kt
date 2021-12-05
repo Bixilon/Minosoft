@@ -26,7 +26,7 @@ class TitleResetS2CP : PlayS2CPacket() {
         connection.fireEvent(TitleResetEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title reset" }
     }
 }

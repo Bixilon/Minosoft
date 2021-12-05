@@ -13,14 +13,8 @@
 
 package de.bixilon.minosoft.config.config.general
 
-import com.squareup.moshi.Json
 import de.bixilon.minosoft.config.Configuration
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 data class GeneralConfig(
     var version: Int = Configuration.LATEST_CONFIG_VERSION,
-    @Json(name = "log") var log: MutableMap<LogMessageType, LogLevels> = LogMessageType.DEFAULT_LOG_MAP.toMutableMap(),
-    @Json(name = "reduce_protocol_log") var reduceProtocolLog: Boolean = true,
-    @Json(name = "ignore_x_start_on_first_thread_warning") var ignoreXStartOnFirstThreadWarning: Boolean = false,
 )

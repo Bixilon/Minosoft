@@ -26,7 +26,7 @@ class SimulationDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.view.serverSimulationDistance = simulationDistance
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Simulation distance set (simulationDistance=$simulationDistance)" }
     }
 }

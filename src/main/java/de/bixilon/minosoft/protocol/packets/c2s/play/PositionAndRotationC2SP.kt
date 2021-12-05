@@ -39,7 +39,7 @@ class PositionAndRotationC2SP(
         buffer.writeBoolean(onGround)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Position and rotation (position=$position, rotation=$rotation, onGround=$onGround)" }
     }
 }

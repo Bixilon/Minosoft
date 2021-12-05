@@ -28,7 +28,7 @@ class HorseContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         // ToDo
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Horse container open (containerId=$containerId, slotCount=$slotCount, entityId=$entityId" }
     }
 

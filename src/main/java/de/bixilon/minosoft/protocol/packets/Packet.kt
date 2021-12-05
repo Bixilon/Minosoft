@@ -10,9 +10,8 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets
 
-package de.bixilon.minosoft.protocol.packets;
-
-public interface Packet {
-    void log();
+interface Packet {
+    fun log(reducedLog: Boolean)
 }

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class CombatEventEnterS2CP : PlayS2CPacket() {
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat event enter" }
     }
 }

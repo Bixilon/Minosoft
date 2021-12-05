@@ -38,7 +38,7 @@ class EncryptionRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.sendPacket(EncryptionResponseC2SP(secretKey, verifyToken, publicKey))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Encryption request (serverId=$serverId, publicKey=${publicKey.toBase64()}, verifyToken=${verifyToken.toBase64()})" }
     }
 

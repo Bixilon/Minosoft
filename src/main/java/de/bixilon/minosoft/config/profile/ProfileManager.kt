@@ -18,6 +18,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import javafx.collections.FXCollections
 import javafx.collections.MapChangeListener
 import java.io.File
 import java.io.FileNotFoundException
@@ -76,8 +77,8 @@ interface ProfileManager<T : Profile> {
         }
     }
 
-    fun <K, V> mapDelegate(checkEquals: Boolean = true, verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegate<K, V> {
-        return MapDelegate(profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
+    fun <K, V> mapDelegate(default: MutableMap<K, V> = mutableMapOf(), checkEquals: Boolean = true, verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegate<K, V> {
+        return MapDelegate(FXCollections.synchronizedObservableMap(FXCollections.observableMap(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
     fun selectDefault() {

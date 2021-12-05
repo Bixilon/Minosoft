@@ -47,7 +47,7 @@ class CommandBlockSetC2SP(
         buffer.writeByte(flags)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Set command block (position=$position, command=\"$command\", type=$type, trackOutput=$trackOutput, isConditional=$isConditional, isAutomatic=$isAutomatic)" }
     }
 

@@ -26,7 +26,7 @@ class AnvilNameSetC2SP(
         buffer.writeString(name)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Anvil name set (name=$name)" }
     }
 }

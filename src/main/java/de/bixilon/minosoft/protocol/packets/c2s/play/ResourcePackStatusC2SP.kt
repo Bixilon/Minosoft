@@ -31,7 +31,7 @@ class ResourcePackStatusC2SP(
         buffer.writeVarInt(status.ordinal)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Resource pack status (hash=$hash, status=$status)" }
     }
 

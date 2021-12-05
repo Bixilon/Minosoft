@@ -100,7 +100,7 @@ public class PacketDeclareRecipes extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol(String.format("[IN] Received declare recipe packet (recipeLength=%d)", this.recipes.size()));
     }
 

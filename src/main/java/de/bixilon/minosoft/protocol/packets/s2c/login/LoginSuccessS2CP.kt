@@ -38,7 +38,7 @@ class LoginSuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.entities.add(null, uuid, playerEntity)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login success (uuid=$uuid, name=$name)" }
     }
 

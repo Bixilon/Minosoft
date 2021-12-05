@@ -137,11 +137,7 @@ object Minosoft {
         taskWorker += Task(identifier = StartupTasks.LOAD_MODS, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = { progress: CountUpAndDownLatch -> ModLoader.loadMods(progress) })
 
 
-        taskWorker += Task(identifier = StartupTasks.LISTEN_LAN_SERVERS, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = {
-            if (!config.config.network.showLanServers) {
-                return@Task
-            }
-
+        taskWorker += Task(identifier = StartupTasks.LISTEN_LAN_SERVERS, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
             LANServerListener.listen()
         })
 

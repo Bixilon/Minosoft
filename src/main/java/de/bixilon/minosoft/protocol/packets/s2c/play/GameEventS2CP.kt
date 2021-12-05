@@ -35,7 +35,7 @@ class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         DefaultGameEventHandlers[this.event.resourceLocation]?.handle(data, connection)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Game event (event=$event, data=$data)" }
     }
 }

@@ -39,7 +39,7 @@ class RemoveScoreboardScoreS2CP(val entity: String, val objective: String?, buff
     }
 
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Remove scoreboard score (entity=$entity§r, objective=$objective§r)" }
     }
 }

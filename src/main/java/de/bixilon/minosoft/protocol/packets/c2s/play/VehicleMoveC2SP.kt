@@ -31,7 +31,7 @@ class VehicleMoveC2SP(
         buffer.writeFloat(pitch)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Vehicle move (position=$position, yaw=$yaw, pitch=$pitch)" }
     }
 }

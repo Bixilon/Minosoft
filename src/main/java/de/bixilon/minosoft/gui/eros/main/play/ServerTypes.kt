@@ -29,7 +29,7 @@ enum class ServerTypes(
     private val countSupplier: () -> Int,
 ) : Translatable {
     CUSTOM(FontAwesomeSolid.SERVER, null, { Minosoft.config.config.server.entries.size }),
-    LAN(FontAwesomeSolid.NETWORK_WIRED, { LANServerListener.active }, { LANServerListener.SERVERS.size }),
+    LAN(FontAwesomeSolid.NETWORK_WIRED, { LANServerListener.listening }, { LANServerListener.SERVERS.size }),
     ;
 
     override val translationKey: ResourceLocation = "minosoft:server_type.${name.lowercase()}".toResourceLocation()
