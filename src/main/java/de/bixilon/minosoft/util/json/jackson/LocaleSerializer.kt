@@ -20,14 +20,22 @@ object LocaleSerializer : SimpleModule() {
     object Deserializer : StdDeserializer<Locale>(Locale::class.java) {
 
         override fun deserialize(parser: JsonParser, context: DeserializationContext?): Locale {
-            return Locale.forLanguageTag(parser.valueAsString)
+            var locale = Locale.forLanguageTag(parser.valueAsString)
+            if (locale.language.isEmpty()) {
+                locale = Locale.US
+            }
+            return locale
         }
     }
 
     object Serializer : StdSerializer<Locale>(Locale::class.java) {
 
         override fun serialize(value: Locale?, generator: JsonGenerator, provider: SerializerProvider?) {
-            generator.writeString(value?.fullName)
+            if (value?.language?.isEmpty() == true) {
+                generator.writeString(Locale.US.fullName)
+            } else {
+                generator.writeString(value?.fullName)
+            }
         }
     }
 }

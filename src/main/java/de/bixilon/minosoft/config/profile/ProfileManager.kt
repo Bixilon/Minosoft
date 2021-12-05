@@ -102,7 +102,7 @@ interface ProfileManager<T : Profile> {
     fun initDefaultProfile() {
         val profile = createDefaultProfile()
         this.selected = profile
-        save(profile)
+        saveAsync(profile)
     }
 
 
@@ -111,26 +111,28 @@ interface ProfileManager<T : Profile> {
     }
 
 
-    fun save(profile: T) {
+    fun saveAsync(profile: T) {
         if (saveLock.isLocked) {
             return
         }
-        DefaultThreadPool += {
-            saveLock.lock()
-            try {
-                val data = serialize(profile)
-                val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
+        DefaultThreadPool += { save(profile) }
+    }
 
-                val profileFile = File(getPath(getName(profile)))
-                profile.ignoreNextReload = true
-                KUtil.safeSaveToFile(profileFile, jsonString)
-                profile.saved = true
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                exception.crash()
-            } finally {
-                saveLock.unlock()
-            }
+    fun save(profile: T) {
+        saveLock.lock()
+        try {
+            val data = serialize(profile)
+            val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
+
+            val profileFile = File(getPath(getName(profile)))
+            profile.ignoreNextReload = true
+            KUtil.safeSaveToFile(profileFile, jsonString)
+            profile.saved = true
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            exception.crash()
+        } finally {
+            saveLock.unlock()
         }
     }
 
@@ -147,9 +149,9 @@ interface ProfileManager<T : Profile> {
         if (!baseDirectory.isDirectory) {
             throw IOException("${baseDirectory.path} is not an directory!")
         }
-        val profileNames = baseDirectory.list { current, name -> File(current, name).isDirectory } ?: throw IOException("Can not create a list of profiles in ${baseDirectory.path}")
+        val profileNames = baseDirectory.list { current, name -> File(current, name).isDirectory }?.toMutableSet() ?: throw IOException("Can not create a list of profiles in ${baseDirectory.path}")
         if (selected == null || profileNames.isEmpty()) {
-            initDefaultProfile()
+            profileNames += DEFAULT_PROFILE_NAME
         }
         for (profileName in profileNames) {
             val path = getPath(profileName, baseDirectory)
@@ -157,15 +159,15 @@ interface ProfileManager<T : Profile> {
             val profile: T
             try {
                 profile = load(profileName, json)
-                if (RunConfiguration.PROFILES_HOT_RELOADING) {
-                    watchProfile(profileName, File(path))
-                }
             } catch (exception: Throwable) {
                 throw ProfileLoadException(path, exception)
             }
             if (saveFile) {
                 profile.saved = false
                 save(profile)
+            }
+            if (RunConfiguration.PROFILES_HOT_RELOADING) {
+                watchProfile(profileName, File(path))
             }
         }
 

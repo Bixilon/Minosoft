@@ -46,6 +46,7 @@ import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
+import de.bixilon.minosoft.util.KUtil.fullName
 import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -105,7 +106,7 @@ object Minosoft {
 
         taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
             val language = ErosProfileManager.selected.general.language
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language.fullName})" }
             ErosProfileManager.selected.general::language.profileWatch(this, true) {
                 LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
             }

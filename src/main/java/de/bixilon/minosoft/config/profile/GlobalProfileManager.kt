@@ -114,7 +114,7 @@ object GlobalProfileManager {
                         continue
                     }
                     val castedManager = manager.unsafeCast<ProfileManager<Profile>>()
-                    castedManager.save(profile)
+                    castedManager.saveAsync(profile)
                 }
 
             }
