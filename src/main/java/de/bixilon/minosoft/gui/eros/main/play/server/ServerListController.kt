@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.play.server
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
@@ -117,6 +118,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
                     account = account,
                     version = serverCard.server.forcedVersion ?: pingVersion,
+                    profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
                 )
                 account.connections[server] = connection
                 serverCard.connections += connection

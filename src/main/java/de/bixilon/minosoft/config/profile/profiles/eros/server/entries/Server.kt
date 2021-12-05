@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.backingDelegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -27,8 +29,22 @@ class Server(
     name: ChatComponent = ChatComponent.of(address),
     forcedVersion: Version? = null,
 ) {
+    /**
+     * Server-address as string. May contain the port
+     */
     var address by delegate(address)
+
+    /**
+     * Server name (showed in eros)
+     */
     var name by delegate(name)
+
+    /**
+     * Profiles to use for the connection to the server.
+     * Changing profiles requires reconnect
+     * If profile is unset, defaults to eros global profiles
+     */
+    var profiles: MutableMap<ResourceLocation, String> by mapDelegate()
 
     @get:JsonProperty("forced_version")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)

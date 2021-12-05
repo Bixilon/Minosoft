@@ -171,9 +171,7 @@ interface ProfileManager<T : Profile> {
             }
         }
 
-        if (selected != null) {
-            profiles[selected]?.let { this.selected = it } ?: selectDefault()
-        }
+        profiles[selected]?.let { this.selected = it } ?: selectDefault()
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
     }

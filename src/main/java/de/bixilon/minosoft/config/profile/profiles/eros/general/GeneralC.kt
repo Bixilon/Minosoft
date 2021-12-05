@@ -6,6 +6,8 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.util.*
 
 class GeneralC {
@@ -21,5 +23,11 @@ class GeneralC {
         set(value) {
             _accountProfile = AccountProfileManager.getName(value)
         }
+
+    /**
+     * Profiles to use for connections
+     * If profile is not set or not found, the global default profile is used
+     */
+    var profileOverrides: MutableMap<ResourceLocation, String> by mapDelegate()
 
 }
