@@ -256,6 +256,8 @@ class WorldRenderer(
             )) { clearChunkCache() }
 
         profile.rendering::antiMoirePattern.listen(this, false, profile) { clearChunkCache() }
+        val rendering = connection.profiles.rendering
+        rendering.performance::fastBedrock.listen(this, false, rendering) { clearChunkCache() }
 
         connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
             if (event.viewDistance < this.previousViewDistance) {

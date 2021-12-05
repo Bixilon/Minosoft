@@ -4,11 +4,14 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.rendering.advanced.AdvancedC
+import de.bixilon.minosoft.config.profile.profiles.rendering.animations.AnimationsC
 import de.bixilon.minosoft.config.profile.profiles.rendering.camera.CameraC
 import de.bixilon.minosoft.config.profile.profiles.rendering.chunkborder.ChunkBorderC
 import de.bixilon.minosoft.config.profile.profiles.rendering.experimental.ExperimentalC
+import de.bixilon.minosoft.config.profile.profiles.rendering.fog.FogC
 import de.bixilon.minosoft.config.profile.profiles.rendering.light.LightC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
+import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
 
 /**
  * Profile for general rendering
@@ -24,12 +27,15 @@ class RenderingProfile(
     override val version: Int = latestVersion
     override var description by delegate(description ?: "")
 
-    val camera = CameraC()
     val advanced = AdvancedC()
-    val movement = MovementC()
+    val animations = AnimationsC()
+    val camera = CameraC()
     val chunkBorder = ChunkBorderC()
-    val light = LightC()
     val experimental = ExperimentalC()
+    val fog = FogC()
+    val light = LightC()
+    val movement = MovementC()
+    val performance = PerformanceC()
 
 
     override fun toString(): String {

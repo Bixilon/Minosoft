@@ -24,4 +24,15 @@ class AdvancedC {
      * Must not be negative
      */
     var swapInterval by delegate(1) { check(it >= 0) { "Swap interval must not be negative!" } }
+
+    /**
+     * Instead of using GL_TRIANGLES it tries to use GL_QUADS whenever possible.
+     * Creates an 3.0 opengl context (still requires 3.3+, for geometry shaders).
+     * Will be faster (on cpu and gpu).
+     * Requires an AMD or NVIDIA GPU (Intel/Mesa follows the specification strict).
+     * Does not work on MacOS (MacOS requires 3.2+)
+     * Violates the opengl specification.
+     * Requires rendering restart to apply
+     */
+    var preferQuads by delegate(false)
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.camera
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -126,7 +125,7 @@ class Camera(
     }
 
     private fun calculateFogDistance() {
-        if (!Minosoft.config.config.game.graphics.fogEnabled) {
+        if (!connection.profiles.rendering.fog.enabled) {
             fogStart = Float.MAX_VALUE
             return
         }

@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -164,8 +163,8 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
-        if (connection.version.versionId >= ProtocolVersions.V_19W36A && !Minosoft.config.config.game.graphics.fastBiomeNoise) {
-            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
+        if (connection.version.versionId >= ProtocolVersions.V_19W36A && !connection.profiles.rendering.performance.fastBiomeNoise) {
+            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection)
         }
 
         connection.settingsManager.sendClientSettings()

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowFocusChangeEvent
@@ -44,6 +44,7 @@ import java.nio.ByteBuffer
 
 
 class GLFWWindow(
+    private val renderWindow: RenderWindow,
     private val eventMaster: AbstractEventMaster,
 ) : BaseWindow {
     private var mousePosition = Vec2d.EMPTY
@@ -137,7 +138,7 @@ class GLFWWindow(
         check(glfwInit()) { "Unable to initialize GLFW" }
 
         glfwDefaultWindowHints()
-        if (Minosoft.config.config.game.graphics.preferQuads) {
+        if (renderWindow.preferQuads) {
             setOpenGLVersion(3, 0, false)
         } else {
             setOpenGLVersion(3, 3, true)

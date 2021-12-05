@@ -74,13 +74,15 @@ class RenderWindow(
     val rendering: Rendering,
 ) {
     private val profile = connection.profiles.rendering
-    val window: BaseWindow = GLFWWindow(connection)
+    val window: BaseWindow = GLFWWindow(this, connection)
     val renderSystem: RenderSystem = OpenGLRenderSystem(this)
     var initialized = false
         private set
     private lateinit var renderThread: Thread
     lateinit var renderStats: AbstractRenderStats
         private set
+
+    val preferQuads = profile.advanced.preferQuads
 
     val inputHandler = RenderWindowInputHandler(this)
 
@@ -201,7 +203,7 @@ class RenderWindow(
         }
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Registering window callbacks (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Registering callbacks (${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
             renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
@@ -210,6 +212,7 @@ class RenderWindow(
         connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
             renderingState = it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING)
         })
+        profile.animations::sprites.listen(this, true, profile = profile) { textureManager.staticTextures.animator.enabled = it }
 
 
         inputHandler.init()

@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_EAST
@@ -33,6 +33,12 @@ class SolidCullSectionPreparer(
     private val someFullBlock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
     private val tintColorCalculator = renderWindow.tintManager
     private val ambientLight = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
+    private var fastBedrock = false
+
+    init {
+        val profile = renderWindow.connection.profiles.rendering
+        profile.performance::fastBedrock.listen(this, true, profile) { this.fastBedrock = it }
+    }
 
     override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val random = Random(0L)
@@ -57,7 +63,7 @@ class SolidCullSectionPreparer(
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-            val efficientBedrock = y == 0 && isLowestSection && Minosoft.config.config.game.graphics.efficientBedrock
+            val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                     blockState = blocks.unsafeGet(x, y, z) ?: continue
@@ -69,7 +75,7 @@ class SolidCullSectionPreparer(
                     light[6] = sectionLight[y shl 8 or (z shl 4) or x]
 
                     if (y == 0) {
-                        if (efficientBedrock && blockState === bedrock) {
+                        if (fastBedrock && blockState === bedrock) {
                             neighbourBlocks[O_DOWN] = someFullBlock
                         } else {
                             neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
