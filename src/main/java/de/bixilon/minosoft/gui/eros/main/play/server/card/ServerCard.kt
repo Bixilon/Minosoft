@@ -76,14 +76,12 @@ class ServerCard(
 
     @Synchronized
     fun ping(): StatusConnection {
-        var ping = ping
-        if (ping == null) {
-            ping = StatusConnection(server.address)
-            this.ping = ping
-            serverListStatusInvoker?.let { ping.registerEvent(it) }
-            ping.ping()
-        }
+        this.ping?.let { return it }
 
+        val ping = StatusConnection(server.address)
+        serverListStatusInvoker?.let { ping.registerEvent(it) }
+        ping.ping()
+        this.ping = ping
         return ping
     }
 

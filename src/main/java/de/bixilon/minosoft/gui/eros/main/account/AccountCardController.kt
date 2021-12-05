@@ -16,14 +16,14 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.TranslatableComponents
-import de.bixilon.minosoft.gui.eros.card.AbstractCard
+import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
-class AccountCardController : AbstractCard<Account>() {
+class AccountCardController : AbstractCardController<Account>() {
     @FXML private lateinit var connectionCountFX: TextFlow
     @FXML private lateinit var stateFX: TextFlow
     @FXML private lateinit var accountNameFX: TextFlow

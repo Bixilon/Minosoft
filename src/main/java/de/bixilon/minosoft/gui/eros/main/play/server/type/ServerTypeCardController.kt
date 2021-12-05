@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.type
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.eros.card.AbstractCard
+import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -24,7 +24,7 @@ import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 
-class ServerTypeCardController : AbstractCard<ServerType>() {
+class ServerTypeCardController : AbstractCardController<ServerType>() {
     @FXML private lateinit var iconFX: FontIcon
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var textFX: TextFlow

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.gui.eros.card.AbstractCard
+import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -24,7 +24,7 @@ import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 
-class AccountTypeCardController : AbstractCard<ErosAccountType<*>>() {
+class AccountTypeCardController : AbstractCardController<ErosAccountType<*>>() {
     @FXML private lateinit var iconFX: FontIcon
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var textFX: TextFlow

@@ -37,6 +37,7 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnecti
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.decide
@@ -73,9 +74,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     override fun init() {
         val erosProfile = ErosProfileManager.selected
         val serverConfig = erosProfile.server.list
-        serverConfig::hideOffline.profileWatchFX(this, true) { hideOfflineFX.isSelected = it }
-        serverConfig::hideFull.profileWatchFX(this, true) { hideFullFX.isSelected = it }
-        serverConfig::hideEmpty.profileWatchFX(this, true) { hideEmptyFX.isSelected = it }
+        serverConfig::hideOffline.profileWatchFX(this, true) { hideOfflineFX.isSelected = it;refreshList() }
+        serverConfig::hideFull.profileWatchFX(this, true) { hideFullFX.isSelected = it;refreshList() }
+        serverConfig::hideEmpty.profileWatchFX(this, true) { hideEmptyFX.isSelected = it;refreshList() }
 
         hideOfflineFX.setOnAction { ErosProfileManager.selected.server.list.hideOffline = hideOfflineFX.isSelected }
         hideFullFX.setOnAction { ErosProfileManager.selected.server.list.hideFull = hideFullFX.isSelected }
@@ -85,12 +86,13 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         val accountProfile = erosProfile.general.accountProfile
         serverListViewFX.setCellFactory {
             val controller = ServerCardController.build()
+            controller.serverList = this
 
             controller.root.setOnMouseClicked {
                 if (it.clickCount != 2) {
                     return@setOnMouseClicked
                 }
-                val card = controller.lastServerCard ?: return@setOnMouseClicked
+                val card = controller.serverCard ?: return@setOnMouseClicked
                 if (!card.canConnect(accountProfile.selected ?: return@setOnMouseClicked)) {
                     return@setOnMouseClicked
                 }
@@ -168,6 +170,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun refreshList() {
+        if (!this::serverType.isInitialized) {
+            return
+        }
         val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
@@ -183,29 +188,15 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     private fun updateServer(server: Server) {
-        val card = ServerCard.CARDS[server] ?: let {
-            val card = ServerCard(server)
-            card.serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
-            card
+        val card = ServerCard.CARDS[server] ?: ServerCard(server).apply {
+            serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
         }
         val wasSelected = serverListViewFX.selectionModel.selectedItem === card
         // Platform.runLater {serverListViewFX.items.remove(card)}
 
         card.ping?.let {
-            if (hideOfflineFX.isSelected && it.error != null) {
+            if (it.hide) {
                 return
-            }
-
-            it.lastServerStatus?.let { status ->
-                val usedSlots = status.usedSlots ?: 0
-                val slots = status.slots ?: 0
-                if (hideFullFX.isSelected && usedSlots >= slots && slots > 0) {
-                    return
-                }
-
-                if (hideEmptyFX.isSelected && usedSlots == 0 && slots > 0) {
-                    return
-                }
             }
         }
 
@@ -228,8 +219,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         }
         val serverType = serverType
         val account = ErosProfileManager.selected.general.accountProfile
-
-        val ping = serverCard.ping
 
         val pane = GridPane()
 
@@ -318,6 +307,36 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
 
         serverInfoFX.children.setAll(pane)
+    }
+
+    val StatusConnection.hide: Boolean
+        get() {
+            if (hideOfflineFX.isSelected && error != null) {
+                return true
+            }
+
+            lastServerStatus?.let { status ->
+                val usedSlots = status.usedSlots ?: 0
+                val slots = status.slots ?: 0
+                if (hideFullFX.isSelected && usedSlots >= slots && slots > 0) {
+                    return true
+                }
+
+                if (hideEmptyFX.isSelected && usedSlots == 0 && slots > 0) {
+                    return true
+                }
+            }
+            return false
+        }
+
+    fun onPingUpdate(card: ServerCard) {
+        val ping = card.ping ?: return
+        if (ping.hide) {
+            if (serverListViewFX.selectionModel.selectedItem == card) {
+                serverListViewFX.selectionModel.select(null)
+            }
+            serverListViewFX.items.remove(card)
+        }
     }
 
     @FXML

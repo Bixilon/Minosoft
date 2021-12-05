@@ -144,10 +144,10 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 setOnAction {
                     SimpleErosConfirmationDialog(
                         onConfirm = {
-                            profile.entries -= account.id
                             if (profile.selected == account) {
                                 profile.selected = null
                             }
+                            profile.entries -= account.id
                             JavaFXUtil.runLater { refreshList() }
                         }
                     ).show()

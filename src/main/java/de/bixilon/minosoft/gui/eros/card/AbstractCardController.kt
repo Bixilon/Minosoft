@@ -20,7 +20,7 @@ import javafx.scene.layout.HBox
 import java.net.URL
 import java.util.*
 
-abstract class AbstractCard<T> : ListCell<T>(), Initializable {
+abstract class AbstractCardController<T> : ListCell<T>(), Initializable {
     @FXML lateinit var root: HBox
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
