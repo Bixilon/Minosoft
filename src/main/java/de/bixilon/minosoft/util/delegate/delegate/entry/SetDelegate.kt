@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.util.delegate.delegate.entry
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.util.delegate.DelegateManager
 import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import de.bixilon.minosoft.util.logging.Log
@@ -22,7 +23,9 @@ open class SetDelegate<V>(
         value.addListener(SetChangeListener {
             verify?.invoke(it)
 
-            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed set entry $it" }
+            if (StaticConfiguration.LOG_DELEGATE) {
+                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Changed set entry $it" }
+            }
             DelegateManager.onChange(thisRef, property.identifier, null, it)
         })
     }

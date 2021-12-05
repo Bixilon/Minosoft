@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.config.profile.delegate.delegate.entry
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
 import de.bixilon.minosoft.util.logging.Log
@@ -29,8 +30,9 @@ open class ListDelegateProfile<V>(
             if (!this.profileInitialized || profile.initializing) {
                 return@ListChangeListener
             }
-
-            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed list entry $it in profile $profileName" }
+            if (StaticConfiguration.LOG_DELEGATE) {
+                Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed list entry $it in profile $profileName" }
+            }
             profileManager.profiles[profileName]?.saved = false
 
             ProfilesDelegateManager.onChange(profile, property.javaField ?: return@ListChangeListener, null, it)

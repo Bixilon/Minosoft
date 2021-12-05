@@ -97,9 +97,9 @@ object Minosoft {
         })
 
         taskWorker += Task(identifier = StartupTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = {
-            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Starting file watcher service..." }
+            Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
             FileWatcherService.start()
-            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "File watcher service started!" }
+            Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "File watcher service started!" }
         })
 
 

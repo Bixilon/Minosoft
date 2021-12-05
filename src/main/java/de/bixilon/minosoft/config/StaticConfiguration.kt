@@ -19,4 +19,6 @@ object StaticConfiguration {
     const val DEBUG_SLOW_LOADING = false // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)
     const val SHOW_LOG_MESSAGES_IN_CHAT = false // prints all console messages in the chat box
     const val REPLACE_SYSTEM_OUT_STREAMS = true // Replace System.out and System.err with the custom Log system ones
+
+    const val LOG_DELEGATE = false
 }

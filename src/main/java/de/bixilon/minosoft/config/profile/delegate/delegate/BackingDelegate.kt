@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.config.profile.delegate.delegate
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -36,7 +37,9 @@ abstract class BackingDelegate<V>(
             return set(value)
         }
 
-        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${get()} to $value" }
+        if (StaticConfiguration.LOG_DELEGATE) {
+            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${get()} to $value" }
+        }
         if (!profile.reloading) {
             profileManager.profiles[profileName]?.saved = false
         }

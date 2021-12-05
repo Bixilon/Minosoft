@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.config.profile.delegate.delegate.entry
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
 import de.bixilon.minosoft.util.logging.Log
@@ -33,7 +34,9 @@ open class MapDelegateProfile<K, V>(
             }
 
 
-            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed map entry $it in profile $profileName" }
+            if (StaticConfiguration.LOG_DELEGATE) {
+                Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed map entry $it in profile $profileName" }
+            }
             profileManager.profiles[profileName]?.saved = false
 
             ProfilesDelegateManager.onChange(profile, property.javaField ?: return@MapChangeListener, null, it)
