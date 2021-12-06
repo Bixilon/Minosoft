@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchFX
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -66,8 +65,7 @@ class UpdateServerDialog(
 
     private var profileSelectDialog: ProfileSelectDialog? = null
 
-    private var profiles = server?.profiles ?: mutableMapOf(AudioProfileManager.namespace to "Default") // ToDo
-
+    private var profiles = server?.profiles ?: mutableMapOf()
 
     fun show() {
         JavaFXUtil.runLater {

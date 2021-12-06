@@ -287,16 +287,17 @@
 
 .table-view {
     -fx-background-color: -secondary-color;
+    -fx-border-width: 1px;
+    -fx-border-color: -secondary-light-color;
 }
 
-.table-view .table-column {
+.table-view .column-header {
     -fx-background-color: -secondary-light-color;
 }
 
-.table-view .placeholder {
+.table-view .column-header .filler,
+.table-view .column-header-background .filler {
     -fx-background-color: -secondary-color;
-    -fx-border-width: 1px;
-    -fx-border-color: -secondary-light-color;
 }
 
 .table-row-cell {
@@ -317,5 +318,9 @@
 }
 
 .table-row-cell:empty {
+    -fx-background-color: -secondary-color;
+}
+
+.table-row-cell:empty:selected {
     -fx-background-color: -secondary-color;
 }

@@ -178,6 +178,7 @@ class ProfileSelectDialog(
                     tableView.refresh()
                 }
             }
+            styleClass.add("table-row-cell")
         }
 
         override fun startEdit() {
@@ -201,7 +202,6 @@ class ProfileSelectDialog(
 
         override fun update(entry: ProfileEntry) = updateItem(entry.resourceLocation)
 
-
         override fun updateItem(item: ResourceLocation?) {
             label.ctext = item?.toString() ?: CLICK_ME_TO_ADD
             tableRow.item.resourceLocation = item
@@ -223,6 +223,7 @@ class ProfileSelectDialog(
                     comboBox.selectionModel.select(SelectSpecialOptions.NONE)
                 }
             }
+            styleClass.add("table-row-cell")
         }
 
         override fun startEdit() {
@@ -262,7 +263,7 @@ class ProfileSelectDialog(
 
 
     private enum class SelectSpecialOptions(override val translationKey: ResourceLocation?) : Translatable {
-        NONE("".toResourceLocation()),
+        NONE("minosoft:general.dialog.profile.select.none".toResourceLocation()),
         CREATE("minosoft:general.dialog.profile.select.add".toResourceLocation()),
         ;
     }

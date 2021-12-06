@@ -25,8 +25,8 @@
 
         <TableView fx:id="profilesFX" editable="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
             <columns>
-                <TableColumn fx:id="typeColumnFX" minWidth="220.0" prefWidth="220.0" reorderable="false" text="Type"/>
-                <TableColumn fx:id="profileColumnFX" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" reorderable="false" text="Profile"/>
+                <TableColumn fx:id="typeColumnFX" minWidth="220.0" prefWidth="220.0" sortable="false" reorderable="false" text="Type"/>
+                <TableColumn fx:id="profileColumnFX" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" sortable="false" reorderable="false" text="Profile"/>
             </columns>
             <GridPane.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

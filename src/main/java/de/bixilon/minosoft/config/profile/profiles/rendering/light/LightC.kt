@@ -22,5 +22,5 @@ class LightC {
      * In original minecraft this setting is called brightness
      * Must be non-negative and may not exceed 1
      */
-    var gamma by delegate(0.0f) { check(it in 0.0f..1.0f) { "Gamma must be non negative and < 1" } }
+    var gamma by delegate(0.0f) { check(it in 0.0f..1.0f) { "Gamma must be non-negative and <= 1" } }
 }
