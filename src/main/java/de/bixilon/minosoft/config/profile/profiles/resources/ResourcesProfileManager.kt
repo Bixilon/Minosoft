@@ -25,9 +25,9 @@ object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
             GlobalEventMaster.fireEvent(ResourcesProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): ResourcesProfile {
+    override fun createProfile(name: String, description: String?): ResourcesProfile {
         currentLoadingPath = name
-        val profile = ResourcesProfile("Default resources profile")
+        val profile = ResourcesProfile(description ?: "Default resources profile")
         currentLoadingPath = null
         profiles[name] = profile
 

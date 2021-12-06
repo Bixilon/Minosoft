@@ -88,6 +88,8 @@ class MojangAddController(
         stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
             if (it.code == KeyCode.ENTER) {
                 login()
+            } else if (it.code == KeyCode.ESCAPE) {
+                cancel()
             }
         }
     }

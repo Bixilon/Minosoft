@@ -25,9 +25,9 @@ object EntityProfileManager : ProfileManager<EntityProfile> {
             GlobalEventMaster.fireEvent(EntityProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): EntityProfile {
+    override fun createProfile(name: String, description: String?): EntityProfile {
         currentLoadingPath = name
-        val profile = EntityProfile("Default entity profile")
+        val profile = EntityProfile(description ?: "Default entity profile")
         currentLoadingPath = null
         profiles[name] = profile
 

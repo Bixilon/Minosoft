@@ -25,9 +25,9 @@ object BlockProfileManager : ProfileManager<BlockProfile> {
             GlobalEventMaster.fireEvent(BlockProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): BlockProfile {
+    override fun createProfile(name: String, description: String?): BlockProfile {
         currentLoadingPath = name
-        val profile = BlockProfile("Default block profile")
+        val profile = BlockProfile(description ?: "Default block profile")
         currentLoadingPath = null
         profiles[name] = profile
 

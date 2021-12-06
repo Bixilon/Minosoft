@@ -61,7 +61,7 @@ interface ProfileManager<T : Profile> {
     fun load(name: String, data: MutableMap<String, Any?>?): T {
         currentLoadingPath = name
         val profile = if (data == null) {
-            return createDefaultProfile(name)
+            return createProfile(name)
         } else {
             Jackson.MAPPER.convertValue(data, profileClass)
         }
@@ -96,23 +96,24 @@ interface ProfileManager<T : Profile> {
     }
 
     fun selectDefault() {
-        selected = profiles[DEFAULT_PROFILE_NAME] ?: createDefaultProfile()
+        selected = profiles[DEFAULT_PROFILE_NAME] ?: createProfile()
     }
 
-    fun createDefaultProfile(name: String = DEFAULT_PROFILE_NAME): T
+    fun createProfile(name: String = DEFAULT_PROFILE_NAME, description: String? = null): T
 
     fun initDefaultProfile(): T {
         profiles[DEFAULT_PROFILE_NAME]?.let { return it }
-        val profile = createDefaultProfile()
-        add(profile)
+        val profile = createProfile()
+        saveAndWatch(profile)
         this.selected = profile
         return profile
     }
 
-    fun add(profile: T) {
+    fun saveAndWatch(profile: T) {
         save(profile)
+        val name = getName(profile)
         if (RunConfiguration.PROFILES_HOT_RELOADING) {
-            watchProfile(DEFAULT_PROFILE_NAME, File(DEFAULT_PROFILE_NAME))
+            watchProfile(name)
         }
     }
 
@@ -214,7 +215,7 @@ interface ProfileManager<T : Profile> {
         return Pair(saveFile, json)
     }
 
-    fun watchProfile(profileName: String, path: File) {
+    fun watchProfile(profileName: String, path: File = File(getPath(profileName))) {
         FileWatcherService.register(FileWatcher(path.toPath(), arrayOf(StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE)) { _, it ->
             val profile = profiles[profileName] ?: return@FileWatcher
             if (profile.ignoreNextReload) {
@@ -238,5 +239,7 @@ interface ProfileManager<T : Profile> {
 
     companion object {
         const val DEFAULT_PROFILE_NAME = "Default"
+
+        val PROFILE_REGEX = "(\\w| |\\d|_){1,32}".toRegex()
     }
 }

@@ -25,9 +25,9 @@ object HUDProfileManager : ProfileManager<HUDProfile> {
             GlobalEventMaster.fireEvent(HUDProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): HUDProfile {
+    override fun createProfile(name: String, description: String?): HUDProfile {
         currentLoadingPath = name
-        val profile = HUDProfile("Default hud profile")
+        val profile = HUDProfile(description ?: "Default hud profile")
         currentLoadingPath = null
         profiles[name] = profile
 

@@ -25,9 +25,9 @@ object RenderingProfileManager : ProfileManager<RenderingProfile> {
             GlobalEventMaster.fireEvent(RenderingProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): RenderingProfile {
+    override fun createProfile(name: String, description: String?): RenderingProfile {
         currentLoadingPath = name
-        val profile = RenderingProfile("Default rendering profile")
+        val profile = RenderingProfile(description ?: "Default rendering profile")
         currentLoadingPath = null
         profiles[name] = profile
 

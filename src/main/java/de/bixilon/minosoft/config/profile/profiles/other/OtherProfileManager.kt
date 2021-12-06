@@ -25,9 +25,9 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
             GlobalEventMaster.fireEvent(OtherProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): OtherProfile {
+    override fun createProfile(name: String, description: String?): OtherProfile {
         currentLoadingPath = name
-        val profile = OtherProfile("Default profile for various things")
+        val profile = OtherProfile(description ?: "Default profile for various things")
         currentLoadingPath = null
         profiles[name] = profile
 

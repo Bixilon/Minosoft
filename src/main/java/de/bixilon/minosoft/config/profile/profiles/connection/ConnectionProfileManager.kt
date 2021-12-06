@@ -25,9 +25,9 @@ object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
             GlobalEventMaster.fireEvent(ConnectionProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): ConnectionProfile {
+    override fun createProfile(name: String, description: String?): ConnectionProfile {
         currentLoadingPath = name
-        val profile = ConnectionProfile("Default connection profile")
+        val profile = ConnectionProfile(description ?: "Default connection profile")
         currentLoadingPath = null
         profiles[name] = profile
 

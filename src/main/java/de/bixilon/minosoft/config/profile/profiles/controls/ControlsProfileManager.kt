@@ -25,9 +25,9 @@ object ControlsProfileManager : ProfileManager<ControlsProfile> {
             GlobalEventMaster.fireEvent(ControlsProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): ControlsProfile {
+    override fun createProfile(name: String, description: String?): ControlsProfile {
         currentLoadingPath = name
-        val profile = ControlsProfile("Default controls profile")
+        val profile = ControlsProfile(description ?: "Default controls profile")
         currentLoadingPath = null
         profiles[name] = profile
 

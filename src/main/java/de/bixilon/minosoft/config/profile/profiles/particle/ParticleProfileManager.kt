@@ -25,9 +25,9 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
             GlobalEventMaster.fireEvent(ParticleProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): ParticleProfile {
+    override fun createProfile(name: String, description: String?): ParticleProfile {
         currentLoadingPath = name
-        val profile = ParticleProfile("Default particle profile")
+        val profile = ParticleProfile(description ?: "Default particle profile")
         currentLoadingPath = null
         profiles[name] = profile
 

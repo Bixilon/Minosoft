@@ -36,9 +36,9 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
             GlobalEventMaster.fireEvent(ErosProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): ErosProfile {
+    override fun createProfile(name: String, description: String?): ErosProfile {
         currentLoadingPath = name
-        val profile = ErosProfile("Default eros profile")
+        val profile = ErosProfile(description ?: "Default eros profile")
         currentLoadingPath = null
         profiles[name] = profile
 

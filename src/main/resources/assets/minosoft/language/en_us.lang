@@ -118,3 +118,28 @@ minosoft:x_start_on_first_thread_warning.description=It looks like you are using
 minosoft:x_start_on_first_thread_warning.eros_running.title=Eros is running
 minosoft:x_start_on_first_thread_warning.eros_running.header=Eros is running
 minosoft:x_start_on_first_thread_warning.eros_running.description=It looks like eros is running and you plan to use rendering. This is (on MacOS) currently not possible. You have to set §7-XstartOnFirstThread §ras jvm argument and use the §7auto-connect §rcommand line option to connect to a server. Sorry for this. If you don't know how or just think that this is shit. take a look at https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
+
+
+minosoft:general.dialog.profile.select.title=Select profiles
+minosoft:general.dialog.profile.select.header=Select profiles
+
+minosoft:general.dialog.profile.select.column.type=Type
+minosoft:general.dialog.profile.select.column.profile=Profile
+
+minosoft:general.dialog.profile.select.cancel_button=Cancel
+minosoft:general.dialog.profile.select.confirm_button=Confirm
+
+minosoft:general.dialog.profile.select.click_me_to_add=Double click to add
+minosoft:general.dialog.profile.select.none=<None>
+minosoft:general.dialog.profile.select.add=<Add>
+
+minosoft:general.dialog.profile.create.title=Add profile
+minosoft:general.dialog.profile.create.header=Add profile
+minosoft:general.dialog.profile.create.description=Enter the details to add the profile
+minosoft:general.dialog.profile.create.type.label=Profile type
+minosoft:general.dialog.profile.create.name.label=Name
+minosoft:general.dialog.profile.create.name.placeholder=Super cool profile
+minosoft:general.dialog.profile.create.description.label=Description
+minosoft:general.dialog.profile.create.description.placeholder=This is my super cool new profile
+minosoft:general.dialog.profile.create.add_button=Add
+minosoft:general.dialog.profile.create.cancel_button=Cancel

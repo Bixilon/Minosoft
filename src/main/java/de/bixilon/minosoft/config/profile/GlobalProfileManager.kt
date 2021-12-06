@@ -143,5 +143,5 @@ object GlobalProfileManager {
         }
     }
 
-    operator fun get(resourceLocation: ResourceLocation): ProfileManager<out Profile>? = DEFAULT_MANAGERS[resourceLocation]
+    operator fun get(resourceLocation: ResourceLocation?): ProfileManager<out Profile>? = DEFAULT_MANAGERS[resourceLocation]
 }

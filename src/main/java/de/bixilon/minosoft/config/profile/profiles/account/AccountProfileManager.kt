@@ -25,9 +25,9 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
             GlobalEventMaster.fireEvent(AccountProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): AccountProfile {
+    override fun createProfile(name: String, description: String?): AccountProfile {
         currentLoadingPath = name
-        val profile = AccountProfile("Default account profile")
+        val profile = AccountProfile(description ?: "Default account profile")
         currentLoadingPath = null
         profiles[name] = profile
 

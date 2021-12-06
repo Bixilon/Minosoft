@@ -74,6 +74,8 @@ class OfflineAddController(
         stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
             if (it.code == KeyCode.ENTER) {
                 add()
+            } else if (it.code == KeyCode.ESCAPE) {
+                cancel()
             }
         }
     }

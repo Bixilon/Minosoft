@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.versions.VersionTypes
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
+import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileSelectDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder

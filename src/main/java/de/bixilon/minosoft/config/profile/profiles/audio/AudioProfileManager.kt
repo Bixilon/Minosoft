@@ -25,9 +25,9 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
             GlobalEventMaster.fireEvent(AudioProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): AudioProfile {
+    override fun createProfile(name: String, description: String?): AudioProfile {
         currentLoadingPath = name
-        val profile = AudioProfile("Default audio profile")
+        val profile = AudioProfile(description ?: "Default audio profile")
         currentLoadingPath = null
         profiles[name] = profile
 

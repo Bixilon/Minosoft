@@ -11,21 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.dialog
+package de.bixilon.minosoft.gui.eros.dialog.profiles
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
+import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
+
 
 class ProfileSelectDialog(
     profiles: MutableMap<ResourceLocation, String>,
@@ -37,9 +43,8 @@ class ProfileSelectDialog(
 
     @FXML private lateinit var profilesFX: TableView<ProfileEntry>
     @FXML private lateinit var typeColumnFX: TableColumn<ProfileEntry, ResourceLocation>
-    @FXML private lateinit var valueColumnFX: TableColumn<ProfileEntry, String>
+    @FXML private lateinit var profileColumnFX: TableColumn<ProfileEntry, Any?>
 
-    @FXML private lateinit var createProfileButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
     @FXML private lateinit var confirmButtonFX: Button
 
@@ -53,8 +58,14 @@ class ProfileSelectDialog(
     override fun init() {
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(HEADER)
 
+        typeColumnFX.ctext = TYPE_COLUMN_TITLE
+        profileColumnFX.ctext = PROFILE_COLUMN_TITLE
+
         typeColumnFX.setCellFactory { ResourceLocationCell() }
-        valueColumnFX.setCellFactory { ProfileCell() }
+        profileColumnFX.setCellFactory { ProfileCell() }
+
+        cancelButtonFX.ctext = CANCEL
+        confirmButtonFX.ctext = CONFIRM
 
         for ((type, profile) in profiles) {
             profilesFX.items += ProfileEntry(type, profile)
@@ -75,15 +86,11 @@ class ProfileSelectDialog(
     }
 
     @FXML
-    fun newProfile() {
-    }
-
-    @FXML
     fun confirm() {
         stage.close()
         val profiles: MutableMap<ResourceLocation, String> = mutableMapOf()
         for ((resourceLocation, profile) in this.profilesFX.items) {
-            if (profile.isBlank()) {
+            if (profile !is String) {
                 continue
             }
             profiles[resourceLocation ?: continue] = profile
@@ -99,14 +106,22 @@ class ProfileSelectDialog(
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/profile_select.fxml".toResourceLocation()
-        private val TITLE = "minosoft:general.dialog.profile_select.title".toResourceLocation()
-        private val HEADER = "minosoft:general.dialog.profile_select.header".toResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/profiles/select.fxml".toResourceLocation()
+        private val TITLE = "minosoft:general.dialog.profile.select.title".toResourceLocation()
+        private val HEADER = "minosoft:general.dialog.profile.select.header".toResourceLocation()
+
+        private val TYPE_COLUMN_TITLE = "minosoft:general.dialog.profile.select.column.type".toResourceLocation()
+        private val PROFILE_COLUMN_TITLE = "minosoft:general.dialog.profile.select.column.profile".toResourceLocation()
+
+        private val CANCEL = "minosoft:general.dialog.profile.select.cancel_button".toResourceLocation()
+        private val CONFIRM = "minosoft:general.dialog.profile.select.confirm_button".toResourceLocation()
+
+        private val CLICK_ME_TO_ADD = "minosoft:general.dialog.profile.select.click_me_to_add".toResourceLocation()
     }
 
     private data class ProfileEntry(
         var resourceLocation: ResourceLocation?,
-        var profile: String = "",
+        var profile: String?,
     )
 
     private abstract inner class EditTableCell<T> : TableCell<ProfileEntry, T>() {
@@ -115,6 +130,8 @@ class ProfileSelectDialog(
 
         init {
             graphic = label
+
+            comboBox.maxWidth = Double.MAX_VALUE
             selectedProperty().addListener { _, _, _ -> cancelEdit() }
             comboBox.selectionModel.selectedItemProperty().addListener { _, _, selected ->
                 commitEdit(selected)
@@ -153,9 +170,10 @@ class ProfileSelectDialog(
     }
 
     private inner class ResourceLocationCell : EditTableCell<ResourceLocation?>() {
+
         init {
             comboBox.selectionModel.selectedItemProperty().addListener { _, previous, selected ->
-                if (previous == null && selected != null) {
+                if (previous == null && selected != null && this.index == tableView.items.size - 1) {
                     tableView.items += ProfileEntry(null, "")
                     tableView.refresh()
                 }
@@ -163,7 +181,7 @@ class ProfileSelectDialog(
         }
 
         override fun startEdit() {
-            val thisNamespace = tableRow.item.resourceLocation
+            val thisNamespace: ResourceLocation? = tableRow.item.resourceLocation
             if (comboBox.items.isEmpty()) {
                 val alreadyDisplayed: MutableSet<ResourceLocation?> = mutableSetOf()
                 for (entry in tableView.items) {
@@ -185,44 +203,67 @@ class ProfileSelectDialog(
 
 
         override fun updateItem(item: ResourceLocation?) {
-            label.text = item?.toString() ?: "Double click to select"
+            label.ctext = item?.toString() ?: CLICK_ME_TO_ADD
             tableRow.item.resourceLocation = item
         }
     }
 
-    private inner class ProfileCell : EditTableCell<String>() {
+    private inner class ProfileCell : EditTableCell<Any?>() {
+
+        init {
+            // forbid selection of "CREATE"
+            comboBox.selectionModel.selectedItemProperty().addListener { _, _, next ->
+                if (next == SelectSpecialOptions.CREATE) {
+                    val profileManager: ProfileManager<Profile> = (GlobalProfileManager[this.tableRow.item.resourceLocation] ?: return@addListener).unsafeCast()
+                    ProfileCreateDialog(profileManager, true) {
+                        val name = profileManager.getName(it)
+                        comboBox.items.add(name)
+                        comboBox.selectionModel.select(name)
+                    }.show()
+                    comboBox.selectionModel.select(SelectSpecialOptions.NONE)
+                }
+            }
+        }
 
         override fun startEdit() {
             comboBox.items.clear()
             comboBox.setCellFactory {
-                object : ListCell<String>() {
-                    override fun updateItem(item: String?, empty: Boolean) {
+                object : ListCell<Any?>() {
+                    override fun updateItem(item: Any?, empty: Boolean) {
                         super.updateItem(item, empty)
-                        text = if (item?.isBlank() == true && !empty) {
-                            "<None>"
-                        } else {
-                            item.toString()
+                        if (empty) {
+                            return
                         }
+                        ctext = item
                     }
                 }
             }
-            comboBox.items += ""
+            comboBox.items += SelectSpecialOptions.NONE
+            comboBox.items += SelectSpecialOptions.CREATE
+
             GlobalProfileManager[tableRow.item.resourceLocation ?: return]?.let {
-                comboBox.items += it.profiles.keys
+                for (profile in it.profiles.keys) {
+                    comboBox.items += profile
+                }
             }
-            comboBox.selectionModel.select(this.tableRow.item.profile)
+            comboBox.selectionModel.select(this.tableRow.item.profile ?: SelectSpecialOptions.NONE)
             super.startEdit()
         }
 
         override fun update(entry: ProfileEntry) = updateItem(entry.profile)
 
-        override fun updateItem(item: String) {
-            if (item.isBlank()) {
-                label.text = "<None>"
-            } else {
-                label.text = item
+        override fun updateItem(item: Any?) {
+            label.ctext = item
+            if (item is String) {
+                tableRow.item.profile = item
             }
-            tableRow.item.profile = item
         }
+    }
+
+
+    private enum class SelectSpecialOptions(override val translationKey: ResourceLocation?) : Translatable {
+        NONE("".toResourceLocation()),
+        CREATE("minosoft:general.dialog.profile.select.add".toResourceLocation()),
+        ;
     }
 }
