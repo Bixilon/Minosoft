@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialog.UpdateServerDialog" -->
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialog.UpdateServerDialog" -->
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS"/>
@@ -29,8 +29,10 @@
                 <RowConstraints valignment="CENTER" vgrow="NEVER"/>
                 <RowConstraints valignment="CENTER" vgrow="NEVER"/>
                 <RowConstraints valignment="CENTER" vgrow="NEVER"/>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER"/>
+                <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="ALWAYS"/>
             </rowConstraints>
+
             <TextFlow fx:id="serverNameLabelFX">
                 <GridPane.margin>
                     <Insets left="5.0" right="30.0" top="15.0"/>
@@ -42,6 +44,7 @@
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </TextField>
+
             <TextFlow fx:id="serverAddressLabelFX" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets left="5.0" right="30.0" top="15.0"/>
@@ -53,6 +56,7 @@
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </TextField>
+
             <TextFlow fx:id="forcedVersionLabelFX" GridPane.rowIndex="2">
                 <GridPane.margin>
                     <Insets left="5.0" right="30.0" top="15.0"/>
@@ -92,6 +96,18 @@
                     </CheckBox>
                 </GridPane>
             </GridPane>
+
+            <TextFlow fx:id="profilesLabelFX" GridPane.rowIndex="3">
+                <GridPane.margin>
+                    <Insets left="5.0" right="30.0" top="15.0"/>
+                </GridPane.margin>
+                <Text text="Profiles"/>
+            </TextFlow>
+            <Button fx:id="openProfileSelectDialogButtonFX" onAction="#openProfileSelectDialog" maxWidth="Infinity" text="Open profile select dialog" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
         </GridPane>
         <GridPane GridPane.rowIndex="2">
             <columnConstraints>
@@ -103,7 +119,7 @@
                 <RowConstraints/>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <Button fx:id="updateServerButtonFX" disable="true" onAction="#update" text="Update server" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Button fx:id="updateServerButtonFX" defaultButton="true" disable="true" onAction="#update" text="Update server" GridPane.columnIndex="2" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets bottom="10.0" left="5.0" right="10.0" top="5.0"/>
                 </GridPane.margin>

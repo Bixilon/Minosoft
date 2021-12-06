@@ -44,6 +44,8 @@ minosoft:update_server.forced_version.label=Forced version
 minosoft:update_server.forced_version.automatic=Auto detect
 minosoft:update_server.forced_version.releases=Releases
 minosoft:update_server.forced_version.snapshots=Snapshots
+minosoft:update_server.profiles.label=Profiles
+minosoft:update_server.profiles.open_select_dialog=Open profile selector
 
 minosoft:update_server.add.title=Add server - Minosoft
 minosoft:update_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server

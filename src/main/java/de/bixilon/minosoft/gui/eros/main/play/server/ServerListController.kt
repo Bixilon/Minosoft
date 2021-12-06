@@ -263,9 +263,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 it.add(Button("Edit").apply {
                     setOnAction {
                         val server = serverCard.server
-                        UpdateServerDialog(server = server, onUpdate = { name, address, forcedVersion ->
+                        UpdateServerDialog(server = server, onUpdate = { name, address, forcedVersion, profiles ->
                             server.name = ChatComponent.of(name)
                             server.forcedVersion = forcedVersion
+                            server.profiles = profiles.toMutableMap()
                             if (server.address != address) {
                                 serverCard.rawFavicon = null
 
@@ -344,8 +345,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun addServer() {
-        UpdateServerDialog(onUpdate = { name, address, forcedVersion ->
-            serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
+        UpdateServerDialog(onUpdate = { name, address, forcedVersion, profiles ->
+            serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap())
         }).show()
     }
 

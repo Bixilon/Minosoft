@@ -64,7 +64,7 @@
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <Button fx:id="ignoreButtonFX" mnemonicParsing="false" onAction="#ignore" text="Ignore" GridPane.columnIndex="1">
+            <Button fx:id="ignoreButtonFX" defaultButton="true" onAction="#ignore" text="Ignore" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>

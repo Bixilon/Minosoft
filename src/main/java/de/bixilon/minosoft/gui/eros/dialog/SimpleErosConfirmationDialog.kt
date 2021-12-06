@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -31,8 +32,8 @@ class SimpleErosConfirmationDialog(
     val title: Any = DEFAULT_TITLE_TEXT,
     val header: Any = DEFAULT_TITLE_TEXT,
     val description: Any? = null,
-    val cancelButtonText: Any = DEFAULT_CANCEL_TEXT,
-    val confirmButtonText: Any = DEFAULT_CONFIRM_TEXT,
+    val cancelButtonText: Any = TranslatableComponents.GENERAL_CANCEL,
+    val confirmButtonText: Any = TranslatableComponents.GENERAL_CONFIRM,
     val onCancel: () -> Unit = {},
     val onConfirm: () -> Unit,
     val modality: Modality = Modality.WINDOW_MODAL,
@@ -86,7 +87,5 @@ class SimpleErosConfirmationDialog(
     companion object {
         private val LAYOUT = "minosoft:eros/dialog/simple_confirmation.fxml".toResourceLocation()
         private val DEFAULT_TITLE_TEXT = "minosoft:general.dialog.are_you_sure".toResourceLocation()
-        private val DEFAULT_CANCEL_TEXT = "minosoft:general.cancel".toResourceLocation()
-        private val DEFAULT_CONFIRM_TEXT = "minosoft:general.confirm".toResourceLocation()
     }
 }

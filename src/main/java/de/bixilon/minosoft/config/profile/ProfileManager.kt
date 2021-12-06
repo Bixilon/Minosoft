@@ -36,6 +36,8 @@ interface ProfileManager<T : Profile> {
     val latestVersion: Int
     val saveLock: ReentrantLock
     val profileClass: Class<T>
+    val profileSelectable: Boolean
+        get() = true
 
     val profiles: HashBiMap<String, T>
     var selected: T
@@ -99,10 +101,19 @@ interface ProfileManager<T : Profile> {
 
     fun createDefaultProfile(name: String = DEFAULT_PROFILE_NAME): T
 
-    fun initDefaultProfile() {
+    fun initDefaultProfile(): T {
+        profiles[DEFAULT_PROFILE_NAME]?.let { return it }
         val profile = createDefaultProfile()
+        add(profile)
         this.selected = profile
-        saveAsync(profile)
+        return profile
+    }
+
+    fun add(profile: T) {
+        save(profile)
+        if (RunConfiguration.PROFILES_HOT_RELOADING) {
+            watchProfile(DEFAULT_PROFILE_NAME, File(DEFAULT_PROFILE_NAME))
+        }
     }
 
 
@@ -150,12 +161,13 @@ interface ProfileManager<T : Profile> {
             throw IOException("${baseDirectory.path} is not an directory!")
         }
         val profileNames = baseDirectory.list { current, name -> File(current, name).isDirectory }?.toMutableSet() ?: throw IOException("Can not create a list of profiles in ${baseDirectory.path}")
-        if (selected == null || profileNames.isEmpty()) {
-            profileNames += DEFAULT_PROFILE_NAME
-        }
+
         for (profileName in profileNames) {
             val path = getPath(profileName, baseDirectory)
             val (saveFile, json) = readAndMigrate(path)
+            if (json == null) {
+                continue
+            }
             val profile: T
             try {
                 profile = load(profileName, json)
@@ -171,7 +183,7 @@ interface ProfileManager<T : Profile> {
             }
         }
 
-        profiles[selected]?.let { this.selected = it } ?: selectDefault()
+        profiles[selected]?.let { this.selected = it } ?: initDefaultProfile()
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
     }

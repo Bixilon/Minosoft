@@ -24,7 +24,6 @@ import java.net.http.HttpResponse
 
 object HTTP2 {
 
-
     fun Map<String, Any>.headers(): Array<String> {
         val headers: MutableList<String> = mutableListOf()
 

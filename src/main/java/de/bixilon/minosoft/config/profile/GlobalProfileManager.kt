@@ -29,29 +29,35 @@ import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import java.io.File
 
 object GlobalProfileManager {
-    val DEFAULT_MANAGERS: List<ProfileManager<out Profile>> = listOf(
-        ErosProfileManager,
-        ParticleProfileManager,
-        AudioProfileManager,
-        EntityProfileManager,
-        ResourcesProfileManager,
-        AccountProfileManager,
-        RenderingProfileManager,
-        BlockProfileManager,
-        ConnectionProfileManager,
-        HUDProfileManager,
-        ControlsProfileManager,
-        OtherProfileManager,
-    )
+    val DEFAULT_MANAGERS: Map<ResourceLocation, ProfileManager<out Profile>>
     private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
     val CLASS_MAPPING: Map<Class<out Profile>, ProfileManager<*>>
 
     init {
+        val map: MutableMap<ResourceLocation, ProfileManager<out Profile>> = mutableMapOf()
         val classMapping: MutableMap<Class<out Profile>, ProfileManager<*>> = mutableMapOf()
-        for (manager in DEFAULT_MANAGERS) {
+        val list = listOf(
+            ErosProfileManager,
+            ParticleProfileManager,
+            AudioProfileManager,
+            EntityProfileManager,
+            ResourcesProfileManager,
+            AccountProfileManager,
+            RenderingProfileManager,
+            BlockProfileManager,
+            ConnectionProfileManager,
+            HUDProfileManager,
+            ControlsProfileManager,
+            OtherProfileManager,
+        )
+
+        for (manager in list) {
+            map.put(manager.namespace, manager)?.let { throw IllegalStateException("Duplicate profile namespace: ${manager.namespace}") }
             classMapping[manager.profileClass] = manager
         }
-        CLASS_MAPPING = classMapping.toMap()
+
+        this.DEFAULT_MANAGERS = map.toMap()
+        this.CLASS_MAPPING = classMapping.toMap()
     }
 
     private var initialized = false
@@ -100,15 +106,15 @@ object GlobalProfileManager {
             throw IllegalStateException("Already initialized!")
         }
         loadSelectedProfiles()
-        for (manager in DEFAULT_MANAGERS) {
-            manager.load(selectedProfiles[manager.namespace])
+        for ((namespace, manager) in DEFAULT_MANAGERS) {
+            manager.load(selectedProfiles[namespace])
         }
         loading = false
         if (selectedProfilesChanges) {
             saveSelectedProfiles()
         }
         TimeWorker += TimeWorkerTask(1000) {
-            for (manager in DEFAULT_MANAGERS) {
+            for (manager in DEFAULT_MANAGERS.values) {
                 for (profile in manager.profiles.values) {
                     if (profile.saved) {
                         continue
@@ -136,4 +142,6 @@ object GlobalProfileManager {
             saveSelectedProfiles()
         }
     }
+
+    operator fun get(resourceLocation: ResourceLocation): ProfileManager<out Profile>? = DEFAULT_MANAGERS[resourceLocation]
 }

@@ -65,12 +65,12 @@
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <Button fx:id="confirmButtonFX" mnemonicParsing="false" onAction="#confirm" text="Confirm" GridPane.columnIndex="2">
+            <Button fx:id="confirmButtonFX" onAction="#confirm" text="Confirm" GridPane.columnIndex="2">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </Button>
-            <Button fx:id="cancelButtonFX" mnemonicParsing="false" onAction="#cancel" text="Cancel" GridPane.columnIndex="1">
+            <Button fx:id="cancelButtonFX" onAction="#cancel" text="Cancel" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>

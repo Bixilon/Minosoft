@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17">
+    <GridPane VBox.vgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+        <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+        </VBox.margin>
+
+        <TextFlow fx:id="headerFX" textAlignment="CENTER">
+            <Text text="Select your profiles"/>
+        </TextFlow>
+
+        <TableView fx:id="profilesFX" editable="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
+            <columns>
+                <TableColumn fx:id="typeColumnFX" minWidth="220.0" prefWidth="220.0" reorderable="false" text="Type"/>
+                <TableColumn fx:id="valueColumnFX" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" reorderable="false" text="Profile"/>
+            </columns>
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+
+        <GridPane GridPane.rowIndex="2">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER"/>
+            </rowConstraints>
+            <Button fx:id="newProfileButtonFX" disable="true" onAction="#newProfile" text="Create new profile" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </Button>
+            <Button fx:id="cancelButtonFX" cancelButton="true" onAction="#cancel" text="Cancel" GridPane.columnIndex="2">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </Button>
+            <Button fx:id="confirmButtonFX" defaultButton="true" onAction="#confirm" text="Confirm" GridPane.columnIndex="3">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </Button>
+        </GridPane>
+    </GridPane>
+</VBox>

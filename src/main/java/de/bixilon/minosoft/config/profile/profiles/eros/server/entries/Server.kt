@@ -28,6 +28,7 @@ class Server(
     address: String,
     name: ChatComponent = ChatComponent.of(address),
     forcedVersion: Version? = null,
+    profiles: MutableMap<ResourceLocation, String> = mutableMapOf(),
 ) {
     /**
      * Server-address as string. May contain the port
@@ -44,7 +45,7 @@ class Server(
      * Changing profiles requires reconnect
      * If profile is unset, defaults to eros global profiles
      */
-    var profiles: MutableMap<ResourceLocation, String> by mapDelegate()
+    var profiles: MutableMap<ResourceLocation, String> by mapDelegate(profiles)
 
     @get:JsonProperty("forced_version")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)

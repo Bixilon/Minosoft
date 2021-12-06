@@ -34,7 +34,9 @@ open class SetDelegateProfile<V>(
             if (StaticConfiguration.LOG_DELEGATE) {
                 Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed set entry $it in profile $profileName" }
             }
-            profileManager.profiles[profileName]?.saved = false
+            if (!profile.reloading) {
+                profileManager.profiles[profileName]?.saved = false
+            }
 
             ProfilesDelegateManager.onChange(profile, property.javaField ?: return@SetChangeListener, null, it)
         })
@@ -45,5 +47,8 @@ open class SetDelegateProfile<V>(
     override fun set(value: MutableSet<V>) {
         this.value = FXCollections.synchronizedObservableSet(FXCollections.observableSet(value))
         initListener()
+        if (!profile.reloading) {
+            profileManager.profiles[profileName]?.saved = false
+        }
     }
 }

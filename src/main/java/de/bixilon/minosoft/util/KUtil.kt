@@ -384,8 +384,8 @@ object KUtil {
     fun Any?.toLong(): Long {
         return when (this) {
             is Long -> this
-            is Number -> this.toLong()
             is Int -> this.toLong()
+            is Number -> this.toLong()
             else -> TODO()
         }
     }

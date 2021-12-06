@@ -33,7 +33,9 @@ open class ListDelegateProfile<V>(
             if (StaticConfiguration.LOG_DELEGATE) {
                 Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed list entry $it in profile $profileName" }
             }
-            profileManager.profiles[profileName]?.saved = false
+            if (!profile.reloading) {
+                profileManager.profiles[profileName]?.saved = false
+            }
 
             ProfilesDelegateManager.onChange(profile, property.javaField ?: return@ListChangeListener, null, it)
         })
@@ -44,5 +46,8 @@ open class ListDelegateProfile<V>(
     override fun set(value: MutableList<V>) {
         this.value = FXCollections.synchronizedObservableList(FXCollections.observableList(value))
         initListener()
+        if (!profile.reloading) {
+            profileManager.profiles[profileName]?.saved = false
+        }
     }
 }

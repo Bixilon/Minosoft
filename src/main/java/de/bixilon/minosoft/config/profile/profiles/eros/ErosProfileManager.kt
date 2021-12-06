@@ -22,6 +22,8 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
     override val profileClass = ErosProfile::class.java
+    override val profileSelectable: Boolean
+        get() = false
 
 
     override var currentLoadingPath: String? = null

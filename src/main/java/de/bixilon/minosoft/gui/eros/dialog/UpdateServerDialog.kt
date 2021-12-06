@@ -15,8 +15,10 @@ package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchFX
+import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.VersionTypes
 import de.bixilon.minosoft.data.registries.versions.Versions
@@ -41,7 +43,7 @@ import javafx.scene.text.TextFlow
  */
 class UpdateServerDialog(
     private val server: Server? = null,
-    val onUpdate: (name: String, address: String, forcedVersion: Version?) -> Unit,
+    val onUpdate: (name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>) -> Unit,
 ) : DialogController() {
     @FXML private lateinit var descriptionFX: TextFlow
     @FXML private lateinit var serverNameLabelFX: TextFlow
@@ -54,8 +56,16 @@ class UpdateServerDialog(
     @FXML private lateinit var showReleasesFX: CheckBox
     @FXML private lateinit var showSnapshotsFX: CheckBox
 
+    @FXML private lateinit var profilesLabelFX: TextFlow
+    @FXML private lateinit var openProfileSelectDialogButtonFX: Button
+
     @FXML private lateinit var updateServerButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
+
+
+    private var profileSelectDialog: ProfileSelectDialog? = null
+
+    private var profiles = server?.profiles ?: mutableMapOf(AudioProfileManager.namespace to "Default") // ToDo
 
 
     fun show() {
@@ -95,6 +105,8 @@ class UpdateServerDialog(
         serverAddressLabelFX.text = SERVER_ADDRESS_LABEL
         serverAddressFX.placeholder = SERVER_ADDRESS_PLACEHOLDER
         forcedVersionLabelFX.text = FORCED_VERSION_LABEL
+        profilesLabelFX.text = PROFILES_LABEL
+        openProfileSelectDialogButtonFX.ctext = PROFILES_OPEN_PROFILE_SELECT
 
         cancelButtonFX.ctext = TranslatableComponents.GENERAL_CANCEL
 
@@ -176,13 +188,30 @@ class UpdateServerDialog(
             return
         }
         val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC_VERSION).decide(null) { forcedVersionFX.selectionModel.selectedItem }
-        DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion) }
+        DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion, profiles) }
         stage.close()
     }
 
     @FXML
     fun cancel() {
         stage.close()
+    }
+
+    @FXML
+    fun openProfileSelectDialog() {
+        profileSelectDialog?.let { it.show(); return }
+        val dialog = ProfileSelectDialog(
+            profiles = profiles,
+            onConfirm = {
+                this.profiles = it.toMutableMap()
+                this.profileSelectDialog = null
+            },
+            onCancel = {
+                this.profileSelectDialog = null
+            },
+        )
+        this.profileSelectDialog = dialog
+        dialog.show()
     }
 
 
@@ -197,6 +226,8 @@ class UpdateServerDialog(
         private val VERSION_AUTOMATIC = "minosoft:update_server.forced_version.automatic".toResourceLocation()
         private val SHOW_RELEASES = "minosoft:update_server.forced_version.releases".toResourceLocation()
         private val SHOW_SNAPSHOTS = "minosoft:update_server.forced_version.snapshots".toResourceLocation()
+        private val PROFILES_LABEL = "minosoft:update_server.profiles.label".toResourceLocation()
+        private val PROFILES_OPEN_PROFILE_SELECT = "minosoft:update_server.profiles.open_select_dialog".toResourceLocation()
 
         private val ADD_TITLE = "minosoft:update_server.add.title".toResourceLocation()
         private val ADD_DESCRIPTION = "minosoft:update_server.add.description".toResourceLocation()

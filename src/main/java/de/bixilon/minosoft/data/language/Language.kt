@@ -27,7 +27,13 @@ class Language(
     }
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        val placeholder = this.data[key] ?: return ChatComponent.of(key.toString() + "->" + data.toString(), null, parent)
+        val placeholder = this.data[key]
+        if (placeholder == null) {
+            if (data.isEmpty()) {
+                return ChatComponent.of(key.toString(), null, parent)
+            }
+            return ChatComponent.of(key.toString() + "->" + data.contentToString(), null, parent)
+        }
 
         val ret = BaseComponent()
 

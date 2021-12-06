@@ -37,7 +37,9 @@ open class MapDelegateProfile<K, V>(
             if (StaticConfiguration.LOG_DELEGATE) {
                 Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed map entry $it in profile $profileName" }
             }
-            profileManager.profiles[profileName]?.saved = false
+            if (!profile.reloading) {
+                profileManager.profiles[profileName]?.saved = false
+            }
 
             ProfilesDelegateManager.onChange(profile, property.javaField ?: return@MapChangeListener, null, it)
         })
@@ -54,6 +56,7 @@ open class MapDelegateProfile<K, V>(
         if (!profileInitialized || profile.initializing || !profile.reloading) {
             this.value = FXCollections.synchronizedObservableMap(FXCollections.observableMap(value))
             initListener()
+            profileManager.profiles[profileName]?.saved = false
             return
         }
 

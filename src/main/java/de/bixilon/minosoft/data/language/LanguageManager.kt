@@ -46,7 +46,11 @@ class LanguageManager(
             }
             return language.translate(key, parent, *data)
         }
-        return ChatComponent.of("$key: ${data.contentToString()}")
+
+        if (data.isEmpty()) {
+            return ChatComponent.of(key.toString(), null, parent)
+        }
+        return ChatComponent.of(key.toString() + "->" + data.contentToString(), null, parent)
     }
 
     companion object {
