@@ -52,7 +52,7 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { Jackson.MAPPER.writeValueAsString(it) },
-            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) } },
+            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
@@ -65,7 +65,7 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { Util.mapToUrlQuery(this) },
-            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) } },
+            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
                 "Content-Type" to "application/x-www-form-urlencoded",
             )
@@ -86,7 +86,7 @@ object HTTP2 {
 
     fun String.getJson(headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
         return this.get(
-            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) } },
+            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
