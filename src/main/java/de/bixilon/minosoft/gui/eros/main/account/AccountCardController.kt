@@ -35,16 +35,18 @@ class AccountCardController : AbstractCardController<Account>() {
         accountNameFX.children.clear()
     }
 
-    override fun updateItem(account: Account?, empty: Boolean) {
-        super.updateItem(account, empty)
+    override fun updateItem(item: Account?, empty: Boolean) {
+        val previous = this.item
+        super.updateItem(item, empty)
+        root.isVisible = !empty
+        item ?: return
+        if (previous === item) {
+            return
+        }
 
-        root.isVisible = account != null
-
-        account ?: return
-
-        accountNameFX.text = account.username
+        accountNameFX.text = item.username
         stateFX.text = "Unchecked"
-        connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(account.connections.size)
+        connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(item.connections.size)
     }
 
     companion object : CardFactory<AccountCardController> {

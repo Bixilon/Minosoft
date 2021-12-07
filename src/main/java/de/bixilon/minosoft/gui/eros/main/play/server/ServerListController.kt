@@ -161,13 +161,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             while (it.next()) {
                 for (removed in it.removed) {
                     serverListViewFX.items -= ServerCard.CARDS.remove(removed)
-                    serverListViewFX.refresh()
                 }
                 for (added in it.addedSubList) {
                     updateServer(added)
-                    serverListViewFX.refresh()
                 }
             }
+            serverListViewFX.refresh()
         }
     }
 

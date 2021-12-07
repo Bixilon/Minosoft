@@ -30,11 +30,15 @@ class ServerTypeCardController : AbstractCardController<ServerType>() {
     @FXML private lateinit var textFX: TextFlow
 
     override fun updateItem(item: ServerType?, empty: Boolean) {
+        val previous = this.item
         super.updateItem(item, empty)
+        iconFX.isVisible = !empty
         item ?: return
+        if (previous === item) {
+            return
+        }
 
 
-        iconFX.isVisible = true
 
         iconFX.iconCode = item.icon
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)

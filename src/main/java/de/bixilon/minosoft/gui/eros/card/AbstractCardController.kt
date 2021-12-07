@@ -31,7 +31,11 @@ abstract class AbstractCardController<T> : ListCell<T>(), Initializable {
     abstract fun clear()
 
     override fun updateItem(item: T?, empty: Boolean) {
+        val previous = this.item
         super.updateItem(item, empty)
+        if (previous === item) {
+            return
+        }
         clear()
     }
 }

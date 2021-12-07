@@ -61,11 +61,15 @@ class ServerCardController : AbstractCardController<ServerCard>() {
     }
 
     override fun updateItem(item: ServerCard?, empty: Boolean) {
+        val previous = this.item
         super.updateItem(item, empty)
 
         root.isVisible = item != null
         this.serverCard = item
         item ?: return
+        if (previous === item) {
+            return
+        }
 
         serverNameFX.text = item.server.name
 
