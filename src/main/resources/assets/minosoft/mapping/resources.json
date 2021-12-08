@@ -1,1 +1,1546 @@
-{"versions":{"17w46a":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"fd90b150fb461573b121a7e6b6de657ba382f14d","jar_assets_hash":"9824f5f5d5b9327b69a0ab8e202f11a34a8aa23a"},"1.16.5-rc1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"2b12e44073c724c6af2050ad3b6116f9c732feb1","jar_assets_hash":"ea372b056349f6bf00d4e71b428274aa01183161"},"1.16.5":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"37fd3c903861eeff3bc24b71eed48f828b5269c8","jar_assets_hash":"ea372b056349f6bf00d4e71b428274aa01183161"},"20w51a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"ab0d1d122bc2c99daad33befe50a16a07d3b3bf7","jar_assets_hash":"1e4d125252481d833930371c9827d72d0fb35cfd"},"21w03a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"30d492744e5c282331958d2096cc8b39d8ec3145","jar_assets_hash":"3ecd18e01de603e30a40a48bf1f318f47ddc303c"},"20w49a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"818705401f58ee4df2267bf97fa2e0fb6e78ce28","jar_assets_hash":"42d5e222a46cf7b5626bd60d372a91232bafab3a"},"20w48a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"a894354496a03e4bce6fe6c03a68313f4660e482","jar_assets_hash":"f6581c4fd25cde00eecf003354cedc450390eb82"},"20w46a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"f4c56c2b7218599b78074a500ab2a89a04db5b36","jar_assets_hash":"ab636db71346ff05c9f4a146e10bb2fbb2990014"},"20w45a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"cf2cd62dfc63fc1a79061a3964d82bf26e0fd208","jar_assets_hash":"e54153b4d7e03ab3faee11dbff58a4e45f3299e8"},"1.16.4":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"1952d94a0784e7abda230aae6a1e8fc0522dba99","jar_assets_hash":"ea372b056349f6bf00d4e71b428274aa01183161"},"1.16.4-rc1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"1fcf6ddd5ee925d19eadc4b7ef7278365979c7fd","jar_assets_hash":"ea372b056349f6bf00d4e71b428274aa01183161"},"1.16.4-pre2":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"0bc552bc3c6516a5831fd365c0cc35e65df2aa01","jar_assets_hash":"df20eb1fed0b429e56503d5d43ee17336031682b"},"1.16.3-rc1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"fffe9f9279f52fa8a5624f4753ac9215b17cabc3","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.4-pre1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"44745d09a0c6b8faca3989274996d5193cdc1560","jar_assets_hash":"32f54ca3a6857bf6b72359e2cff6087a0da00a6f"},"1.16.3":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"1321521b2caf934f7fc9665aab7e059a7b2bfcdf","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.2":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"653e97a2d1d76f87653f02242d243cdee48a5144","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.2-pre3":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"8cfa861961862c263ff80f2f6478535fd1ed7d8b","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.2-rc1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"dd4982bb447c1d2c7c03419b90dbe8f017c47311","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.2-rc2":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"157f7160b1b41bbaa681fcf8d98542bc27ab4b15","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.2-pre2":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"ce5762620a698b464d07a6c733cd66c7fa8072a1","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"1.16.2-pre1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"18caa7718c665b6d8597f7979bbdcb078ea117a0","jar_assets_hash":"3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"},"20w29a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"4a7182b743f15e3c787f8e62e47eb2dd93604167","jar_assets_hash":"2c28a02c66fd6201e5b99809dc059e4ebf634e15"},"20w30a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"60762a56f1552578d27b91df594ba2a8953dabcc","jar_assets_hash":"a9ceb18df80f7b0ce5751d9ea7328e0b07b9be5c"},"20w28a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"1af89d3bb666c848e5640715b6aaa4c0fc5ae7d0","jar_assets_hash":"bb2e542124d703bdf48391cd12715c1556306500"},"20w27a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"83f30681e76d3438105159c645d9f2f6df88a4d8","jar_assets_hash":"397710a61b3847d910ebe5f1fd6fb4aadd84e37c"},"1.16":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"228fdf45541c4c2fe8aec4f20e880cb8fcd46621","jar_assets_hash":"c283045f15eee52c3f34d4aa38df98fe873f1239"},"1.16.1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"c9abbe8ee4fa490751ca70635340b7cf00db83ff","jar_assets_hash":"c283045f15eee52c3f34d4aa38df98fe873f1239"},"1.16-rc1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"a056316b66aea50c0555d5f438cf839b6cdde000","jar_assets_hash":"c283045f15eee52c3f34d4aa38df98fe873f1239"},"1.16-pre8":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"23b14c93185398af577353c47af04248991b72b4","jar_assets_hash":"c283045f15eee52c3f34d4aa38df98fe873f1239"},"1.16-pre5":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"424242726ad6c828f47af0ef2a8dc3ac7a91ef96","jar_assets_hash":"cc6070d061efce60c470b1fb2b32f3f7f10256eb"},"1.16-pre7":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"62473fe623906a01b2f7cf4f7c1396ab23697e5f","jar_assets_hash":"c283045f15eee52c3f34d4aa38df98fe873f1239"},"1.16-pre4":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"67bd747f23f658a442766588d044074c65c41332","jar_assets_hash":"738462b91bd1bc82df431bfc467b778ca3171ab5"},"1.16-pre6":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"44aa1f291392b002cb7096c71913306f57e318e0","jar_assets_hash":"25476889ce0c41abb084fd5f29ab620546e97eb6"},"1.16-pre3":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"0d7c195c685f8a6172696c9a7f8f4e5d76185528","jar_assets_hash":"44ae09549ad471d7456abf28a4cb626cf405b020"},"1.16-pre2":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"a1382f4cf8815e3085efb1782cf32ed5cb621b86","jar_assets_hash":"c1fcfd42ea00713cc31aac3f98b7c3da582486a0"},"1.16-pre1":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"a0041360ae7579fb553d26aa5e8bdb869815e54a","jar_assets_hash":"c1fcfd42ea00713cc31aac3f98b7c3da582486a0"},"20w22a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"905dbb8972c73e2e62fbfa31b828ba299e136743","jar_assets_hash":"73dd08ff5505de68a160c9005f148c990d2972e1"},"20w21a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"96efb012b75620e881d5b97deb6fd9f02caab4e5","jar_assets_hash":"8e478a611632d814227e34a74ec8fe4fd192b32b"},"20w20b":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"ff70a84c9cdc99a866c4b06410ec46f541dcf988","jar_assets_hash":"5a04a6b58dbfabc54cd7deca3243c410b77db808"},"20w20a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"2b171fb288bfd9c845f99015cbccf1d38bdaef65","jar_assets_hash":"5a04a6b58dbfabc54cd7deca3243c410b77db808"},"20w19a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"10788e762e437780f17b16832b59647548b34ac1","jar_assets_hash":"904f61e6a715a79a3e3931ddabf694f8708ef8fb"},"20w17a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"0f9a4d6f9bc5b8fe3a3b5e1d6787f856de3d4f72","jar_assets_hash":"371f50faa78cb21c1da6a61a5b873abdeaf2dbe2"},"20w18a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"472c80b7df1ef0818da70ef7d13ad512866afd09","jar_assets_hash":"7b83dcd4d4521a8f110f8bbdb85881783f966f38"},"20w15a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"53585ce8bf64f921feb5090a7facd04995ffc739","jar_assets_hash":"bb38d346b93cbe52959e2081251320c3b0d1ab8c"},"20w16a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"5edab2c289420b7201b8f780c2dc4669b77fcd1e","jar_assets_hash":"08083a56a7b2fd0350a8193a6baa66b97b92a9d2"},"20w14infinite":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"cc5cb23748614a6396ffb77427b4f11f4b6ae99b","jar_assets_hash":"4c3620c163805aaed52aa32802b5770317658254"},"20w14a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"cb36abdee528372522f52ae41ccc0609fd9c4038","jar_assets_hash":"11249ed97ff3fd58963ec8bb44580bee0bc56c79"},"20w13a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"dbabcec822dc4cd7fff60793facab0f346d1b734","jar_assets_hash":"dfb43949d637f3a1653857cddb74113615087f76"},"20w13b":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"e4f75e82519fe859932d22c9c05b762cd544af11","jar_assets_hash":"dfb43949d637f3a1653857cddb74113615087f76"},"20w12a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"8ffb3d6807ede557ca7e114b4b6c3fb797d6e432","jar_assets_hash":"a2df740f37b86d32577c5c5f06d2f3da005a646a"},"20w11a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"760bf0158d0c7b59b1a6a550bbab9ea4a4921371","jar_assets_hash":"0d591ff5944b43fce215cc9b5356e7f9ddb1899b"},"20w10a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"5476bd5eda4f2fec842225b4e60dc270aa9c18c9","jar_assets_hash":"818ebdeffc9ee2561d9f9cd4493992af72796cac"},"20w09a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"d62a517011a3ec66b053a8eae703779555227204","jar_assets_hash":"880a115d831ffc289a465a44f2f156e80f415e71"},"20w08a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"505d4b727709ef618cf27432f1c94894133caae1","jar_assets_hash":"c7b76dc9010382c8e7133e7d915cc1eed9c1c48e"},"20w07a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"421d3171259d100d25c9579ac4d6fdbd1d364294","jar_assets_hash":"c7b76dc9010382c8e7133e7d915cc1eed9c1c48e"},"1.15.2":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"e3f78cd16f9eb9a52307ed96ebec64241cc5b32d","jar_assets_hash":"392445386f46b4b0fa38091447cc09bbd6898c52"},"20w06a":{"index_version":"1.16","index_hash":"3a5d110a6ab102c7083bae4296d2de4b8fcf92eb","client_jar_hash":"cb31534291e7e126f323cdc6596d481cc09753f5","jar_assets_hash":"76d6dcde2d0419a50e8dba41d9822084756363aa"},"1.15.1":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"8b11614bea9293592a947ea8f4fd72981ea66677","jar_assets_hash":"961c219cc7b1dd9670540e1898035190a0018679"},"1.15.2-pre1":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"9f28455f9f9d09294e0ba19beb13dc26b39a9582","jar_assets_hash":"392445386f46b4b0fa38091447cc09bbd6898c52"},"1.15":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"7b07fd09d1e3aae1bc7a1304fedc73bfe5d81800","jar_assets_hash":"961c219cc7b1dd9670540e1898035190a0018679"},"1.15-pre7":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"3d58943d119fab2404cedc465f45da09d4925f8e","jar_assets_hash":"961c219cc7b1dd9670540e1898035190a0018679"},"1.15-pre6":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"bc120aa16cfce2be8188f8f809013476f76c57fc","jar_assets_hash":"961c219cc7b1dd9670540e1898035190a0018679"},"1.15-pre5":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"4cfabb9bc131faf9d99417932d813a1148836fd7","jar_assets_hash":"cb9190ff204dc1d83c90a3d8adc31b91c9476654"},"1.15.1-pre1":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"70e27f84a178951b0df7c42c7b9313782cb9925e","jar_assets_hash":"961c219cc7b1dd9670540e1898035190a0018679"},"1.15-pre4":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"6868a5c87243707f7936c21a4e52d076e3d73234","jar_assets_hash":"6aa6e31f5966b010ba5c02a4a30d3c06cadca637"},"1.15-pre2":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"86826ed25a880827a5b0a2e330402a234e7c6f70","jar_assets_hash":"f9bf4210075724bcfa3c428ad7e859e927bc568c"},"1.15-pre3":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"468c221358a93040097edb51f768647683fedd18","jar_assets_hash":"a70dd51b4a5c655a29c0e83ee673de899a2563b7"},"19w46b":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"d795c91e58fd1c3ef66e5061a0562df4bc480368","jar_assets_hash":"acee59c9f96a4e5ee4d1fdff2c649b57ee7b2d96"},"1.15-pre1":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"6e9fe5ad18470fd1b3318f337fca18cd94d7b9e6","jar_assets_hash":"a999eea3ff13dc219930b590e8ca2a98124f54ce"},"19w46a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"c0fda1050b9e3affbd1fa7aeec39b6a787c2cb79","jar_assets_hash":"ef1adb5fb2153a336397e2a3173c150b87c11f78"},"19w45b":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"bf60be81bb0902fdeb221d0d09870112d31df0b7","jar_assets_hash":"388168da08497b9e4a2392ab5824a9a9483ee20d"},"19w45a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"67fb46186cd0469929a2a3e06d97a2edb42aa983","jar_assets_hash":"388168da08497b9e4a2392ab5824a9a9483ee20d"},"19w44a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"3675ef34dd983d862b366662405e0d9b9654b656","jar_assets_hash":"df7b6e2f015dba4c1b7519f1a0ea687f064e4a23"},"19w41a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"e009395464a1e2f4c8c760fc08de73c91e5a03ee","jar_assets_hash":"94c6e3029634011649611a19c3b0b206f7866432"},"19w42a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"6c40e373f7811321fef635c87b14686ef024b484","jar_assets_hash":"6d8ab72da89232144e16666513fca919a2e7efc8"},"19w39a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"a0b9a2c6cceb77d4dcf601eeef1ffc7dc882b48a","jar_assets_hash":"6b8629b151066ab2274f409aff8a779f6bfda5a6"},"19w38b":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"d51e6f344aa46b609e5877699af3c9f613d8ef7c","jar_assets_hash":"110308afc62f658986b6bc5f89e3c26581a4d41e"},"19w40a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"b5706bdc877f25168acfc337ff4d39a9e8fd57a7","jar_assets_hash":"6b8629b151066ab2274f409aff8a779f6bfda5a6"},"19w38a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"33e153dbada31777c9344d3e21398f825bd92064","jar_assets_hash":"110308afc62f658986b6bc5f89e3c26581a4d41e"},"19w37a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"0fd25a522c2faef517aeb55fb9472d7ac4141efc","jar_assets_hash":"3ae2b03344821901fceb10a88cadd56c8cb37727"},"19w35a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"6a3e18dfa1ab427d77c0e52e55e62509f15be697","jar_assets_hash":"e6baeb5a49bbb42c6f2dc739cba00b0262211623"},"19w36a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"54a359d0b47818d85c61db79ec742f7fdab5b914","jar_assets_hash":"3ae2b03344821901fceb10a88cadd56c8cb37727"},"19w34a":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"9d74a00192ffc6b83c8b3c754619d057a9353754","jar_assets_hash":"2eb0b3225147ba776d79c7904c55542df14bed2b"},"1.14.4-pre7":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"53bf70e446ecfb4a88a7546ab3479c4cc868e143","jar_assets_hash":"5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"},"1.14.4-pre6":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"338cd13bb237252c59b59043b49340e545fa1722","jar_assets_hash":"5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"},"1.14.4":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"8c325a0c5bd674dd747d6ebaa4c791fd363ad8a9","jar_assets_hash":"5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"},"1.14.4-pre4":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"ee6386897fd6d7f777d4159fd45b26deaff14cff","jar_assets_hash":"5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"},"1.14.4-pre5":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"db91103c10795811477ec33589b2e1cf452f43f2","jar_assets_hash":"5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"},"1.14.4-pre3":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"4e7e41622e1fb083e093b071396dad50168c9613","jar_assets_hash":"16cee3bace5ea4f2fb000bcc96df28c4b634849c"},"1.14.3-pre4":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"7f35f02e03ad1b837d0302c874e8cbc662bf1b88","jar_assets_hash":"8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"},"1.14.4-pre2":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"96f1d6989a86f1bdbf4cc1583a88e6a16f985d17","jar_assets_hash":"16cee3bace5ea4f2fb000bcc96df28c4b634849c"},"1.14.3":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"af100b34ec7ef2b8b9cf7775b544d21d690dddec","jar_assets_hash":"8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"},"1.14.4-pre1":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"bcabf6e9e9664796bd97e01c54d1dbf27aa47c39","jar_assets_hash":"9f48df3db077268ef35d9f83233fa2c607091342"},"1.14.3-pre2":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"a9358d6b2ac6025923155b46dc26cc74523ac130","jar_assets_hash":"8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"},"1.14.3-pre3":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"360c54d41522541f6eb303771192433de4ea1235","jar_assets_hash":"8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"},"1.14.3-pre1":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"c49ca8d28e3c64d39dc46d21dd92f421a34ec241","jar_assets_hash":"8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"},"1.14.2":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"ca6c5a139045967229975c0c0b7f93e78b4314c2","jar_assets_hash":"5440f75b46beb5503e18d8f85f5c50d803130094"},"1.14.2 Pre-Release 3":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"e1490260d733b18dfc573ab181f9f2df8fb34303","jar_assets_hash":"5440f75b46beb5503e18d8f85f5c50d803130094"},"1.14.2 Pre-Release 4":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"60783b7bab4125d55f187c859e4b41418ebc8719","jar_assets_hash":"5440f75b46beb5503e18d8f85f5c50d803130094"},"1.14.2 Pre-Release 1":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"b1802f2bbe126d3b9a524a187eab1be3f346eb1c","jar_assets_hash":"d0c4a23ad68d88afbe0c4c03006e34f028699999"},"1.14.2 Pre-Release 2":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"d12a34d8584f5465a4851f77bc5a1ce05ac9d59c","jar_assets_hash":"c03291e8961721fb2ec4cf90774e603371b9d810"},"1.14.1":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"55ba86ddcbc3579397f41910463ffd4056e1e523","jar_assets_hash":"d0c4a23ad68d88afbe0c4c03006e34f028699999"},"1.14.1 Pre-Release 2":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"4074da2da9e8207c022e5e12355d4fe87063b86b","jar_assets_hash":"d0c4a23ad68d88afbe0c4c03006e34f028699999"},"1.14.1 Pre-Release 1":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"bf5ada613755329f9d194c1e8a5b26b6bbf30cca","jar_assets_hash":"d0c4a23ad68d88afbe0c4c03006e34f028699999"},"1.14 Pre-Release 5":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"3e61d082391ad8d25c40d5825cae8843cfeaf579","jar_assets_hash":"a105b5a34166a59adebb845079eb845a91adaa01"},"1.14":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"7a762a59345c13af7d87111207a93f5a8607f6c0","jar_assets_hash":"c5b3ac767106c219b415ebe26c7b35d3c1710f10"},"1.14 Pre-Release 4":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"9d2f8dd80ddc2008ed87681186af5321cdb6e560","jar_assets_hash":"141b5977769d1df2b15ad8803e14946a1b157e9a"},"1.14 Pre-Release 3":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"12f85e0b940f3649c9ecb5a3201811f56992e5c0","jar_assets_hash":"1681d129153f0b052cda475bd381b59b453e3227"},"1.14 Pre-Release 2":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"7d41669ddd780baecab2926d6ea6b08dac7d834f","jar_assets_hash":"c846ce30ea933452acb8f941d266977b53b6d8d5"},"19w14b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"a008dc3c45cb4f120ae5e0f124d5af2de1bafed5","jar_assets_hash":"c26459cc228f6ceb41961ee24df43bf7d7e5352b"},"1.14 Pre-Release 1":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"eb144c0dbc03116c832cdd20d28a8a686327905a","jar_assets_hash":"8d9fe45d9bd44d3cec3b128f517052988b50ff58"},"19w14a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"d55493da62562de4c8005f6dd117adf78b287658","jar_assets_hash":"c26459cc228f6ceb41961ee24df43bf7d7e5352b"},"3D Shareware v1.34":{"index_version":"1.14-af","index_hash":"dadd12315f0620650a72b5f2a402c8a28aca578d","client_jar_hash":"44db7d7bcd5a1bee6f54f6a623f26a1b3d1e293f","jar_assets_hash":"cd56d763b5e5367efe834c5815f0b9bfc46ecc76"},"19w13b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"bf33e377d07eadd8989570e24d9fc484aa39c81f","jar_assets_hash":"d631fcf962453c6131c537b4cc3c92a0e2f1f91b"},"19w13a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"dac80b7f57dee4b0deaa6c78821908c5a5cc7071","jar_assets_hash":"ed093145374c173b9ce82beed5631687de658ccf"},"19w12b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"2fc0501773a90d120c9f6476037c4bfba554a549","jar_assets_hash":"91a10c38e60e8029f678fcbab04ea338877db502"},"19w12a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"15ee2d37e5ec79dbf51aa39b000616be94033d6a","jar_assets_hash":"6e80b5d4a233c6374309a7187ae6fc56f2f2cab7"},"19w11b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"fba44eb056f80480832482cf7788f725a727e3c3","jar_assets_hash":"cc1a496a30779886763da4440298237e84ed9da9"},"19w11a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"03e795efb9c91f2c4994826c45f3a99d2c695517","jar_assets_hash":"518c92d0acdfad26402ea8019ba0aff310810eca"},"19w09a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"8ea094f62c14d184bed801b9d7eb06120ffbd2b6","jar_assets_hash":"7677312644056c06aa00cde6fb01e8be3a92628c"},"19w08b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"cc17b46768c36095f2bf2f621bea12dc307b57d0","jar_assets_hash":"7a862a515d1374458af414b71d64da67c30b160a"},"19w06a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"10c8f97e8d9d32a6d0a951a7db6f51818d5d258a","jar_assets_hash":"e8722b4bcf8e1ebb65dcd06f00060501a58666d8"},"19w08a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"8107282674163f5bb025548fef3ec26d6c5cd6ba","jar_assets_hash":"8048927cc47524518b316195248f7dabc6522aac"},"19w07a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"656fcedd90336e82678d260e4fa20df958926474","jar_assets_hash":"c22351c8e73869f2d05cc44d8732d351a6e0c053"},"19w04b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"1db2550289499e9611fb03744a63adc50d8ac811","jar_assets_hash":"9d22656b9a19b0186da40a46bb5d15b5afbb820b"},"19w05a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"26f8cdc6354884a4564a6d4e9dceb4e4440dfb54","jar_assets_hash":"87404fa2794ead04afb418cc79834e669d01a332"},"19w04a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"4a075e5ceae3fc15efd36222daeb832c94e16946","jar_assets_hash":"9d22656b9a19b0186da40a46bb5d15b5afbb820b"},"19w03b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"c23a6e04cc6dc2c3a139d80d17e005599e2243eb","jar_assets_hash":"df5e8ab7e60507c6ad864362774218db22b64deb"},"19w03a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"7280ee42cce1c0371c96c95c22170d3aea7068bb","jar_assets_hash":"df5e8ab7e60507c6ad864362774218db22b64deb"},"19w03c":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"332bdc5f0f0505d86f1f7e5b0f5c7693b494a830","jar_assets_hash":"df5e8ab7e60507c6ad864362774218db22b64deb"},"18w49a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"2a0b27ad8bd6cd2bb09e3a2210170fd0b5424c54","jar_assets_hash":"5b53bf93de0d6e7544ad1a5716e5fc678a4fc19b"},"18w50a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"865a610fe77eb9d2fea48de1a02229526a391249","jar_assets_hash":"3175102c7fd74433f4c4fa8cb7cee4a51127f546"},"19w02a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"8664f5d1b428d5ba8a936ab9c097cc78821d06e6","jar_assets_hash":"635a1b0c00cca53cb0c705fd73a17332af8c4746"},"18w47b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"1174ad74afce51a9309f1293af5bf24f60609cee","jar_assets_hash":"69e2b718160b5dc623c70c8d5a52bd481dc0c230"},"18w48a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"8c2c778a22201836bf482a8ed06e1b1f994c61e3","jar_assets_hash":"06fcb1f21d39516c62fe92084c14650f7e67a3d9"},"18w48b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"4b1dc59156a888b2e20bbcbfdd5704fb4e7f6789","jar_assets_hash":"06fcb1f21d39516c62fe92084c14650f7e67a3d9"},"18w47a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"1cac5e82265eef3a7670c8752f31f02c65116aef","jar_assets_hash":"7742a1337bdf91443940ed449c3c3986dc3106bb"},"18w46a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"342ece78f131c72c4669c9aa27a7be542b911171","jar_assets_hash":"692b4a5d983f2b4c07fff6ecd0a674f8959a3980"},"18w45a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"e03e8d27b07cccc85ae669e666bc3e4e2036c374","jar_assets_hash":"4ff9cee8841c4b53773cbaac1a0a8e4231ab53ad"},"18w44a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"20ea61f07e34b3e81ca356b6a71cc98cc4e571a9","jar_assets_hash":"109d634e0d6c5adcacb4784bddb4e85cab5ba482"},"18w43c":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"a040369aa294a5a42048d828b03592b54db6a8d3","jar_assets_hash":"adbbf3c7dfe971722088c546fb47becbae7aa052"},"18w43b":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"0b93502884da84e9d60532729eca59b70c96f281","jar_assets_hash":"571ae7567f23007c5f7f23973937f82477d2990f"},"18w43a":{"index_version":"1.14","index_hash":"d6c94fad4f7a03a8e46083c023926515fc0e551e","client_jar_hash":"6f0fa604e9c8b1996c985aceb9b589fa4e583671","jar_assets_hash":"ddddfc3f93ec94756ba662ba3df625d7bc86b3c0"},"1.13.2":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"30bfe37a8db404db11c7edf02cb5165817afb4d9","jar_assets_hash":"ddff99098d5f5dead1777f838e220163e49ea29a"},"1.13.2-pre2":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"3ad1375091d9de67beb3197dcd173d05ff27dd0b","jar_assets_hash":"ddff99098d5f5dead1777f838e220163e49ea29a"},"1.13.2-pre1":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"843bc6377ff859b7744d12df0b62653dc318456b","jar_assets_hash":"ddff99098d5f5dead1777f838e220163e49ea29a"},"1.13.1":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"8de235e5ec3a7fce168056ea395d21cbdec18d7c","jar_assets_hash":"ddff99098d5f5dead1777f838e220163e49ea29a"},"1.13.1-pre1":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"7f7ae07cc319346b632f6c9f26ff8c67728b203c","jar_assets_hash":"7e4553f9747d45efe982a901871fbe9dedbbe1c6"},"1.13.1-pre2":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"7eaeaa37e0c7642d519c39de70a630119ad4929a","jar_assets_hash":"ddff99098d5f5dead1777f838e220163e49ea29a"},"18w33a":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"b8fc21c1446df367ac02946f1b475bd72df84dd6","jar_assets_hash":"eed90f8e53976473f61dc30c83cdc5a41c8318c5"},"18w32a":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"f4f53276150e295afc8cd300d87568f279607bfb","jar_assets_hash":"19deb798aae2901f1a15694fc624a83878f4bcb3"},"18w31a":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"0a343ef39365d70908a3c59fbbf2d9c0ddd2ad75","jar_assets_hash":"d6f377ff2933192495b04187975e0467349915e2"},"18w30b":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"e6bfb0dc26e29d80efb137c8e9359fd3c324cf1a","jar_assets_hash":"497febcb4eb4f1a349e1c084d7fa373e7d63fd46"},"18w30a":{"index_version":"1.13.1","index_hash":"6d78d53da5ac7158e2f725056312edf9871dfbb1","client_jar_hash":"d368609e838cb1b22e1e1e9eee8f83dbe4847909","jar_assets_hash":"72319e797d863a8c85735c944a82bee72fad18eb"},"1.13":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"c0b970952cdd279912da384cdbfc0c26e6c6090b","jar_assets_hash":"83d476c9c4a5d86520131d808a24501d73ec5d8c"},"1.13-pre10":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"72c4fbff2a1318a57bfb66e325055064a13378a8","jar_assets_hash":"ab19481282d2589aed7b6cb516c4948b1787c1b2"},"1.13-pre9":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"4dedcb718a3382496d19d13cfe5dc070528a15cd","jar_assets_hash":"540b92b27cec69d5fc09ec0b5b550745f9ce509b"},"1.13-pre8":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"fbece4a24e47af57c3ee75e331f9390309f92ae5","jar_assets_hash":"d7cea2337647342e59cd82fbdb1bb9ad0594ea7c"},"1.13-pre7":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"0b5d9df7bc2d0e4fd00d0bf7cf4409b999567497","jar_assets_hash":"77d26c8203a6874dbb6bff84e9fdd1db575d2050"},"1.13-pre4":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"c4a93fea1ea2a1a7886c8f5f66f6d929db53f021","jar_assets_hash":"7331ba72b38e3dea06cb4085ebf88d9a28eb8226"},"1.13-pre3":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"94f2e86f94d7d80c19ec1d3d637b1ef2d862be9e","jar_assets_hash":"38d965f39ee28fbaffe2f73ae63699c9e2d8721e"},"1.13-pre2":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"b833d32e1846989a61c6c3faa40232bb72bd59de","jar_assets_hash":"2831c9776e71d705d87c93ca064fae1ee7523da1"},"1.13-pre1":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"f9b3302a997e52af71efc3904d805957430e4820","jar_assets_hash":"23946002e04dcc3d6af3bc382d6d45263e68dce5"},"18w22c":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"ec446c24c4842f6237ba7c560a5b0dae9ac87c22","jar_assets_hash":"7f6cdd3505d608e1b5f6d4356d93dcb5bc69bb40"},"18w22b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"a7db66a86e6696aef0fbfbf813293ff1aa01a64a","jar_assets_hash":"7f6cdd3505d608e1b5f6d4356d93dcb5bc69bb40"},"18w22a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"0a864719da82dd91bf5d7031cf9c40e5ec3dbfd7","jar_assets_hash":"e91fb72a6b21330eec5b32270c49021b0f459730"},"18w21b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"77b9304fd8e97953de4c6334f56abe4bc2661fe1","jar_assets_hash":"2c59a414ee0b4ec27a16c32931d7bf5fad0c6b90"},"18w21a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"9b1d1486518585537a0d9e608dd27e3946880d48","jar_assets_hash":"2c59a414ee0b4ec27a16c32931d7bf5fad0c6b90"},"18w20c":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"273595b95fff5080b74cefe18ce0c747d02663ed","jar_assets_hash":"a17822e3744011f3f2de50b67f202ac5a683cadf"},"18w20a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"89843d397a9b0fd42bea26ada6890ebc693ad288","jar_assets_hash":"00fb968b805af6346c24e89ba26162f8fd047347"},"18w20b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"91aa79a2aa3c656221defebf5310c1ffacfd81ed","jar_assets_hash":"a83a7f8f11d67fc871c7b8ed651783f9dbffcbec"},"18w19a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"d52b2e8f15a764000c1ca6dabab4440069ff97a4","jar_assets_hash":"56a99e4021b05fb21e0cae1687273f61d004291e"},"18w19b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"6e5306869f9644e0a91f23345b4f445742daf5cc","jar_assets_hash":"f3ba6d2d0b00f44a450d1306cf68c0a775284e21"},"18w16a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"8787bc29f2a1e151123f70e21698af23374d1b08","jar_assets_hash":"6b2adf82c06b2cc5f517cc32efb8e3f1e49a0255"},"18w15a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"ba02c440e50e0197a13cef03ca2356c8cc51f058","jar_assets_hash":"5cc2dfe24081ad50e5d8f06b04338393184fcb9e"},"18w14a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"73885c6bf4fdcca8ab1ca22b56f69c9945725770","jar_assets_hash":"3497f21c31e54a39f243b5b738be2e88cb95e828"},"18w14b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"d9b4fc98eb5242346ed0421f6ccd3c9032dc0514","jar_assets_hash":"a6376923f81b7e5b517258c2f1cb130545000409"},"18w11a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"e4abfe0c5e7f490a1071e7c99cb1cef81ffd89dc","jar_assets_hash":"25a55e2f5fae3bc3eb172a91df00b5abde6546d2"},"18w10d":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"062c014c0e8684ca554d3abbcfc31e3e56334a2a","jar_assets_hash":"55eda7703a0c7f42757b288a95e71a90a90c5f14"},"18w10c":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"cec68c82ce5824f74069e8ba84871786077da6ab","jar_assets_hash":"55eda7703a0c7f42757b288a95e71a90a90c5f14"},"18w10b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"383e0396f585fcc5a487f04fcb77a9743a0e44c3","jar_assets_hash":"e6a5f37ce1fa50698765da4517893ad00c73a088"},"18w10a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"fb24610e6fca6f83e8b45e3a46224601d4ca6c27","jar_assets_hash":"b585b42c5585263a138807059e2629a34c831357"},"18w09a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"701085c1b668d45b7c0ee5ea911b11d6691c01bc","jar_assets_hash":"3603c8b64b6f2537dea2275bb7afcc3f6ec789f8"},"18w08b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"665fd71175823d517cee81154b374bb27ac5c070","jar_assets_hash":"331eac71c88075a3bf798f056327d58f15cb1c76"},"18w08a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"52cacb4730ddee013b67e10e49b99955b4ec10ea","jar_assets_hash":"1ec085c5386cd95837bd862a640f66e54a6aaef6"},"18w07c":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"3d5865b5bf013f84e44c3f096193aa45c672bb51","jar_assets_hash":"1bc58363bca2179afb2b4c922eb651b4c3c7f0bb"},"18w07a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"fa2960642589fc7bd3e14049ffe7d84a4d2bac1d","jar_assets_hash":"9116c0e863adb18d40e5a51c08970732fc1cd1d3"},"18w05a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"bc3c321006bd1864a9e3dfea8c351927c44519c6","jar_assets_hash":"8597235d7cfbea26bca7bd1fd4b4d19b37ec8047"},"18w03b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"39b958dd8e4ab25c6b6522ce9c83d4bd45173738","jar_assets_hash":"3c020f440dd301633fba0402f2be409d385ef730"},"18w03a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"b9e9cfa4e6019fa1d4aa7b368366b9d8979db2a1","jar_assets_hash":"3c020f440dd301633fba0402f2be409d385ef730"},"18w07b":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"e1aeafe25aa454e35e53bd489523bed51aa5e826","jar_assets_hash":"1bc58363bca2179afb2b4c922eb651b4c3c7f0bb"},"18w06a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"78ed8d3359453614d8f69bd982111e8aa6c8f612","jar_assets_hash":"83fdddb3c5f6555726b23caf394ea495ca9d7760"},"18w02a":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"05932046cbefd34e42ba21530b96986435163bda","jar_assets_hash":"b6d3b297f4779e5bf1d35e777d9b6c24c039ed50"},"21w06a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"50a88791b64547d5325018270e0a5a71f8d4fc03","jar_assets_hash":"7f65de69b9578ceea07de66aad9a5f2e3c460069"},"21w05b":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"8230cf2349b48ba79b0581a3fc76be53f26312bc","jar_assets_hash":"b89083def6d9a26a689fe1401863ce9d97d93cef"},"21w05a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"225bda6c3721a464e9f772a1ca96db2d5df246b9","jar_assets_hash":"4091e28566b3a0944e0eac1112b335fe7b1400b0"},"1.15.2-pre2":{"index_version":"1.15","index_hash":"bfdce6db2ba511d7dba9ef81910943d6c3d2608d","client_jar_hash":"a6b3fcea0178c47e518a3703adb8af793f526bce","jar_assets_hash":"392445386f46b4b0fa38091447cc09bbd6898c52"},"21w14a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"4af7eb4770d3e708d287db3bf023d4bbc60465b0","jar_assets_hash":"e39427c3cd275c0872adab52630906453bf7f92f"},"21w13a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"507be109a1902b7c3b30c1e900299344c7c0bee6","jar_assets_hash":"4b7f030df9c7905bb296ff20a5bda66387b72a90"},"21w11a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"07ad8b23e33d195fd897133c9c0e35d7fa1593eb","jar_assets_hash":"a2f8324339320ad54067b0f4774e5f45212d69d9"},"21w10a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"7840a9b8d9aeb480b16962c40a2ca3758893f00e","jar_assets_hash":"44f9fcf33e86bed68d0609934c668b1daa7b4300"},"21w08b":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"c8ae0a1a8b18841e009b8dcdf21ec014f5787410","jar_assets_hash":"f8dfb7aad074722ea44f859734aafadd1ec35acb"},"21w08a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"3a008c012bd6bba29054701c7797493523660c57","jar_assets_hash":"f8dfb7aad074722ea44f859734aafadd1ec35acb"},"21w07a":{"index_version":"1.17","index_hash":"d68c9fb7046a75a85eeea3c881bc358f2c55c6c4","client_jar_hash":"e6886725265257d34b5e0d0661632c61800bded3","jar_assets_hash":"afd9cc70073b034da831ba445526879cac930176"},"1.13-pre6":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"9405570c459c0803da2754b34e5ffeb74413a904","jar_assets_hash":"1adf0f5c62e352755f482e4c997b9de11b2852c2"},"1.13-pre5":{"index_version":"1.13","index_hash":"23981354446ddc141dcf03cc4bfa6b2a9492aa90","client_jar_hash":"f3262055c586a075fc84f9d4bc76b3cf1a72d69c","jar_assets_hash":"f911e929f01e9cd6f54e3f42d2d748f34af5a9bf"},"18w01a":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"504f07f4a10f295522a57f2b1163298dc4a63103","jar_assets_hash":"7b1b08b0f0f07fd82d147ecce3b4a5c20e0dd794"},"17w50a":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"ebb9600d0f33b6ffd1dec8fc3010677dc07accbc","jar_assets_hash":"aab0d777fc9cb669c7fe29e32c44e25347cedde1"},"17w49b":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"bb28e11e5b6ca4c0678d00bf82d061d282ab6445","jar_assets_hash":"008d365818e79e873e8e7cd28d5cdfa4bfec3d02"},"17w49a":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"a58ce444458ba9267973c31877a57eac5a5cbeda","jar_assets_hash":"8c39e2e5687f11a3ff6633da103e46c3254a97db"},"17w48a":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"1b31d5152548eeb7dfa94cdeafd8d9321de8f8c3","jar_assets_hash":"2a86e04ba3555fc4fe712c79139ebcd64ea71549"},"17w47b":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"049d118c3fc0d3fad544aaf387ca6c5cb2cf4e00","jar_assets_hash":"f7790e004b93f4b73854f26759c29ccc401809c4"},"17w47a":{"index_version":"1.12","index_hash":"1584b57c1a0b5e593fad1f5b8f78536ca640547b","client_jar_hash":"4485b04ad6358eef525aeeb246fe2b6b23d232ee","jar_assets_hash":"ad5d46b23d44f88b9ab8a5b0ba2b3bd5291ecc0c"},"21w15a":{"index_version":"1.17","index_hash":"e8dbc76be7778ccf837a48c462806b873aff62ff","client_jar_hash":"749805abb797f201a76e2c6ad2e7ff6f790bb53c","jar_assets_hash":"c3413d9904c18598d757caf2282fe250a510644a"},"21w16a":{"index_version":"1.17","index_hash":"0198cb89458ae865669d11bcf4ddc014b02e204b","client_jar_hash":"f124f2aad604e88f27f010834d82c7af85506b6c","jar_assets_hash":"a45aecd72a6c54719412417234708458f4106e7c"},"21w17a":{"index_version":"1.17","index_hash":"7228a0a2f77ce7f176e1a98f2beff168a6d01ffe","client_jar_hash":"6f0597c8dfef133d59cdce2c629a37f0e259512b","jar_assets_hash":"61a717369d8136fb5eb928dd46cbace145c4ab01"},"21w18a":{"index_version":"1.17","index_hash":"7ccefbf653a0f407c655522dab844e29baa0cefb","client_jar_hash":"f52cf94abf99911ca88c12f776bcf30c9b6f1617","jar_assets_hash":"fce53ae48a16a233bc4fc3d79a127c49c4fa04de"},"21w19a":{"index_version":"1.17","index_hash":"b9ee9752245731c4c441fb1d94b52033bea63efb","client_jar_hash":"ec029994171ba8e3d9a68458d7d307a67a84faac","jar_assets_hash":"f73f4e4e1ff6f110e24535f8c1c0fcb87abb29c8"},"21w20a":{"index_version":"1.17","index_hash":"22ec056697dacf4c6aa1f17700e94994454f9e49","client_jar_hash":"f756009979e33058d57695a3599b4a2544d856ca","jar_assets_hash":"74af780f47f4c025b74c68522cb1684e1d9ea525"},"1.17-pre1":{"index_version":"1.17","index_hash":"928de7f973076c901a10a186a09812de9027bab5","client_jar_hash":"940af6eda421da56e3bf9c390df65ba713cc8f7f","jar_assets_hash":"73fc99ac31889e3b13b8e6b65de7a3b942b913de"},"1.17-pre3":{"index_version":"1.17","index_hash":"d6c1357efc4f62da468d98fe57dae0489e410ab6","client_jar_hash":"3d587b97faf19d4c2fa63e03d1920eb37a95920b","jar_assets_hash":"32437d17f9efe60edb086df3c2d6b8d5645ad888"},"1.17-pre2":{"index_version":"1.17","index_hash":"d6c1357efc4f62da468d98fe57dae0489e410ab6","client_jar_hash":"72ebf53f36151a9c2657dca80f72a97c0917d3ce","jar_assets_hash":"5031d64ad7e6b7ebfe5f6b2e60b3966cae3416a7"},"1.17-pre4":{"index_version":"1.17","index_hash":"19a53a9d06b3a2c4e64eb0a907b90fe49bf1f6ee","client_jar_hash":"de8e68ea23f837f9ab628cda7b16ba3de4b79153","jar_assets_hash":"df1dbd6e645ebc88b78ad72bc8b0026c48084698"},"1.17-pre5":{"index_version":"1.17","index_hash":"ff4c1b667c02b183352af8817a2699a96abc08e0","client_jar_hash":"ad51f4efbc250c15d84eaf07f600787246fa6cd6","jar_assets_hash":"df1dbd6e645ebc88b78ad72bc8b0026c48084698"},"1.17-rc1":{"index_version":"1.17","index_hash":"c6e8898a39b4c29ca1ce3cadcae58b532a279a6f","client_jar_hash":"006320ab2a9969f0e0d3dc64a463e1816be5e225","jar_assets_hash":"df1dbd6e645ebc88b78ad72bc8b0026c48084698"},"1.17-rc2":{"index_version":"1.17","index_hash":"5980cedf055a0ebc1059ddb9487a004c7d0f781e","client_jar_hash":"fe88ac6c8a0bedc9a48e5c9b48eb0f4dc24ccc79","jar_assets_hash":"df1dbd6e645ebc88b78ad72bc8b0026c48084698"},"1.17":{"index_version":"1.17","index_hash":"15809afbdc4489abd52a3d6c3fda0124f8f3404b","client_jar_hash":"1cf89c77ed5e72401b869f66410934804f3d6f52","jar_assets_hash":"df1dbd6e645ebc88b78ad72bc8b0026c48084698"},"1.17.1-pre1":{"index_version":"1.17","index_hash":"fc00c90b4d2d27a4569b4f0d5487c70d13063dba","client_jar_hash":"e2379ea3e1ff2ad1ab566e7fad78ce39eff3781f","jar_assets_hash":"b2cb1982e43d75dc8c9137251c3bd0a81476e5c8"},"1.17.1-pre2":{"index_version":"1.17","index_hash":"229b5b523cf8b920db0a9d4ee2b1cf3f49d7dbce","client_jar_hash":"6edfbe953993a45d3f7c845a5b4e97492f2e8f85","jar_assets_hash":"b2cb1982e43d75dc8c9137251c3bd0a81476e5c8"},"1.17.1-rc1":{"index_version":"1.17","index_hash":"4fefa75bc44abb319a51939cda70094b6c183c5d","client_jar_hash":"40595d7eeeebc212f6e2b8b5a3dbfc5377cfef9b","jar_assets_hash":"0df4201b8f5412047d7a55a88be646df98a183fe"},"1.17.1-pre3":{"index_version":"1.17","index_hash":"4fefa75bc44abb319a51939cda70094b6c183c5d","client_jar_hash":"c9f26f45a9c18c27ef1dd3753057ce81401d742d","jar_assets_hash":"b2cb1982e43d75dc8c9137251c3bd0a81476e5c8"},"1.17.1":{"index_version":"1.17","index_hash":"e5af543d9b3ce1c063a97842c38e50e29f961f00","client_jar_hash":"8d9b65467c7913fcf6f5b2e729d44a1e00fde150","jar_assets_hash":"0df4201b8f5412047d7a55a88be646df98a183fe"},"1.17.1-rc2":{"index_version":"1.17","index_hash":"e5af543d9b3ce1c063a97842c38e50e29f961f00","client_jar_hash":"132b56af0236e9877261325b67d1606d126463ae","jar_assets_hash":"0df4201b8f5412047d7a55a88be646df98a183fe"},"1.18-pre1":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"020aa79e63a7aab5d6f30e5ec7a6c08baee6b64c","jar_assets_hash":"ce03dd2ae051945bf950faf00e526e0760081a55"},"21w44a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"6bf2feca56785edfddf308cbeef0fc3331155685","jar_assets_hash":"2c5b2030f54b3efa8c8b0d60c78871e9a9c8ff97"},"21w43a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"ad67ea7db46f4ebbb1d8d5f9286401660a26ebbf","jar_assets_hash":"d17a5f3325658f1d16cc5843cb17618f13eb7ffa"},"21w42a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"05781f1ce3749ee0958be1de939d15b8aff1910b","jar_assets_hash":"c51e7eafc6c0bb037157016a56fb20d6523c4b41"},"21w41a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"dd353c98457702583b610552da47ff8eb57c602d","jar_assets_hash":"c3ef815088806094792171b8568a3b2732f0c335"},"21w40a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"b88eecb40a4b522aaebe5b10dc44d235f2aef944","jar_assets_hash":"8b80cdc275124b28c1653d103abbbf0d5e130393"},"21w39a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"2b2b97d9ca6d50669096016f0da959879afe3203","jar_assets_hash":"bf187815b927ccd4a6f216ac985f325ff24b6c07"},"21w38a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"4e7c161ec40c9928ebfcc1f96be407d71de4b50d","jar_assets_hash":"874f9b7b885e3f5785ac74ad752d6ae345f61afa"},"21w37a":{"index_version":"1.18","index_hash":"843bb3402bc89e57d3a2e1cced0dd166d660f226","client_jar_hash":"be41b4e18f4a600365fd7a2b8eeac49232304ced","jar_assets_hash":"0942fcf44f7734a8942cc46a043f251dbe5bfc15"},"1.18-pre5":{"index_version":"1.18","index_hash":"b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e","client_jar_hash":"561446f5e8345f0d77b56f7874ce8aa71cdb1c62","jar_assets_hash":"60d08fcc3d9a7a7bd93a9212c7dc171df1e6a011"},"1.18-pre4":{"index_version":"1.18","index_hash":"b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e","client_jar_hash":"9690cfe8e0d491173c17018f57671bb40745c33b","jar_assets_hash":"73a70efa266025f91e621ecff2a8178f9f28fb72"},"1.18-pre3":{"index_version":"1.18","index_hash":"b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e","client_jar_hash":"fe58c0cffa004dbb78c9a1cf30cc935d280a45b3","jar_assets_hash":"73a70efa266025f91e621ecff2a8178f9f28fb72"},"1.18-pre2":{"index_version":"1.18","index_hash":"b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e","client_jar_hash":"6b88f1734c80775f59416db3599c2a4333558ca4","jar_assets_hash":"fd0e66c1b82ac8a99b8d51c5aa90d39994c87db3"},"1.18-pre6":{"index_version":"1.18","index_hash":"816e3e9c187679b4622ebd1272e7c7c302d4c743","client_jar_hash":"86dc60a6e7e9f1bbb877ce2c950de3d1c3cafb89","jar_assets_hash":"60d08fcc3d9a7a7bd93a9212c7dc171df1e6a011"},"1.18-pre7":{"index_version":"1.18","index_hash":"3574cededbb35435580ba6f38cd85119de5e2ace","client_jar_hash":"04f78760e28f823365430bf1126a49ac30d7db6c","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18-pre8":{"index_version":"1.18","index_hash":"93627da4c545c82fcd9812d5db04c2b3a30c75ae","client_jar_hash":"ffb896e756a4edc4a538e9a0ac408f9f45ea5076","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18-rc1":{"index_version":"1.18","index_hash":"ce48875941e15ce9a4fbd692f72e48c0aa43c278","client_jar_hash":"6232765f8b87066e271ab984eccd8a8f3af03630","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18-rc3":{"index_version":"1.18","index_hash":"4a6132b7a24aea2d28ead2679650cc3392dc85b2","client_jar_hash":"060dd014d59c90d723db87f9c9cedb511f374a71","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18-rc2":{"index_version":"1.18","index_hash":"4a6132b7a24aea2d28ead2679650cc3392dc85b2","client_jar_hash":"6d90a50cc252b78f959b5d41c46f8d983efda594","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18-rc4":{"index_version":"1.18","index_hash":"d599b18b99d9fb1ffe74b0387530ca7beb3e080b","client_jar_hash":"4cf8ed5168308946275308cae955ec70b4379477","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18":{"index_version":"1.18","index_hash":"f6a014ffd1f48eaebbdded34722869b466dca489","client_jar_hash":"d49eb6caed53d23927648c97451503442f9e26fd","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18.1-pre1":{"index_version":"1.18","index_hash":"487d57e69da2d48006d36683f13ad7815b30b90d","client_jar_hash":"9561f774dcc8797a02a907fc79d946533fbb00c7","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"},"1.18.1-rc1":{"index_version":"1.18","index_hash":"c491bcfa7a4a3b37acbdd883668101bbce23caaa","client_jar_hash":"e123b3b6b654213cd4f9f381dc17c1ad2f6b2fe2","jar_assets_hash":"4895ecd07d19e284853cb72b266fbf2bcf32b9cb"}}}
+{
+  "versions": {
+    "17w46a": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "fd90b150fb461573b121a7e6b6de657ba382f14d",
+      "jar_assets_hash": "9824f5f5d5b9327b69a0ab8e202f11a34a8aa23a"
+    },
+    "1.16.5-rc1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "2b12e44073c724c6af2050ad3b6116f9c732feb1",
+      "jar_assets_hash": "ea372b056349f6bf00d4e71b428274aa01183161"
+    },
+    "1.16.5": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "37fd3c903861eeff3bc24b71eed48f828b5269c8",
+      "jar_assets_hash": "ea372b056349f6bf00d4e71b428274aa01183161"
+    },
+    "20w51a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "ab0d1d122bc2c99daad33befe50a16a07d3b3bf7",
+      "jar_assets_hash": "1e4d125252481d833930371c9827d72d0fb35cfd"
+    },
+    "21w03a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "30d492744e5c282331958d2096cc8b39d8ec3145",
+      "jar_assets_hash": "3ecd18e01de603e30a40a48bf1f318f47ddc303c"
+    },
+    "20w49a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "818705401f58ee4df2267bf97fa2e0fb6e78ce28",
+      "jar_assets_hash": "42d5e222a46cf7b5626bd60d372a91232bafab3a"
+    },
+    "20w48a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "a894354496a03e4bce6fe6c03a68313f4660e482",
+      "jar_assets_hash": "f6581c4fd25cde00eecf003354cedc450390eb82"
+    },
+    "20w46a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "f4c56c2b7218599b78074a500ab2a89a04db5b36",
+      "jar_assets_hash": "ab636db71346ff05c9f4a146e10bb2fbb2990014"
+    },
+    "20w45a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "cf2cd62dfc63fc1a79061a3964d82bf26e0fd208",
+      "jar_assets_hash": "e54153b4d7e03ab3faee11dbff58a4e45f3299e8"
+    },
+    "1.16.4": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "1952d94a0784e7abda230aae6a1e8fc0522dba99",
+      "jar_assets_hash": "ea372b056349f6bf00d4e71b428274aa01183161"
+    },
+    "1.16.4-rc1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "1fcf6ddd5ee925d19eadc4b7ef7278365979c7fd",
+      "jar_assets_hash": "ea372b056349f6bf00d4e71b428274aa01183161"
+    },
+    "1.16.4-pre2": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "0bc552bc3c6516a5831fd365c0cc35e65df2aa01",
+      "jar_assets_hash": "df20eb1fed0b429e56503d5d43ee17336031682b"
+    },
+    "1.16.3-rc1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "fffe9f9279f52fa8a5624f4753ac9215b17cabc3",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.4-pre1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "44745d09a0c6b8faca3989274996d5193cdc1560",
+      "jar_assets_hash": "32f54ca3a6857bf6b72359e2cff6087a0da00a6f"
+    },
+    "1.16.3": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "1321521b2caf934f7fc9665aab7e059a7b2bfcdf",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.2": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "653e97a2d1d76f87653f02242d243cdee48a5144",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.2-pre3": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "8cfa861961862c263ff80f2f6478535fd1ed7d8b",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.2-rc1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "dd4982bb447c1d2c7c03419b90dbe8f017c47311",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.2-rc2": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "157f7160b1b41bbaa681fcf8d98542bc27ab4b15",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.2-pre2": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "ce5762620a698b464d07a6c733cd66c7fa8072a1",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "1.16.2-pre1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "18caa7718c665b6d8597f7979bbdcb078ea117a0",
+      "jar_assets_hash": "3cec2088e787e794f1b0c1e9cc8b5331db19bdf9"
+    },
+    "20w29a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "4a7182b743f15e3c787f8e62e47eb2dd93604167",
+      "jar_assets_hash": "2c28a02c66fd6201e5b99809dc059e4ebf634e15"
+    },
+    "20w30a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "60762a56f1552578d27b91df594ba2a8953dabcc",
+      "jar_assets_hash": "a9ceb18df80f7b0ce5751d9ea7328e0b07b9be5c"
+    },
+    "20w28a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "1af89d3bb666c848e5640715b6aaa4c0fc5ae7d0",
+      "jar_assets_hash": "bb2e542124d703bdf48391cd12715c1556306500"
+    },
+    "20w27a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "83f30681e76d3438105159c645d9f2f6df88a4d8",
+      "jar_assets_hash": "397710a61b3847d910ebe5f1fd6fb4aadd84e37c"
+    },
+    "1.16": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "228fdf45541c4c2fe8aec4f20e880cb8fcd46621",
+      "jar_assets_hash": "c283045f15eee52c3f34d4aa38df98fe873f1239"
+    },
+    "1.16.1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "c9abbe8ee4fa490751ca70635340b7cf00db83ff",
+      "jar_assets_hash": "c283045f15eee52c3f34d4aa38df98fe873f1239"
+    },
+    "1.16-rc1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "a056316b66aea50c0555d5f438cf839b6cdde000",
+      "jar_assets_hash": "c283045f15eee52c3f34d4aa38df98fe873f1239"
+    },
+    "1.16-pre8": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "23b14c93185398af577353c47af04248991b72b4",
+      "jar_assets_hash": "c283045f15eee52c3f34d4aa38df98fe873f1239"
+    },
+    "1.16-pre5": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "424242726ad6c828f47af0ef2a8dc3ac7a91ef96",
+      "jar_assets_hash": "cc6070d061efce60c470b1fb2b32f3f7f10256eb"
+    },
+    "1.16-pre7": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "62473fe623906a01b2f7cf4f7c1396ab23697e5f",
+      "jar_assets_hash": "c283045f15eee52c3f34d4aa38df98fe873f1239"
+    },
+    "1.16-pre4": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "67bd747f23f658a442766588d044074c65c41332",
+      "jar_assets_hash": "738462b91bd1bc82df431bfc467b778ca3171ab5"
+    },
+    "1.16-pre6": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "44aa1f291392b002cb7096c71913306f57e318e0",
+      "jar_assets_hash": "25476889ce0c41abb084fd5f29ab620546e97eb6"
+    },
+    "1.16-pre3": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "0d7c195c685f8a6172696c9a7f8f4e5d76185528",
+      "jar_assets_hash": "44ae09549ad471d7456abf28a4cb626cf405b020"
+    },
+    "1.16-pre2": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "a1382f4cf8815e3085efb1782cf32ed5cb621b86",
+      "jar_assets_hash": "c1fcfd42ea00713cc31aac3f98b7c3da582486a0"
+    },
+    "1.16-pre1": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "a0041360ae7579fb553d26aa5e8bdb869815e54a",
+      "jar_assets_hash": "c1fcfd42ea00713cc31aac3f98b7c3da582486a0"
+    },
+    "20w22a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "905dbb8972c73e2e62fbfa31b828ba299e136743",
+      "jar_assets_hash": "73dd08ff5505de68a160c9005f148c990d2972e1"
+    },
+    "20w21a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "96efb012b75620e881d5b97deb6fd9f02caab4e5",
+      "jar_assets_hash": "8e478a611632d814227e34a74ec8fe4fd192b32b"
+    },
+    "20w20b": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "ff70a84c9cdc99a866c4b06410ec46f541dcf988",
+      "jar_assets_hash": "5a04a6b58dbfabc54cd7deca3243c410b77db808"
+    },
+    "20w20a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "2b171fb288bfd9c845f99015cbccf1d38bdaef65",
+      "jar_assets_hash": "5a04a6b58dbfabc54cd7deca3243c410b77db808"
+    },
+    "20w19a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "10788e762e437780f17b16832b59647548b34ac1",
+      "jar_assets_hash": "904f61e6a715a79a3e3931ddabf694f8708ef8fb"
+    },
+    "20w17a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "0f9a4d6f9bc5b8fe3a3b5e1d6787f856de3d4f72",
+      "jar_assets_hash": "371f50faa78cb21c1da6a61a5b873abdeaf2dbe2"
+    },
+    "20w18a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "472c80b7df1ef0818da70ef7d13ad512866afd09",
+      "jar_assets_hash": "7b83dcd4d4521a8f110f8bbdb85881783f966f38"
+    },
+    "20w15a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "53585ce8bf64f921feb5090a7facd04995ffc739",
+      "jar_assets_hash": "bb38d346b93cbe52959e2081251320c3b0d1ab8c"
+    },
+    "20w16a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "5edab2c289420b7201b8f780c2dc4669b77fcd1e",
+      "jar_assets_hash": "08083a56a7b2fd0350a8193a6baa66b97b92a9d2"
+    },
+    "20w14infinite": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "cc5cb23748614a6396ffb77427b4f11f4b6ae99b",
+      "jar_assets_hash": "4c3620c163805aaed52aa32802b5770317658254"
+    },
+    "20w14a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "cb36abdee528372522f52ae41ccc0609fd9c4038",
+      "jar_assets_hash": "11249ed97ff3fd58963ec8bb44580bee0bc56c79"
+    },
+    "20w13a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "dbabcec822dc4cd7fff60793facab0f346d1b734",
+      "jar_assets_hash": "dfb43949d637f3a1653857cddb74113615087f76"
+    },
+    "20w13b": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "e4f75e82519fe859932d22c9c05b762cd544af11",
+      "jar_assets_hash": "dfb43949d637f3a1653857cddb74113615087f76"
+    },
+    "20w12a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "8ffb3d6807ede557ca7e114b4b6c3fb797d6e432",
+      "jar_assets_hash": "a2df740f37b86d32577c5c5f06d2f3da005a646a"
+    },
+    "20w11a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "760bf0158d0c7b59b1a6a550bbab9ea4a4921371",
+      "jar_assets_hash": "0d591ff5944b43fce215cc9b5356e7f9ddb1899b"
+    },
+    "20w10a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "5476bd5eda4f2fec842225b4e60dc270aa9c18c9",
+      "jar_assets_hash": "818ebdeffc9ee2561d9f9cd4493992af72796cac"
+    },
+    "20w09a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "d62a517011a3ec66b053a8eae703779555227204",
+      "jar_assets_hash": "880a115d831ffc289a465a44f2f156e80f415e71"
+    },
+    "20w08a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "505d4b727709ef618cf27432f1c94894133caae1",
+      "jar_assets_hash": "c7b76dc9010382c8e7133e7d915cc1eed9c1c48e"
+    },
+    "20w07a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "421d3171259d100d25c9579ac4d6fdbd1d364294",
+      "jar_assets_hash": "c7b76dc9010382c8e7133e7d915cc1eed9c1c48e"
+    },
+    "1.15.2": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "e3f78cd16f9eb9a52307ed96ebec64241cc5b32d",
+      "jar_assets_hash": "392445386f46b4b0fa38091447cc09bbd6898c52"
+    },
+    "20w06a": {
+      "index_version": "1.16",
+      "index_hash": "3a5d110a6ab102c7083bae4296d2de4b8fcf92eb",
+      "client_jar_hash": "cb31534291e7e126f323cdc6596d481cc09753f5",
+      "jar_assets_hash": "76d6dcde2d0419a50e8dba41d9822084756363aa"
+    },
+    "1.15.1": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "8b11614bea9293592a947ea8f4fd72981ea66677",
+      "jar_assets_hash": "961c219cc7b1dd9670540e1898035190a0018679"
+    },
+    "1.15.2-pre1": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "9f28455f9f9d09294e0ba19beb13dc26b39a9582",
+      "jar_assets_hash": "392445386f46b4b0fa38091447cc09bbd6898c52"
+    },
+    "1.15": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "7b07fd09d1e3aae1bc7a1304fedc73bfe5d81800",
+      "jar_assets_hash": "961c219cc7b1dd9670540e1898035190a0018679"
+    },
+    "1.15-pre7": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "3d58943d119fab2404cedc465f45da09d4925f8e",
+      "jar_assets_hash": "961c219cc7b1dd9670540e1898035190a0018679"
+    },
+    "1.15-pre6": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "bc120aa16cfce2be8188f8f809013476f76c57fc",
+      "jar_assets_hash": "961c219cc7b1dd9670540e1898035190a0018679"
+    },
+    "1.15-pre5": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "4cfabb9bc131faf9d99417932d813a1148836fd7",
+      "jar_assets_hash": "cb9190ff204dc1d83c90a3d8adc31b91c9476654"
+    },
+    "1.15.1-pre1": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "70e27f84a178951b0df7c42c7b9313782cb9925e",
+      "jar_assets_hash": "961c219cc7b1dd9670540e1898035190a0018679"
+    },
+    "1.15-pre4": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "6868a5c87243707f7936c21a4e52d076e3d73234",
+      "jar_assets_hash": "6aa6e31f5966b010ba5c02a4a30d3c06cadca637"
+    },
+    "1.15-pre2": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "86826ed25a880827a5b0a2e330402a234e7c6f70",
+      "jar_assets_hash": "f9bf4210075724bcfa3c428ad7e859e927bc568c"
+    },
+    "1.15-pre3": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "468c221358a93040097edb51f768647683fedd18",
+      "jar_assets_hash": "a70dd51b4a5c655a29c0e83ee673de899a2563b7"
+    },
+    "19w46b": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "d795c91e58fd1c3ef66e5061a0562df4bc480368",
+      "jar_assets_hash": "acee59c9f96a4e5ee4d1fdff2c649b57ee7b2d96"
+    },
+    "1.15-pre1": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "6e9fe5ad18470fd1b3318f337fca18cd94d7b9e6",
+      "jar_assets_hash": "a999eea3ff13dc219930b590e8ca2a98124f54ce"
+    },
+    "19w46a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "c0fda1050b9e3affbd1fa7aeec39b6a787c2cb79",
+      "jar_assets_hash": "ef1adb5fb2153a336397e2a3173c150b87c11f78"
+    },
+    "19w45b": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "bf60be81bb0902fdeb221d0d09870112d31df0b7",
+      "jar_assets_hash": "388168da08497b9e4a2392ab5824a9a9483ee20d"
+    },
+    "19w45a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "67fb46186cd0469929a2a3e06d97a2edb42aa983",
+      "jar_assets_hash": "388168da08497b9e4a2392ab5824a9a9483ee20d"
+    },
+    "19w44a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "3675ef34dd983d862b366662405e0d9b9654b656",
+      "jar_assets_hash": "df7b6e2f015dba4c1b7519f1a0ea687f064e4a23"
+    },
+    "19w41a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "e009395464a1e2f4c8c760fc08de73c91e5a03ee",
+      "jar_assets_hash": "94c6e3029634011649611a19c3b0b206f7866432"
+    },
+    "19w42a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "6c40e373f7811321fef635c87b14686ef024b484",
+      "jar_assets_hash": "6d8ab72da89232144e16666513fca919a2e7efc8"
+    },
+    "19w39a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "a0b9a2c6cceb77d4dcf601eeef1ffc7dc882b48a",
+      "jar_assets_hash": "6b8629b151066ab2274f409aff8a779f6bfda5a6"
+    },
+    "19w38b": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "d51e6f344aa46b609e5877699af3c9f613d8ef7c",
+      "jar_assets_hash": "110308afc62f658986b6bc5f89e3c26581a4d41e"
+    },
+    "19w40a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "b5706bdc877f25168acfc337ff4d39a9e8fd57a7",
+      "jar_assets_hash": "6b8629b151066ab2274f409aff8a779f6bfda5a6"
+    },
+    "19w38a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "33e153dbada31777c9344d3e21398f825bd92064",
+      "jar_assets_hash": "110308afc62f658986b6bc5f89e3c26581a4d41e"
+    },
+    "19w37a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "0fd25a522c2faef517aeb55fb9472d7ac4141efc",
+      "jar_assets_hash": "3ae2b03344821901fceb10a88cadd56c8cb37727"
+    },
+    "19w35a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "6a3e18dfa1ab427d77c0e52e55e62509f15be697",
+      "jar_assets_hash": "e6baeb5a49bbb42c6f2dc739cba00b0262211623"
+    },
+    "19w36a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "54a359d0b47818d85c61db79ec742f7fdab5b914",
+      "jar_assets_hash": "3ae2b03344821901fceb10a88cadd56c8cb37727"
+    },
+    "19w34a": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "9d74a00192ffc6b83c8b3c754619d057a9353754",
+      "jar_assets_hash": "2eb0b3225147ba776d79c7904c55542df14bed2b"
+    },
+    "1.14.4-pre7": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "53bf70e446ecfb4a88a7546ab3479c4cc868e143",
+      "jar_assets_hash": "5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"
+    },
+    "1.14.4-pre6": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "338cd13bb237252c59b59043b49340e545fa1722",
+      "jar_assets_hash": "5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"
+    },
+    "1.14.4": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "8c325a0c5bd674dd747d6ebaa4c791fd363ad8a9",
+      "jar_assets_hash": "5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"
+    },
+    "1.14.4-pre4": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "ee6386897fd6d7f777d4159fd45b26deaff14cff",
+      "jar_assets_hash": "5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"
+    },
+    "1.14.4-pre5": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "db91103c10795811477ec33589b2e1cf452f43f2",
+      "jar_assets_hash": "5eb7bbb72d3b1ae1acc085c2fe94f90ba63d2aff"
+    },
+    "1.14.4-pre3": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "4e7e41622e1fb083e093b071396dad50168c9613",
+      "jar_assets_hash": "16cee3bace5ea4f2fb000bcc96df28c4b634849c"
+    },
+    "1.14.3-pre4": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "7f35f02e03ad1b837d0302c874e8cbc662bf1b88",
+      "jar_assets_hash": "8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"
+    },
+    "1.14.4-pre2": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "96f1d6989a86f1bdbf4cc1583a88e6a16f985d17",
+      "jar_assets_hash": "16cee3bace5ea4f2fb000bcc96df28c4b634849c"
+    },
+    "1.14.3": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "af100b34ec7ef2b8b9cf7775b544d21d690dddec",
+      "jar_assets_hash": "8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"
+    },
+    "1.14.4-pre1": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "bcabf6e9e9664796bd97e01c54d1dbf27aa47c39",
+      "jar_assets_hash": "9f48df3db077268ef35d9f83233fa2c607091342"
+    },
+    "1.14.3-pre2": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "a9358d6b2ac6025923155b46dc26cc74523ac130",
+      "jar_assets_hash": "8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"
+    },
+    "1.14.3-pre3": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "360c54d41522541f6eb303771192433de4ea1235",
+      "jar_assets_hash": "8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"
+    },
+    "1.14.3-pre1": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "c49ca8d28e3c64d39dc46d21dd92f421a34ec241",
+      "jar_assets_hash": "8bd6b8aa49e34c7335e679f97c40c1e8226e25f7"
+    },
+    "1.14.2": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "ca6c5a139045967229975c0c0b7f93e78b4314c2",
+      "jar_assets_hash": "5440f75b46beb5503e18d8f85f5c50d803130094"
+    },
+    "1.14.2 Pre-Release 3": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "e1490260d733b18dfc573ab181f9f2df8fb34303",
+      "jar_assets_hash": "5440f75b46beb5503e18d8f85f5c50d803130094"
+    },
+    "1.14.2 Pre-Release 4": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "60783b7bab4125d55f187c859e4b41418ebc8719",
+      "jar_assets_hash": "5440f75b46beb5503e18d8f85f5c50d803130094"
+    },
+    "1.14.2 Pre-Release 1": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "b1802f2bbe126d3b9a524a187eab1be3f346eb1c",
+      "jar_assets_hash": "d0c4a23ad68d88afbe0c4c03006e34f028699999"
+    },
+    "1.14.2 Pre-Release 2": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "d12a34d8584f5465a4851f77bc5a1ce05ac9d59c",
+      "jar_assets_hash": "c03291e8961721fb2ec4cf90774e603371b9d810"
+    },
+    "1.14.1": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "55ba86ddcbc3579397f41910463ffd4056e1e523",
+      "jar_assets_hash": "d0c4a23ad68d88afbe0c4c03006e34f028699999"
+    },
+    "1.14.1 Pre-Release 2": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "4074da2da9e8207c022e5e12355d4fe87063b86b",
+      "jar_assets_hash": "d0c4a23ad68d88afbe0c4c03006e34f028699999"
+    },
+    "1.14.1 Pre-Release 1": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "bf5ada613755329f9d194c1e8a5b26b6bbf30cca",
+      "jar_assets_hash": "d0c4a23ad68d88afbe0c4c03006e34f028699999"
+    },
+    "1.14 Pre-Release 5": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "3e61d082391ad8d25c40d5825cae8843cfeaf579",
+      "jar_assets_hash": "a105b5a34166a59adebb845079eb845a91adaa01"
+    },
+    "1.14": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "7a762a59345c13af7d87111207a93f5a8607f6c0",
+      "jar_assets_hash": "c5b3ac767106c219b415ebe26c7b35d3c1710f10"
+    },
+    "1.14 Pre-Release 4": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "9d2f8dd80ddc2008ed87681186af5321cdb6e560",
+      "jar_assets_hash": "141b5977769d1df2b15ad8803e14946a1b157e9a"
+    },
+    "1.14 Pre-Release 3": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "12f85e0b940f3649c9ecb5a3201811f56992e5c0",
+      "jar_assets_hash": "1681d129153f0b052cda475bd381b59b453e3227"
+    },
+    "1.14 Pre-Release 2": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "7d41669ddd780baecab2926d6ea6b08dac7d834f",
+      "jar_assets_hash": "c846ce30ea933452acb8f941d266977b53b6d8d5"
+    },
+    "19w14b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "a008dc3c45cb4f120ae5e0f124d5af2de1bafed5",
+      "jar_assets_hash": "c26459cc228f6ceb41961ee24df43bf7d7e5352b"
+    },
+    "1.14 Pre-Release 1": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "eb144c0dbc03116c832cdd20d28a8a686327905a",
+      "jar_assets_hash": "8d9fe45d9bd44d3cec3b128f517052988b50ff58"
+    },
+    "19w14a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "d55493da62562de4c8005f6dd117adf78b287658",
+      "jar_assets_hash": "c26459cc228f6ceb41961ee24df43bf7d7e5352b"
+    },
+    "3D Shareware v1.34": {
+      "index_version": "1.14-af",
+      "index_hash": "dadd12315f0620650a72b5f2a402c8a28aca578d",
+      "client_jar_hash": "44db7d7bcd5a1bee6f54f6a623f26a1b3d1e293f",
+      "jar_assets_hash": "cd56d763b5e5367efe834c5815f0b9bfc46ecc76"
+    },
+    "19w13b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "bf33e377d07eadd8989570e24d9fc484aa39c81f",
+      "jar_assets_hash": "d631fcf962453c6131c537b4cc3c92a0e2f1f91b"
+    },
+    "19w13a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "dac80b7f57dee4b0deaa6c78821908c5a5cc7071",
+      "jar_assets_hash": "ed093145374c173b9ce82beed5631687de658ccf"
+    },
+    "19w12b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "2fc0501773a90d120c9f6476037c4bfba554a549",
+      "jar_assets_hash": "91a10c38e60e8029f678fcbab04ea338877db502"
+    },
+    "19w12a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "15ee2d37e5ec79dbf51aa39b000616be94033d6a",
+      "jar_assets_hash": "6e80b5d4a233c6374309a7187ae6fc56f2f2cab7"
+    },
+    "19w11b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "fba44eb056f80480832482cf7788f725a727e3c3",
+      "jar_assets_hash": "cc1a496a30779886763da4440298237e84ed9da9"
+    },
+    "19w11a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "03e795efb9c91f2c4994826c45f3a99d2c695517",
+      "jar_assets_hash": "518c92d0acdfad26402ea8019ba0aff310810eca"
+    },
+    "19w09a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "8ea094f62c14d184bed801b9d7eb06120ffbd2b6",
+      "jar_assets_hash": "7677312644056c06aa00cde6fb01e8be3a92628c"
+    },
+    "19w08b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "cc17b46768c36095f2bf2f621bea12dc307b57d0",
+      "jar_assets_hash": "7a862a515d1374458af414b71d64da67c30b160a"
+    },
+    "19w06a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "10c8f97e8d9d32a6d0a951a7db6f51818d5d258a",
+      "jar_assets_hash": "e8722b4bcf8e1ebb65dcd06f00060501a58666d8"
+    },
+    "19w08a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "8107282674163f5bb025548fef3ec26d6c5cd6ba",
+      "jar_assets_hash": "8048927cc47524518b316195248f7dabc6522aac"
+    },
+    "19w07a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "656fcedd90336e82678d260e4fa20df958926474",
+      "jar_assets_hash": "c22351c8e73869f2d05cc44d8732d351a6e0c053"
+    },
+    "19w04b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "1db2550289499e9611fb03744a63adc50d8ac811",
+      "jar_assets_hash": "9d22656b9a19b0186da40a46bb5d15b5afbb820b"
+    },
+    "19w05a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "26f8cdc6354884a4564a6d4e9dceb4e4440dfb54",
+      "jar_assets_hash": "87404fa2794ead04afb418cc79834e669d01a332"
+    },
+    "19w04a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "4a075e5ceae3fc15efd36222daeb832c94e16946",
+      "jar_assets_hash": "9d22656b9a19b0186da40a46bb5d15b5afbb820b"
+    },
+    "19w03b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "c23a6e04cc6dc2c3a139d80d17e005599e2243eb",
+      "jar_assets_hash": "df5e8ab7e60507c6ad864362774218db22b64deb"
+    },
+    "19w03a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "7280ee42cce1c0371c96c95c22170d3aea7068bb",
+      "jar_assets_hash": "df5e8ab7e60507c6ad864362774218db22b64deb"
+    },
+    "19w03c": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "332bdc5f0f0505d86f1f7e5b0f5c7693b494a830",
+      "jar_assets_hash": "df5e8ab7e60507c6ad864362774218db22b64deb"
+    },
+    "18w49a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "2a0b27ad8bd6cd2bb09e3a2210170fd0b5424c54",
+      "jar_assets_hash": "5b53bf93de0d6e7544ad1a5716e5fc678a4fc19b"
+    },
+    "18w50a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "865a610fe77eb9d2fea48de1a02229526a391249",
+      "jar_assets_hash": "3175102c7fd74433f4c4fa8cb7cee4a51127f546"
+    },
+    "19w02a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "8664f5d1b428d5ba8a936ab9c097cc78821d06e6",
+      "jar_assets_hash": "635a1b0c00cca53cb0c705fd73a17332af8c4746"
+    },
+    "18w47b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "1174ad74afce51a9309f1293af5bf24f60609cee",
+      "jar_assets_hash": "69e2b718160b5dc623c70c8d5a52bd481dc0c230"
+    },
+    "18w48a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "8c2c778a22201836bf482a8ed06e1b1f994c61e3",
+      "jar_assets_hash": "06fcb1f21d39516c62fe92084c14650f7e67a3d9"
+    },
+    "18w48b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "4b1dc59156a888b2e20bbcbfdd5704fb4e7f6789",
+      "jar_assets_hash": "06fcb1f21d39516c62fe92084c14650f7e67a3d9"
+    },
+    "18w47a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "1cac5e82265eef3a7670c8752f31f02c65116aef",
+      "jar_assets_hash": "7742a1337bdf91443940ed449c3c3986dc3106bb"
+    },
+    "18w46a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "342ece78f131c72c4669c9aa27a7be542b911171",
+      "jar_assets_hash": "692b4a5d983f2b4c07fff6ecd0a674f8959a3980"
+    },
+    "18w45a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "e03e8d27b07cccc85ae669e666bc3e4e2036c374",
+      "jar_assets_hash": "4ff9cee8841c4b53773cbaac1a0a8e4231ab53ad"
+    },
+    "18w44a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "20ea61f07e34b3e81ca356b6a71cc98cc4e571a9",
+      "jar_assets_hash": "109d634e0d6c5adcacb4784bddb4e85cab5ba482"
+    },
+    "18w43c": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "a040369aa294a5a42048d828b03592b54db6a8d3",
+      "jar_assets_hash": "adbbf3c7dfe971722088c546fb47becbae7aa052"
+    },
+    "18w43b": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "0b93502884da84e9d60532729eca59b70c96f281",
+      "jar_assets_hash": "571ae7567f23007c5f7f23973937f82477d2990f"
+    },
+    "18w43a": {
+      "index_version": "1.14",
+      "index_hash": "d6c94fad4f7a03a8e46083c023926515fc0e551e",
+      "client_jar_hash": "6f0fa604e9c8b1996c985aceb9b589fa4e583671",
+      "jar_assets_hash": "ddddfc3f93ec94756ba662ba3df625d7bc86b3c0"
+    },
+    "1.13.2": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "30bfe37a8db404db11c7edf02cb5165817afb4d9",
+      "jar_assets_hash": "ddff99098d5f5dead1777f838e220163e49ea29a"
+    },
+    "1.13.2-pre2": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "3ad1375091d9de67beb3197dcd173d05ff27dd0b",
+      "jar_assets_hash": "ddff99098d5f5dead1777f838e220163e49ea29a"
+    },
+    "1.13.2-pre1": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "843bc6377ff859b7744d12df0b62653dc318456b",
+      "jar_assets_hash": "ddff99098d5f5dead1777f838e220163e49ea29a"
+    },
+    "1.13.1": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "8de235e5ec3a7fce168056ea395d21cbdec18d7c",
+      "jar_assets_hash": "ddff99098d5f5dead1777f838e220163e49ea29a"
+    },
+    "1.13.1-pre1": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "7f7ae07cc319346b632f6c9f26ff8c67728b203c",
+      "jar_assets_hash": "7e4553f9747d45efe982a901871fbe9dedbbe1c6"
+    },
+    "1.13.1-pre2": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "7eaeaa37e0c7642d519c39de70a630119ad4929a",
+      "jar_assets_hash": "ddff99098d5f5dead1777f838e220163e49ea29a"
+    },
+    "18w33a": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "b8fc21c1446df367ac02946f1b475bd72df84dd6",
+      "jar_assets_hash": "eed90f8e53976473f61dc30c83cdc5a41c8318c5"
+    },
+    "18w32a": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "f4f53276150e295afc8cd300d87568f279607bfb",
+      "jar_assets_hash": "19deb798aae2901f1a15694fc624a83878f4bcb3"
+    },
+    "18w31a": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "0a343ef39365d70908a3c59fbbf2d9c0ddd2ad75",
+      "jar_assets_hash": "d6f377ff2933192495b04187975e0467349915e2"
+    },
+    "18w30b": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "e6bfb0dc26e29d80efb137c8e9359fd3c324cf1a",
+      "jar_assets_hash": "497febcb4eb4f1a349e1c084d7fa373e7d63fd46"
+    },
+    "18w30a": {
+      "index_version": "1.13.1",
+      "index_hash": "6d78d53da5ac7158e2f725056312edf9871dfbb1",
+      "client_jar_hash": "d368609e838cb1b22e1e1e9eee8f83dbe4847909",
+      "jar_assets_hash": "72319e797d863a8c85735c944a82bee72fad18eb"
+    },
+    "1.13": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "c0b970952cdd279912da384cdbfc0c26e6c6090b",
+      "jar_assets_hash": "83d476c9c4a5d86520131d808a24501d73ec5d8c"
+    },
+    "1.13-pre10": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "72c4fbff2a1318a57bfb66e325055064a13378a8",
+      "jar_assets_hash": "ab19481282d2589aed7b6cb516c4948b1787c1b2"
+    },
+    "1.13-pre9": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "4dedcb718a3382496d19d13cfe5dc070528a15cd",
+      "jar_assets_hash": "540b92b27cec69d5fc09ec0b5b550745f9ce509b"
+    },
+    "1.13-pre8": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "fbece4a24e47af57c3ee75e331f9390309f92ae5",
+      "jar_assets_hash": "d7cea2337647342e59cd82fbdb1bb9ad0594ea7c"
+    },
+    "1.13-pre7": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "0b5d9df7bc2d0e4fd00d0bf7cf4409b999567497",
+      "jar_assets_hash": "77d26c8203a6874dbb6bff84e9fdd1db575d2050"
+    },
+    "1.13-pre4": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "c4a93fea1ea2a1a7886c8f5f66f6d929db53f021",
+      "jar_assets_hash": "7331ba72b38e3dea06cb4085ebf88d9a28eb8226"
+    },
+    "1.13-pre3": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "94f2e86f94d7d80c19ec1d3d637b1ef2d862be9e",
+      "jar_assets_hash": "38d965f39ee28fbaffe2f73ae63699c9e2d8721e"
+    },
+    "1.13-pre2": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "b833d32e1846989a61c6c3faa40232bb72bd59de",
+      "jar_assets_hash": "2831c9776e71d705d87c93ca064fae1ee7523da1"
+    },
+    "1.13-pre1": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "f9b3302a997e52af71efc3904d805957430e4820",
+      "jar_assets_hash": "23946002e04dcc3d6af3bc382d6d45263e68dce5"
+    },
+    "18w22c": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "ec446c24c4842f6237ba7c560a5b0dae9ac87c22",
+      "jar_assets_hash": "7f6cdd3505d608e1b5f6d4356d93dcb5bc69bb40"
+    },
+    "18w22b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "a7db66a86e6696aef0fbfbf813293ff1aa01a64a",
+      "jar_assets_hash": "7f6cdd3505d608e1b5f6d4356d93dcb5bc69bb40"
+    },
+    "18w22a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "0a864719da82dd91bf5d7031cf9c40e5ec3dbfd7",
+      "jar_assets_hash": "e91fb72a6b21330eec5b32270c49021b0f459730"
+    },
+    "18w21b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "77b9304fd8e97953de4c6334f56abe4bc2661fe1",
+      "jar_assets_hash": "2c59a414ee0b4ec27a16c32931d7bf5fad0c6b90"
+    },
+    "18w21a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "9b1d1486518585537a0d9e608dd27e3946880d48",
+      "jar_assets_hash": "2c59a414ee0b4ec27a16c32931d7bf5fad0c6b90"
+    },
+    "18w20c": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "273595b95fff5080b74cefe18ce0c747d02663ed",
+      "jar_assets_hash": "a17822e3744011f3f2de50b67f202ac5a683cadf"
+    },
+    "18w20a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "89843d397a9b0fd42bea26ada6890ebc693ad288",
+      "jar_assets_hash": "00fb968b805af6346c24e89ba26162f8fd047347"
+    },
+    "18w20b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "91aa79a2aa3c656221defebf5310c1ffacfd81ed",
+      "jar_assets_hash": "a83a7f8f11d67fc871c7b8ed651783f9dbffcbec"
+    },
+    "18w19a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "d52b2e8f15a764000c1ca6dabab4440069ff97a4",
+      "jar_assets_hash": "56a99e4021b05fb21e0cae1687273f61d004291e"
+    },
+    "18w19b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "6e5306869f9644e0a91f23345b4f445742daf5cc",
+      "jar_assets_hash": "f3ba6d2d0b00f44a450d1306cf68c0a775284e21"
+    },
+    "18w16a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "8787bc29f2a1e151123f70e21698af23374d1b08",
+      "jar_assets_hash": "6b2adf82c06b2cc5f517cc32efb8e3f1e49a0255"
+    },
+    "18w15a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "ba02c440e50e0197a13cef03ca2356c8cc51f058",
+      "jar_assets_hash": "5cc2dfe24081ad50e5d8f06b04338393184fcb9e"
+    },
+    "18w14a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "73885c6bf4fdcca8ab1ca22b56f69c9945725770",
+      "jar_assets_hash": "3497f21c31e54a39f243b5b738be2e88cb95e828"
+    },
+    "18w14b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "d9b4fc98eb5242346ed0421f6ccd3c9032dc0514",
+      "jar_assets_hash": "a6376923f81b7e5b517258c2f1cb130545000409"
+    },
+    "18w11a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "e4abfe0c5e7f490a1071e7c99cb1cef81ffd89dc",
+      "jar_assets_hash": "25a55e2f5fae3bc3eb172a91df00b5abde6546d2"
+    },
+    "18w10d": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "062c014c0e8684ca554d3abbcfc31e3e56334a2a",
+      "jar_assets_hash": "55eda7703a0c7f42757b288a95e71a90a90c5f14"
+    },
+    "18w10c": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "cec68c82ce5824f74069e8ba84871786077da6ab",
+      "jar_assets_hash": "55eda7703a0c7f42757b288a95e71a90a90c5f14"
+    },
+    "18w10b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "383e0396f585fcc5a487f04fcb77a9743a0e44c3",
+      "jar_assets_hash": "e6a5f37ce1fa50698765da4517893ad00c73a088"
+    },
+    "18w10a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "fb24610e6fca6f83e8b45e3a46224601d4ca6c27",
+      "jar_assets_hash": "b585b42c5585263a138807059e2629a34c831357"
+    },
+    "18w09a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "701085c1b668d45b7c0ee5ea911b11d6691c01bc",
+      "jar_assets_hash": "3603c8b64b6f2537dea2275bb7afcc3f6ec789f8"
+    },
+    "18w08b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "665fd71175823d517cee81154b374bb27ac5c070",
+      "jar_assets_hash": "331eac71c88075a3bf798f056327d58f15cb1c76"
+    },
+    "18w08a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "52cacb4730ddee013b67e10e49b99955b4ec10ea",
+      "jar_assets_hash": "1ec085c5386cd95837bd862a640f66e54a6aaef6"
+    },
+    "18w07c": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "3d5865b5bf013f84e44c3f096193aa45c672bb51",
+      "jar_assets_hash": "1bc58363bca2179afb2b4c922eb651b4c3c7f0bb"
+    },
+    "18w07a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "fa2960642589fc7bd3e14049ffe7d84a4d2bac1d",
+      "jar_assets_hash": "9116c0e863adb18d40e5a51c08970732fc1cd1d3"
+    },
+    "18w05a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "bc3c321006bd1864a9e3dfea8c351927c44519c6",
+      "jar_assets_hash": "8597235d7cfbea26bca7bd1fd4b4d19b37ec8047"
+    },
+    "18w03b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "39b958dd8e4ab25c6b6522ce9c83d4bd45173738",
+      "jar_assets_hash": "3c020f440dd301633fba0402f2be409d385ef730"
+    },
+    "18w03a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "b9e9cfa4e6019fa1d4aa7b368366b9d8979db2a1",
+      "jar_assets_hash": "3c020f440dd301633fba0402f2be409d385ef730"
+    },
+    "18w07b": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "e1aeafe25aa454e35e53bd489523bed51aa5e826",
+      "jar_assets_hash": "1bc58363bca2179afb2b4c922eb651b4c3c7f0bb"
+    },
+    "18w06a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "78ed8d3359453614d8f69bd982111e8aa6c8f612",
+      "jar_assets_hash": "83fdddb3c5f6555726b23caf394ea495ca9d7760"
+    },
+    "18w02a": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "05932046cbefd34e42ba21530b96986435163bda",
+      "jar_assets_hash": "b6d3b297f4779e5bf1d35e777d9b6c24c039ed50"
+    },
+    "21w06a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "50a88791b64547d5325018270e0a5a71f8d4fc03",
+      "jar_assets_hash": "7f65de69b9578ceea07de66aad9a5f2e3c460069"
+    },
+    "21w05b": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "8230cf2349b48ba79b0581a3fc76be53f26312bc",
+      "jar_assets_hash": "b89083def6d9a26a689fe1401863ce9d97d93cef"
+    },
+    "21w05a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "225bda6c3721a464e9f772a1ca96db2d5df246b9",
+      "jar_assets_hash": "4091e28566b3a0944e0eac1112b335fe7b1400b0"
+    },
+    "1.15.2-pre2": {
+      "index_version": "1.15",
+      "index_hash": "bfdce6db2ba511d7dba9ef81910943d6c3d2608d",
+      "client_jar_hash": "a6b3fcea0178c47e518a3703adb8af793f526bce",
+      "jar_assets_hash": "392445386f46b4b0fa38091447cc09bbd6898c52"
+    },
+    "21w14a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "4af7eb4770d3e708d287db3bf023d4bbc60465b0",
+      "jar_assets_hash": "e39427c3cd275c0872adab52630906453bf7f92f"
+    },
+    "21w13a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "507be109a1902b7c3b30c1e900299344c7c0bee6",
+      "jar_assets_hash": "4b7f030df9c7905bb296ff20a5bda66387b72a90"
+    },
+    "21w11a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "07ad8b23e33d195fd897133c9c0e35d7fa1593eb",
+      "jar_assets_hash": "a2f8324339320ad54067b0f4774e5f45212d69d9"
+    },
+    "21w10a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "7840a9b8d9aeb480b16962c40a2ca3758893f00e",
+      "jar_assets_hash": "44f9fcf33e86bed68d0609934c668b1daa7b4300"
+    },
+    "21w08b": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "c8ae0a1a8b18841e009b8dcdf21ec014f5787410",
+      "jar_assets_hash": "f8dfb7aad074722ea44f859734aafadd1ec35acb"
+    },
+    "21w08a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "3a008c012bd6bba29054701c7797493523660c57",
+      "jar_assets_hash": "f8dfb7aad074722ea44f859734aafadd1ec35acb"
+    },
+    "21w07a": {
+      "index_version": "1.17",
+      "index_hash": "d68c9fb7046a75a85eeea3c881bc358f2c55c6c4",
+      "client_jar_hash": "e6886725265257d34b5e0d0661632c61800bded3",
+      "jar_assets_hash": "afd9cc70073b034da831ba445526879cac930176"
+    },
+    "1.13-pre6": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "9405570c459c0803da2754b34e5ffeb74413a904",
+      "jar_assets_hash": "1adf0f5c62e352755f482e4c997b9de11b2852c2"
+    },
+    "1.13-pre5": {
+      "index_version": "1.13",
+      "index_hash": "23981354446ddc141dcf03cc4bfa6b2a9492aa90",
+      "client_jar_hash": "f3262055c586a075fc84f9d4bc76b3cf1a72d69c",
+      "jar_assets_hash": "f911e929f01e9cd6f54e3f42d2d748f34af5a9bf"
+    },
+    "18w01a": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "504f07f4a10f295522a57f2b1163298dc4a63103",
+      "jar_assets_hash": "7b1b08b0f0f07fd82d147ecce3b4a5c20e0dd794"
+    },
+    "17w50a": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "ebb9600d0f33b6ffd1dec8fc3010677dc07accbc",
+      "jar_assets_hash": "aab0d777fc9cb669c7fe29e32c44e25347cedde1"
+    },
+    "17w49b": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "bb28e11e5b6ca4c0678d00bf82d061d282ab6445",
+      "jar_assets_hash": "008d365818e79e873e8e7cd28d5cdfa4bfec3d02"
+    },
+    "17w49a": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "a58ce444458ba9267973c31877a57eac5a5cbeda",
+      "jar_assets_hash": "8c39e2e5687f11a3ff6633da103e46c3254a97db"
+    },
+    "17w48a": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "1b31d5152548eeb7dfa94cdeafd8d9321de8f8c3",
+      "jar_assets_hash": "2a86e04ba3555fc4fe712c79139ebcd64ea71549"
+    },
+    "17w47b": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "049d118c3fc0d3fad544aaf387ca6c5cb2cf4e00",
+      "jar_assets_hash": "f7790e004b93f4b73854f26759c29ccc401809c4"
+    },
+    "17w47a": {
+      "index_version": "1.12",
+      "index_hash": "1584b57c1a0b5e593fad1f5b8f78536ca640547b",
+      "client_jar_hash": "4485b04ad6358eef525aeeb246fe2b6b23d232ee",
+      "jar_assets_hash": "ad5d46b23d44f88b9ab8a5b0ba2b3bd5291ecc0c"
+    },
+    "21w15a": {
+      "index_version": "1.17",
+      "index_hash": "e8dbc76be7778ccf837a48c462806b873aff62ff",
+      "client_jar_hash": "749805abb797f201a76e2c6ad2e7ff6f790bb53c",
+      "jar_assets_hash": "c3413d9904c18598d757caf2282fe250a510644a"
+    },
+    "21w16a": {
+      "index_version": "1.17",
+      "index_hash": "0198cb89458ae865669d11bcf4ddc014b02e204b",
+      "client_jar_hash": "f124f2aad604e88f27f010834d82c7af85506b6c",
+      "jar_assets_hash": "a45aecd72a6c54719412417234708458f4106e7c"
+    },
+    "21w17a": {
+      "index_version": "1.17",
+      "index_hash": "7228a0a2f77ce7f176e1a98f2beff168a6d01ffe",
+      "client_jar_hash": "6f0597c8dfef133d59cdce2c629a37f0e259512b",
+      "jar_assets_hash": "61a717369d8136fb5eb928dd46cbace145c4ab01"
+    },
+    "21w18a": {
+      "index_version": "1.17",
+      "index_hash": "7ccefbf653a0f407c655522dab844e29baa0cefb",
+      "client_jar_hash": "f52cf94abf99911ca88c12f776bcf30c9b6f1617",
+      "jar_assets_hash": "fce53ae48a16a233bc4fc3d79a127c49c4fa04de"
+    },
+    "21w19a": {
+      "index_version": "1.17",
+      "index_hash": "b9ee9752245731c4c441fb1d94b52033bea63efb",
+      "client_jar_hash": "ec029994171ba8e3d9a68458d7d307a67a84faac",
+      "jar_assets_hash": "f73f4e4e1ff6f110e24535f8c1c0fcb87abb29c8"
+    },
+    "21w20a": {
+      "index_version": "1.17",
+      "index_hash": "22ec056697dacf4c6aa1f17700e94994454f9e49",
+      "client_jar_hash": "f756009979e33058d57695a3599b4a2544d856ca",
+      "jar_assets_hash": "74af780f47f4c025b74c68522cb1684e1d9ea525"
+    },
+    "1.17-pre1": {
+      "index_version": "1.17",
+      "index_hash": "928de7f973076c901a10a186a09812de9027bab5",
+      "client_jar_hash": "940af6eda421da56e3bf9c390df65ba713cc8f7f",
+      "jar_assets_hash": "73fc99ac31889e3b13b8e6b65de7a3b942b913de"
+    },
+    "1.17-pre3": {
+      "index_version": "1.17",
+      "index_hash": "d6c1357efc4f62da468d98fe57dae0489e410ab6",
+      "client_jar_hash": "3d587b97faf19d4c2fa63e03d1920eb37a95920b",
+      "jar_assets_hash": "32437d17f9efe60edb086df3c2d6b8d5645ad888"
+    },
+    "1.17-pre2": {
+      "index_version": "1.17",
+      "index_hash": "d6c1357efc4f62da468d98fe57dae0489e410ab6",
+      "client_jar_hash": "72ebf53f36151a9c2657dca80f72a97c0917d3ce",
+      "jar_assets_hash": "5031d64ad7e6b7ebfe5f6b2e60b3966cae3416a7"
+    },
+    "1.17-pre4": {
+      "index_version": "1.17",
+      "index_hash": "19a53a9d06b3a2c4e64eb0a907b90fe49bf1f6ee",
+      "client_jar_hash": "de8e68ea23f837f9ab628cda7b16ba3de4b79153",
+      "jar_assets_hash": "df1dbd6e645ebc88b78ad72bc8b0026c48084698"
+    },
+    "1.17-pre5": {
+      "index_version": "1.17",
+      "index_hash": "ff4c1b667c02b183352af8817a2699a96abc08e0",
+      "client_jar_hash": "ad51f4efbc250c15d84eaf07f600787246fa6cd6",
+      "jar_assets_hash": "df1dbd6e645ebc88b78ad72bc8b0026c48084698"
+    },
+    "1.17-rc1": {
+      "index_version": "1.17",
+      "index_hash": "c6e8898a39b4c29ca1ce3cadcae58b532a279a6f",
+      "client_jar_hash": "006320ab2a9969f0e0d3dc64a463e1816be5e225",
+      "jar_assets_hash": "df1dbd6e645ebc88b78ad72bc8b0026c48084698"
+    },
+    "1.17-rc2": {
+      "index_version": "1.17",
+      "index_hash": "5980cedf055a0ebc1059ddb9487a004c7d0f781e",
+      "client_jar_hash": "fe88ac6c8a0bedc9a48e5c9b48eb0f4dc24ccc79",
+      "jar_assets_hash": "df1dbd6e645ebc88b78ad72bc8b0026c48084698"
+    },
+    "1.17": {
+      "index_version": "1.17",
+      "index_hash": "15809afbdc4489abd52a3d6c3fda0124f8f3404b",
+      "client_jar_hash": "1cf89c77ed5e72401b869f66410934804f3d6f52",
+      "jar_assets_hash": "df1dbd6e645ebc88b78ad72bc8b0026c48084698"
+    },
+    "1.17.1-pre1": {
+      "index_version": "1.17",
+      "index_hash": "fc00c90b4d2d27a4569b4f0d5487c70d13063dba",
+      "client_jar_hash": "e2379ea3e1ff2ad1ab566e7fad78ce39eff3781f",
+      "jar_assets_hash": "b2cb1982e43d75dc8c9137251c3bd0a81476e5c8"
+    },
+    "1.17.1-pre2": {
+      "index_version": "1.17",
+      "index_hash": "229b5b523cf8b920db0a9d4ee2b1cf3f49d7dbce",
+      "client_jar_hash": "6edfbe953993a45d3f7c845a5b4e97492f2e8f85",
+      "jar_assets_hash": "b2cb1982e43d75dc8c9137251c3bd0a81476e5c8"
+    },
+    "1.17.1-rc1": {
+      "index_version": "1.17",
+      "index_hash": "4fefa75bc44abb319a51939cda70094b6c183c5d",
+      "client_jar_hash": "40595d7eeeebc212f6e2b8b5a3dbfc5377cfef9b",
+      "jar_assets_hash": "0df4201b8f5412047d7a55a88be646df98a183fe"
+    },
+    "1.17.1-pre3": {
+      "index_version": "1.17",
+      "index_hash": "4fefa75bc44abb319a51939cda70094b6c183c5d",
+      "client_jar_hash": "c9f26f45a9c18c27ef1dd3753057ce81401d742d",
+      "jar_assets_hash": "b2cb1982e43d75dc8c9137251c3bd0a81476e5c8"
+    },
+    "1.17.1": {
+      "index_version": "1.17",
+      "index_hash": "e5af543d9b3ce1c063a97842c38e50e29f961f00",
+      "client_jar_hash": "8d9b65467c7913fcf6f5b2e729d44a1e00fde150",
+      "jar_assets_hash": "0df4201b8f5412047d7a55a88be646df98a183fe"
+    },
+    "1.17.1-rc2": {
+      "index_version": "1.17",
+      "index_hash": "e5af543d9b3ce1c063a97842c38e50e29f961f00",
+      "client_jar_hash": "132b56af0236e9877261325b67d1606d126463ae",
+      "jar_assets_hash": "0df4201b8f5412047d7a55a88be646df98a183fe"
+    },
+    "1.18-pre1": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "020aa79e63a7aab5d6f30e5ec7a6c08baee6b64c",
+      "jar_assets_hash": "ce03dd2ae051945bf950faf00e526e0760081a55"
+    },
+    "21w44a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "6bf2feca56785edfddf308cbeef0fc3331155685",
+      "jar_assets_hash": "2c5b2030f54b3efa8c8b0d60c78871e9a9c8ff97"
+    },
+    "21w43a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "ad67ea7db46f4ebbb1d8d5f9286401660a26ebbf",
+      "jar_assets_hash": "d17a5f3325658f1d16cc5843cb17618f13eb7ffa"
+    },
+    "21w42a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "05781f1ce3749ee0958be1de939d15b8aff1910b",
+      "jar_assets_hash": "c51e7eafc6c0bb037157016a56fb20d6523c4b41"
+    },
+    "21w41a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "dd353c98457702583b610552da47ff8eb57c602d",
+      "jar_assets_hash": "c3ef815088806094792171b8568a3b2732f0c335"
+    },
+    "21w40a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "b88eecb40a4b522aaebe5b10dc44d235f2aef944",
+      "jar_assets_hash": "8b80cdc275124b28c1653d103abbbf0d5e130393"
+    },
+    "21w39a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "2b2b97d9ca6d50669096016f0da959879afe3203",
+      "jar_assets_hash": "bf187815b927ccd4a6f216ac985f325ff24b6c07"
+    },
+    "21w38a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "4e7c161ec40c9928ebfcc1f96be407d71de4b50d",
+      "jar_assets_hash": "874f9b7b885e3f5785ac74ad752d6ae345f61afa"
+    },
+    "21w37a": {
+      "index_version": "1.18",
+      "index_hash": "843bb3402bc89e57d3a2e1cced0dd166d660f226",
+      "client_jar_hash": "be41b4e18f4a600365fd7a2b8eeac49232304ced",
+      "jar_assets_hash": "0942fcf44f7734a8942cc46a043f251dbe5bfc15"
+    },
+    "1.18-pre5": {
+      "index_version": "1.18",
+      "index_hash": "b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e",
+      "client_jar_hash": "561446f5e8345f0d77b56f7874ce8aa71cdb1c62",
+      "jar_assets_hash": "60d08fcc3d9a7a7bd93a9212c7dc171df1e6a011"
+    },
+    "1.18-pre4": {
+      "index_version": "1.18",
+      "index_hash": "b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e",
+      "client_jar_hash": "9690cfe8e0d491173c17018f57671bb40745c33b",
+      "jar_assets_hash": "73a70efa266025f91e621ecff2a8178f9f28fb72"
+    },
+    "1.18-pre3": {
+      "index_version": "1.18",
+      "index_hash": "b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e",
+      "client_jar_hash": "fe58c0cffa004dbb78c9a1cf30cc935d280a45b3",
+      "jar_assets_hash": "73a70efa266025f91e621ecff2a8178f9f28fb72"
+    },
+    "1.18-pre2": {
+      "index_version": "1.18",
+      "index_hash": "b1c3e63f32c489f977ac4d325e6a7ba5b7aa757e",
+      "client_jar_hash": "6b88f1734c80775f59416db3599c2a4333558ca4",
+      "jar_assets_hash": "fd0e66c1b82ac8a99b8d51c5aa90d39994c87db3"
+    },
+    "1.18-pre6": {
+      "index_version": "1.18",
+      "index_hash": "816e3e9c187679b4622ebd1272e7c7c302d4c743",
+      "client_jar_hash": "86dc60a6e7e9f1bbb877ce2c950de3d1c3cafb89",
+      "jar_assets_hash": "60d08fcc3d9a7a7bd93a9212c7dc171df1e6a011"
+    },
+    "1.18-pre7": {
+      "index_version": "1.18",
+      "index_hash": "3574cededbb35435580ba6f38cd85119de5e2ace",
+      "client_jar_hash": "04f78760e28f823365430bf1126a49ac30d7db6c",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18-pre8": {
+      "index_version": "1.18",
+      "index_hash": "93627da4c545c82fcd9812d5db04c2b3a30c75ae",
+      "client_jar_hash": "ffb896e756a4edc4a538e9a0ac408f9f45ea5076",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18-rc1": {
+      "index_version": "1.18",
+      "index_hash": "ce48875941e15ce9a4fbd692f72e48c0aa43c278",
+      "client_jar_hash": "6232765f8b87066e271ab984eccd8a8f3af03630",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18-rc3": {
+      "index_version": "1.18",
+      "index_hash": "4a6132b7a24aea2d28ead2679650cc3392dc85b2",
+      "client_jar_hash": "060dd014d59c90d723db87f9c9cedb511f374a71",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18-rc2": {
+      "index_version": "1.18",
+      "index_hash": "4a6132b7a24aea2d28ead2679650cc3392dc85b2",
+      "client_jar_hash": "6d90a50cc252b78f959b5d41c46f8d983efda594",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18-rc4": {
+      "index_version": "1.18",
+      "index_hash": "d599b18b99d9fb1ffe74b0387530ca7beb3e080b",
+      "client_jar_hash": "4cf8ed5168308946275308cae955ec70b4379477",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18": {
+      "index_version": "1.18",
+      "index_hash": "f6a014ffd1f48eaebbdded34722869b466dca489",
+      "client_jar_hash": "d49eb6caed53d23927648c97451503442f9e26fd",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18.1-pre1": {
+      "index_version": "1.18",
+      "index_hash": "487d57e69da2d48006d36683f13ad7815b30b90d",
+      "client_jar_hash": "9561f774dcc8797a02a907fc79d946533fbb00c7",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18.1-rc1": {
+      "index_version": "1.18",
+      "index_hash": "c491bcfa7a4a3b37acbdd883668101bbce23caaa",
+      "client_jar_hash": "e123b3b6b654213cd4f9f381dc17c1ad2f6b2fe2",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    },
+    "1.18.1-rc2": {
+      "index_version": "1.18",
+      "index_hash": "62d12ddd08d410ff2f7f20693bb3ef38628b6846",
+      "client_jar_hash": "816d038208ac127176fde4d6597fd11a0aeb98c7",
+      "jar_assets_hash": "4895ecd07d19e284853cb72b266fbf2bcf32b9cb"
+    }
+  }
+}
