@@ -13,5 +13,8 @@ stages:
 
 build:
   stage: build
+  only:
+    - master
+    - merge_requests
   script:
-    - 'mvn $MAVEN_CLI_OPTS verify'
+    - 'mvn $MAVEN_CLI_OPTS compile'
