@@ -114,7 +114,7 @@ class MainErosController : JavaFXWindowController() {
         }
 
         val profile = ErosProfileManager.selected.general.accountProfile
-        profile::selected.profileWatchFX(this, true) {
+        profile::selected.profileWatchFX(this, true, profile) {
             if (profile != ErosProfileManager.selected.general.accountProfile) {
                 return@profileWatchFX
             }

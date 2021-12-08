@@ -229,7 +229,7 @@ interface ProfileManager<T : Profile> {
             }
         }
 
-        profiles[selected]?.let { this.selected = it } ?: initDefaultProfile()
+        this.selected = profiles[selected]?.let { return@let it } ?: initDefaultProfile()
 
         Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
     }

@@ -1,0 +1,8 @@
+
+* {
+    -primary-color: linear-gradient(from 25px 25px to 100px 100px, #dc143c, #32cd32);
+    -primary-light-color: linear-gradient(from 25px 25px to 100px 100px, #ff5966, #73ff65);
+    -primary-dark-color: linear-gradient(from 25px 25px to 100px 100px, #a20016, #009b00);
+    -primary-text-color: #000000;
+}
+
