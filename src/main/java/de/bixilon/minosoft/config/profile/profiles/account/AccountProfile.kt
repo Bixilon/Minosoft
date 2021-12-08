@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.config.profile.profiles.account
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -27,10 +28,24 @@ class AccountProfile(
     override val version: Int = latestVersion
     override var description by delegate(description ?: "")
 
+    /**
+     * The client token.
+     * This 128 length long string is generated randomly while the profile was created
+     * Will be sent to mojang when logging in/refreshing an account
+     */
     var clientToken by delegate(Util.generateRandomString(128))
+
+    /**
+     * All accounts
+     */
+    @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
     var entries: MutableMap<String, Account> by mapDelegate()
         private set
 
+    /**
+     * The current id of the selected account
+     */
+    @get:JsonInclude(JsonInclude.Include.NON_NULL)
     @get:JsonProperty("selected") private var _selected: String? by delegate(null)
 
     @get:JsonIgnore var selected: Account? by backingDelegate(getter = { entries[_selected] }, setter = { _selected = it?.id })

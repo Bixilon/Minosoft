@@ -29,18 +29,22 @@ class AccountTypeCardController : AbstractCardController<ErosAccountType<*>>() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var textFX: TextFlow
 
-    override fun updateItem(type: ErosAccountType<*>?, empty: Boolean) {
-        super.updateItem(type, empty)
-        type ?: return
+    override fun updateItem(item: ErosAccountType<*>?, empty: Boolean) {
+        val previous = this.item
+        super.updateItem(item, empty)
+        item ?: return
+        if (previous === item) {
+            return
+        }
 
 
         iconFX.isVisible = true
 
-        iconFX.iconCode = type.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(type)
+        iconFX.iconCode = item.icon
+        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
 
-        recalculate(type)
-        ErosProfileManager.selected.general.accountProfile::entries.profileWatchMapFX(this) { recalculate(type) }
+        recalculate(item)
+        ErosProfileManager.selected.general.accountProfile::entries.profileWatchMapFX(this) { recalculate(item) }
     }
 
     private fun recalculate(type: ErosAccountType<*>) {

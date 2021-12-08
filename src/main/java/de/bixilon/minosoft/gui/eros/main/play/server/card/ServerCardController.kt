@@ -47,8 +47,6 @@ class ServerCardController : AbstractCardController<ServerCard>() {
 
     var serverList: ServerListController? = null
 
-    var serverCard: ServerCard? = null
-        private set
 
     override fun clear() {
         faviconFX.image = JavaFXUtil.MINOSOFT_LOGO
@@ -64,12 +62,12 @@ class ServerCardController : AbstractCardController<ServerCard>() {
         val previous = this.item
         super.updateItem(item, empty)
 
-        root.isVisible = item != null
-        this.serverCard = item
-        item ?: return
+        root.isVisible = !empty
         if (previous === item) {
             return
         }
+        previous?.unregister()
+        item ?: return
 
         serverNameFX.text = item.server.name
 
@@ -79,7 +77,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
         item.favicon?.let { faviconFX.image = it }
 
         item.statusReceiveInvoker = JavaFXEventInvoker.of<ServerStatusReceiveEvent> {
-            if (serverCard != item || it.connection.error != null) {
+            if (this.item != item || it.connection.error != null) {
                 // error already occurred, not setting any data
                 return@of
             }
@@ -94,7 +92,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
         }
 
         item.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent> {
-            if (serverCard != item || it.connection.error != null || it.connection.lastServerStatus != null) {
+            if (this.item != item || it.connection.error != null || it.connection.lastServerStatus != null) {
                 // error or motd is already displayed
                 return@of
             }
@@ -103,7 +101,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
         }
 
         item.statusErrorInvoker = JavaFXEventInvoker.of<ConnectionErrorEvent> {
-            if (serverCard != item) {
+            if (this.item != item) {
                 return@of
             }
             motdFX.text = it.exception.text
@@ -111,7 +109,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
         }
 
         item.pongInvoker = JavaFXEventInvoker.of<StatusPongReceiveEvent> {
-            if (serverCard != item || it.connection.error != null) {
+            if (this.item != item || it.connection.error != null) {
                 // error already occurred, not setting any data
                 return@of
             }

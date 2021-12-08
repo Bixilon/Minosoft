@@ -241,6 +241,7 @@ public final class Util {
         return file.getParentFile().mkdirs();
     }
 
+    @NotNull
     public static String generateRandomString(int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

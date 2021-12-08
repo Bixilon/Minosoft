@@ -70,6 +70,7 @@ class ServerCard(
         statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregisterEvent(it) }
         statusUpdateInvoker?.let { statusUpdateInvoker = null; ping.unregisterEvent(it) }
         statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregisterEvent(it) }
+        serverListStatusInvoker?.let { serverListStatusInvoker = null; ping.unregisterEvent(it) }
         pongInvoker?.let { pongInvoker = null; ping.unregisterEvent(it) }
     }
 

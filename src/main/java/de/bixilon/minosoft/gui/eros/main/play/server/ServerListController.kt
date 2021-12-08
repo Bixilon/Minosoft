@@ -93,7 +93,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 if (it.clickCount != 2) {
                     return@setOnMouseClicked
                 }
-                val card = controller.serverCard ?: return@setOnMouseClicked
+                val card = controller.item ?: return@setOnMouseClicked
                 if (!card.canConnect(accountProfile.selected ?: return@setOnMouseClicked)) {
                     return@setOnMouseClicked
                 }
@@ -166,7 +166,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     updateServer(added)
                 }
             }
-            serverListViewFX.refresh()
         }
     }
 
@@ -190,6 +189,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     private fun updateServer(server: Server) {
+        val serverType = serverType ?: return
+        if (server !in serverType.servers) {
+            throw IllegalStateException("Server is not even in list!") // probably forgot to unregister listeners
+        }
         val card = ServerCard.CARDS[server] ?: ServerCard(server).apply {
             serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
         }

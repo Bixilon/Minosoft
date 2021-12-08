@@ -45,6 +45,7 @@ class Server(
      * Changing profiles requires reconnect
      * If profile is unset, defaults to eros global profiles
      */
+    @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
     var profiles: MutableMap<ResourceLocation, String> by mapDelegate(profiles)
 
     @get:JsonProperty("forced_version")
