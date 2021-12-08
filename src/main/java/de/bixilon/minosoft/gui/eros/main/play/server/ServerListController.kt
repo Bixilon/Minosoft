@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
+import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
-import de.bixilon.minosoft.gui.eros.dialog.UpdateServerDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
@@ -262,7 +262,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 it.add(Button("Edit").apply {
                     setOnAction {
                         val server = serverCard.server
-                        UpdateServerDialog(server = server, onUpdate = { name, address, forcedVersion, profiles ->
+                        ServerModifyDialog(server = server, onUpdate = { name, address, forcedVersion, profiles ->
                             server.name = ChatComponent.of(name)
                             server.forcedVersion = forcedVersion
                             server.profiles = profiles.toMutableMap()
@@ -344,7 +344,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun addServer() {
-        UpdateServerDialog(onUpdate = { name, address, forcedVersion, profiles ->
+        ServerModifyDialog(onUpdate = { name, address, forcedVersion, profiles ->
             serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap())
         }).show()
     }

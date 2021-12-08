@@ -36,24 +36,24 @@ minosoft:general.dialog.are_you_sure=Are you sure?
 minosoft:general.dialog.warning=Warning!
 
 
-minosoft:update_server.name.label=Server name
-minosoft:update_server.name.placeholder=A Minosoft server
-minosoft:update_server.address.label=Server address
-minosoft:update_server.address.placeholder=127.0.0.1:25565
-minosoft:update_server.forced_version.label=Forced version
-minosoft:update_server.forced_version.automatic=Auto detect
-minosoft:update_server.forced_version.releases=Releases
-minosoft:update_server.forced_version.snapshots=Snapshots
-minosoft:update_server.profiles.label=Profiles
-minosoft:update_server.profiles.open_select_dialog=Open profile selector
+minosoft:modify_server.name.label=Server name
+minosoft:modify_server.name.placeholder=A Minosoft server
+minosoft:modify_server.address.label=Server address
+minosoft:modify_server.address.placeholder=127.0.0.1:25565
+minosoft:modify_server.forced_version.label=Forced version
+minosoft:modify_server.forced_version.automatic=Auto detect
+minosoft:modify_server.forced_version.releases=Releases
+minosoft:modify_server.forced_version.snapshots=Snapshots
+minosoft:modify_server.profiles.label=Profiles
+minosoft:modify_server.profiles.open_select_dialog=Open profile selector
 
-minosoft:update_server.add.title=Add server - Minosoft
-minosoft:update_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
-minosoft:update_server.add.update_button=Add server
+minosoft:modify_server.add.title=Add server - Minosoft
+minosoft:modify_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
+minosoft:modify_server.add.update_button=Add server
 
-minosoft:update_server.edit.title=Edit server - Minosoft
-minosoft:update_server.edit.description=Please change the server details and click on save
-minosoft:update_server.edit.update_button=Save server
+minosoft:modify_server.edit.title=Edit server - Minosoft
+minosoft:modify_server.edit.description=Please change the server details and click on save
+minosoft:modify_server.edit.update_button=Save server
 
 minosoft:server_list.refresh.header=Refresh
 minosoft:server_list.refresh.text1=Get the latest
@@ -133,13 +133,18 @@ minosoft:general.dialog.profile.select.click_me_to_add=Double click to add
 minosoft:general.dialog.profile.select.none=<None>
 minosoft:general.dialog.profile.select.create=<Create>
 
-minosoft:general.dialog.profile.create.title=Add profile
-minosoft:general.dialog.profile.create.header=Add profile
-minosoft:general.dialog.profile.create.description=Enter the details to add the profile
+minosoft:general.dialog.profile.create.title=Create profile
+minosoft:general.dialog.profile.create.header=Create profile
+minosoft:general.dialog.profile.create.description=Enter the details to create the profile
 minosoft:general.dialog.profile.create.type.label=Profile type
 minosoft:general.dialog.profile.create.name.label=Name
 minosoft:general.dialog.profile.create.name.placeholder=Super cool profile
 minosoft:general.dialog.profile.create.description.label=Description
 minosoft:general.dialog.profile.create.description.placeholder=This is my super cool new profile
-minosoft:general.dialog.profile.create.add_button=Add
+minosoft:general.dialog.profile.create.create_button=Create
 minosoft:general.dialog.profile.create.cancel_button=Cancel
+
+
+minosoft:profiles.profile.name=Name
+minosoft:profiles.profile.description=Description
+minosoft:profiles.profile.disk_path=Disk path

@@ -48,7 +48,7 @@ class ProfileCreateDialog<T : Profile>(
     @FXML private lateinit var descriptionLabelFX: TextFlow
     @FXML private lateinit var descriptionFieldFX: TextField
 
-    @FXML private lateinit var addButtonFX: Button
+    @FXML private lateinit var createButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
 
 
@@ -81,11 +81,11 @@ class ProfileCreateDialog<T : Profile>(
         nameFX.placeholder = NAME_PLACEHOLDER
         descriptionLabelFX.text = DESCRIPTION_LABEL
         descriptionFieldFX.placeholder = DESCRIPTION_PLACEHOLDER
-        addButtonFX.ctext = ADD_BUTTON
+        createButtonFX.ctext = CREATE_BUTTON
         cancelButtonFX.ctext = CANCEL_BUTTON
 
         nameFX.textProperty().addListener { _, _, new ->
-            addButtonFX.isDisable = !ProfileManager.PROFILE_REGEX.matches(new) || manager.profiles[new] != null
+            createButtonFX.isDisable = !ProfileManager.PROFILE_REGEX.matches(new) || manager.profiles[new] != null
         }
     }
 
@@ -93,17 +93,15 @@ class ProfileCreateDialog<T : Profile>(
         super.postInit()
 
         stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.ENTER) {
-                add()
-            } else if (it.code == KeyCode.ESCAPE) {
+            if (it.code == KeyCode.ESCAPE) {
                 cancel()
             }
         }
     }
 
     @FXML
-    fun add() {
-        if (addButtonFX.isDisable) {
+    fun create() {
+        if (createButtonFX.isDisable) {
             return
         }
         val manager: ProfileManager<T> = if (strictType) {
@@ -133,7 +131,7 @@ class ProfileCreateDialog<T : Profile>(
         private val NAME_PLACEHOLDER = "minosoft:general.dialog.profile.create.name.placeholder".toResourceLocation()
         private val DESCRIPTION_LABEL = "minosoft:general.dialog.profile.create.description.label".toResourceLocation()
         private val DESCRIPTION_PLACEHOLDER = "minosoft:general.dialog.profile.create.description.placeholder".toResourceLocation()
-        private val ADD_BUTTON = "minosoft:general.dialog.profile.create.add_button".toResourceLocation()
+        private val CREATE_BUTTON = "minosoft:general.dialog.profile.create.create_button".toResourceLocation()
         private val CANCEL_BUTTON = "minosoft:general.dialog.profile.create.cancel_button".toResourceLocation()
     }
 }

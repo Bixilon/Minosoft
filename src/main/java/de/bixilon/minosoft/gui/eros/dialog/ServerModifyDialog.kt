@@ -34,14 +34,12 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 
 /**
  * Used to add or edit a server
  */
-class UpdateServerDialog(
+class ServerModifyDialog(
     private val server: Server? = null,
     val onUpdate: (name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>) -> Unit,
 ) : DialogController() {
@@ -59,7 +57,7 @@ class UpdateServerDialog(
     @FXML private lateinit var profilesLabelFX: TextFlow
     @FXML private lateinit var openProfileSelectDialogButtonFX: Button
 
-    @FXML private lateinit var updateServerButtonFX: Button
+    @FXML private lateinit var modifyServerButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
 
 
@@ -151,39 +149,28 @@ class UpdateServerDialog(
             forcedVersionFX.selectionModel.select(Versions.AUTOMATIC_VERSION)
             // add
             descriptionFX.text = ADD_DESCRIPTION
-            updateServerButtonFX.ctext = ADD_UPDATE_BUTTON
+            modifyServerButtonFX.ctext = ADD_UPDATE_BUTTON
         } else {
             forcedVersionFX.selectionModel.select(server.forcedVersion ?: Versions.AUTOMATIC_VERSION)
             descriptionFX.text = EDIT_DESCRIPTION
-            updateServerButtonFX.ctext = EDIT_UPDATE_BUTTON
+            modifyServerButtonFX.ctext = EDIT_UPDATE_BUTTON
 
             serverNameFX.text = server.name.legacyText.removeSuffix("§r")
             serverAddressFX.text = server.address
 
-            updateServerButtonFX.isDisable = serverAddressFX.text.isBlank()
+            modifyServerButtonFX.isDisable = serverAddressFX.text.isBlank()
         }
 
         serverAddressFX.textProperty().addListener { _, _, new ->
             serverAddressFX.text = DNSUtil.fixAddress(new)
 
-            updateServerButtonFX.isDisable = serverAddressFX.text.isBlank()
-        }
-    }
-
-    override fun postInit() {
-        super.postInit()
-
-
-        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.ENTER) {
-                update()
-            }
+            modifyServerButtonFX.isDisable = serverAddressFX.text.isBlank()
         }
     }
 
     @FXML
-    fun update() {
-        if (updateServerButtonFX.isDisable) {
+    fun modify() {
+        if (modifyServerButtonFX.isDisable) {
             return
         }
         val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC_VERSION).decide(null) { forcedVersionFX.selectionModel.selectedItem }
@@ -215,26 +202,26 @@ class UpdateServerDialog(
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/update_server.fxml".toResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/modify_server.fxml".toResourceLocation()
 
-        private val SERVER_NAME_LABEL = "minosoft:update_server.name.label".toResourceLocation()
-        private val SERVER_NAME_PLACEHOLDER = "minosoft:update_server.name.placeholder".toResourceLocation()
-        private val SERVER_ADDRESS_LABEL = "minosoft:update_server.address.label".toResourceLocation()
-        private val SERVER_ADDRESS_PLACEHOLDER = "minosoft:update_server.address.placeholder".toResourceLocation()
-        private val FORCED_VERSION_LABEL = "minosoft:update_server.forced_version.label".toResourceLocation()
-        private val VERSION_AUTOMATIC = "minosoft:update_server.forced_version.automatic".toResourceLocation()
-        private val SHOW_RELEASES = "minosoft:update_server.forced_version.releases".toResourceLocation()
-        private val SHOW_SNAPSHOTS = "minosoft:update_server.forced_version.snapshots".toResourceLocation()
-        private val PROFILES_LABEL = "minosoft:update_server.profiles.label".toResourceLocation()
-        private val PROFILES_OPEN_PROFILE_SELECT = "minosoft:update_server.profiles.open_select_dialog".toResourceLocation()
+        private val SERVER_NAME_LABEL = "minosoft:modify_server.name.label".toResourceLocation()
+        private val SERVER_NAME_PLACEHOLDER = "minosoft:modify_server.name.placeholder".toResourceLocation()
+        private val SERVER_ADDRESS_LABEL = "minosoft:modify_server.address.label".toResourceLocation()
+        private val SERVER_ADDRESS_PLACEHOLDER = "minosoft:modify_server.address.placeholder".toResourceLocation()
+        private val FORCED_VERSION_LABEL = "minosoft:modify_server.forced_version.label".toResourceLocation()
+        private val VERSION_AUTOMATIC = "minosoft:modify_server.forced_version.automatic".toResourceLocation()
+        private val SHOW_RELEASES = "minosoft:modify_server.forced_version.releases".toResourceLocation()
+        private val SHOW_SNAPSHOTS = "minosoft:modify_server.forced_version.snapshots".toResourceLocation()
+        private val PROFILES_LABEL = "minosoft:modify_server.profiles.label".toResourceLocation()
+        private val PROFILES_OPEN_PROFILE_SELECT = "minosoft:modify_server.profiles.open_select_dialog".toResourceLocation()
 
-        private val ADD_TITLE = "minosoft:update_server.add.title".toResourceLocation()
-        private val ADD_DESCRIPTION = "minosoft:update_server.add.description".toResourceLocation()
-        private val ADD_UPDATE_BUTTON = "minosoft:update_server.add.update_button".toResourceLocation()
+        private val ADD_TITLE = "minosoft:modify_server.add.title".toResourceLocation()
+        private val ADD_DESCRIPTION = "minosoft:modify_server.add.description".toResourceLocation()
+        private val ADD_UPDATE_BUTTON = "minosoft:modify_server.add.update_button".toResourceLocation()
 
 
-        private val EDIT_TITLE = "minosoft:update_server.edit.title".toResourceLocation()
-        private val EDIT_DESCRIPTION = "minosoft:update_server.edit.description".toResourceLocation()
-        private val EDIT_UPDATE_BUTTON = "minosoft:update_server.edit.update_button".toResourceLocation()
+        private val EDIT_TITLE = "minosoft:modify_server.edit.title".toResourceLocation()
+        private val EDIT_DESCRIPTION = "minosoft:modify_server.edit.description".toResourceLocation()
+        private val EDIT_UPDATE_BUTTON = "minosoft:modify_server.edit.update_button".toResourceLocation()
     }
 }

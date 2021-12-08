@@ -65,7 +65,7 @@
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <Button fx:id="confirmButtonFX" onAction="#confirm" text="Confirm" GridPane.columnIndex="2">
+            <Button fx:id="confirmButtonFX" onAction="#confirm" text="Confirm" defaultButton="true" GridPane.columnIndex="2">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>

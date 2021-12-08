@@ -23,8 +23,6 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Button
-import javafx.scene.input.KeyCode
-import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 
@@ -62,12 +60,6 @@ class SimpleErosConfirmationDialog(
 
         stage.setOnCloseRequest {
             DefaultThreadPool += onCancel
-        }
-
-        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.ENTER) {
-                confirm()
-            }
         }
     }
 
