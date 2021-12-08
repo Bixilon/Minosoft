@@ -18,9 +18,12 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.watcher.entry.MapDelegateWatcher.Companion.watchMapFX
@@ -146,13 +149,19 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
             it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
 
             it.add(Button("Delete").apply {
+                isDisable = !profile.manager.canDelete(profile)
                 setOnAction {
                     SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), onConfirm = {
-                        TODO("Not yet implemented")
+                        profile.manager.deleteAsync(profile)
+                        JavaFXUtil.runLater {
+                            profilesListViewFX.items.remove(profile)
+                            setProfileInfo(profilesListViewFX.selectionModel.selectedItem)
+                        }
                     }).show()
                 }
             }, 0, 0)
             it.add(Button("Edit").apply {
+                // ToDo: Profile editing
                 isDisable = true
             }, 1, 0)
 
@@ -194,6 +203,13 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
         private val PROFILE_INFO_PROPERTIES: List<Pair<ResourceLocation, (Profile) -> Any?>> = listOf(
             "minosoft:profiles.profile.name".toResourceLocation() to { it.name },
             "minosoft:profiles.profile.description".toResourceLocation() to { it.description },
+
+            "minosoft:general.empty".toResourceLocation() to { " " },
+
+            "minosoft:profiles.profile.disk_path".toResourceLocation() to {
+                val path = it.manager.getPath(it.name)
+                TextComponent(it.manager.getPath(it.name), clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_FILE, path))
+            },
         )
     }
 }

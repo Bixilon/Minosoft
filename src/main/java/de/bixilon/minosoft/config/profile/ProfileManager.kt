@@ -127,6 +127,43 @@ interface ProfileManager<T : Profile> {
     }
 
 
+    fun deleteAsync(profile: T) {
+        if (saveLock.isLocked) {
+            return
+        }
+        DefaultThreadPool += { delete(profile) }
+    }
+
+    fun canDelete(profile: T): Boolean {
+        return profiles.size > 1
+    }
+
+    fun delete(profile: T) {
+        saveLock.lock()
+        if (!canDelete(profile)) {
+            throw IllegalStateException("Can not delete $profile")
+        }
+        try {
+            val name = profile.name
+            profiles.remove(name)
+            if (selected == profile) {
+                selected = profiles.iterator().next().value
+            }
+            val file = File(getPath(profile.name))
+            if (file.exists()) {
+                if (!file.delete() || file.exists()) {
+                    throw IOException("Can not delete $file")
+                }
+            }
+            // ToDo: FileWatcherService.unregister(file)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            exception.crash()
+        } finally {
+            saveLock.unlock()
+        }
+    }
+
     fun saveAsync(profile: T) {
         if (saveLock.isLocked) {
             return

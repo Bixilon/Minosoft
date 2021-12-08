@@ -114,6 +114,13 @@ object JavaFXUtil {
         this.clickable()
     }
 
+    fun Text.file(path: String) {
+        // ToDo: Open in file browser/default program
+        this.accessibleRole = AccessibleRole.HYPERLINK
+        this.styleClass.setAll("hyperlink")
+        this.clickable()
+    }
+
     fun Node.clickable() {
         this.cursorProperty().unsafeCast<StyleableProperty<Cursor>>().applyStyle(null, Cursor.HAND)
     }

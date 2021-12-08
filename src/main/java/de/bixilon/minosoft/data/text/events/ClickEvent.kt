@@ -31,6 +31,7 @@ class ClickEvent {
             Util.checkURL(value.toString())
         }
         check(action != ClickEventActions.OPEN_CONFIRMATION) { "Can not use OPEN_CONFIRMATION in restricted mode!" }
+        check(action != ClickEventActions.OPEN_FILE) { "Can not use OPEN_FILE in restricted mode!" }
     }
 
     constructor(action: ClickEventActions, value: Any) {
@@ -54,6 +55,7 @@ class ClickEvent {
         SUGGEST_COMMAND,
         CHANGE_PAGE,
         OPEN_CONFIRMATION,
+        OPEN_FILE,
         ;
 
         companion object : ValuesEnum<ClickEventActions> {

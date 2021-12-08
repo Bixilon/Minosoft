@@ -16,6 +16,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
@@ -185,6 +186,7 @@ open class TextComponent(
         clickEvent?.let { event ->
             when (event.action) {
                 ClickEvent.ClickEventActions.OPEN_URL -> text.hyperlink(event.value.toString())
+                ClickEvent.ClickEventActions.OPEN_FILE -> text.file(event.value.toString())
                 else -> {
                     NotImplementedError("Unknown action ${event.action}").report()
                     return@let
