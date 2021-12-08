@@ -151,10 +151,10 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                         TODO("Not yet implemented")
                     }).show()
                 }
-            }, 1, 0)
+            }, 0, 0)
             it.add(Button("Edit").apply {
                 isDisable = true
-            }, 2, 0)
+            }, 1, 0)
 
             it.add(Button("Set primary").apply {
                 isDisable = profile.manager.selected == profile

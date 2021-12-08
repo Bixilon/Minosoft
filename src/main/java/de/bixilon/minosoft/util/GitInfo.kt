@@ -23,6 +23,7 @@ import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.FileNotFoundException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -109,9 +110,10 @@ object GitInfo {
 
             RunConfiguration.VERSION_STRING = "Minosoft $GIT_COMMIT_ID_ABBREV"
             IS_INITIALIZED = true
+        } catch (exception: FileNotFoundException) {
+            Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { "Failed to load git.json. Everything is fine, you have probably just not compiled with maven :)" }
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { "Could not load git information." }
-            Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { exception }
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { exception }
         }
     }
 

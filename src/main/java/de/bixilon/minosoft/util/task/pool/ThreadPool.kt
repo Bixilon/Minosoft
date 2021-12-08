@@ -35,41 +35,47 @@ open class ThreadPool(
     val queueSize: Int
         get() = queue.size
 
+
+    private fun startThreadLoop() {
+        var runnable: ThreadPoolRunnable
+        while (true) {
+            if (state == ThreadPoolStates.STOPPING) {
+                break
+            }
+            try {
+                runnable = queue.take()
+            } catch (exception: InterruptedException) {
+                break
+            }
+
+            try {
+                runnable.thread = Thread.currentThread()
+                runnable.runnable?.run()
+                runnable.thread = null
+            } catch (exception: InterruptedException) {
+                runnable.wasInterrupted = true
+                queue += runnable
+
+                if (state == ThreadPoolStates.STOPPING) {
+                    break
+                }
+            } catch (exception: Throwable) {
+                exception.printStackTrace()
+            } finally {
+                runnable.thread = null
+            }
+        }
+    }
+
     @Synchronized
     private fun checkThreads() {
         for (i in 0 until threadCount - threads.size) {
-            var runnable: ThreadPoolRunnable
             val thread = Thread {
-                while (true) {
-                    if (state == ThreadPoolStates.STOPPING) {
-                        break
-                    }
-                    try {
-                        runnable = queue.take()
-                    } catch (exception: InterruptedException) {
-                        break
-                    }
-
-                    try {
-                        runnable.thread = Thread.currentThread()
-                        runnable.runnable?.run()
-                        runnable.thread = null
-                    } catch (exception: Throwable) {
-                        runnable.thread = null
-                        if (exception is InterruptedException) {
-                            // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Thread ${Thread.currentThread()} was interrupted" }
-                            runnable.wasInterrupted = true
-                            queue += runnable
-
-                            if (state == ThreadPoolStates.STOPPING) {
-                                break
-                            }
-                        } else {
-                            exception.printStackTrace()
-                        }
-                    }
+                try {
+                    startThreadLoop()
+                } finally {
+                    threads -= Thread.currentThread()
                 }
-                threads -= Thread.currentThread()
             }
             thread.name = name.format(nextThreadId++)
             thread.start()

@@ -258,7 +258,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             serverType.servers -= serverCard.server
                         }).show()
                     }
-                }, 1, 0)
+                }, 0, 0)
                 it.add(Button("Edit").apply {
                     setOnAction {
                         val server = serverCard.server
@@ -282,7 +282,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             JavaFXUtil.runLater { refreshList() }
                         }).show()
                     }
-                }, 2, 0)
+                }, 1, 0)
             }
 
             it.add(Button("Refresh").apply {
