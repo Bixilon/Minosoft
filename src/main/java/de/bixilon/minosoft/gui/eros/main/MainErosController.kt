@@ -115,6 +115,9 @@ class MainErosController : JavaFXWindowController() {
 
         val profile = ErosProfileManager.selected.general.accountProfile
         profile::selected.profileWatchFX(this, true) {
+            if (profile != ErosProfileManager.selected.general.accountProfile) {
+                return@profileWatchFX
+            }
             accountImageFX.image = it?.avatar
             accountNameFX.ctext = it?.username ?: NO_ACCOUNT_SELECTED
         }

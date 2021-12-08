@@ -149,10 +149,14 @@ interface ProfileManager<T : Profile> {
             if (selected == profile) {
                 selected = profiles.iterator().next().value
             }
-            val file = File(getPath(profile.name))
+            val file = File(getPath(name))
             if (file.exists()) {
                 if (!file.delete() || file.exists()) {
                     throw IOException("Can not delete $file")
+                }
+                val parent = file.parentFile
+                if (parent.list()?.isEmpty() == true) {
+                    parent.delete()
                 }
             }
             // ToDo: FileWatcherService.unregister(file)

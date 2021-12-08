@@ -21,9 +21,13 @@ abstract class EventInvoker(
     val isIgnoreCancelled: Boolean,
     val priority: Priorities,
     protected val listener: EventListener?,
-) {
+) : Comparable<EventInvoker> {
     abstract val kEventType: KClass<out Event>?
     abstract val eventType: Class<out Event>
 
     abstract operator fun invoke(event: Event)
+
+    override fun compareTo(other: EventInvoker): Int {
+        return -(other.priority.ordinal - this.priority.ordinal)
+    }
 }
