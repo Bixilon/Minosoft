@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_EAST

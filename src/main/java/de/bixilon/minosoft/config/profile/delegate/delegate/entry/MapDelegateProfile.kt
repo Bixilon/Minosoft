@@ -3,6 +3,7 @@ package de.bixilon.minosoft.config.profile.delegate.delegate.entry
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
+import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -10,7 +11,6 @@ import javafx.collections.FXCollections
 import javafx.collections.MapChangeListener
 import javafx.collections.ObservableMap
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
 
 open class MapDelegateProfile<K, V>(
     private var value: ObservableMap<K, V>,
@@ -41,7 +41,7 @@ open class MapDelegateProfile<K, V>(
                 profileManager.profiles[profileName]?.saved = false
             }
 
-            ProfilesDelegateManager.onChange(profile, property.javaField ?: return@MapChangeListener, null, it)
+            ProfilesDelegateManager.onChange(profile, property.identifier, null, it)
         })
     }
 

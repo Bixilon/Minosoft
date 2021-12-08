@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors

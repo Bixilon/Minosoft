@@ -14,7 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.assets.JarAssetsManager
 import de.bixilon.minosoft.data.assets.Resources

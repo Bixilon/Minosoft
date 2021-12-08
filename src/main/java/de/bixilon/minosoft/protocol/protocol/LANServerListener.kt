@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent

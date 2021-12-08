@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatchRendering
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

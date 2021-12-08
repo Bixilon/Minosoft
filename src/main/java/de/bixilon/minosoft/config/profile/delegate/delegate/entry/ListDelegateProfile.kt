@@ -3,13 +3,13 @@ package de.bixilon.minosoft.config.profile.delegate.delegate.entry
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
+import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
-import kotlin.reflect.jvm.javaField
 
 open class ListDelegateProfile<V>(
     private var value: ObservableList<V>,
@@ -37,7 +37,7 @@ open class ListDelegateProfile<V>(
                 profileManager.profiles[profileName]?.saved = false
             }
 
-            ProfilesDelegateManager.onChange(profile, property.javaField ?: return@ListChangeListener, null, it)
+            ProfilesDelegateManager.onChange(profile, property.identifier, null, it)
         })
     }
 

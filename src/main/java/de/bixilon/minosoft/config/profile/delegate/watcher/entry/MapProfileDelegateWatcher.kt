@@ -5,17 +5,16 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.ProfileDelegateWatche
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import javafx.collections.MapChangeListener
-import java.lang.reflect.Field
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
 
 class MapProfileDelegateWatcher<K, V>(
     override val property: KProperty<MutableMap<K, V>>,
-    override val field: Field,
     override val profile: Profile?,
     private val callback: (MapChangeListener.Change<K, V>) -> Unit,
 ) : ProfileDelegateWatcher<MutableMap<K, V>> {
+    override val fieldIdentifier = property.identifier
 
     override fun invoke(previous: Any?, value: Any?) {
         callback(value.unsafeCast())
@@ -25,12 +24,12 @@ class MapProfileDelegateWatcher<K, V>(
 
         @JvmOverloads
         fun <K, V> KProperty<MutableMap<K, V>>.profileWatchMap(reference: Any, profile: Profile? = null, callback: ((MapChangeListener.Change<K, V>) -> Unit)) {
-            ProfilesDelegateManager.register(reference, MapProfileDelegateWatcher(this, javaField!!, profile, callback))
+            ProfilesDelegateManager.register(reference, MapProfileDelegateWatcher(this, profile, callback))
         }
 
         @JvmOverloads
         fun <K, V> KProperty<MutableMap<K, V>>.profileWatchMapFX(reference: Any, profile: Profile? = null, callback: ((MapChangeListener.Change<K, V>) -> Unit)) {
-            ProfilesDelegateManager.register(reference, MapProfileDelegateWatcher(this, javaField!!, profile) { JavaFXUtil.runLater { callback(it) } })
+            ProfilesDelegateManager.register(reference, MapProfileDelegateWatcher(this, profile) { JavaFXUtil.runLater { callback(it) } })
         }
     }
 }

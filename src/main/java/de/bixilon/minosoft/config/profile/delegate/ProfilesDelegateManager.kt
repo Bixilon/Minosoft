@@ -9,17 +9,16 @@ import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import java.lang.ref.WeakReference
-import java.lang.reflect.Field
 
 object ProfilesDelegateManager {
-    private val listeners: SynchronizedMap<Field, SynchronizedMap<Profile?, MutableSet<Pair<WeakReference<Any>, ProfileDelegateWatcher<Any>>>>> = synchronizedMapOf()
+    private val listeners: SynchronizedMap<String, SynchronizedMap<Profile?, MutableSet<Pair<WeakReference<Any>, ProfileDelegateWatcher<Any>>>>> = synchronizedMapOf()
 
     fun <T> register(reference: Any, listener: ProfileDelegateWatcher<T>) {
-        this.listeners.getOrPut(listener.field) { synchronizedMapOf() }.getOrPut(listener.profile) { synchronizedSetOf() }.add(Pair(WeakReference(reference), listener.unsafeCast()))
+        this.listeners.getOrPut(listener.fieldIdentifier) { synchronizedMapOf() }.getOrPut(listener.profile) { synchronizedSetOf() }.add(Pair(WeakReference(reference), listener.unsafeCast()))
     }
 
-    fun onChange(profile: Profile, field: Field, previous: Any?, value: Any?) {
-        val fieldListeners = listeners[field] ?: return
+    fun onChange(profile: Profile, fieldIdentifier: String, previous: Any?, value: Any?) {
+        val fieldListeners = listeners[fieldIdentifier] ?: return
 
         fun work(queue: MutableSet<Pair<WeakReference<Any>, ProfileDelegateWatcher<Any>>>) {
             val toRemove: MutableSet<Pair<WeakReference<Any>, ProfileDelegateWatcher<Any>>> = mutableSetOf()

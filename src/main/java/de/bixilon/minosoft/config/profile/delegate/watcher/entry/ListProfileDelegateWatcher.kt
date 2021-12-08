@@ -5,17 +5,16 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.ProfileDelegateWatche
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import javafx.collections.ListChangeListener
-import java.lang.reflect.Field
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
 
 class ListProfileDelegateWatcher<V>(
     override val property: KProperty<MutableList<V>>,
-    override val field: Field,
     override val profile: Profile?,
     private val callback: (ListChangeListener.Change<V>) -> Unit,
 ) : ProfileDelegateWatcher<MutableList<V>> {
+    override val fieldIdentifier = property.identifier
 
     override fun invoke(previous: Any?, value: Any?) {
         callback(value.unsafeCast())
@@ -25,12 +24,12 @@ class ListProfileDelegateWatcher<V>(
 
         @JvmOverloads
         fun <V> KProperty<MutableList<V>>.profileWatchList(reference: Any, profile: Profile? = null, callback: ((ListChangeListener.Change<V>) -> Unit)) {
-            ProfilesDelegateManager.register(reference, ListProfileDelegateWatcher(this, javaField!!, profile, callback))
+            ProfilesDelegateManager.register(reference, ListProfileDelegateWatcher(this, profile, callback))
         }
 
         @JvmOverloads
         fun <V> KProperty<MutableList<V>>.profileWatchListFX(reference: Any, profile: Profile? = null, callback: ((ListChangeListener.Change<V>) -> Unit)) {
-            ProfilesDelegateManager.register(reference, ListProfileDelegateWatcher(this, javaField!!, profile) { JavaFXUtil.runLater { callback(it) } })
+            ProfilesDelegateManager.register(reference, ListProfileDelegateWatcher(this, profile) { JavaFXUtil.runLater { callback(it) } })
         }
     }
 }

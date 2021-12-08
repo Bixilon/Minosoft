@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent

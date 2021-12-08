@@ -4,13 +4,13 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import de.bixilon.minosoft.util.delegate.delegate.DelegateSetter
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlin.reflect.jvm.javaField
 
 abstract class BackingDelegate<V>(
     private val profileManager: ProfileManager<*>,
@@ -45,6 +45,6 @@ abstract class BackingDelegate<V>(
         }
         set(value)
 
-        ProfilesDelegateManager.onChange(profile, property.javaField ?: return, previous, value)
+        ProfilesDelegateManager.onChange(profile, property.identifier, previous, value)
     }
 }

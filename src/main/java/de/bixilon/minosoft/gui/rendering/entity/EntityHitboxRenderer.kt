@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entity
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation

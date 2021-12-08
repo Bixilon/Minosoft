@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
@@ -45,7 +46,7 @@ class ProfileCardController : AbstractCardController<Profile>() {
 
 
         profileNameFX.text = item.name
-        profileDescriptionFX.text = item.description
+        item::description.profileWatchFX(this, true, item) { profileDescriptionFX.text = it }
     }
 
     companion object : CardFactory<ProfileCardController> {

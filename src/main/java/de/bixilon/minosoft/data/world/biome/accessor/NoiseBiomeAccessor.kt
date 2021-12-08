@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray

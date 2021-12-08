@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateLWatcher.Companion.profileWatch
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
