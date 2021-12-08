@@ -7,6 +7,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.lates
 import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 import de.bixilon.minosoft.config.profile.profiles.eros.text.TextC
+import de.bixilon.minosoft.config.profile.profiles.eros.theme.ThemeC
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
@@ -26,6 +27,7 @@ class ErosProfile(
 
 
     val general = GeneralC()
+    val theme = ThemeC()
     val server = ServerC()
     val text = TextC()
 

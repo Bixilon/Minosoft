@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.gui.eros.util
 
+import com.sun.javafx.util.WeakReferenceQueue
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
@@ -39,11 +42,33 @@ import java.net.CookieManager
 import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
+    private const val DEFAULT_STYLE = "resource:minosoft:eros/style.css"
+    private val stages: WeakReferenceQueue<Stage> = WeakReferenceQueue()
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
+    private var watchingTheme = false
+
+    private fun startThemeWatcher() {
+        if (watchingTheme) {
+            return
+        }
+
+        ErosProfileManager.selected.theme::theme.profileWatchFX(this) {
+            stages.cleanup()
+            for (stage in stages.iterator() as Iterator<Stage?>) {
+                stage ?: continue
+                stage.scene.stylesheets.clear()
+                stage.scene.stylesheets.add(DEFAULT_STYLE)
+                val theme = ErosProfileManager.selected.theme.theme
+                stage.scene.stylesheets.add("resource:minosoft:eros/themes/$theme.css")
+            }
+        }
+        watchingTheme = true
+    }
 
     fun <T : JavaFXController> openModal(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL): T {
+        startThemeWatcher()
         val fxmlLoader = FXMLLoader()
         controller?.let { fxmlLoader.setController(it) }
         val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
@@ -54,7 +79,12 @@ object JavaFXUtil {
         stage.scene = Scene(parent)
         stage.icons.setAll(MINOSOFT_LOGO)
 
-        stage.scene.stylesheets.add("resource:minosoft:eros/style.css")
+        stage.scene.stylesheets.add(DEFAULT_STYLE)
+        val theme = ErosProfileManager.selected.theme.theme
+        stage.scene.stylesheets.add("resource:minosoft:eros/themes/$theme.css")
+
+        stages.cleanup()
+        stages.add(stage)
 
         val controller: T = fxmlLoader.getController()
 
