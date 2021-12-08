@@ -1,9 +1,11 @@
 package de.bixilon.minosoft.config.profile.profiles.other
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.other.log.LogC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for various things that do not fit in any other profile
@@ -11,6 +13,7 @@ import de.bixilon.minosoft.config.profile.profiles.other.log.LogC
 class OtherProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = OtherProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

@@ -132,7 +132,7 @@ object GlobalProfileManager {
         if (profile == null) {
             selectedProfiles -= profileManager.namespace
         } else {
-            val name = profileManager.getName(profile)
+            val name = profile.name
             if (selectedProfiles.put(profileManager.namespace, name) == name) {
                 return
             }

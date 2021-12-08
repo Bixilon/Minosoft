@@ -1,10 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.particle
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.particle.types.TypesC
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for particle
@@ -12,6 +14,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 class ParticleProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = ParticleProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

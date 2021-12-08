@@ -1,10 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.block
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
 import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for block rendering
@@ -12,6 +14,7 @@ import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
 class BlockProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = BlockProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

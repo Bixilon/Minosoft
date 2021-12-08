@@ -6,6 +6,7 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object EntityProfileManager : ProfileManager<EntityProfile> {
@@ -13,6 +14,7 @@ object EntityProfileManager : ProfileManager<EntityProfile> {
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
     override val profileClass = EntityProfile::class.java
+    override val icon = FontAwesomeSolid.SKULL
 
 
     override var currentLoadingPath: String? = null

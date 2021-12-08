@@ -1,11 +1,13 @@
 package de.bixilon.minosoft.config.profile.profiles.eros
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 import de.bixilon.minosoft.config.profile.profiles.eros.text.TextC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for Eros
@@ -13,6 +15,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.text.TextC
 class ErosProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = ErosProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

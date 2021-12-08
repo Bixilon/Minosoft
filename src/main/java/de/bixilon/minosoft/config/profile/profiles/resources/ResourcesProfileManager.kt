@@ -6,6 +6,7 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
@@ -13,6 +14,7 @@ object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
     override val profileClass = ResourcesProfile::class.java
+    override val icon = FontAwesomeSolid.DOWNLOAD
 
 
     override var currentLoadingPath: String? = null

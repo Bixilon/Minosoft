@@ -36,7 +36,7 @@ import javafx.stage.Modality
 class ProfileCreateDialog<T : Profile>(
     private val manager: ProfileManager<T>,
     private val strictType: Boolean,
-    private val onCreate: (profile: Profile) -> Unit,
+    private val onCreate: (manager: ProfileManager<*>, profile: Profile) -> Unit,
 ) : JavaFXWindowController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
@@ -113,7 +113,7 @@ class ProfileCreateDialog<T : Profile>(
         }
         val profile = manager.createProfile(nameFX.text, descriptionFieldFX.text)
         manager.saveAndWatch(profile)
-        onCreate(profile)
+        onCreate(manager, profile)
         stage.hide()
     }
 

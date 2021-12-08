@@ -1,10 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.hud
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.hud.chat.ChatC
 import de.bixilon.minosoft.config.profile.profiles.hud.crosshair.CrosshairC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for hud (rendering)
@@ -12,6 +14,7 @@ import de.bixilon.minosoft.config.profile.profiles.hud.crosshair.CrosshairC
 class HUDProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = HUDProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

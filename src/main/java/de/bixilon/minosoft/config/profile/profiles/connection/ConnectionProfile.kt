@@ -1,10 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.connection
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.connection.skin.SkinC
 import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import java.util.*
 
 /**
@@ -13,6 +15,7 @@ import java.util.*
 class ConnectionProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = ConnectionProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

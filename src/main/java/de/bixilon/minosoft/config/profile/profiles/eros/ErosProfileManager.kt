@@ -15,6 +15,7 @@ import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.MapChangeListener
 import javafx.collections.SetChangeListener
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object ErosProfileManager : ProfileManager<ErosProfile> {
@@ -24,6 +25,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
     override val profileClass = ErosProfile::class.java
     override val profileSelectable: Boolean
         get() = false
+    override val icon = FontAwesomeSolid.WINDOW_RESTORE
 
 
     override var currentLoadingPath: String? = null

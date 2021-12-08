@@ -43,7 +43,7 @@ class MainErosController : JavaFXWindowController() {
     @FXML private lateinit var versionTextFX: Label
 
     @FXML private lateinit var playIconFX: FontIcon
-    @FXML private lateinit var settingsIconFX: FontIcon
+    @FXML private lateinit var profilesIconFX: FontIcon
     @FXML private lateinit var helpIconFX: FontIcon
     @FXML private lateinit var aboutIconFX: FontIcon
     @FXML private lateinit var exitIconFX: FontIcon
@@ -80,7 +80,7 @@ class MainErosController : JavaFXWindowController() {
         versionTextFX.text = RunConfiguration.VERSION_STRING
         iconMap = mapOf(
             ErosMainActivities.PLAY to playIconFX,
-            ErosMainActivities.SETTINGS to settingsIconFX,
+            ErosMainActivities.PROFILES to profilesIconFX,
             ErosMainActivities.HELP to helpIconFX,
             ErosMainActivities.ABOUT to aboutIconFX,
         )
@@ -94,8 +94,8 @@ class MainErosController : JavaFXWindowController() {
         playIconFX.setOnMouseClicked {
             activity = ErosMainActivities.PLAY
         }
-        settingsIconFX.setOnMouseClicked {
-            // ToDo: activity = ErosMainActivities.SETTINGS
+        profilesIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.PROFILES
         }
         helpIconFX.setOnMouseClicked {
             // ToDo: activity = ErosMainActivities.HELP

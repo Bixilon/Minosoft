@@ -106,7 +106,7 @@ class ProfileSelectDialog(
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/profiles/select.fxml".toResourceLocation()
+        val LAYOUT = "minosoft:eros/dialog/profiles/select.fxml".toResourceLocation()
         private val TITLE = "minosoft:general.dialog.profile.select.title".toResourceLocation()
         private val HEADER = "minosoft:general.dialog.profile.select.header".toResourceLocation()
 
@@ -215,8 +215,8 @@ class ProfileSelectDialog(
             comboBox.selectionModel.selectedItemProperty().addListener { _, _, next ->
                 if (next == SelectSpecialOptions.CREATE) {
                     val profileManager: ProfileManager<Profile> = (GlobalProfileManager[this.tableRow.item.resourceLocation] ?: return@addListener).unsafeCast()
-                    ProfileCreateDialog(profileManager, true) {
-                        val name = profileManager.getName(it)
+                    ProfileCreateDialog(profileManager, true) { _, profile ->
+                        val name = profile.name
                         comboBox.items.add(name)
                         comboBox.selectionModel.select(name)
                     }.show()
@@ -257,6 +257,8 @@ class ProfileSelectDialog(
             label.ctext = item
             if (item is String) {
                 tableRow.item.profile = item
+            } else {
+                tableRow.item.profile = null
             }
         }
     }
@@ -264,7 +266,7 @@ class ProfileSelectDialog(
 
     private enum class SelectSpecialOptions(override val translationKey: ResourceLocation?) : Translatable {
         NONE("minosoft:general.dialog.profile.select.none".toResourceLocation()),
-        CREATE("minosoft:general.dialog.profile.select.add".toResourceLocation()),
+        CREATE("minosoft:general.dialog.profile.select.create".toResourceLocation()),
         ;
     }
 }

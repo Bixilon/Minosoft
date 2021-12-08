@@ -131,7 +131,7 @@ minosoft:general.dialog.profile.select.confirm_button=Confirm
 
 minosoft:general.dialog.profile.select.click_me_to_add=Double click to add
 minosoft:general.dialog.profile.select.none=<None>
-minosoft:general.dialog.profile.select.add=<Add>
+minosoft:general.dialog.profile.select.create=<Create>
 
 minosoft:general.dialog.profile.create.title=Add profile
 minosoft:general.dialog.profile.create.header=Add profile

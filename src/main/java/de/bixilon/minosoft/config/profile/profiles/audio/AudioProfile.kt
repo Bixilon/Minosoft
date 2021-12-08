@@ -1,10 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.audio
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.audio.types.TypesC
 import de.bixilon.minosoft.config.profile.profiles.audio.volume.VolumeC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for audio
@@ -12,6 +14,7 @@ import de.bixilon.minosoft.config.profile.profiles.audio.volume.VolumeC
 class AudioProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = AudioProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

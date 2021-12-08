@@ -24,6 +24,8 @@ import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.MapChangeListener
 import javafx.collections.SetChangeListener
+import org.kordamp.ikonli.Ikon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -38,6 +40,8 @@ interface ProfileManager<T : Profile> {
     val profileClass: Class<T>
     val profileSelectable: Boolean
         get() = true
+    val icon: Ikon
+        get() = FontAwesomeSolid.QUESTION
 
     val profiles: HashBiMap<String, T>
     var selected: T
@@ -111,7 +115,7 @@ interface ProfileManager<T : Profile> {
 
     fun saveAndWatch(profile: T) {
         save(profile)
-        val name = getName(profile)
+        val name = profile.name
         if (RunConfiguration.PROFILES_HOT_RELOADING) {
             watchProfile(name)
         }
@@ -136,7 +140,7 @@ interface ProfileManager<T : Profile> {
             val data = serialize(profile)
             val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
-            val profileFile = File(getPath(getName(profile)))
+            val profileFile = File(getPath(profile.name))
             profile.ignoreNextReload = true
             KUtil.safeSaveToFile(profileFile, jsonString)
             profile.saved = true

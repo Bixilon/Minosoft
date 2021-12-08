@@ -38,7 +38,7 @@
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </CheckBox>
-            <Button fx:id="addServerButtonFX" onAction="#addServer" text="Add Server" GridPane.columnIndex="4"/>
+            <Button fx:id="addServerButtonFX" onAction="#addServer" text="Add server" GridPane.columnIndex="4"/>
             <GridPane.margin>
                 <Insets top="5.0"/>
             </GridPane.margin>

@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.config.profile.profiles.rendering
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.latestVersion
@@ -12,6 +13,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.fog.FogC
 import de.bixilon.minosoft.config.profile.profiles.rendering.light.LightC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for general rendering
@@ -19,6 +21,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.performance.Perform
 class RenderingProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = RenderingProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false

@@ -1,9 +1,11 @@
 package de.bixilon.minosoft.config.profile.profiles.resources
 
+import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.resources.source.SourceC
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for resources
@@ -11,6 +13,7 @@ import de.bixilon.minosoft.config.profile.profiles.resources.source.SourceC
 class ResourcesProfile(
     description: String? = null,
 ) : Profile {
+    override val manager: ProfileManager<Profile> = ResourcesProfileManager.unsafeCast()
     override var initializing: Boolean = true
         private set
     override var reloading: Boolean = false
