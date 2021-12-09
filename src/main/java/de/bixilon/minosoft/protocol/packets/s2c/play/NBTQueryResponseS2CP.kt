@@ -23,7 +23,7 @@ class NBTQueryResponseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val transactionId: Int = buffer.readVarInt()
     val nbt: Map<String, Any> = buffer.readNBT().asCompound()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "NBT query response (transactionId=$transactionId nbt=$nbt)" }
     }
 }

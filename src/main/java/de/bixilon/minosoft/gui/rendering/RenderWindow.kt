@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
+import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -32,6 +32,8 @@ import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
+import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
+import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -55,6 +57,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -70,12 +73,16 @@ class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
-    val window: BaseWindow = GLFWWindow(connection)
+    private val profile = connection.profiles.rendering
+    val window: BaseWindow = GLFWWindow(this, connection)
     val renderSystem: RenderSystem = OpenGLRenderSystem(this)
     var initialized = false
         private set
     private lateinit var renderThread: Thread
-    val renderStats: AbstractRenderStats = AbstractRenderStats.createInstance()
+    lateinit var renderStats: AbstractRenderStats
+        private set
+
+    val preferQuads = profile.advanced.preferQuads
 
     val inputHandler = RenderWindowInputHandler(this)
 
@@ -128,20 +135,23 @@ class RenderWindow(
                 initialPositionReceived = true
             }
         })
+        profile.experimental::fps.profileWatch(this, true, profile) {
+            renderStats = if (it) {
+                ExperimentalRenderStats()
+            } else {
+                RenderStats()
+            }
+        }
 
         // order dependent (from back to front)
         registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(BlockOutlineRenderer)
-        if (Minosoft.config.config.game.graphics.particles.enabled) {
+        if (!connection.profiles.particle.skipLoading) {
             registerRenderer(ParticleRenderer)
         }
-        if (Minosoft.config.config.game.entities.hitBox.enabled) {
-            registerRenderer(EntityHitBoxRenderer)
-        }
-        if (Minosoft.config.config.game.world.chunkBorders.enabled) {
-            registerRenderer(ChunkBorderRenderer)
-        }
+        registerRenderer(EntityHitboxRenderer)
+        registerRenderer(ChunkBorderRenderer)
         registerRenderer(HUDRenderer)
     }
 
@@ -150,7 +160,7 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
 
-        window.init()
+        window.init(connection.profiles.rendering)
         window.setDefaultIcon(connection.assetsManager)
 
         inputHandler.camera.init(this)
@@ -168,12 +178,7 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
-        WHITE_TEXTURE = TextureLikeTexture(
-            texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")),
-            uvStart = Vec2(0.0f, 0.0f),
-            uvEnd = Vec2(0.001f, 0.001f),
-            size = Vec2i(16, 16)
-        )
+        WHITE_TEXTURE = TextureLikeTexture(texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
         font = FontLoader.load(this)
 
 
@@ -198,7 +203,7 @@ class RenderWindow(
         }
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Registering window callbacks (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Registering callbacks (${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
             renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
@@ -207,6 +212,7 @@ class RenderWindow(
         connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
             renderingState = it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING)
         })
+        profile.animations::sprites.profileWatch(this, true, profile = profile) { textureManager.staticTextures.animator.enabled = it }
 
 
         inputHandler.init()
@@ -226,49 +232,54 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
-            ),
-        )) {
+        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to setOf(KeyCodes.KEY_P),
+                ),
+            )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderSystem.polygonMode = nextMode
-            sendDebugMessage("Set polygon to: $nextMode")
+            sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
 
-        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_ESCAPE),
-            ),
-        )) { window.close() }
+        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
+                ),
+            )) { window.close() }
 
-        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2),
-            ),
-            ignoreConsumer = true,
-        )) { screenshotTaker.takeScreenshot() }
+        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.PRESS to setOf(KeyCodes.KEY_F2),
+                ),
+                ignoreConsumer = true,
+            )) { screenshotTaker.takeScreenshot() }
 
-        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_I),
-            ),
-            ignoreConsumer = true,
-        )) {
-            sendDebugMessage("Pausing incoming packets: $it")
+        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to setOf(KeyCodes.KEY_I),
+                ),
+                ignoreConsumer = true,
+            )) {
+            sendDebugMessage("Pausing incoming packets: ${it.format()}")
             connection.network.pauseReceiving(it)
         }
 
-        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
-            ),
-            ignoreConsumer = true,
-        )) {
-            sendDebugMessage("Pausing outgoing packets: $it")
+        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyAction.STICKY to setOf(KeyCodes.KEY_O),
+                ),
+                ignoreConsumer = true,
+            )) {
+            sendDebugMessage("Pausing outgoing packets: ${it.format()}")
             connection.network.pauseSending(it)
         }
     }

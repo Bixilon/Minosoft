@@ -24,7 +24,7 @@ class HotbarSlotSetC2SP(val slot: Int) : PlayC2SPacket {
         buffer.writeShort(slot)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Hotbar slot set (slot=$slot)" }
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros
 
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
@@ -35,6 +36,16 @@ object Eros {
                 return@of
             }
             start()
+        })
+
+        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<ErosProfileSelectEvent> {
+            if (skipErosStartup || !this::mainErosController.isInitialized) {
+                return@of
+            }
+            JavaFXUtil.runLater {
+                this.mainErosController.stage.close()
+                start()
+            }
         })
     }
 

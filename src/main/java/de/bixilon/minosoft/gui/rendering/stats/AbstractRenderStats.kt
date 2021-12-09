@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.util.avg.Average
 
 interface AbstractRenderStats {
@@ -27,16 +26,4 @@ interface AbstractRenderStats {
     fun startFrame() = Unit
     fun endDraw() = Unit
     fun endFrame() = Unit
-
-
-    companion object {
-
-        fun createInstance(): AbstractRenderStats {
-            if (Minosoft.config.config.game.other.experimentalFPS) {
-                return ExperimentalRenderStats()
-            }
-
-            return RenderStats()
-        }
-    }
 }

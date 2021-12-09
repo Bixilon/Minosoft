@@ -29,7 +29,7 @@ class InitializeWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket()
     val warningTime = buffer.readVarInt()
     val warningBlocks = buffer.readVarInt()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize world border (x=$x, z=$z, oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
     }
 }

@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -29,10 +30,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.ReadWriteLock
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.time.TimeWorker
 import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import glm_.mat4x4.Mat4
@@ -42,8 +41,9 @@ import glm_.vec3.Vec3
 class ParticleRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, TransparentDrawable, TranslucentDrawable {
+) : Renderer, TransparentDrawable, TranslucentDrawable, SkipAll {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
+    private val profile = connection.profiles.particle
     private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
     private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
 
@@ -59,10 +59,47 @@ class ParticleRenderer(
 
     private lateinit var particleTask: TimeWorkerTask
 
+    override val skipAll: Boolean
+        get() = !enabled
+
+
+    private var enabled = true
+        set(value) {
+            if (!value) {
+                particlesLock.lock()
+                particles.clear()
+                particlesLock.unlock()
+
+                particleQueueLock.lock()
+                particleQueue.clear()
+                particleQueueLock.unlock()
+            }
+            field = value
+        }
+    private var maxAmount = RenderConstants.MAXIMUM_PARTICLE_AMOUNT
+        set(value) {
+            check(value > 1) { "Can not have negative particle mac amount" }
+            particlesLock.lock()
+            while (particles.size > value) {
+                particles.removeAt(0)
+            }
+            val particlesSize = particles.size
+            particlesLock.unlock()
+            particleQueueLock.lock()
+            while (particlesSize + particleQueue.size > value) {
+                particleQueue.removeAt(0)
+            }
+            particleQueueLock.unlock()
+            field = value
+        }
+
     val size: Int
         get() = particles.size
 
     override fun init() {
+        profile::maxAmount.profileWatch(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
+        profile::enabled.profileWatch(this, true, profile) { enabled = it }
+
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
                 fun applyToShader(shader: Shader) {
@@ -103,25 +140,27 @@ class ParticleRenderer(
 
         connection.world.particleRenderer = this
 
-        particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED) {
+        particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+            if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
                 return@TimeWorkerTask
             }
+            val cameraPosition = connection.player.positionInfo.chunkPosition
+            val particleViewDistance = connection.world.view.particleViewDistance
 
-            val cameraLength = connection.player.position.length()
             val toRemove: MutableSet<Particle> = mutableSetOf()
 
             particlesLock.acquire()
             try {
                 val time = KUtil.time
                 for (particle in particles) {
-                    if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+                    if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) {
                         particle.dead = true
                         toRemove += particle
                     } else if (particle.dead) {
                         toRemove += particle
+                    } else {
+                        particle.tryTick(time)
                     }
-                    particle.tryTick(time)
                 }
             } finally {
                 particlesLock.release()
@@ -136,7 +175,8 @@ class ParticleRenderer(
             particleQueueLock.unlock()
 
             particlesLock.unlock()
-        })
+        }
+        TimeWorker += particleTask
 
         connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
             if (!it.state.disconnected) {
@@ -147,17 +187,15 @@ class ParticleRenderer(
     }
 
     fun add(particle: Particle) {
-        if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED) {
+        if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
             return
         }
-        val particleCount = particles.size
-        if (particleCount >= RenderConstants.MAXIMUM_PARTICLE_AMOUNT) {
-            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
+        val particleCount = particles.size + particleQueue.size
+        if (particleCount >= maxAmount) {
             return
         }
-        val cameraLength = connection.player.position.length()
 
-        if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.positionInfo.chunkPosition)) {
             particle.dead = true
             return
         }

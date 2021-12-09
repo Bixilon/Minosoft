@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamMemberAddEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -44,8 +43,8 @@ class TeamMemberAddS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPac
         connection.fireEvent(TeamMemberAddEvent(connection, team, members))
     }
 
-    override fun log() {
-        if (Minosoft.config.config.general.reduceProtocolLog) {
+    override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
             return
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team member add (name=$name, members=$members)" }

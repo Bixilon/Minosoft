@@ -26,7 +26,7 @@ class ChatMessageC2SP(
         buffer.writeString(message)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat message: $message" }
     }
 }

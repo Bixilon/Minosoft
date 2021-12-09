@@ -31,7 +31,7 @@ class WorldTimeSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(TimeChangeEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World time set (age=$age, time=$time)" }
     }
 

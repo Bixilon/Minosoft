@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -55,7 +54,7 @@ class OpenGLRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
-    override var preferredPrimitiveType: PrimitiveTypes = if (Minosoft.config.config.game.graphics.preferQuads) {
+    override var preferredPrimitiveType: PrimitiveTypes = if (renderWindow.preferQuads) {
         PrimitiveTypes.QUAD
     } else {
         PrimitiveTypes.TRIANGLE
@@ -95,7 +94,7 @@ class OpenGLRenderSystem(
             vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor
             else -> OtherOpenGLVendor
         }
-        if (Minosoft.config.config.game.graphics.preferQuads && vendor.strictSpecification) {
+        if (renderWindow.preferQuads && vendor.strictSpecification) {
             throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `prefer_quads` is not working!")
         }
 

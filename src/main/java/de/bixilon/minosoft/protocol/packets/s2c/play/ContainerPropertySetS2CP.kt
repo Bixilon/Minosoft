@@ -23,7 +23,7 @@ class ContainerPropertySetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val property = buffer.readUnsignedShort()
     val value = buffer.readUnsignedShort()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container property set (containerId=$containerId, property=$property, value=$value)" }
     }
 

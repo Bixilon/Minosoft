@@ -138,7 +138,7 @@ class ItemStack(
         customDisplayName: ChatComponent? = this.customDisplayName,
         unbreakable: Boolean = this.unbreakable,
         durability: Int = this.durability,
-        nbt: MutableMap<String, Any> = this.nbt.synchronizedDeepCopy()!!,
+        nbt: MutableMap<String, Any> = this.nbt.synchronizedDeepCopy(),
         container: Container? = this.container,
         hideFlags: Int = this.hideFlags,
         dyedColor: RGBColor? = this.dyedColor,
@@ -184,12 +184,12 @@ class ItemStack(
 
         nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
             it.getAndRemove(DISPLAY_MAME_TAG).nullCast<String>()?.let { nameTag ->
-                customDisplayName = ChatComponent.of(nameTag, translator = connection?.version?.language)
+                customDisplayName = ChatComponent.of(nameTag, translator = connection?.language)
             }
 
             it.getAndRemove(DISPLAY_LORE_TAG)?.listCast<String>()?.let { loreTag ->
                 for (lore in loreTag) {
-                    this.lore.add(ChatComponent.of(lore, translator = connection?.version?.language))
+                    this.lore.add(ChatComponent.of(lore, translator = connection?.language))
                 }
             }
             it.getAndRemove(DISPLAY_COLOR_TAG)?.toInt()?.asRGBColor().let { color -> this.dyedColor = color }
@@ -280,7 +280,7 @@ class ItemStack(
         get() {
             customDisplayName?.let { return it }
             item.translationKey?.let {
-                connection?.version?.language?.translate(it)?.let { translatedName ->
+                connection?.language?.translate(it)?.let { translatedName ->
                     translatedName.applyDefaultColor(rarity.color)
                     return translatedName
                 }

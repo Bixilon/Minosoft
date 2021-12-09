@@ -50,7 +50,7 @@ class ExperienceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(ExperienceChangeEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Experience set (bar=$bar, level=$level, total=$total)" }
     }
 }

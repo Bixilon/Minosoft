@@ -34,7 +34,7 @@ class HandshakeC2SP(
         buffer.writeVarInt(nextState.protocolId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Handshake (protocolId=$protocolId, hostname=${address.hostname}, port=${address.port}, nextState=$nextState)" }
     }
 }

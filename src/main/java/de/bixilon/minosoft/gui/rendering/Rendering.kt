@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.RenderPolling
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -34,8 +34,8 @@ class Rendering(private val connection: PlayConnection) {
         latch.inc()
         this.latch = latch
         if (RunConfiguration.OPEN_Gl_ON_FIRST_THREAD) {
-            Minosoft.rendering = this
-            Minosoft.RENDERING_LATCH.dec()
+            RenderPolling.rendering = this
+            RenderPolling.RENDERING_LATCH.dec()
             return
         }
         start()
@@ -52,7 +52,7 @@ class Rendering(private val connection: PlayConnection) {
     }
 
     private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
-        if (!Minosoft.config.config.game.sound.enabled) {
+        if (connection.profiles.audio.skipLoading) {
             return
         }
         val audioLatch = CountUpAndDownLatch(1, latch)

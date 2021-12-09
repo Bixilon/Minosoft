@@ -50,7 +50,7 @@ class SignTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         signBlockEntity.lines = lines
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign text set (position=$position, lines=$lines" }
     }
 }

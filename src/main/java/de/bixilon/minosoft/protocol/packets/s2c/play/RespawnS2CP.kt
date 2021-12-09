@@ -99,7 +99,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(RespawnEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Respawn (dimension=$dimension, difficulty=$difficulty, gamemode=$gamemode, levelType=$levelType)" }
     }
 }

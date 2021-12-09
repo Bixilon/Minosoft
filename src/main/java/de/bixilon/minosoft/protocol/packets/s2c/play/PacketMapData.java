@@ -123,7 +123,7 @@ public class PacketMapData extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol(String.format("[IN] Received map meta data (mapId=%d)", this.mapId));
     }
 

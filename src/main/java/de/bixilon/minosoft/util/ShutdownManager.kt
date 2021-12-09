@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
-import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -30,13 +30,11 @@ object ShutdownManager {
 
     fun shutdown(message: String? = null, reason: ShutdownReasons = ShutdownReasons.UNKNOWN) {
         Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Shutting down..." }
-        for (connection in Connection.CONNECTIONS.toSynchronizedSet()) {
+        for (connection in PlayConnection.ACTIVE_CONENCTIONS.toSynchronizedSet()) {
             connection.disconnect()
         }
-        if (Minosoft.configInitialized) {
-            // Minosoft.config.saveToFile()
-        }
-        DefaultThreadPool.shutdownNow() // ToDo: Save config
+        FileWatcherService.stop()
+        DefaultThreadPool.shutdownNow()
         exitProcess(reason.exitCode)
     }
 

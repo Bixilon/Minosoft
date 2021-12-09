@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.language
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import java.util.*
 
 class MultiLanguageManager(
     val translators: MutableMap<String, Translator> = mutableMapOf(),
@@ -27,8 +28,12 @@ class MultiLanguageManager(
     }
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        key ?: return ChatComponent.of("$key: ${data.contentToString()}")
+        key ?: return ChatComponent.of("null: ${data.contentToString()}")
 
         return translators[key.namespace]?.translate(key, parent, *data) ?: ChatComponent.of("$key: ${data.contentToString()}")
+    }
+
+    fun loadLanguage(language: Locale) {
+
     }
 }

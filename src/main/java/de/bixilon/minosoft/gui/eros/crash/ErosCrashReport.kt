@@ -17,12 +17,15 @@ import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.toStackTrace
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.KUtil.tryCatch
 import de.bixilon.minosoft.util.UnitFormatter.formatBytes
+import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -46,9 +49,7 @@ import java.text.SimpleDateFormat
 
 class ErosCrashReport : JavaFXWindowController() {
     @FXML private lateinit var crashReportPathDescriptionFX: TextFlow
-
     @FXML private lateinit var crashReportPathFX: Hyperlink
-
     @FXML private lateinit var detailsFX: TextArea
 
 
@@ -105,7 +106,7 @@ class ErosCrashReport : JavaFXWindowController() {
             "Written while driving in a FlixBus",
             "Coded while traveling in the ICE 272 towards Hamburg-Altona",
             "Sorry, the ICE 693 drive towards Munich was really long",
-            "Coded while playing bedwars"
+            "Coded while playing bedwars",
         )
 
 
@@ -121,14 +122,17 @@ class ErosCrashReport : JavaFXWindowController() {
 
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
-
-            try {
+            tryCatch(executor = { FileWatcherService.stop() })
+            tryCatch(executor = {
                 for (window in Window.getWindows()) {
                     JavaFXUtil.runLater { window.hide() }
                 }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
+            })
+            tryCatch(executor = {
+                for (connection in PlayConnection.ACTIVE_CONENCTIONS.toSynchronizedSet()) {
+                    connection.disconnect()
+                }
+            })
 
             val details = createCrashText(this)
 

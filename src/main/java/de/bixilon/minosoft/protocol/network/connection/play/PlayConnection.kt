@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
+import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
@@ -44,6 +46,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionSt
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -54,6 +57,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -66,7 +70,9 @@ class PlayConnection(
     val address: ServerAddress,
     val account: Account,
     val version: Version,
+    val profiles: ConnectionProfiles = ConnectionProfiles(),
 ) : Connection() {
+    val settingsManager = ClientSettingsManager(this)
     val registries = Registries()
     val recipes = Recipes()
     val world = World(this)
@@ -80,6 +86,7 @@ class PlayConnection(
     lateinit var assetsManager: MultiAssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
+    lateinit var language: LanguageManager
 
     var commandRootNode: CommandRootNode? = null
 
@@ -122,6 +129,7 @@ class PlayConnection(
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = PlayConnectionStates.HANDSHAKING
+                    ACTIVE_CONENCTIONS += this
                     for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
                         var valid = false
                         for (serverAddress in validators) {
@@ -151,19 +159,22 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
-                    entityTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
+                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
                         for (entity in world.entities) {
                             entity.tick()
                         }
-                    })
+                    }
+                    TimeWorker += entityTickTask
 
-                    worldTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.tick()
-                    })
+                    }
+                    TimeWorker += worldTickTask
 
-                    randomTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    randomTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.randomTick()
-                    })
+                    }
+                    TimeWorker += randomTickTask
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.position) {
@@ -195,6 +206,7 @@ class PlayConnection(
                         TimeWorker.removeTask(randomTickTask)
                     }
                     state = PlayConnectionStates.DISCONNECTED
+                    ACTIVE_CONENCTIONS -= this
                 }
                 else -> {
                 }
@@ -208,6 +220,7 @@ class PlayConnection(
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER)
+            language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version)
             registries.parentRegistries = version.registries
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
@@ -256,7 +269,7 @@ class PlayConnection(
             return
         }
         try {
-            packet.log()
+            packet.log(profiles.other.log.reducedProtocolLog)
             val event = PacketReceiveEvent(this, packet)
             if (fireEvent(event)) {
                 return
@@ -283,5 +296,9 @@ class PlayConnection(
                 return it.entries.contains(`object`)
             }
         }
+    }
+
+    companion object {
+        val ACTIVE_CONENCTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
     }
 }

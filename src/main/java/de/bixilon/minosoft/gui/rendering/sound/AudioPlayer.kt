@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
@@ -44,6 +44,7 @@ class AudioPlayer(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) : AbstractAudioPlayer {
+    private val profile = connection.profiles.audio
     private val soundManager = SoundManager(connection)
     var initialized = false
         private set
@@ -60,6 +61,8 @@ class AudioPlayer(
 
     val sourcesCount: Int
         get() = sources.size
+
+    private var enabled = profile.enabled
 
 
     fun init(latch: CountUpAndDownLatch) {
@@ -85,7 +88,10 @@ class AudioPlayer(
 
         listener = SoundListener()
 
-        listener.masterVolume = Minosoft.config.config.game.sound.masterVolume
+        val volumeConfig = connection.profiles.audio.volume
+
+        listener.masterVolume = volumeConfig.masterVolume
+        volumeConfig::masterVolume.profileWatch(this) { queue += { listener.masterVolume = it } }
 
         connection.registerEvent(CallbackEventInvoker.of<CameraPositionChangeEvent> {
             queue += {
@@ -98,6 +104,18 @@ class AudioPlayer(
 
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
 
+        profile::enabled.profileWatch(this, false, profile) {
+            if (it) {
+                enabled = true
+                return@profileWatch
+            }
+            queue += {
+                for (source in sources) {
+                    source.stop()
+                }
+                enabled = false
+            }
+        }
         initialized = true
         connection.world.audioPlayer = this
         latch.dec()
@@ -111,6 +129,9 @@ class AudioPlayer(
     }
 
     override fun stopSound(sound: ResourceLocation) {
+        if (!profile.enabled) {
+            return
+        }
         queue += {
             for (source in sources) {
                 if (!source.isPlaying) {
@@ -142,6 +163,9 @@ class AudioPlayer(
     }
 
     private fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        if (!profile.enabled) {
+            return
+        }
         queue += add@{
             sound.load(connection.assetsManager)
             val source = getAvailableSource()
@@ -180,7 +204,9 @@ class AudioPlayer(
             }
             queue.work()
             calculateAvailableSources()
-
+            while (!enabled) {
+                Thread.sleep(1L)
+            }
             Thread.sleep(1L)
         }
     }

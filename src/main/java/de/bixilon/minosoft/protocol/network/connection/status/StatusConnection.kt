@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.status
 
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -165,7 +166,7 @@ class StatusConnection(
 
     override fun handlePacket(packet: S2CPacket) {
         try {
-            packet.log()
+            packet.log(OtherProfileManager.selected.log.reducedProtocolLog)
             val event = PacketReceiveEvent(this, packet)
             if (fireEvent(event)) {
                 return

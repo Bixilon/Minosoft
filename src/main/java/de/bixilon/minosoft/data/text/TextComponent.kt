@@ -12,10 +12,11 @@
  */
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
@@ -131,7 +132,7 @@ open class TextComponent(
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
         this.color?.let {
-            if (Minosoft.config.config.chat.colored) {
+            if (ErosProfileManager.selected.text.colored) {
                 text.fill = Color.rgb(it.red, it.green, it.blue)
             }
         } ?: let {
@@ -140,8 +141,8 @@ open class TextComponent(
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
                 PreChatFormattingCodes.OBFUSCATED -> {
-                    // ToDo: potential memory/performance leak: Stop timeline, when TextComponent isn't shown anymore
-                    val obfuscatedTimeline = if (Minosoft.config.config.chat.obfuscated) {
+                    // ToDo: This is just slow
+                    val obfuscatedTimeline = if (ErosProfileManager.selected.text.obfuscated) {
                         Timeline(
                             KeyFrame(Duration.millis(50.0), {
                                 val chars = text.text.toCharArray()
@@ -185,6 +186,7 @@ open class TextComponent(
         clickEvent?.let { event ->
             when (event.action) {
                 ClickEvent.ClickEventActions.OPEN_URL -> text.hyperlink(event.value.toString())
+                ClickEvent.ClickEventActions.OPEN_FILE -> text.file(event.value.toString())
                 else -> {
                     NotImplementedError("Unknown action ${event.action}").report()
                     return@let

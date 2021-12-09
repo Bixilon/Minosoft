@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class BookOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val hand: Hands = Hands[buffer.readVarInt()]
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Book open (hand=$hand)" }
     }
 }

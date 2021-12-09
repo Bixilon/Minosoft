@@ -13,21 +13,23 @@
 
 package de.bixilon.minosoft.data.accounts.types
 
-import com.squareup.moshi.Json
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.AccountType
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
+import org.jetbrains.annotations.Nullable
 import java.util.*
 
 class MicrosoftAccount(
     val uuid: UUID,
     username: String,
-    @Json(name = "authorization_token") private val authorizationToken: String,
+    @field:JsonProperty private val authorizationToken: String,
 ) : Account(username) {
-    @Transient var accessToken: String? = null
+    @Transient @JsonIgnore var accessToken: String? = null
     override val id: String = uuid.toString()
     override val type: ResourceLocation = RESOURCE_LOCATION
 
@@ -35,9 +37,9 @@ class MicrosoftAccount(
         AccountUtil.joinMojangServer(username, accessToken!!, uuid, serverId)
     }
 
-    override fun logout() = Unit
+    override fun logout(clientToken: String) = Unit
 
-    override fun verify() {
+    override fun verify(@Nullable clientToken: String) {
         if (accessToken != null) {
             return
         }
@@ -47,20 +49,11 @@ class MicrosoftAccount(
         accessToken = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(userHash, xstsToken)
     }
 
-    override fun serialize(): Map<String, Any> {
-        return mapOf(
-            "uuid" to uuid,
-            "username" to username,
-            "authorization_token" to authorizationToken,
-            "type" to type,
-        )
-    }
-
     override fun toString(): String {
         return "MicrosoftAccount{$username}"
     }
 
-    companion object : AccountType(MicrosoftAccount::class) {
+    companion object : CompanionResourceLocation {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
     }
 }

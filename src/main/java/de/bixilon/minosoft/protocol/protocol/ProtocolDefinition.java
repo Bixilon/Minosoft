@@ -68,12 +68,6 @@ public final class ProtocolDefinition {
     public static final int ITEM_STACK_MAX_SIZE = 64;
 
 
-    public static final String MOJANG_URL_VERSION_MANIFEST = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-    public static final String MINECRAFT_URL_RESOURCES = "https://resources.download.minecraft.net/%s/%s";
-    public static final String MOJANG_URL_PACKAGES = "https://launchermeta.mojang.com/v1/packages/%s/%s";
-    public static final String MOJANG_LAUNCHER_URL_PACKAGES = "https://launcher.mojang.com/v1/objects/%s/%s";
-
-
     public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "00000000402b5328"; // ToDo: Should we use our own application id?
     // public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "fe6f0fbf-3038-486a-9c84-6a28b71e0455";
     public static final String MICROSOFT_ACCOUNT_OAUTH_FLOW_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=" + MICROSOFT_ACCOUNT_APPLICATION_ID + "&scope=XboxLive.signin%20offline_access&response_type=code";

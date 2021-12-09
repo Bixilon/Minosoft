@@ -56,7 +56,7 @@
             <padding>
                 <Insets top="5.0"/>
             </padding>
-            <Button maxWidth="Infinity" onAction="#exit" text="Exit" GridPane.columnIndex="2"/>
+            <Button maxWidth="Infinity" onAction="#exit" defaultButton="true" text="Exit" GridPane.columnIndex="2"/>
             <Button maxWidth="Infinity" onAction="#hardCrash" text="Hard crash"/>
         </GridPane>
     </GridPane>

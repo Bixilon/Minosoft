@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
-import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.ShutdownManager
+import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -43,24 +43,23 @@ class MainErosController : JavaFXWindowController() {
     @FXML private lateinit var versionTextFX: Label
 
     @FXML private lateinit var playIconFX: FontIcon
-    @FXML private lateinit var settingsIconFX: FontIcon
+    @FXML private lateinit var profilesIconFX: FontIcon
     @FXML private lateinit var helpIconFX: FontIcon
     @FXML private lateinit var aboutIconFX: FontIcon
     @FXML private lateinit var exitIconFX: FontIcon
 
     @FXML private lateinit var contentFX: Pane
-
     @FXML private lateinit var accountImageFX: ImageView
-
     @FXML private lateinit var accountNameFX: Label
 
     private lateinit var iconMap: Map<ErosMainActivities, FontIcon>
 
+    private val controllers: SynchronizedMap<ErosMainActivities, EmbeddedJavaFXController<*>> = synchronizedMapOf()
 
     private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (just not the default)
         set(value) {
             field = value
-            contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<EmbeddedJavaFXController<*>>(field.layout).root)
+            contentFX.children.setAll(controllers.getOrPut(value) { JavaFXUtil.loadEmbeddedController(field.layout) }.root)
 
             highlightIcon(iconMap[value])
         }
@@ -80,8 +79,8 @@ class MainErosController : JavaFXWindowController() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
         versionTextFX.text = RunConfiguration.VERSION_STRING
         iconMap = mapOf(
-            ErosMainActivities.PlAY to playIconFX,
-            ErosMainActivities.SETTINGS to settingsIconFX,
+            ErosMainActivities.PLAY to playIconFX,
+            ErosMainActivities.PROFILES to profilesIconFX,
             ErosMainActivities.HELP to helpIconFX,
             ErosMainActivities.ABOUT to aboutIconFX,
         )
@@ -93,10 +92,10 @@ class MainErosController : JavaFXWindowController() {
         highlightIcon(playIconFX)
 
         playIconFX.setOnMouseClicked {
-            activity = ErosMainActivities.PlAY
+            activity = ErosMainActivities.PLAY
         }
-        settingsIconFX.setOnMouseClicked {
-            // ToDo: activity = ErosMainActivities.SETTINGS
+        profilesIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.PROFILES
         }
         helpIconFX.setOnMouseClicked {
             // ToDo: activity = ErosMainActivities.HELP
@@ -114,14 +113,18 @@ class MainErosController : JavaFXWindowController() {
             }
         }
 
-        GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
-            accountImageFX.image = it.account?.avatar
-            accountNameFX.ctext = it.account?.username ?: NO_ACCOUNT_SELECTED
-        })
+        val profile = ErosProfileManager.selected.general.accountProfile
+        profile::selected.profileWatchFX(this, true, profile) {
+            if (profile != ErosProfileManager.selected.general.accountProfile) {
+                return@profileWatchFX
+            }
+            accountImageFX.image = it?.avatar
+            accountNameFX.ctext = it?.username ?: NO_ACCOUNT_SELECTED
+        }
         accountImageFX.clickable()
         accountNameFX.clickable()
 
-        activity = ErosMainActivities.PlAY
+        activity = ErosMainActivities.PLAY
     }
 
     override fun postInit() {
@@ -130,7 +133,9 @@ class MainErosController : JavaFXWindowController() {
         }
     }
 
-    fun verifyAccount(account: Account? = Minosoft.config.config.account.selected, onSuccess: (Account) -> Unit) {
+    fun verifyAccount(account: Account? = null, onSuccess: (Account) -> Unit) {
+        val profile = ErosProfileManager.selected.general.accountProfile
+        val account = account ?: profile.selected
         if (account == null) {
             activity = ErosMainActivities.ACCOUNT
             return
@@ -138,7 +143,7 @@ class MainErosController : JavaFXWindowController() {
 
         DefaultThreadPool += {
             try {
-                account.verify()
+                account.verify(profile.clientToken)
             } catch (exception: Throwable) {
                 Platform.runLater { activity = ErosMainActivities.ACCOUNT }
                 // ToDo: Show account window and do account error handling

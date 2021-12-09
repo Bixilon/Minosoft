@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.status
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.KUtil.toInt
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
@@ -37,8 +36,6 @@ class ServerStatus(
 
     var favicon: ByteArray? = null
         private set
-    var faviconHash: String? = null
-        private set
 
     init {
         data["version"]?.compoundCast()?.let {
@@ -55,7 +52,6 @@ class ServerStatus(
 
         data["favicon"]?.toString()?.let {
             val favicon = Base64.getDecoder().decode(it.replace("data:image/png;base64,", "").replace("\n", ""))
-            faviconHash = Util.sha1(favicon)
             this.favicon = favicon
         }
     }

@@ -27,7 +27,7 @@ class DisplayRecipeCraftingBookStateC2SP(
         buffer.writeVarInt(recipeId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Display recipe crafting book state (recipeId=$recipeId)" }
     }
 }

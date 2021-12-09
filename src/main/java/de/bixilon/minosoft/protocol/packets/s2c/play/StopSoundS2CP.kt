@@ -51,7 +51,7 @@ class StopSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         // ToDo: Category
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Stop sound (category=$category, sound=$sound)" }
     }
 }

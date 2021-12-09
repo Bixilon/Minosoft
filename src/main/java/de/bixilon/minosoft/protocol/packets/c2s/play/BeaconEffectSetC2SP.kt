@@ -28,7 +28,7 @@ class BeaconEffectSetC2SP(
         buffer.writeVarInt(secondaryEffect)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Beacon effect set (primary=$primaryEffect, secondary=$secondaryEffect)" }
     }
 }

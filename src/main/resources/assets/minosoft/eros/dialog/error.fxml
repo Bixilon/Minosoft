@@ -49,7 +49,7 @@
             <padding>
                 <Insets top="5.0"/>
             </padding>
-            <Button fx:id="ignoreFX" maxWidth="Infinity" onAction="#ignore" text="Ignore" GridPane.columnIndex="2"/>
+            <Button fx:id="ignoreFX" maxWidth="Infinity" defaultButton="true" onAction="#ignore" text="Ignore" GridPane.columnIndex="2"/>
             <Button fx:id="fatalCrashFX" maxWidth="Infinity" onAction="#fatalCrash" text="Fatal crash"/>
         </GridPane>
     </GridPane>

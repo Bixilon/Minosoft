@@ -32,7 +32,7 @@ class LoginKickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.state = PlayConnectionStates.ERROR
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login kick (reason=$reason)" }
     }
 }

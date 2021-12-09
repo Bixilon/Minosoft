@@ -30,7 +30,7 @@ class TeamRemoveS2CP(val name: String) : PlayS2CPacket() {
         connection.fireEvent(ScoreboardTeamRemoveEvent(connection, team))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Team remove (name=$name)" }
     }
 }

@@ -13,20 +13,14 @@
 
 package de.bixilon.minosoft.gui.eros.main.play
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.play.server.Refreshable
 import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
 import de.bixilon.minosoft.gui.eros.main.play.server.type.ServerTypeCardController
-import de.bixilon.minosoft.gui.eros.modding.events.ErosControllerTerminateEvent
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
-import de.bixilon.minosoft.modding.event.invoker.EventInvoker
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
@@ -36,15 +30,11 @@ import javafx.scene.text.TextFlow
 
 class PlayController : EmbeddedJavaFXController<Pane>() {
     @FXML private lateinit var playTypeContentFX: Pane
-
-    @FXML private lateinit var playTypeListViewFX: ListView<ServerTypes>
+    @FXML private lateinit var playTypeListViewFX: ListView<ServerType>
 
     @FXML private lateinit var refreshPaneFX: GridPane
-
     @FXML private lateinit var refreshHeaderFX: TextFlow
-
     @FXML private lateinit var refreshText1FX: TextFlow
-
     @FXML private lateinit var refreshText2FX: TextFlow
 
 
@@ -52,8 +42,8 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
     override fun init() {
         playTypeListViewFX.setCellFactory { ServerTypeCardController.build() }
-        for (type in ServerTypes.VALUES) {
-            if (!type.active) {
+        for (type in ServerType.TYPES) { // ToDo: Listen for changes
+            if (type.hidden) {
                 continue
             }
             playTypeListViewFX.items += type
@@ -63,38 +53,22 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
 
         playTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
+            new ?: return@addListener // Should not happen
             if (this::currentController.isInitialized) {
-                currentController.terminate()
-            }
-            currentController = when (new ?: return@addListener) {
-                ServerTypes.CUSTOM -> JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
-                    servers = Minosoft.config.config.server.entries.values
-                    refreshList()
+                val currentController = this.currentController
+                if (currentController is ServerListController) {
+                    currentController.serverType = new
+                    currentController.initWatch()
+                    currentController.refreshList()
                 }
-                ServerTypes.LAN -> JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
-                    val events: MutableList<EventInvoker> = mutableListOf()
-                    events += GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<LANServerDiscoverEvent> { refreshList() })
-                    readOnly = true
-                    customRefresh = {
-                        LANServerListener.clear()
-                        refreshList()
-                    }
-
-                    GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<ErosControllerTerminateEvent>(oneShot = true) {
-                        if (it.controller != this) {
-                            return@of
-                        }
-
-                        GlobalEventMaster.unregisterEvents(*events.toTypedArray())
-                        LANServerListener.clear()
-                    })
-
-                    LANServerListener.clear()
-                    servers = LANServerListener.SERVERS.values
-                    refreshList()
-                }
+                return@addListener
             }
-            playTypeContentFX.children.setAll(currentController.root)
+            currentController = JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
+                serverType = new
+                initWatch()
+                refreshList()
+                playTypeContentFX.children.setAll(this.root)
+            }
         }
 
         playTypeListViewFX.selectionModel.select(0)
@@ -113,8 +87,6 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
     companion object {
         val LAYOUT = "minosoft:eros/main/play/play.fxml".toResourceLocation()
-        private val CUSTOM_SERVER_TYPE = "minosoft:server_type.custom".toResourceLocation()
-        private val LAN_SERVER_TYPE = "minosoft:server_type.lan".toResourceLocation()
         private val REFRESH_HEADER = "minosoft:server_list.refresh.header".toResourceLocation()
         private val REFRESH_TEXT1 = "minosoft:server_list.refresh.text1".toResourceLocation()
         private val REFRESH_TEXT2 = "minosoft:server_list.refresh.text2".toResourceLocation()

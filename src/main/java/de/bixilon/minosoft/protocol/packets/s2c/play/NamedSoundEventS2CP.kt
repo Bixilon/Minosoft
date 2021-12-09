@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
@@ -62,13 +61,13 @@ class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         soundEvent ?: return
-        if (!Minosoft.config.config.game.sound.enablePacketSounds) {
+        if (!connection.profiles.audio.types.packet) {
             return
         }
         connection.fireEvent(PlaySoundEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Named sound event (sound=$soundEvent, volume=$volume, pitch=$pitch, position=$position, category=$category)" }
     }
 }

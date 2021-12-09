@@ -56,7 +56,7 @@ object RenderConstants {
     const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 300
     const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500
 
-    const val MAXIMUM_PARTICLE_AMOUNT = 500000
+    const val MAXIMUM_PARTICLE_AMOUNT = 50000
 
     const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
 

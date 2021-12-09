@@ -28,7 +28,7 @@ class ContainerClickButtonC2SP(
         buffer.writeByte(buttonId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Click window (containerId=$containerId, buttonId=$buttonId)" }
     }
 }

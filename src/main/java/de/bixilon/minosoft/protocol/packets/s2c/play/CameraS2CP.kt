@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class CameraS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readVarInt()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Camera (entityId=$entityId)" }
     }
 }

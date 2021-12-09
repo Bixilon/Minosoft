@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.assets
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
@@ -39,6 +39,7 @@ class MinecraftAssetsManager(
     private val assetVersion: AssetVersion,
     private val pixlyzerHash: String,
 ) : FileAssetsManager {
+    private val profile = ResourcesProfileManager.selected
     override val namespaces: MutableSet<String> = mutableSetOf()
     private val assetsMapping: MutableMap<ResourceLocation, String> = mutableMapOf()
     private val assetsSizes: MutableMap<String, Long> = mutableMapOf()
@@ -90,7 +91,13 @@ class MinecraftAssetsManager(
 
         Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generating client.jar assets for ${assetVersion.version}" }
         // download jar
-        downloadAsset(String.format(ProtocolDefinition.MOJANG_LAUNCHER_URL_PACKAGES, this.assetVersion.clientJarHash, "client.jar"), this.assetVersion.clientJarHash!!, true)
+        downloadAsset(Util.formatString(
+            profile.source.launcherPackages,
+            mapOf(
+                "fullHash" to this.assetVersion.clientJarHash,
+                "filename" to "client.jar",
+            )
+        ), this.assetVersion.clientJarHash!!, true)
         val clientJarAssetsHashMap = HashMap<String, String>()
         val versionJar = ZipInputStream(readAssetAsStream(this.assetVersion.clientJarHash))
         var nextZipEntry: ZipEntry?
@@ -123,20 +130,32 @@ class MinecraftAssetsManager(
     }
 
     private fun downloadAssetsIndex() {
-        Util.downloadFileAsGz(String.format(ProtocolDefinition.MOJANG_URL_PACKAGES + ".json", assetVersion.indexHash, assetVersion.indexVersion), AssetsUtil.getAssetDiskPath(assetVersion.indexHash!!, true))
+        Util.downloadFileAsGz(Util.formatString(
+            profile.source.mojangPackages,
+            mapOf(
+                "fullHash" to this.assetVersion.indexHash,
+                "filename" to "${assetVersion.indexVersion}.json",
+            )
+        ), AssetsUtil.getAssetDiskPath(assetVersion.indexHash!!, true))
     }
 
     private fun downloadAsset(source: AssetsSource, hash: String) {
         when (source) {
             AssetsSource.MINECRAFT -> {
-                downloadAsset(String.format(ProtocolDefinition.MINECRAFT_URL_RESOURCES, hash.substring(0, 2), hash), hash, true)
+                downloadAsset(Util.formatString(
+                    profile.source.minecraftResources,
+                    mapOf(
+                        "hashPrefix" to hash.substring(0, 2),
+                        "fullHash" to hash,
+                    )
+                ), hash, true)
             }
             AssetsSource.PIXLYZER -> {
                 downloadAsset(Util.formatString(
-                    Minosoft.config.config.download.url.pixlyzer,
+                    profile.source.pixlyzer,
                     mapOf(
                         "hashPrefix" to hash.substring(0, 2),
-                        "fullHash" to hash
+                        "fullHash" to hash,
                     )
                 ), hash, compress = false, checkURL = false)
             }

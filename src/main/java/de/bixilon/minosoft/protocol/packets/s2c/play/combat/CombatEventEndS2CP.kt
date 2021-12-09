@@ -23,7 +23,7 @@ class CombatEventEndS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val duration = buffer.readVarInt()
     val entityId = buffer.readInt()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat end event (entityId=$entityId, duration=$duration)" }
     }
 }

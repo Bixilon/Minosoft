@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 
 interface SpriteAnimator {
+    var enabled: Boolean
     val size: Int
 
     fun init()

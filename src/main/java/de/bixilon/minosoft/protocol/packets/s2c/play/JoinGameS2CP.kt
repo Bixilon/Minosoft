@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PluginMessageC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -165,12 +163,13 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
-        if (connection.version.versionId >= ProtocolVersions.V_19W36A && !Minosoft.config.config.game.graphics.fastBiomeNoise) {
-            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
+        if (connection.version.versionId >= ProtocolVersions.V_19W36A && !connection.profiles.rendering.performance.fastBiomeNoise) {
+            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection)
         }
 
-        connection.sendPacket(ClientSettingsC2SP(viewDistance = Minosoft.config.config.game.camera.viewDistance))
+        connection.settingsManager.sendClientSettings()
 
+        // ToDo: This has nothing to do here!
         val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
         val buffer = PlayOutByteBuffer(connection)
         buffer.writeString("vanilla") // ToDo: Remove prefix
@@ -202,7 +201,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         return dimensionMap
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Join game (entityId=$entityId, gamemode=$gamemode, dimensionType=$dimensionProperties, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 

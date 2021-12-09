@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.player
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
@@ -216,7 +215,7 @@ class LocalPlayerEntity(
         get() = inventory.equipment
 
     private fun sendMovementPackets() {
-        if (Minosoft.config.config.game.camera.disableMovementSending) {
+        if (connection.profiles.rendering.movement.disablePacketSending) {
             return
         }
         val currentTime = KUtil.time
@@ -581,7 +580,7 @@ class LocalPlayerEntity(
         get() = healthCondition.hp.toDouble()
 
     override val mainArm: Arms
-        get() = Minosoft.config.config.game.skin.mainArm
+        get() = connection.profiles.connection.mainArm
 
     companion object {
         private val CLIMBABLE_TAG = "minecraft:climbable".toResourceLocation()

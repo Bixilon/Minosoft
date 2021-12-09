@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.config.key
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import de.bixilon.minosoft.util.KUtil.synchronizedDeepCopy
+
 class KeyBinding(
-    val action: MutableMap<KeyAction, MutableSet<KeyCodes>>,
-    var ignoreConsumer: Boolean = false,
+    val action: Map<KeyAction, Set<KeyCodes>>,
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT) var ignoreConsumer: Boolean = false,
 ) {
-    constructor(keyBinding: KeyBinding) : this(keyBinding.action.toMutableMap()) // ToDo: Deep copy
+    constructor(keyBinding: KeyBinding) : this(keyBinding.action.synchronizedDeepCopy()) // ToDo: Deep copy
 }

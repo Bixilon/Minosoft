@@ -40,7 +40,7 @@ class CompassPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(CompassPositionChangeEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Spawn position set (spawnPosition=$spawnPosition, angle=$angle)" }
     }
 }

@@ -22,7 +22,7 @@ class EntityStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     private val entityId: Int = buffer.readInt()
     private val eventId: Int = buffer.readUnsignedByte()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity status (entityId=$entityId, eventId=$eventId)" }
     }
 }

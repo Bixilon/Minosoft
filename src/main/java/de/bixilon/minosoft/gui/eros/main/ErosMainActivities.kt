@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.main
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.main.play.PlayController
+import de.bixilon.minosoft.gui.eros.main.profiles.ProfilesController
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.enum.ValuesEnum
@@ -23,10 +24,11 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 enum class ErosMainActivities(
     val layout: ResourceLocation,
 ) {
-    PlAY(PlayController.LAYOUT),
-    SETTINGS("".toResourceLocation()),
+    PLAY(PlayController.LAYOUT),
+    PROFILES(ProfilesController.LAYOUT),
     HELP("".toResourceLocation()),
     ABOUT("".toResourceLocation()),
+
 
     ACCOUNT(AccountController.LAYOUT),
     ;

@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.eros.card.AbstractCard
+import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -22,26 +24,33 @@ import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 
-class AccountTypeCardController : AbstractCard<ErosAccountType<*>>() {
+class AccountTypeCardController : AbstractCardController<ErosAccountType<*>>() {
     @FXML private lateinit var iconFX: FontIcon
-
     @FXML private lateinit var headerFX: TextFlow
-
     @FXML private lateinit var textFX: TextFlow
 
-    override fun updateItem(type: ErosAccountType<*>?, empty: Boolean) {
-        super.updateItem(type, empty)
-        type ?: return
+    override fun updateItem(item: ErosAccountType<*>?, empty: Boolean) {
+        val previous = this.item
+        super.updateItem(item, empty)
+        item ?: return
+        if (previous === item) {
+            return
+        }
 
 
         iconFX.isVisible = true
 
-        iconFX.iconCode = type.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(type)
+        iconFX.iconCode = item.icon
+        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
 
+        recalculate(item)
+        ErosProfileManager.selected.general.accountProfile::entries.profileWatchMapFX(this) { recalculate(item) }
+    }
 
+    private fun recalculate(type: ErosAccountType<*>) {
         var count = 0
-        for (account in Minosoft.config.config.account.entries.values) {
+        val profile = ErosProfileManager.selected.general.accountProfile
+        for (account in profile.entries.values) {
             if (account.type != type.resourceLocation) {
                 continue
             }

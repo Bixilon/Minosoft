@@ -61,12 +61,15 @@ object TimeWorker {
         TASKS += task
     }
 
-    fun addTask(task: TimeWorkerTask): TimeWorkerTask {
+    fun addTask(task: TimeWorkerTask) {
         TASKS += task
-        return task
     }
+
+    operator fun plusAssign(task: TimeWorkerTask) = addTask(task)
 
     fun removeTask(task: TimeWorkerTask) {
         TASKS -= task
     }
+
+    operator fun minusAssign(task: TimeWorkerTask) = removeTask(task)
 }

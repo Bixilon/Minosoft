@@ -24,7 +24,7 @@ class StatusPingC2SP(val pingId: Long) : AllC2SPacket {
         buffer.writeLong(pingId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Status ping (pingId=$pingId)" }
     }
 }

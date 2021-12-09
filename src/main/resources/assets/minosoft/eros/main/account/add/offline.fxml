@@ -67,7 +67,7 @@
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
-            <Button disable="true" onAction="#add" fx:id="addButtonFX" text="Add" GridPane.columnIndex="2">
+            <Button disable="true" onAction="#add" fx:id="addButtonFX" text="Add" defaultButton="true" GridPane.columnIndex="2">
                 <GridPane.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                 </GridPane.margin>

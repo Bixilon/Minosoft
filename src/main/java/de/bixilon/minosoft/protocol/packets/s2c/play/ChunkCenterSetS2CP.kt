@@ -22,7 +22,7 @@ import glm_.vec2.Vec2i
 class ChunkCenterSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     private val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk center set (position=$position)" }
     }
 

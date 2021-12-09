@@ -16,14 +16,14 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.TranslatableComponents
-import de.bixilon.minosoft.gui.eros.card.AbstractCard
+import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
-class AccountCardController : AbstractCard<Account>() {
+class AccountCardController : AbstractCardController<Account>() {
     @FXML private lateinit var connectionCountFX: TextFlow
     @FXML private lateinit var stateFX: TextFlow
     @FXML private lateinit var accountNameFX: TextFlow
@@ -35,16 +35,18 @@ class AccountCardController : AbstractCard<Account>() {
         accountNameFX.children.clear()
     }
 
-    override fun updateItem(account: Account?, empty: Boolean) {
-        super.updateItem(account, empty)
+    override fun updateItem(item: Account?, empty: Boolean) {
+        val previous = this.item
+        super.updateItem(item, empty)
+        root.isVisible = !empty
+        item ?: return
+        if (previous === item) {
+            return
+        }
 
-        root.isVisible = account != null
-
-        account ?: return
-
-        accountNameFX.text = account.username
+        accountNameFX.text = item.username
         stateFX.text = "Unchecked"
-        connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(account.connections.size)
+        connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(item.connections.size)
     }
 
     companion object : CardFactory<AccountCardController> {

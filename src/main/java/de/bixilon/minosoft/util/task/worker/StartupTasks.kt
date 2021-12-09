@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.task.worker
 
 enum class StartupTasks {
-    LOAD_CONFIG,
+    LOAD_PROFILES,
     LOAD_LANGUAGE_FILES,
     LOAD_VERSIONS,
     LOAD_DEFAULT_REGISTRIES,
@@ -23,5 +23,6 @@ enum class StartupTasks {
     INITIALIZE_CLI,
     INITIALIZE_JAVAFX,
     X_START_ON_FIRST_THREAD_WARNING,
+    FILE_WATCHER,
     ;
 }

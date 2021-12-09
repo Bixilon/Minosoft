@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowFocusChangeEvent
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.util.OSUtil
 import de.bixilon.minosoft.util.logging.Log
@@ -42,8 +44,11 @@ import java.nio.ByteBuffer
 
 
 class GLFWWindow(
+    private val renderWindow: RenderWindow,
     private val eventMaster: AbstractEventMaster,
 ) : BaseWindow {
+    private var mousePosition = Vec2d.EMPTY
+    private var skipNextMouseEvent = true
     private var window = -1L
 
     override var cursorMode: CursorModes = CursorModes.NORMAL
@@ -53,6 +58,7 @@ class GLFWWindow(
             }
             glfwSetInputMode(window, GLFW_CURSOR, value.glfw)
             field = value
+            skipNextMouseEvent = true
         }
 
     private var _size = Vec2i(DEFAULT_WINDOW_SIZE)
@@ -127,12 +133,12 @@ class GLFWWindow(
             field = value
         }
 
-    override fun init() {
+    override fun init(profile: RenderingProfile) {
         GLFWErrorCallback.createPrint(System.err).set()
         check(glfwInit()) { "Unable to initialize GLFW" }
 
         glfwDefaultWindowHints()
-        if (Minosoft.config.config.game.graphics.preferQuads) {
+        if (renderWindow.preferQuads) {
             setOpenGLVersion(3, 0, false)
         } else {
             setOpenGLVersion(3, 3, true)
@@ -148,7 +154,7 @@ class GLFWWindow(
 
         glfwMakeContextCurrent(window)
 
-        super.init()
+        super.init(profile)
 
         val primaryMonitor = glfwGetPrimaryMonitor()
         if (primaryMonitor != MemoryUtil.NULL) {
@@ -239,6 +245,7 @@ class GLFWWindow(
         val previousSize = Vec2i(_size)
         _size = Vec2i(width, height)
         eventMaster.fireEvent(ResizeWindowEvent(previousSize = previousSize, size = _size))
+        this.skipNextMouseEvent = true
     }
 
     private fun mouseKeyInput(windowId: Long, button: Int, action: Int, modifierKey: Int) {
@@ -275,7 +282,16 @@ class GLFWWindow(
         if (windowId != window) {
             return
         }
-        eventMaster.fireEvent(MouseMoveEvent(position = Vec2d(x, y)))
+        val position = Vec2d(x, y)
+        val previous = this.mousePosition
+        val delta = position - previous
+        this.mousePosition = position
+
+        if (!skipNextMouseEvent) {
+            eventMaster.fireEvent(MouseMoveEvent(position = position, previous = previous, delta = delta))
+        } else {
+            skipNextMouseEvent = false
+        }
     }
 
     private fun onScroll(window: Long, xOffset: Double, yOffset: Double) {

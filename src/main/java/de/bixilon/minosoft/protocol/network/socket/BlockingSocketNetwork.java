@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.socket;
 
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager;
 import de.bixilon.minosoft.gui.rendering.util.JavaBackport;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
@@ -208,7 +209,7 @@ public class BlockingSocketNetwork extends Network {
                     while (this.sendingPaused && this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                         Util.sleep(1L);
                     }
-                    packet.log();
+                    packet.log(OtherProfileManager.INSTANCE.getSelected().getLog().getReducedProtocolLog());
 
                     this.outputStream.write(prepareC2SPacket(packet));
                     this.outputStream.flush();

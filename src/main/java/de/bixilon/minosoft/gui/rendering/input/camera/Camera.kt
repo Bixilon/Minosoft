@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.camera
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.camera.frustum.Frustum
@@ -58,11 +58,11 @@ class Camera(
     val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) {
+    private val profile = connection.profiles.rendering.camera
+    private val controlsProfile = connection.profiles.controls
     var fogColor = Previous(ChatColors.GREEN)
-    var fogStart = Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
-    private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
+    var fogStart = connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
 
-    private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
     private var zoom = 0.0f
 
     var cameraFront = Vec3d(0.0, 0.0, -1.0)
@@ -83,9 +83,9 @@ class Camera(
 
     private val fov: Double
         get() {
-            val fov = Minosoft.config.config.game.camera.fov / (zoom + 1.0)
+            val fov = profile.fov / (zoom + 1.0)
 
-            if (!Minosoft.config.config.game.camera.dynamicFov) {
+            if (!profile.dynamicFOV) {
                 return fov
             }
             return fov * connection.player.fovMultiplier.interpolate()
@@ -109,10 +109,8 @@ class Camera(
     val frustum: Frustum = Frustum(this)
 
 
-    fun mouseCallback(position: Vec2d) {
-        val delta = position - lastMousePosition
-        lastMousePosition = position
-        delta *= mouseSensitivity
+    fun mouseCallback(delta: Vec2d) {
+        delta *= 0.1f * controlsProfile.mouse.sensitivity
         var yaw = delta.x + connection.player.rotation.yaw
         if (yaw > 180) {
             yaw -= 360
@@ -127,7 +125,7 @@ class Camera(
     }
 
     private fun calculateFogDistance() {
-        if (!Minosoft.config.config.game.graphics.fogEnabled) {
+        if (!connection.profiles.rendering.fog.enabled) {
             fogStart = Float.MAX_VALUE
             return
         }
@@ -135,7 +133,7 @@ class Camera(
         fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
-            Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
+            connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
         }
     }
 
@@ -157,63 +155,65 @@ class Camera(
     fun init(renderWindow: RenderWindow) {
         renderWindow.inputHandler.registerCheckCallback(
             MOVE_SPRINT_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_CONTROL),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
                 ),
             ),
             MOVE_FORWARDS_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_W),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_W),
                 ),
             ),
             MOVE_BACKWARDS_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_S),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_S),
                 ),
             ),
             MOVE_LEFT_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_A),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_A),
                 ),
             ),
             MOVE_RIGHT_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_D),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_D),
                 ),
             ),
             FLY_UP_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_SPACE),
                 ),
             ),
             FLY_DOWN_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
                 ),
             ),
             ZOOM_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_C),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_C),
                 ),
             ),
             JUMP_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_SPACE),
                 ),
             ),
             SNEAK_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT),
+                mapOf(
+                    KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
                 ),
             ),
             TOGGLE_FLY_KEYBINDING to KeyBinding(
-                mutableMapOf(
-                    KeyAction.DOUBLE_PRESS to mutableSetOf(KeyCodes.KEY_SPACE),
+                mapOf(
+                    KeyAction.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE),
                 ),
             ),
         )
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
+
+        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { it.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() }) // ToDo
 
         fun dropItem(stack: Boolean) {
             val time = KUtil.time
@@ -235,14 +235,14 @@ class Camera(
 
         // ToDo: This has nothing todo with the camera, should be in the interaction manager
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_KEYBINDING, KeyBinding(
-            mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
+            mapOf(
+                KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
             ),
         )) { dropItem(false) }
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_STACK_KEYBINDING, KeyBinding(
-            mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_LEFT_CONTROL)
+            mapOf(
+                KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
+                KeyAction.MODIFIER to setOf(KeyCodes.KEY_LEFT_CONTROL)
             ),
         )) { dropItem(true) }
         frustum.recalculate()

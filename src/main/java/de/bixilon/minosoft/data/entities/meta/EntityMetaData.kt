@@ -180,7 +180,7 @@ class EntityMetaData(
         }
 
         fun getChatComponent(field: EntityMetaDataFields): ChatComponent? {
-            return get<Any?>(field)?.let { ChatComponent.of(it, connection.version.language) }
+            return get<Any?>(field)?.let { ChatComponent.of(it, connection.language) }
         }
 
         fun getString(field: EntityMetaDataFields): String? {

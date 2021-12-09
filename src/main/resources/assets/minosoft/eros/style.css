@@ -40,9 +40,23 @@
     -fx-border-color: -primary-light-color;
 }
 
-.button:armed, .button:focused {
+.button:armed {
     -fx-border-color: -primary-color;
     -fx-background-color: -primary-color;
+}
+
+.button:default {
+    -fx-border-color: -primary-color;
+}
+
+.button:default:hover {
+    -fx-border-color: -primary-color;
+    -fx-background-color: -primary-color;
+}
+
+.button:default:armed {
+    -fx-border-color: -primary-dark-color;
+    -fx-background-color: -primary-dark-color;
 }
 
 
@@ -266,4 +280,47 @@
 
 .obfuscated {
     -fx-font-family: 'monospaced';
+}
+
+
+/* Table view */
+
+.table-view {
+    -fx-background-color: -secondary-color;
+    -fx-border-width: 1px;
+    -fx-border-color: -secondary-light-color;
+}
+
+.table-view .column-header {
+    -fx-background-color: -secondary-light-color;
+}
+
+.table-view .column-header .filler,
+.table-view .column-header-background .filler {
+    -fx-background-color: -secondary-color;
+}
+
+.table-row-cell {
+    -fx-background-color: -secondary-color;
+    -fx-text-background-color: -secondary-text-color;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: -secondary-light-color;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -primary-color;
+}
+
+.table-row-cell:selected:hover {
+    -fx-background-color: -primary-dark-color;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: -secondary-color;
+}
+
+.table-row-cell:empty:selected {
+    -fx-background-color: -secondary-color;
 }

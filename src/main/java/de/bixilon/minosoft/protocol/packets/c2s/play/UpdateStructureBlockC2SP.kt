@@ -58,7 +58,7 @@ class UpdateStructureBlockC2SP(
         buffer.writeByte(flags)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Update structure block (position=$position, action=$action, mode=$mode, name=\"$name\", offsetX=$offsetX, offsetY=$offsetY, offsetZ=$offsetZ, sizeX=$sizeX, sizeY=$sizeY, sizeZ=$sizeZ, mirror=$mirror, rotation=$rotation, metaData=$metaData, integrity=$integrity, seed=$seed, flags=$flags)" }
     }
 

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
@@ -44,7 +43,7 @@ open class HoeItem(
     }
 
     override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
-        if (!Minosoft.config.config.game.controls.enableTilling) {
+        if (!connection.profiles.controls.interaction.tilling) {
             return InteractionResults.CONSUME
         }
 

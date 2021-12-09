@@ -63,7 +63,7 @@ open class BlockItem(
         var placeBlockState: BlockState = block!!.defaultState
         try {
             placeBlockState = block.getPlacementState(connection, raycastHit) ?: return InteractionResults.PASS
-        } catch (exception: Exception) {
+        } catch (exception: Throwable) {
             exception.printStackTrace()
         }
 

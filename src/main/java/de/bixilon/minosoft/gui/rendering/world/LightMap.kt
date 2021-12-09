@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
@@ -32,6 +31,7 @@ import kotlin.math.sin
 
 
 class LightMap(private val connection: PlayConnection) {
+    private val profile = connection.profiles.rendering.light
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
     private val uniformBuffer = FloatOpenGLUniformBuffer(1, memAllocFloat(UNIFORM_BUFFER_SIZE))
@@ -105,7 +105,7 @@ class LightMap(private val connection: PlayConnection) {
                     }
                 }
 
-                color = lerp(Minosoft.config.config.game.light.gamma, color, color.toVec3 modify { 1.0f - (1.0f - it).pow(4) })
+                color = lerp(profile.gamma, color, color.toVec3 modify { 1.0f - (1.0f - it).pow(4) })
                 color = lerp(0.04f, color, Vec3(0.75f))
                 color = color.clamp(0.0f, 1.0f)
 

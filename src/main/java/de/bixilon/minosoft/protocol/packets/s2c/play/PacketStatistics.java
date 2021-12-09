@@ -38,7 +38,7 @@ public class PacketStatistics extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol(String.format("[IN] Received player statistics (count=%d)", this.statistics.size()));
     }
 

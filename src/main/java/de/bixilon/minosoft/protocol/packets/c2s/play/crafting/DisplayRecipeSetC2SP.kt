@@ -27,7 +27,7 @@ class DisplayRecipeSetC2SP(
         buffer.writeResourceLocation(recipe.result.item.resourceLocation)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Display recipe set (recipe=$recipe)" }
     }
 }

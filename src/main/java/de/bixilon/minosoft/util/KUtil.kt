@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.util
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -28,14 +26,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.LockMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
-import okio.Buffer
 import sun.misc.Unsafe
-import java.io.PrintWriter
-import java.io.StringWriter
+import java.io.*
 import java.lang.reflect.Field
 import java.nio.ByteBuffer
 import java.time.Instant
@@ -45,6 +41,13 @@ import kotlin.random.Random
 
 
 object KUtil {
+    val UNSAFE: Unsafe
+
+    init {
+        val unsafeField = Unsafe::class.java.getDeclaredField("theUnsafe")
+        unsafeField.isAccessible = true
+        UNSAFE = unsafeField[null] as Unsafe
+    }
 
     fun <T : Enum<*>> getEnumValues(values: Array<T>): Map<String, T> {
         val ret: MutableMap<String, T> = mutableMapOf()
@@ -137,7 +140,7 @@ object KUtil {
         return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
     }
 
-    fun <T> T.synchronizedDeepCopy(): T? {
+    fun <T> T.synchronizedDeepCopy(): T {
         return when (this) {
             is Map<*, *> -> {
                 val map: MutableMap<Any?, Any?> = synchronizedMapOf()
@@ -170,7 +173,7 @@ object KUtil {
             is String -> this
             is Number -> this
             is Boolean -> this
-            null -> null
+            null -> null.unsafeCast()
             else -> TODO("Don't know how to copy ${(this as T)!!::class.java.name}")
         }
     }
@@ -356,28 +359,24 @@ object KUtil {
         return this.unsafeCast()
     }
 
-    fun Any.toJson(beautiful: Boolean = false, adapter: JsonAdapter<Any> = JSONSerializer.ANY_ADAPTER): String {
-        val buffer = Buffer()
-        val jsonWriter: JsonWriter = JsonWriter.of(buffer)
-        if (beautiful) {
-            jsonWriter.indent = "  "
+    fun Any.toJson(beautiful: Boolean = false): String {
+        return if (beautiful) {
+            Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(this)
+        } else {
+            Jackson.MAPPER.writeValueAsString(this)
         }
-        synchronized(this) {
-            adapter.toJson(jsonWriter, this)
-        }
-        return buffer.readUtf8()
     }
 
     fun String.fromJson(): Any {
-        return JSONSerializer.ANY_ADAPTER.fromJson(this)!!
+        return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
     }
 
     fun Any?.toInt(): Int {
         return when (this) {
             is Int -> this
+            is Long -> this.toInt()
             is Number -> this.toInt()
             is String -> Integer.valueOf(this)
-            is Long -> this.toInt()
             else -> TODO()
         }
     }
@@ -385,8 +384,8 @@ object KUtil {
     fun Any?.toLong(): Long {
         return when (this) {
             is Long -> this
-            is Number -> this.toLong()
             is Int -> this.toLong()
+            is Number -> this.toLong()
             else -> TODO()
         }
     }
@@ -489,7 +488,7 @@ object KUtil {
 
     fun Any?.autoType(): Any? {
         if (this == null) {
-            return this
+            return null
         }
         if (this is Number) {
             return this
@@ -529,4 +528,34 @@ object KUtil {
 
     val time: Long
         get() = Instant.now().toEpochMilli()
+
+    fun safeSaveToFile(destination: File, content: String) {
+        val parent = destination.parentFile
+        if (!parent.exists()) {
+            parent.mkdirs()
+            if (!parent.isDirectory) {
+                throw IOException("Could not create folder: ${parent.path}")
+            }
+        }
+
+        val tempFile = File("${destination.path}.tmp")
+        if (tempFile.exists()) {
+            if (!tempFile.delete()) {
+                throw IOException("Could not delete $tempFile!")
+            }
+        }
+        FileWriter(tempFile).apply {
+            write(content)
+            close()
+        }
+        if (destination.exists() && !destination.delete()) {
+            throw IOException("Could not delete $destination!")
+        }
+        if (!tempFile.renameTo(destination)) {
+            throw IOException("Could not move $tempFile to $destination!")
+        }
+    }
+
+    val Locale.fullName: String
+        get() = language + "_" + country.ifEmpty { language.uppercase() }
 }

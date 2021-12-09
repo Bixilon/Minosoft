@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarTitleSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -41,8 +40,8 @@ class BossbarTitleSetS2CP(
         connection.fireEvent(BossbarTitleSetEvent(connection, EventInitiators.SERVER, uuid, bossbar))
     }
 
-    override fun log() {
-        if (Minosoft.config.config.general.reduceProtocolLog) {
+    override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
             // servers have sometimes "animated" bossbars
             return
         }

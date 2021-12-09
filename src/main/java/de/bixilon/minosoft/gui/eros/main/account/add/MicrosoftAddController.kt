@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
@@ -45,6 +45,7 @@ class MicrosoftAddController(
 
     override fun init() {
         super.init()
+        val profile = ErosProfileManager.selected.general.accountProfile
 
         JavaFXUtil.resetWebView()
         webView.engine.isJavaScriptEnabled = true
@@ -62,8 +63,8 @@ class MicrosoftAddController(
                     try {
                         // ms-xal-00000000402b5328://auth/?code=M.R3_BL2.9c86df10-b29b-480d-9094-d8accb31e4a5
                         val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(Util.urlQueryToMap(URL(location).query)["code"]!!)
-                        Minosoft.config.config.account.entries[account.id] = account
-                        Minosoft.config.saveToFile()
+                        profile.entries[account.id] = account
+                        profile.selected = account
                         JavaFXUtil.runLater { accountController.refreshList() }
                     } catch (exception: Exception) {
                         exception.printStackTrace()

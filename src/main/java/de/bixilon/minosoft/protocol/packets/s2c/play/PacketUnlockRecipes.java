@@ -72,7 +72,7 @@ public class PacketUnlockRecipes extends PlayS2CPacket {
     }
 
     @Override
-    public void log() {
+    public void log(boolean reducedLog) {
         Log.protocol(String.format("[IN] Received unlock crafting recipe packet (action=%s, isCraftingBookOpen=%s, isFilteringActive=%s, isSmeltingBookOpen=%s, isSmeltingFilteringActive=%s listedLength=%d, taggedLength=%s)", this.action, this.isCraftingBookOpen, this.isCraftingFilteringActive, this.isSmeltingBookOpen, this.isSmeltingFilteringActive, this.listed.length, ((this.tagged == null) ? 0 : this.tagged.length)));
     }
 

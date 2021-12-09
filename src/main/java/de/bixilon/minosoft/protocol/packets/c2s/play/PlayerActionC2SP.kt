@@ -44,7 +44,7 @@ class PlayerActionC2SP(
         buffer.writeByte(direction.ordinal)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Player action (action=$action, position=$position, direction=$direction)" }
     }
 

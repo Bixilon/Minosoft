@@ -36,8 +36,8 @@ class ItemPickInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerKeyCallback("minosoft:pick_item".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
+            mapOf(
+                KeyAction.PRESS to setOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
             ),
         )) {
             pickItem(true) // ToDo: Combination for not copying nbt

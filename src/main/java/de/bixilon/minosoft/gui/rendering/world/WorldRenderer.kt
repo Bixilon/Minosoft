@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
@@ -66,7 +68,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.LOW
@@ -82,6 +84,7 @@ class WorldRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
+    private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val frustum = renderWindow.inputHandler.camera.frustum
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
@@ -113,6 +116,7 @@ class WorldRenderer(
     private var clearVisibleNextFrame = false
     private var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
 
+    private var previousViewDistance = connection.world.view.viewDistance
 
     private var cameraPosition = Vec3.EMPTY
     private var cameraChunkPosition = Vec2i.EMPTY
@@ -243,15 +247,77 @@ class WorldRenderer(
             }
         })
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_A),
-            ),
-        )) {
-            unloadWorld()
-            prepareWorld()
-        }
+        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F3),
+                    KeyAction.PRESS to setOf(KeyCodes.KEY_A),
+                ),
+            )) { clearChunkCache() }
+
+        profile.rendering::antiMoirePattern.profileWatch(this, false, profile) { clearChunkCache() }
+        val rendering = connection.profiles.rendering
+        rendering.performance::fastBedrock.profileWatch(this, false, rendering) { clearChunkCache() }
+
+        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
+            if (event.viewDistance < this.previousViewDistance) {
+                // Unload all chunks(-sections) that are out of view distance
+                queueLock.lock()
+                culledQueueLock.lock()
+                meshesToLoadLock.lock()
+                meshesToUnloadLock.lock()
+                loadedMeshesLock.lock()
+
+                val loadedMeshesToRemove: MutableSet<Vec2i> = mutableSetOf()
+                for ((chunkPosition, sections) in loadedMeshes) {
+                    if (isChunkVisible(chunkPosition)) {
+                        continue
+                    }
+                    loadedMeshesToRemove += chunkPosition
+                    for (mesh in sections.values) {
+                        if (mesh in meshesToUnload) {
+                            continue
+                        }
+                        meshesToUnload += mesh
+                    }
+                }
+                loadedMeshes -= loadedMeshesToRemove
+
+                val toRemove: MutableSet<Vec2i> = mutableSetOf()
+                for ((chunkPosition, _) in culledQueue) {
+                    if (isChunkVisible(chunkPosition)) {
+                        continue
+                    }
+                    toRemove += chunkPosition
+                }
+                culledQueue -= toRemove
+
+                queue.removeAll { !isChunkVisible(it.chunkPosition) }
+
+                meshesToLoad.removeAll { !isChunkVisible(it.chunkPosition) }
+
+                for (task in preparingTasks.toMutableSet()) {
+                    if (!isChunkVisible(task.chunkPosition)) {
+                        task.runnable.interrupt()
+                    }
+                }
+
+                loadedMeshesLock.unlock()
+                queueLock.unlock()
+                culledQueueLock.unlock()
+                meshesToLoadLock.unlock()
+                meshesToUnloadLock.unlock()
+            } else {
+                prepareWorld()
+            }
+
+            this.previousViewDistance = event.viewDistance
+        })
+    }
+
+    private fun clearChunkCache() {
+        unloadWorld()
+        prepareWorld()
     }
 
     private fun prepareWorld() {
@@ -316,6 +382,7 @@ class WorldRenderer(
             for (mesh in meshes.values) {
                 meshesToUnload += mesh
             }
+            loadedMeshes -= chunkPosition
         }
 
         loadedMeshesLock.unlock()
@@ -442,6 +509,9 @@ class WorldRenderer(
         if (!chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
+        if (this.loadedMeshes.containsKey(chunkPosition)) {
+            return
+        }
 
         // ToDo: Check if chunk is visible (not section, chunk)
         var queueChanges = 0
@@ -558,7 +628,7 @@ class WorldRenderer(
     }
 
     private fun isChunkVisible(chunkPosition: Vec2i): Boolean {
-        return chunkPosition.isInRenderDistance(cameraChunkPosition)
+        return chunkPosition.isInViewDistance(connection.world.view.viewDistance, cameraChunkPosition)
     }
 
     private fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i, checkChunk: Boolean): Boolean {

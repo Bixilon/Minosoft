@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
@@ -29,6 +28,7 @@ class OpenGLSpriteAnimator : SpriteAnimator {
 
     var initialized = false
         private set
+    override var enabled = true
 
     override fun init() {
         check(animations.size < MAX_ANIMATED_TEXTURES) { "Can not have more than $MAX_ANIMATED_TEXTURES animated textures!" }
@@ -37,14 +37,7 @@ class OpenGLSpriteAnimator : SpriteAnimator {
         initialized = true
     }
 
-    override fun draw() {
-        if (!initialized) {
-            return
-        }
-        if (!Minosoft.config.config.game.graphics.animations.textures) {
-            return
-        }
-
+    private fun recalculate() {
         val currentTime = KUtil.time
         val deltaLastDraw = currentTime - lastRun
         lastRun = currentTime
@@ -67,15 +60,22 @@ class OpenGLSpriteAnimator : SpriteAnimator {
             }
 
 
-            val arrayOffset = textureAnimation.texture.renderData!!.animationData * INTS_PER_ANIMATED_TEXTURE
+            val arrayOffset = textureAnimation.texture.renderData.animationData * INTS_PER_ANIMATED_TEXTURE
 
-            uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData!!.shaderTextureId
-            uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData!!.shaderTextureId
+            uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData.shaderTextureId
+            uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData.shaderTextureId
             uniformBuffer.data[arrayOffset + 2] = interpolation.toInt()
         }
 
 
         uniformBuffer.upload()
+    }
+
+    override fun draw() {
+        if (!initialized || !enabled) {
+            return
+        }
+        recalculate()
     }
 
 

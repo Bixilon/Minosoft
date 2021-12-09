@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -72,6 +71,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
 
     override fun init() {
+        enabled = false
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 
@@ -93,11 +93,14 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
         }
 
-        if (Minosoft.config.config.game.sound.enabled) {
-            layout += AutoTextElement(hudRenderer, 1) {
-                BaseComponent().apply {
-                    this += "S "
+        val audioProfile = connection.profiles.audio
 
+        layout += AutoTextElement(hudRenderer, 1) {
+            BaseComponent().apply {
+                this += "S "
+                if (connection.profiles.audio.skipLoading || !audioProfile.enabled) {
+                    this += "$§cdisabled"
+                } else {
                     val audioPlayer = renderWindow.rendering.audioPlayer
 
                     this += audioPlayer.availableSources
@@ -282,9 +285,10 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
     companion object : HUDBuilder<DebugHUDElement> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
+        override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
-            mutableMapOf(
-                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_F3),
+            mapOf(
+                KeyAction.STICKY to setOf(KeyCodes.KEY_F3),
             ),
         )
 

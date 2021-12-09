@@ -27,7 +27,7 @@ class CraftingRecipeRequestC2SP(
         buffer.writeVarInt(recipeId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Crafting recipe request (containerId=$containerId, recipeId=$recipeId)" }
     }
 }

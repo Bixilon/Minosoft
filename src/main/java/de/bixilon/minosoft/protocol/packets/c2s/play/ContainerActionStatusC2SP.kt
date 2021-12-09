@@ -30,7 +30,7 @@ class ContainerActionStatusC2SP(
         buffer.writeBoolean(accepted)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Confirming container action (containerId=$containerId, actionId=$actionId, accepted=$accepted)" }
     }
 }

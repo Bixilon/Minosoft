@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+        <TextFlow style="-fx-font-size: 30;" fx:id="headerFX">
+            <GridPane.margin>
+                <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
+            </GridPane.margin>
+            <Text text="Add profile"/>
+        </TextFlow>
+        <TextFlow fx:id="descriptionFX" GridPane.rowIndex="1">
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <GridPane.margin>
+                <Insets bottom="15.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+            <Text text="Please enter the profile details to continue"/>
+        </TextFlow>
+        <GridPane GridPane.rowIndex="2">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+                <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+                <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+            </rowConstraints>
+
+            <TextFlow fx:id="typeLabelFX">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="30.0" top="5.0"/>
+                </GridPane.margin>
+                <Text text="Type"/>
+            </TextFlow>
+            <ComboBox fx:id="typeFX" promptText="minosoft:eros" maxWidth="Infinity" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </ComboBox>
+
+            <TextFlow fx:id="nameLabelFX" GridPane.rowIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="30.0" top="5.0"/>
+                </GridPane.margin>
+                <Text text="Name"/>
+            </TextFlow>
+            <TextField fx:id="nameFX" promptText="Name" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </TextField>
+
+            <TextFlow fx:id="descriptionLabelFX" GridPane.rowIndex="2">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="30.0" top="5.0"/>
+                </GridPane.margin>
+                <Text text="Name"/>
+            </TextFlow>
+            <TextField fx:id="descriptionFieldFX" promptText="Description" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </TextField>
+        </GridPane>
+        <GridPane GridPane.rowIndex="4">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER"/>
+            </rowConstraints>
+            <Button fx:id="cancelButtonFX" onAction="#cancel" text="Cancel" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
+            <Button disable="true" onAction="#create" fx:id="createButtonFX" text="Create" defaultButton="true" GridPane.columnIndex="2">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
+        </GridPane>
+    </GridPane>
+</HBox>

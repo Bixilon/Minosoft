@@ -40,7 +40,7 @@ class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer:
     }
 
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Put scoreboard score (entity=$entity§r, objective=$objective§r, value=$value)" }
     }
 }

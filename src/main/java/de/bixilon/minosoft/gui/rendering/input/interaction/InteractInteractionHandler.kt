@@ -51,8 +51,8 @@ class InteractInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(USE_ITEM_KEYBINDING to KeyBinding(
-            mutableMapOf(
-                KeyAction.CHANGE to mutableSetOf(KeyCodes.MOUSE_BUTTON_RIGHT),
+            mapOf(
+                KeyAction.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
             ),
         ))
     }

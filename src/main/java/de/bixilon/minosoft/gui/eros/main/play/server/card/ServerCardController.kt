@@ -16,8 +16,11 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.eros.card.AbstractCard
+import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
+import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
+import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.favicon
+import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
@@ -29,6 +32,7 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongRece
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.Image
@@ -36,7 +40,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
-class ServerCardController : AbstractCard<ServerCard>() {
+class ServerCardController : AbstractCardController<ServerCard>() {
     @FXML private lateinit var faviconFX: ImageView
     @FXML private lateinit var serverNameFX: TextFlow
     @FXML private lateinit var motdFX: TextFlow
@@ -44,9 +48,8 @@ class ServerCardController : AbstractCard<ServerCard>() {
     @FXML private lateinit var playerCountFX: Label
     @FXML private lateinit var serverVersionFX: Label
 
+    var serverList: ServerListController? = null
 
-    var lastServerCard: ServerCard? = null
-        private set
 
     override fun clear() {
         faviconFX.image = JavaFXUtil.MINOSOFT_LOGO
@@ -58,23 +61,26 @@ class ServerCardController : AbstractCard<ServerCard>() {
         serverVersionFX.ctext = ""
     }
 
-    override fun updateItem(card: ServerCard?, empty: Boolean) {
-        super.updateItem(card, empty)
+    override fun updateItem(item: ServerCard?, empty: Boolean) {
+        val previous = this.item
+        super.updateItem(item, empty)
 
-        root.isVisible = card != null
-        this.lastServerCard = card
-        card ?: return
+        root.isVisible = !empty
+        if (previous === item) {
+            return
+        }
+        previous?.unregister()
+        item ?: return
 
-        serverNameFX.text = card.server.name
+        serverNameFX.text = item.server.name
 
-        card.server.ping()
+        item.unregister()
+        item.ping()
 
-        card.unregister()
+        item.server.favicon?.let { faviconFX.image = it }
 
-        card.server.favicon?.let { faviconFX.image = Image(ByteArrayInputStream(it)) }
-
-        card.statusReceiveInvoker = JavaFXEventInvoker.of<ServerStatusReceiveEvent> {
-            if (lastServerCard != card || it.connection.error != null) {
+        item.statusReceiveInvoker = JavaFXEventInvoker.of<ServerStatusReceiveEvent> {
+            if (this.item != item || it.connection.error != null) {
                 // error already occurred, not setting any data
                 return@of
             }
@@ -84,33 +90,34 @@ class ServerCardController : AbstractCard<ServerCard>() {
 
             faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
 
-            it.status.favicon?.let { favicon ->
-                card.server.favicon = favicon
-                Minosoft.config.saveToFile()
-            } // ToDo: Should not be part of the gui
+            it.status.favicon?.let { favicon -> DefaultThreadPool += { item.server.saveFavicon(favicon) } } // ToDo: This is running every event?
+            serverList?.onPingUpdate(item)
         }
 
-        card.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent> {
-            if (lastServerCard != card || it.connection.error != null || it.connection.lastServerStatus != null) {
+        item.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent> {
+            if (this.item != item || it.connection.error != null || it.connection.lastServerStatus != null) {
                 // error or motd is already displayed
                 return@of
             }
             motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it.state))
+            serverList?.onPingUpdate(item)
         }
 
-        card.statusErrorInvoker = JavaFXEventInvoker.of<ConnectionErrorEvent> {
-            if (lastServerCard != card) {
+        item.statusErrorInvoker = JavaFXEventInvoker.of<ConnectionErrorEvent> {
+            if (this.item != item) {
                 return@of
             }
             motdFX.text = it.exception.text
+            serverList?.onPingUpdate(item)
         }
 
-        card.pongInvoker = JavaFXEventInvoker.of<StatusPongReceiveEvent> {
-            if (lastServerCard != card || it.connection.error != null) {
+        item.pongInvoker = JavaFXEventInvoker.of<StatusPongReceiveEvent> {
+            if (this.item != item || it.connection.error != null) {
                 // error already occurred, not setting any data
                 return@of
             }
             pingFX.text = "${it.latency} ms"
+            serverList?.onPingUpdate(item)
         }
     }
 

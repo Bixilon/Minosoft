@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
@@ -28,15 +28,23 @@ import glm_.vec2.Vec2i
 
 class ChatHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextFlowElement>(hudRenderer) {
     private val connection = renderWindow.connection
+    private val profile = connection.profiles.hud
+    private val chatProfile = profile.chat
     override val layout = TextFlowElement(hudRenderer, 20000)
+    override var enabled: Boolean
+        get() = !chatProfile.hidden
+        set(value) {
+            chatProfile.hidden = !value
+        }
 
 
     override val layoutOffset: Vec2i
         get() = Vec2i(2, hudRenderer.scaledSize.y - layout.size.y - BOTTOM_OFFSET)
 
     init {
-        val config = Minosoft.config.config.game.hud.chat
-        layout.prefMaxSize = Vec2i(config.width, config.height)
+        layout.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
+        chatProfile::width.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(it, layout.prefMaxSize.y) }
+        chatProfile::height.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(layout.prefMaxSize.x, it) }
     }
 
 
@@ -48,7 +56,7 @@ class ChatHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextFlowElem
             layout += it.message
         })
         connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
-            if (Minosoft.config.config.game.hud.internalMessages.enabled) {
+            if (!profile.chat.internal.hidden) {
                 return@of
             }
             layout += it.message

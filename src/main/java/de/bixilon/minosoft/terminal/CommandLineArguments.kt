@@ -67,6 +67,10 @@ object CommandLineArguments {
             addArgument("--opengl_on_first_thread")
                 .action(Arguments.storeTrue())
                 .help("Forces OpenGL to use the main thread. Can not be disabled on MacOS. Defaults to false")
+
+            addArgument("--disable_profile_hot_reloading")
+                .action(Arguments.storeTrue())
+                .help("Disables profile hot reloading")
         }
 
     fun parse(args: Array<String>) {
@@ -106,5 +110,8 @@ object CommandLineArguments {
         RunConfiguration.AUTO_CONNECT_TO = namespace.getString("connect")
 
         RunConfiguration.OPEN_Gl_ON_FIRST_THREAD = RunConfiguration.OPEN_Gl_ON_FIRST_THREAD || namespace.getBoolean("opengl_on_first_thread")
+
+
+        RunConfiguration.PROFILES_HOT_RELOADING = !namespace.getBoolean("disable_profile_hot_reloading")
     }
 }

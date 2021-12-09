@@ -39,14 +39,10 @@ enum class KeyAction {
     MODIFIER,
 
     /**
-     * Pressing the key makes it sticky, you have to press it again to make it not pressed anymore. Initially not pressed.
+     * Pressing the key makes it sticky, you have to press it again to make it not pressed anymore.
+     * Initial pressing state can be set when registering, defaults to false
      */
     STICKY,
-
-    /**
-     * Exactly the same as STICKY, but inverted. Initial pressed.
-     */
-    STICKY_INVERTED,
 
     /**
      * Key must be pressed twice in a certain time. Behaves like sticky (press twice again to disable)

@@ -41,7 +41,7 @@ class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
         connection.state = StatusConnectionStates.PING_DONE
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Status pong (pingId=$pingId)" }
     }
 }

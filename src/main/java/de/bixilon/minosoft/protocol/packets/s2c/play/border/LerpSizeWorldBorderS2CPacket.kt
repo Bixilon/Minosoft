@@ -24,7 +24,7 @@ class LerpSizeWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val newRadius = buffer.readDouble()
     val speed = buffer.readVarLong()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Lerp size world border (oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed)" }
     }
 }

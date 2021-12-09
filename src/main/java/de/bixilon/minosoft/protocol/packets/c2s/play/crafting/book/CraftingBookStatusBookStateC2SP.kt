@@ -41,7 +41,7 @@ class CraftingBookStatusBookStateC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Crafting book status (craftingBookOpen=$craftingBookOpen, craftingFilter=$craftingFilter, blastingBookOpen=$blastingBookOpen, blastingFilter=$blastingFilter, smokingBookOpen=$smokingBookOpen, smokingFilter=$smokingFilter)" }
     }
 }

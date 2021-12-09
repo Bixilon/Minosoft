@@ -50,7 +50,7 @@
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
                 </FontIcon>
-                <FontIcon fx:id="settingsIconFX" accessibleText="Settings" iconLiteral="fas-cogs" iconSize="30" GridPane.columnIndex="2">
+                <FontIcon fx:id="profilesIconFX" accessibleText="Profiles" iconLiteral="fas-users" iconSize="30" GridPane.columnIndex="2">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
                     </GridPane.margin>

@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.eros
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -26,7 +26,7 @@ object XStartOnFirstThreadWarning {
         if (OSUtil.OS != OSUtil.OSs.MAC || RunConfiguration.DISABLE_RENDERING) {
             return
         }
-        if (Minosoft.config.config.general.ignoreXStartOnFirstThreadWarning) {
+        if (OtherProfileManager.selected.ignoreXStartOnFirstThreadWarning) {
             return
         }
         if (RunConfiguration.X_START_ON_FIRST_THREAD_SET) {

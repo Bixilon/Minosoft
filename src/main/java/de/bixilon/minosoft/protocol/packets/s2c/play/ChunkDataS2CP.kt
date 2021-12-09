@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
@@ -153,8 +152,8 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         chunk.setData(chunkData)
     }
 
-    override fun log() {
-        if (Minosoft.config.config.general.reduceProtocolLog) {
+    override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
             return
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk data (chunkPosition=$chunkPosition)" }

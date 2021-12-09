@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class EmptyEntityMoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Empty entity move (entityId=$entityId)" }
     }
 }

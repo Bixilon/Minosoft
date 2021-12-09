@@ -28,7 +28,7 @@ class AdvancementOpenTabC2SP(
         buffer.writeString(tabName)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Open advancement tab (tab=$tabName)" }
     }
 }

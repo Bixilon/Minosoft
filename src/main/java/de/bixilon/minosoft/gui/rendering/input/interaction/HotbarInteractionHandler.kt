@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -61,8 +60,9 @@ class HotbarInteractionHandler(
         val main = inventory[InventorySlots.EquipmentSlots.MAIN_HAND]
         val off = inventory[InventorySlots.EquipmentSlots.OFF_HAND]
 
+        swapLimiter += { connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND)) }
+
         if (main == null && off == null) {
-            // ToDo: Forbid swap if both are equals?
             // both are air, we can't swap
             return
         }
@@ -71,25 +71,22 @@ class HotbarInteractionHandler(
             InventorySlots.EquipmentSlots.MAIN_HAND to off,
             InventorySlots.EquipmentSlots.OFF_HAND to main,
         )
-        swapLimiter += { connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND)) }
     }
 
 
     fun init() {
         for (i in 1..PlayerInventory.HOTBAR_SLOTS) {
             renderWindow.inputHandler.registerKeyCallback("minosoft:hotbar_slot_$i".toResourceLocation(), KeyBinding(
-                mutableMapOf(
-                    KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
+                mapOf(
+                    KeyAction.PRESS to setOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
                 ),
-            )) {
-                selectSlot(i - 1)
-            }
+            )) { selectSlot(i - 1) }
         }
 
         connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent> {
             currentScrollOffset += it.offset.y
 
-            val limit = Minosoft.config.config.game.controls.hotbarScrollSensitivity
+            val limit = connection.profiles.controls.mouse.scrollSensitivity
             var nextSlot = connection.player.selectedHotbarSlot
             if (currentScrollOffset >= limit && currentScrollOffset > 0) {
                 nextSlot--
@@ -110,12 +107,10 @@ class HotbarInteractionHandler(
 
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:swap_items".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F),
+            mapOf(
+                KeyAction.PRESS to setOf(KeyCodes.KEY_F),
             ),
-        )) {
-            swapItems()
-        }
+        )) { swapItems() }
     }
 
     fun draw(delta: Double) {

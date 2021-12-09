@@ -21,7 +21,15 @@ import glm_.vec2.Vec2d
 class MouseMoveEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,
     position: Vec2d,
+    previous: Vec2d,
+    delta: Vec2d,
 ) : RenderEvent(renderWindow) {
     val position: Vec2d = position
+        get() = Vec2d(field)
+
+    val previous: Vec2d = previous
+        get() = Vec2d(field)
+
+    val delta: Vec2d = delta
         get() = Vec2d(field)
 }

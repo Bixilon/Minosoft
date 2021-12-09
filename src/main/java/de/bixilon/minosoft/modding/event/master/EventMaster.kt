@@ -22,13 +22,14 @@ import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.ReadWriteLock
+import java.util.*
 import kotlin.reflect.full.companionObjectInstance
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
     val parents: MutableSet<AbstractEventMaster> = synchronizedSetOf(*parents)
-    private val eventInvokers: MutableList<EventInvoker> = mutableListOf<EventInvoker>().sortedWith { a: EventInvoker, b: EventInvoker ->
-        -(b.priority.ordinal - a.priority.ordinal)
-    }.toSynchronizedList()
+    private val eventInvokerLock = ReadWriteLock()
+    private val eventInvokers: PriorityQueue<EventInvoker> = PriorityQueue()
 
     override val size: Int
         get() {
@@ -45,7 +46,9 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
             parent.fireEvent(event)
         }
 
-        for (invoker in eventInvokers.toSynchronizedList()) {
+        val toRemove: MutableSet<EventInvoker> = mutableSetOf()
+        eventInvokerLock.acquire()
+        for (invoker in eventInvokers) {
             if (!invoker.eventType.isAssignableFrom(event::class.java)) {
                 continue
             }
@@ -56,8 +59,14 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
             }
 
             if (invoker is OneShotInvoker && invoker.oneShot) {
-                eventInvokers -= invoker
+                toRemove += invoker
             }
+        }
+        eventInvokerLock.release()
+        if (toRemove.isNotEmpty()) {
+            eventInvokerLock.lock()
+            this.eventInvokers -= toRemove
+            eventInvokerLock.unlock()
         }
 
 
@@ -70,11 +79,18 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
     }
 
     override fun unregisterEvent(invoker: EventInvoker?) {
-        eventInvokers -= invoker ?: return
+        eventInvokerLock.lock()
+        try {
+            eventInvokers -= invoker ?: return
+        } finally {
+            eventInvokerLock.unlock()
+        }
     }
 
     override fun <T : EventInvoker> registerEvent(invoker: T): T {
+        eventInvokerLock.lock()
         eventInvokers += invoker
+        eventInvokerLock.unlock()
 
         if (invoker is EventInstantFireable && invoker.instantFire) {
             val companion = invoker.kEventType?.companionObjectInstance ?: return invoker

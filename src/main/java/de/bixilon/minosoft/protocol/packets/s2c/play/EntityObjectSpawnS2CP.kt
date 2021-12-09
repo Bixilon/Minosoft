@@ -70,7 +70,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(EntitySpawnEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity object spawn (entityId=$entityId, entityUUID=$entityUUID, entity=$entity, velocity=$velocity)" }
     }
 

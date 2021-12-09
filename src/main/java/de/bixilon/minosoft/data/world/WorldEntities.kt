@@ -78,6 +78,7 @@ class WorldEntities : Iterable<Entity> {
         uuidEntityMap[entityUUID]?.let { remove(it) }
     }
 
+    @Deprecated("ToDo: Lock")
     override fun iterator(): Iterator<Entity> {
         return idEntityMap.toSynchronizedMap().values.iterator()
     }

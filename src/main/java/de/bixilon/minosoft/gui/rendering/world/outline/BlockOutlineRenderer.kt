@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.outline
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -36,6 +36,7 @@ class BlockOutlineRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OtherDrawable {
+    private val profile = connection.profiles.block.outline
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
@@ -43,6 +44,20 @@ class BlockOutlineRenderer(
     private var currentMesh: LineMesh? = null
     override val skipOther: Boolean
         get() = currentMesh == null
+
+    /**
+     * Unloads the current mesh and creates a new one
+     * Uses when the profile changed
+     */
+    private var reload = false
+
+    override fun init() {
+        val profile = connection.profiles.block
+        this.profile::enabled.profileWatch(this, profile = profile) { reload = true }
+        this.profile::showCollisionBoxes.profileWatch(this, profile = profile) { reload = true }
+        this.profile::outlineColor.profileWatch(this, profile = profile) { reload = true }
+        this.profile::collisionColor.profileWatch(this, profile = profile) { reload = true }
+    }
 
 
     override fun drawOther() {
@@ -52,7 +67,7 @@ class BlockOutlineRenderer(
 
     override fun setupOther() {
         renderWindow.renderSystem.reset(faceCulling = false)
-        if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
+        if (profile.showThroughWalls) {
             renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
         renderWindow.shaderManager.genericColorShader.use()
@@ -88,7 +103,11 @@ class BlockOutlineRenderer(
             }
         }
 
-        if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState) {
+        if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState && !reload) {
+            return
+        }
+
+        if (!profile.enabled) {
             return
         }
 
@@ -97,11 +116,11 @@ class BlockOutlineRenderer(
 
         val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
 
-        currentMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.outlineColor)
+        currentMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
 
 
-        if (Minosoft.config.config.game.other.blockOutline.collisionBoxes) {
-            currentMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.collisionColor, 0.005f)
+        if (profile.showCollisionBoxes) {
+            currentMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
         }
 
         currentMesh.load()
@@ -110,6 +129,7 @@ class BlockOutlineRenderer(
         this.currentOutlinePosition = raycastHit.blockPosition
         this.currentOutlineBlockState = raycastHit.blockState
         this.currentMesh = currentMesh
+        this.reload = false
     }
 
 

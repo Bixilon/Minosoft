@@ -44,7 +44,7 @@
                     <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
                 </GridPane.margin>
             </Button>
-            <Button fx:id="closeButtonFX" text="Close" GridPane.columnIndex="1">
+            <Button fx:id="closeButtonFX" text="Close" defaultButton="true" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="10.0"/>
                 </GridPane.margin>

@@ -30,7 +30,7 @@ class RecipeBookStateC2SP(
         buffer.writeBoolean(filterActive)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Recipe book state (book=$book, bookOpen=$bookOpen, filterActive=$filterActive)" }
     }
 

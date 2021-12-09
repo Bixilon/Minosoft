@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.MojangAccount
@@ -76,11 +78,22 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val type = accountTypeListViewFX.selectionModel.selectedItem
         val selected = accountListViewFX.selectionModel.selectedItem
         accountListViewFX.items.clear()
-        for (account in Minosoft.config.config.account.entries.values) {
+        val profile = ErosProfileManager.selected.general.accountProfile
+        for (account in profile.entries.values) {
             if (account.type != type.resourceLocation) {
                 continue
             }
             accountListViewFX.items += account
+        }
+        profile::entries.profileWatchMapFX(this, profile) {
+            if (it.wasRemoved()) {
+                accountListViewFX.items.remove(it.valueRemoved)
+            } else if (it.wasAdded()) {
+                if (it.valueAdded.type != type.resourceLocation) {
+                    return@profileWatchMapFX
+                }
+                accountListViewFX.items += it.valueAdded
+            }
         }
 
         accountListViewFX.items.contains(selected).decide(selected, null).let {
@@ -96,6 +109,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             accountInfoFX.children.clear()
             return
         }
+        val profile = ErosProfileManager.selected.general.accountProfile
 
         val pane = GridPane()
 
@@ -130,8 +144,10 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 setOnAction {
                     SimpleErosConfirmationDialog(
                         onConfirm = {
-                            Minosoft.config.config.account.entries.remove(account.id)
-                            Minosoft.config.saveToFile()
+                            if (profile.selected == account) {
+                                profile.selected = null
+                            }
+                            profile.entries -= account.id
                             JavaFXUtil.runLater { refreshList() }
                         }
                     ).show()
@@ -142,7 +158,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 setOnAction {
                     isDisable = true
                     DefaultThreadPool += {
-                        account.verify()
+                        account.verify(profile.clientToken)
                         JavaFXUtil.runLater { refreshList() }
                     }
                 }
@@ -152,13 +168,12 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     isDisable = true
 
                     DefaultThreadPool += {
-                        account.verify() // ToDo: Show error
-                        Minosoft.config.config.account.selected = account
-                        Minosoft.config.saveToFile()
+                        account.verify(profile.clientToken) // ToDo: Show error
+                        profile.selected = account
                         JavaFXUtil.runLater { refreshList() }
                     }
                 }
-                isDisable = Minosoft.config.config.account.selected === account
+                isDisable = profile.selected == account
             }, 4, 0)
 
 

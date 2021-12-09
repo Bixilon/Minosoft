@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.SpriteTextu
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -54,7 +54,7 @@ class OpenGLTextureArray(
 
         // load .mcmeta
         val properties = try {
-            JSONSerializer.IMAGE_PROPERTIES_ADAPTER.fromJson(renderWindow.connection.assetsManager.readStringAsset(ResourceLocation("$resourceLocation.mcmeta")))!!
+            Jackson.MAPPER.readValue(renderWindow.connection.assetsManager.readStringAsset(ResourceLocation("$resourceLocation.mcmeta")), ImageProperties::class.java)
         } catch (exception: FileNotFoundException) {
             ImageProperties()
         }

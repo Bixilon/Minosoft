@@ -50,7 +50,7 @@ class CreateScoreboardObjectiveS2CP(val name: String, private var _displayName: 
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Create scoreboard objective (name=$name, displayName=$displayName, unit=$unit)" }
     }
 

@@ -52,7 +52,7 @@ class VillagerTradesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Villager trades (containerId=$containerId, trades=$trades, level=$level, experience=$experience, regularVillager=$regularVillager, canRestock=$canRestock)" }
     }
 }

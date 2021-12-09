@@ -27,7 +27,7 @@ class EntitySoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val volume: Float = buffer.readFloat()
     val pitch: Float = buffer.readFloat()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity sound effect (soundEvent=$soundEvent, category=$category, entityId$entityId, volume=$volume, pitch=$pitch)" }
     }
 }

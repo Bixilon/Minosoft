@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -48,8 +47,8 @@ class UpdateScoreboardObjectiveS2CP(val objective: String, private var _displayN
         }
     }
 
-    override fun log() {
-        if (Minosoft.config.config.general.reduceProtocolLog) {
+    override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
             return
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Update scoreboard objective (objective=$objective, displayName=$displayName, unit=$unit)" }

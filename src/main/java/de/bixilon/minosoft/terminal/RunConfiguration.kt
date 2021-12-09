@@ -21,6 +21,7 @@ import java.io.File
 import java.lang.management.ManagementFactory
 
 object RunConfiguration {
+    @Deprecated("Use profile manager")
     var CONFIG_FILENAME = "minosoft.json" // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
 
     var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes
@@ -32,6 +33,8 @@ object RunConfiguration {
 
     var DISABLE_EROS = false // if true, the whole javafx eros part is disabled
     var DISABLE_RENDERING = false // if true, rendering is disabled
+
+    var PROFILES_HOT_RELOADING = true
 
     var AUTO_CONNECT_TO: String? = null
 

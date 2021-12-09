@@ -16,7 +16,7 @@ import com.squareup.moshi.JsonEncodingException
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.Node
@@ -91,7 +91,7 @@ interface ChatComponent {
             }
             if (!ignoreJson && string.startsWith('{')) {
                 try {
-                    return BaseComponent(translator, parent, JSONSerializer.MAP_ADAPTER.fromJson(string)!!, restrictedMode)
+                    return BaseComponent(translator, parent, Jackson.MAPPER.readValue(string, Jackson.JSON_MAP_TYPE), restrictedMode)
                 } catch (ignored: JsonEncodingException) {
                 }
             }

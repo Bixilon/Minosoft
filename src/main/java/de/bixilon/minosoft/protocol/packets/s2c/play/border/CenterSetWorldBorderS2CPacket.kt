@@ -23,7 +23,7 @@ class CenterSetWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() 
     val x = buffer.readDouble()
     val z = buffer.readDouble()
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Center set world border (x=$x, z=$z)" }
     }
 }

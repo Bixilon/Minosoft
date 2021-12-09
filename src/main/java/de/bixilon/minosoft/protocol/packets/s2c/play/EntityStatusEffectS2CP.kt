@@ -60,7 +60,7 @@ class EntityStatusEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         entity.addEffect(effect)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Entity status effect (entityId=$entityId, effect=$effect, isAmbient=$isAmbient, hideParticles=$hideParticles, showIcon=$showIcon)" }
     }
 }

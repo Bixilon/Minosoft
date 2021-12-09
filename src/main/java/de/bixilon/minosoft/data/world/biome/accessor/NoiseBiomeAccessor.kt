@@ -13,15 +13,24 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.MMath
 import glm_.vec2.Vec2i
 
-class NoiseBiomeAccessor(private val world: World) {
+class NoiseBiomeAccessor(
+    private val connection: PlayConnection,
+) {
+    private val world = connection.world
+    private var fastNoise = false
+
+    init {
+        val profile = connection.profiles.rendering
+        profile.performance::fastBiomeNoise.profileWatch(this, true, profile = profile) { fastNoise = it }
+    }
 
     fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
         val biomeY = if (world.dimension?.supports3DBiomes == true) {
@@ -30,7 +39,7 @@ class NoiseBiomeAccessor(private val world: World) {
             0
         }
 
-        if (Minosoft.config.config.game.graphics.fastBiomeNoise) {
+        if (fastNoise) {
             chunk.biomeSource?.let {
                 if (it !is SpatialBiomeArray) {
                     return null

@@ -31,7 +31,7 @@ class BossbarRemoveS2CP(
         connection.fireEvent(BossbarRemoveEvent(connection, EventInitiators.SERVER, uuid, bossbar))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar remove (uuid=$uuid)" }
     }
 }

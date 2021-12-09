@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -58,6 +58,7 @@ class HUDRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OtherDrawable {
+    private val profile = connection.profiles.hud
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     var scaledSize: Vec2i = renderWindow.window.size
@@ -82,23 +83,16 @@ class HUDRenderer(
         val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
         val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
 
-        // ToDo: Default disabled elements like the debug screen?
-
-        renderWindow.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding) { hudElement.enabled = it }
+        renderWindow.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding, defaultPressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
     }
 
     private fun registerDefaultElements() {
         registerElement(DebugHUDElement)
-        if (Minosoft.config.config.game.hud.crosshair.enabled) {
-            registerElement(CrosshairHUDElement)
-        }
+        registerElement(CrosshairHUDElement)
         registerElement(BossbarHUDElement)
-        if (Minosoft.config.config.game.hud.chat.enabled) {
-            registerElement(ChatHUDElement)
-        }
-        if (Minosoft.config.config.game.hud.internalMessages.enabled) {
-            registerElement(InternalMessagesHUDElement)
-        }
+        registerElement(ChatHUDElement)
+
+        registerElement(InternalMessagesHUDElement)
         registerElement(BreakProgressHUDElement)
         registerElement(TabListHUDElement)
         registerElement(HotbarHUDElement)
@@ -107,19 +101,22 @@ class HUDRenderer(
         registerElement(ScoreboardHUDElement)
     }
 
-    override fun init() {
-        connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
-            scaledSize = Vec2i(Vec2(it.size) / Minosoft.config.config.game.hud.scale)
-            matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
-            matrixChange = true
+    private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
+        scaledSize = Vec2i(Vec2(windowSize) / scale)
+        matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
+        matrixChange = true
 
-            for (element in hudElements.toSynchronizedMap().values) {
-                if (element is LayoutedHUDElement<*>) {
-                    element.layout.silentApply()
-                }
-                element.apply()
+        for (element in hudElements.toSynchronizedMap().values) {
+            if (element is LayoutedHUDElement<*>) {
+                element.layout.silentApply()
             }
-        })
+            element.apply()
+        }
+    }
+
+    override fun init() {
+        connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
+        profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
         atlasManager.init()
 
         registerDefaultElements()
@@ -129,10 +126,10 @@ class HUDRenderer(
         }
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:enable_hud".toResourceLocation(), KeyBinding(
-            mutableMapOf(
-                KeyAction.STICKY_INVERTED to mutableSetOf(KeyCodes.KEY_F1),
+            mapOf(
+                KeyAction.STICKY to setOf(KeyCodes.KEY_F1),
             ),
-        )) { enabled = it }
+        ), defaultPressed = enabled) { enabled = it }
     }
 
     override fun postInit() {

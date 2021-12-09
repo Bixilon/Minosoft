@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.accounts.types
 
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.AccountType
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -24,22 +24,15 @@ class OfflineAccount(username: String) : Account(username) {
 
     override fun join(serverId: String) = Unit
 
-    override fun logout() = Unit
+    override fun logout(clientToken: String) = Unit
 
-    override fun verify() = Unit
-
-    override fun serialize(): Map<String, Any> {
-        return mapOf(
-            "username" to username,
-            "type" to type,
-        )
-    }
+    override fun verify(clientToken: String) = Unit
 
     override fun toString(): String {
         return "OfflineAccount{$username}"
     }
 
-    companion object : AccountType(OfflineAccount::class) {
+    companion object : CompanionResourceLocation {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".toResourceLocation()
     }
 }

@@ -16,14 +16,13 @@ package de.bixilon.minosoft.util.http
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.json.Jackson
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 object HTTP2 {
-
 
     fun Map<String, Any>.headers(): Array<String> {
         val headers: MutableList<String> = mutableListOf()
@@ -52,8 +51,8 @@ object HTTP2 {
         return post(
             url = url,
             data = this,
-            bodyPublisher = { JSONSerializer.MAP_ADAPTER.toJson(it) },
-            bodyBuilder = { it.isBlank().decide(null) { JSONSerializer.MAP_ADAPTER.fromJson(it) } },
+            bodyPublisher = { Jackson.MAPPER.writeValueAsString(it) },
+            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
@@ -66,7 +65,7 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { Util.mapToUrlQuery(this) },
-            bodyBuilder = { it.isBlank().decide(null) { JSONSerializer.MAP_ADAPTER.fromJson(it) } },
+            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
                 "Content-Type" to "application/x-www-form-urlencoded",
             )
@@ -87,7 +86,7 @@ object HTTP2 {
 
     fun String.getJson(headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
         return this.get(
-            bodyBuilder = { it.isBlank().decide(null) { JSONSerializer.MAP_ADAPTER.fromJson(it) } },
+            bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,8 @@ public class Versions {
         return VERSION_PROTOCOL_ID_MAP.get(protocolId);
     }
 
-    public static Version getVersionByName(String name) {
+    @Nullable
+    public static Version getVersionByName(@Nullable final String name) {
         if ("automatic".equals(name)) {
             return AUTOMATIC_VERSION;
         }

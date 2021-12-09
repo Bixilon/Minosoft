@@ -30,7 +30,7 @@ class MinecartCommandBlockSetC2SP(
         buffer.writeBoolean(trackOutput)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Minecart command block (entityId=$entityId, command=$command, trackOutput=$trackOutput)" }
     }
 }

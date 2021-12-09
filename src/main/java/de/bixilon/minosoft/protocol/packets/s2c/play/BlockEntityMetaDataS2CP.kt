@@ -47,7 +47,7 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, this))
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block entity meta data (position=$position, type=$type, nbt=$nbt)" }
     }
 }

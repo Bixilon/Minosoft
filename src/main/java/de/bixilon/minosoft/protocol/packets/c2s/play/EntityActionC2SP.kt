@@ -41,7 +41,7 @@ class EntityActionC2SP(
         }
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity action (entityId=$entityId, action=$action, parameter=$parameter)" }
     }
 

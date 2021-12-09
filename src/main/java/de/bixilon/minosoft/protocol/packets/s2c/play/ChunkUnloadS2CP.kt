@@ -27,7 +27,7 @@ class ChunkUnloadS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.unloadChunk(chunkPosition)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk unload (chunkPosition=$chunkPosition)" }
     }
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.util.chunk
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -294,10 +293,9 @@ object ChunkUtil {
         }
     }
 
-    fun Vec2i.isInRenderDistance(cameraPosition: Vec2i): Boolean {
-        val viewDistance = Minosoft.config.config.game.camera.viewDistance
+    fun Vec2i.isInViewDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
         val delta = (this - cameraPosition).abs
 
-        return delta.x < viewDistance || delta.y < viewDistance
+        return delta.x <= viewDistance && delta.y <= viewDistance
     }
 }

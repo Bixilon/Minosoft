@@ -37,7 +37,7 @@ class ContainerCloseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.player.containers.remove(containerId)
     }
 
-    override fun log() {
+    override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Container close (containerId=$containerId)" }
     }
 
