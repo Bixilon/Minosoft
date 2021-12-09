@@ -113,7 +113,7 @@ Because there are no releases or tags yet, I don't build any versions. This will
 
 ### Linux
 
-The latest x64 build gets uploaded to github actions. See [https://github.com/Bixilon/Minosoft/actions]()
+The latest x64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions)
 
 #### Arch
 
