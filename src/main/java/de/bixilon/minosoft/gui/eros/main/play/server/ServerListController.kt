@@ -192,7 +192,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     private fun updateServer(server: Server) {
         val serverType = serverType ?: return
         if (server !in serverType.servers) {
-            throw IllegalStateException("Server is not even in list!") // probably forgot to unregister listeners
+            return
         }
         val card = ServerCard.CARDS[server] ?: ServerCard(server).apply {
             serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
