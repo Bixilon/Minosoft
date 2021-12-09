@@ -152,6 +152,7 @@ object JavaFXUtil {
     }
 
     fun Node.clickable() {
+        this.styleClass.add("button")
         this.cursorProperty().unsafeCast<StyleableProperty<Cursor>>().applyStyle(null, Cursor.HAND)
     }
 

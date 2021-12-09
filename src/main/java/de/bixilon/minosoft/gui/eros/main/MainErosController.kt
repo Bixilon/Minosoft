@@ -33,6 +33,7 @@ import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
+import javafx.scene.layout.GridPane
 import javafx.scene.layout.Pane
 import javafx.stage.WindowEvent
 import org.kordamp.ikonli.javafx.FontIcon
@@ -49,6 +50,8 @@ class MainErosController : JavaFXWindowController() {
     @FXML private lateinit var exitIconFX: FontIcon
 
     @FXML private lateinit var contentFX: Pane
+
+    @FXML private lateinit var accountFX: GridPane
     @FXML private lateinit var accountImageFX: ImageView
     @FXML private lateinit var accountNameFX: Label
 
@@ -121,8 +124,7 @@ class MainErosController : JavaFXWindowController() {
             accountImageFX.image = it?.avatar
             accountNameFX.ctext = it?.username ?: NO_ACCOUNT_SELECTED
         }
-        accountImageFX.clickable()
-        accountNameFX.clickable()
+        accountFX.clickable()
 
         activity = ErosMainActivities.PLAY
     }

@@ -71,7 +71,7 @@
                     </GridPane.margin>
                 </FontIcon>
             </GridPane>
-            <GridPane onMouseClicked="#openAccountActivity" styleClass="context-menu" GridPane.columnIndex="3">
+            <GridPane fx:id="accountFX" onMouseClicked="#openAccountActivity" styleClass="context-menu" GridPane.columnIndex="3">
                 <columnConstraints>
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                     <ColumnConstraints hgrow="NEVER"/>
