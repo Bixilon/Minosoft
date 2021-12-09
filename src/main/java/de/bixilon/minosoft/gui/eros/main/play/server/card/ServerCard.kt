@@ -22,16 +22,12 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionSt
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.collections.SynchronizedMap
-import javafx.scene.image.Image
 
 class ServerCard(
     val server: Server,
 ) {
     var ping: StatusConnection? = null
     val connections: MutableSet<PlayConnection> = synchronizedSetOf()
-
-    var rawFavicon: ByteArray? = null
-    val favicon: Image? = null // ToDo: Image(ByteArrayInputStream(it))
 
     var statusReceiveInvoker: EventInvoker? = null
         set(value) {

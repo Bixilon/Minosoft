@@ -19,6 +19,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
+import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.favicon
+import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
@@ -30,6 +32,7 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongRece
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.Image
@@ -74,7 +77,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
         item.unregister()
         item.ping()
 
-        item.favicon?.let { faviconFX.image = it }
+        item.server.favicon?.let { faviconFX.image = it }
 
         item.statusReceiveInvoker = JavaFXEventInvoker.of<ServerStatusReceiveEvent> {
             if (this.item != item || it.connection.error != null) {
@@ -87,7 +90,7 @@ class ServerCardController : AbstractCardController<ServerCard>() {
 
             faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
 
-            it.status.favicon?.let { favicon -> item.rawFavicon = favicon }
+            it.status.favicon?.let { favicon -> DefaultThreadPool += { item.server.saveFavicon(favicon) } } // ToDo: This is running every event?
             serverList?.onPingUpdate(item)
         }
 

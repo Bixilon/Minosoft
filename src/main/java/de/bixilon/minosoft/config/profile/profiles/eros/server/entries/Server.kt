@@ -33,12 +33,12 @@ class Server(
     /**
      * Server-address as string. May contain the port
      */
-    var address by delegate(address)
+    var address by delegate(address) { check(it.isNotBlank()) { "Server address must not be blank!" } }
 
     /**
      * Server name (showed in eros)
      */
-    var name by delegate(name)
+    var name by delegate(name) { check(it.message.isNotBlank()) { "Server name must not be blank!" } }
 
     /**
      * Profiles to use for the connection to the server.
@@ -56,5 +56,5 @@ class Server(
     var forcedVersion by backingDelegate(getter = { Versions.getVersionByName(_forcedVersion) }, setter = { _forcedVersion = it?.name })
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    var faviconHash: String? by delegate(null)
+    var faviconHash: String? by delegate(null) { if (it != null) check(it.length == 40) { "Not a valid sha1 hash!" } }
 }

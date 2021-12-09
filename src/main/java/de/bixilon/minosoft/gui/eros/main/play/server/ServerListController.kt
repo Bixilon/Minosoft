@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
+import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
@@ -270,7 +271,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             server.forcedVersion = forcedVersion
                             server.profiles = profiles.toMutableMap()
                             if (server.address != address) {
-                                serverCard.rawFavicon = null
+                                server.faviconHash?.let { hash -> server.saveFavicon(null, hash) }
 
                                 server.address = address
 
