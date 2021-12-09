@@ -13,7 +13,8 @@ stages:
 
 build:
   stage: build
-  rules:
-    - if: $CI_COMMIT_MESSAGE =~ '/^((?!GIT_SILENT).)*$/' && ($CI_PIPELINE_SOURCE == "merge_request_event" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master")
+  only:
+    - master
+    - merge_requests
   script:
     - 'mvn $MAVEN_CLI_OPTS compile'
