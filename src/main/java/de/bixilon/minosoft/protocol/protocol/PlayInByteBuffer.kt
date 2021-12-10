@@ -23,7 +23,16 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.recipes.Ingredient
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W21A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W28B
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
 
@@ -136,15 +145,10 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readBiomeArray(): Array<Biome> {
         val length = when {
-            versionId >= V_20W28A -> {
-                readVarInt()
-            }
-            versionId >= V_19W36A -> {
-                1024
-            }
-            else -> {
-                0
-            }
+            versionId >= V_20W28A -> readVarInt()
+            versionId >= V_19W36A -> 1024
+
+            else -> 0
         }
 
         check(length <= ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) { "Trying to allocate too much memory" }

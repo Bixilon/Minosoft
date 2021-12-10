@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
-import com.squareup.moshi.JsonEncodingException
+import com.fasterxml.jackson.core.JacksonException
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -92,7 +92,7 @@ interface ChatComponent {
             if (!ignoreJson && string.startsWith('{')) {
                 try {
                     return BaseComponent(translator, parent, Jackson.MAPPER.readValue(string, Jackson.JSON_MAP_TYPE), restrictedMode)
-                } catch (ignored: JsonEncodingException) {
+                } catch (ignored: JacksonException) {
                 }
             }
 

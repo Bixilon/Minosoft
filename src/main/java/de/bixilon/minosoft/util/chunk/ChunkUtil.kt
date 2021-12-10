@@ -30,7 +30,12 @@ import de.bixilon.minosoft.data.world.container.palette.palettes.SingularPalette
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W35A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import glm_.vec2.Vec2i
 import java.util.*
 
