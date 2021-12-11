@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFA
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.OSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -163,7 +164,6 @@ class GLFWWindow(
             }
         }
 
-
         glfwSetKeyCallback(window, this::keyInput)
         glfwSetMouseButtonCallback(window, this::mouseKeyInput)
 
@@ -282,11 +282,12 @@ class GLFWWindow(
         if (windowId != window) {
             return
         }
+
+
         val position = Vec2d(x, y)
         val previous = this.mousePosition
         val delta = position - previous
         this.mousePosition = position
-
         if (!skipNextMouseEvent) {
             eventMaster.fireEvent(MouseMoveEvent(position = position, previous = previous, delta = delta))
         } else {
