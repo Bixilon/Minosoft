@@ -40,7 +40,7 @@ interface AssetsManager {
     fun readAssetAsStream(resourceLocation: ResourceLocation): InputStream
 
     fun readAssetAsReader(resourceLocation: ResourceLocation): BufferedReader {
-        return BufferedReader(InputStreamReader(readAssetAsStream(resourceLocation)))
+        return BufferedReader(InputStreamReader(readAssetAsStream(resourceLocation), Charsets.UTF_8))
     }
 
     @Deprecated(message = "Will be removed...")
