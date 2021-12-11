@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.KUtil.fullName
 
 class ClientSettingsManager(
     private val connection: PlayConnection,
@@ -74,7 +73,7 @@ class ClientSettingsManager(
             return
         }
         connection.sendPacket(ClientSettingsC2SP(
-            locale = language.fullName,
+            locale = language,
             chatColors = connection.profiles.hud.chat.chatColors,
             viewDistance = connection.profiles.block.viewDistance,
             chatMode = connection.profiles.hud.chat.chatMode,

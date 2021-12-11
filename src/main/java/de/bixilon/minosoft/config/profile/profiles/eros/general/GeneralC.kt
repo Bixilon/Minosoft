@@ -7,13 +7,14 @@ import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.fullName
 import java.util.*
 
 class GeneralC {
     /**
      * Language to use for eros. This is also the fallback language for other profiles
      */
-    var language: Locale by delegate(Locale.getDefault())
+    var language: String by delegate(Locale.getDefault()?.fullName ?: "en_US")
 
     @get:JsonProperty("account_profile") private var _accountProfile: String? by delegate(null)
 

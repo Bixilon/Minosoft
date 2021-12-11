@@ -7,7 +7,6 @@ import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileM
 import de.bixilon.minosoft.config.profile.profiles.connection.skin.SkinC
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import java.util.*
 
 /**
  * Profile for connection
@@ -29,7 +28,7 @@ class ConnectionProfile(
      * Will be sent to the server
      * If unset (null), uses eros language
      */
-    var language: Locale? by delegate(null)
+    var language: String? by delegate(null)
 
     /**
      * If false, the server should not list us the ping player list

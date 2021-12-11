@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ClientSettingsC2SP(
-    val locale: String = "en_us",
+    val locale: String = "en_US",
     var chatColors: Boolean = true,
     val viewDistance: Int = 10,
     val chatMode: ChatModes = ChatModes.EVERYTHING,

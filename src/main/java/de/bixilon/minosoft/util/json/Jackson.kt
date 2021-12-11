@@ -19,7 +19,6 @@ object Jackson {
             .build())
         .registerModule(ResourceLocationSerializer)
         .registerModule(RGBColorSerializer)
-        .registerModule(LocaleSerializer)
         .registerModule(ChatComponentColorSerializer)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setDefaultMergeable(true)
