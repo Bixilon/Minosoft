@@ -50,6 +50,10 @@ object CommandLineArguments {
                 .action(Arguments.storeTrue())
                 .help("Disables rendering")
 
+            addArgument("--disable_cursor_catch")
+                .action(Arguments.storeTrue())
+                .help("Disables catching the cursor")
+
             addArgument("--headless")
                 .action(Arguments.storeTrue())
                 .help("Disables the server list and rendering")
@@ -88,7 +92,7 @@ object CommandLineArguments {
         RunConfiguration.LOG_COLOR_LEVEL = namespace.getBoolean("disable_log_color_level")
         RunConfiguration.LOG_COLOR_TYPE = namespace.getBoolean("disable_log_color_type")
         RunConfiguration.LOG_RELATIVE_TIME = namespace.getBoolean("relative_log")
-
+        RunConfiguration.DISABLE_CURSOR_CATCH = namespace.getBoolean("disable_cursor_catch")
         RunConfiguration.DISABLE_EROS = namespace.getBoolean("disable_eros")
         RunConfiguration.DISABLE_RENDERING = namespace.getBoolean("disable_rendering")
 

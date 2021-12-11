@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
@@ -49,7 +50,7 @@ interface BaseWindow {
         resizable = true
         profile.advanced::swapInterval.profileWatchRendering(this, true, profile) { swapInterval = it }
 
-        if (!StaticConfiguration.DEBUG_MODE) {
+        if (!RunConfiguration.DISABLE_CURSOR_CATCH) {
             cursorMode = CursorModes.DISABLED
         }
         size = DEFAULT_WINDOW_SIZE
