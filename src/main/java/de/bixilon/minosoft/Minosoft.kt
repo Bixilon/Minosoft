@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft
 
-import de.bixilon.minosoft.assets.file.ResourceAssetsManager
+import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
@@ -48,7 +48,7 @@ import de.bixilon.minosoft.util.task.worker.tasks.Task
 
 object Minosoft {
     val MAIN_THREAD: Thread = Thread.currentThread()
-    val MINOSOFT_ASSETS_MANAGER = ResourceAssetsManager(Minosoft::class.java)
+    val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java)
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 

@@ -13,23 +13,30 @@
 
 package de.bixilon.minosoft.assets.file
 
+import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import org.reflections.Reflections
-import org.reflections.scanners.Scanners
+import java.io.InputStream
 
 
 /**
- * Provides resources from a class
+ * Provides assets that are saved in a directory (on your hard drive)
  */
 
-class ResourceAssetsManager(
-    private val clazz: Class<*>,
+class DirectoryAssetsManager(
+    private val basePath: String,
 ) : FileAssetsManager() {
-    var reflections = Reflections(clazz::class.java, Scanners.Resources)
-    var resourceList: Set<String> = reflections.getResources("assets")
 
+    private val ResourceLocation.filePath: String
+        get() = "$basePath/$namespace/$path"
 
-    override fun load(latch: CountUpAndDownLatch) {
-        TODO("Not yet implemented")
+    override fun load(latch: CountUpAndDownLatch) = Unit
+
+    override fun get(path: ResourceLocation): InputStream {
+        return FileUtil.readFile(path.filePath, false)
+    }
+
+    override fun nullGet(path: ResourceLocation): InputStream? {
+        return FileUtil.saveReadFile(path.filePath, false)
     }
 }

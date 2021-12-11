@@ -99,7 +99,7 @@ data class Version(
             registries.parentRegistries = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
-            MBFBinaryReader(FileUtil.readFile(FileAssetsUtil.getPath(AssetsVersionProperties[this]!!.pixlyzerHash), false)).readMBF().data.asCompound()
+            MBFBinaryReader(FileUtil.readFile(FileAssetsUtil.getPath(AssetsVersionProperties[this]!!.pixlyzerHash ?: throw IllegalStateException("$this has no pixlyzer data!")), false)).readMBF().data.asCompound()
         } catch (exception: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.VERBOSE) { exception }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.assets.util
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.luben.zstd.ZstdInputStream
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.Jackson
@@ -61,7 +62,7 @@ object FileUtil {
             if (length < 0) {
                 break
             }
-            builder.append(String(buffer, 0, length))
+            builder.append(String(buffer, 0, length, Charsets.UTF_8))
         }
         if (close) {
             this.close()
@@ -82,7 +83,7 @@ object FileUtil {
 
     inline fun <reified T> InputStream.readJson(close: Boolean = true): T {
         try {
-            return Jackson.MAPPER.readValue(this, T::class.java)
+            return Jackson.MAPPER.readValue(this)
         } finally {
             if (close) {
                 this.close()
