@@ -1,0 +1,150 @@
+minosoft:general.empty=
+minosoft:general.cancel=Cancelar
+minosoft:general.confirm=Confirmar
+minosoft:general.delete=Eliminar
+minosoft:general.ignore=Ignorar
+
+minosoft:eros_window_title=Minosoft
+
+minosoft:server_type.custom=Personalizado
+minosoft:server_type.lan=LAN
+
+minosoft:server_info.server_name=Nombre del servidor
+minosoft:server_info.server_address=Dirección del servidor
+minosoft:server_info.real_server_address=Dirección real
+minosoft:server_info.forced_version=Forzar versión
+minosoft:server_info.remote_version=Versión remota
+minosoft:server_info.remote_brand=Marca remota
+minosoft:server_info.active_connections=Conexiones activas
+minosoft:server_info.players_online=Jugadores conectados
+minosoft:server_info.ping=Latencia
+
+minosoft:server_info.delete.dialog.description=Estas seguro de que quieres eliminar el servidor: %1$s (%2$s)?
+
+
+minosoft:connection.status.state.waiting=Esperando...
+minosoft:connection.status.state.resolving=Resolviendo direccion...
+minosoft:connection.status.state.establishing=Estableciendo conexión...
+minosoft:connection.status.state.handshaking=Negociando con el servidor...
+minosoft:connection.status.state.querying_status=Descargando motd...
+minosoft:connection.status.state.querying_ping=Calculando ping...
+minosoft:connection.status.state.ping_done=Estado recibido!
+minosoft:connection.status.state.error=¡Error en la conexion!
+
+
+minosoft:general.dialog.are_you_sure=Estas seguro?
+minosoft:general.dialog.warning=¡Alerta!
+
+
+minosoft:modify_server.name.label=Nombre del servidor
+minosoft:modify_server.name.placeholder=Servidor de Minosoft
+minosoft:modify_server.address.label=Direccion del servidor
+minosoft:modify_server.address.placeholder=127.0.0.1:25565
+minosoft:modify_server.forced_version.label=Forzar version
+minosoft:modify_server.forced_version.automatic=Autodetectar
+minosoft:modify_server.forced_version.releases=Lanzamientos
+minosoft:modify_server.forced_version.snapshots=Snapshots
+minosoft:modify_server.profiles.label=Perfiles
+minosoft:modify_server.profiles.open_select_dialog=Abrir selector de perfiles
+
+minosoft:modify_server.add.title=Añadir servidor - Minosoft
+minosoft:modify_server.add.description=Por favor, indica el nombre del servidor al igual que la IP y la version
+minosoft:modify_server.add.update_button=Añadir
+
+minosoft:modify_server.edit.title=Editar servidor - Minosoft
+minosoft:modify_server.edit.description=Por favor cambia los detalles del servidor y guarda
+minosoft:modify_server.edit.update_button=Guardar
+
+minosoft:server_list.refresh.header=Actualizar
+minosoft:server_list.refresh.text1=Obtener la ultima
+minosoft:server_list.refresh.text2=información
+
+
+
+minosoft:main.account.no_account_selected=Sin cuenta seleccionada
+
+minosoft:main.account.type.mojang=Mojang
+minosoft:main.account.type.microsoft=Microsoft
+minosoft:main.account.type.offline=Offline
+
+
+minosoft:main.account.card.connection_count=%1$s conexiones
+
+minosoft:main.account.account_info.id=Id
+minosoft:main.account.account_info.email=E-Mail
+minosoft:main.account.account_info.uuid=UUID
+
+minosoft:main.account.add.offline.title=Añadir cuenta offline
+minosoft:main.account.add.offline.header=Añadir cuenta offline
+minosoft:main.account.add.offline.description=Por favor introduzca el nombre de usuario de la cuenta
+minosoft:main.account.add.offline.username.label=Usuario
+minosoft:main.account.add.offline.username.placeholder=Usuario ejemplo
+minosoft:main.account.add.offline.add_button=Añadir
+minosoft:main.account.add.offline.cancel_button=Cancelar
+
+minosoft:main.account.add.mojang.title=Añadir cuenta de Mojang
+minosoft:main.account.add.mojang.header=Añadir cuenta de Mojang
+minosoft:main.account.add.mojang.description=Introduze tu email (o nombre de usuario para cuentas antiguas) y tu contraseña
+minosoft:main.account.add.mojang.email.label=E-mail
+minosoft:main.account.add.mojang.email.placeholder=user@ejemplo.es
+minosoft:main.account.add.mojang.password.label=Contraseña
+minosoft:main.account.add.mojang.password.placeholder=****
+minosoft:main.account.add.mojang.add_button=Añadir
+minosoft:main.account.add.mojang.cancel_button=Cancelar
+
+minosoft:main.account.add.microsoft.title=Añadir cuenta de Microsoft
+
+
+minosoft:connection.kick.title=Expulsado del servidor
+minosoft:connection.kick.header=Te han expulsado
+minosoft:connection.kick.description=Te han expulsado de %1$s (conectado con: %2$s)
+minosoft:connection.kick.reconnect_button=Reconectarse
+minosoft:connection.kick.close_button=Cerrar
+
+minosoft:connection.login_kick.title=Expulsado del servidor
+minosoft:connection.login_kick.header=Te han expulsado
+minosoft:connection.login_kick.description=Te han expulsado mientras iniciabas sesion de %1$s (conectado con: %2$s)
+
+minosoft:error.title=%1$s - Minosoft
+minosoft:error.header=¡Ha ocurrido un error!
+minosoft:error.description=Ha ocurrido un error en Minosoft. Puedes continuar como antes, pero el comportamiento puede ser inesperado. Si el error continua, sientete libre de abrir un ticket aquí: https://gitlab.bixilon.de/bixilon/minosoft/-/issues/
+minosoft:error.fatal_crash=Cierre inesperado
+
+
+minosoft:x_start_on_first_thread_warning.title=-XstartOnFirstThread no especificado
+minosoft:x_start_on_first_thread_warning.header=-XstartOnFirstThread no especificado
+minosoft:x_start_on_first_thread_warning.description=Parece que estas en MacOS; Debido a unas decisiones hechas por Apple, tendras que poner §7-XstartOnFirstThread§r como un argumento de Java si deseas usar el renderizado. Si no sabes como o no te gusta este comportamiento echa un vistazo a https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
+
+minosoft:x_start_on_first_thread_warning.eros_running.title=Eros ejecutandose
+minosoft:x_start_on_first_thread_warning.eros_running.header=Eros ejecutandose
+minosoft:x_start_on_first_thread_warning.eros_running.description=Parece que Eros se esta ejecutando y planeas usar el renderizado. Esto (en MacOS) no es posible actualmente. Tienes que añadir §7-XstartOnFirstThread §rcomo un argumento de Java y el comando §7auto-connect §rpara conectarte a un servidor. Lo sentimos por esto. Si no te gusta este comportamiento echa un vistazo a https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
+
+
+minosoft:general.dialog.profile.select.title=Seleccionar perfiles
+minosoft:general.dialog.profile.select.header=Seleccionar perfiles
+
+minosoft:general.dialog.profile.select.column.type=Tipo
+minosoft:general.dialog.profile.select.column.profile=Perfil
+
+minosoft:general.dialog.profile.select.cancel_button=Cancelar
+minosoft:general.dialog.profile.select.confirm_button=Confirmar
+
+minosoft:general.dialog.profile.select.click_me_to_add=Doble click para añadir
+minosoft:general.dialog.profile.select.none=<Nada>
+minosoft:general.dialog.profile.select.create=<Crear>
+
+minosoft:general.dialog.profile.create.title=Crear perfil
+minosoft:general.dialog.profile.create.header=Crear perfil
+minosoft:general.dialog.profile.create.description=Introduce los detalles para crear perfil
+minosoft:general.dialog.profile.create.type.label=Tipo de perfil
+minosoft:general.dialog.profile.create.name.label=Nombre
+minosoft:general.dialog.profile.create.name.placeholder=Perfil super molon
+minosoft:general.dialog.profile.create.description.label=Descripción
+minosoft:general.dialog.profile.create.description.placeholder=Mi nuevo perfil super molon
+minosoft:general.dialog.profile.create.create_button=Crear
+minosoft:general.dialog.profile.create.cancel_button=Cancelar
+
+
+minosoft:profiles.profile.name=Nombre
+minosoft:profiles.profile.description=Descripción
+minosoft:profiles.profile.disk_path=Ruta del disco
