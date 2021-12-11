@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
@@ -59,7 +60,7 @@ object DefaultRegistries {
     fun load() {
         check(!initialized) { "Already initialized!" }
 
-        val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ENUM_RESOURCE_LOCATION).asCompound().toResourceLocationMap()
+        val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
         EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("equipment_slots")].asCompound())
         HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")].asCompound())
@@ -74,7 +75,7 @@ object DefaultRegistries {
         ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("entity_actions")].asCompound())
 
 
-        val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(REGISTRIES_RESOURCE_LOCATION).asCompound().toResourceLocationMap()
+        val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")].asCompound(), PluginChannel)
 

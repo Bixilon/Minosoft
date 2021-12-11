@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -47,7 +47,7 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
             return
         }
 
-        val decoder = PNGDecoder(assetsManager.readAssetAsStream(resourceLocation))
+        val decoder = PNGDecoder(assetsManager[resourceLocation])
         val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
 

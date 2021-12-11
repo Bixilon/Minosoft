@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
+import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
+import de.bixilon.minosoft.assets.util.FileAssetsUtil
+import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.assets.util.FileUtil.readArchive
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
-import de.bixilon.minosoft.data.assets.AssetsUtil
-import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
@@ -76,9 +78,6 @@ import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import java.io.FileInputStream
-import java.util.zip.GZIPInputStream
-import java.util.zip.ZipInputStream
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -130,8 +129,8 @@ class WorldRenderer(
     val preparingTasksSize: Int by preparingTasks::size
 
     override fun init() {
-        val asset = Resources.getAssetVersionByVersion(connection.version)
-        val zip = ZipInputStream(GZIPInputStream(FileInputStream(AssetsUtil.getAssetDiskPath(asset.clientJarHash!!, true))))
+        val asset = AssetsVersionProperties[connection.version]!!
+        val zip = FileUtil.readFile(FileAssetsUtil.getPath(asset.clientJarHash)).readArchive()
         val modelLoader = ModelLoader(zip, renderWindow)
         modelLoader.load()
 

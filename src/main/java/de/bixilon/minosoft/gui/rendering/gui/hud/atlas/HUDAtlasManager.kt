@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
 
+import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
@@ -24,7 +25,7 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
     private lateinit var elements: Map<ResourceLocation, HUDAtlasElement>
 
     fun init() {
-        val data = hudRenderer.connection.assetsManager.readJsonAsset(ATLAS_DATA)
+        val data = hudRenderer.connection.assetsManager[ATLAS_DATA].readJsonObject()
         val versionId = hudRenderer.connection.version.versionId
 
         val elements: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()

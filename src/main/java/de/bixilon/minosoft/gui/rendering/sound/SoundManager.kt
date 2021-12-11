@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
+import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundType
@@ -16,7 +17,7 @@ class SoundManager(
 
 
     fun load() {
-        val soundsIndex = connection.assetsManager.readJsonAsset(SOUNDS_INDEX_FILE)
+        val soundsIndex = connection.assetsManager[SOUNDS_INDEX_FILE].readJsonObject()
 
         for ((name, data) in soundsIndex) {
             val resourceLocation = name.toResourceLocation()

@@ -21,21 +21,15 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
-import de.bixilon.minosoft.util.KUtil.fromJson
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 class ModelLoader(
-    val jar: ZipInputStream,
+    val data: Map<String, ByteArray>,
     val renderWindow: RenderWindow,
 ) {
     private val unbakedBlockModels: MutableMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toMutableMap()
@@ -47,24 +41,18 @@ class ModelLoader(
 
     private fun loadJsons() {
         // ToDo: Integrate in assets manager
-        var entry: ZipEntry? = jar.nextEntry
-        while (entry != null) {
-            if (!entry.name.startsWith("assets/minecraft/models/") && !entry.name.startsWith("assets/minecraft/blockstates/")) {
-                entry = jar.nextEntry
+        for ((entryName, data) in data) {
+            if (!entryName.startsWith("assets/minecraft/models/") && !entryName.startsWith("assets/minecraft/blockstates/")) {
                 continue
             }
-            val name = entry.name.removePrefix("assets/minecraft/").removeSuffix(".json")
-            val jsonString = Util.readReader(BufferedReader(InputStreamReader(jar)), false)
+            val name = entryName.removePrefix("assets/minecraft/").removeSuffix(".json")
+            val json: Map<String, Any> = Jackson.MAPPER.readValue(String(data), Jackson.JSON_MAP_TYPE)
 
-            val json = jsonString.fromJson().asCompound()
             if (name.startsWith("models/")) {
                 modelJsons[name.removePrefix("models/").toResourceLocation()] = json
             } else {
                 blockStateJsons[name.removePrefix("blockstates/").toResourceLocation()] = json
             }
-
-
-            entry = jar.nextEntry
         }
     }
 

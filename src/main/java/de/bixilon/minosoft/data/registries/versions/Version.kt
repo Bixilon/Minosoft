@@ -14,8 +14,11 @@ package de.bixilon.minosoft.data.registries.versions
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.mbf.MBFBinaryReader
-import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
-import de.bixilon.minosoft.data.assets.Resources
+import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
+import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
+import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
+import de.bixilon.minosoft.assets.util.FileAssetsUtil
+import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
@@ -42,7 +45,8 @@ data class Version(
     val type: VersionTypes = VersionTypes[this]
     var isLoaded = false
     val registries: Registries = Registries()
-    lateinit var assetsManager: MinecraftAssetsManager
+    lateinit var jarAssetsManager: JarAssetsManager
+    lateinit var indexAssetsManager: IndexAssetsManager
 
     fun getPacketById(state: ProtocolStates, command: Int): S2C? {
         return s2CPacketMapping[state]?.inverse()?.get(command)
@@ -57,15 +61,14 @@ data class Version(
     }
 
     private fun initializeAssetManger(latch: CountUpAndDownLatch) {
-        if (this::assetsManager.isInitialized) {
+        if (this::jarAssetsManager.isInitialized) {
             return
         }
         if (!isFlattened() && versionId != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
-            assetsManager = Versions.PRE_FLATTENING_VERSION.assetsManager
+            jarAssetsManager = Versions.PRE_FLATTENING_VERSION.jarAssetsManager
             return
         }
-        assetsManager = MinecraftAssetsManager(Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
-        assetsManager.downloadAllAssets(latch)
+        // ToDo
     }
 
     @Synchronized
@@ -96,7 +99,7 @@ data class Version(
             registries.parentRegistries = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
-            MBFBinaryReader(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this), false)).readMBF().data.asCompound()
+            MBFBinaryReader(FileUtil.readFile(FileAssetsUtil.getPath(AssetsVersionProperties[this]!!.pixlyzerHash), false)).readMBF().data.asCompound()
         } catch (exception: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.VERBOSE) { exception }

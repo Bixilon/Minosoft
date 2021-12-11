@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -10,7 +11,7 @@ class GrassTintCalculator : TintProvider {
     private lateinit var colorMap: IntArray
 
     fun init(assetsManager: AssetsManager) {
-        colorMap = assetsManager.readRGBArrayAsset("minecraft:colormap/grass".toResourceLocation().texture())
+        colorMap = assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray()
     }
 
     fun getColor(downfall: Int, temperature: Int): Int {

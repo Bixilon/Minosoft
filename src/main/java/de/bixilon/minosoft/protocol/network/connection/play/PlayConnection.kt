@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.multi.PriorityAssetsManager
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.language.LanguageManager
@@ -83,7 +83,7 @@ class PlayConnection(
     @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)
     val serverInfo = ServerInfo()
-    lateinit var assetsManager: MultiAssetsManager
+    lateinit var assetsManager: PriorityAssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: LanguageManager
@@ -219,13 +219,15 @@ class PlayConnection(
             state = PlayConnectionStates.LOADING
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(latch) // ToDo: show gui loader
-            assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER)
+            assetsManager = PriorityAssetsManager(Minosoft.MINOSOFT_ASSETS_MANAGER)
             language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version)
             registries.parentRegistries = version.registries
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
 
             if (!RunConfiguration.DISABLE_RENDERING) {
+                assetsManager.add(version.jarAssetsManager)
+                assetsManager.add(version.indexAssetsManager)
                 val renderer = Rendering(this)
                 this.rendering = renderer
                 val renderLatch = CountUpAndDownLatch(0, latch)

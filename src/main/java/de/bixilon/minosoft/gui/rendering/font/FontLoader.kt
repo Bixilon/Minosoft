@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
@@ -32,7 +33,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
 
 
     fun load(renderWindow: RenderWindow): Font {
-        val fontIndex = renderWindow.connection.assetsManager.readJsonAsset(FONT_INDEX)
+        val fontIndex = renderWindow.connection.assetsManager[FONT_INDEX].readJsonObject()
 
         val providers: MutableList<FontProvider> = mutableListOf()
 

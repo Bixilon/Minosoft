@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,14 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.assets
+package de.bixilon.minosoft.assets.file
 
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.util.CountUpAndDownLatch
+import org.reflections.Reflections
+import org.reflections.scanners.Scanners
 
-data class AssetVersion(
-    val version: Version,
-    val indexVersion: String?,
-    val indexHash: String?,
-    val clientJarHash: String?,
-    val jarAssetsHash: String?,
-)
+
+/**
+ * Provides resources from a class
+ */
+
+class ResourceAssetsManager(
+    private val clazz: Class<*>,
+) : FileAssetsManager() {
+    var reflections = Reflections(clazz::class.java, Scanners.Resources)
+    var resourceList: Set<String> = reflections.getResources("assets")
+
+
+    override fun load(latch: CountUpAndDownLatch) {
+        TODO("Not yet implemented")
+    }
+}

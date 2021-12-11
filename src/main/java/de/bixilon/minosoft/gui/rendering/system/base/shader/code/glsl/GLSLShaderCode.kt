@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl
 
+import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -68,7 +69,7 @@ class GLSLShaderCode(
 
                         val include = ResourceLocation(reader.readString())
 
-                        val includeCode = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager.readStringAsset(ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")))
+                        val includeCode = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
                         this.uniforms += includeCode.uniforms
 
                         code.append('\n')

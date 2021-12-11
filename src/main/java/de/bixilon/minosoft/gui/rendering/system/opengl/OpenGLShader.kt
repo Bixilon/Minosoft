@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
+import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -42,7 +43,7 @@ class OpenGLShader(
         private set
 
     private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
-        val code = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager.readStringAsset(resourceLocation))
+        val code = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[resourceLocation].readAsString())
 
         code.defines += defines
 
