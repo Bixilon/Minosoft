@@ -234,17 +234,17 @@ class Camera(
         }
 
         // ToDo: This has nothing todo with the camera, should be in the interaction manager
-        renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_KEYBINDING, KeyBinding(
-            mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
-            ),
-        )) { dropItem(false) }
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_STACK_KEYBINDING, KeyBinding(
             mapOf(
                 KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
                 KeyAction.MODIFIER to setOf(KeyCodes.KEY_LEFT_CONTROL)
             ),
         )) { dropItem(true) }
+        renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_KEYBINDING, KeyBinding(
+            mapOf(
+                KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
+            ),
+        )) { dropItem(false) }
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
