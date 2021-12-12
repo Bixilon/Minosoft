@@ -282,6 +282,16 @@ class RenderWindow(
             sendDebugMessage("Pausing outgoing packets: ${it.format()}")
             connection.network.pauseSending(it)
         }
+
+        inputHandler.registerKeyCallback("minosoft:toggle_fullscreen".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.PRESS to setOf(KeyCodes.KEY_F11),
+                ),
+                ignoreConsumer = true,
+            )) {
+            window.fullscreen = !window.fullscreen
+        }
     }
 
     fun startLoop() {
