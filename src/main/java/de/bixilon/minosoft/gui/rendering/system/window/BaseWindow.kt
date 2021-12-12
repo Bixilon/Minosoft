@@ -34,6 +34,7 @@ interface BaseWindow {
 
     var visible: Boolean
     var resizable: Boolean
+    var fullscreen: Boolean
 
     var swapInterval: Int
 

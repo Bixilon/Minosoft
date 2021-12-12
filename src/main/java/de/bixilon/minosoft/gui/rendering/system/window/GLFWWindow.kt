@@ -104,6 +104,22 @@ class GLFWWindow(
             field = value
         }
 
+    override var fullscreen: Boolean = false
+        set(value) {
+            if (field == value) {
+                return
+            }
+            val monitor = glfwGetPrimaryMonitor()
+            val mode = glfwGetVideoMode(monitor) ?: return
+            if (value) {
+                glfwSetWindowMonitor(window, monitor, 15, 15, mode.width(), mode.height(), mode.refreshRate())
+            } else {
+                glfwSetWindowMonitor(window, 0, (mode.width() - DEFAULT_WINDOW_SIZE.x) / 2, (mode.height() - DEFAULT_WINDOW_SIZE.y) / 2, DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y, GLFW_DONT_CARE)
+            }
+
+            field = value
+        }
+
     override var swapInterval: Int = -1
         set(value) {
             if (field == value) {
