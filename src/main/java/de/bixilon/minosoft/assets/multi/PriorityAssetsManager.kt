@@ -27,6 +27,17 @@ class PriorityAssetsManager(
 ) : MultiAssetsManager {
     private val managers: MutableMap<String, MutableSet<AssetsManager>> = mutableMapOf()
     override val namespaces: MutableSet<String> = mutableSetOf()
+    override val loaded: Boolean
+        get() {
+            for (managers in managers.values) {
+                for (manager in managers) {
+                    if (!manager.loaded) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
 
     init {
         for (manager in managers) {
@@ -67,6 +78,9 @@ class PriorityAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         for ((_, managers) in managers) {
             for (manager in managers) {
+                if (manager.loaded) {
+                    continue
+                }
                 manager.load(latch)
             }
         }

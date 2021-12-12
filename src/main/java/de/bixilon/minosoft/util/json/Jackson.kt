@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.util.json
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
@@ -21,6 +22,7 @@ object Jackson {
         .registerModule(RGBColorSerializer)
         .registerModule(ChatComponentColorSerializer)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE)
         .setDefaultMergeable(true)
 
 

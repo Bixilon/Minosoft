@@ -40,10 +40,14 @@ class JarAssetsManager(
     val profile: ResourcesProfile,
     val version: Version,
 ) : MinecraftAssetsManager {
+    override var loaded: Boolean = false
+        private set
     override val namespaces = setOf(ProtocolDefinition.DEFAULT_NAMESPACE)
     private var jarAssets: MutableMap<String, ByteArray> = mutableMapOf()
 
     override fun load(latch: CountUpAndDownLatch) {
+        check(!loaded) { "Already loaded!" }
+
         val jarAssetFile = File(FileAssetsUtil.getPath(jarAssetsHash))
         if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify)) {
             val jarAssets = FileUtil.readFile(jarAssetFile).readArchive()
@@ -100,6 +104,7 @@ class JarAssetsManager(
 
             this.jarAssets = buildingJarAsset
         }
+        loaded = true
     }
 
     override fun get(path: ResourceLocation): InputStream {
@@ -116,6 +121,7 @@ class JarAssetsManager(
 
     override fun unload() {
         jarAssets = mutableMapOf()
+        loaded = false
     }
 
     override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {

@@ -50,6 +50,8 @@ class IndexAssetsManager(
     private val verify: Boolean = profile.verify
     private val assets: MutableMap<ResourceLocation, AssetsProperty> = synchronizedMapOf()
     override val namespaces: Set<String> = setOf(ProtocolDefinition.DEFAULT_NAMESPACE)
+    override var loaded: Boolean = false
+        private set
 
     private fun downloadAssetsIndex(): Map<String, Any> {
         return Jackson.MAPPER.readValue(FileAssetsUtil.downloadAndGetAsset(Util.formatString(profile.source.mojangPackages,
@@ -77,6 +79,8 @@ class IndexAssetsManager(
     }
 
     override fun load(latch: CountUpAndDownLatch) {
+        check(!loaded) { "Already loaded!" }
+
         var assets = FileUtil.saveReadFile(FileAssetsUtil.getPath(indexHash))?.readJsonObject() ?: downloadAssetsIndex()
 
         assets["objects"].let { assets = it.asCompound() }
@@ -120,13 +124,17 @@ class IndexAssetsManager(
             }
         }
         assetsLatch.await()
+        loaded = true
     }
 
     override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
         TODO("Not yet implemented")
     }
 
-    override fun unload() {}
+    override fun unload() {
+        assets.clear()
+        loaded = false
+    }
 
     override fun get(path: ResourceLocation): InputStream {
         return FileUtil.readFile(FileAssetsUtil.getPath(assets[path]?.hash ?: throw FileNotFoundException("Could not find asset $path")))

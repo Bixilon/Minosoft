@@ -29,22 +29,28 @@ class ZipAssetsManager(
 ) : FileAssetsManager() {
 
     override fun load(latch: CountUpAndDownLatch) {
+        check(!loaded) { "Already loaded!" }
+
         val namespaces: MutableSet<String> = mutableSetOf()
         while (true) {
             val entry = inputStream.nextEntry ?: break
+            if (entry.isDirectory) {
+                continue
+            }
             when (val name = entry.name) {
                 "pack.png" -> image = inputStream.readAllBytes()
-                "pack.mcmeta" -> properties = inputStream.readJson()
+                "pack.mcmeta" -> properties = inputStream.readJson(false)
                 else -> {
                     val resourceLocation = name.toAssetName() ?: continue
                     namespaces += resourceLocation.namespace
                     assets[resourceLocation] = inputStream.readAllBytes()
                 }
             }
-            inputStream.closeEntry()
         }
+
         inputStream.close()
         this.namespaces = namespaces
+        loaded = true
     }
 
     constructor(file: File) : this(ZipInputStream(FileInputStream(file)))

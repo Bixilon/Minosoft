@@ -220,8 +220,8 @@ class PlayConnection(
             version.load(profiles.resources)
             registries.parentRegistries = version.registries
 
-            assetsManager = AssetsLoader.create(profiles.resources, version)
             Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
+            assetsManager = AssetsLoader.create(profiles.resources, version, latch)
             assetsManager.load(latch)
             Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
 

@@ -32,6 +32,8 @@ class DirectoryAssetsManager(
 ) : AssetsManager {
     override val namespaces: MutableSet<String> = mutableSetOf()
     private var assets: MutableSet<ResourceLocation> = mutableSetOf()
+    override var loaded: Boolean = false
+        private set
 
     private val ResourceLocation.filePath: String
         get() = "$basePath/$namespace/$path"
@@ -51,11 +53,14 @@ class DirectoryAssetsManager(
     }
 
     override fun load(latch: CountUpAndDownLatch) {
+        check(!loaded) { "Already loaded!" }
         scanDirectory(File(basePath))
+        loaded = true
     }
 
     override fun unload() {
         assets.clear()
+        loaded = false
     }
 
     override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {

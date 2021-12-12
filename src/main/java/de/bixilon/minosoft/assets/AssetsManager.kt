@@ -20,6 +20,7 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 
 interface AssetsManager : Iterable<Map.Entry<ResourceLocation, ByteArray>> {
+
     /**
      * All namespaces this assets-manager can provide
      */
@@ -37,6 +38,7 @@ interface AssetsManager : Iterable<Map.Entry<ResourceLocation, ByteArray>> {
     val properties: AssetsManagerProperties?
         get() = null
 
+    val loaded: Boolean
 
     /**
      * Returns the input stream of an asset or throws FileNotFoundException

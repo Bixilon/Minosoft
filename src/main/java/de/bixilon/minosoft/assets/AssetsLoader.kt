@@ -8,14 +8,18 @@ import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperty
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.util.CountUpAndDownLatch
 
 object AssetsLoader {
 
-    fun create(profile: ResourcesProfile, version: Version, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
+    fun create(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
         val assetsManager = PriorityAssetsManager()
 
         for (resourcePack in profile.assets.resourcePacks) {
-            assetsManager += resourcePack.type.creator(resourcePack)
+            resourcePack.type.creator(resourcePack).let {
+                it.load(latch)
+                assetsManager += it
+            }
         }
 
         if (!profile.assets.disableIndexAssets) {

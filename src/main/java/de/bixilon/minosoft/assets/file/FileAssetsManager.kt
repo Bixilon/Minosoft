@@ -21,6 +21,8 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 
 abstract class FileAssetsManager : AssetsManager {
+    override var loaded: Boolean = false
+        protected set
     override var image: ByteArray? = null
         protected set
     override var properties: AssetsManagerProperties? = null
@@ -40,6 +42,7 @@ abstract class FileAssetsManager : AssetsManager {
 
     override fun unload() {
         assets.clear()
+        loaded = false
     }
 
     override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
