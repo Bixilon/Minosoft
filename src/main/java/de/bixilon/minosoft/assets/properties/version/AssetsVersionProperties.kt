@@ -16,7 +16,7 @@ object AssetsVersionProperties {
         }
         val assetsProperties: Map<String, AssetsVersionProperty> = Minosoft.MINOSOFT_ASSETS_MANAGER[ASSETS_PROPERTIES_FILE].readJson()
         for ((versionName, property) in assetsProperties) {
-            PROPERTIES[Versions.getVersionByName(versionName) ?: continue] = property
+            PROPERTIES[Versions[versionName] ?: continue] = property
         }
     }
 

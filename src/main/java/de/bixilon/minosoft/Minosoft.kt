@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.language.LanguageManager.Companion.load
 import de.bixilon.minosoft.data.language.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.XStartOnFirstThreadWarning
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -69,7 +70,7 @@ object Minosoft {
 
         taskWorker += Task(identifier = StartupTasks.LOAD_VERSIONS, priority = ThreadPool.HIGH, executor = {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
-            // Versions.loadAvailableVersions(MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/versions.json")))
+            Versions.load()
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Versions loaded!" }
         })
 
@@ -90,7 +91,7 @@ object Minosoft {
             val language = ErosProfileManager.selected.general.language
             ErosProfileManager.selected.general::language.profileWatch(this, true) {
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-                LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
+                LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, MINOSOFT_ASSETS_MANAGER, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
             }
         })

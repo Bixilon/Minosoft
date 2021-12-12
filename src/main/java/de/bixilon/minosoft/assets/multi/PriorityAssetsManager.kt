@@ -46,8 +46,11 @@ class PriorityAssetsManager(
     fun add(manager: AssetsManager) {
         for (namespace in manager.namespaces) {
             this.managers.getOrPut(namespace) { mutableSetOf() } += manager
+            this.namespaces += namespace
         }
     }
+
+    operator fun plusAssign(manager: AssetsManager) = add(manager)
 
     override fun get(path: ResourceLocation): InputStream {
         return nullGet(path) ?: throw FileNotFoundException("Can not find assets-manager for $path")

@@ -24,14 +24,14 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ClientSettingsC2SP(
-    val locale: String = "en_US",
-    var chatColors: Boolean = true,
-    val viewDistance: Int = 10,
-    val chatMode: ChatModes = ChatModes.EVERYTHING,
-    val skinParts: Array<SkinParts> = SkinParts.VALUES,
-    val mainArm: Arms = Arms.RIGHT,
-    val disableTextFiltering: Boolean = true,
-    val allowListing: Boolean = true,
+    val locale: String,
+    var chatColors: Boolean,
+    val viewDistance: Int,
+    val chatMode: ChatModes,
+    val skinParts: Array<SkinParts>,
+    val mainArm: Arms,
+    val disableTextFiltering: Boolean,
+    val allowListing: Boolean,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {

@@ -20,11 +20,15 @@ import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool
@@ -39,13 +43,13 @@ import java.io.InputStream
  */
 class IndexAssetsManager(
     private val profile: ResourcesProfile,
-    private val verify: Boolean,
     private val assetsVersion: String,
     private val indexHash: String,
     private val types: Set<IndexAssetsType>,
 ) : MinecraftAssetsManager {
+    private val verify: Boolean = profile.verify
     private val assets: MutableMap<ResourceLocation, AssetsProperty> = synchronizedMapOf()
-    override val namespaces: MutableSet<String> = mutableSetOf()
+    override val namespaces: Set<String> = setOf(ProtocolDefinition.DEFAULT_NAMESPACE)
 
     private fun downloadAssetsIndex(): Map<String, Any> {
         return Jackson.MAPPER.readValue(FileAssetsUtil.downloadAndGetAsset(Util.formatString(profile.source.mojangPackages,
@@ -65,6 +69,7 @@ class IndexAssetsManager(
                 "hashPrefix" to hash.substring(0, 2),
                 "fullHash" to hash,
             ))
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading asset $url" }
         val downloadedHash = FileAssetsUtil.downloadAsset(url)
         if (downloadedHash != hash) {
             throw IOException("Verification of asset $hash failed!")
@@ -73,23 +78,34 @@ class IndexAssetsManager(
 
     override fun load(latch: CountUpAndDownLatch) {
         var assets = FileUtil.saveReadFile(FileAssetsUtil.getPath(indexHash))?.readJsonObject() ?: downloadAssetsIndex()
+
+        assets["objects"].let { assets = it.asCompound() }
+        val tasks = CountUpAndDownLatch(0)
         val assetsLatch = CountUpAndDownLatch(assets.size, parent = latch)
 
-        val tasks = CountUpAndDownLatch(0)
-        assets["objects"].let { assets = it.asCompound() }
         for ((path, data) in assets) {
             check(data is Map<*, *>)
-            val name = path.toAssetName() ?: continue
+            val name = path.toAssetName(false)
+            if (name == null) {
+                assetsLatch.dec()
+                continue
+            }
+
             val type = when {
                 name.path.startsWith("lang/") -> IndexAssetsType.LANGUAGE
                 name.path.startsWith("sounds/") -> IndexAssetsType.SOUNDS
+                name.path == "sounds.json" -> IndexAssetsType.SOUNDS
                 name.path.startsWith("textures/") -> IndexAssetsType.TEXTURES
-                else -> continue
+                else -> {
+                    assetsLatch.dec()
+                    continue
+                }
             }
             if (type !in this.types) {
+                assetsLatch.dec()
                 continue
             }
-            namespaces += name.namespace
+
             val size = data["size"]?.toLong() ?: -1
             val hash = data["hash"].toString()
             if (tasks.count > DefaultThreadPool.threadCount - 1) {

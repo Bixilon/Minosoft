@@ -116,7 +116,7 @@ class PlayInByteBuffer : InByteBuffer {
             }
             val count = readUnsignedByte()
             var metaData = 0
-            if (connection.version.isFlattened()) {
+            if (!connection.version.flattened) {
                 metaData = readUnsignedShort()
             }
             val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()

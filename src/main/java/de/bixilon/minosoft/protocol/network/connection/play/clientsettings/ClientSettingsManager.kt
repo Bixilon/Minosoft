@@ -64,7 +64,7 @@ class ClientSettingsManager(
             return
         }
         this.language = language
-        connection.language = LanguageManager.load(language, connection.version)
+        connection.language = LanguageManager.load(language, connection.version, connection.assetsManager)
         sendClientSettings()
     }
 

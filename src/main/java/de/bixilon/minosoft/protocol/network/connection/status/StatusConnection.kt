@@ -124,7 +124,7 @@ class StatusConnection(
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = StatusConnectionStates.HANDSHAKING
-                    network.sendPacket(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
+                    network.sendPacket(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, Versions.AUTOMATIC.protocolId))
                     protocolState = ProtocolStates.STATUS
                 }
                 ProtocolStates.STATUS -> {

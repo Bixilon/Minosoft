@@ -40,11 +40,11 @@ object AutoConnect {
         // ToDo: Show those connections in eros
         val split = connectString.split(',')
         val address = split[0]
-        val version = Versions.getVersionByName(split.getOrNull(1) ?: "automatic") ?: throw IllegalArgumentException("Auto connect: Version not found!")
+        val version = Versions[split.getOrNull(1) ?: "automatic"] ?: throw IllegalArgumentException("Auto connect: Version not found!")
         val accountProfile = AccountProfileManager.selected
         val account = accountProfile.entries[split.getOrNull(2)] ?: accountProfile.selected ?: throw RuntimeException("Auto connect: Account not found! Have you started normal before or added an account?")
 
-        if (version == Versions.AUTOMATIC_VERSION) {
+        if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
             val ping = StatusConnection(address)
             ping.ping()

@@ -11,11 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.assets.file
+package de.bixilon.minosoft.assets.directory
 
+import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 
 
@@ -25,18 +29,50 @@ import java.io.InputStream
 
 class DirectoryAssetsManager(
     private val basePath: String,
-) : FileAssetsManager() {
+) : AssetsManager {
+    override val namespaces: MutableSet<String> = mutableSetOf()
+    private var assets: MutableSet<ResourceLocation> = mutableSetOf()
 
     private val ResourceLocation.filePath: String
         get() = "$basePath/$namespace/$path"
 
-    override fun load(latch: CountUpAndDownLatch) = Unit
+    // ToDo: Load properties
+
+    private fun scanDirectory(directory: File) {
+        for (file in directory.listFiles() ?: return) {
+            if (file.isDirectory) {
+                scanDirectory(file)
+                continue
+            }
+            val path = file.path.removePrefix(basePath).removePrefix("/").toAssetName(false) ?: continue
+            assets += path
+            namespaces += path.namespace
+        }
+    }
+
+    override fun load(latch: CountUpAndDownLatch) {
+        scanDirectory(File(basePath))
+    }
+
+    override fun unload() {
+        assets.clear()
+    }
+
+    override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
+        TODO("Not yet implemented")
+    }
 
     override fun get(path: ResourceLocation): InputStream {
+        if (path !in assets) {
+            throw FileNotFoundException("Can not find asset $path")
+        }
         return FileUtil.readFile(path.filePath, false)
     }
 
     override fun nullGet(path: ResourceLocation): InputStream? {
+        if (path !in assets) {
+            return null
+        }
         return FileUtil.saveReadFile(path.filePath, false)
     }
 }

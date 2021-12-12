@@ -15,7 +15,9 @@ package de.bixilon.minosoft.assets.util
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.luben.zstd.ZstdInputStream
+import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.json.Jackson
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
@@ -126,5 +128,9 @@ object FileUtil {
         }
 
         return colors
+    }
+
+    fun InputStream.readMBFMap(): Map<Any, Any> {
+        return MBFBinaryReader(this).readMBF().data.unsafeCast()
     }
 }

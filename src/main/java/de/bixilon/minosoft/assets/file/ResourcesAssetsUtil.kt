@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.assets.file
 
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import java.io.FileNotFoundException
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets

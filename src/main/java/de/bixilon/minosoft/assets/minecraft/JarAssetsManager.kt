@@ -41,12 +41,15 @@ class JarAssetsManager(
     val version: Version,
 ) : MinecraftAssetsManager {
     override val namespaces = setOf(ProtocolDefinition.DEFAULT_NAMESPACE)
-    private var jarAssets: Map<String, ByteArray> = mapOf()
+    private var jarAssets: MutableMap<String, ByteArray> = mutableMapOf()
 
     override fun load(latch: CountUpAndDownLatch) {
         val jarAssetFile = File(FileAssetsUtil.getPath(jarAssetsHash))
         if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify)) {
-            jarAssets = FileUtil.readFile(jarAssetFile).readArchive()
+            val jarAssets = FileUtil.readFile(jarAssetFile).readArchive()
+            for ((path, data) in jarAssets) {
+                this.jarAssets[path.removePrefix("assets/" + ProtocolDefinition.DEFAULT_NAMESPACE + "/")] = data
+            }
         } else {
             var clientJar = FileUtil.saveReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
             if (clientJar == null) {
@@ -112,7 +115,7 @@ class JarAssetsManager(
     }
 
     override fun unload() {
-        jarAssets = mapOf()
+        jarAssets = mutableMapOf()
     }
 
     override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {

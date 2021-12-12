@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.assets.multi.PriorityAssetsManager
+import de.bixilon.minosoft.assets.AssetsLoader
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
-import de.bixilon.minosoft.data.registries.RegistriesLoadingException
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.recipes.Recipes
@@ -83,7 +82,7 @@ class PlayConnection(
     @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)
     val serverInfo = ServerInfo()
-    lateinit var assetsManager: PriorityAssetsManager
+    lateinit var assetsManager: AssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: LanguageManager
@@ -129,7 +128,7 @@ class PlayConnection(
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = PlayConnectionStates.HANDSHAKING
-                    ACTIVE_CONENCTIONS += this
+                    ACTIVE_CONNECTIONS += this
                     for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
                         var valid = false
                         for (serverAddress in validators) {
@@ -206,7 +205,7 @@ class PlayConnection(
                         TimeWorker.removeTask(randomTickTask)
                     }
                     state = PlayConnectionStates.DISCONNECTED
-                    ACTIVE_CONENCTIONS -= this
+                    ACTIVE_CONNECTIONS -= this
                 }
                 else -> {
                 }
@@ -218,16 +217,20 @@ class PlayConnection(
         try {
             state = PlayConnectionStates.LOADING
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
-            version.load(latch) // ToDo: show gui loader
-            assetsManager = PriorityAssetsManager(Minosoft.MINOSOFT_ASSETS_MANAGER)
-            language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version)
+            version.load(profiles.resources)
             registries.parentRegistries = version.registries
+
+            assetsManager = AssetsLoader.create(profiles.resources, version)
+            Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
+            assetsManager.load(latch)
+            Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
+
+            language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
+
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
 
             if (!RunConfiguration.DISABLE_RENDERING) {
-                assetsManager.add(version.jarAssetsManager)
-                assetsManager.add(version.indexAssetsManager)
                 val renderer = Rendering(this)
                 this.rendering = renderer
                 val renderLatch = CountUpAndDownLatch(0, latch)
@@ -239,26 +242,28 @@ class PlayConnection(
             state = PlayConnectionStates.ESTABLISHING
         } catch (exception: Throwable) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
-            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }
             version.unload()
-            error = RegistriesLoadingException("Registries could not be loaded", exception)
+            if (this::assetsManager.isInitialized) {
+                assetsManager.unload()
+            }
+            error = exception
             retry = false
         }
         latch.dec()
     }
 
-
     override fun getPacketId(packetType: PacketTypes.C2S): Int {
-        return version.getPacketId(packetType) ?: Protocol.getPacketId(packetType) ?: error("Can not find packet $packetType for $version")
+        // ToDo: Improve speed
+        return version.c2sPackets[packetType.state]?.indexOf(packetType) ?: Protocol.getPacketId(packetType) ?: error("Can not find packet $packetType for $version")
     }
 
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return version.getPacketById(protocolState, packetId) ?: Protocol.getPacketById(protocolState, packetId) ?: let {
+        return version.s2cPackets[protocolState]?.getOrNull(packetId) ?: Protocol.getPacketById(protocolState, packetId) ?: let {
             // wtf, notchain sends play disconnect packet in login state...
             if (protocolState != ProtocolStates.LOGIN) {
                 return@let null
             }
-            val playPacket = version.getPacketById(ProtocolStates.PLAY, packetId)
+            val playPacket = version.s2cPackets[ProtocolStates.PLAY]?.getOrNull(packetId)
             if (playPacket == PacketTypes.S2C.PLAY_KICK) {
                 return@let playPacket
             }
@@ -301,6 +306,6 @@ class PlayConnection(
     }
 
     companion object {
-        val ACTIVE_CONENCTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
+        val ACTIVE_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
     }
 }

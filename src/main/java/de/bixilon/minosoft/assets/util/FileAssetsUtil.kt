@@ -88,6 +88,7 @@ object FileAssetsUtil {
         file.parentFile.apply {
             mkdirs()
             if (!isDirectory) {
+                tempFile.delete()
                 throw IllegalStateException("Could not create folder $this")
             }
         }
@@ -108,8 +109,8 @@ object FileAssetsUtil {
         return saveAndGet(ByteArrayInputStream(data), compress, false)
     }
 
-    fun String.toAssetName(): ResourceLocation? {
-        if (!startsWith("assets/")) {
+    fun String.toAssetName(verifyPrefix: Boolean = true): ResourceLocation? {
+        if (verifyPrefix && !startsWith("assets/")) {
             return null
         }
         val split = removePrefix("assets/").split("/", limit = 2)
@@ -135,26 +136,31 @@ object FileAssetsUtil {
             return true
         }
 
-        val digest = MessageDigest.getInstance("SHA-1")
+        try {
+            val digest = MessageDigest.getInstance("SHA-1")
 
-        var input: InputStream = FileInputStream(file)
-        if (compress) {
-            input = ZstdInputStream(input)
-        }
-
-        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
-        var length: Int
-        while (true) {
-            length = input.read(buffer, 0, buffer.size)
-            if (length < 0) {
-                break
+            var input: InputStream = FileInputStream(file)
+            if (compress) {
+                input = ZstdInputStream(input)
             }
-            digest.update(buffer, 0, length)
-        }
-        val equals = hash != Util.byteArrayToHexString(digest.digest())
-        if (!equals) {
+
+            val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+            var length: Int
+            while (true) {
+                length = input.read(buffer, 0, buffer.size)
+                if (length < 0) {
+                    break
+                }
+                digest.update(buffer, 0, length)
+            }
+            val equals = hash == Util.byteArrayToHexString(digest.digest())
+            if (!equals) {
+                file.delete()
+            }
+            return equals
+        } catch (exception: Throwable) {
             file.delete()
+            return false
         }
-        return equals
     }
 }

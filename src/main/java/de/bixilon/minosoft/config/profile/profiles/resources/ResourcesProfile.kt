@@ -4,6 +4,7 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.latestVersion
+import de.bixilon.minosoft.config.profile.profiles.resources.assets.AssetsC
 import de.bixilon.minosoft.config.profile.profiles.resources.source.SourceC
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
@@ -23,6 +24,7 @@ class ResourcesProfile(
     override var description by delegate(description ?: "")
 
     val source = SourceC()
+    val assets = AssetsC()
 
     /**
      * If set, all downloaded assets will be checked on load.

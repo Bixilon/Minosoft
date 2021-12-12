@@ -53,7 +53,7 @@ class Server(
     private var _forcedVersion by delegate(forcedVersion?.name)
 
     @get:JsonIgnore
-    var forcedVersion by backingDelegate(getter = { Versions.getVersionByName(_forcedVersion) }, setter = { _forcedVersion = it?.name })
+    var forcedVersion by backingDelegate(getter = { Versions[_forcedVersion] }, setter = { _forcedVersion = it?.name })
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
     var faviconHash: String? by delegate(null) { if (it != null) check(it.length == 40) { "Not a valid sha1 hash!" } }

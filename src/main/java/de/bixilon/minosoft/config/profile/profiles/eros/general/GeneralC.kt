@@ -6,6 +6,7 @@ import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
+import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.fullName
 import java.util.*
@@ -14,7 +15,7 @@ class GeneralC {
     /**
      * Language to use for eros. This is also the fallback language for other profiles
      */
-    var language: String by delegate(Locale.getDefault()?.fullName ?: "en_US")
+    var language: String by delegate(Locale.getDefault()?.fullName ?: LanguageManager.FALLBACK_LANGUAGE)
 
     @get:JsonProperty("account_profile") private var _accountProfile: String? by delegate(null)
 
@@ -29,5 +30,4 @@ class GeneralC {
      * If profile is not set or not found, the global default profile is used
      */
     var profileOverrides: MutableMap<ResourceLocation, String> by mapDelegate()
-
 }
