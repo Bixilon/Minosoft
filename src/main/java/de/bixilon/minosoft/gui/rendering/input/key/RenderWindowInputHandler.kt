@@ -94,6 +94,7 @@ class RenderWindowInputHandler(
                 keyBinding.keyBinding = it.valueAdded
             }
         }
+        cameraInput.init()
     }
 
 
@@ -276,6 +277,7 @@ class RenderWindowInputHandler(
     }
 
     fun draw(delta: Double) {
+        cameraInput.update()
         interactionManager.draw(delta)
     }
 }

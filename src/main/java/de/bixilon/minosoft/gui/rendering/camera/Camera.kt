@@ -3,9 +3,8 @@ package de.bixilon.minosoft.gui.rendering.camera
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 
 class Camera(
-    private val renderWindow: RenderWindow,
+    renderWindow: RenderWindow,
 ) {
-    private val connection = renderWindow.connection
     val matrixHandler = MatrixHandler(renderWindow)
     val raycastHandler = RaycastHandler(renderWindow, this)
     val fogManager = FogManager(renderWindow)
