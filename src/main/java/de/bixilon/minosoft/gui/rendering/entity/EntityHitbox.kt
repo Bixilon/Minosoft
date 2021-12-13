@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.input.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh

@@ -82,7 +82,7 @@ class BlockOutlineRenderer(
     }
 
     override fun prepareDraw() {
-        val raycastHit = renderWindow.inputHandler.camera.target.nullCast<BlockRaycastHit>()
+        val raycastHit = renderWindow.camera.raycastHandler.target.nullCast<BlockRaycastHit>()
 
         var currentMesh = currentMesh
 

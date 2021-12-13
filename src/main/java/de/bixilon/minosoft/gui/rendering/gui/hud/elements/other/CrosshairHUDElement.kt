@@ -69,7 +69,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
 
         // Custom draw to make the crosshair inverted
         if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
-            val hitResult = renderWindow.inputHandler.camera.target ?: return
+            val hitResult = renderWindow.camera.raycastHandler.target ?: return
             if (hitResult !is EntityRaycastHit && (hitResult !is BlockRaycastHit || renderWindow.connection.world.getBlockEntity(hitResult.blockPosition) == null)) {
                 return
             }

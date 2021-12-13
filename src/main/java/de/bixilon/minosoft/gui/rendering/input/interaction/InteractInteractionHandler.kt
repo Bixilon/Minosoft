@@ -155,7 +155,7 @@ class InteractInteractionHandler(
         // if riding: return
 
         val selectedSlot = connection.player.selectedHotbarSlot
-        val target = renderWindow.inputHandler.camera.nonFluidTarget
+        val target = renderWindow.camera.raycastHandler.nonFluidTarget
 
         for (hand in Hands.VALUES) {
             val item = connection.player.inventory[hand]

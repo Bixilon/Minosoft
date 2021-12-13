@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -35,9 +34,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.mat4x4.Mat4d
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 class SkyRenderer(
     private val connection: PlayConnection,
@@ -76,14 +73,14 @@ class SkyRenderer(
         sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
     }
 
-    private fun setSunMatrix(projectionViewMatrix: Mat4d) {
-        val timeAngle = (connection.world.skyAngle * 360.0).rad
-        val rotatedMatrix = if (timeAngle == 0.0) {
+    private fun setSunMatrix(projectionViewMatrix: Mat4) {
+        val timeAngle = (connection.world.skyAngle * 360.0f).rad
+        val rotatedMatrix = if (timeAngle == 0.0f) {
             projectionViewMatrix
         } else {
-            projectionViewMatrix.rotate(timeAngle, Vec3d(0.0f, 0.0f, 1.0f))
+            projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
         }
-        skySunShader.use().setMat4("uSkyViewProjectionMatrix", Mat4(rotatedMatrix))
+        skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix)
         sunMatrixUpToDate = false
     }
 
@@ -93,7 +90,7 @@ class SkyRenderer(
 
     private fun drawSun() {
         if (sunMatrixUpToDate) {
-            setSunMatrix(renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
+            setSunMatrix(renderWindow.camera.matrixHandler.projectionMatrix * renderWindow.camera.matrixHandler.viewMatrix.toMat3().toMat4())
             skySunMesh.unload()
 
             skySunMesh = SimpleTextureMesh(renderWindow)
@@ -122,12 +119,6 @@ class SkyRenderer(
         // ToDo: Calculate correct
         val brightness = 1.0f
         val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
-
-        renderWindow.inputHandler.camera.fogColor.value = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
-            connection.player.positionInfo.biome?.waterFogColor ?: skyColor
-        } else {
-            skyColor
-        }
 
 
         for (shader in renderWindow.renderSystem.shaders) {

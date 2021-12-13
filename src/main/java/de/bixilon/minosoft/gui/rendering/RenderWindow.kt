@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
@@ -76,6 +77,7 @@ class RenderWindow(
     private val profile = connection.profiles.rendering
     val window: BaseWindow = GLFWWindow(this, connection)
     val renderSystem: RenderSystem = OpenGLRenderSystem(this)
+    val camera = Camera(this)
     var initialized = false
         private set
     private lateinit var renderThread: Thread
@@ -163,7 +165,7 @@ class RenderWindow(
         window.init(connection.profiles.rendering)
         window.setDefaultIcon(connection.assetsManager)
 
-        inputHandler.camera.init(this)
+        camera.init()
 
         tintManager.init(connection.assetsManager)
 
@@ -360,6 +362,7 @@ class RenderWindow(
             window.pollEvents()
 
             inputHandler.draw(deltaFrameTime)
+            camera.draw()
 
             // handle opengl context tasks, but limit it per frame
             queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)

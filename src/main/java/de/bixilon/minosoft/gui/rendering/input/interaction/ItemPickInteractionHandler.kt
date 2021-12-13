@@ -48,7 +48,7 @@ class ItemPickInteractionHandler(
         if (!connection.player.baseAbilities.creative) {
             return
         }
-        val raycast = renderWindow.inputHandler.camera.nonFluidTarget ?: return
+        val raycast = renderWindow.camera.raycastHandler.nonFluidTarget ?: return
 
         if (raycast.distance > connection.player.reachDistance) {
             return

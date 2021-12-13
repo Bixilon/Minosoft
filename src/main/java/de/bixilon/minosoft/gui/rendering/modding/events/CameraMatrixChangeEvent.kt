@@ -15,20 +15,20 @@ package de.bixilon.minosoft.gui.rendering.modding.events
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
-import glm_.mat4x4.Mat4d
+import glm_.mat4x4.Mat4
 
 class CameraMatrixChangeEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,
-    viewMatrix: Mat4d,
-    projectionMatrix: Mat4d,
-    viewProjectionMatrix: Mat4d,
+    viewMatrix: Mat4,
+    projectionMatrix: Mat4,
+    viewProjectionMatrix: Mat4,
 ) : RenderEvent(renderWindow) {
-    val viewMatrix: Mat4d = viewMatrix
-        get() = Mat4d(field)
+    val viewMatrix: Mat4 = viewMatrix
+        get() = Mat4(field)
 
-    val projectionMatrix: Mat4d = projectionMatrix
-        get() = Mat4d(field)
+    val projectionMatrix: Mat4 = projectionMatrix
+        get() = Mat4(field)
 
-    val viewProjectionMatrix: Mat4d = viewProjectionMatrix
-        get() = Mat4d(field)
+    val viewProjectionMatrix: Mat4 = viewProjectionMatrix
+        get() = Mat4(field)
 }

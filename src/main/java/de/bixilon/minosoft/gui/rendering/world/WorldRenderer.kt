@@ -46,7 +46,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
@@ -87,7 +86,7 @@ class WorldRenderer(
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val frustum = renderWindow.inputHandler.camera.frustum
+    private val frustum = renderWindow.camera.matrixHandler.frustum
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val world: World = connection.world
@@ -660,7 +659,7 @@ class WorldRenderer(
 
     private fun onFrustumChange() {
         var sortQueue = false
-        val cameraPosition = connection.player.cameraPosition.toVec3()
+        val cameraPosition = connection.player.cameraPosition
         if (this.cameraPosition != cameraPosition) {
             this.cameraPosition = cameraPosition
             this.cameraChunkPosition = connection.player.positionInfo.chunkPosition

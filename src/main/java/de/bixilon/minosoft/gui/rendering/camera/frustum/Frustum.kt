@@ -11,34 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera.frustum
+package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.get
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.mat3x3.Mat3
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import glm_.vec4.Vec4
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
-class Frustum(private val camera: Camera) {
+class Frustum(
+    private val matrixHandler: MatrixHandler,
+) {
     private lateinit var data: FrustumData
 
-    init {
-        recalculate()
-    }
-
     fun recalculate() {
-        val matrix = Mat4(camera.viewProjectionMatrix).transpose()
+        val matrix = matrixHandler.viewProjectionMatrix.transpose()
         val planes = arrayOf(
             matrix[3] + matrix[0],
             matrix[3] - matrix[0],

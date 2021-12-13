@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.type
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -178,7 +178,7 @@ open class OutByteBuffer(open val connection: Connection? = null) {
             this.writeNBTTagType(type)
         }
 
-        val type = tag.type
+        val type = tag.nbtType
         writeNBTTagType(type)
         if (type == NBTTagTypes.END) {
             return
@@ -206,7 +206,7 @@ open class OutByteBuffer(open val connection: Connection? = null) {
                 this.writeNBTTagType(if (tag.isEmpty()) {
                     NBTTagTypes.END
                 } else {
-                    tag.iterator().next().type
+                    tag.iterator().next().nbtType
                 })
 
                 writeInt(tag.size)
@@ -217,7 +217,7 @@ open class OutByteBuffer(open val connection: Connection? = null) {
             }
             is Map<*, *> -> {
                 for ((key, value) in tag) {
-                    val valueType = value.type
+                    val valueType = value.nbtType
                     if (valueType == NBTTagTypes.END) {
                         error("NBT does not support null as value in a compound tag!")
                     }

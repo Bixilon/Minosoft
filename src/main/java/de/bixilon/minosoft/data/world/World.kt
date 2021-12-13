@@ -234,11 +234,11 @@ class World(
         return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0x00
     }
 
-    val skyAngle: Double
+    val skyAngle: Float
         get() {
             val fractionalPath = MMath.fractionalPart(abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
             val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
-            return (fractionalPath * 2.0 + angle) / 3.0
+            return ((fractionalPath * 2.0 + angle) / 3.0).toFloat()
         }
 
     val lightBase: Double

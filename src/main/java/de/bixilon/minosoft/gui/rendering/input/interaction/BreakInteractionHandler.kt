@@ -98,7 +98,7 @@ class BreakInteractionHandler(
             cancelDigging()
             return false
         }
-        val raycastHit = renderWindow.inputHandler.camera.nonFluidTarget
+        val raycastHit = renderWindow.camera.raycastHandler.nonFluidTarget
 
         if (raycastHit !is BlockRaycastHit) {
             cancelDigging()
