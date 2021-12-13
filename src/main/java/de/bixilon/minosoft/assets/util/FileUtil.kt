@@ -73,7 +73,7 @@ object FileUtil {
         return builder.toString()
     }
 
-    fun InputStream.readJsonObject(close: Boolean = true): Map<String, Any?> {
+    fun InputStream.readJsonObject(close: Boolean = true): Map<String, Any> {
         try {
             return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
         } finally {

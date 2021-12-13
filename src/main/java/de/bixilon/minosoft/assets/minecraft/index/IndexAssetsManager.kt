@@ -127,10 +127,6 @@ class IndexAssetsManager(
         loaded = true
     }
 
-    override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
-        TODO("Not yet implemented")
-    }
-
     override fun unload() {
         assets.clear()
         loaded = false

@@ -131,7 +131,7 @@ class WorldRenderer(
     override fun init() {
         val asset = AssetsVersionProperties[connection.version]!!
         val zip = FileUtil.readFile(FileAssetsUtil.getPath(asset.jarAssetsHash)).readArchive()
-        val modelLoader = ModelLoader(zip, renderWindow)
+        val modelLoader = ModelLoader(renderWindow)
         modelLoader.load()
 
         connection.registries.fluidRegistry.forEachItem {

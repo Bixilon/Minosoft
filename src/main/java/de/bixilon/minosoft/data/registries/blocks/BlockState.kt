@@ -107,8 +107,6 @@ data class BlockState(
                 getProperties(it)
             } ?: mutableMapOf()
 
-
-
             val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
 
 

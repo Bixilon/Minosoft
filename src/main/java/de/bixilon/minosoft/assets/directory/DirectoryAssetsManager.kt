@@ -63,10 +63,6 @@ class DirectoryAssetsManager(
         loaded = false
     }
 
-    override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
-        TODO("Not yet implemented")
-    }
-
     override fun get(path: ResourceLocation): InputStream {
         if (path !in assets) {
             throw FileNotFoundException("Can not find asset $path")

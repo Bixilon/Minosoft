@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch
 import java.io.FileNotFoundException
 import java.io.InputStream
 
-interface AssetsManager : Iterable<Map.Entry<ResourceLocation, ByteArray>> {
+interface AssetsManager {
 
     /**
      * All namespaces this assets-manager can provide

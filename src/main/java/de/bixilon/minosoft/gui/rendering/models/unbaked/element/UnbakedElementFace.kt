@@ -34,12 +34,19 @@ data class UnbakedElementFace(
             val uvStart = uv?.let { Vec2(it[0], it[1]) / BLOCK_RESOLUTION } ?: fallbackUvStart
             val uvEnd = uv?.let { Vec2(it[2], it[3]) / BLOCK_RESOLUTION } ?: fallbackUvEnd
 
+            val cullFace = data["cullface"]?.toString()?.let {
+                if (it == "none") {
+                    return@let null
+                }
+                return@let Directions[it]
+            }
+
             return UnbakedElementFace(
                 direction = direction,
                 uvStart = uvStart,
                 uvEnd = uvEnd,
                 texture = data["texture"].toString(),
-                cullFace = data["cullface"]?.toString()?.let { return@let Directions[it] },
+                cullFace = cullFace,
                 rotation = data["rotation"]?.toInt() ?: 0,
                 tintIndex = data["tintindex"]?.toInt() ?: -1,
             )

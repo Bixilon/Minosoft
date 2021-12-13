@@ -41,7 +41,7 @@ data class TextureAnimation(
 
     private fun getNextIndex(): Int {
         return if (currentFrameIndex == animationProperties.frames.size - 1) {
-            1
+            0
         } else {
             currentFrameIndex + 1
         }

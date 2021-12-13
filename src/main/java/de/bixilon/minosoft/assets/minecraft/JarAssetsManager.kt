@@ -124,10 +124,6 @@ class JarAssetsManager(
         loaded = false
     }
 
-    override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
-        TODO("Not yet implemented")
-    }
-
     companion object {
         private val REQUIRED_FILE_PREFIXES = arrayOf(
             "blockstates/",
@@ -137,7 +133,7 @@ class JarAssetsManager(
             "particles/",
             "texts/",
             "textures/",
-            "recipes/"
+            "recipes/",
         )
     }
 }

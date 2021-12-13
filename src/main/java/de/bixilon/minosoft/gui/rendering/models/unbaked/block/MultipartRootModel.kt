@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -90,7 +89,7 @@ class MultipartRootModel(
             return condition
         }
 
-        operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: List<Any>): MultipartRootModel {
+        operator fun invoke(modelLoader: ModelLoader, data: List<Any>): MultipartRootModel {
             val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<UnbakedBlockStateModel>> = mutableMapOf()
 
 
@@ -100,10 +99,10 @@ class MultipartRootModel(
                 val applyData = modelData["apply"]!!
                 val apply: MutableSet<UnbakedBlockStateModel> = mutableSetOf()
                 if (applyData is Map<*, *>) {
-                    apply += UnbakedBlockStateModel(models, applyData.unsafeCast())
+                    apply += UnbakedBlockStateModel(modelLoader, applyData.unsafeCast())
                 } else if (applyData is List<*>) {
                     for (applyModelData in applyData) {
-                        apply += UnbakedBlockStateModel(models, applyModelData.unsafeCast())
+                        apply += UnbakedBlockStateModel(modelLoader, applyModelData.unsafeCast())
                     }
                 }
 

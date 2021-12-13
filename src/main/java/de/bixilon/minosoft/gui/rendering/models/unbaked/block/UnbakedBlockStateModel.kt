@@ -15,13 +15,12 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -181,9 +180,9 @@ data class UnbakedBlockStateModel(
     }
 
     companion object {
-        operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: Map<String, Any>): UnbakedBlockStateModel {
+        operator fun invoke(modeLoader: ModelLoader, data: Map<String, Any>): UnbakedBlockStateModel {
             return UnbakedBlockStateModel(
-                model = models[data["model"].toResourceLocation()].unsafeCast(),
+                model = modeLoader.loadBlockModel(data["model"].toResourceLocation()).unsafeCast(),
                 rotation = data.toVec2iN(),
                 uvLock = data["uvlock"]?.toBoolean() ?: false,
                 weight = data["weight"]?.toInt() ?: 1,

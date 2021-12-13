@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.WeightedBakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 
 class WeightedUnbakedBlockStateModel(
@@ -36,11 +35,11 @@ class WeightedUnbakedBlockStateModel(
     }
 
     companion object {
-        operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: List<Map<String, Any>>): WeightedUnbakedBlockStateModel {
+        operator fun invoke(modelLoader: ModelLoader, data: List<Map<String, Any>>): WeightedUnbakedBlockStateModel {
             val weightedModels: MutableList<UnbakedBlockStateModel> = mutableListOf()
 
             for (entry in data) {
-                weightedModels += UnbakedBlockStateModel(models, entry)
+                weightedModels += UnbakedBlockStateModel(modelLoader, entry)
             }
 
             return WeightedUnbakedBlockStateModel(weightedModels)

@@ -92,6 +92,10 @@ open class ResourceLocation(
         }
     }
 
+    fun prefix(prefix: String): ResourceLocation {
+        return ResourceLocation(namespace, prefix + path)
+    }
+
     override fun compareTo(other: ResourceLocation): Int {
         return hashCode() - other.hashCode()
     }

@@ -85,8 +85,4 @@ class PriorityAssetsManager(
             }
         }
     }
-
-    override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
-        TODO("Not yet implemented")
-    }
 }

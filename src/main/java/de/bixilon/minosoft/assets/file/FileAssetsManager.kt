@@ -44,8 +44,4 @@ abstract class FileAssetsManager : AssetsManager {
         assets.clear()
         loaded = false
     }
-
-    override fun iterator(): Iterator<Map.Entry<ResourceLocation, ByteArray>> {
-        return assets.iterator()
-    }
 }
