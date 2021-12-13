@@ -69,6 +69,7 @@ import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
+import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.LOW
@@ -99,6 +100,7 @@ class WorldRenderer(
 
     val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
     private val preparingTasks: MutableSet<SectionPrepareTask> = synchronizedSetOf() // current running section preparing tasks
+    private val preparingTasksLock = ReadWriteLock()
 
     private val queue: MutableList<WorldQueueItem> = synchronizedListOf() // queue, that is visible, and should be rendered
     private val queueLock = ReadWriteLock()
@@ -296,11 +298,13 @@ class WorldRenderer(
 
                 meshesToLoad.removeAll { !isChunkVisible(it.chunkPosition) }
 
+                preparingTasksLock.acquire()
                 for (task in preparingTasks.toMutableSet()) {
                     if (!isChunkVisible(task.chunkPosition)) {
                         task.runnable.interrupt()
                     }
                 }
+                preparingTasksLock.release()
 
                 loadedMeshesLock.unlock()
                 queueLock.unlock()
@@ -349,9 +353,11 @@ class WorldRenderer(
 
         clearVisibleNextFrame = true
 
+        preparingTasksLock.acquire()
         for (task in preparingTasks.toMutableSet()) {
             task.runnable.interrupt()
         }
+        preparingTasksLock.release()
 
         loadedMeshesLock.unlock()
         queueLock.unlock()
@@ -373,11 +379,13 @@ class WorldRenderer(
 
         meshesToLoad.removeAll { it.chunkPosition == chunkPosition }
 
+        preparingTasksLock.acquire()
         for (task in preparingTasks.toMutableSet()) {
             if (task.chunkPosition == chunkPosition) {
                 task.runnable.interrupt()
             }
         }
+        preparingTasksLock.release()
         if (meshes != null) {
             for (mesh in meshes.values) {
                 meshesToUnload += mesh
@@ -416,20 +424,20 @@ class WorldRenderer(
         for (item in items) {
             val task = SectionPrepareTask(item.chunkPosition, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             task.runnable.runnable = Runnable {
-
-                fun end() {
-                    preparingTasks -= task
-                    workQueue()
-                }
-
                 var locked = false
                 try {
-                    val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable end()
-                    val section = chunk[item.sectionHeight] ?: return@Runnable end()
+                    val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable
+                    val section = chunk[item.sectionHeight] ?: return@Runnable
                     if (section.blocks.isEmpty) {
-                        return@Runnable end()
+                        return@Runnable
                     }
-                    val neighbourChunks: Array<Chunk> = world.getChunkNeighbours(item.chunkPosition).unsafeCast()
+                    val neighbourChunks: Array<Chunk>
+                    world.getChunkNeighbours(item.chunkPosition).let {
+                        if (!it.loaded) {
+                            return@Runnable queueSection(item.chunkPosition, item.sectionHeight, chunk, section)
+                        }
+                        neighbourChunks = it.unsafeCast()
+                    }
                     val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
                     val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight)
                     solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
@@ -437,7 +445,7 @@ class WorldRenderer(
                         fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
                     }
                     if (mesh.clearEmpty() == 0) {
-                        return@Runnable end()
+                        return@Runnable
                     }
                     item.mesh = mesh
                     meshesToLoadLock.lock()
@@ -454,16 +462,20 @@ class WorldRenderer(
                     if (locked) {
                         meshesToLoadLock.unlock()
                     }
-                    if (exception is InterruptedException) {
-                        // task got interrupted (probably because of chunk unload)
-                        preparingTasks -= task
-                        return@Runnable
+                    if (exception !is InterruptedException) {
+                        // otherwise task got interrupted (probably because of chunk unload)
+                        throw exception
                     }
-                    throw exception
+                } finally {
+                    preparingTasksLock.lock()
+                    preparingTasks -= task
+                    preparingTasksLock.unlock()
+                    workQueue()
                 }
-                end()
             }
+            preparingTasksLock.lock()
             preparingTasks += task
+            preparingTasksLock.unlock()
             DefaultThreadPool += task.runnable
         }
     }
@@ -472,6 +484,13 @@ class WorldRenderer(
         if (!chunk.isFullyLoaded || section.blocks.isEmpty) { // ToDo: Unload if empty
             return false
         }
+        /*
+        // ToDo: The chunk needs to be fully loaded!
+        val neighbours = world.getChunkNeighbours(chunkPosition)
+        if(!neighbours.loaded){
+            return false
+        }
+         */
 
         val visible = ignoreFrustum || isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {

@@ -78,7 +78,7 @@ class ParticleRenderer(
         }
     private var maxAmount = RenderConstants.MAXIMUM_PARTICLE_AMOUNT
         set(value) {
-            check(value > 1) { "Can not have negative particle mac amount" }
+            check(value > 1) { "Can not have negative particle max amount" }
             particlesLock.lock()
             while (particles.size > value) {
                 particles.removeAt(0)

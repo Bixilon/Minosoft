@@ -146,11 +146,12 @@ class MainErosController : JavaFXWindowController() {
         DefaultThreadPool += {
             try {
                 account.verify(profile.clientToken)
+                onSuccess(account)
             } catch (exception: Throwable) {
+                exception.printStackTrace()
                 Platform.runLater { activity = ErosMainActivities.ACCOUNT }
                 // ToDo: Show account window and do account error handling
             }
-            onSuccess(account)
         }
     }
 
