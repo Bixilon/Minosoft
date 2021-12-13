@@ -20,6 +20,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
     private lateinit var elements: Map<ResourceLocation, HUDAtlasElement>
@@ -79,8 +81,8 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
 
     fun postInit() {
         for (element in elements.values) {
-            element.uvStart = element.texture.singlePixelSize * element.start
-            element.uvEnd = element.texture.singlePixelSize * element.end
+            element.uvStart = ATLAS_SINGLE_PIXEL_SIZE * element.start
+            element.uvEnd = ATLAS_SINGLE_PIXEL_SIZE * element.end
         }
     }
 
@@ -94,5 +96,8 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
 
     companion object {
         private val ATLAS_DATA = "minosoft:mapping/atlas.json".toResourceLocation()
+
+        private val ATLAS_SIZE = Vec2i(256, 256)
+        private val ATLAS_SINGLE_PIXEL_SIZE = Vec2(1.0f) / ATLAS_SIZE
     }
 }

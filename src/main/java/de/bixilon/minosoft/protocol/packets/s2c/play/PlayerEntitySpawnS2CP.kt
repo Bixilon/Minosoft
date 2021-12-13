@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
-import de.bixilon.minosoft.data.player.PlayerProperty
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -38,15 +38,11 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         entityId = buffer.readVarInt()
         var name = "TBA"
 
-        val properties: MutableMap<String, PlayerProperty> = mutableMapOf()
+        var properties = PlayerProperties()
         if (buffer.versionId < ProtocolVersions.V_14W21A) {
             name = buffer.readString()
             entityUUID = buffer.readUUIDString()
-            val length = buffer.readVarInt()
-            for (i in 0 until length) {
-                val property = PlayerProperty(buffer.readString(), buffer.readString(), buffer.readString())
-                properties[property.key] = property
-            }
+            properties = buffer.readPlayerProperties()
         } else {
             entityUUID = buffer.readUUID()
         }

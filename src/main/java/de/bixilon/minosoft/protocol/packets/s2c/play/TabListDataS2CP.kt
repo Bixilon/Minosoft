@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
@@ -60,15 +59,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 when (action) {
                     TabListItemActions.ADD -> {
                         val name = buffer.readString()
-                        val playerProperties: MutableMap<String, PlayerProperty> = mutableMapOf()
-                        for (index in 0 until buffer.readVarInt()) {
-                            val property = PlayerProperty(
-                                buffer.readString(),
-                                buffer.readString(),
-                                buffer.readOptional { buffer.readString() },
-                            )
-                            playerProperties[property.key] = property
-                        }
+                        val properties = buffer.readPlayerProperties()
                         val gamemode = Gamemodes[buffer.readVarInt()]
                         val ping = buffer.readVarInt()
                         val hasDisplayName = buffer.readBoolean()
@@ -79,7 +70,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                         }
                         data = TabListItemData(
                             name = name,
-                            properties = playerProperties,
+                            properties = properties,
                             gamemode = gamemode,
                             ping = ping,
                             hasDisplayName = hasDisplayName,

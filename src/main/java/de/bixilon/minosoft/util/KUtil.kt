@@ -33,6 +33,7 @@ import glm_.vec4.Vec4t
 import sun.misc.Unsafe
 import java.io.*
 import java.lang.reflect.Field
+import java.net.URL
 import java.nio.ByteBuffer
 import java.time.Instant
 import java.util.*
@@ -558,4 +559,9 @@ object KUtil {
 
     val Locale.fullName: String
         get() = language + "_" + country.ifEmpty { language.uppercase() }
+
+
+    fun URL.check() {
+        check(this.protocol == "http" || this.protocol == "https") { "Url is not a web address" }
+    }
 }

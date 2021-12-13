@@ -122,6 +122,8 @@ object Minosoft {
 
             Util.forceClassInit(Eros::class.java)
         }
+        taskWorker += Task(identifier = StartupTasks.LOAD_YGGDRASIL, executor = { YggdrasilUtil.load() })
+
 
 
         taskWorker.work(START_UP_LATCH)

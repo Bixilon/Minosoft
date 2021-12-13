@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util.nbt.tag
 
+import de.bixilon.minosoft.util.KUtil.nullCast
+
 object NBTUtil {
 
     fun compound(): MutableMap<String, Any> {
@@ -33,11 +35,7 @@ object NBTUtil {
     }
 
     fun Any?.compoundCast(): MutableMap<String, Any>? {
-        try {
-            return this as MutableMap<String, Any>
-        } catch (ignored: ClassCastException) {
-        }
-        return null
+        return this.nullCast()
     }
 
     fun Any?.asCompound(): MutableMap<String, Any> {
