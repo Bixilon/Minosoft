@@ -120,12 +120,18 @@ class SkyRenderer(
         val brightness = 1.0f
         val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
+        baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
-        for (shader in renderWindow.renderSystem.shaders) {
-            if (shader.uniforms.contains("uSkyColor")) {
-                shader.use().setRGBColor("uSkyColor", skyColor)
+        connection.world.dimension?.hasSkyLight?.let {
+            baseColor = if (it) {
+                connection.player.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+            } else {
+                RenderConstants.BLACK_COLOR
             }
-        }
+        } ?: let { baseColor = RenderConstants.DEFAULT_SKY_COLOR }
+
+
+        skyboxShader.use().setRGBColor("uSkyColor", skyColor)
     }
 
     private fun drawSkybox() {

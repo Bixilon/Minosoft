@@ -3,6 +3,7 @@ package de.bixilon.minosoft.gui.rendering.camera
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 
 class FogManager(
     private val renderWindow: RenderWindow,
@@ -26,8 +27,15 @@ class FogManager(
     }
 
     private fun calculateFog() {
-        fogStart = renderWindow.connection.world.view.viewDistance * 16.0f
-        fogEnd = fogStart + 10.0f
+        if (!renderWindow.connection.profiles.rendering.fog.enabled) {
+            // ToDo: This is not improving performance
+            fogStart = Float.MAX_VALUE
+            fogEnd = Float.MAX_VALUE
+        } else {
+            fogStart = renderWindow.connection.world.view.viewDistance * 16.0f
+            fogEnd = fogStart + 10.0f
+        }
+        renderWindow[SkyRenderer]?.let { fogColor = it.baseColor }
     }
 
 
