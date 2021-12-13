@@ -19,7 +19,15 @@ class CameraInput(
     private val player = connection.player
     private val controlsProfile = connection.profiles.controls
 
-    private var ignoreInput: Boolean = false
+    private val ignoreInput: Boolean
+        get() {
+            val entity = matrixHandler.entity
+            if (entity != player) {
+                return true
+            }
+
+            return false
+        }
 
     private fun registerKeyBindings() {
         renderWindow.inputHandler.registerCheckCallback(
@@ -88,20 +96,21 @@ class CameraInput(
     }
 
     fun update() {
-        val input = MovementInput(
-            pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-            pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-            pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-            pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
-            jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
-            sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
-            sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
-            flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
-            flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
-            toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
-        )
-        if (ignoreInput) {
-            return
+        val input = if (ignoreInput) {
+            MovementInput()
+        } else {
+            MovementInput(
+                pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
+                pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
+                pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
+                pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
+                jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
+                sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
+                sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
+                flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
+                flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
+                toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
+            )
         }
         connection.player.input = input
     }
