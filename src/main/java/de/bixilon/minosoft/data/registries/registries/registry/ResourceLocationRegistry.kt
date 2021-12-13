@@ -74,8 +74,7 @@ class ResourceLocationRegistry(
         return super.toString() + ": ${idValueMap.size}x"
     }
 
-    @Deprecated("TODO")
-    override fun iterator(): Iterator<ResourceLocation> {
+    override fun noParentIterator(): Iterator<ResourceLocation> {
         return idValueMap.values.iterator()
     }
 }

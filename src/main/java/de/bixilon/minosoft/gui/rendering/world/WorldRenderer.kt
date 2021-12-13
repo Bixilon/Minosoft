@@ -13,10 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
-import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
-import de.bixilon.minosoft.assets.util.FileAssetsUtil
-import de.bixilon.minosoft.assets.util.FileUtil
-import de.bixilon.minosoft.assets.util.FileUtil.readArchive
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -129,16 +125,14 @@ class WorldRenderer(
     val preparingTasksSize: Int by preparingTasks::size
 
     override fun init() {
-        val asset = AssetsVersionProperties[connection.version]!!
-        val zip = FileUtil.readFile(FileAssetsUtil.getPath(asset.jarAssetsHash)).readArchive()
         val modelLoader = ModelLoader(renderWindow)
         modelLoader.load()
 
-        connection.registries.fluidRegistry.forEachItem {
-            if (it is FlowableFluid) {
-                it.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(it.flowingTextureName!!.texture())
+        for (fluid in connection.registries.fluidRegistry) {
+            if (fluid is FlowableFluid) {
+                fluid.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(fluid.flowingTextureName!!.texture())
             }
-            it.stillTexture = it.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
+            fluid.stillTexture = fluid.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
         }
     }
 

@@ -118,8 +118,8 @@ class ParticleRenderer(
 
         transparentMesh.load()
         translucentMesh.load()
-        connection.registries.particleTypeRegistry.forEachItem {
-            for (resourceLocation in it.textures) {
+        for (particle in connection.registries.particleTypeRegistry) {
+            for (resourceLocation in particle.textures) {
                 renderWindow.textureManager.staticTextures.createTexture(resourceLocation)
             }
         }

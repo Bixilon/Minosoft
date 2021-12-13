@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
@@ -171,14 +170,6 @@ open class Registry<T : RegistryItem>(
         this.valueIdMap.putAll(valueIdMap)
     }
 
-    @Deprecated("Too slow, should be used with a ToDo: RegistryIterator")
-    fun forEachItem(lambda: (T) -> Unit) {
-        for (item in resourceLocationMap.values) {
-            lambda(item)
-        }
-        parent.nullCast<Registry<T>>()?.forEachItem(lambda)
-    }
-
     override fun toString(): String {
         return super.toString() + ": ${resourceLocationMap.size}x"
     }
@@ -195,8 +186,7 @@ open class Registry<T : RegistryItem>(
         BITS_16,
     }
 
-    @Deprecated("TODO")
-    override fun iterator(): Iterator<T> {
+    override fun noParentIterator(): Iterator<T> {
         return resourceLocationMap.values.iterator()
     }
 }

@@ -88,12 +88,12 @@ class ModelLoader(
     fun load() {
         // ToDo: Optimize performance
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
-        registry.blockRegistry.forEachItem {
-            loadBlockStates(it)
+        for (block in registry.blockRegistry) {
+            loadBlockStates(block)
         }
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
-        registry.itemRegistry.forEachItem {
-            loadItemModel(it.resourceLocation.prefix("item/"))
+        for (item in registry.itemRegistry) {
+            loadItemModel(item.resourceLocation.prefix("item/"))
         }
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading unbaked models!" }
 
