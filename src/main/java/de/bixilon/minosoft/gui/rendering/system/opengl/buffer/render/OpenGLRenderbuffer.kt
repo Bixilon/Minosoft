@@ -22,6 +22,11 @@ class OpenGLRenderbuffer(
         glBindRenderbuffer(GL_RENDERBUFFER, id)
     }
 
+    override fun unload() {
+        glDeleteRenderbuffers(id)
+        id = -1
+    }
+
     companion object {
         private val RenderbufferModes.gl: Int
             get() {

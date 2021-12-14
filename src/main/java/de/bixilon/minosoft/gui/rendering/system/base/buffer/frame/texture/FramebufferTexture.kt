@@ -7,4 +7,5 @@ interface FramebufferTexture {
     // ToDo: Mode
 
     fun init()
+    fun unload()
 }

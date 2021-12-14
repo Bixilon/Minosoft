@@ -10,24 +10,27 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRende
 import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL30.*
 
-class OpenGLFramebuffer : Framebuffer {
+class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
     override var state: FramebufferState = FramebufferState.PREPARING
         private set
 
     private var id = -1
 
     private lateinit var texture: OpenGLFramebufferTexture
+    private lateinit var renderbuffer: OpenGLRenderbuffer
 
     override fun init() {
-        check(state == FramebufferState.PREPARING) { "Framebuffer is already (un)loaded!" }
+        check(state != FramebufferState.COMPLETE) { "Framebuffer is complete!" }
         id = glGenFramebuffers()
         unsafeBind()
 
-        texture = OpenGLFramebufferTexture(Vec2i(900, 500)) // ToDo
+        glViewport(0, 0, size.x, size.y)
+
+        texture = OpenGLFramebufferTexture(size)
         texture.init()
         attach(texture)
 
-        val renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_24_STENCIL_8, Vec2i(900, 500)) // ToDo
+        renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_COMPONENT24, size)
         renderbuffer.init()
         attach(renderbuffer)
 
@@ -51,7 +54,7 @@ class OpenGLFramebuffer : Framebuffer {
 
     override fun attach(renderbuffer: Renderbuffer) {
         check(renderbuffer is OpenGLRenderbuffer) { "Can not attach non OpenGL renderbuffer!" }
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.id)
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.id)
     }
 
     override fun attach(texture: FramebufferTexture) {
@@ -62,10 +65,27 @@ class OpenGLFramebuffer : Framebuffer {
     override fun delete() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
         glDeleteFramebuffers(id)
+        id = -1
         state = FramebufferState.DELETED
     }
 
     override fun bindTexture() {
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
         glBindTexture(GL_TEXTURE_2D, texture.id)
+    }
+
+    override fun resize(size: Vec2i) {
+        if (size == this.size) {
+            return
+        }
+        if (this::texture.isInitialized) {
+            texture.unload()
+        }
+        if (this::renderbuffer.isInitialized) {
+            renderbuffer.unload()
+        }
+        this.size = size
+        delete()
+        init()
     }
 }

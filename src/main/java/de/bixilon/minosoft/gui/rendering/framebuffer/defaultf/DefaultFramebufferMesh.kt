@@ -10,10 +10,10 @@ class DefaultFramebufferMesh(renderWindow: RenderWindow) : Mesh(renderWindow, De
 
     init {
         val vertices = arrayOf(
-            Vec2(-1.0f, -1.0f) to Vec2(0.0f, 0.0f),
-            Vec2(-1.0f, +1.0f) to Vec2(0.0f, 1.0f),
-            Vec2(+1.0f, +1.0f) to Vec2(1.0f, 1.0f),
-            Vec2(+1.0f, -1.0f) to Vec2(1.0f, 0.0f),
+            Vec2(-1.0f, -1.0f) to Vec2(0.0f, 1.0f),
+            Vec2(-1.0f, +1.0f) to Vec2(0.0f, 0.0f),
+            Vec2(+1.0f, +1.0f) to Vec2(1.0f, 0.0f),
+            Vec2(+1.0f, -1.0f) to Vec2(1.0f, 1.0f),
         )
         for ((positionIndex, textureIndex) in this.order) {
             addVertex(vertices[positionIndex].first, vertices[textureIndex].second)

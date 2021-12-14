@@ -7,4 +7,5 @@ interface Renderbuffer {
     val size: Vec2i
 
     fun init()
+    fun unload()
 }

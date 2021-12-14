@@ -231,7 +231,7 @@ class OpenGLRenderSystem(
     }
 
     override fun createFramebuffer(): Framebuffer {
-        return OpenGLFramebuffer()
+        return OpenGLFramebuffer(renderWindow.window.size)
     }
 
     override fun createTextureManager(): TextureManager {

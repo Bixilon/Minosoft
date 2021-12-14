@@ -14,7 +14,7 @@
 #version 330 core
 
 layout (location = 0) in vec2 vinPosition;
-layout (location = 0) in vec2 vinUV;
+layout (location = 1) in vec2 vinUV;
 
 out vec2 finUV;
 
