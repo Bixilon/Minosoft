@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
 
-interface UniformBuffer : RenderBuffer {
+interface UniformBuffer : RenderableBuffer {
     val bindingIndex: Int
 }

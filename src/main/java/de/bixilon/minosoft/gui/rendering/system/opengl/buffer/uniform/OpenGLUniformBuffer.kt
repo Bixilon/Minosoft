@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferDrawTypes
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderableBuffer
 import org.lwjgl.opengl.GL30.glBindBufferBase
 import org.lwjgl.opengl.GL30.glBindBufferRange
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
-abstract class OpenGLUniformBuffer(override val bindingIndex: Int) : OpenGLRenderBuffer(RenderBufferTypes.UNIFORM_BUFFER), UniformBuffer {
-    override val drawTypes: RenderBufferDrawTypes = RenderBufferDrawTypes.DYNAMIC
+abstract class OpenGLUniformBuffer(override val bindingIndex: Int) : OpenGLRenderableBuffer(RenderableBufferTypes.UNIFORM_BUFFER), UniformBuffer {
+    override val drawTypes: RenderableBufferDrawTypes = RenderableBufferDrawTypes.DYNAMIC
     protected abstract val size: Int
     protected var initialSize = -1
 

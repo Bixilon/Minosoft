@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
@@ -31,6 +32,7 @@ interface RenderSystem {
     val shaders: MutableSet<Shader>
     val vendor: GPUVendor
     var shader: Shader?
+    var framebuffer: Framebuffer?
 
     fun init()
 
@@ -90,6 +92,7 @@ interface RenderSystem {
     fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
     fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
     fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatBuffer): FloatUniformBuffer
+    fun createFramebuffer(): Framebuffer
 
     fun createTextureManager(): TextureManager
 

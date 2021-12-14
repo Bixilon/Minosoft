@@ -13,8 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-enum class RenderBufferDrawTypes {
-    DYNAMIC,
-    STATIC,
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+
+enum class RenderableBufferTypes {
+    UNIFORM_BUFFER,
+    ARRAY_BUFFER,
     ;
+
+    companion object : ValuesEnum<RenderableBufferTypes> {
+        override val VALUES: Array<RenderableBufferTypes> = values()
+        override val NAME_MAP: Map<String, RenderableBufferTypes> = EnumUtil.getEnumValues(VALUES)
+    }
 }

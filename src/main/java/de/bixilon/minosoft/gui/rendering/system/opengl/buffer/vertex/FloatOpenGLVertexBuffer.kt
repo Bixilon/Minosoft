@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferStates
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
@@ -32,7 +32,7 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
         glBufferData(type.gl, buffer, drawTypes.gl)
         buffer.limit(previousLimit)
         buffer.position(previousPosition)
-        state = RenderBufferStates.UPLOADED
+        state = RenderableBufferStates.UPLOADED
 
         _data = null
 
@@ -46,13 +46,13 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
     }
 
     override fun draw() {
-        check(state == RenderBufferStates.UPLOADED) { "Can not draw $state vertex buffer!" }
+        check(state == RenderableBufferStates.UPLOADED) { "Can not draw $state vertex buffer!" }
         glBindVertexArray(vao)
         glDrawArrays(primitiveType.gl, 0, vertices)
     }
 
     override fun unload() {
-        if (state == RenderBufferStates.UPLOADED) {
+        if (state == RenderableBufferStates.UPLOADED) {
             glDeleteVertexArrays(vao)
             vao = -1
         }

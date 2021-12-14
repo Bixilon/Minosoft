@@ -66,6 +66,8 @@ class HUDRenderer(
     private var enabled = true
     var matrixChange = true
         private set
+//    override val framebuffer: Framebuffer
+    //       get() = renderWindow.framebufferManager.gui
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
 

@@ -20,12 +20,14 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
@@ -37,7 +39,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL20.*
+import org.lwjgl.opengl.GL30.*
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
@@ -78,6 +80,19 @@ class OpenGLRenderSystem(
 
             value.unsafeUse()
 
+            field = value
+        }
+    override var framebuffer: Framebuffer? = null
+        set(value) {
+            if (value == field) {
+                return
+            }
+            if (value == null) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0)
+            } else {
+                check(value is OpenGLFramebuffer) { "Can not use non OpenGL framebuffer!" }
+                value.bind()
+            }
             field = value
         }
 
@@ -213,6 +228,10 @@ class OpenGLRenderSystem(
 
     override fun createIntUniformBuffer(bindingIndex: Int, data: IntArray): IntUniformBuffer {
         return IntOpenGLUniformBuffer(bindingIndex, data)
+    }
+
+    override fun createFramebuffer(): Framebuffer {
+        return OpenGLFramebuffer()
     }
 
     override fun createTextureManager(): TextureManager {

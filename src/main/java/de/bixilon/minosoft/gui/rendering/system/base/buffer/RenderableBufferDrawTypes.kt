@@ -10,9 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
+package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-interface FloatVertexBuffer : RenderFloatBuffer, RenderableBuffer, VertexBuffer
+enum class RenderableBufferDrawTypes {
+    DYNAMIC,
+    STATIC,
+    ;
+}

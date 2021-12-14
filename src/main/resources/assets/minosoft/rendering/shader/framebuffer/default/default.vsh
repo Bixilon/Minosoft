@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,18 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer
+#version 330 core
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+layout (location = 0) in vec2 vinPosition;
+layout (location = 0) in vec2 vinUV;
 
-enum class RenderBufferTypes {
-    UNIFORM_BUFFER,
-    ARRAY_BUFFER,
-    ;
+out vec2 finUV;
 
-    companion object : ValuesEnum<RenderBufferTypes> {
-        override val VALUES: Array<RenderBufferTypes> = values()
-        override val NAME_MAP: Map<String, RenderBufferTypes> = EnumUtil.getEnumValues(VALUES)
-    }
+void main() {
+    gl_Position = vec4(vinPosition, 0.0f, 1.0f);
+    finUV = vinUV;
 }

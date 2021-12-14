@@ -10,17 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+
 package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-interface RenderBuffer {
-    val state: RenderBufferStates
-    val type: RenderBufferTypes
-
-    fun init()
-    fun initialUpload()
-    fun upload()
-    fun bind()
-    fun unbind()
-
-    fun unload()
+enum class RenderableBufferStates {
+    PREPARING,
+    UPLOADED,
+    UNLOADED,
+    ;
 }

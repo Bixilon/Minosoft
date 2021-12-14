@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
+import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLikeTexture
@@ -118,6 +119,7 @@ class RenderWindow(
     val queue = Queue()
 
     val shaderManager = ShaderManager(this)
+    val framebufferManager = FramebufferManager(this)
 
     lateinit var WHITE_TEXTURE: TextureLike
 
@@ -186,6 +188,7 @@ class RenderWindow(
 
 
         shaderManager.init()
+        framebufferManager.init()
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
@@ -336,6 +339,7 @@ class RenderWindow(
             val rendererList = rendererMap.values
 
             for (renderer in rendererList) {
+                renderSystem.framebuffer = renderer.framebuffer
                 renderer.prepareDraw()
             }
 
@@ -343,17 +347,19 @@ class RenderWindow(
                 if (renderer is SkipAll && renderer.skipAll) {
                     continue
                 }
-                for (phase in RenderPhases.VALUES) {
+                for (phase in RenderPhases.VALUES) { // ToDo: Move this up after frame buffers
                     if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
                         continue
                     }
                     if (phase.invokeSkip(renderer)) {
                         continue
                     }
+                    renderSystem.framebuffer = renderer.framebuffer
                     phase.invokeSetup(renderer)
                     phase.invokeDraw(renderer)
                 }
             }
+            framebufferManager.draw()
             renderSystem.reset() // Reset to enable depth mask, etc again
 
             renderStats.endDraw()

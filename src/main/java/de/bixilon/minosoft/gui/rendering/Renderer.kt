@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 
 interface Renderer {
     val renderWindow: RenderWindow
     val renderSystem: RenderSystem
+    val framebuffer: Framebuffer
+        get() = renderWindow.framebufferManager.default.framebuffer
 
     fun init() = Unit
 

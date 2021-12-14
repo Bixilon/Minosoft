@@ -10,9 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
+package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
+interface RenderableBuffer {
+    val state: RenderableBufferStates
+    val type: RenderableBufferTypes
 
-interface FloatVertexBuffer : RenderFloatBuffer, RenderableBuffer, VertexBuffer
+    fun init()
+    fun initialUpload()
+    fun upload()
+    fun bind()
+    fun unbind()
+
+    fun unload()
+}
