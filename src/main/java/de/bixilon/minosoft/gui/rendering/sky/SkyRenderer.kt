@@ -46,7 +46,7 @@ class SkyRenderer(
     private val skyboxMesh = SkyboxMesh(renderWindow)
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
-    private var sunMatrixUpToDate: Boolean = true
+    private var updateSun: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
 
 
@@ -66,22 +66,21 @@ class SkyRenderer(
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
-            if (connection.world.time != it.time) {
-                sunMatrixUpToDate = true
+            if (connection.world.time.time != it.time) {
+                updateSun = true
             }
         })
         sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
     }
 
     private fun setSunMatrix(projectionViewMatrix: Mat4) {
-        val timeAngle = (connection.world.skyAngle * 360.0f).rad
+        val timeAngle = (connection.world.time.skyAngle * 360.0f).rad
         val rotatedMatrix = if (timeAngle == 0.0f) {
             projectionViewMatrix
         } else {
             projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
         }
         skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix)
-        sunMatrixUpToDate = false
     }
 
     override fun postInit() {
@@ -89,7 +88,7 @@ class SkyRenderer(
     }
 
     private fun drawSun() {
-        if (sunMatrixUpToDate) {
+        if (updateSun) {
             setSunMatrix(renderWindow.camera.matrixHandler.projectionMatrix * renderWindow.camera.matrixHandler.viewMatrix.toMat3().toMat4())
             skySunMesh.unload()
 
@@ -102,11 +101,12 @@ class SkyRenderer(
                         position = position,
                         texture = sunTexture,
                         uv = uv,
-                        tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.rainGradient), // ToDo: Depends on time
+                        tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.weather.rainGradient), // ToDo: Depends on time
                     )
                 }
             )
             skySunMesh.load()
+            updateSun = false
 
         }
         renderSystem.enable(RenderingCapabilities.BLENDING)

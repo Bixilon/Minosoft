@@ -22,7 +22,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -35,10 +37,8 @@ import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.lockMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
-import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
@@ -46,13 +46,9 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import de.bixilon.minosoft.util.collections.LockMap
 import de.bixilon.minosoft.util.delegate.DelegateManager.delegate
-import glm_.func.common.clamp
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.cos
 import kotlin.random.Random
 
 /**
@@ -70,11 +66,8 @@ class World(
     var difficulty: Difficulties? = null
     var difficultyLocked = false
     var hashedSeed = 0L
-    var time = 0L
-    var age = 0L
-    var raining = false
-    var rainGradient = 0.0f
-    var thunderGradient = 0.0f
+    val time = WorldTime(this)
+    val weather = WorldWeather()
     val view = WorldView(connection)
     private val random = Random
 
@@ -233,25 +226,6 @@ class World(
     fun getLight(blockPosition: Vec3i): Int {
         return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0x00
     }
-
-    val skyAngle: Float
-        get() {
-            val fractionalPath = MMath.fractionalPart(abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
-            val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
-            return ((fractionalPath * 2.0 + angle) / 3.0).toFloat()
-        }
-
-    val lightBase: Double
-        get() {
-            var base = 1.0f - (cos(skyAngle * 2.0 * PI) * 2.0 + 0.2)
-            base = base.clamp(0.0, 1.0)
-            base = 1.0 - base
-
-            base *= 1.0 - ((rainGradient * 5.0) / 16.0)
-            base *= 1.0 - (((thunderGradient * rainGradient) * 5.0) / 16.0)
-            return base * 0.8 + 0.2
-        }
-
 
     /**
      * @return All 8 neighbour chunks
