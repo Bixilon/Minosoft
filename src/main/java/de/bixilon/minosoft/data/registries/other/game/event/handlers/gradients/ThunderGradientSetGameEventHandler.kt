@@ -22,6 +22,6 @@ object ThunderGradientSetGameEventHandler : GameEventHandler {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:thunder_gradient_set".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
-        connection.world.thunderGradient = data
+        connection.world.weather.thunderGradient = data
     }
 }

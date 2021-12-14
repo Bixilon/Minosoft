@@ -128,7 +128,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             layout += AutoTextElement(hudRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
-                Directions.byDirection(hudRenderer.renderWindow.inputHandler.camera.cameraFront).apply {
+                Directions.byDirection(hudRenderer.renderWindow.camera.matrixHandler.cameraFront).apply {
                     text += this
                     text += " "
                     text += vector
@@ -227,7 +227,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
         layout += LineSpacerElement(hudRenderer)
 
-        renderWindow.inputHandler.camera.apply {
+        renderWindow.camera.targetHandler.apply {
             layout += AutoTextElement(hudRenderer, 1, HorizontalAlignments.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"

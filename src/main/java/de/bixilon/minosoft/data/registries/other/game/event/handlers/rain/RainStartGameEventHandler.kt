@@ -22,7 +22,7 @@ object RainStartGameEventHandler : GameEventHandler {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:rain_start".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
-        connection.world.raining = true
-        connection.world.rainGradient = 1.0f
+        connection.world.weather.raining = true
+        connection.world.weather.rainGradient = 1.0f
     }
 }

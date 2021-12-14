@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.gui.rendering.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
@@ -96,7 +96,7 @@ class AudioPlayer(
         connection.registerEvent(CallbackEventInvoker.of<CameraPositionChangeEvent> {
             queue += {
                 listener.position = Vec3(it.newPosition)
-                listener.setOrientation(it.renderWindow.inputHandler.camera.cameraFront, Camera.CAMERA_UP_VEC3)
+                listener.setOrientation(it.renderWindow.camera.matrixHandler.cameraFront, MatrixHandler.CAMERA_UP_VEC3)
             }
         })
 

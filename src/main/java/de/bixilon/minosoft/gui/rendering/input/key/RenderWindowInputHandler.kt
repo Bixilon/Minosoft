@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDeleg
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.input.CameraInput
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
@@ -38,7 +38,7 @@ class RenderWindowInputHandler(
     val renderWindow: RenderWindow,
 ) {
     val connection: PlayConnection = renderWindow.connection
-    val camera: Camera = Camera(connection, renderWindow)
+    val cameraInput = CameraInput(renderWindow, renderWindow.camera.matrixHandler)
     private val profile = connection.profiles.controls
 
     private val keyBindingCallbacks: MutableMap<ResourceLocation, KeyBindingCallbackPair> = mutableMapOf()
@@ -80,7 +80,8 @@ class RenderWindowInputHandler(
             //if (renderWindow.inputHandler.currentKeyConsumer != null) {
             //   return
             //}
-            camera.mouseCallback(it.delta)
+
+            cameraInput.mouseCallback(it.delta)
         })
 
         profile::keyBindings.profileWatchMap(this, profile = profile) {
@@ -93,6 +94,7 @@ class RenderWindowInputHandler(
                 keyBinding.keyBinding = it.valueAdded
             }
         }
+        cameraInput.init()
     }
 
 
@@ -275,8 +277,7 @@ class RenderWindowInputHandler(
     }
 
     fun draw(delta: Double) {
-        camera.draw()
-
+        cameraInput.update()
         interactionManager.draw(delta)
     }
 }

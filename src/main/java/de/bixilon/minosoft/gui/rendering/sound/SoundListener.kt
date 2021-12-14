@@ -14,9 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import org.lwjgl.openal.AL10.*
 
 class SoundListener(position: Vec3 = Vec3.EMPTY) {
@@ -36,13 +34,13 @@ class SoundListener(position: Vec3 = Vec3.EMPTY) {
         get() = alGetListenerf(AL_MAX_GAIN)
         set(value) = alListenerf(AL_MAX_GAIN, value)
 
-    fun setOrientation(look: Vec3d, up: Vec3d) {
-        alListenerfv(AL_ORIENTATION, floatArrayOf(look.x.toFloat(), look.y.toFloat(), look.z.toFloat(), up.x.toFloat(), up.y.toFloat(), up.z.toFloat()))
+    fun setOrientation(look: Vec3, up: Vec3) {
+        alListenerfv(AL_ORIENTATION, floatArrayOf(look.x, look.y, look.z, up.x, up.y, up.z))
     }
 
     init {
         this.position = position
         this.velocity = Vec3.EMPTY
-        setOrientation(Vec3d.EMPTY, Vec3d(0.0, 1.0, 0.0))
+        setOrientation(Vec3.EMPTY, Vec3(0.0, 1.0, 0.0))
     }
 }

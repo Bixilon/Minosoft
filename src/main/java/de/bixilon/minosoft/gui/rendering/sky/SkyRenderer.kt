@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -35,9 +34,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.mat4x4.Mat4d
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 class SkyRenderer(
     private val connection: PlayConnection,
@@ -49,7 +46,7 @@ class SkyRenderer(
     private val skyboxMesh = SkyboxMesh(renderWindow)
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
-    private var sunMatrixUpToDate: Boolean = true
+    private var updateSun: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
 
 
@@ -69,22 +66,21 @@ class SkyRenderer(
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
-            if (connection.world.time != it.time) {
-                sunMatrixUpToDate = true
+            if (connection.world.time.time != it.time) {
+                updateSun = true
             }
         })
         sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
     }
 
-    private fun setSunMatrix(projectionViewMatrix: Mat4d) {
-        val timeAngle = (connection.world.skyAngle * 360.0).rad
-        val rotatedMatrix = if (timeAngle == 0.0) {
+    private fun setSunMatrix(projectionViewMatrix: Mat4) {
+        val timeAngle = (connection.world.time.skyAngle * 360.0f).rad
+        val rotatedMatrix = if (timeAngle == 0.0f) {
             projectionViewMatrix
         } else {
-            projectionViewMatrix.rotate(timeAngle, Vec3d(0.0f, 0.0f, 1.0f))
+            projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
         }
-        skySunShader.use().setMat4("uSkyViewProjectionMatrix", Mat4(rotatedMatrix))
-        sunMatrixUpToDate = false
+        skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix)
     }
 
     override fun postInit() {
@@ -92,8 +88,8 @@ class SkyRenderer(
     }
 
     private fun drawSun() {
-        if (sunMatrixUpToDate) {
-            setSunMatrix(renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
+        if (updateSun) {
+            setSunMatrix(renderWindow.camera.matrixHandler.projectionMatrix * renderWindow.camera.matrixHandler.viewMatrix.toMat3().toMat4())
             skySunMesh.unload()
 
             skySunMesh = SimpleTextureMesh(renderWindow)
@@ -105,11 +101,12 @@ class SkyRenderer(
                         position = position,
                         texture = sunTexture,
                         uv = uv,
-                        tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.rainGradient), // ToDo: Depends on time
+                        tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.weather.rainGradient), // ToDo: Depends on time
                     )
                 }
             )
             skySunMesh.load()
+            updateSun = false
 
         }
         renderSystem.enable(RenderingCapabilities.BLENDING)
@@ -123,18 +120,18 @@ class SkyRenderer(
         val brightness = 1.0f
         val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
-        renderWindow.inputHandler.camera.fogColor.value = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
-            connection.player.positionInfo.biome?.waterFogColor ?: skyColor
-        } else {
-            skyColor
-        }
+        baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
-
-        for (shader in renderWindow.renderSystem.shaders) {
-            if (shader.uniforms.contains("uSkyColor")) {
-                shader.use().setRGBColor("uSkyColor", skyColor)
+        connection.world.dimension?.hasSkyLight?.let {
+            baseColor = if (it) {
+                connection.player.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+            } else {
+                RenderConstants.BLACK_COLOR
             }
-        }
+        } ?: let { baseColor = RenderConstants.DEFAULT_SKY_COLOR }
+
+
+        skyboxShader.use().setRGBColor("uSkyColor", skyColor)
     }
 
     private fun drawSkybox() {

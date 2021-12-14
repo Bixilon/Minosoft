@@ -60,7 +60,7 @@ object NBTUtil {
         return null
     }
 
-    val Any?.type: NBTTagTypes
+    val Any?.nbtType: NBTTagTypes
         get() {
             return when (this) {
                 null -> NBTTagTypes.END
@@ -76,7 +76,7 @@ object NBTUtil {
                 is Map<*, *> -> NBTTagTypes.COMPOUND
                 is IntArray -> NBTTagTypes.INT_ARRAY
                 is LongArray -> NBTTagTypes.LONG_ARRAY
-                else -> throw  IllegalArgumentException("NBT does not support ${type::class.java.name}")
+                else -> throw  IllegalArgumentException("NBT does not support ${this::class.java.name}")
             }
         }
 }

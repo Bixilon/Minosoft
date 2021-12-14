@@ -20,18 +20,18 @@ import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(resourceLocation, registries, data) {
 
-    override fun getPlacementState(connection: PlayConnection, hit: BlockRaycastHit): BlockState? {
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
         TODO()
     }
 
-    override fun onUse(connection: PlayConnection, hit: BlockRaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        connection.world[hit.blockPosition] = hit.blockState.cycle(BlockProperties.REPEATER_DELAY)
+    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
+        connection.world[target.blockPosition] = target.blockState.cycle(BlockProperties.REPEATER_DELAY)
 
         return InteractionResults.SUCCESS
     }

@@ -15,14 +15,14 @@ package de.bixilon.minosoft.data.entities
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
-import glm_.vec3.Vec3d
+import glm_.vec3.Vec3
 
 data class EntityRotation(
     val yaw: Double,
     val pitch: Double,
 ) {
-    val front: Vec3d
-        get() = Vec3d(
+    val front: Vec3
+        get() = Vec3(
             (yaw + 90).rad.cos * (-pitch).rad.cos,
             (-pitch).rad.sin,
             (yaw + 90).rad.sin * (-pitch).rad.cos

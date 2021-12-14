@@ -28,6 +28,8 @@ class InteractionManager(
     val attack = AttackInteractionHandler(renderWindow)
     val `break` = BreakInteractionHandler(renderWindow)
     val use = InteractInteractionHandler(renderWindow, this)
+    val drop = DropInteractionManager(renderWindow)
+    val spectate = SpectateInteractionManager(renderWindow)
 
     private val swingArmRateLimiter = RateLimiter()
 
@@ -38,6 +40,8 @@ class InteractionManager(
         pick.init()
         `break`.init()
         use.init()
+        drop.init()
+        spectate.init()
     }
 
     fun draw(delta: Double) {
@@ -46,6 +50,8 @@ class InteractionManager(
         // attack.draw(delta)
         `break`.draw(delta)
         use.draw(delta)
+        drop.draw(delta)
+        spectate.draw(delta)
 
         swingArmRateLimiter.work()
     }

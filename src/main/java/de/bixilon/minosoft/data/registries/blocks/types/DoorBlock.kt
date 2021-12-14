@@ -21,22 +21,22 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.materials.DefaultMaterials
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class DoorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : DoubleSizeBlock(resourceLocation, registries, data) {
 
-    override fun getPlacementState(connection: PlayConnection, hit: BlockRaycastHit): BlockState? {
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
         TODO()
     }
 
-    override fun onUse(connection: PlayConnection, hit: BlockRaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        if (hit.blockState.material.resourceLocation == DefaultMaterials.METAL) {
+    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
+        if (target.blockState.material.resourceLocation == DefaultMaterials.METAL) {
             return InteractionResults.CONSUME
         }
 
-        connection.world[hit.blockPosition] = hit.blockState.cycle(BlockProperties.DOOR_OPEN)
+        connection.world[target.blockPosition] = target.blockState.cycle(BlockProperties.DOOR_OPEN)
 
         return InteractionResults.SUCCESS
     }

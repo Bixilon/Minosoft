@@ -19,6 +19,9 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
+/**
+ * Teleports our self in spectator mode to an entity
+ */
 class EntitySpectateC2SP(
     val entityUUID: UUID,
 ) : PlayC2SPacket {

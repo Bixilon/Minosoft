@@ -29,7 +29,7 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sin
 
-
+@Deprecated("Needs refactoring")
 class LightMap(private val connection: PlayConnection) {
     private val profile = connection.profiles.rendering.light
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
@@ -50,7 +50,7 @@ class LightMap(private val connection: PlayConnection) {
     }
 
     fun update() {
-        val skyGradient = connection.world.lightBase.toFloat()
+        val skyGradient = connection.world.time.lightBase.toFloat()
 
         // ToDo: Lightning
 

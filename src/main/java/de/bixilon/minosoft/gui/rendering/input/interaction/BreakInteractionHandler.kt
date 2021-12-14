@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
@@ -98,9 +98,9 @@ class BreakInteractionHandler(
             cancelDigging()
             return false
         }
-        val raycastHit = renderWindow.inputHandler.camera.nonFluidTarget
+        val raycastHit = renderWindow.camera.targetHandler.target
 
-        if (raycastHit !is BlockRaycastHit) {
+        if (raycastHit !is BlockTarget) {
             cancelDigging()
             return false
         }
@@ -120,7 +120,7 @@ class BreakInteractionHandler(
             if (breakPosition != null) {
                 return
             }
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, raycastHit.blockPosition, raycastHit.direction))
 
             breakPosition = raycastHit.blockPosition
             breakBlockState = raycastHit.blockState
@@ -130,7 +130,7 @@ class BreakInteractionHandler(
         }
 
         fun finishDigging() {
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.direction))
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
 

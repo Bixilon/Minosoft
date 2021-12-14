@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.Colors
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -55,14 +55,14 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         }
     }
 
-    override fun getPlacementState(connection: PlayConnection, hit: BlockRaycastHit): BlockState? {
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
         TODO()
     }
 
-    override fun onUse(connection: PlayConnection, hit: BlockRaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        val nextState = hit.blockState.cycle(BlockProperties.POWERED)
-        connection.world[hit.blockPosition] = nextState
-        spawnParticles(connection, nextState, hit.blockPosition, 1.0f)
+    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
+        val nextState = target.blockState.cycle(BlockProperties.POWERED)
+        connection.world[target.blockPosition] = nextState
+        spawnParticles(connection, nextState, target.blockPosition, 1.0f)
 
         return InteractionResults.SUCCESS
     }

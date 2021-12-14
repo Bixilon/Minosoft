@@ -11,25 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera.hit
+package de.bixilon.minosoft.gui.rendering.camera.target.targets
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-class FluidRaycastHit(
+open class BlockTarget(
     position: Vec3d,
     distance: Double,
-    hitDirection: Directions,
+    direction: Directions,
     val blockState: BlockState,
     val blockPosition: Vec3i,
-    val fluid: Fluid,
-) : RaycastHit(position, distance, hitDirection), TextFormattable {
+) : GenericTarget(position, distance, direction), TextFormattable {
+    val hitPosition = position - blockPosition
 
     override fun toString(): String {
         return toText().legacyText
@@ -38,10 +37,10 @@ class FluidRaycastHit(
     override fun toText(): ChatComponent {
         val text = BaseComponent()
 
-        text += "Fluid target "
+        text += "Block target "
         text += blockPosition
         text += ": "
-        text += fluid.resourceLocation
+        text += blockState.block.resourceLocation
 
         for ((property, value) in blockState.properties) {
             text += "\n"
@@ -52,4 +51,5 @@ class FluidRaycastHit(
 
         return text
     }
+
 }

@@ -45,7 +45,7 @@ class EntityHitboxRenderer(
 ) : Renderer, OpaqueDrawable, SkipAll {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val profile = connection.profiles.entity.hitbox
-    private val frustum = renderWindow.inputHandler.camera.frustum
+    private val frustum = renderWindow.camera.matrixHandler.frustum
     private val meshes: LockMap<Entity, EntityHitbox> = lockMapOf()
     private val toUnload: MutableSet<EntityHitbox> = synchronizedSetOf()
 

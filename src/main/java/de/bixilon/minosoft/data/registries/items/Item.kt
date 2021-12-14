@@ -40,8 +40,8 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toBoolean
@@ -69,15 +69,15 @@ open class Item(
         return 1.0f
     }
 
-    open fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 
-    open fun interactEntity(connection: PlayConnection, raycastHit: EntityRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactEntity(connection: PlayConnection, target: EntityTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 
-    open fun interactEntityAt(connection: PlayConnection, raycastHit: EntityRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactEntityAt(connection: PlayConnection, target: EntityTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 

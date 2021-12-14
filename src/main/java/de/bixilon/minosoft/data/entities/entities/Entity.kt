@@ -49,7 +49,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -128,10 +128,10 @@ abstract class Entity(
         }
     open val positionInfo = EntityPositionInfo(connection, this)
 
-    val eyePosition: Vec3d
+    val eyePosition: Vec3
         get() = cameraPosition + Vec3(0.0f, eyeHeight, 0.0f)
 
-    var cameraPosition: Vec3d = position.toVec3d
+    var cameraPosition: Vec3 = position.toVec3
         private set
 
     open val spawnSprintingParticles: Boolean
@@ -362,7 +362,7 @@ abstract class Entity(
             postTick()
             lastTickTime = currentTime
         }
-        cameraPosition = VecUtil.lerp((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+        cameraPosition = VecUtil.lerp((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
     }
 
     open val pushableByFluids: Boolean = false

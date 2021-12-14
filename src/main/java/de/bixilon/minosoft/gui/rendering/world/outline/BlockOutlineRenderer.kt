@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
@@ -82,7 +82,7 @@ class BlockOutlineRenderer(
     }
 
     override fun prepareDraw() {
-        val raycastHit = renderWindow.inputHandler.camera.target.nullCast<BlockRaycastHit>()
+        val raycastHit = renderWindow.camera.targetHandler.target.nullCast<BlockTarget>()
 
         var currentMesh = currentMesh
 

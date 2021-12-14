@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -30,12 +30,12 @@ open class PlantBlock(resourceLocation: ResourceLocation, registries: Registries
         return blockState.block.resourceLocation == MinecraftBlocks.DIRT || blockState.block.resourceLocation == MinecraftBlocks.FARMLAND
     }
 
-    override fun getPlacementState(connection: PlayConnection, hit: BlockRaycastHit): BlockState? {
-        val below = connection.world[hit.blockPosition + hit.hitDirection + Directions.DOWN] ?: return null
+    override fun getPlacementState(connection: PlayConnection, target: BlockTarget): BlockState? {
+        val below = connection.world[target.blockPosition + target.direction + Directions.DOWN] ?: return null
         if (!canPlaceOn(below)) {
             return null
         }
-        return super.getPlacementState(connection, hit)
+        return super.getPlacementState(connection, target)
     }
 
     companion object : BlockFactory<PlantBlock> {
