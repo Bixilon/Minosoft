@@ -34,7 +34,7 @@ class VerifyAssetsDialog(
 
     fun show() {
         JavaFXUtil.runLater {
-            JavaFXUtil.openModal("TODO", LAYOUT, this)
+            JavaFXUtil.openModal(TITLE, LAYOUT, this)
             update()
             stage.show()
         }
@@ -42,6 +42,8 @@ class VerifyAssetsDialog(
 
 
     override fun init() {
+        headerFX.text = HEADER
+        cancelButtonFX.isDisable = true
         latch += {
             JavaFXUtil.runLater {
                 update()
@@ -57,7 +59,7 @@ class VerifyAssetsDialog(
             return
         }
         countTextFX.text = "${total - count}/${total}"
-        mibTextFX.text = "?/? Mib"
+        mibTextFX.text = "No clue how much MiB :)"
         val progress = if (total <= 0) {
             0.0
         } else {
@@ -73,5 +75,8 @@ class VerifyAssetsDialog(
 
     companion object {
         private val LAYOUT = "minosoft:eros/dialog/connection/verify_assets.fxml".toResourceLocation()
+
+        private val TITLE = "minosoft:connection.dialog.verify_assets.title".toResourceLocation()
+        private val HEADER = "minosoft:connection.dialog.verify_assets.header".toResourceLocation()
     }
 }

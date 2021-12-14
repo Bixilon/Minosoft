@@ -23,6 +23,9 @@
         </VBox.margin>
         <TextFlow fx:id="headerFX">
             <Text text="Connecting to the server..."/>
+            <GridPane.margin>
+                <Insets bottom="10.0"/>
+            </GridPane.margin>
         </TextFlow>
         <GridPane GridPane.rowIndex="1">
             <columnConstraints>

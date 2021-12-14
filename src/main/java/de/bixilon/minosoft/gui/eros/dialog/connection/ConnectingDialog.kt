@@ -36,13 +36,14 @@ class ConnectingDialog(
 
     fun show() {
         JavaFXUtil.runLater {
-            JavaFXUtil.openModal("TODO", LAYOUT, this)
+            JavaFXUtil.openModal(TITLE, LAYOUT, this)
             update(connection.state)
         }
     }
 
 
     override fun init() {
+        headerFX.text = HEADER
         connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { update(it.state) }) // ToDo: This creates a memory leak...
     }
 
@@ -67,6 +68,9 @@ class ConnectingDialog(
 
     companion object {
         private val LAYOUT = "minosoft:eros/dialog/connection/connecting.fxml".toResourceLocation()
+
+        private val TITLE = "minosoft:connection.dialog.connecting.title".toResourceLocation()
+        private val HEADER = "minosoft:connection.dialog.connecting.header".toResourceLocation()
 
         private const val PROGRESS_STEPS = 7
         private val PlayConnectionStates.step: Int

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -121,6 +122,9 @@ class IndexAssetsManager(
                 this.assets[name] = AssetsProperty(type, hash, size)
                 tasks.dec()
                 assetsLatch.dec()
+                if (StaticConfiguration.DEBUG_SLOW_LOADING) {
+                    Thread.sleep(30L)
+                }
             }
         }
         assetsLatch.await()
