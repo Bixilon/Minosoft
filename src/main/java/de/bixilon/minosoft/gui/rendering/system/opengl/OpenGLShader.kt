@@ -68,10 +68,7 @@ class OpenGLShader(
 
     override fun load() {
         val pathPrefix = "${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${
-            resourceLocation.path.replace(
-                "/",
-                "_"
-            )
+            resourceLocation.path.split("/").last()
         }"
         shader = glCreateProgram()
 
