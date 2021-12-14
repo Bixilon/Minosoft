@@ -87,6 +87,9 @@ object Versions : Iterable<Version> {
     }
 
     operator fun get(name: String?): Version? {
+        if (name == "automatic") {
+            return AUTOMATIC
+        }
         return VERSIONS_BY_NAME[name]
     }
 

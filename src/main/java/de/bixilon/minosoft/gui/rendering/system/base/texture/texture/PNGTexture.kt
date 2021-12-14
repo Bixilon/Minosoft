@@ -64,7 +64,7 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
             val byteOutput = ByteArrayOutputStream()
             val dataOutput = DataOutputStream(byteOutput)
             for (color in rgb) {
-                dataOutput.writeInt(color)
+                dataOutput.writeInt(color shl 8)
             }
 
             data.put(byteOutput.toByteArray())

@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.toDouble
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2
@@ -30,21 +29,24 @@ class BitmapFontProvider(
     private val renderWindow: RenderWindow,
     data: Map<String, Any>,
 ) : FontProvider {
-    val height = data["height"]?.toInt() ?: 8
     val ascent = data["ascent"].toDouble()
     private val chars: MutableMap<Char, CharData> = mutableMapOf()
-    private val heightScale = Font.CHAR_HEIGHT.toFloat() / height
     var charWidth = 8
         private set
 
     init {
+        val charRows = data["chars"].asList()
         val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
         texture.load(renderWindow.connection.assetsManager)
+
+        val height = texture.size.y / charRows.size
+        val heightScale = Font.CHAR_HEIGHT.toFloat() / height
+
         charWidth = texture.size.x / CHARS_PER_ROW
         val textureData = texture.data!!
         val pixel = Vec2(1.0f) / texture.size
-        for ((y, row) in data["chars"].asList().withIndex()) {
-            val xStart = IntArray(CHARS_PER_ROW) { 8 }
+        for ((y, row) in charRows.withIndex()) {
+            val xStart = IntArray(CHARS_PER_ROW) { charWidth }
             val xEnd = IntArray(CHARS_PER_ROW) { 0 }
             val yStart = pixel.y * y * height
             val yEnd = pixel.y * (y + 1) * height
@@ -84,13 +86,13 @@ class BitmapFontProvider(
                     y = yEnd,
                 )
 
-                var width = xEnd[x] - xStart[x]
+                val width = xEnd[x] - xStart[x]
+
+                var scaledWidth = (width * heightScale).toInt()
 
                 if (width <= 0) {
-                    width = EMPTY_CHAR_WIDTH
+                    scaledWidth = EMPTY_CHAR_WIDTH
                 }
-
-                val scaledWidth = (width * heightScale).toInt()
 
                 val charData = CharData(
                     renderWindow = renderWindow,
@@ -102,7 +104,7 @@ class BitmapFontProvider(
                     uvEnd = uvEnd,
                 )
 
-                chars[char.toChar()] = charData
+                this.chars[char.toChar()] = charData
             }
         }
         textureData.rewind()

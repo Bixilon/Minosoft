@@ -46,5 +46,4 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
             providers = providers,
         )
     }
-
 }
