@@ -227,7 +227,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
         layout += LineSpacerElement(hudRenderer)
 
-        renderWindow.camera.raycastHandler.apply {
+        renderWindow.camera.targetHandler.apply {
             layout += AutoTextElement(hudRenderer, 1, HorizontalAlignments.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"

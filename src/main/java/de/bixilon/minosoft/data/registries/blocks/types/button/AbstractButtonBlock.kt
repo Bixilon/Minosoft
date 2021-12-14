@@ -19,17 +19,17 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AbstractButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
 
-    override fun onUse(connection: PlayConnection, hit: BlockRaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        if (hit.blockState.properties[BlockProperties.POWERED] == true) {
+    override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
+        if (target.blockState.properties[BlockProperties.POWERED] == true) {
             return InteractionResults.CONSUME
         }
-        connection.world[hit.blockPosition] = hit.blockState.withProperties(BlockProperties.POWERED to true)
+        connection.world[target.blockPosition] = target.blockState.withProperties(BlockProperties.POWERED to true)
         return InteractionResults.SUCCESS
     }
 }

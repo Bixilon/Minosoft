@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CustomHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
@@ -69,8 +69,8 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
 
         // Custom draw to make the crosshair inverted
         if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
-            val hitResult = renderWindow.camera.raycastHandler.target ?: return
-            if (hitResult !is EntityRaycastHit && (hitResult !is BlockRaycastHit || renderWindow.connection.world.getBlockEntity(hitResult.blockPosition) == null)) {
+            val hitResult = renderWindow.camera.targetHandler.target ?: return
+            if (hitResult !is EntityTarget && (hitResult !is BlockTarget || renderWindow.connection.world.getBlockEntity(hitResult.blockPosition) == null)) {
                 return
             }
         }

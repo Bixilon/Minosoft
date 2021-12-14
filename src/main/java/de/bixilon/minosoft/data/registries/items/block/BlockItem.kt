@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -37,14 +37,14 @@ open class BlockItem(
         this::block.inject(data["block"])
     }
 
-    override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
         if (!connection.player.gamemode.canBuild) {
             return InteractionResults.PASS
         }
 
-        val placePosition = raycastHit.blockPosition
-        if (!raycastHit.blockState.material.replaceable) {
-            placePosition += raycastHit.hitDirection
+        val placePosition = target.blockPosition
+        if (!target.blockState.material.replaceable) {
+            placePosition += target.direction
 
             if (connection.world[placePosition]?.material?.replaceable == false) {
                 return InteractionResults.PASS
@@ -62,7 +62,7 @@ open class BlockItem(
 
         var placeBlockState: BlockState = block!!.defaultState
         try {
-            placeBlockState = block.getPlacementState(connection, raycastHit) ?: return InteractionResults.PASS
+            placeBlockState = block.getPlacementState(connection, target) ?: return InteractionResults.PASS
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }

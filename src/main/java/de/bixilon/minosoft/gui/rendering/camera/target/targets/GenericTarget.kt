@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera.hit
+package de.bixilon.minosoft.gui.rendering.camera.target.targets
 
 import de.bixilon.minosoft.data.direction.Directions
 import glm_.vec3.Vec3d
 
-abstract class RaycastHit(
+abstract class GenericTarget(
     val position: Vec3d,
     val distance: Double,
-    val hitDirection: Directions,
+    val direction: Directions,
 )

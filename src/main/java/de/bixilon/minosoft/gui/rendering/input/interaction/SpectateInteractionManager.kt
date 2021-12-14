@@ -25,12 +25,8 @@ class SpectateInteractionManager(
             ),
         )) { spectate(null) }
 
-        renderWindow.connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
-            spectate(null)
-        })
-        renderWindow.connection.registerEvent(CallbackEventInvoker.of<CameraSetEvent> {
-            spectate(it.entity)
-        })
+        renderWindow.connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { spectate(null) })
+        renderWindow.connection.registerEvent(CallbackEventInvoker.of<CameraSetEvent> { spectate(it.entity) })
     }
 
 

@@ -11,24 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera.hit
+package de.bixilon.minosoft.gui.rendering.camera.target.targets
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 
-open class BlockRaycastHit(
+class EntityTarget(
     position: Vec3d,
     distance: Double,
-    hitDirection: Directions,
-    val blockState: BlockState,
-    val blockPosition: Vec3i,
-) : RaycastHit(position, distance, hitDirection), TextFormattable {
-    val hitPosition = position - blockPosition
+    direction: Directions,
+    val entity: Entity,
+) : GenericTarget(position, distance, direction), TextFormattable {
 
     override fun toString(): String {
         return toText().legacyText
@@ -37,19 +34,28 @@ open class BlockRaycastHit(
     override fun toText(): ChatComponent {
         val text = BaseComponent()
 
-        text += "Block target "
-        text += blockPosition
+        text += "Entity target "
+        text += entity.position
         text += ": "
-        text += blockState.block.resourceLocation
+        text += entity.entityType.resourceLocation
 
-        for ((property, value) in blockState.properties) {
+        text += "\n"
+        text += "Id: ${entity.id}"
+        text += "\n"
+        text += "UUID: ${entity.uuid}"
+
+
+        val metaData = entity.entityMetaDataFormatted
+        if (metaData.isNotEmpty()) {
+            text += "\n"
+        }
+
+        for ((property, value) in metaData) {
             text += "\n"
             text += property
             text += ": "
             text += value
         }
-
         return text
     }
-
 }

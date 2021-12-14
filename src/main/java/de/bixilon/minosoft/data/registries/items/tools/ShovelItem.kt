@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -43,16 +43,16 @@ open class ShovelItem(
     }
 
 
-    override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
         if (!connection.profiles.controls.interaction.flattening) {
             return InteractionResults.CONSUME
         }
 
-        if (connection.world[raycastHit.blockPosition + Directions.UP] != null) {
+        if (connection.world[target.blockPosition + Directions.UP] != null) {
             return InteractionResults.PASS
         }
 
-        return super.interactWithTool(connection, raycastHit.blockPosition, flattenableBlockStates?.get(raycastHit.blockState.block))
+        return super.interactWithTool(connection, target.blockPosition, flattenableBlockStates?.get(target.blockState.block))
     }
 
 

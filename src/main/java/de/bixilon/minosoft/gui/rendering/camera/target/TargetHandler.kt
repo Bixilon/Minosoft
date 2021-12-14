@@ -1,73 +1,71 @@
-package de.bixilon.minosoft.gui.rendering.camera
+package de.bixilon.minosoft.gui.rendering.camera.target
 
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.FluidRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.FluidTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.util.KUtil.decide
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-class RaycastHandler(
+class TargetHandler(
     private val renderWindow: RenderWindow,
     private var camera: Camera,
 ) {
     private val connection = renderWindow.connection
 
-    // ToDo: They should also be available in headless mode
-    var nonFluidTarget: RaycastHit? = null
+    /**
+     * Can ba a BlockTarget or an EntityTarget. Not a FluidTarget
+     */
+    var target: GenericTarget? = null
         private set
-    var target: RaycastHit? = null
-        private set
-    var blockTarget: BlockRaycastHit? = null // Block target or if blocked by entity null
-        private set
-    var fluidTarget: FluidRaycastHit? = null
-        private set
-    var entityTarget: EntityRaycastHit? = null
+    var fluidTarget: FluidTarget? = null
         private set
 
 
     fun raycast() {
-        // ToDo
         val eyePosition = camera.matrixHandler.eyePosition.toVec3d
         val cameraFront = camera.matrixHandler.cameraFront.toVec3d
 
-        target = raycast(eyePosition, cameraFront, blocks = true, fluids = true, entities = true)
-        nonFluidTarget = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = true)
-        blockTarget = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = false) as BlockRaycastHit?
-        fluidTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = true, entities = false) as FluidRaycastHit?
-        entityTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = false, entities = true) as EntityRaycastHit?
+        target = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = true)
+        fluidTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = true, entities = false) as FluidTarget?
     }
 
 
-    private fun raycastEntity(origin: Vec3d, direction: Vec3d): EntityRaycastHit? {
-        var currentHit: EntityRaycastHit? = null
+    private fun raycastEntity(origin: Vec3d, direction: Vec3d): EntityTarget? {
+        var currentHit: EntityTarget? = null
 
+        val originF = Vec3(origin)
         for (entity in connection.world.entities) {
             if (entity is LocalPlayerEntity) {
                 continue
             }
-            val hit = VoxelShape(entity.cameraAABB).raycast(origin, direction)
-            if (!hit.hit) {
+            if ((entity.cameraPosition - originF).length2() > MAX_ENTITY_DISTANCE) {
                 continue
             }
-            if ((currentHit?.distance ?: Double.MAX_VALUE) < hit.distance) {
+            val target = VoxelShape(entity.cameraAABB).raycast(origin, direction)
+            if (!target.hit) {
                 continue
             }
-            currentHit = EntityRaycastHit(origin + direction * hit.distance, hit.distance, hit.direction, entity)
+            if ((currentHit?.distance ?: Double.MAX_VALUE) < target.distance) {
+                continue
+            }
+            currentHit = EntityTarget(origin + direction * target.distance, target.distance, target.direction, entity)
 
         }
         return currentHit
     }
 
-    private fun raycast(origin: Vec3d, direction: Vec3d, blocks: Boolean, fluids: Boolean, entities: Boolean): RaycastHit? {
+    private fun raycast(origin: Vec3d, direction: Vec3d, blocks: Boolean, fluids: Boolean, entities: Boolean): GenericTarget? {
         if (!blocks && !fluids && entities) {
             // only raycast entities
             return raycastEntity(origin, direction)
@@ -78,7 +76,7 @@ class RaycastHandler(
             return (origin - currentPosition).length()
         }
 
-        var hit: RaycastHit? = null
+        var target: GenericTarget? = null
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
             val blockState = connection.world[blockPosition]
@@ -97,7 +95,7 @@ class RaycastHandler(
                     if (!fluids) {
                         continue
                     }
-                    hit = FluidRaycastHit(
+                    target = FluidTarget(
                         currentPosition,
                         distance,
                         voxelShapeRaycastResult.direction,
@@ -111,7 +109,7 @@ class RaycastHandler(
                 if (!blocks) {
                     continue
                 }
-                hit = BlockRaycastHit(
+                target = BlockTarget(
                     currentPosition,
                     distance,
                     voxelShapeRaycastResult.direction,
@@ -125,15 +123,16 @@ class RaycastHandler(
         }
 
         if (entities) {
-            val entityRaycastHit = raycastEntity(origin, direction) ?: return hit
-            hit ?: return null
-            return (entityRaycastHit.distance < hit.distance).decide(entityRaycastHit, hit)
+            val entityRaycastHit = raycastEntity(origin, direction) ?: return target
+            target ?: return null
+            return (entityRaycastHit.distance < target.distance).decide(entityRaycastHit, target)
         }
 
-        return hit
+        return target
     }
 
     companion object {
         private const val RAYCAST_MAX_STEPS = 100
+        private const val MAX_ENTITY_DISTANCE = 20.0f * 20.0f // length2 does not get the square root
     }
 }

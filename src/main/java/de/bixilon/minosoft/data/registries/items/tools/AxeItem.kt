@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.mapCast
@@ -39,12 +39,12 @@ open class AxeItem(
         entries.toMap()
     }
 
-    override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
         if (!connection.profiles.controls.interaction.stripping) {
             return InteractionResults.CONSUME
         }
 
-        return super.interactWithTool(connection, raycastHit.blockPosition, strippableBlocks?.get(raycastHit.blockState.block)?.withProperties(raycastHit.blockState.properties))
+        return super.interactWithTool(connection, target.blockPosition, strippableBlocks?.get(target.blockState.block)?.withProperties(target.blockState.properties))
     }
 
     companion object {

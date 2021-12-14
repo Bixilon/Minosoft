@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.items.UsableItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockInteractC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.ItemUseC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
@@ -71,16 +71,16 @@ class InteractInteractionHandler(
         interactingTicksLeft = 0
     }
 
-    fun interactBlock(hit: BlockRaycastHit, item: ItemStack?, hand: Hands): InteractionResults {
-        if (hit.distance >= connection.player.reachDistance) {
+    fun interactBlock(target: BlockTarget, item: ItemStack?, hand: Hands): InteractionResults {
+        if (target.distance >= connection.player.reachDistance) {
             return InteractionResults.PASS
         }
         // if out of world (border): return CONSUME
 
         connection.sendPacket(BlockInteractC2SP(
-            position = hit.blockPosition,
-            direction = hit.hitDirection,
-            cursorPosition = Vec3(hit.hitPosition),
+            position = target.blockPosition,
+            direction = target.direction,
+            cursorPosition = Vec3(target.hitPosition),
             item = item,
             hand = hand,
             insideBlock = false, // ToDo: insideBlock
@@ -90,7 +90,7 @@ class InteractInteractionHandler(
             return InteractionResults.SUCCESS
         }
 
-        val result = hit.blockState.block.onUse(connection, hit, hand, item)
+        val result = target.blockState.block.onUse(connection, target, hand, item)
         if (result == InteractionResults.SUCCESS) {
             return InteractionResults.SUCCESS
         }
@@ -102,13 +102,13 @@ class InteractInteractionHandler(
             return InteractionResults.PASS // ToDo: Check
         }
 
-        return item.item.interactBlock(connection, hit, hand, item)
+        return item.item.interactBlock(connection, target, hand, item)
     }
 
-    fun interactEntityAt(hit: EntityRaycastHit, hand: Hands): InteractionResults {
+    fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
         // used in armor stands
         val player = connection.player
-        connection.sendPacket(EntityInteractAtC2SP(connection, hit.entity, Vec3(hit.position), hand, player.isSneaking))
+        connection.sendPacket(EntityInteractAtC2SP(connection, target.entity, Vec3(target.position), hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.PASS
@@ -117,9 +117,9 @@ class InteractInteractionHandler(
         return InteractionResults.PASS
     }
 
-    fun interactEntity(hit: EntityRaycastHit, hand: Hands): InteractionResults {
+    fun interactEntity(target: EntityTarget, hand: Hands): InteractionResults {
         val player = connection.player
-        connection.sendPacket(EntityInteractC2SP(connection, hit.entity, hand, player.isSneaking))
+        connection.sendPacket(EntityInteractC2SP(connection, target.entity, hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.PASS
@@ -155,12 +155,12 @@ class InteractInteractionHandler(
         // if riding: return
 
         val selectedSlot = connection.player.selectedHotbarSlot
-        val target = renderWindow.camera.raycastHandler.nonFluidTarget
+        val target = renderWindow.camera.targetHandler.target
 
         for (hand in Hands.VALUES) {
             val item = connection.player.inventory[hand]
             when (target) {
-                is EntityRaycastHit -> {
+                is EntityTarget -> {
                     var result = interactEntityAt(target, hand)
 
                     if (result == InteractionResults.PASS) {
@@ -175,7 +175,7 @@ class InteractInteractionHandler(
                         return
                     }
                 }
-                is BlockRaycastHit -> {
+                is BlockTarget -> {
                     val result = interactBlock(target, item, hand)
                     if (result == InteractionResults.SUCCESS) {
                         interactionManager.swingHand(hand)

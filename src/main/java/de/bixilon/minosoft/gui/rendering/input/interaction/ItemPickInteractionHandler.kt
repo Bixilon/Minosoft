@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.RateLimiter
 import de.bixilon.minosoft.protocol.packets.c2s.play.ItemStackCreateC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -48,25 +48,25 @@ class ItemPickInteractionHandler(
         if (!connection.player.baseAbilities.creative) {
             return
         }
-        val raycast = renderWindow.camera.raycastHandler.nonFluidTarget ?: return
+        val target = renderWindow.camera.targetHandler.target ?: return
 
-        if (raycast.distance > connection.player.reachDistance) {
+        if (target.distance > connection.player.reachDistance) {
             return
         }
 
         val itemStack: ItemStack?
 
-        when (raycast) {
-            is BlockRaycastHit -> {
-                itemStack = ItemStack(raycast.blockState.block.item!!, connection, 1)
+        when (target) {
+            is BlockTarget -> {
+                itemStack = ItemStack(target.blockState.block.item!!, connection, 1)
 
                 if (copyNBT) {
-                    val blockEntity = connection.world.getBlockEntity(raycast.blockPosition)
+                    val blockEntity = connection.world.getBlockEntity(target.blockPosition)
                     blockEntity?.nbt?.let { itemStack.nbt.putAll(it) }
                 }
             }
-            is EntityRaycastHit -> {
-                val entity = raycast.entity
+            is EntityTarget -> {
+                val entity = target.entity
                 itemStack = entity.entityType.spawnEgg?.let { ItemStack(it, connection) } ?: let {
                     entity.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?.copy()
                 }
