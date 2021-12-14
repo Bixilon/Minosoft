@@ -18,7 +18,6 @@ import javafx.scene.input.KeyEvent
 
 abstract class DialogController : JavaFXWindowController() {
 
-
     override fun postInit() {
         super.postInit()
 

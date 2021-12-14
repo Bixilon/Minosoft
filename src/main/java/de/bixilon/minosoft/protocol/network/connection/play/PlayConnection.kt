@@ -212,10 +212,11 @@ class PlayConnection(
             }
         }
 
-    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
+    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(0)) {
+        val count = latch.count
         check(!wasConnected) { "Connection was already connected!" }
         try {
-            state = PlayConnectionStates.LOADING
+            state = PlayConnectionStates.LOADING_ASSETS
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(profiles.resources)
             registries.parentRegistries = version.registries
@@ -224,6 +225,7 @@ class PlayConnection(
             assetsManager = AssetsLoader.create(profiles.resources, version, latch)
             assetsManager.load(latch)
             Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
+            state = PlayConnectionStates.LOADING
 
             language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
@@ -249,7 +251,7 @@ class PlayConnection(
             error = exception
             retry = false
         }
-        latch.dec()
+        latch.count = count
     }
 
     override fun getPacketId(packetType: PacketTypes.C2S): Int {

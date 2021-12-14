@@ -35,14 +35,13 @@ class VerifyAssetsDialog(
     fun show() {
         JavaFXUtil.runLater {
             JavaFXUtil.openModal("TODO", LAYOUT, this)
+            update()
             stage.show()
         }
     }
 
 
     override fun init() {
-        update()
-
         latch += {
             JavaFXUtil.runLater {
                 update()
@@ -53,13 +52,18 @@ class VerifyAssetsDialog(
     private fun update() {
         val count = latch.count
         val total = latch.total
-        if (count >= total) {
+        if (count <= 0 && total > 0) {
             stage.close()
             return
         }
-        countTextFX.text = "${count}/${total}"
+        countTextFX.text = "${total - count}/${total}"
         mibTextFX.text = "?/? Mib"
-        progressFX.progress = count.toDouble() / total.toDouble()
+        val progress = if (total <= 0) {
+            0.0
+        } else {
+            (total - count.toDouble()) / total.toDouble()
+        }
+        progressFX.progress = progress
     }
 
     @FXML

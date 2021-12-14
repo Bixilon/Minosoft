@@ -107,6 +107,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             return@setCellFactory controller
         }
 
+        accountProfile::selected.profileWatchFX(this, profile = accountProfile) { setServerInfo(serverListViewFX.selectionModel.selectedItem) }
+
         serverListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setServerInfo(new)
         }
@@ -151,8 +153,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                         reason = event.reason,
                     ).show()
                 })
-                val latch = CountUpAndDownLatch(1)
-                VerifyAssetsDialog(latch = latch).show()
+                val latch = CountUpAndDownLatch(0)
+                val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
+                connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state.disconnected) assetsDialog.close() })
                 ConnectingDialog(connection).show()
                 connection.connect(latch)
             }

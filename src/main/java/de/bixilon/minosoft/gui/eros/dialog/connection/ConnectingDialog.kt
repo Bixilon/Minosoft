@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.gui.eros.dialog.connection
 
 import de.bixilon.minosoft.gui.eros.controller.DialogController
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -36,22 +37,26 @@ class ConnectingDialog(
     fun show() {
         JavaFXUtil.runLater {
             JavaFXUtil.openModal("TODO", LAYOUT, this)
+            update(connection.state)
         }
     }
 
 
     override fun init() {
-        update(PlayConnectionStates.WAITING)
-
-        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { update(it.state) }) // ToDo: This creates a memory leak...
+        connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { update(it.state) }) // ToDo: This creates a memory leak...
     }
 
     private fun update(state: PlayConnectionStates) {
-        if (state == PlayConnectionStates.HANDSHAKING) {
-            show()
-        }
         val step = state.step
+        if (!stage.isShowing && step >= 0) {
+            stage.show()
+        }
         progressFX.progress = step.toDouble() / (PROGRESS_STEPS - 1).toDouble()
+        if (progressFX.progress == 1.0) {
+            stage.hide()
+            return
+        }
+        statusTextFX.text = state
     }
 
     @FXML
@@ -63,15 +68,16 @@ class ConnectingDialog(
     companion object {
         private val LAYOUT = "minosoft:eros/dialog/connection/connecting.fxml".toResourceLocation()
 
-        private const val PROGRESS_STEPS = 6
+        private const val PROGRESS_STEPS = 7
         private val PlayConnectionStates.step: Int
             get() = when (this) {
-                PlayConnectionStates.ESTABLISHING -> 0
-                PlayConnectionStates.HANDSHAKING -> 1
-                PlayConnectionStates.LOGGING_IN -> 2
-                PlayConnectionStates.JOINING -> 3
-                PlayConnectionStates.SPAWNING -> 4
-                else -> 5
+                PlayConnectionStates.LOADING -> 0
+                PlayConnectionStates.ESTABLISHING -> 1
+                PlayConnectionStates.HANDSHAKING -> 2
+                PlayConnectionStates.LOGGING_IN -> 3
+                PlayConnectionStates.JOINING -> 4
+                PlayConnectionStates.SPAWNING -> 5
+                else -> 6
             }
     }
 }
