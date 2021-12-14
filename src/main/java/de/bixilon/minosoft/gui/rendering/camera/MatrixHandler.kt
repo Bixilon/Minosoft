@@ -51,9 +51,9 @@ class MatrixHandler(
 
     private var upToDate = false
 
-    var viewMatrix = calculateViewMatrix()
+    var viewMatrix = Mat4()
         private set
-    var projectionMatrix = calculateProjectionMatrix(renderWindow.window.sizef)
+    var projectionMatrix = Mat4()
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
@@ -70,17 +70,17 @@ class MatrixHandler(
         }
 
 
-    private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition): Mat4 {
-        return glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
+    private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition) {
+        viewMatrix = glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
-        return glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, 10000.0f)
+    private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
+        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, 10000.0f)
     }
 
     fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
-            projectionMatrix = calculateProjectionMatrix(Vec2(it.size))
+            calculateProjectionMatrix(Vec2(it.size))
             upToDate = false
         })
         draw() // set initial values
@@ -95,10 +95,14 @@ class MatrixHandler(
         }
         this.eyePosition = eyePosition
         this.rotation = rotation
+        if (fov != previousFOV) {
+            calculateProjectionMatrix()
+        }
         previousFOV = fov
 
         updateRotation(rotation)
         updateViewMatrix(eyePosition)
+        updateViewProjectionMatrix()
         updateFrustum()
 
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
@@ -114,7 +118,10 @@ class MatrixHandler(
     }
 
     private fun updateViewMatrix(eyePosition: Vec3) {
-        viewMatrix = calculateViewMatrix(eyePosition)
+        calculateViewMatrix(eyePosition)
+    }
+
+    private fun updateViewProjectionMatrix() {
         viewProjectionMatrix = projectionMatrix * viewMatrix
     }
 
