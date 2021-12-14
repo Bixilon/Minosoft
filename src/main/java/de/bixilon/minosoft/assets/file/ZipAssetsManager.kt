@@ -26,7 +26,8 @@ import java.util.zip.ZipInputStream
  */
 class ZipAssetsManager(
     private val inputStream: ZipInputStream,
-) : FileAssetsManager() {
+    canUnload: Boolean = true,
+) : FileAssetsManager(canUnload) {
 
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
@@ -53,6 +54,6 @@ class ZipAssetsManager(
         loaded = true
     }
 
-    constructor(file: File) : this(ZipInputStream(FileInputStream(file)))
-    constructor(path: String) : this(File(path))
+    constructor(file: File, canUnload: Boolean = true) : this(ZipInputStream(FileInputStream(file)), canUnload)
+    constructor(path: String, canUnload: Boolean = true) : this(File(path), canUnload)
 }

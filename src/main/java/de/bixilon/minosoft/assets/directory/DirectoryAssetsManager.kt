@@ -29,6 +29,7 @@ import java.io.InputStream
 
 class DirectoryAssetsManager(
     private val basePath: String,
+    private val canUnload: Boolean = true,
 ) : AssetsManager {
     override val namespaces: MutableSet<String> = mutableSetOf()
     private var assets: MutableSet<ResourceLocation> = mutableSetOf()
@@ -59,6 +60,9 @@ class DirectoryAssetsManager(
     }
 
     override fun unload() {
+        if (!canUnload) {
+            return
+        }
         assets.clear()
         loaded = false
     }

@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
+import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
-import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.get
@@ -48,7 +48,7 @@ data class UnbakedBlockStateModel(
     val rotation: Vec2i?,
     val uvLock: Boolean,
     val weight: Int,
-) : UnbakedModel {
+) : AbstractUnbakedBlockModel {
     var baked: BakedBlockModel? = null
 
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {

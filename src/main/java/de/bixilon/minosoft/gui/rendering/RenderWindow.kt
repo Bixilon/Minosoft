@@ -65,6 +65,7 @@ import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -168,15 +169,15 @@ class RenderWindow(
         tintManager.init(connection.assetsManager)
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating context (${stopwatch.labTime()})..." }
 
         renderSystem.init()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Enabling all open gl features (${stopwatch.labTime()})..." }
 
         renderSystem.reset()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
         WHITE_TEXTURE = TextureLikeTexture(texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
         font = FontLoader.load(this)
@@ -185,25 +186,25 @@ class RenderWindow(
         shaderManager.init()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Initializing renderer (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
             renderer.init()
         }
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.preLoad()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.load()
         font.postInit()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
             renderer.postInit()
         }
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Registering callbacks (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
             renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
@@ -222,6 +223,8 @@ class RenderWindow(
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
 
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Unloading assets manager" }
+        connection.assetsManager.unload()
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
         initialized = true
         latch.dec()

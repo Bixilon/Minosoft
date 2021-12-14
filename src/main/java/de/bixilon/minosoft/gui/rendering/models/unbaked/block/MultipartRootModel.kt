@@ -16,12 +16,12 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
-import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 class MultipartRootModel(
-    private val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<UnbakedBlockStateModel>>,
+    private val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<AbstractUnbakedBlockModel>>,
 ) : RootModel {
 
     private fun Map<BlockProperties, Set<Any>>.matches(blockState: BlockState): Boolean {
@@ -57,8 +57,8 @@ class MultipartRootModel(
         return matches
     }
 
-    override fun getModelForState(blockState: BlockState): UnbakedModel {
-        val models: MutableSet<UnbakedBlockStateModel> = mutableSetOf()
+    override fun getModelForState(blockState: BlockState): AbstractUnbakedBlockModel {
+        val models: MutableSet<AbstractUnbakedBlockModel> = mutableSetOf()
 
         for ((condition, apply) in conditions) {
             if (condition.matchesAny(blockState)) {
@@ -90,20 +90,18 @@ class MultipartRootModel(
         }
 
         operator fun invoke(modelLoader: ModelLoader, data: List<Any>): MultipartRootModel {
-            val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<UnbakedBlockStateModel>> = mutableMapOf()
+            val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<AbstractUnbakedBlockModel>> = mutableMapOf()
 
 
             for (modelData in data) {
                 check(modelData is Map<*, *>)
                 val condition: MutableSet<Map<BlockProperties, Set<Any>>> = mutableSetOf()
                 val applyData = modelData["apply"]!!
-                val apply: MutableSet<UnbakedBlockStateModel> = mutableSetOf()
+                val apply: MutableSet<AbstractUnbakedBlockModel> = mutableSetOf()
                 if (applyData is Map<*, *>) {
                     apply += UnbakedBlockStateModel(modelLoader, applyData.unsafeCast())
                 } else if (applyData is List<*>) {
-                    for (applyModelData in applyData) {
-                        apply += UnbakedBlockStateModel(modelLoader, applyModelData.unsafeCast())
-                    }
+                    apply += WeightedUnbakedBlockStateModel(modelLoader, applyData.unsafeCast())
                 }
 
                 modelData["when"]?.compoundCast()?.let {

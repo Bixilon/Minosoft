@@ -51,6 +51,9 @@ class ModelLoader(
     }
 
     private fun loadBlockStates(block: Block) {
+        if (block.resourceLocation.path == "grass_block") {
+            val a = 1
+        }
         val blockStateJson = assetsManager[block.resourceLocation.blockState()].readJsonObject()
 
         val model = RootModel(this, blockStateJson) ?: return

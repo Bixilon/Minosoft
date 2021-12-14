@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 
-abstract class FileAssetsManager : AssetsManager {
+abstract class FileAssetsManager(private val canUnload: Boolean = true) : AssetsManager {
     override var loaded: Boolean = false
         protected set
     override var image: ByteArray? = null
@@ -41,6 +41,9 @@ abstract class FileAssetsManager : AssetsManager {
     }
 
     override fun unload() {
+        if (!canUnload) {
+            return
+        }
         assets.clear()
         loaded = false
     }

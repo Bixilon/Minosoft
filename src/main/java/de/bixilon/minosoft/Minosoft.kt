@@ -49,7 +49,7 @@ import de.bixilon.minosoft.util.task.worker.tasks.Task
 
 object Minosoft {
     val MAIN_THREAD: Thread = Thread.currentThread()
-    val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java)
+    val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
