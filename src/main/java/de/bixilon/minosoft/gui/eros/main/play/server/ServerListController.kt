@@ -25,7 +25,9 @@ import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.dialog.connection.ConnectingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
+import de.bixilon.minosoft.gui.eros.dialog.connection.VerifyAssetsDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
@@ -41,6 +43,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
+import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.thousands
@@ -148,7 +151,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                         reason = event.reason,
                     ).show()
                 })
-                connection.connect()
+                val latch = CountUpAndDownLatch(1)
+                VerifyAssetsDialog(latch = latch).show()
+                ConnectingDialog(connection).show()
+                connection.connect(latch)
             }
         }
     }
