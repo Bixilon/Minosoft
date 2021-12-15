@@ -47,11 +47,6 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         glBindFramebuffer(GL_FRAMEBUFFER, id)
     }
 
-    fun unbind() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0)
-    }
-
     override fun attach(renderbuffer: Renderbuffer) {
         check(renderbuffer is OpenGLRenderbuffer) { "Can not attach non OpenGL renderbuffer!" }
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.id)
@@ -71,6 +66,7 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
 
     override fun bindTexture() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, texture.id)
     }
 

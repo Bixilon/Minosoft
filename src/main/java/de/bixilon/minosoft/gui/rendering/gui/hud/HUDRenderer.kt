@@ -44,6 +44,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -66,8 +67,8 @@ class HUDRenderer(
     private var enabled = true
     var matrixChange = true
         private set
-//    override val framebuffer: Framebuffer
-    //       get() = renderWindow.framebufferManager.gui
+    override val framebuffer: Framebuffer
+        get() = renderWindow.framebufferManager.gui.framebuffer
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
 

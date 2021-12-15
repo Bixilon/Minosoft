@@ -243,7 +243,7 @@ class OpenGLRenderSystem(
             if (value == field) {
                 return
             }
-            glClearColor(clearColor.floatRed, clearColor.floatGreen, clearColor.floatBlue, clearColor.floatAlpha)
+            glClearColor(value.floatRed, value.floatGreen, value.floatBlue, value.floatAlpha)
 
             field = value
         }

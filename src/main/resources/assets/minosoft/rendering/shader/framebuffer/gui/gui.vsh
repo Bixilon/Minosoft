@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,18 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+#version 330 core
 
-object Colors {
-    val TRUE_BLACK = RGBColor(0, 0, 0)
+layout (location = 0) in vec2 vinPosition;
+layout (location = 1) in vec2 vinUV;
 
-    val TRUE_RED = RGBColor(255, 0, 0)
-    val TRUE_GREEN = RGBColor(0, 255, 0)
-    val TRUE_BLUE = RGBColor(0, 0, 255)
+out vec2 finUV;
 
-    val TRUE_YELLOW = RGBColor(255, 255, 0)
-
-    val DARK_RED = RGBColor(255, 50, 30)
-
-    val TRANSPARENT = RGBColor(0, 0, 0, 0)
+void main() {
+    gl_Position = vec4(vinPosition, 0.0f, 1.0f);
+    finUV = vinUV;
 }

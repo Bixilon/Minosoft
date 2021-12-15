@@ -246,6 +246,7 @@ class RenderWindow(
                 ),
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
+            renderSystem.framebuffer = framebufferManager.default.framebuffer
             renderSystem.polygonMode = nextMode
             sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
@@ -319,7 +320,9 @@ class RenderWindow(
             }
 
             renderStats.startFrame()
+            renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
+            framebufferManager.clear()
 
 
             val currentTickTime = TimeUtil.time
@@ -343,11 +346,11 @@ class RenderWindow(
                 renderer.prepareDraw()
             }
 
-            for (renderer in rendererList) {
-                if (renderer is SkipAll && renderer.skipAll) {
-                    continue
-                }
-                for (phase in RenderPhases.VALUES) { // ToDo: Move this up after frame buffers
+            for (phase in RenderPhases.VALUES) { // ToDo: Move this up after frame buffers
+                for (renderer in rendererList) {
+                    if (renderer is SkipAll && renderer.skipAll) {
+                        continue
+                    }
                     if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
                         continue
                     }
@@ -360,6 +363,7 @@ class RenderWindow(
                 }
             }
             framebufferManager.draw()
+            renderSystem.framebuffer = null
             renderSystem.reset() // Reset to enable depth mask, etc again
 
             renderStats.endDraw()

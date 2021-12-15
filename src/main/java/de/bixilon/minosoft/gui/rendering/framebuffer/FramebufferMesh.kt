@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.gui.rendering.framebuffer.defaultf
+package de.bixilon.minosoft.gui.rendering.framebuffer
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -6,7 +6,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 
 
-class DefaultFramebufferMesh(renderWindow: RenderWindow) : Mesh(renderWindow, DefaultFramebufferMeshStruct) {
+class FramebufferMesh(renderWindow: RenderWindow) : Mesh(renderWindow, DefaultFramebufferMeshStruct) {
 
     init {
         val vertices = arrayOf(

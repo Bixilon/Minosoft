@@ -44,7 +44,7 @@ interface RenderSystem {
         sourceAlpha: BlendingFunctions = BlendingFunctions.SOURCE_ALPHA,
         destinationAlpha: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
         depth: DepthFunctions = DepthFunctions.LESS,
-        clearColor: RGBColor = Colors.TRUE_YELLOW,
+        clearColor: RGBColor = Colors.TRANSPARENT,
     ) {
         setBlendFunc(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
