@@ -46,7 +46,7 @@ interface RenderSystem {
         depth: DepthFunctions = DepthFunctions.LESS,
         clearColor: RGBColor = Colors.TRANSPARENT,
     ) {
-        setBlendFunc(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+        setBlendFunction(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending
         this[RenderingCapabilities.FACE_CULLING] = faceCulling
@@ -63,7 +63,7 @@ interface RenderSystem {
 
     operator fun set(source: BlendingFunctions, destination: BlendingFunctions)
 
-    fun setBlendFunc(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlphaFactor: BlendingFunctions, destinationAlphaFactor: BlendingFunctions)
+    fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions)
 
     var depth: DepthFunctions
     var depthMask: Boolean

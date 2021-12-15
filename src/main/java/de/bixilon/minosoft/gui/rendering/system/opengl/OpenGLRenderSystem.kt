@@ -161,8 +161,8 @@ class OpenGLRenderSystem(
         glBlendFunc(source.gl, destination.gl)
     }
 
-    override fun setBlendFunc(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlphaFactor: BlendingFunctions, destinationAlphaFactor: BlendingFunctions) {
-        glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlphaFactor.gl, destinationAlphaFactor.gl)
+    override fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions) {
+        glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlpha.gl, destinationAlpha.gl)
     }
 
     override var depth: DepthFunctions = DepthFunctions.LESS

@@ -112,7 +112,7 @@ class SkyRenderer(
 
         }
         renderSystem.enable(RenderingCapabilities.BLENDING)
-        renderSystem.setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+        renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         skySunShader.use()
         skySunMesh.draw()
     }
@@ -137,7 +137,7 @@ class SkyRenderer(
     }
 
     private fun drawSkybox() {
-        renderSystem.setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO) // ToDo
+        renderSystem.setBlendFunction(BlendingFunctions.ONE_MINUS_CONSTANT_COLOR, BlendingFunctions.ONE_MINUS_SOURCE_COLOR, BlendingFunctions.ONE, BlendingFunctions.ZERO) // ToDo
         checkSkyColor()
         skyboxShader.use()
         skyboxMesh.draw()
