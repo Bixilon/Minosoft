@@ -35,7 +35,7 @@ public class VersionParser extends CommandParser {
         if (StringUtils.isBlank(rawVersionName)) {
             throw new BlankStringCommandParseException(stringReader, rawVersionName);
         }
-        Version version = Versions.getVersionByName(rawVersionName);
+        Version version = Versions.INSTANCE.get(rawVersionName);
         if (version == null) {
             throw new InvalidVersionCommandParseException(stringReader, rawVersionName);
         }

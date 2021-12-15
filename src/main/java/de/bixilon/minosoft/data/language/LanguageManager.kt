@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.data.language
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.util.FileUtil.readAsString
+import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -21,7 +23,6 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.tryCatch
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.io.FileNotFoundException
 
 class LanguageManager(
@@ -52,20 +53,19 @@ class LanguageManager(
     }
 
     companion object {
+        const val FALLBACK_LANGUAGE = "en_US"
 
-
-        fun load(language: String, version: Version?, path: ResourceLocation = ResourceLocation("lang/")): LanguageManager {
-            val assetsManager = version?.assetsManager ?: Minosoft.MINOSOFT_ASSETS_MANAGER
+        fun load(language: String, version: Version?, assetsManager: AssetsManager, path: ResourceLocation = ResourceLocation("lang/")): LanguageManager {
 
             fun loadMinecraftLanguage(language: String): Language {
                 val data: MutableMap<ResourceLocation, String> = mutableMapOf()
 
                 if (version != null && version.versionId >= ProtocolVersions.V_18W02A) {
-                    for ((key, value) in assetsManager.readJsonAsset(ResourceLocation(path.namespace, path.path + "${language.lowercase()}.json")).asCompound()) {
+                    for ((key, value) in assetsManager[ResourceLocation(path.namespace, path.path + "${language.lowercase()}.json")].readJsonObject()) {
                         data[ResourceLocation(key)] = value.toString()
                     }
                 } else {
-                    val lines = assetsManager.readStringAsset(ResourceLocation(path.namespace, path.path + "${language.lowercase()}.lang")).lines()
+                    val lines = assetsManager[ResourceLocation(path.namespace, path.path + "${language.lowercase()}.lang")].readAsString().lines()
 
                     for (line in lines) {
                         if (line.isBlank()) {
@@ -81,13 +81,12 @@ class LanguageManager(
 
             val languages: MutableList<Language> = mutableListOf()
 
-            if (language != "en_US") {
+            if (language != FALLBACK_LANGUAGE) {
                 tryCatch(FileNotFoundException::class.java, executor = { languages += loadMinecraftLanguage(language) })
             }
-            languages += loadMinecraftLanguage("en_US")
+            languages += loadMinecraftLanguage(FALLBACK_LANGUAGE)
 
             return LanguageManager(languages)
-
         }
     }
 }

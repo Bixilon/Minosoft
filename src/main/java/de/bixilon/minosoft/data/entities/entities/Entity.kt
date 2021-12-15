@@ -587,8 +587,8 @@ abstract class Entity(
             return // ToDo
         }
 
-        connection.registries.fluidRegistry.forEachItem {
-            updateFluidState(it.resourceLocation)
+        for (fluid in connection.registries.fluidRegistry) {
+            updateFluidState(fluid.resourceLocation)
         }
 
         submergedFluid = null

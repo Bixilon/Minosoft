@@ -14,6 +14,8 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
@@ -116,7 +118,7 @@ class PlayInByteBuffer : InByteBuffer {
             }
             val count = readUnsignedByte()
             var metaData = 0
-            if (connection.version.isFlattened()) {
+            if (!connection.version.flattened) {
                 metaData = readUnsignedShort()
             }
             val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()
@@ -213,5 +215,29 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readEntityIdArray(length: Int = readVarInt()): Array<Int> {
         return readArray(length) { readEntityId() }
+    }
+
+
+    fun readPlayerProperties(): PlayerProperties {
+        var textures: PlayerTextures? = null
+        for (i in 0 until readVarInt()) {
+            val name = readString()
+            val value = readString()
+            val signature = if (versionId < V_14W21A) {
+                readString()
+            } else {
+                readOptional { readString() }
+            }
+            when (name) {
+                PlayerProperties.TEXTURE_PROPERTIES -> {
+                    check(textures == null) { "Textures duplicated" }
+                    textures = PlayerTextures.of(value, signature ?: throw IllegalArgumentException("Texture data needs to be signed!"))
+                }
+                else -> throw IllegalArgumentException("Unknown player property $name")
+            }
+        }
+        return PlayerProperties(
+            textures = textures,
+        )
     }
 }

@@ -17,4 +17,12 @@ import javafx.stage.Stage
 
 abstract class JavaFXWindowController : JavaFXController() {
     lateinit var stage: Stage
+
+
+    fun close() {
+        if (this::stage.isInitialized) {
+            stage.close()
+        }
+    }
+
 }

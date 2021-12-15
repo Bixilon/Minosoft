@@ -13,10 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
@@ -45,7 +44,7 @@ class SimpleRootModel(
     }
 
     companion object {
-        operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: Map<String, Any>): SimpleRootModel {
+        operator fun invoke(modelLoader: ModelLoader, data: Map<String, Any>): SimpleRootModel {
             val conditions: MutableMap<Map<BlockProperties, Any>, UnbakedModel> = mutableMapOf()
 
 
@@ -63,8 +62,8 @@ class SimpleRootModel(
                 }
 
                 val model = when (value) {
-                    is Map<*, *> -> UnbakedBlockStateModel(models, value.unsafeCast())
-                    is List<*> -> WeightedUnbakedBlockStateModel(models, value.unsafeCast())
+                    is Map<*, *> -> UnbakedBlockStateModel(modelLoader, value.unsafeCast())
+                    is List<*> -> WeightedUnbakedBlockStateModel(modelLoader, value.unsafeCast())
                     else -> TODO("Can not create model: $value")
                 }
 

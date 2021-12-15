@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -22,7 +22,11 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
+import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
 import java.nio.ByteBuffer
+import javax.imageio.ImageIO
 
 
 class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractTexture {
@@ -47,9 +51,24 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
             return
         }
 
-        val decoder = PNGDecoder(assetsManager.readAssetAsStream(resourceLocation))
+        val decoder = PNGDecoder(assetsManager[resourceLocation])
         val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
-        decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+        try {
+            decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+        } catch (exception: Throwable) {
+            // ToDo: This somehow crashes with some resource packs
+            // exception.printStackTrace()
+            val image: BufferedImage = ImageIO.read(assetsManager[resourceLocation])
+            val rgb = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
+
+            val byteOutput = ByteArrayOutputStream()
+            val dataOutput = DataOutputStream(byteOutput)
+            for (color in rgb) {
+                dataOutput.writeInt(color shl 8)
+            }
+
+            data.put(byteOutput.toByteArray())
+        }
 
         size = Vec2i(decoder.width, decoder.height)
         transparency = TextureTransparencies.OPAQUE

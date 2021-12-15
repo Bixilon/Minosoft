@@ -36,7 +36,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
@@ -46,7 +45,7 @@ public final class Util {
     public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final Gson GSON = new Gson();
-    private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
+    private static final Random RANDOM = new Random();
     private static final Field JSON_READER_POS_FIELD;
     private static final Field JSON_READER_LINE_START_FIELD;
 
@@ -140,6 +139,16 @@ public final class Util {
         return null;
     }
 
+    public static String sha256(byte[] data) {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        try {
+            return sha256(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String sha1(File file) throws IOException {
         return sha1(new FileInputStream(file));
     }
@@ -150,15 +159,27 @@ public final class Util {
 
     public static String sha1(InputStream inputStream) throws IOException {
         try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
+            return hash(MessageDigest.getInstance("SHA-1"), inputStream);
+        } catch (NoSuchAlgorithmException | FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
-            byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
-            int length;
-            while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
-                crypt.update(buffer, 0, length);
-            }
-            return byteArrayToHexString(crypt.digest());
+    private static String hash(MessageDigest digest, InputStream inputStream) throws IOException {
+        digest.reset();
+
+        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
+        int length;
+        while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
+            digest.update(buffer, 0, length);
+        }
+        return byteArrayToHexString(digest.digest());
+    }
+
+    public static String sha256(InputStream inputStream) throws IOException {
+        try {
+            return hash(MessageDigest.getInstance("SHA-256"), inputStream);
         } catch (NoSuchAlgorithmException | FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -251,11 +272,11 @@ public final class Util {
     }
 
     public static char getRandomChar(char[] chars) {
-        return chars[(THREAD_LOCAL_RANDOM.nextInt(chars.length))];
+        return chars[(RANDOM.nextInt(chars.length))];
     }
 
     public static char getRandomChar() {
-        return (char) THREAD_LOCAL_RANDOM.nextInt();
+        return (char) RANDOM.nextInt();
     }
 
     public static String getStringBetween(String search, String first, String second) {

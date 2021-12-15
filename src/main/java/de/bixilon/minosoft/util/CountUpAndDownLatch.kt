@@ -17,6 +17,7 @@ import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 
 
 class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: CountUpAndDownLatch? = null) {
+    private val changeCallbacks: MutableSet<() -> Unit> = mutableSetOf()
     private val lock = Object()
     private val children: MutableSet<CountUpAndDownLatch> = synchronizedSetOf()
     private var rawCount = 0
@@ -40,6 +41,9 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
             synchronized(lock) {
                 diff = value - rawCount
                 rawCount = value
+                if (value <= 0) {
+                    changeCallbacks.clear()
+                }
             }
             parent?.plus(diff) ?: notify()
         }
@@ -87,6 +91,9 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
     @JvmName(name = "customNotify")
     private fun notify(`this`: CountUpAndDownLatch = this) {
         synchronized(lock) {
+            for (callback in changeCallbacks) {
+                callback.invoke()
+            }
             lock.notifyAll()
         }
         for (child in children.toSynchronizedList()) {
@@ -139,6 +146,13 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
             waitForChange()
         }
         await()
+    }
+
+
+    operator fun plusAssign(callback: () -> Unit) {
+        synchronized(lock) {
+            changeCallbacks += callback
+        }
     }
 
     override fun toString(): String {

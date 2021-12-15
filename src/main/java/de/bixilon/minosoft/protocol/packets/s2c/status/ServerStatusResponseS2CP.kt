@@ -31,7 +31,7 @@ class ServerStatusResponseS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
 
     override fun handle(connection: StatusConnection) {
         connection.lastServerStatus = status
-        val version: Version? = Versions.getVersionByProtocolId(status.protocolId ?: -1)
+        val version: Version? = Versions.getByProtocol(status.protocolId ?: -1)
         if (version == null) {
             Log.log(LogMessageType.NETWORK_STATUS, LogLevels.WARN) { "Server is running on unknown version (protocolId=${status.protocolId})" }
         } else {

@@ -15,9 +15,15 @@ package de.bixilon.minosoft.gui.eros.util
 
 import de.bixilon.minosoft.data.accounts.Account
 import javafx.scene.image.Image
+import javafx.scene.image.WritableImage
+import java.io.ByteArrayInputStream
+
 
 object JavaFXAccountUtil {
 
-    val Account.avatar: Image?
-        get() = JavaFXUtil.MINOSOFT_LOGO // ToDo
+    val Account.avatar: Image
+        get() = this.properties?.textures?.skin?.read()?.let {
+            val image = Image(ByteArrayInputStream(it), 0.0, 0.0, true, false)
+            return@let WritableImage(image.pixelReader, 8, 8, 8, 8)
+        } ?: JavaFXUtil.MINOSOFT_LOGO
 }

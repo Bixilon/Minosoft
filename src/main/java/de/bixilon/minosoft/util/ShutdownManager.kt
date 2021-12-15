@@ -30,7 +30,7 @@ object ShutdownManager {
 
     fun shutdown(message: String? = null, reason: ShutdownReasons = ShutdownReasons.UNKNOWN) {
         Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Shutting down..." }
-        for (connection in PlayConnection.ACTIVE_CONENCTIONS.toSynchronizedSet()) {
+        for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
             connection.disconnect()
         }
         FileWatcherService.stop()

@@ -71,7 +71,7 @@ object JavaFXUtil {
         startThemeWatcher()
         val fxmlLoader = FXMLLoader()
         controller?.let { fxmlLoader.setController(it) }
-        val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
+        val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
 
         val stage = Stage()
         stage.initModality(modality)
@@ -98,7 +98,7 @@ object JavaFXUtil {
 
     fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation): T {
         val fxmlLoader = FXMLLoader()
-        val pane = fxmlLoader.load<Pane>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
+        val pane = fxmlLoader.load<Pane>(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
 
         val controller = fxmlLoader.getController<T>()
 

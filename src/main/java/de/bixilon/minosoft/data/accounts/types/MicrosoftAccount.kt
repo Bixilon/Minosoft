@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.accounts.types
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -28,6 +29,7 @@ class MicrosoftAccount(
     val uuid: UUID,
     username: String,
     @field:JsonProperty private val authorizationToken: String,
+    override val properties: PlayerProperties?,
 ) : Account(username) {
     @Transient @JsonIgnore var accessToken: String? = null
     override val id: String = uuid.toString()

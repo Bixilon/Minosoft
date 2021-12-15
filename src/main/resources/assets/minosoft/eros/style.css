@@ -324,3 +324,21 @@
 .table-row-cell:empty:selected {
     -fx-background-color: -secondary-color;
 }
+
+
+/* Progress bar */
+.progress-bar {
+    -fx-background-color: -secondary-color;
+    -fx-border-color: -primary-color;
+    -fx-background-radius: 2px;
+    -fx-border-radius: 2px;
+    -fx-border-width: 1px;
+}
+
+.progress-bar .bar {
+    -fx-background-color: -primary-color;
+}
+
+.progress-bar > .track {
+    -fx-background-color: -secondary-color;
+}

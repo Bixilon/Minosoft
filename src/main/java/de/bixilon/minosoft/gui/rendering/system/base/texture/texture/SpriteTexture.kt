@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies

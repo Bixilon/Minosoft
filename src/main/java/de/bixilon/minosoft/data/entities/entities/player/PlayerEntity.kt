@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.player.Arms
-import de.bixilon.minosoft.data.player.PlayerProperty
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.world.World
@@ -35,7 +35,7 @@ abstract class PlayerEntity(
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
-    properties: Map<String, PlayerProperty> = mapOf(),
+    properties: PlayerProperties = PlayerProperties(),
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, position, rotation) {
     override val dimensions: Vec2

@@ -127,8 +127,8 @@ class Registries {
         }
     }
 
-    fun load(version: Version, pixlyzerData: MutableMap<String, Any>) {
-        isFlattened = version.isFlattened()
+    fun load(version: Version, pixlyzerData: Map<String, Any>) {
+        isFlattened = version.flattened
         blockStateRegistry.flattened = isFlattened
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.compoundCast())
@@ -157,7 +157,7 @@ class Registries {
 
         entityTypeRegistry.rawInitialize(pixlyzerData["entities"]?.compoundCast(), this, EntityType)
 
-        motiveRegistry.rawInitialize(pixlyzerData["motives"]?.compoundCast(), this, Motive, version.isFlattened())
+        motiveRegistry.rawInitialize(pixlyzerData["motives"]?.compoundCast(), this, Motive, version.flattened)
         soundEventRegistry.rawInitialize(pixlyzerData["sound_events"]?.compoundCast())
         particleTypeRegistry.rawInitialize(pixlyzerData["particles"]?.compoundCast(), this, ParticleType)
         materialRegistry.rawInitialize(pixlyzerData["materials"]?.compoundCast(), this, Material)
@@ -166,8 +166,8 @@ class Registries {
         biomeRegistry.rawInitialize(pixlyzerData["biomes"]?.compoundCast(), this, Biome)
         dimensionRegistry.rawInitialize(pixlyzerData["dimensions"]?.compoundCast(), this, Dimension)
         fluidRegistry.rawInitialize(pixlyzerData["fluids"]?.compoundCast(), this, Fluid)
-        blockRegistry.rawInitialize(pixlyzerData["blocks"]?.compoundCast(), this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
-        itemRegistry.rawInitialize(pixlyzerData["items"]?.compoundCast(), this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
+        blockRegistry.rawInitialize(pixlyzerData["blocks"]?.compoundCast(), this, Block, version.flattened, Registry.MetaTypes.BITS_4)
+        itemRegistry.rawInitialize(pixlyzerData["items"]?.compoundCast(), this, Item, version.flattened, Registry.MetaTypes.BITS_16)
 
         blockEntityTypeRegistry.rawInitialize(pixlyzerData["block_entities"]?.compoundCast(), this, BlockEntityType)
 

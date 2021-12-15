@@ -15,7 +15,7 @@
 uniform sampler2DArray uTextures[7];
 
 vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
-    #ifdef __NVIDIA
+    #if defined __NVIDIA || defined __AMD
     return texture(uTextures[textureId], uv);
     #else
     switch (textureId) {

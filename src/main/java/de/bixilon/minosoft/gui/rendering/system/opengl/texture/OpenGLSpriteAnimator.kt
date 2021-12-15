@@ -75,7 +75,7 @@ class OpenGLSpriteAnimator : SpriteAnimator {
         if (!initialized || !enabled) {
             return
         }
-        recalculate()
+       recalculate()
     }
 
 

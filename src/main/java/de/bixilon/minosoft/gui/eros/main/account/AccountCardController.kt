@@ -18,18 +18,23 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
+import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.PixelImageView
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
 class AccountCardController : AbstractCardController<Account>() {
+    @FXML private lateinit var avatarFX: PixelImageView
     @FXML private lateinit var connectionCountFX: TextFlow
     @FXML private lateinit var stateFX: TextFlow
     @FXML private lateinit var accountNameFX: TextFlow
 
 
     override fun clear() {
+        avatarFX.image = JavaFXUtil.MINOSOFT_LOGO
         connectionCountFX.children.clear()
         stateFX.children.clear()
         accountNameFX.children.clear()
@@ -44,6 +49,7 @@ class AccountCardController : AbstractCardController<Account>() {
             return
         }
 
+        avatarFX.image = item.avatar
         accountNameFX.text = item.username
         stateFX.text = "Unchecked"
         connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(item.connections.size)

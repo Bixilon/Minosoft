@@ -1,14 +1,20 @@
 package de.bixilon.minosoft.util.json
 
+import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.type.MapType
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 
 object Jackson {
-    val MAPPER = ObjectMapper()
+    val MAPPER = JsonMapper.builder()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE)
+        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .build()
         .registerModule(KotlinModule.Builder()
             .withReflectionCacheSize(512)
             .configure(KotlinFeature.NullToEmptyCollection, false)
@@ -20,7 +26,6 @@ object Jackson {
         .registerModule(ResourceLocationSerializer)
         .registerModule(RGBColorSerializer)
         .registerModule(ChatComponentColorSerializer)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setDefaultMergeable(true)
 
 

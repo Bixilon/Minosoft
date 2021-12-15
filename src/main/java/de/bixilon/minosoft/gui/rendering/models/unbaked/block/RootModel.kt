@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
@@ -24,12 +23,12 @@ interface RootModel {
     fun getModelForState(blockState: BlockState): UnbakedModel
 
     companion object {
-        operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: Map<String, Any>): RootModel? {
+        operator fun invoke(modeLoader: ModelLoader, data: Map<String, Any>): RootModel? {
             val variants = data["variants"]
             val multipart = data["multipart"]
             return when {
-                variants != null -> SimpleRootModel(models, variants.unsafeCast())
-                multipart != null -> MultipartRootModel(models, multipart.unsafeCast())
+                variants != null -> SimpleRootModel(modeLoader, variants.unsafeCast())
+                multipart != null -> MultipartRootModel(modeLoader, multipart.unsafeCast())
                 else -> TODO("Don't know what type of block state model to choose: $data")
             }
         }

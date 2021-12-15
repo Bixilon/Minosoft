@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.sound.SoundUtil.sound
 import de.bixilon.minosoft.util.KUtil.toBoolean

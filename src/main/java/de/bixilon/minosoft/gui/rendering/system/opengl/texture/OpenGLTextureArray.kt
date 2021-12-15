@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
+import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.SpriteTextu
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -54,8 +56,8 @@ class OpenGLTextureArray(
 
         // load .mcmeta
         val properties = try {
-            Jackson.MAPPER.readValue(renderWindow.connection.assetsManager.readStringAsset(ResourceLocation("$resourceLocation.mcmeta")), ImageProperties::class.java)
-        } catch (exception: FileNotFoundException) {
+            Jackson.MAPPER.readValue(renderWindow.connection.assetsManager["$resourceLocation.mcmeta".toResourceLocation()].readAsString(), ImageProperties::class.java)
+        } catch (exception: FileNotFoundException) { // ToDo: Speed up and not use exceptions
             ImageProperties()
         }
         if (texture == null) {
@@ -196,8 +198,8 @@ class OpenGLTextureArray(
 
 
     companion object {
-        val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
         const val TEXTURE_MAX_RESOLUTION = 1024
+        val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, TEXTURE_MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
         const val MAX_MIPMAP_LEVELS = 5
     }
 }

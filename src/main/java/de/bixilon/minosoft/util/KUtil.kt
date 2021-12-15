@@ -33,6 +33,7 @@ import glm_.vec4.Vec4t
 import sun.misc.Unsafe
 import java.io.*
 import java.lang.reflect.Field
+import java.net.URL
 import java.nio.ByteBuffer
 import java.time.Instant
 import java.util.*
@@ -53,7 +54,7 @@ object KUtil {
         val ret: MutableMap<String, T> = mutableMapOf()
 
         for (value in values) {
-            ret[value.name.lowercase(Locale.getDefault())] = value
+            ret[value.name.lowercase()] = value
 
             if (value is AliasableEnum) {
                 for (name in value.names) {
@@ -558,4 +559,19 @@ object KUtil {
 
     val Locale.fullName: String
         get() = language + "_" + country.ifEmpty { language.uppercase() }
+
+
+    fun URL.check() {
+        check(this.protocol == "http" || this.protocol == "https") { "Url is not a web address" }
+    }
+
+    val String.isHexString: Boolean
+        get() {
+            for (digit in toCharArray()) {
+                if (digit !in '0'..'9' && digit !in 'a'..'f') {
+                    return false
+                }
+            }
+            return true
+        }
 }

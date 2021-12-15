@@ -49,6 +49,8 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
 import de.bixilon.minosoft.protocol.packets.s2c.status.ServerStatusResponseS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
 class PacketTypes {
 
@@ -115,8 +117,10 @@ class PacketTypes {
 
         val state: ProtocolStates = ProtocolStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
 
-        companion object {
+        companion object : ValuesEnum<C2S> {
             private val MAPPING: Map<Class<out C2SPacket>, C2S>
+            override val VALUES: Array<C2S> = values()
+            override val NAME_MAP: Map<String, C2S> = KUtil.getEnumValues(VALUES)
 
             init {
                 val mapping: MutableMap<Class<out C2SPacket>, C2S> = mutableMapOf()
@@ -288,5 +292,11 @@ class PacketTypes {
 
 
         val state: ProtocolStates = ProtocolStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
+
+
+        companion object : ValuesEnum<S2C> {
+            override val VALUES: Array<S2C> = values()
+            override val NAME_MAP: Map<String, S2C> = KUtil.getEnumValues(VALUES)
+        }
     }
 }

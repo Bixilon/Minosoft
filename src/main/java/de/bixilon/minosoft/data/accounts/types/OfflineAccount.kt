@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.data.accounts.types
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -21,6 +23,9 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class OfflineAccount(username: String) : Account(username) {
     override val id: String = username
     override val type: ResourceLocation = RESOURCE_LOCATION
+
+    @JsonIgnore
+    override val properties: PlayerProperties? = null
 
     override fun join(serverId: String) = Unit
 

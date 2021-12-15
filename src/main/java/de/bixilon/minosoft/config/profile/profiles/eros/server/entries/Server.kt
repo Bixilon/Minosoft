@@ -16,6 +16,7 @@ package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.backingDelegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
@@ -53,8 +54,8 @@ class Server(
     private var _forcedVersion by delegate(forcedVersion?.name)
 
     @get:JsonIgnore
-    var forcedVersion by backingDelegate(getter = { Versions.getVersionByName(_forcedVersion) }, setter = { _forcedVersion = it?.name })
+    var forcedVersion by backingDelegate(getter = { Versions[_forcedVersion] }, setter = { _forcedVersion = it?.name })
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    var faviconHash: String? by delegate(null) { if (it != null) check(it.length == 40) { "Not a valid sha1 hash!" } }
+    var faviconHash: String? by delegate(null) { if (it != null) check(it.length == FileAssetsUtil.HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
 }

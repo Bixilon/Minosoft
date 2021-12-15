@@ -17,8 +17,6 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
-import de.bixilon.minosoft.data.assets.AssetsUtil
-import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
@@ -76,9 +74,6 @@ import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import java.io.FileInputStream
-import java.util.zip.GZIPInputStream
-import java.util.zip.ZipInputStream
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -131,16 +126,14 @@ class WorldRenderer(
     val preparingTasksSize: Int by preparingTasks::size
 
     override fun init() {
-        val asset = Resources.getAssetVersionByVersion(connection.version)
-        val zip = ZipInputStream(GZIPInputStream(FileInputStream(AssetsUtil.getAssetDiskPath(asset.clientJarHash!!, true))))
-        val modelLoader = ModelLoader(zip, renderWindow)
+        val modelLoader = ModelLoader(renderWindow)
         modelLoader.load()
 
-        connection.registries.fluidRegistry.forEachItem {
-            if (it is FlowableFluid) {
-                it.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(it.flowingTextureName!!.texture())
+        for (fluid in connection.registries.fluidRegistry) {
+            if (fluid is FlowableFluid) {
+                fluid.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(fluid.flowingTextureName!!.texture())
             }
-            it.stillTexture = it.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
+            fluid.stillTexture = fluid.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
         }
     }
 

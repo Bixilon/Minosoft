@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.builtin.BuiltinModels
@@ -21,63 +23,47 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
-import de.bixilon.minosoft.util.KUtil.fromJson
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 class ModelLoader(
-    val jar: ZipInputStream,
     val renderWindow: RenderWindow,
 ) {
+    private val assetsManager = renderWindow.connection.assetsManager
     private val unbakedBlockModels: MutableMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toMutableMap()
-    private val unbakedBlockStateModels: MutableMap<ResourceLocation, RootModel> = mutableMapOf()
-    private val blockStateJsons: MutableMap<ResourceLocation, Map<String, Any>> = mutableMapOf()
-    private val modelJsons: MutableMap<ResourceLocation, Map<String, Any>> = mutableMapOf()
 
     private val registry: Registries = renderWindow.connection.registries
 
-    private fun loadJsons() {
-        // ToDo: Integrate in assets manager
-        var entry: ZipEntry? = jar.nextEntry
-        while (entry != null) {
-            if (!entry.name.startsWith("assets/minecraft/models/") && !entry.name.startsWith("assets/minecraft/blockstates/")) {
-                entry = jar.nextEntry
-                continue
-            }
-            val name = entry.name.removePrefix("assets/minecraft/").removeSuffix(".json")
-            val jsonString = Util.readReader(BufferedReader(InputStreamReader(jar)), false)
-
-            val json = jsonString.fromJson().asCompound()
-            if (name.startsWith("models/")) {
-                modelJsons[name.removePrefix("models/").toResourceLocation()] = json
-            } else {
-                blockStateJsons[name.removePrefix("blockstates/").toResourceLocation()] = json
-            }
-
-
-            entry = jar.nextEntry
-        }
-    }
 
     private fun cleanup() {
         unbakedBlockModels.clear()
-        unbakedBlockStateModels.clear()
-        modelJsons.clear()
-        blockStateJsons.clear()
     }
 
-    private fun loadBlockModel(name: ResourceLocation, data: Map<String, Any>? = null): GenericUnbakedModel {
+    private fun ResourceLocation.model(): ResourceLocation {
+        return ResourceLocation(this.namespace, "models/" + this.path + ".json")
+    }
+
+    private fun ResourceLocation.blockState(): ResourceLocation {
+        return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
+    }
+
+    private fun loadBlockStates(block: Block) {
+        val blockStateJson = assetsManager[block.resourceLocation.blockState()].readJsonObject()
+
+        val model = RootModel(this, blockStateJson) ?: return
+
+
+        for (state in block.states) {
+            state.blockModel = model.getModelForState(state).bake(renderWindow).unsafeCast()
+        }
+    }
+
+    fun loadBlockModel(name: ResourceLocation): GenericUnbakedModel {
         unbakedBlockModels[name]?.let { return it.unsafeCast() }
-        val data = data ?: modelJsons[name] ?: error("Can not find json: $name")
+        val data = assetsManager[name.model()].readJsonObject()
 
         val parent = data["parent"]?.toResourceLocation()?.let { loadBlockModel(it) }
 
@@ -87,9 +73,9 @@ class ModelLoader(
         return model
     }
 
-    private fun loadItemModel(name: ResourceLocation, data: Map<String, Any>? = null): GenericUnbakedModel {
+    fun loadItemModel(name: ResourceLocation): GenericUnbakedModel {
         unbakedBlockModels[name]?.let { return it.unsafeCast() }
-        val data = data ?: modelJsons[name] ?: error("Can not find json: $name")
+        val data = assetsManager[name.model()].readJsonObject()
 
         val parent = data["parent"]?.toResourceLocation()?.let { loadItemModel(it) }
 
@@ -99,47 +85,17 @@ class ModelLoader(
         return model
     }
 
-    private fun loadModels() {
-        for ((name, data) in modelJsons) {
-            if (name.path.startsWith("block/")) {
-                loadBlockModel(name, data)
-            } else if (name.path.startsWith("item/")) {
-                loadItemModel(name, data)
-            } else {
-                TODO("Unknown block model type: $name")
-            }
-        }
-    }
-
-    private fun loadBlockStates() {
-        for ((name, data) in blockStateJsons) {
-            val model = RootModel(unbakedBlockModels, data) ?: continue
-            unbakedBlockStateModels[name] = model
-        }
-    }
-
-    private fun bakeModels() {
-        for ((name, model) in unbakedBlockStateModels) {
-            val block = registry.blockRegistry[name] ?: continue
-
-            for (state in block.states) {
-                state.blockModel = model.getModelForState(state).bake(renderWindow).unsafeCast()
-            }
-        }
-    }
-
     fun load() {
-        loadJsons()
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loaded ${blockStateJsons.size} block states and ${modelJsons.size} model jsons!" }
-
-        loadModels()
+        // ToDo: Optimize performance
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
+        for (block in registry.blockRegistry) {
+            loadBlockStates(block)
+        }
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
+        for (item in registry.itemRegistry) {
+            loadItemModel(item.resourceLocation.prefix("item/"))
+        }
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading unbaked models!" }
-
-        loadBlockStates()
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading block states!" }
-
-        bakeModels()
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done baking models!" }
 
         cleanup()
     }

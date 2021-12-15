@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 
 class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
     override var parent: AbstractRegistry<BlockState?>? = null
@@ -30,8 +29,8 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
             return value
         }
 
-    override fun iterator(): Iterator<BlockState> {
-        return idMap.toSynchronizedMap().values.iterator()
+    override fun noParentIterator(): Iterator<BlockState?> {
+        return idMap.values.iterator()
     }
 
     override fun clear() {

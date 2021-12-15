@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.player.tab
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.PlayerProperty
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.KUtil.nullCompare
@@ -24,7 +24,7 @@ data class TabListItem(
     var ping: Int = -1,
     var gamemode: Gamemodes = Gamemodes.SURVIVAL,
     var displayName: ChatComponent = ChatComponent.of(name),
-    var properties: Map<String, PlayerProperty> = mutableMapOf(),
+    var properties: PlayerProperties = PlayerProperties(),
     var team: Team? = null,
 ) : Comparable<TabListItem> {
     val tabDisplayName: ChatComponent

@@ -23,4 +23,10 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
     operator fun get(id: Int): T?
 
     fun getId(value: T): Int
+
+    fun noParentIterator(): Iterator<T>
+
+    override fun iterator(): Iterator<T> {
+        return RegistryIterator(this)
+    }
 }

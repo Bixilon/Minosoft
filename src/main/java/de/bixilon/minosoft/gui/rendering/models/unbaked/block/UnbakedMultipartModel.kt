@@ -2,11 +2,10 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.MultipartBakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
-import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -14,10 +13,10 @@ import glm_.vec3.Vec3i
 import java.util.*
 
 class UnbakedMultipartModel(
-    val models: Set<UnbakedBlockStateModel>,
-) : UnbakedModel {
+    val models: Set<AbstractUnbakedBlockModel>,
+) : AbstractUnbakedBlockModel {
 
-    override fun bake(renderWindow: RenderWindow): BakedModel {
+    override fun bake(renderWindow: RenderWindow): BakedBlockModel {
         val baked: Array<BakedBlockModel?> = arrayOfNulls(this.models.size)
         val sizes: Array<MutableList<AbstractFaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
         var particleTexture: AbstractTexture? = null

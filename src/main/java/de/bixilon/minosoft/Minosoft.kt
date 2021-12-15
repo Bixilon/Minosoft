@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft
 
+import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
+import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.data.assets.JarAssetsManager
-import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.language.LanguageManager.Companion.load
 import de.bixilon.minosoft.data.language.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -49,7 +49,7 @@ import de.bixilon.minosoft.util.task.worker.tasks.Task
 
 object Minosoft {
     val MAIN_THREAD: Thread = Thread.currentThread()
-    val MINOSOFT_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minosoft"))
+    val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
@@ -57,6 +57,7 @@ object Minosoft {
     fun main(args: Array<String>) {
         CommandLineArguments.parse(args)
         Util.initUtilClasses()
+        MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft" }
         if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
@@ -69,7 +70,7 @@ object Minosoft {
 
         taskWorker += Task(identifier = StartupTasks.LOAD_VERSIONS, priority = ThreadPool.HIGH, executor = {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
-            Versions.loadAvailableVersions(MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/versions.json")))
+            Versions.load()
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Versions loaded!" }
         })
 
@@ -90,7 +91,7 @@ object Minosoft {
             val language = ErosProfileManager.selected.general.language
             ErosProfileManager.selected.general::language.profileWatch(this, true) {
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-                LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
+                LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, MINOSOFT_ASSETS_MANAGER, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
             }
         })
@@ -98,7 +99,7 @@ object Minosoft {
         taskWorker += Task(identifier = StartupTasks.LOAD_DEFAULT_REGISTRIES, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
 
-            Resources.load()
+            AssetsVersionProperties.load()
             DefaultRegistries.load()
 
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Default registries loaded!" }
@@ -121,6 +122,8 @@ object Minosoft {
 
             Util.forceClassInit(Eros::class.java)
         }
+        taskWorker += Task(identifier = StartupTasks.LOAD_YGGDRASIL, executor = { YggdrasilUtil.load() })
+
 
 
         taskWorker.work(START_UP_LATCH)

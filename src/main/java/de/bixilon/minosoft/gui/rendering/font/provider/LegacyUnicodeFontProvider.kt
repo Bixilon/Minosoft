@@ -30,7 +30,7 @@ class LegacyUnicodeFontProvider(
 
     init {
         val template = data["template"].unsafeCast<String>()
-        val sizes = renderWindow.connection.assetsManager.readAssetAsStream(data["sizes"].toResourceLocation())
+        val sizes = renderWindow.connection.assetsManager[data["sizes"].toResourceLocation()]
 
         var char = '\u0000'
         for (page in 0 until UNICODE_PAGES) {

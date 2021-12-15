@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "definitions": {
+    "hash": {
+      "type": "string",
+      "pattern": "[0-9a-f]{40}"
+    }
+  },
+  "patternProperties": {
+    "": {
+      "type": "object",
+      "properties": {
+        "index_version": {
+          "type": "string",
+          "pattern": "\\d+\\.\\d{1,2}"
+        },
+        "index_hash": {
+          "$ref": "#/definitions/hash"
+        },
+        "client_jar_hash": {
+          "$ref": "#/definitions/hash"
+        },
+        "jar_assets_hash": {
+          "$ref": "#/definitions/hash"
+        },
+        "pixlyzer_hash": {
+          "$ref": "#/definitions/hash"
+        }
+      },
+      "required": [
+        "index_version",
+        "index_hash",
+        "client_jar_hash",
+        "jar_assets_hash",
+        "pixlyzer_hash"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

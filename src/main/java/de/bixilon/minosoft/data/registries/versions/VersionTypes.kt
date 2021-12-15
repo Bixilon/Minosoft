@@ -22,7 +22,7 @@ enum class VersionTypes {
         private val SNAPSHOT_DETECT_REGEX = "(\\d{2}w\\d{2})[a-f]|(1.\\d{1,2}(.\\d+)?-?(rc|pre)\\d*)".toRegex()
 
         @Deprecated(message = "Should be saved in the versions.json")
-        operator fun get(version: Version): VersionTypes {
+        operator fun get(version: de.bixilon.minosoft.data.registries.versions.Version): VersionTypes {
             if (SNAPSHOT_DETECT_REGEX.matches(version.name)) {
                 return SNAPSHOT
             }

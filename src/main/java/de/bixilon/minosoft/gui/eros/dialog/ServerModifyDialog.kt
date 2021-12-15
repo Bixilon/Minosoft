@@ -75,7 +75,7 @@ class ServerModifyDialog(
     private fun refreshVersions() {
         val selected = forcedVersionFX.selectionModel.selectedItem
         forcedVersionFX.items.clear()
-        for (version in Versions.VERSION_ID_MAP.values) {
+        for (version in Versions) {
             if (version.type == VersionTypes.RELEASE && !showReleasesFX.isSelected) {
                 continue
             }
@@ -85,14 +85,14 @@ class ServerModifyDialog(
             forcedVersionFX.items += version
         }
 
-        forcedVersionFX.items += Versions.AUTOMATIC_VERSION
+        forcedVersionFX.items += Versions.AUTOMATIC
 
         forcedVersionFX.items.sortByDescending { it.sortingId }
 
         if (forcedVersionFX.items.contains(selected)) {
             forcedVersionFX.selectionModel.select(selected)
         } else {
-            forcedVersionFX.selectionModel.select(Versions.AUTOMATIC_VERSION)
+            forcedVersionFX.selectionModel.select(Versions.AUTOMATIC)
         }
     }
 
@@ -135,7 +135,7 @@ class ServerModifyDialog(
                     super.updateItem(version, empty)
                     version ?: return
 
-                    text = if (version == Versions.AUTOMATIC_VERSION) {
+                    text = if (version == Versions.AUTOMATIC) {
                         Minosoft.LANGUAGE_MANAGER.translate(VERSION_AUTOMATIC).message
                     } else {
                         "${version.name} (${version.type.name.lowercase()})"
@@ -146,12 +146,12 @@ class ServerModifyDialog(
         refreshVersions()
 
         if (server == null) {
-            forcedVersionFX.selectionModel.select(Versions.AUTOMATIC_VERSION)
+            forcedVersionFX.selectionModel.select(Versions.AUTOMATIC)
             // add
             descriptionFX.text = ADD_DESCRIPTION
             modifyServerButtonFX.ctext = ADD_UPDATE_BUTTON
         } else {
-            forcedVersionFX.selectionModel.select(server.forcedVersion ?: Versions.AUTOMATIC_VERSION)
+            forcedVersionFX.selectionModel.select(server.forcedVersion ?: Versions.AUTOMATIC)
             descriptionFX.text = EDIT_DESCRIPTION
             modifyServerButtonFX.ctext = EDIT_UPDATE_BUTTON
 
@@ -173,7 +173,7 @@ class ServerModifyDialog(
         if (modifyServerButtonFX.isDisable) {
             return
         }
-        val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC_VERSION).decide(null) { forcedVersionFX.selectionModel.selectedItem }
+        val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC).decide(null) { forcedVersionFX.selectionModel.selectedItem }
         DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion, profiles) }
         stage.close()
     }

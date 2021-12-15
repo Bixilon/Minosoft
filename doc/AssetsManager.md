@@ -1,0 +1,36 @@
+- Not \infin files in objects folder (no jar extraction)
+- Assets per version
+- zstd compression (reminder: pixlyzer is already in mbf format (probably zstd compressed))
+- eros: Download/progress dialog
+- Features (like disable audio)
+- Audio: download on demand?
+- Save as hash (do not save duplicated)
+- GUI assets manager (pre download assets, show downloaded versions; remove version data)
+- Assets verification (with size, hash, download missing ones)
+- Resource packs (+ reloading)
+- Show/calculate size of assets
+- minecraft skins, capes
+- server resource packs
+- integrated data as "optional resource pack"
+
+## Assets
+
+- Readable via resource location
+- Asset types
+   - Assets index (all of them are optional)
+      - ~~icons~~
+      - language files (only download on purpose)
+      - sounds (e.g. if music is disabled: don't download music)
+      - textures (almost none, just the panorama)
+      - ~~realms data~~ (separate namespace, all ignorable)
+   - Jar assets (pretty much all of them are mandatory)
+      - block states
+      - font
+      - models
+      - particles (models)
+      - ~~shader~~
+      - texts
+      - textures
+      - pack.png
+   - PixLyzer assets
+      - mbf format, by hash, already compressed

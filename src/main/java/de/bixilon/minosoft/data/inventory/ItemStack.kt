@@ -254,20 +254,20 @@ class ItemStack(
                 val enchantmentList: MutableList<Map<String, Any>> = mutableListOf()
                 for ((enchantment, level) in enchantments) {
                     val enchantmentTag: MutableMap<String, Any> = mutableMapOf()
-                    enchantmentTag[ENCHANTMENT_ID_TAG] = if (connection.version.isFlattened()) {
+                    enchantmentTag[ENCHANTMENT_ID_TAG] = if (connection.version.flattened) {
                         enchantment.resourceLocation.full
                     } else {
                         connection.registries.enchantmentRegistry.getId(enchantment)
                     }
 
-                    enchantmentTag[ENCHANTMENT_LEVEL_TAG] = if (connection.version.isFlattened()) {
+                    enchantmentTag[ENCHANTMENT_LEVEL_TAG] = if (connection.version.flattened) {
                         level
                     } else {
                         level.toShort()
                     }
                     enchantmentList += enchantmentTag
                 }
-                if (connection.version.isFlattened()) {
+                if (connection.version.flattened) {
                     nbt[ENCHANTMENT_FLATTENING_TAG] = enchantmentList
                 } else {
                     nbt[ENCHANTMENT_PRE_FLATTENING_TAG] = enchantmentList

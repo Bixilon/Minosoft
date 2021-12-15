@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.assets.AssetsManager
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL10.AL_FORMAT_MONO16
 import org.lwjgl.openal.AL10.AL_FORMAT_STEREO16
@@ -45,7 +45,7 @@ class SoundData(
     companion object {
 
         operator fun invoke(assetsManager: AssetsManager, sound: Sound): SoundData {
-            val buffer = assetsManager.readByteAsset(sound.path)
+            val buffer = ByteBuffer.wrap(assetsManager[sound.path].readAllBytes())
 
             val error = BufferUtils.createIntBuffer(1)
             val vorbis = stb_vorbis_open_memory(buffer, error, null)

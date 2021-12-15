@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.player.PlayerProperty
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -30,7 +30,7 @@ class RemotePlayerEntity(
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
-    properties: Map<String, PlayerProperty> = mapOf(),
+    properties: PlayerProperties = PlayerProperties(),
     tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : PlayerEntity(connection, entityType, position, rotation, name, properties, tabListItem) {
 

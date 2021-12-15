@@ -24,7 +24,7 @@ interface CardFactory<T : ListCell<*>> {
     fun build(): T {
         val loader = FXMLLoader()
 
-        loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(LAYOUT))
+        loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER[LAYOUT])
 
         return loader.getController()
     }
