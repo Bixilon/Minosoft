@@ -32,11 +32,13 @@ data class SoundType(
             totalWeight += sound.weight
         }
 
-        check(totalWeight >= 1) { "Weight must be >= 1" }
         this.totalWeight = totalWeight
     }
 
-    fun getSound(random: Random): Sound {
+    fun getSound(random: Random): Sound? {
+        if (sounds.isEmpty()) {
+            return null
+        }
         var weightLeft = abs(random.nextLong() % totalWeight)
 
         for (sound in sounds) {

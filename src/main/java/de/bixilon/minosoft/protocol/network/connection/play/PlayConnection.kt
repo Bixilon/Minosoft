@@ -204,6 +204,7 @@ class PlayConnection(
                     if (this::randomTickTask.isInitialized) {
                         TimeWorker.removeTask(randomTickTask)
                     }
+                    assetsManager.unload()
                     state = PlayConnectionStates.DISCONNECTED
                     ACTIVE_CONNECTIONS -= this
                 }

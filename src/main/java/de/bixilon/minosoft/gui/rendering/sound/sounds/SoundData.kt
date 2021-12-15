@@ -45,7 +45,10 @@ class SoundData(
     companion object {
 
         operator fun invoke(assetsManager: AssetsManager, sound: Sound): SoundData {
-            val buffer = ByteBuffer.wrap(assetsManager[sound.path].readAllBytes())
+            val vorbisData = assetsManager[sound.path].readAllBytes()
+            val buffer = BufferUtils.createByteBuffer(vorbisData.size)
+            buffer.put(vorbisData)
+            buffer.rewind()
 
             val error = BufferUtils.createIntBuffer(1)
             val vorbis = stb_vorbis_open_memory(buffer, error, null)
@@ -73,7 +76,7 @@ class SoundData(
                 channels = channels,
                 sampleRate = sampleRate,
                 samplesLength = samplesLength,
-                sampleSeconds = sampleSeconds
+                sampleSeconds = sampleSeconds,
             )
         }
     }

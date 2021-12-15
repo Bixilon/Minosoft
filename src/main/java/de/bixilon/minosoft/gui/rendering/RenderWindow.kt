@@ -225,8 +225,6 @@ class RenderWindow(
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Unloading assets manager" }
-        connection.assetsManager.unload()
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
         initialized = true
         latch.dec()

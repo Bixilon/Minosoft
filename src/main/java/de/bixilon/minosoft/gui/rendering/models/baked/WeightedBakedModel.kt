@@ -35,15 +35,17 @@ class WeightedBakedModel(
             totalWeight += weight
         }
 
-        check(totalWeight > 0) { "Weight must be >= 1" }
         this.totalWeight = totalWeight
     }
 
     override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
-        return getModel(random).getTouchingFaceProperties(random, direction)
+        return getModel(random)?.getTouchingFaceProperties(random, direction) ?: arrayOf()
     }
 
-    private fun getModel(random: Random): BakedBlockModel {
+    private fun getModel(random: Random): BakedBlockModel? {
+        if (models.isEmpty()) {
+            return null
+        }
         var weightLeft = abs(random.nextLong() % totalWeight)
 
         for ((model, weight) in models) {
@@ -57,12 +59,12 @@ class WeightedBakedModel(
     }
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
-        return getModel(random).singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints)
+        return getModel(random)?.singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints) ?: false
     }
 
     override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
         random.setSeed(VecUtil.generatePositionHash(blockPosition.x, blockPosition.y, blockPosition.z))
-        return getModel(random).getParticleTexture(random, blockPosition)
+        return getModel(random)?.getParticleTexture(random, blockPosition)
     }
 
 }
