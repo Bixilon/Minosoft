@@ -22,4 +22,8 @@ uniform sampler2D uTexture;
 
 void main() {
     foutColor = texture(uTexture, finUV);
+
+    if (foutColor.a == 0.0f) {
+        discard;
+    }
 }

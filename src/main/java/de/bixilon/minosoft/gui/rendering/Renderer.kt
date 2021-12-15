@@ -19,8 +19,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 interface Renderer {
     val renderWindow: RenderWindow
     val renderSystem: RenderSystem
-    val framebuffer: Framebuffer
+    val framebuffer: Framebuffer?
         get() = renderWindow.framebufferManager.default.framebuffer
+    val post: Boolean
+        get() = false
 
     fun init() = Unit
 

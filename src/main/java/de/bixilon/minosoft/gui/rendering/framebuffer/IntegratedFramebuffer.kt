@@ -29,6 +29,7 @@ interface IntegratedFramebuffer : Drawable {
 
     override fun draw() {
         renderWindow.renderSystem.framebuffer = null
+        renderWindow.renderSystem.reset(blending = true)
         framebuffer.bindTexture()
         shader.use()
         mesh.draw()

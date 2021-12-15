@@ -22,7 +22,7 @@ uniform mat4 uSkyViewProjectionMatrix;
 uniform vec4 uSkyColor;
 
 void main() {
-    gl_Position = (uSkyViewProjectionMatrix * vec4(vinPosition, 1.0)).xyww;
+    gl_Position = uSkyViewProjectionMatrix * vec4(vinPosition, 1.0);
 
     finColor = uSkyColor;
 }

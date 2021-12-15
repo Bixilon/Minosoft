@@ -5,7 +5,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.defaultf.DefaultFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 
 class FramebufferManager(
@@ -34,7 +33,6 @@ class FramebufferManager(
 
     override fun draw() {
         default.draw()
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER, IntegratedBufferTypes.STENCIL_BUFFER)
         gui.draw()
     }
 }

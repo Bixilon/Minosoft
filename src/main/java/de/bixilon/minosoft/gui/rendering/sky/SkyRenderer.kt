@@ -22,9 +22,9 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.CustomDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
@@ -48,6 +48,8 @@ class SkyRenderer(
     private lateinit var sunTexture: AbstractTexture
     private var updateSun: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
+    override val framebuffer: Framebuffer? = null
+    override val post: Boolean = true
 
 
     override fun init() {
@@ -135,13 +137,13 @@ class SkyRenderer(
     }
 
     private fun drawSkybox() {
+        renderSystem.setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO) // ToDo
         checkSkyColor()
         skyboxShader.use()
         skyboxMesh.draw()
     }
 
     override fun drawCustom() {
-        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
         drawSkybox()
         drawSun()
     }

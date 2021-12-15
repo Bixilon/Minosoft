@@ -345,25 +345,12 @@ class RenderWindow(
                 renderSystem.framebuffer = renderer.framebuffer
                 renderer.prepareDraw()
             }
+            renderAll(rendererList, false)
 
-            for (phase in RenderPhases.VALUES) { // ToDo: Move this up after frame buffers
-                for (renderer in rendererList) {
-                    if (renderer is SkipAll && renderer.skipAll) {
-                        continue
-                    }
-                    if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
-                        continue
-                    }
-                    if (phase.invokeSkip(renderer)) {
-                        continue
-                    }
-                    renderSystem.framebuffer = renderer.framebuffer
-                    phase.invokeSetup(renderer)
-                    phase.invokeDraw(renderer)
-                }
-            }
-            framebufferManager.draw()
             renderSystem.framebuffer = null
+            framebufferManager.draw()
+            renderAll(rendererList, true)
+
             renderSystem.reset() // Reset to enable depth mask, etc again
 
             renderStats.endDraw()
@@ -417,5 +404,24 @@ class RenderWindow(
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
         return rendererMap[renderer.RESOURCE_LOCATION].unsafeCast()
+    }
+
+    private fun renderAll(rendererList: Collection<Renderer>, post: Boolean) {
+        for (phase in RenderPhases.VALUES) {
+            for (renderer in rendererList) {
+                if ((renderer.post != post) || renderer is SkipAll && renderer.skipAll) {
+                    continue
+                }
+                if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
+                    continue
+                }
+                if (phase.invokeSkip(renderer)) {
+                    continue
+                }
+                renderSystem.framebuffer = renderer.framebuffer
+                phase.invokeSetup(renderer)
+                phase.invokeDraw(renderer)
+            }
+        }
     }
 }

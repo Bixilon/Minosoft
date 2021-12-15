@@ -19,6 +19,6 @@ layout (location = 1) in vec2 vinUV;
 out vec2 finUV;
 
 void main() {
-    gl_Position = vec4(vinPosition, 0.0f, 1.0f);
+    gl_Position = vec4(vinPosition, -0.1f, 1.0f);
     finUV = vinUV;
 }
