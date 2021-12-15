@@ -59,12 +59,12 @@ class IndexAssetsManager(
             mapOf(
                 "fullHash" to indexHash,
                 "filename" to "$assetsVersion.json",
-            ))).second, Jackson.JSON_MAP_TYPE)
+            )), hashType = FileAssetsUtil.HashTypes.SHA1).second, Jackson.JSON_MAP_TYPE)
     }
 
     fun verifyAsset(hash: String) {
         val file = File(FileAssetsUtil.getPath(hash))
-        if (FileAssetsUtil.verifyAsset(hash, file, verify)) {
+        if (FileAssetsUtil.verifyAsset(hash, file, verify, hashType = FileAssetsUtil.HashTypes.SHA1)) {
             return
         }
         val url = Util.formatString(profile.source.minecraftResources,
@@ -73,7 +73,7 @@ class IndexAssetsManager(
                 "fullHash" to hash,
             ))
         Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading asset $url" }
-        val downloadedHash = FileAssetsUtil.downloadAsset(url)
+        val downloadedHash = FileAssetsUtil.downloadAsset(url, hashType = FileAssetsUtil.HashTypes.SHA1)
         if (downloadedHash != hash) {
             throw IOException("Verification of asset $hash failed!")
         }
@@ -82,7 +82,7 @@ class IndexAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        var assets = FileUtil.saveReadFile(FileAssetsUtil.getPath(indexHash))?.readJsonObject() ?: downloadAssetsIndex()
+        var assets = FileUtil.safeReadFile(FileAssetsUtil.getPath(indexHash))?.readJsonObject() ?: downloadAssetsIndex()
 
         assets["objects"].let { assets = it.asCompound() }
         val tasks = CountUpAndDownLatch(0)

@@ -29,11 +29,11 @@ import java.util.zip.ZipInputStream
 
 object FileUtil {
 
-    fun saveReadFile(path: String, compressed: Boolean = true): InputStream? {
-        return saveReadFile(File(path), compressed)
+    fun safeReadFile(path: String, compressed: Boolean = true): InputStream? {
+        return safeReadFile(File(path), compressed)
     }
 
-    fun saveReadFile(file: File, compressed: Boolean = true): InputStream? {
+    fun safeReadFile(file: File, compressed: Boolean = true): InputStream? {
         if (!file.exists()) {
             return null
         }

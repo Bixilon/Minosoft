@@ -22,7 +22,7 @@ object FaviconManager {
             return null
         }
 
-    fun Server.saveFavicon(favicon: ByteArray?, faviconHash: String = Util.sha1(favicon)) {
+    fun Server.saveFavicon(favicon: ByteArray?, faviconHash: String = Util.sha256(favicon)) {
         if (this.faviconHash == faviconHash) {
             return
         }

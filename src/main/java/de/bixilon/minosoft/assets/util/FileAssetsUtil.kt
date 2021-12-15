@@ -18,6 +18,7 @@ import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil.isHexString
 import de.bixilon.minosoft.util.Util
 import java.io.*
 import java.net.URL
@@ -29,18 +30,21 @@ object FileAssetsUtil {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "assets/objects/"
 
     fun getPath(hash: String): String {
+        if (!hash.isHexString) {
+            throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?")
+        }
         return BASE_PATH + hash.substring(0, 2) + "/" + hash
     }
 
-    fun downloadAsset(url: String, compress: Boolean = true): String {
-        return saveAndGet(URL(url).openStream(), compress, false).first
+    fun downloadAsset(url: String, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
+        return saveAndGet(URL(url).openStream(), compress, false, hashType).first
     }
 
-    fun downloadAndGetAsset(url: String, compress: Boolean = true): Pair<String, ByteArray> {
-        return saveAndGet(URL(url).openStream(), compress, true)
+    fun downloadAndGetAsset(url: String, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): Pair<String, ByteArray> {
+        return saveAndGet(URL(url).openStream(), compress, true, hashType)
     }
 
-    fun saveAndGet(stream: InputStream, compress: Boolean = true, get: Boolean = true): Pair<String, ByteArray> {
+    fun saveAndGet(stream: InputStream, compress: Boolean = true, get: Boolean = true, hashType: HashTypes = HashTypes.SHA256): Pair<String, ByteArray> {
         var tempFile: File
         do {
             tempFile = File(RunConfiguration.TEMPORARY_FOLDER + Util.generateRandomString(32))
@@ -56,7 +60,7 @@ object FileAssetsUtil {
         } else {
             ByteArrayOutputStream(0)
         }
-        val digest = MessageDigest.getInstance("SHA-1")
+        val digest = hashType.createDigest()
         var output: OutputStream = FileOutputStream(tempFile)
         if (compress) {
             output = ZstdOutputStream(output)
@@ -97,16 +101,16 @@ object FileAssetsUtil {
         return Pair(hash, returnStream.toByteArray())
     }
 
-    fun saveAsset(stream: InputStream, compress: Boolean = true): String {
-        return saveAndGet(stream, compress, false).first
+    fun saveAsset(stream: InputStream, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
+        return saveAndGet(stream, compress, false, hashType).first
     }
 
-    fun saveAsset(data: ByteArray, compress: Boolean = true): String {
-        return saveAndGet(ByteArrayInputStream(data), compress, false).first
+    fun saveAsset(data: ByteArray, compress: Boolean = true, hashType: HashTypes = HashTypes.SHA256): String {
+        return saveAndGet(ByteArrayInputStream(data), compress, false, hashType).first
     }
 
-    fun saveAndGetAsset(data: ByteArray, compress: Boolean = true): Pair<String, ByteArray> {
-        return saveAndGet(ByteArrayInputStream(data), compress, false)
+    fun saveAndGetAsset(data: ByteArray, hashType: HashTypes = HashTypes.SHA256, compress: Boolean = true): Pair<String, ByteArray> {
+        return saveAndGet(ByteArrayInputStream(data), compress, false, hashType)
     }
 
     fun String.toAssetName(verifyPrefix: Boolean = true): ResourceLocation? {
@@ -120,7 +124,7 @@ object FileAssetsUtil {
         return ResourceLocation(split[0], split[1])
     }
 
-    fun verifyAsset(hash: String, file: File = File(getPath(hash)), verify: Boolean, compress: Boolean = true): Boolean {
+    fun verifyAsset(hash: String, file: File = File(getPath(hash)), verify: Boolean, hashType: HashTypes = HashTypes.SHA256, compress: Boolean = true): Boolean {
         if (!file.exists()) {
             return false
         }
@@ -137,7 +141,7 @@ object FileAssetsUtil {
         }
 
         try {
-            val digest = MessageDigest.getInstance("SHA-1")
+            val digest = hashType.createDigest()
 
             var input: InputStream = FileInputStream(file)
             if (compress) {
@@ -161,6 +165,19 @@ object FileAssetsUtil {
         } catch (exception: Throwable) {
             file.delete()
             return false
+        }
+    }
+
+    enum class HashTypes(
+        val digestName: String,
+        val length: Int,
+    ) {
+        SHA1("SHA-1", 40),
+        SHA256("SHA-256", 64),
+        ;
+
+        fun createDigest(): MessageDigest {
+            return MessageDigest.getInstance(digestName)
         }
     }
 }

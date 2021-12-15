@@ -49,13 +49,13 @@ class JarAssetsManager(
         check(!loaded) { "Already loaded!" }
 
         val jarAssetFile = File(FileAssetsUtil.getPath(jarAssetsHash))
-        if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify)) {
+        if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify, FileAssetsUtil.HashTypes.SHA1)) {
             val jarAssets = FileUtil.readFile(jarAssetFile).readArchive()
             for ((path, data) in jarAssets) {
                 this.jarAssets[path.removePrefix("assets/" + ProtocolDefinition.DEFAULT_NAMESPACE + "/")] = data
             }
         } else {
-            var clientJar = FileUtil.saveReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
+            var clientJar = FileUtil.safeReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
             if (clientJar == null) {
                 val downloaded = FileAssetsUtil.downloadAndGetAsset(Util.formatString(profile.source.launcherPackages, mapOf(
                     "fullHash" to clientJarHash,

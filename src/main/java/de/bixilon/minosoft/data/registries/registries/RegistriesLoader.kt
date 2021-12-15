@@ -39,7 +39,7 @@ object RegistriesLoader {
                 "hashPrefix" to hash.substring(0, 2),
                 "fullHash" to hash,
             )
-        ), false)
+        ), false, hashType = FileAssetsUtil.HashTypes.SHA1)
         if (savedHash.first != hash) {
             throw IllegalStateException("Data mismatch, expected $hash, got ${savedHash.first}")
         }

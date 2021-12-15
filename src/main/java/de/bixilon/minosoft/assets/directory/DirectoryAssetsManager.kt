@@ -78,6 +78,6 @@ class DirectoryAssetsManager(
         if (path !in assets) {
             return null
         }
-        return FileUtil.saveReadFile(path.filePath, false)
+        return FileUtil.safeReadFile(path.filePath, false)
     }
 }

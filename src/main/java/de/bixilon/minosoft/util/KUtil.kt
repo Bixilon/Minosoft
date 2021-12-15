@@ -564,4 +564,14 @@ object KUtil {
     fun URL.check() {
         check(this.protocol == "http" || this.protocol == "https") { "Url is not a web address" }
     }
+
+    val String.isHexString: Boolean
+        get() {
+            for (digit in toCharArray()) {
+                if (digit !in '0'..'9' && digit !in 'a'..'f') {
+                    return false
+                }
+            }
+            return true
+        }
 }
