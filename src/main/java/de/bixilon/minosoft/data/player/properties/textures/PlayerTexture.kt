@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.data.player.properties.textures
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.util.KUtil.check
@@ -8,6 +9,7 @@ import java.net.URL
 open class PlayerTexture(
     val url: URL,
 ) {
+    @JsonIgnore
     var data: ByteArray? = null
         private set
 
@@ -22,7 +24,8 @@ open class PlayerTexture(
             "textures.minecraft.net" -> url.file.split("/").last()
             else -> TODO("Can not get texture identifier!")
         }
-        val file = FileUtil.safeReadFile(FileAssetsUtil.getPath(sha256), true)?.let {
+
+        FileUtil.safeReadFile(FileAssetsUtil.getPath(sha256), true)?.let {
             val data = it.readAllBytes()
             this.data = data
             return data

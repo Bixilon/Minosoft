@@ -32,16 +32,16 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongRece
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.PixelImageView
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.Image
-import javafx.scene.image.ImageView
 import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
 class ServerCardController : AbstractCardController<ServerCard>() {
-    @FXML private lateinit var faviconFX: ImageView
+    @FXML private lateinit var faviconFX: PixelImageView
     @FXML private lateinit var serverNameFX: TextFlow
     @FXML private lateinit var motdFX: TextFlow
     @FXML private lateinit var pingFX: Label

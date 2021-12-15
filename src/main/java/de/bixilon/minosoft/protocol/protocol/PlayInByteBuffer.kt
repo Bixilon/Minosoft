@@ -229,10 +229,11 @@ class PlayInByteBuffer : InByteBuffer {
                 readOptional { readString() }
             }
             when (name) {
-                "textures" -> {
+                PlayerProperties.TEXTURE_PROPERTIES -> {
                     check(textures == null) { "Textures duplicated" }
                     textures = PlayerTextures.of(value, signature ?: throw IllegalArgumentException("Texture data needs to be signed!"))
                 }
+                else -> throw IllegalArgumentException("Unknown player property $name")
             }
         }
         return PlayerProperties(

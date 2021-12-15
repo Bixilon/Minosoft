@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.bixilon.minosoft.util.PixelImageView?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
@@ -79,11 +80,11 @@
                 <rowConstraints>
                     <RowConstraints minHeight="10.0" vgrow="ALWAYS"/>
                 </rowConstraints>
-                <ImageView fx:id="accountImageFX" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                <PixelImageView fx:id="accountImageFX" width="30.0" height="30.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                     <GridPane.margin>
                         <Insets right="5.0"/>
                     </GridPane.margin>
-                </ImageView>
+                </PixelImageView>
                 <Label fx:id="accountNameFX" text="Account" GridPane.columnIndex="1"/>
                 <padding>
                     <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>

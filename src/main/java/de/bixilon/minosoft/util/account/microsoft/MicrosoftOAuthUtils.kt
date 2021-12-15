@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.asUUID
@@ -43,10 +44,12 @@ object MicrosoftOAuthUtils {
         val accessToken = getMinecraftBearerAccessToken(userHash, xstsToken)
         val accountInfo = AccountUtil.getMojangAccountInfo(accessToken)
 
+        val uuid = accountInfo.id.asUUID()
         val account = MicrosoftAccount(
-            uuid = accountInfo.id.asUUID(),
+            uuid = uuid,
             username = accountInfo.name,
             authorizationToken = authorizationToken,
+            properties = PlayerProperties.fetch(uuid),
         )
 
         account.accessToken = accessToken

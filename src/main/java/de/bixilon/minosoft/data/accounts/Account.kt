@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.OfflineAccount
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -35,6 +36,7 @@ abstract class Account(
 ) {
     abstract val id: String
     abstract val type: ResourceLocation
+    abstract val properties: PlayerProperties?
 
     @Transient
     @JsonIgnore

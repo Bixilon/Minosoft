@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.bixilon.minosoft.util.PixelImageView?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
@@ -14,7 +14,7 @@
         <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="NEVER"/>
         </rowConstraints>
-        <ImageView fx:id="faviconFX" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true"/>
+        <PixelImageView fx:id="faviconFX" height="100" width="100"/>
         <GridPane GridPane.columnIndex="1">
             <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="10.0"/>

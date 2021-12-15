@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.accounts.types
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
@@ -37,6 +38,7 @@ class MojangAccount(
     val uuid: UUID,
     val email: String,
     @field:JsonProperty private var accessToken: String,
+    override val properties: PlayerProperties,
 ) : Account(username) {
     @Transient
     private var refreshed: Boolean = false
@@ -115,12 +117,14 @@ class MojangAccount(
 
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang login successful (email=$email)" }
 
+            val uuid = response.body["selectedProfile"].asCompound()["id"].toString().asUUID()
             return MojangAccount(
                 id = response.body["user"].asCompound()["id"].unsafeCast(),
                 username = response.body["selectedProfile"].asCompound()["name"].unsafeCast(),
-                uuid = response.body["selectedProfile"].asCompound()["id"].toString().asUUID(),
+                uuid = uuid,
                 email = email,
                 accessToken = response.body["accessToken"].unsafeCast(),
+                properties = PlayerProperties.fetch(uuid),
             )
         }
     }

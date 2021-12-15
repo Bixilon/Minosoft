@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.data.player.properties.textures
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.module.kotlin.convertValue
 import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.Util
@@ -9,12 +10,12 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 class PlayerTextures(
-    val name: String?,
-    val uuid: UUID?,
-    val date: Date?,
-    val skin: SkinPlayerTexture?,
-    val cape: PlayerTexture?,
-    val elytra: PlayerTexture?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val name: String?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val uuid: UUID?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val date: Date?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val skin: SkinPlayerTexture?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val cape: PlayerTexture?,
+    @JsonInclude(JsonInclude.Include.NON_EMPTY) val elytra: PlayerTexture?,
 ) {
 
     companion object {
