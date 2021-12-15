@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.bixilon.minosoft.util.PixelImageView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.account.AccountCardController">
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" fx:controller="de.bixilon.minosoft.gui.eros.main.account.AccountCardController">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity"/>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
             <ColumnConstraints hgrow="NEVER"/>
         </columnConstraints>
-        <GridPane GridPane.columnIndex="1">
+        <PixelImageView fx:id="avatarFX" height="60.0" width="60.0" pickOnBounds="true">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+        </PixelImageView>
+        <TextFlow fx:id="accountNameFX" style="-fx-font-size: 20;" GridPane.columnIndex="1">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+            <Text text="Account name"/>
+        </TextFlow>
+        <GridPane GridPane.columnIndex="2">
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER"/>
             </columnConstraints>
@@ -31,11 +44,5 @@
                 <Text text="Refreshed"/>
             </TextFlow>
         </GridPane>
-        <TextFlow fx:id="accountNameFX" style="-fx-font-size: 20;">
-            <GridPane.margin>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-            </GridPane.margin>
-            <Text text="Account name"/>
-        </TextFlow>
     </GridPane>
 </HBox>
