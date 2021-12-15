@@ -32,6 +32,7 @@ data class SoundType(
             totalWeight += sound.weight
         }
 
+        check(totalWeight >= 1) { "Weight must be >= 1" }
         this.totalWeight = totalWeight
     }
 

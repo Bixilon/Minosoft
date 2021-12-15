@@ -35,6 +35,7 @@ class WeightedBakedModel(
             totalWeight += weight
         }
 
+        check(totalWeight > 0) { "Weight must be >= 1" }
         this.totalWeight = totalWeight
     }
 
