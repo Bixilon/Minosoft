@@ -574,4 +574,7 @@ object KUtil {
             }
             return true
         }
+
+    val File.slashPath: String
+        get() = absolutePath.replace('\\', '/')
 }

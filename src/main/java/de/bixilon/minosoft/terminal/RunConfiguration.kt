@@ -16,6 +16,7 @@ package de.bixilon.minosoft.terminal
 import com.google.common.base.StandardSystemProperty
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.slashPath
 import de.bixilon.minosoft.util.OSUtil
 import java.io.File
 import java.lang.management.ManagementFactory
@@ -55,7 +56,7 @@ object RunConfiguration {
             // failed creating folder
             throw RuntimeException("Could not create home folder ($homeDir)!")
         }
-        folder.absolutePath + "/"
+        folder.slashPath + "/"
     }
 
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/minosoft/"

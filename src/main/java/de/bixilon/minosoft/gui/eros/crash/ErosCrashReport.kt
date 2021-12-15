@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
+import de.bixilon.minosoft.util.KUtil.slashPath
 import de.bixilon.minosoft.util.KUtil.toStackTrace
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.KUtil.tryCatch
@@ -141,7 +142,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 val crashReportFolder = File(RunConfiguration.HOME_DIRECTORY + "crash-reports")
                 crashReportFolder.mkdirs()
 
-                crashReportPath = "${crashReportFolder.absolutePath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(KUtil.time)}.txt"
+                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(KUtil.time)}.txt"
 
                 val stream = FileOutputStream(crashReportPath)
 

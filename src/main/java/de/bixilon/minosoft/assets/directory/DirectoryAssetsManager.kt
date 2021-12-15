@@ -18,6 +18,7 @@ import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil.slashPath
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
@@ -28,9 +29,10 @@ import java.io.InputStream
  */
 
 class DirectoryAssetsManager(
-    private val basePath: String,
+    basePath: String,
     private val canUnload: Boolean = true,
 ) : AssetsManager {
+    private val basePath = File(basePath).slashPath
     override val namespaces: MutableSet<String> = mutableSetOf()
     private var assets: MutableSet<ResourceLocation> = mutableSetOf()
     override var loaded: Boolean = false
@@ -47,7 +49,7 @@ class DirectoryAssetsManager(
                 scanDirectory(file)
                 continue
             }
-            val path = file.path.removePrefix(basePath).removePrefix("/").toAssetName(false) ?: continue
+            val path = file.slashPath.removePrefix(basePath).removePrefix("/").toAssetName(false) ?: continue
             assets += path
             namespaces += path.namespace
         }

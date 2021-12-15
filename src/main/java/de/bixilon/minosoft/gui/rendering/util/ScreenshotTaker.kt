@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.slashPath
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool
@@ -76,7 +77,7 @@ class ScreenshotTaker(
                         TextComponent(file.name).apply {
                             color = ChatColors.WHITE
                             underline()
-                            clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, "file:${file.absolutePath}")
+                            clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, "file:${file.slashPath}")
                             hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to open")
                         },
                         // "\n",
