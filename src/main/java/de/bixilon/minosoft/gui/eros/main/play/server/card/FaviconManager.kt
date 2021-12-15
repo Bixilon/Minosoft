@@ -35,7 +35,7 @@ object FaviconManager {
             file.delete() // ToDo: Check if other servers are using it
             return
         }
-        val outputStream = ZstdOutputStream(FileOutputStream(file))
+        val outputStream = ZstdOutputStream(FileOutputStream(file), 5)
         outputStream.write(favicon)
         outputStream.close()
 

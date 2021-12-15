@@ -167,8 +167,6 @@ public final class Util {
     }
 
     private static String hash(MessageDigest digest, InputStream inputStream) throws IOException {
-        digest.reset();
-
         byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
         int length;
         while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {

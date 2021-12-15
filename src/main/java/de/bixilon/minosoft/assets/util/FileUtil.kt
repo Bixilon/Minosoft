@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.json.Jackson
 import de.matthiasmann.twl.utils.PNGDecoder
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import org.kamranzafar.jtar.TarInputStream
 import org.lwjgl.BufferUtils
 import java.io.File
 import java.io.FileInputStream
@@ -95,7 +95,7 @@ object FileUtil {
 
     fun InputStream.readArchive(): Map<String, ByteArray> {
         val content: MutableMap<String, ByteArray> = mutableMapOf()
-        val stream = TarArchiveInputStream(this)
+        val stream = TarInputStream(this)
         while (true) {
             val entry = stream.nextEntry ?: break
             content[entry.name] = stream.readAllBytes()

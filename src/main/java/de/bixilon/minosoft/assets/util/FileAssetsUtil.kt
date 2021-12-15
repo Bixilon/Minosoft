@@ -31,7 +31,7 @@ object FileAssetsUtil {
 
     fun getPath(hash: String): String {
         if (!hash.isHexString) {
-            throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?")
+            throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
         }
         return BASE_PATH + hash.substring(0, 2) + "/" + hash
     }
@@ -52,7 +52,7 @@ object FileAssetsUtil {
         tempFile.parentFile.apply {
             mkdirs()
             if (!isDirectory) {
-                throw IllegalStateException("Could not create folder: ${tempFile.parentFile}")
+                throw IllegalStateException("Could not create folder: $this")
             }
         }
         val returnStream = if (get) {
@@ -63,7 +63,7 @@ object FileAssetsUtil {
         val digest = hashType.createDigest()
         var output: OutputStream = FileOutputStream(tempFile)
         if (compress) {
-            output = ZstdOutputStream(output)
+            output = ZstdOutputStream(output, 5)
         }
 
         val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)

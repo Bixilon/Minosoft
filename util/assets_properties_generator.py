@@ -28,7 +28,7 @@ SKIP_COMPILE = True
 
 
 def generateJarAssets(versionId, assetsProperties):
-    process = subprocess.Popen(r'mvn -q exec:java -Dexec.mainClass="de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator" -Dexec.args="\"%s\" \"%s\""' % (versionId, assetsProperties["client_jar_hash"]), shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(r'mvn -e -q exec:java -Dexec.mainClass="de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator" -Dexec.args="\"%s\" \"%s\""' % (versionId, assetsProperties["client_jar_hash"]), shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     exitCode = process.wait()
     if exitCode != 0:
         print(process.stdout.read().decode('utf-8'))

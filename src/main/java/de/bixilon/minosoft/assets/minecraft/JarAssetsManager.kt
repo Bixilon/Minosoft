@@ -25,8 +25,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
+import org.kamranzafar.jtar.TarEntry
+import org.kamranzafar.jtar.TarHeader
+import org.kamranzafar.jtar.TarOutputStream
 import java.io.*
 
 /**
@@ -49,7 +50,7 @@ class JarAssetsManager(
         check(!loaded) { "Already loaded!" }
 
         val jarAssetFile = File(FileAssetsUtil.getPath(jarAssetsHash))
-        if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify, FileAssetsUtil.HashTypes.SHA1)) {
+        if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify)) {
             val jarAssets = FileUtil.readFile(jarAssetFile).readArchive()
             for ((path, data) in jarAssets) {
                 this.jarAssets[path.removePrefix("assets/" + ProtocolDefinition.DEFAULT_NAMESPACE + "/")] = data
@@ -60,14 +61,14 @@ class JarAssetsManager(
                 val downloaded = FileAssetsUtil.downloadAndGetAsset(Util.formatString(profile.source.launcherPackages, mapOf(
                     "fullHash" to clientJarHash,
                     "filename" to "client.jar",
-                )), false)
+                )), false, FileAssetsUtil.HashTypes.SHA1)
                 check(downloaded.first == clientJarHash) { "Minecraft client.jar verification failed!" }
                 clientJar = ByteArrayInputStream(downloaded.second).readZipArchive()
             }
 
             val buildingJarAsset: MutableMap<String, ByteArray> = mutableMapOf()
-            val byteOutputStream = ByteArrayOutputStream(5_000_0000) // ToDo: Memory optimize this
-            val tarOutputStream = TarArchiveOutputStream(byteOutputStream)
+            val byteOutputStream = ByteArrayOutputStream(10_000_0000) // ToDo: Memory optimize this
+            val tarOutputStream = TarOutputStream(byteOutputStream)
             for ((filename, data) in clientJar) {
                 if (!filename.startsWith("assets/")) {
                     continue
@@ -89,17 +90,16 @@ class JarAssetsManager(
                 if (!required) {
                     continue
                 }
-                val entry = TarArchiveEntry(filename)
-                entry.size = data.size.toLong()
-                tarOutputStream.putArchiveEntry(entry)
+                buildingJarAsset[cutFilename] = data
+                tarOutputStream.putNextEntry(TarEntry(TarHeader.createHeader(filename, data.size.toLong(), 0L, false, 777)))
                 tarOutputStream.write(data)
-                tarOutputStream.closeArchiveEntry()
+                tarOutputStream.flush()
             }
             tarOutputStream.close()
             val savedHash = FileAssetsUtil.saveAsset(byteOutputStream.toByteArray())
             File(FileAssetsUtil.getPath(clientJarHash)).delete()
             if (savedHash != jarAssetsHash) {
-                throw InvalidAssetException("".toResourceLocation(), savedHash, jarAssetsHash)
+                throw InvalidAssetException("jar_assets".toResourceLocation(), savedHash, jarAssetsHash)
             }
 
             this.jarAssets = buildingJarAsset

@@ -435,9 +435,9 @@
             <version>2.13.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <groupId>org.kamranzafar</groupId>
+            <artifactId>jtar</artifactId>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
