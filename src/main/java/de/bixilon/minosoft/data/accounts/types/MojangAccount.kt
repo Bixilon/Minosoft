@@ -38,7 +38,7 @@ class MojangAccount(
     val uuid: UUID,
     val email: String,
     @field:JsonProperty private var accessToken: String,
-    override val properties: PlayerProperties,
+    override val properties: PlayerProperties?,
 ) : Account(username) {
     @Transient
     private var refreshed: Boolean = false
