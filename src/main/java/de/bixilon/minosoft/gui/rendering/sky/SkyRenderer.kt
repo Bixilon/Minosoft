@@ -22,10 +22,11 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
-import de.bixilon.minosoft.gui.rendering.system.base.phases.CustomDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
@@ -39,7 +40,7 @@ import glm_.vec3.Vec3
 class SkyRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, CustomDrawable {
+) : Renderer, PostDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val skyboxShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
     private val skySunShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
@@ -49,8 +50,6 @@ class SkyRenderer(
     private var updateSun: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
     override val framebuffer: Framebuffer? = null
-    override val post: Boolean = true
-
 
     override fun init() {
         skyboxShader.load()
@@ -109,7 +108,6 @@ class SkyRenderer(
             )
             skySunMesh.load()
             updateSun = false
-
         }
         renderSystem.enable(RenderingCapabilities.BLENDING)
         renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
@@ -137,13 +135,13 @@ class SkyRenderer(
     }
 
     private fun drawSkybox() {
-        renderSystem.setBlendFunction(BlendingFunctions.ONE_MINUS_CONSTANT_COLOR, BlendingFunctions.ONE_MINUS_SOURCE_COLOR, BlendingFunctions.ONE, BlendingFunctions.ZERO) // ToDo
         checkSkyColor()
         skyboxShader.use()
         skyboxMesh.draw()
     }
 
-    override fun drawCustom() {
+    override fun drawPost() {
+        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
         drawSkybox()
         drawSun()
     }

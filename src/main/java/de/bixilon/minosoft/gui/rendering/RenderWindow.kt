@@ -46,6 +46,7 @@ import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
@@ -246,7 +247,7 @@ class RenderWindow(
                 ),
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
-            renderSystem.framebuffer = framebufferManager.default.framebuffer
+            renderSystem.framebuffer = framebufferManager.world.framebuffer
             renderSystem.polygonMode = nextMode
             sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
@@ -345,11 +346,23 @@ class RenderWindow(
                 renderSystem.framebuffer = renderer.framebuffer
                 renderer.prepareDraw()
             }
-            renderAll(rendererList, false)
+            renderAll(rendererList)
 
             renderSystem.framebuffer = null
             framebufferManager.draw()
-            renderAll(rendererList, true)
+            for (renderer in rendererList) {
+                if (renderer is SkipAll && renderer.skipAll) {
+                    continue
+                }
+                if (renderer !is PostDrawable) {
+                    continue
+                }
+                if (renderer.skipPost) {
+                    continue
+                }
+                renderSystem.framebuffer = renderer.framebuffer
+                renderer.drawPost()
+            }
 
             renderSystem.reset() // Reset to enable depth mask, etc again
 
@@ -406,10 +419,10 @@ class RenderWindow(
         return rendererMap[renderer.RESOURCE_LOCATION].unsafeCast()
     }
 
-    private fun renderAll(rendererList: Collection<Renderer>, post: Boolean) {
+    private fun renderAll(rendererList: Collection<Renderer>) {
         for (phase in RenderPhases.VALUES) {
             for (renderer in rendererList) {
-                if ((renderer.post != post) || renderer is SkipAll && renderer.skipAll) {
+                if (renderer is SkipAll && renderer.skipAll) {
                     continue
                 }
                 if (!phase.type.java.isAssignableFrom(renderer::class.java)) {

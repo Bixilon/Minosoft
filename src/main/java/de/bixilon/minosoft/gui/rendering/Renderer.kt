@@ -20,9 +20,7 @@ interface Renderer {
     val renderWindow: RenderWindow
     val renderSystem: RenderSystem
     val framebuffer: Framebuffer?
-        get() = renderWindow.framebufferManager.default.framebuffer
-    val post: Boolean
-        get() = false
+        get() = renderWindow.framebufferManager.world.framebuffer
 
     fun init() = Unit
 

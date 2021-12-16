@@ -63,7 +63,7 @@ interface RenderSystem {
 
     operator fun set(source: BlendingFunctions, destination: BlendingFunctions)
 
-    fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions)
+    fun setBlendFunction(sourceRGB: BlendingFunctions = BlendingFunctions.SOURCE_ALPHA, destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, sourceAlpha: BlendingFunctions = BlendingFunctions.ONE, destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO)
 
     var depth: DepthFunctions
     var depthMask: Boolean
