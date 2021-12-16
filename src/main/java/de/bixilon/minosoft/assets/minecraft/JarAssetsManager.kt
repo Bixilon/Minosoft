@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.assets.minecraft
 
+import com.fasterxml.jackson.databind.JsonNode
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -26,10 +27,12 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.json.Jackson
 import org.kamranzafar.jtar.TarEntry
 import org.kamranzafar.jtar.TarHeader
 import org.kamranzafar.jtar.TarOutputStream
 import java.io.*
+
 
 /**
  * Integrated assets-manager, that provides the assets in the minecraft.jar file
@@ -81,6 +84,13 @@ class JarAssetsManager(
                 }
                 cutFilename = splitFilename.getOrNull(1) ?: continue
 
+                var outData = data
+                if (cutFilename.endsWith(".json")) {
+                    // minify json
+                    val jsonNode = Jackson.MAPPER.readValue(data, JsonNode::class.java)
+                    outData = jsonNode.toString().toByteArray()
+                }
+
                 var required = false
                 for (prefix in REQUIRED_FILE_PREFIXES) {
                     if (cutFilename.startsWith(prefix)) {
@@ -91,9 +101,9 @@ class JarAssetsManager(
                 if (!required) {
                     continue
                 }
-                buildingJarAsset[cutFilename] = data
-                tarOutputStream.putNextEntry(TarEntry(TarHeader.createHeader(filename, data.size.toLong(), 0L, false, 777).apply { generalize() }))
-                tarOutputStream.write(data)
+                buildingJarAsset[cutFilename] = outData
+                tarOutputStream.putNextEntry(TarEntry(TarHeader.createHeader(filename, outData.size.toLong(), 0L, false, 777).apply { generalize() }))
+                tarOutputStream.write(outData)
                 tarOutputStream.flush()
             }
             tarOutputStream.close()
