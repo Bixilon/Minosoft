@@ -583,7 +583,6 @@ object KUtil {
         userId = 0
         groupId = 0
         modTime = 0L
-        modTime = 0L
         userName = StringBuffer("nobody")
         groupName = StringBuffer("nobody")
     }
