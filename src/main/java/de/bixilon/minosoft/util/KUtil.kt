@@ -30,6 +30,7 @@ import de.bixilon.minosoft.util.json.Jackson
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
+import org.kamranzafar.jtar.TarHeader
 import sun.misc.Unsafe
 import java.io.*
 import java.lang.reflect.Field
@@ -577,4 +578,13 @@ object KUtil {
 
     val File.slashPath: String
         get() = absolutePath.replace('\\', '/')
+
+    fun TarHeader.generalize() {
+        userId = 0
+        groupId = 0
+        modTime = 0L
+        modTime = 0L
+        userName = StringBuffer("nobody")
+        groupName = StringBuffer("nobody")
+    }
 }

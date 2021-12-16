@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util
 import org.kamranzafar.jtar.TarEntry
@@ -91,7 +92,7 @@ class JarAssetsManager(
                     continue
                 }
                 buildingJarAsset[cutFilename] = data
-                tarOutputStream.putNextEntry(TarEntry(TarHeader.createHeader(filename, data.size.toLong(), 0L, false, 777)))
+                tarOutputStream.putNextEntry(TarEntry(TarHeader.createHeader(filename, data.size.toLong(), 0L, false, 777).apply { generalize() }))
                 tarOutputStream.write(data)
                 tarOutputStream.flush()
             }
