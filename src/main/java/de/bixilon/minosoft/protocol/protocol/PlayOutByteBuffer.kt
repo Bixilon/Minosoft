@@ -17,11 +17,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import glm_.vec3.Vec3i
 
-class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer(connection) {
+class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     val versionId = connection.version.versionId
 
 
-    fun writeByteArray(data: ByteArray) {
+    override fun writeByteArray(data: ByteArray) {
         if (versionId < ProtocolVersions.V_14W21A) {
             writeShort(data.size.toShort())
         } else {

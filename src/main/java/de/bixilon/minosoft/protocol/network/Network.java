@@ -127,11 +127,11 @@ public abstract class Network {
         if (packet instanceof PlayC2SPacket) {
             PlayOutByteBuffer buffer = new PlayOutByteBuffer((PlayConnection) this.connection);
             ((PlayC2SPacket) packet).write(buffer);
-            data = buffer.toByteArray();
+            data = buffer.toArray();
         } else if (packet instanceof AllC2SPacket) {
-            OutByteBuffer buffer = new OutByteBuffer(this.connection);
+            OutByteBuffer buffer = new OutByteBuffer();
             ((AllC2SPacket) packet).write(buffer);
-            data = buffer.toByteArray();
+            data = buffer.toArray();
         } else {
             throw new IllegalStateException();
         }
@@ -140,33 +140,32 @@ public abstract class Network {
         outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.C2S.Companion.getPacketType(packet.getClass())));
         outByteBuffer.writeUnprefixedByteArray(data);
 
-        data = outByteBuffer.toByteArray();
+        data = outByteBuffer.toArray();
 
 
         if (this.compressionThreshold >= 0) {
             // compression is enabled
             // check if there is a need to compress it and if so, do it!
-            OutByteBuffer outRawBuffer = new OutByteBuffer(this.connection);
+            OutByteBuffer outRawBuffer = new OutByteBuffer();
             if (data.length >= this.compressionThreshold) {
                 // compress it
-                OutByteBuffer lengthPrefixedBuffer = new OutByteBuffer(this.connection);
+                OutByteBuffer lengthPrefixedBuffer = new OutByteBuffer();
                 byte[] compressed = Util.compress(data);
                 lengthPrefixedBuffer.writeVarInt(data.length); // uncompressed length
                 lengthPrefixedBuffer.writeUnprefixedByteArray(compressed);
-                outRawBuffer.prefixVarInt(lengthPrefixedBuffer.toByteArray().length); // length of total data is uncompressed length + compressed data
-                outRawBuffer.writeUnprefixedByteArray(lengthPrefixedBuffer.toByteArray()); // write all bytes
+                outRawBuffer.writeByteArray(lengthPrefixedBuffer.toArray()); // write all bytes
             } else {
                 outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
                 outRawBuffer.writeVarInt(0); // data is uncompressed, compressed size is 0
                 outRawBuffer.writeUnprefixedByteArray(data);
             }
-            data = outRawBuffer.toByteArray();
+            data = outRawBuffer.toArray();
         } else {
             // append packet length
-            OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(this.connection);
+            OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer();
             bufferWithLengthPrefix.writeVarInt(data.length);
             bufferWithLengthPrefix.writeUnprefixedByteArray(data);
-            data = bufferWithLengthPrefix.toByteArray();
+            data = bufferWithLengthPrefix.toArray();
         }
         return data;
     }

@@ -16,8 +16,8 @@ import com.google.gson.JsonObject
 import com.sun.javafx.geom.Vec3f
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.collections.bytes.HeapArrayByteList
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
 import glm_.vec3.Vec3
@@ -27,12 +27,11 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.*
 
-open class OutByteBuffer(open val connection: Connection? = null) {
-    @Deprecated("Will be replaced with a thing like the ArrayFloatList")
-    val bytes: MutableList<Byte> = mutableListOf()
+open class OutByteBuffer() {
+    private val bytes = HeapArrayByteList()
 
 
-    constructor(buffer: OutByteBuffer) : this(buffer.connection) {
+    constructor(buffer: OutByteBuffer) : this() {
         bytes.addAll(buffer.bytes)
     }
 
@@ -51,7 +50,12 @@ open class OutByteBuffer(open val connection: Connection? = null) {
     }
 
     open fun writeUnprefixedByteArray(data: ByteArray) {
-        bytes.addAll(data.toList())
+        bytes.addAll(data)
+    }
+
+    open fun writeByteArray(data: ByteArray) {
+        writeVarInt(data.size)
+        bytes.addAll(data)
     }
 
     fun writeLong(value: Long) {
@@ -133,20 +137,6 @@ open class OutByteBuffer(open val connection: Connection? = null) {
                 temp = temp or 0x80
             }
             writeByte(temp)
-        } while (value != 0)
-    }
-
-    fun prefixVarInt(int: Int) {
-        var value = int
-        var count = 0
-        // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
-        do {
-            var temp = value and 0x7F
-            value = value ushr 7
-            if (value != 0) {
-                temp = temp or 0x80
-            }
-            bytes.add(count++, temp.toByte())
         } while (value != 0)
     }
 
@@ -256,8 +246,8 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         writeInt(blockPosition?.z ?: 0)
     }
 
-    fun toByteArray(): ByteArray {
-        return bytes.toByteArray()
+    fun toArray(): ByteArray {
+        return bytes.toArray()
     }
 
     fun writeUnprefixedIntArray(data: IntArray) {
@@ -283,7 +273,7 @@ open class OutByteBuffer(open val connection: Connection? = null) {
     }
 
     fun writeTo(buffer: ByteBuffer) {
-        buffer.put(toByteArray())
+        buffer.put(toArray())
     }
 
     fun writeResourceLocation(resourceLocation: ResourceLocation) {
