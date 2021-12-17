@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.XStartOnFirstThreadWarning
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
+import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -116,9 +117,9 @@ object Minosoft {
 
         if (!RunConfiguration.DISABLE_EROS) {
             taskWorker += Task(identifier = StartupTasks.INITIALIZE_JAVAFX, executor = { JavaFXInitializer.start() })
-            taskWorker += Task(identifier = StartupTasks.X_START_ON_FIRST_THREAD_WARNING, executor = { XStartOnFirstThreadWarning.show() }, dependencies = arrayOf(StartupTasks.LOAD_PROFILES, StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
+            taskWorker += Task(identifier = StartupTasks.X_START_ON_FIRST_THREAD_WARNING, executor = { XStartOnFirstThreadWarning.show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
 
-            // ToDo: Show start up progress window
+            taskWorker += Task(identifier = StartupTasks.STARTUP_PROGRESS, executor = { StartingDialog(START_UP_LATCH).show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
 
             Util.forceClassInit(Eros::class.java)
         }

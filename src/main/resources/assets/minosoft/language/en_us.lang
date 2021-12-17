@@ -3,6 +3,7 @@ minosoft:general.cancel=Cancel
 minosoft:general.confirm=Confirm
 minosoft:general.delete=Delete
 minosoft:general.ignore=Ignore
+minosoft:general.exit=Exit
 
 minosoft:eros_window_title=Minosoft
 
@@ -18,16 +19,15 @@ minosoft:server_info.remote_brand=Remote brand
 minosoft:server_info.active_connections=Active connections
 minosoft:server_info.players_online=Players online
 minosoft:server_info.ping=Latency
-
 minosoft:server_info.delete.dialog.description=Do you really want to delete the server %1$s (%2$s)?
 
 
 minosoft:connection.dialog.verify_assets.title=Verifying assets... - Minosoft
 minosoft:connection.dialog.verify_assets.header=Verifying and downloading missing assets. This might take a while...
-
 minosoft:connection.dialog.connecting.title=Connecting... - Minosoft
 minosoft:connection.dialog.connecting.header=Connecting...
-
+minosoft:dialog.starting.title=Starting... - Minosoft
+minosoft:dialog.starting.header=Minosoft is still starting. Please wait...
 minosoft:connection.play.state.waiting=Waiting for connection...
 minosoft:connection.play.state.loading_assets=Loading assets...
 minosoft:connection.play.state.loading=Loading...

@@ -25,5 +25,6 @@ enum class StartupTasks {
     X_START_ON_FIRST_THREAD_WARNING,
     FILE_WATCHER,
     LOAD_YGGDRASIL,
+    STARTUP_PROGRESS,
     ;
 }
