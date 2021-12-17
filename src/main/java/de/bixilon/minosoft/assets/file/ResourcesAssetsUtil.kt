@@ -20,7 +20,7 @@ object ResourcesAssetsUtil {
                 val zip = URLDecoder.decode(jarPath, StandardCharsets.UTF_8)
                 ZipAssetsManager(zip, canUnload = canUnload)
             }
-            else -> TODO("Can not read resources: $rootResources")
+            else -> throw IllegalStateException("Can not read resources: $rootResources")
         }
     }
 }

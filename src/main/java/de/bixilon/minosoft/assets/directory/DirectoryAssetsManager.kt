@@ -41,8 +41,6 @@ class DirectoryAssetsManager(
     private val ResourceLocation.filePath: String
         get() = "$basePath/$namespace/$path"
 
-    // ToDo: Load properties
-
     private fun scanDirectory(directory: File) {
         for (file in directory.listFiles() ?: return) {
             if (file.isDirectory) {
