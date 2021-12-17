@@ -25,6 +25,7 @@ object TranslatableComponents {
     val GENERAL_DELETE = "minosoft:general.delete".toResourceLocation()
     val GENERAL_IGNORE = "minosoft:general.ignore".toResourceLocation()
     val GENERAL_EXIT = "minosoft:general.exit".toResourceLocation()
+    val GENERAL_REFRESH = "minosoft:general.refresh".toResourceLocation()
 
     val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".toResourceLocation(), null, name, address) }
     val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".toResourceLocation(), null, count) }

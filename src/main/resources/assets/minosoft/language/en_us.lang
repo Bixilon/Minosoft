@@ -4,6 +4,7 @@ minosoft:general.confirm=Confirm
 minosoft:general.delete=Delete
 minosoft:general.ignore=Ignore
 minosoft:general.exit=Exit
+minosoft:general.refresh=Refresh
 
 minosoft:eros_window_title=Minosoft
 
@@ -65,23 +66,28 @@ minosoft:modify_server.forced_version.releases=Releases
 minosoft:modify_server.forced_version.snapshots=Snapshots
 minosoft:modify_server.profiles.label=Profiles
 minosoft:modify_server.profiles.open_select_dialog=Open profile selector
-
 minosoft:modify_server.add.title=Add server - Minosoft
 minosoft:modify_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
 minosoft:modify_server.add.update_button=Add server
-
 minosoft:modify_server.edit.title=Edit server - Minosoft
 minosoft:modify_server.edit.description=Please change the server details and click on save
 minosoft:modify_server.edit.update_button=Save server
-
+minosoft:server_list.hide_offline=Hide offline
+minosoft:server_list.hide_full=Hide full
+minosoft:server_list.hide_empty=Hide empty
+minosoft:server_list.add_server=Hide empty
+minosoft:server_list.button.connect=Connect
+minosoft:server_list.button.edit=Edit
 minosoft:server_list.refresh.header=Refresh
 minosoft:server_list.refresh.text1=Get the latest
 minosoft:server_list.refresh.text2=information
 
 
 
+minosoft:main.account.list.info.button.verify=Verify
+minosoft:main.account.list.info.button.use=Use
+minosoft:main.account.list.info.add=Add account
 minosoft:main.account.no_account_selected=No account selected
-
 minosoft:main.account.type.mojang=Mojang
 minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
@@ -168,3 +174,7 @@ minosoft:profiles.profile.name=Name
 minosoft:profiles.profile.description=Description
 minosoft:profiles.profile.disk_path=Disk path
 
+
+minosoft:profiles.profile.list.button.edit=Edit
+minosoft:profiles.profile.list.button.set_primary=Set primary
+minosoft:profiles.profile.list.button.create=Create profile

@@ -19,11 +19,13 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.watcher.entry.MapDelegateWatcher.Companion.watchMapFX
@@ -36,9 +38,10 @@ import javafx.scene.layout.*
 
 
 class ProfilesListController : EmbeddedJavaFXController<Pane>() {
-    @FXML private lateinit var createProfileButtonFX: Button
     @FXML private lateinit var profilesListViewFX: ListView<Profile>
     @FXML private lateinit var profileInfoFX: AnchorPane
+
+    @FXML private lateinit var createProfileButtonFX: Button
 
     var profileManager: ProfileManager<Profile>? = null
         set(value) {
@@ -63,6 +66,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
         profilesListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setProfileInfo(new)
         }
+        createProfileButtonFX.ctext = CREATE
     }
 
     override fun postInit() {
@@ -159,10 +163,12 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                         }
                     }).show()
                 }
+                ctext = TranslatableComponents.GENERAL_DELETE
             }, 0, 0)
             it.add(Button("Edit").apply {
                 // ToDo: Profile editing
                 isDisable = true
+                ctext = EDIT
             }, 1, 0)
 
             it.add(Button("Set primary").apply {
@@ -171,6 +177,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                     profile.manager.selected = profile
                     isDisable = true
                 }
+                ctext = SET_PRIMARY
             }, 3, 0)
 
 
@@ -199,6 +206,10 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
 
     companion object {
         val LAYOUT = "minosoft:eros/main/profiles/profiles_list.fxml".toResourceLocation()
+
+        private val EDIT = "minosoft:profiles.profile.list.button.edit".toResourceLocation()
+        private val SET_PRIMARY = "minosoft:profiles.profile.list.button.set_primary".toResourceLocation()
+        private val CREATE = "minosoft:profiles.profile.list.button.create".toResourceLocation()
 
         private val PROFILE_INFO_PROPERTIES: List<Pair<ResourceLocation, (Profile) -> Any?>> = listOf(
             "minosoft:profiles.profile.name".toResourceLocation() to { it.name },

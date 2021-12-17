@@ -22,12 +22,14 @@ import de.bixilon.minosoft.data.accounts.types.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.OfflineAccount
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -61,6 +63,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             refreshList()
             addButtonFX.isDisable = new.addHandler == null
         }
+        addButtonFX.ctext = ADD
 
 
         accountListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
@@ -142,16 +145,15 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
             it.add(Button("Delete").apply {
                 setOnAction {
-                    SimpleErosConfirmationDialog(
-                        onConfirm = {
-                            if (profile.selected == account) {
-                                profile.selected = null
-                            }
-                            profile.entries -= account.id
-                            JavaFXUtil.runLater { refreshList() }
+                    SimpleErosConfirmationDialog(onConfirm = {
+                        if (profile.selected == account) {
+                            profile.selected = null
                         }
-                    ).show()
+                        profile.entries -= account.id
+                        JavaFXUtil.runLater { refreshList() }
+                    }).show()
                 }
+                ctext = TranslatableComponents.GENERAL_DELETE
             }, 1, 0)
 
             it.add(Button("Verify").apply {
@@ -162,6 +164,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                         JavaFXUtil.runLater { refreshList() }
                     }
                 }
+                ctext = VERIFY
             }, 3, 0)
             it.add(Button("Use").apply {
                 setOnAction {
@@ -174,6 +177,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     }
                 }
                 isDisable = profile.selected == account
+                ctext = USE
             }, 4, 0)
 
 
@@ -189,6 +193,10 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
     companion object {
         val LAYOUT = "minosoft:eros/main/account/account.fxml".toResourceLocation()
+
+        private val VERIFY = "minosoft:main.account.list.info.button.verify".toResourceLocation()
+        private val USE = "minosoft:main.account.list.info.button.use".toResourceLocation()
+        private val ADD = "minosoft:main.account.list.info.button.add".toResourceLocation()
 
         private val ACCOUNT_INFO_PROPERTIES: List<Pair<ResourceLocation, (account: Account) -> Any?>> = listOf(
             "minosoft:main.account.account_info.id".toResourceLocation() to { it.id },
