@@ -75,7 +75,7 @@ minosoft:modify_server.edit.update_button=Save server
 minosoft:server_list.hide_offline=Hide offline
 minosoft:server_list.hide_full=Hide full
 minosoft:server_list.hide_empty=Hide empty
-minosoft:server_list.add_server=Hide empty
+minosoft:server_list.add_server=Add server
 minosoft:server_list.button.connect=Connect
 minosoft:server_list.button.edit=Edit
 minosoft:server_list.refresh.header=Refresh
@@ -86,7 +86,7 @@ minosoft:server_list.refresh.text2=information
 
 minosoft:main.account.list.info.button.verify=Verify
 minosoft:main.account.list.info.button.use=Use
-minosoft:main.account.list.info.add=Add account
+minosoft:main.account.list.info.button.add=Add account
 minosoft:main.account.no_account_selected=No account selected
 minosoft:main.account.type.mojang=Mojang
 minosoft:main.account.type.microsoft=Microsoft

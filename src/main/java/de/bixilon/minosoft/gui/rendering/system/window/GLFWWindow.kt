@@ -470,6 +470,7 @@ class GLFWWindow(
             GLFW_MOUSE_BUTTON_RIGHT to KeyCodes.MOUSE_BUTTON_RIGHT,
             GLFW_MOUSE_BUTTON_MIDDLE to KeyCodes.MOUSE_BUTTON_MIDDLE,
         )
+
         val CursorModes.glfw: Int
             get() {
                 return when (this) {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.eros.main.about.AboutController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.main.play.PlayController
 import de.bixilon.minosoft.gui.eros.main.profiles.ProfilesController
@@ -27,7 +28,7 @@ enum class ErosMainActivities(
     PLAY(PlayController.LAYOUT),
     PROFILES(ProfilesController.LAYOUT),
     HELP("".toResourceLocation()),
-    ABOUT("".toResourceLocation()),
+    ABOUT(AboutController.LAYOUT),
 
 
     ACCOUNT(AccountController.LAYOUT),

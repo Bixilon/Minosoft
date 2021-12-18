@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        xmlns="http://www.w3.org/2000/svg"
+        width="200mm"
+        height="200mm"
+        viewBox="0 0 200 200"
+        version="1.1"
+        id="svg8"
+        inkscape:export-filename="C:\Users\Simeon Weigel\Pictures\Inkskape\Bixilon Logo beta.png"
+        inkscape:export-xdpi="66.842232"
+        inkscape:export-ydpi="66.842232"
+        inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+        sodipodi:docname="Bixilon Logo.svg">
+  <defs
+          id="defs2"/>
+  <sodipodi:namedview
+          id="base"
+          pagecolor="#ffffff"
+          bordercolor="#666666"
+          borderopacity="1.0"
+          inkscape:pageopacity="0.0"
+          inkscape:pageshadow="2"
+          inkscape:zoom="0.49497475"
+          inkscape:cx="347.58152"
+          inkscape:cy="330.78167"
+          inkscape:document-units="mm"
+          inkscape:current-layer="layer1"
+          showgrid="false"
+          fit-margin-top="0"
+          fit-margin-left="0"
+          fit-margin-right="0"
+          fit-margin-bottom="0"
+          inkscape:window-width="1920"
+          inkscape:window-height="1001"
+          inkscape:window-x="-9"
+          inkscape:window-y="-9"
+          inkscape:window-maximized="1"/>
+  <metadata
+          id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+              rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+                rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+          inkscape:label="Ebene 1"
+          inkscape:groupmode="layer"
+          id="layer1"
+          transform="translate(0,-74.701271)">
+    <circle
+            style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:2.70799971;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+            id="path4518"
+            cx="150"
+            cy="124.70127"
+            r="50"/>
+    <circle
+            cy="124.70128"
+            cx="50"
+            id="circle4520"
+            style="fill:#00ff00;fill-opacity:1;stroke:none;stroke-width:2.70800018;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+            r="50"/>
+    <rect
+            style="fill:#0009ff;fill-opacity:1;stroke:none;stroke-width:2.70799994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+            id="rect4522"
+            width="30"
+            height="60"
+            x="85"
+            y="164.70128"
+            ry="5.0411592"/>
+    <g
+            id="g4530"
+            transform="matrix(1.0057283,0.17257229,-0.17008463,1.020438,49.14435,-21.505875)">
+      <rect
+              transform="matrix(0.95849028,0.28512521,-0.28315718,0.95907352,0,0)"
+              ry="5.0321536"
+              y="206.52092"
+              x="71.046646"
+              height="29.946407"
+              width="100.05277"
+              id="rect4524"
+              style="fill:#ffff00;fill-opacity:1;stroke:none;stroke-width:2.70629311;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+      <rect
+              style="fill:#ffff00;fill-opacity:1;stroke:none;stroke-width:2.70629311;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+              id="rect4526"
+              width="100.0537"
+              height="29.946131"
+              x="-19.874584"
+              y="-280.77682"
+              ry="5.0321069"
+              transform="matrix(-0.81465832,0.57994122,-0.57824673,-0.81586195,0,0)"/>
+    </g>
+  </g>
+</svg>

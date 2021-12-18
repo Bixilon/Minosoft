@@ -106,8 +106,7 @@ class MainErosController : JavaFXWindowController() {
             JavaFXUtil.HOST_SERVICES.showDocument("https://gitlab.bixilon.de/bixilon/minosoft/-/issues/")
         }
         aboutIconFX.setOnMouseClicked {
-            // ToDo: activity = ErosMainActivities.ABOUT
-            JavaFXUtil.HOST_SERVICES.showDocument("https://gitlab.bixilon.de/bixilon/minosoft/")
+            activity = ErosMainActivities.ABOUT
         }
         exitIconFX.apply {
             clickable()

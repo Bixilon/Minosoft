@@ -449,5 +449,10 @@
             <artifactId>zstd-jni</artifactId>
             <version>1.5.0-4</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.afester.javafx</groupId>
+            <artifactId>FranzXaver</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
 </project>
