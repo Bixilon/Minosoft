@@ -18,7 +18,7 @@ import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 
 class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: CountUpAndDownLatch? = null) {
     private val changeCallbacks: MutableSet<() -> Unit> = mutableSetOf()
-    private val lock = Object()
+    val lock = Object()
     private val children: MutableSet<CountUpAndDownLatch> = synchronizedSetOf()
     private var rawCount = 0
         set(value) {
