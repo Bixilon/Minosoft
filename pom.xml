@@ -405,9 +405,9 @@
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.bixilon.bixilon</groupId>
+            <groupId>de.bixilon</groupId>
             <artifactId>mbf-kotlin</artifactId>
-            <version>0.2</version>
+            <version>0.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
