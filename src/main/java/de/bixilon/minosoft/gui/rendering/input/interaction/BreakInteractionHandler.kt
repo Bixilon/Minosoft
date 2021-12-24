@@ -98,20 +98,20 @@ class BreakInteractionHandler(
             cancelDigging()
             return false
         }
-        val raycastHit = renderWindow.camera.targetHandler.target
+        val target = renderWindow.camera.targetHandler.target
 
-        if (raycastHit !is BlockTarget) {
+        if (target !is BlockTarget) {
             cancelDigging()
             return false
         }
 
-        if (raycastHit.distance >= connection.player.reachDistance) {
+        if (target.distance >= connection.player.reachDistance) {
             cancelDigging()
             return false
         }
 
         // check if we look at another block or our inventory changed
-        if (breakPosition != raycastHit.blockPosition || breakBlockState != raycastHit.blockState || breakSelectedSlot != connection.player.selectedHotbarSlot) {
+        if (breakPosition != target.blockPosition || breakBlockState != target.blockState || breakSelectedSlot != connection.player.selectedHotbarSlot) {
             cancelDigging()
         }
 
@@ -120,22 +120,22 @@ class BreakInteractionHandler(
             if (breakPosition != null) {
                 return
             }
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, raycastHit.blockPosition, raycastHit.direction))
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, target.blockPosition, target.direction))
 
-            breakPosition = raycastHit.blockPosition
-            breakBlockState = raycastHit.blockState
+            breakPosition = target.blockPosition
+            breakBlockState = target.blockState
             breakProgress = 0.0
 
             breakSelectedSlot = connection.player.selectedHotbarSlot
         }
 
         fun finishDigging() {
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.direction))
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, target.blockPosition, target.direction))
             clearDigging()
-            connection.world.setBlockState(raycastHit.blockPosition, null)
+            connection.world.setBlockState(target.blockPosition, null)
 
-            raycastHit.blockState.breakSoundEvent?.let {
-                connection.world.playSoundEvent(it, raycastHit.blockPosition, volume = raycastHit.blockState.soundEventVolume, pitch = raycastHit.blockState.soundEventPitch)
+            target.blockState.breakSoundEvent?.let {
+                connection.world.playSoundEvent(it, target.blockPosition, volume = target.blockState.soundEventVolume, pitch = target.blockState.soundEventPitch)
             }
         }
 
@@ -176,14 +176,14 @@ class BreakInteractionHandler(
 
         val isToolEffective = breakItemInHand?.item?.let {
             return@let if (it is MiningToolItem) {
-                it.isEffectiveOn(connection, raycastHit.blockState)
+                it.isEffectiveOn(connection, target.blockState)
             } else {
                 false
             }
         } ?: false
-        val isBestTool = !raycastHit.blockState.requiresTool || isToolEffective
+        val isBestTool = !target.blockState.requiresTool || isToolEffective
 
-        var speedMultiplier = breakItemInHand?.let { it.item.getMiningSpeedMultiplier(connection, raycastHit.blockState, it) } ?: 1.0f
+        var speedMultiplier = breakItemInHand?.let { it.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
 
         if (isToolEffective) {
             breakItemInHand?.enchantments?.get(efficiencyEnchantment)?.let {
@@ -212,7 +212,7 @@ class BreakInteractionHandler(
             speedMultiplier /= 5.0f
         }
 
-        var damage = speedMultiplier / raycastHit.blockState.hardness
+        var damage = speedMultiplier / target.blockState.hardness
 
         damage /= if (isBestTool) {
             30

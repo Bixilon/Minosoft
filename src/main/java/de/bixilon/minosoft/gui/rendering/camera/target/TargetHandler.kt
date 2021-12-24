@@ -123,9 +123,9 @@ class TargetHandler(
         }
 
         if (entities) {
-            val entityRaycastHit = raycastEntity(origin, direction) ?: return target
+            val entityTarget = raycastEntity(origin, direction) ?: return target
             target ?: return null
-            return (entityRaycastHit.distance < target.distance).decide(entityRaycastHit, target)
+            return (entityTarget.distance < target.distance).decide(entityTarget, target)
         }
 
         return target

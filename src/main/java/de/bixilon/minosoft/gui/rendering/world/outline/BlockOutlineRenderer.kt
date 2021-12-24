@@ -82,28 +82,28 @@ class BlockOutlineRenderer(
     }
 
     override fun prepareDraw() {
-        val raycastHit = renderWindow.camera.targetHandler.target.nullCast<BlockTarget>()
+        val target = renderWindow.camera.targetHandler.target.nullCast<BlockTarget>()
 
         var currentMesh = currentMesh
 
-        if (raycastHit == null) {
+        if (target == null) {
             unload()
             return
         }
 
-        if (raycastHit.distance >= connection.player.reachDistance) {
+        if (target.distance >= connection.player.reachDistance) {
             unload()
             return
         }
 
         if (connection.player.gamemode == Gamemodes.ADVENTURE || connection.player.gamemode == Gamemodes.SPECTATOR) {
-            if (raycastHit.blockState.block.blockEntityType == null) {
+            if (target.blockState.block.blockEntityType == null) {
                 unload()
                 return
             }
         }
 
-        if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState && !reload) {
+        if (target.blockPosition == currentOutlinePosition && target.blockState == currentOutlineBlockState && !reload) {
             return
         }
 
@@ -114,20 +114,20 @@ class BlockOutlineRenderer(
         currentMesh?.unload()
         currentMesh = LineMesh(renderWindow)
 
-        val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
+        val blockOffset = target.blockPosition.toVec3d + target.blockPosition.getWorldOffset(target.blockState.block)
 
-        currentMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
+        currentMesh.drawVoxelShape(target.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
 
 
         if (profile.showCollisionBoxes) {
-            currentMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
+            currentMesh.drawVoxelShape(target.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
         }
 
         currentMesh.load()
 
 
-        this.currentOutlinePosition = raycastHit.blockPosition
-        this.currentOutlineBlockState = raycastHit.blockState
+        this.currentOutlinePosition = target.blockPosition
+        this.currentOutlineBlockState = target.blockState
         this.currentMesh = currentMesh
         this.reload = false
     }
