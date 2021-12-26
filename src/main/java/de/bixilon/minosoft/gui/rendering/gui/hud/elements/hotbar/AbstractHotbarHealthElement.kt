@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kutil.math.MMath.ceil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -9,7 +10,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
 abstract class AbstractHotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {

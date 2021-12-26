@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.text
 
 import com.fasterxml.jackson.core.JacksonException
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.json.Jackson
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList

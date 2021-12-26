@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.modding.event.master
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
+import de.bixilon.kutil.concurrent.lock.ReadWriteLock
 import de.bixilon.minosoft.modding.event.EventInstantFire
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedList
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
-import de.bixilon.minosoft.util.ReadWriteLock
 import java.util.*
 import kotlin.reflect.full.companionObjectInstance
 

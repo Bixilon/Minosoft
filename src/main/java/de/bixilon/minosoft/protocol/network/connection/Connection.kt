@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 
 abstract class Connection : AbstractEventMaster {
     val network = Network.getNetworkInstance(this)

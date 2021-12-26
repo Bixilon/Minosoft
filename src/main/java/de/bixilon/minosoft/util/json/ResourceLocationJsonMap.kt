@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.util.json
 
 import com.google.gson.JsonObject
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 object ResourceLocationJsonMap {
 

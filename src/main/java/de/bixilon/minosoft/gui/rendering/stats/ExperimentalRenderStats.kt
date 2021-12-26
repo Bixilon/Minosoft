@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
+import de.bixilon.kutil.avg.Average
+import de.bixilon.kutil.avg.LongAverage
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.nextFloat
-import de.bixilon.minosoft.util.avg.Average
-import de.bixilon.minosoft.util.avg.LongAverage
 import glm_.func.common.clamp
 import kotlin.random.Random
 

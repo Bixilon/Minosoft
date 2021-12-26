@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object BossbarS2CPF {
 
@@ -43,7 +43,7 @@ object BossbarS2CPF {
 
         companion object : ValuesEnum<BossbarActions> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, BossbarActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, BossbarActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

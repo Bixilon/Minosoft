@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.protocol.RateLimiter
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 
 class InteractionManager(

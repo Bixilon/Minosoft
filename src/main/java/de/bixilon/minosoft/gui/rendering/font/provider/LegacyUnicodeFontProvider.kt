@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.font.provider
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2
 
 class LegacyUnicodeFontProvider(

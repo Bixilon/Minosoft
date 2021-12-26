@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class RenderBufferTypes {
     UNIFORM_BUFFER,
@@ -23,6 +23,6 @@ enum class RenderBufferTypes {
 
     companion object : ValuesEnum<RenderBufferTypes> {
         override val VALUES: Array<RenderBufferTypes> = values()
-        override val NAME_MAP: Map<String, RenderBufferTypes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, RenderBufferTypes> = EnumUtil.getEnumValues(VALUES)
     }
 }

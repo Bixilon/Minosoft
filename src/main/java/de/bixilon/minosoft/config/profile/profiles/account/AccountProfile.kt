@@ -3,6 +3,7 @@ package de.bixilon.minosoft.config.profile.profiles.account
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.backingDelegate
@@ -10,7 +11,6 @@ import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.mapDelegate
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 
 /**

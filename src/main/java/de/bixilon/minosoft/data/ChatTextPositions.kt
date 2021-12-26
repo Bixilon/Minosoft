@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class ChatTextPositions {
     CHAT_BOX,
@@ -23,6 +23,6 @@ enum class ChatTextPositions {
 
     companion object : ValuesEnum<ChatTextPositions> {
         override val VALUES: Array<ChatTextPositions> = values()
-        override val NAME_MAP: Map<String, ChatTextPositions> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, ChatTextPositions> = EnumUtil.getEnumValues(VALUES)
     }
 }

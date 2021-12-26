@@ -12,6 +12,10 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.concurrent.lock.ReadWriteLock
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.AABB
@@ -37,14 +41,10 @@ import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.lockMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
-import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
-import de.bixilon.minosoft.util.collections.LockMap
 import de.bixilon.minosoft.util.delegate.DelegateManager.delegate
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3

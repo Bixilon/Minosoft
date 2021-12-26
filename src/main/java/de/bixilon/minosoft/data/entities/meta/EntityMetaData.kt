@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.data.entities.meta
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.Poses
@@ -26,8 +29,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.BitByte
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -100,14 +101,14 @@ class EntityMetaData(
 
         companion object : ValuesEnum<EntityMetaDataDataTypes> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, EntityMetaDataDataTypes> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, EntityMetaDataDataTypes> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
     inner class MetaDataHashMap : HashMap<Int, Any>() {
 
         operator fun <K> get(field: EntityMetaDataFields): K {
-            val index: Int = this@EntityMetaData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue as K // Can not find field.
+            val index: Int = this@EntityMetaData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue.unsafeCast() // Can not find field.
             get(index)?.let {
                 try {
                     return it as K

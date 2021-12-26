@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.eros.dialog
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.ShutdownManager
 import javafx.fxml.FXML

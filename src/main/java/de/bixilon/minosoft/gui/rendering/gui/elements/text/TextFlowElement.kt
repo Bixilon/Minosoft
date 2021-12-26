@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -24,8 +26,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.synchronizedListOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import glm_.vec2.Vec2i
 
 class TextFlowElement(

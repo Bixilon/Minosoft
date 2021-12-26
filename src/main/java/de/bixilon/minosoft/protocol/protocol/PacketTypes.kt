@@ -17,6 +17,8 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
@@ -49,8 +51,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
 import de.bixilon.minosoft.protocol.packets.s2c.status.ServerStatusResponseS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 class PacketTypes {
 
@@ -120,7 +120,7 @@ class PacketTypes {
         companion object : ValuesEnum<C2S> {
             private val MAPPING: Map<Class<out C2SPacket>, C2S>
             override val VALUES: Array<C2S> = values()
-            override val NAME_MAP: Map<String, C2S> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, C2S> = EnumUtil.getEnumValues(VALUES)
 
             init {
                 val mapping: MutableMap<Class<out C2SPacket>, C2S> = mutableMapOf()
@@ -296,7 +296,7 @@ class PacketTypes {
 
         companion object : ValuesEnum<S2C> {
             override val VALUES: Array<S2C> = values()
-            override val NAME_MAP: Map<String, S2C> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, S2C> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveCreateEvent
@@ -20,8 +22,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -69,7 +69,7 @@ class CreateScoreboardObjectiveS2CP(val name: String, private var _displayName: 
 
         companion object : ValuesEnum<ObjectiveUnits> {
             override val VALUES: Array<ObjectiveUnits> = values()
-            override val NAME_MAP: Map<String, ObjectiveUnits> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, ObjectiveUnits> = EnumUtil.getEnumValues(VALUES)
         }
     }
 

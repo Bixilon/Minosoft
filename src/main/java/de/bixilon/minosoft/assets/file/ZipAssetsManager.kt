@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.assets.file
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
-import de.bixilon.minosoft.util.CountUpAndDownLatch
 import java.io.File
 import java.io.FileInputStream
 import java.util.zip.ZipInputStream

@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.registries
 
 import com.google.gson.JsonObject
+import de.bixilon.kutil.math.MMath.ceil
+import de.bixilon.kutil.math.MMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
@@ -21,8 +23,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ONE
-import de.bixilon.minosoft.util.MMath.ceil
-import de.bixilon.minosoft.util.MMath.floor
 import glm_.Java.Companion.glm
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d

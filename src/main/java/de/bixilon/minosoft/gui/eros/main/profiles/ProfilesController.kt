@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.profiles.type.ProfilesTypeCardController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
 import javafx.scene.layout.Pane

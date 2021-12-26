@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.LANServerType
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

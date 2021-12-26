@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.eros.crash
 
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.general.OSUtil
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -23,14 +26,12 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.slashPath
 import de.bixilon.minosoft.util.KUtil.toStackTrace
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.KUtil.tryCatch
 import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent

@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.assets.minecraft.index
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class IndexAssetsType {
     LANGUAGE,
@@ -11,7 +11,7 @@ enum class IndexAssetsType {
 
     companion object : ValuesEnum<IndexAssetsType> {
         override val VALUES: Array<IndexAssetsType> = values()
-        override val NAME_MAP: Map<String, IndexAssetsType> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, IndexAssetsType> = EnumUtil.getEnumValues(VALUES)
 
     }
 }

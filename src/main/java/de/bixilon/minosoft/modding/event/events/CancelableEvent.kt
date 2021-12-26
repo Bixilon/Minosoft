@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 
 interface CancelableEvent {
     var cancelled: Boolean

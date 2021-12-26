@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.MojangAccount
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.PasswordField

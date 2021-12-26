@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class URLProtocols(val prefix: String, val restricted: Boolean = false) {
     HTTP("http://"),
@@ -24,6 +24,6 @@ enum class URLProtocols(val prefix: String, val restricted: Boolean = false) {
 
     companion object : ValuesEnum<URLProtocols> {
         override val VALUES: Array<URLProtocols> = values()
-        override val NAME_MAP: Map<String, URLProtocols> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, URLProtocols> = EnumUtil.getEnumValues(VALUES)
     }
 }

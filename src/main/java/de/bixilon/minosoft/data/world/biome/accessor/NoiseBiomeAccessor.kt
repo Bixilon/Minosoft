@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
+import de.bixilon.kutil.math.MMath.square
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.MMath
 import glm_.vec2.Vec2i
 
 class NoiseBiomeAccessor(
@@ -165,7 +165,7 @@ class NoiseBiomeAccessor(
 
         val zFractionSalt = distribute(ret)
 
-        return MMath.square(xFraction + xFractionSalt) + MMath.square(yFraction + yFractionSalt) + MMath.square(zFraction + zFractionSalt)
+        return square(xFraction + xFractionSalt) + square(yFraction + yFractionSalt) + square(zFraction + zFractionSalt)
     }
 
     private fun distribute(seed: Long): Double {

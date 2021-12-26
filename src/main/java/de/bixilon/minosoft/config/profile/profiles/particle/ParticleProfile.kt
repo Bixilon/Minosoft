@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.particle
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.particle.types.TypesC
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for particle

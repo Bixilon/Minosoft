@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.models.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.display.ModelDisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 

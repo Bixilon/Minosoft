@@ -12,6 +12,9 @@
  */
 package de.bixilon.minosoft.data.registries.biomes
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -21,10 +24,7 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.MMath
 import java.util.*
 
 data class Biome(
@@ -46,7 +46,7 @@ data class Biome(
 
 
     fun getClampedTemperature(height: Int): Int {
-        return getColorMapCoordinate(MMath.clamp(temperature + (MMath.clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0.0f, 1.0f))
+        return getColorMapCoordinate(clamp(temperature + (clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0.0f, 1.0f))
     }
 
     override fun toString(): String {
@@ -56,7 +56,7 @@ data class Biome(
     companion object : ResourceLocationDeserializer<Biome> {
 
         private fun getColorMapCoordinate(value: Float): Int {
-            return ((1.0 - MMath.clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
+            return ((1.0 - clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
         }
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Biome {

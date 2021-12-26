@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,7 +48,7 @@ class PlayerFaceS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         companion object : ValuesEnum<PlayerFaces> {
             override val VALUES: Array<PlayerFaces> = values()
-            override val NAME_MAP: Map<String, PlayerFaces> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, PlayerFaces> = EnumUtil.getEnumValues(VALUES)
         }
     }
 

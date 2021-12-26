@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec3.Vec3d
 import java.util.*
 

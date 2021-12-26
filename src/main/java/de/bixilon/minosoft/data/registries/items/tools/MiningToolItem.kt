@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.util.KUtil.listCast
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3i
 
 abstract class MiningToolItem(

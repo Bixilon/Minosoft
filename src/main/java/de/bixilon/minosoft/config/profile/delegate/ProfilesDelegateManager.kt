@@ -1,13 +1,13 @@
 package de.bixilon.minosoft.config.profile.delegate
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
+import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.delegate.watcher.ProfileDelegateWatcher
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.collections.SynchronizedMap
 import java.lang.ref.WeakReference
 
 object ProfilesDelegateManager {

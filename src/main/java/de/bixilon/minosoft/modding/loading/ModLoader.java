@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.modding.loading;
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool;
+import de.bixilon.kutil.latch.CountUpAndDownLatch;
 import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.terminal.RunConfiguration;
-import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.KUtil;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 

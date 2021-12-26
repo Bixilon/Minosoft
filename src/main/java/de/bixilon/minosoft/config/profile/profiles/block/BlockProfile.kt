@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.block
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
 import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for block rendering

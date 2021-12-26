@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.data.registries.versions
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 object Versions : Iterable<Version> {
     private val VERSIONS_INDEX = "minosoft:mapping/versions.json".toResourceLocation()

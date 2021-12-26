@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.other.containers
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 
 open class Container(
     protected val connection: PlayConnection,

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 

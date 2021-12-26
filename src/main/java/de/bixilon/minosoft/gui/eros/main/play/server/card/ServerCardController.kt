@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.card
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.Image

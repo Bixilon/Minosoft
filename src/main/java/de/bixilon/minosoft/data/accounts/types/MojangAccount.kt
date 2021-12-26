@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.accounts.types
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.http.exceptions.AuthenticationException

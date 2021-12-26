@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
-import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.watcher.entry.MapDelegateWatcher.Companion.watchMapFX
 import javafx.fxml.FXML

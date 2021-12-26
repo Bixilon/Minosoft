@@ -1,10 +1,10 @@
 package de.bixilon.minosoft.data.world.container
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 class BlockSectionDataProvider(
     data: Array<BlockState?>? = null,

@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.world.biome.source
 
+import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.util.MMath
 
 class SpatialBiomeArray(val data: Array<Biome>) : BiomeSource {
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        val index = (MMath.clamp(y, 0, Y_BIT_MASK)) shl X_SECTION_COUNT + X_SECTION_COUNT or
+        val index = (clamp(y, 0, Y_BIT_MASK)) shl X_SECTION_COUNT + X_SECTION_COUNT or
                 ((z and X_BIT_MASK) shl X_SECTION_COUNT) or
                 (x and X_BIT_MASK)
 

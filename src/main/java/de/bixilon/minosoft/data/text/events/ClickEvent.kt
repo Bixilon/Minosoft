@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.text.events
 
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 class ClickEvent {
     val action: ClickEventActions
@@ -60,7 +60,7 @@ class ClickEvent {
 
         companion object : ValuesEnum<ClickEventActions> {
             override val VALUES: Array<ClickEventActions> = values()
-            override val NAME_MAP: Map<String, ClickEventActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, ClickEventActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

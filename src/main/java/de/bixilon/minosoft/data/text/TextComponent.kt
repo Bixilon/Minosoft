@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
@@ -19,7 +20,6 @@ import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.Util
 import javafx.animation.Animation
 import javafx.animation.KeyFrame

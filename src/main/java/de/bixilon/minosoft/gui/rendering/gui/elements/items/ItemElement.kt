@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.text.ChatColors
@@ -16,7 +17,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
 
 class ItemElement(

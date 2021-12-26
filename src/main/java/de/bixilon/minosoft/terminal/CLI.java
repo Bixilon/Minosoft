@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.terminal;
 
 import com.google.common.reflect.ClassPath;
+import de.bixilon.kutil.latch.CountUpAndDownLatch;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
-import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.ShutdownManager;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;

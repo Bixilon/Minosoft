@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Difficulties {
     PEACEFUL,
@@ -24,6 +24,6 @@ enum class Difficulties {
 
     companion object : ValuesEnum<Difficulties> {
         override val VALUES: Array<Difficulties> = values()
-        override val NAME_MAP: Map<String, Difficulties> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Difficulties> = EnumUtil.getEnumValues(VALUES)
     }
 }

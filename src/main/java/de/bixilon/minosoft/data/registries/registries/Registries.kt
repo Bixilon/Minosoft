@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.registries.registries
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
@@ -47,8 +49,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.KUtil.listCast
 import de.bixilon.minosoft.util.KUtil.mapCast
-import de.bixilon.minosoft.util.KUtil.nullCast
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.lang.reflect.Field

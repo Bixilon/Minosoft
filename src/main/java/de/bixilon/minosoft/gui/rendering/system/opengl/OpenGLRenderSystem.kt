@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL

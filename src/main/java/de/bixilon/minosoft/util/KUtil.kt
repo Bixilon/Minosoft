@@ -13,6 +13,12 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -23,9 +29,6 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.collections.LockMap
-import de.bixilon.minosoft.util.collections.SynchronizedMap
-import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.json.Jackson
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
@@ -38,7 +41,6 @@ import java.net.URL
 import java.nio.ByteBuffer
 import java.time.Instant
 import java.util.*
-import kotlin.Pair
 import kotlin.random.Random
 
 
@@ -51,36 +53,8 @@ object KUtil {
         UNSAFE = unsafeField[null] as Unsafe
     }
 
-    fun <T : Enum<*>> getEnumValues(values: Array<T>): Map<String, T> {
-        val ret: MutableMap<String, T> = mutableMapOf()
-
-        for (value in values) {
-            ret[value.name.lowercase()] = value
-
-            if (value is AliasableEnum) {
-                for (name in value.names) {
-                    ret[name] = value
-                }
-            }
-        }
-
-        return ret.toMap()
-    }
-
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun <T> Any?.unsafeCast(): T {
-        return this as T
-    }
-
-    inline fun <reified T> Any?.nullCast(): T? {
-        if (this is T) {
-            return this
-        }
-        return null
     }
 
     fun Any?.toResourceLocation(): ResourceLocation {
@@ -89,57 +63,6 @@ object KUtil {
             is ResourceLocation -> this
             else -> TODO("Don't know how to turn $this into a resource location!")
         }
-    }
-
-    fun <K, V> lockMapOf(vararg pairs: Pair<K, V>): LockMap<K, V> {
-        return LockMap(mutableMapOf(*pairs))
-    }
-
-    fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): SynchronizedMap<K, V> {
-        return SynchronizedMap(mutableMapOf(*pairs))
-    }
-
-    fun <V> synchronizedSetOf(vararg values: V): MutableSet<V> {
-        return Collections.synchronizedSet(mutableSetOf(*values))
-    }
-
-    fun <V> synchronizedListOf(vararg values: V): MutableList<V> {
-        return Collections.synchronizedList(mutableListOf(*values))
-    }
-
-    private fun <K> Any.synchronizedCopy(lock: Object? = null, copier: () -> K): K {
-        val ret: K
-        synchronized(lock ?: this) {
-            ret = copier()
-        }
-        return ret
-    }
-
-    fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
-        return when (this) {
-            is LockMap<*, *> -> {
-                lock.acquire()
-                val map: SynchronizedMap<K, V> = SynchronizedMap(this.toMutableMap()).unsafeCast()
-                lock.release()
-                map
-            }
-            is SynchronizedMap<*, *> -> {
-                val map: SynchronizedMap<K, V>
-                synchronized(this.lock) {
-                    map = SynchronizedMap(this.toMutableMap()).unsafeCast()
-                }
-                map
-            }
-            else -> synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
-        }
-    }
-
-    fun <V> Collection<V>.toSynchronizedList(): MutableList<V> {
-        return synchronizedCopy { Collections.synchronizedList(this.toMutableList()) }
-    }
-
-    fun <V> Collection<V>.toSynchronizedSet(): MutableSet<V> {
-        return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
     }
 
     fun <T> T.synchronizedDeepCopy(): T {
@@ -221,38 +144,6 @@ object KUtil {
         return this.nextInt(100) < intPercent
     }
 
-    fun <T> Boolean.decide(`true`: T, `false`: T): T {
-        return if (this) {
-            `true`
-        } else {
-            `false`
-        }
-    }
-
-    fun <T> Boolean.decide(`true`: () -> T, `false`: () -> T): T {
-        return if (this) {
-            `true`()
-        } else {
-            `false`()
-        }
-    }
-
-    fun <T> Boolean.decide(`true`: T, `false`: () -> T): T {
-        return if (this) {
-            `true`
-        } else {
-            `false`()
-        }
-    }
-
-    fun <T> Boolean.decide(`true`: () -> T, `false`: T): T {
-        return if (this) {
-            `true`()
-        } else {
-            `false`
-        }
-    }
-
     fun String.asUUID(): UUID {
         return Util.getUUIDFromString(this)
     }
@@ -271,43 +162,6 @@ object KUtil {
 
     operator fun <T> Array<T>.get(enum: Enum<*>): T {
         return this[enum.ordinal]
-    }
-
-    fun <K, V> Map<K, Any>.extend(vararg pairs: Pair<K, Any>): Map<K, V> {
-        val map: MutableMap<K, V> = mutableMapOf()
-
-        for ((key, value) in this) {
-            map[key] = value.unsafeCast()
-        }
-
-        for (pair in pairs) {
-            map[pair.first] = pair.second.unsafeCast()
-        }
-        return map.toMap()
-    }
-
-    fun <V> Collection<V>.extend(vararg values: Any): List<V> {
-        val list: MutableList<V> = mutableListOf()
-
-        for (value in this) {
-            list += value.unsafeCast<V>()
-        }
-
-        fun add(value: Any?) {
-            when (value) {
-                is Collection<*> -> {
-                    for (element in value) {
-                        add(element)
-                    }
-                }
-                else -> list += value.unsafeCast<V>()
-            }
-        }
-
-        for (value in values) {
-            add(value)
-        }
-        return list.toList()
     }
 
     fun Any?.format(): ChatComponent {

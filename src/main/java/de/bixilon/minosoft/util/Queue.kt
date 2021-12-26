@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.util.KUtil.synchronizedListOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedList
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 
 class Queue {
     private val queue: MutableList<Runnable> = synchronizedListOf()

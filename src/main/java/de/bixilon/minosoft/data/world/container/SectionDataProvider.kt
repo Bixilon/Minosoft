@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.container
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.concurrent.lock.ReadWriteLock
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.ReadWriteLock
 import glm_.vec3.Vec3i
 
 open class SectionDataProvider<T>(

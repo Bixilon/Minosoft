@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.util.account.microsoft
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.toLong
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.LoginException
 import de.bixilon.minosoft.util.http.HTTP2.postData

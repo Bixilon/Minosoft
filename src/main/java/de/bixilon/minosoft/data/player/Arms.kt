@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.player
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Arms {
     LEFT,
@@ -22,7 +22,7 @@ enum class Arms {
 
     companion object : ValuesEnum<Arms> {
         override val VALUES: Array<Arms> = values()
-        override val NAME_MAP: Map<String, Arms> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Arms> = EnumUtil.getEnumValues(VALUES)
 
         val Arms.opposite: Arms
             get() {

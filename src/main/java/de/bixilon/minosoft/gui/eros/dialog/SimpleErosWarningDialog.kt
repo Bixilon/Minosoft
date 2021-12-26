@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.eros.dialog
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.input.KeyCode

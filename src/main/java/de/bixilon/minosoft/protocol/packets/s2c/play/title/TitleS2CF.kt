@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object TitleS2CF {
 
@@ -51,7 +51,7 @@ object TitleS2CF {
 
         companion object : ValuesEnum<TitleActions> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, TitleActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, TitleActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

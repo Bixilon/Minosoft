@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.func.rad
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i

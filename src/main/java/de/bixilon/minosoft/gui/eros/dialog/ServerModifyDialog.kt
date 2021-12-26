@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.eros.dialog
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -29,9 +31,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.text.TextFlow

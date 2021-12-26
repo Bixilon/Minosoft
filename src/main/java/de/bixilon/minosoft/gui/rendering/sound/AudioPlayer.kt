@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.AbstractAudioPlayer
@@ -23,9 +26,6 @@ import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.KUtil.synchronizedListOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

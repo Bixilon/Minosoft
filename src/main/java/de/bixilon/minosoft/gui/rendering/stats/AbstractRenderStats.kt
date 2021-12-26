@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
-import de.bixilon.minosoft.util.avg.Average
+import de.bixilon.kutil.avg.Average
 
 interface AbstractRenderStats {
     val avgFrameTime: Average<Long>

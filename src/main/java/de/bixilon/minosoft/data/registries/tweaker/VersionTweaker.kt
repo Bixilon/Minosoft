@@ -18,10 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import glm_.vec3.Vec3i
 
 object VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location

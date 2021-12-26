@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
 
 class PerVersionEnumRegistry<T : Enum<*>>(

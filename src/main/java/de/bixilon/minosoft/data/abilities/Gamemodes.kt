@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.abilities
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Gamemodes(
     val canBuild: Boolean,
@@ -54,6 +54,6 @@ enum class Gamemodes(
 
     companion object : ValuesEnum<Gamemodes> {
         override val VALUES: Array<Gamemodes> = values()
-        override val NAME_MAP: Map<String, Gamemodes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Gamemodes> = EnumUtil.getEnumValues(VALUES)
     }
 }

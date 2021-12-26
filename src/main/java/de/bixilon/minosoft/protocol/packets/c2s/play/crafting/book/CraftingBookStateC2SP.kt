@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.crafting.book
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_PRE6
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 abstract class CraftingBookStateC2SP(
     val action: CraftingBookStates,
@@ -37,7 +37,7 @@ abstract class CraftingBookStateC2SP(
 
         companion object : ValuesEnum<CraftingBookStates> {
             override val VALUES: Array<CraftingBookStates> = values()
-            override val NAME_MAP: Map<String, CraftingBookStates> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, CraftingBookStates> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

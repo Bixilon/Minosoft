@@ -69,6 +69,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
         containerElement.silentApply()
         cacheUpToDate = false
     }
+
     companion object {
         private val BASE = "minecraft:hotbar_base".toResourceLocation()
         private val FRAME = "minecraft:hotbar_frame".toResourceLocation()

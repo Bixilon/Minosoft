@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.event
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class EventInitiators {
     CLIENT,
@@ -24,7 +24,7 @@ enum class EventInitiators {
 
     companion object : ValuesEnum<EventInitiators> {
         override val VALUES: Array<EventInitiators> = values()
-        override val NAME_MAP: Map<String, EventInitiators> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, EventInitiators> = EnumUtil.getEnumValues(VALUES)
         val DEFAULT = UNKNOWN
     }
 }

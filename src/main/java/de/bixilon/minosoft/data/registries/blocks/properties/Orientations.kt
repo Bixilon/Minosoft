@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Orientations {
     DOWN_EAST,
@@ -34,7 +34,7 @@ enum class Orientations {
 
     companion object : ValuesEnum<Orientations>, BlockPropertiesSerializer {
         override val VALUES: Array<Orientations> = values()
-        override val NAME_MAP: Map<String, Orientations> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Orientations> = EnumUtil.getEnumValues(VALUES)
 
         override fun deserialize(value: Any): Orientations {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 interface RootModel {
 

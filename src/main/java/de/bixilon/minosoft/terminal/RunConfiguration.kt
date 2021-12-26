@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.terminal
 
 import com.google.common.base.StandardSystemProperty
+import de.bixilon.kutil.general.OSUtil
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.slashPath
-import de.bixilon.minosoft.util.OSUtil
 import java.io.File
 import java.lang.management.ManagementFactory
 

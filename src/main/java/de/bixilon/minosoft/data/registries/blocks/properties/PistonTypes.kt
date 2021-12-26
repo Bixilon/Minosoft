@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class PistonTypes {
     NORMAL,
@@ -24,7 +24,7 @@ enum class PistonTypes {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<PistonTypes> {
         override val VALUES = values()
-        override val NAME_MAP: Map<String, PistonTypes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, PistonTypes> = EnumUtil.getEnumValues(VALUES)
 
         override fun deserialize(value: Any): PistonTypes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

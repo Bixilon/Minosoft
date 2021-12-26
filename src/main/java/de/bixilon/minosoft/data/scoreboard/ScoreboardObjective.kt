@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.CreateScoreboardObjectiveS2CP
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 class ScoreboardObjective(
     val name: String,

@@ -12,6 +12,11 @@
  */
 package de.bixilon.minosoft.data.player
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.math.MMath.clamp
+import de.bixilon.kutil.math.MMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
@@ -50,12 +55,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.decide
-import de.bixilon.minosoft.util.KUtil.nullCast
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.MMath.floor
 import de.bixilon.minosoft.util.Previous
 import glm_.func.cos
 import glm_.func.rad
@@ -304,9 +304,9 @@ class LocalPlayerEntity(
         }
         this.fallDistance = 0.0
         val returnVelocity = Vec3d(
-            x = MMath.clamp(velocity.x, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE),
+            x = clamp(velocity.x, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE),
             y = max(velocity.y, -CLIMBING_CLAMP_VALUE),
-            z = MMath.clamp(velocity.z, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
+            z = clamp(velocity.z, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
         )
         if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != MinecraftBlocks.SCAFFOLDING && isSneaking) {
             returnVelocity.y = 0.0
@@ -573,7 +573,7 @@ class LocalPlayerEntity(
 
         sendMovementPackets()
 
-        fovMultiplier.value = 1.0 + MMath.clamp(walkingSpeed * 1.9, -2.0, 2.0)
+        fovMultiplier.value = 1.0 + clamp(walkingSpeed * 1.9, -2.0, 2.0)
     }
 
     override val health: Double

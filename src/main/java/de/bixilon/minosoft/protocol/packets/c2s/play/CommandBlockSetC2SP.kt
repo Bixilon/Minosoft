@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -59,7 +59,7 @@ class CommandBlockSetC2SP(
 
         companion object : ValuesEnum<CommandBlockTypes> {
             override val VALUES: Array<CommandBlockTypes> = values()
-            override val NAME_MAP: Map<String, CommandBlockTypes> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, CommandBlockTypes> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

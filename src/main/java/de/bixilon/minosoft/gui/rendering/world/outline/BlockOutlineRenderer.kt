@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.outline
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec3.Vec3i
 
 class BlockOutlineRenderer(

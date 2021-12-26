@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.registries.registries.registry
 
 import com.google.gson.JsonPrimitive
-import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.util.collections.Clearable
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
 
 class EnumRegistry<T : Enum<*>>(

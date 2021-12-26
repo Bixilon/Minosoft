@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.phases
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import kotlin.reflect.KClass
 
 class RenderPhases<T : Renderer>(

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class GUILights {
     FRONT,
@@ -23,7 +23,7 @@ enum class GUILights {
 
     companion object : ValuesEnum<GUILights> {
         override val VALUES: Array<GUILights> = values()
-        override val NAME_MAP: Map<String, GUILights> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, GUILights> = EnumUtil.getEnumValues(VALUES)
 
     }
 }

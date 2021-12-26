@@ -12,13 +12,13 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -59,7 +59,7 @@ class EntityActionC2SP(
 
         companion object : ValuesEnum<EntityActions> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, EntityActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, EntityActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

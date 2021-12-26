@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.world.container.palette.palettes
 
+import de.bixilon.kutil.math.MMath.ceilLog2
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.MMath
 
 class RegistryPalette<T>(private val registry: AbstractRegistry<T>) : Palette<T> {
-    override val bits = MMath.ceilLog2(registry.size)
+    override val bits = ceilLog2(registry.size)
 
     override fun read(buffer: PlayInByteBuffer) {}
 

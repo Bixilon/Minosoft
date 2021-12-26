@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -9,7 +10,6 @@ import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.Ga
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.modding.event.events.CameraSetEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.protocol.RateLimiter
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SpectateInteractionManager(

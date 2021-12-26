@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.util.MMath
+import de.bixilon.kutil.math.MMath.clamp
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import org.checkerframework.common.value.qual.IntRange
@@ -94,7 +94,7 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
     }
 
     fun with(red: Float = this.floatRed, green: Float = this.floatGreen, blue: Float = this.floatBlue, alpha: Float = this.floatAlpha): RGBColor {
-        return RGBColor(MMath.clamp(red, 0.0f, 1.0f), MMath.clamp(green, 0.0f, 1.0f), MMath.clamp(blue, 0.0f, 1.0f), MMath.clamp(alpha, 0.0f, 1.0f))
+        return RGBColor(clamp(red, 0.0f, 1.0f), clamp(green, 0.0f, 1.0f), clamp(blue, 0.0f, 1.0f), clamp(alpha, 0.0f, 1.0f))
     }
 
     fun mix(vararg colors: RGBColor): RGBColor {

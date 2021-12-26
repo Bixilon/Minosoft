@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.about.AboutController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.main.play.PlayController
 import de.bixilon.minosoft.gui.eros.main.profiles.ProfilesController
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class ErosMainActivities(
     val layout: ResourceLocation,
@@ -36,6 +36,6 @@ enum class ErosMainActivities(
 
     companion object : ValuesEnum<ErosMainActivities> {
         override val VALUES: Array<ErosMainActivities> = values()
-        override val NAME_MAP: Map<String, ErosMainActivities> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, ErosMainActivities> = EnumUtil.getEnumValues(VALUES)
     }
 }

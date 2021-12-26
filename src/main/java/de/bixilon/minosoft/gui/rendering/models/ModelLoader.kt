@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

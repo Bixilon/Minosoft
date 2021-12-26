@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.protocol.RateLimiter
 import de.bixilon.minosoft.protocol.packets.c2s.play.ItemStackCreateC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

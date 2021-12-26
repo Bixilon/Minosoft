@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.util
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.Rendering
 

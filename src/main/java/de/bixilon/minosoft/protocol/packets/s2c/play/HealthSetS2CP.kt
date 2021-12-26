@@ -12,18 +12,18 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val hp: Float = MMath.clamp(buffer.readFloat(), 0.0f, Float.MAX_VALUE)
+    val hp: Float = clamp(buffer.readFloat(), 0.0f, Float.MAX_VALUE)
     val hunger = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readUnsignedShort()
     } else {
@@ -52,5 +52,4 @@ class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Health set (hp=$hp, hunger=$hunger, saturation=$saturation)" }
     }
-
 }

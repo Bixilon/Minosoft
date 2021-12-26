@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.data.scoreboard
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class ScoreboardPositions {
     TAB_LIST,
@@ -28,6 +28,6 @@ enum class ScoreboardPositions {
 
     companion object : ValuesEnum<ScoreboardPositions> {
         override val VALUES: Array<ScoreboardPositions> = values()
-        override val NAME_MAP: Map<String, ScoreboardPositions> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, ScoreboardPositions> = EnumUtil.getEnumValues(VALUES)
     }
 }

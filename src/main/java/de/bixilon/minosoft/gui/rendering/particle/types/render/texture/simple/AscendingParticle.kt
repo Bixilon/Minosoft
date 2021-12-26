@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
+import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.MMath
 import glm_.vec3.Vec3d
 
 abstract class AscendingParticle(
@@ -34,7 +34,7 @@ abstract class AscendingParticle(
 ) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
     override var scale: Float
-        get() = super.scale * MMath.clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)
+        get() = super.scale * clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)
         set(value) {
             super.scale = value
         }

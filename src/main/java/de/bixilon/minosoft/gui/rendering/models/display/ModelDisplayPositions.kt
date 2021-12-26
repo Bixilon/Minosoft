@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.display
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.enum.AliasableEnum
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.AliasableEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class ModelDisplayPositions(vararg names: String = arrayOf()) : AliasableEnum {
     THIRD_PERSON_RIGHT_HAND("thirdperson_righthand"),
@@ -33,7 +33,6 @@ enum class ModelDisplayPositions(vararg names: String = arrayOf()) : AliasableEn
 
     companion object : ValuesEnum<ModelDisplayPositions> {
         override val VALUES: Array<ModelDisplayPositions> = values()
-        override val NAME_MAP: Map<String, ModelDisplayPositions> = KUtil.getEnumValues(VALUES)
-
+        override val NAME_MAP: Map<String, ModelDisplayPositions> = EnumUtil.getEnumValues(VALUES)
     }
 }

@@ -454,5 +454,10 @@
             <artifactId>FranzXaver</artifactId>
             <version>0.1</version>
         </dependency>
+        <dependency>
+            <groupId>de.bixilon</groupId>
+            <artifactId>kutil</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

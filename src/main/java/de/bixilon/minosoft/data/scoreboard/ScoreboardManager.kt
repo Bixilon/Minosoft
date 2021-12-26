@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreTeamChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.decide
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 
 class ScoreboardManager(private val connection: PlayConnection) {
     val teams: MutableMap<String, Team> = synchronizedMapOf()

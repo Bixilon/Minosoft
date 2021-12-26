@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.util.nbt.tag
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class NBTTagTypes {
     END,
@@ -33,6 +33,6 @@ enum class NBTTagTypes {
 
     companion object : ValuesEnum<NBTTagTypes> {
         override val VALUES: Array<NBTTagTypes> = values()
-        override val NAME_MAP: Map<String, NBTTagTypes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, NBTTagTypes> = EnumUtil.getEnumValues(VALUES)
     }
 }

@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.util.delegate.watcher.entry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.delegate.DelegateManager
 import de.bixilon.minosoft.util.delegate.DelegateManager.identifier
 import de.bixilon.minosoft.util.delegate.watcher.DelegateListener

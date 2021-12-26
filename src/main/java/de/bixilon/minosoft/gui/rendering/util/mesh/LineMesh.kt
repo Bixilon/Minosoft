@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.kutil.math.MMath.positiveNegative
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
-import de.bixilon.minosoft.util.MMath.positiveNegative
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 

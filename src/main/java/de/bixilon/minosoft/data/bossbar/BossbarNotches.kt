@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.bossbar
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class BossbarNotches {
     NO_NOTCHES,
@@ -25,6 +25,6 @@ enum class BossbarNotches {
 
     companion object : ValuesEnum<BossbarNotches> {
         override val VALUES: Array<BossbarNotches> = values()
-        override val NAME_MAP: Map<String, BossbarNotches> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, BossbarNotches> = EnumUtil.getEnumValues(VALUES)
     }
 }

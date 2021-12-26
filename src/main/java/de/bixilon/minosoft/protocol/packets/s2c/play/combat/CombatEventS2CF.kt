@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.combat
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object CombatEventS2CF {
 
@@ -36,7 +36,7 @@ object CombatEventS2CF {
 
         companion object : ValuesEnum<CombatEvents> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, CombatEvents> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, CombatEvents> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

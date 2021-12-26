@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class StructureBlockModes {
     SAVE,
@@ -28,7 +28,7 @@ enum class StructureBlockModes {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<StructureBlockModes> {
         override val VALUES = values()
-        override val NAME_MAP: Map<String, StructureBlockModes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, StructureBlockModes> = EnumUtil.getEnumValues(VALUES)
 
         override fun deserialize(value: Any): StructureBlockModes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

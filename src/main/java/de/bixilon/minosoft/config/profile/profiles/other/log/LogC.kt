@@ -18,5 +18,5 @@ class LogC {
      * @see de.bixilon.minosoft.util.logging.LogMessageType
      */
     var levels by mapDelegate(LogMessageType.DEFAULT_LOG_MAP.toMutableMap())
-    private set
+        private set
 }

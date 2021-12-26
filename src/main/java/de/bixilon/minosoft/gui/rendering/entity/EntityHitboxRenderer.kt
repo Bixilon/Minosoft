@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -33,11 +37,7 @@ import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.lockMapOf
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
-import de.bixilon.minosoft.util.collections.LockMap
 
 class EntityHitboxRenderer(
     val connection: PlayConnection,

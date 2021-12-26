@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.element
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.util.KUtil.toBoolean
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3

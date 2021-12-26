@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class ProtocolStates(val connected: Boolean, val protocolId: Int = -1) {
     CONNECTING(false),
@@ -26,7 +26,7 @@ enum class ProtocolStates(val connected: Boolean, val protocolId: Int = -1) {
 
     companion object : ValuesEnum<ProtocolStates> {
         override val VALUES: Array<ProtocolStates> = values()
-        override val NAME_MAP: Map<String, ProtocolStates> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, ProtocolStates> = EnumUtil.getEnumValues(VALUES)
         val PROTOCOL_IDS = arrayOf(HANDSHAKING, STATUS, LOGIN, PLAY)
     }
 }

@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.audio
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.audio.types.TypesC
 import de.bixilon.minosoft.config.profile.profiles.audio.volume.VolumeC
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for audio

@@ -1,13 +1,13 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 

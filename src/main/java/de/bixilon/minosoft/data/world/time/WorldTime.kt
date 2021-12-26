@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.data.world.time
 
+import de.bixilon.kutil.math.MMath.fractionalPart
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.MMath
 import glm_.func.common.clamp
 import kotlin.math.PI
 import kotlin.math.abs
@@ -17,7 +17,7 @@ class WorldTime(
 
     val skyAngle: Float
         get() {
-            val fractionalPath = MMath.fractionalPart(abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
+            val fractionalPath = fractionalPart(abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
             val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
             return ((fractionalPath * 2.0 + angle) / 3.0).toFloat()
         }

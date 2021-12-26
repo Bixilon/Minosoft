@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.dialog.profiles
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.text.TextFlow

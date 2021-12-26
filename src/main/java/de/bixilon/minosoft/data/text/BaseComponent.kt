@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
 import de.bixilon.minosoft.data.text.events.ClickEvent
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.listCast
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.modding.event.master
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.modding.event.address.ServerAddressValidator
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 object GlobalEventMaster : EventMaster() {
     val specificEventInvokers: MutableMap<MutableSet<ServerAddressValidator>, MutableSet<EventInvoker>> = synchronizedMapOf()

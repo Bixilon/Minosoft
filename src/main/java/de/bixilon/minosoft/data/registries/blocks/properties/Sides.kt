@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Sides {
     LEFT,
@@ -24,7 +24,7 @@ enum class Sides {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Sides> {
         override val VALUES = values()
-        override val NAME_MAP: Map<String, Sides> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Sides> = EnumUtil.getEnumValues(VALUES)
 
         override fun deserialize(value: Any): Sides {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

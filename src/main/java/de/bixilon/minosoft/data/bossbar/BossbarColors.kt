@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.bossbar
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class BossbarColors {
     PINK,
@@ -27,6 +27,6 @@ enum class BossbarColors {
 
     companion object : ValuesEnum<BossbarColors> {
         override val VALUES: Array<BossbarColors> = values()
-        override val NAME_MAP: Map<String, BossbarColors> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, BossbarColors> = EnumUtil.getEnumValues(VALUES)
     }
 }

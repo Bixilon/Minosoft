@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.assets
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.assets.minecraft.index.IndexAssetsManager
@@ -8,7 +9,6 @@ import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperty
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.util.CountUpAndDownLatch
 
 object AssetsLoader {
 

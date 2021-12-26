@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.block.entities
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec3.Vec3i
 
 class MapBlockEntityProvider(

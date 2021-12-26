@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.biomes
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 data class BiomeCategory(
     override val name: String,

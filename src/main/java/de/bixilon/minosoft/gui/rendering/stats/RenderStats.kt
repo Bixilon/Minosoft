@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
+import de.bixilon.kutil.avg.LongAverage
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.avg.LongAverage
 
 class RenderStats : AbstractRenderStats {
     override val avgFrameTime: LongAverage = LongAverage(1L * 1000000000L) // 1 second * SECOND_SCALE

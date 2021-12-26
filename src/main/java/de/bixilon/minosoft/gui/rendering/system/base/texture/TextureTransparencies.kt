@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class TextureTransparencies {
     OPAQUE,
@@ -24,6 +24,6 @@ enum class TextureTransparencies {
 
     companion object : ValuesEnum<TextureTransparencies> {
         override val VALUES: Array<TextureTransparencies> = values()
-        override val NAME_MAP: Map<String, TextureTransparencies> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, TextureTransparencies> = EnumUtil.getEnumValues(VALUES)
     }
 }

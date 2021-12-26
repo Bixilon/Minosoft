@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -70,7 +69,7 @@ class GUIMesh(
                 BASE_Z + Z_MULTIPLIER * z,
                 uv.x,
                 uv.y,
-                Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
+                Float.fromBits(texture.renderData.shaderTextureId),
                 Float.fromBits(color.rgba),
             )
         }

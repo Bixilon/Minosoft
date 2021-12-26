@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.util.logging
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class LogMessageType(
     val defaultColor: RGBColor,
@@ -62,7 +62,7 @@ enum class LogMessageType(
 
     companion object : ValuesEnum<LogMessageType> {
         override val VALUES: Array<LogMessageType> = values()
-        override val NAME_MAP: Map<String, LogMessageType> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, LogMessageType> = EnumUtil.getEnumValues(VALUES)
 
         val DEFAULT_LOG_MAP: Map<LogMessageType, LogLevels> = let {
             val ret: MutableMap<LogMessageType, LogLevels> = mutableMapOf()

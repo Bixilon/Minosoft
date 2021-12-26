@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.assets
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.CountUpAndDownLatch
 import java.io.FileNotFoundException
 import java.io.InputStream
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.preparer
 
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.Chunk
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.models.baked.block.GreedyBakedBlockMode
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_SIZE
-import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*

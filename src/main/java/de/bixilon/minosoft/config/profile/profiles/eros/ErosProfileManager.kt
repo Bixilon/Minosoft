@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.config.profile.profiles.eros
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.delegate.BackingDelegate
@@ -10,7 +11,6 @@ import de.bixilon.minosoft.config.profile.delegate.delegate.entry.MapDelegatePro
 import de.bixilon.minosoft.config.profile.delegate.delegate.entry.SetDelegateProfile
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.MapChangeListener

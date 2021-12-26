@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.bossbar
 
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import java.util.*
 
 class BossbarManager {

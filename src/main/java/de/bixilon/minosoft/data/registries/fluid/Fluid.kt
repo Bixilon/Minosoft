@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.registries.fluid
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -27,8 +29,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nullCast
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.math.abs

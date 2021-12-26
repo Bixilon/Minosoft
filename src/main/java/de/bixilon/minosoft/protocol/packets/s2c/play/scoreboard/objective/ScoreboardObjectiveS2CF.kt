@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object ScoreboardObjectiveS2CF {
 
@@ -43,7 +43,7 @@ object ScoreboardObjectiveS2CF {
 
         companion object : ValuesEnum<ScoreboardScoreActions> {
             override val VALUES: Array<ScoreboardScoreActions> = values()
-            override val NAME_MAP: Map<String, ScoreboardScoreActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, ScoreboardScoreActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

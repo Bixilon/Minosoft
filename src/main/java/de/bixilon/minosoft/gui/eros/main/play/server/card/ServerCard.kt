@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.card
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
-import de.bixilon.minosoft.util.collections.SynchronizedMap
 
 class ServerCard(
     val server: Server,

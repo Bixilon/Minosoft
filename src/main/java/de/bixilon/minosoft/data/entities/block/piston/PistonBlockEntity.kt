@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.entities.block.piston
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     var state: PistonStates = PistonStates.PULL
@@ -48,7 +48,7 @@ open class PistonBlockEntity(connection: PlayConnection) : BlockEntity(connectio
 
         companion object : ValuesEnum<PistonStates> {
             override val VALUES: Array<PistonStates> = values()
-            override val NAME_MAP: Map<String, PistonStates> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, PistonStates> = EnumUtil.getEnumValues(VALUES)
 
         }
     }

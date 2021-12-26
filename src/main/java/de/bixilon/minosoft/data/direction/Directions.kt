@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.direction
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
@@ -19,8 +21,6 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
@@ -171,7 +171,7 @@ enum class Directions(
         const val SIZE_SIDES = 4
         const val SIDE_OFFSET = 2
         override val VALUES = values()
-        override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Directions> = EnumUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
         val PRIORITY_SIDES = arrayOf(WEST, EAST, NORTH, SOUTH)
         private val HORIZONTAL = arrayOf(SOUTH, WEST, NORTH, EAST)

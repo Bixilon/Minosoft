@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.MultipartBakedModel
@@ -8,7 +9,6 @@ import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFacePropertie
 import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3i
 import java.util.*
 

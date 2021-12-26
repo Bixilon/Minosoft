@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.camera.target
 
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -13,7 +14,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
-import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 

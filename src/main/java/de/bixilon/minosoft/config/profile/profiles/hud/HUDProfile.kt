@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.hud
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.hud.chat.ChatC
 import de.bixilon.minosoft.config.profile.profiles.hud.crosshair.CrosshairC
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for hud (rendering)

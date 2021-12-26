@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 import java.util.*
 

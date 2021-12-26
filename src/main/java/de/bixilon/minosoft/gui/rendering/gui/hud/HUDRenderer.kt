@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -45,10 +48,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2

@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.entities
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
@@ -23,8 +25,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class EntityMetaDataFields(val defaultValue: Any? = null) {
     ENTITY_FLAGS(0.toByte()),
@@ -306,6 +306,6 @@ enum class EntityMetaDataFields(val defaultValue: Any? = null) {
 
     companion object : ValuesEnum<EntityMetaDataFields> {
         override val VALUES: Array<EntityMetaDataFields> = values()
-        override val NAME_MAP: Map<String, EntityMetaDataFields> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, EntityMetaDataFields> = EnumUtil.getEnumValues(VALUES)
     }
 }

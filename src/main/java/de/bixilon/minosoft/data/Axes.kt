@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.data
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Axes {
     X,
@@ -25,7 +25,7 @@ enum class Axes {
 
     companion object : ValuesEnum<Axes>, BlockPropertiesSerializer {
         override val VALUES: Array<Axes> = values()
-        override val NAME_MAP: Map<String, Axes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Axes> = EnumUtil.getEnumValues(VALUES)
 
         operator fun get(direction: Directions): Axes {
             return when (direction) {

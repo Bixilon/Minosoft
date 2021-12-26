@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.config.profile.profiles.resources
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.resources.assets.AssetsC
 import de.bixilon.minosoft.config.profile.profiles.resources.source.SourceC
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for resources

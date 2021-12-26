@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.scoreboard
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.AliasableEnum
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.AliasableEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class NameTagVisibilities(vararg names: String) : AliasableEnum {
     ALWAYS,
@@ -28,7 +28,7 @@ enum class NameTagVisibilities(vararg names: String) : AliasableEnum {
 
     companion object : ValuesEnum<NameTagVisibilities> {
         override val VALUES: Array<NameTagVisibilities> = values()
-        override val NAME_MAP: Map<String, NameTagVisibilities> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, NameTagVisibilities> = EnumUtil.getEnumValues(VALUES)
 
     }
 }

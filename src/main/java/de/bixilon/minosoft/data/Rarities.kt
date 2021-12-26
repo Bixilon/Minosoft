@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Rarities(val color: RGBColor) {
     COMMON(ChatColors.WHITE),
@@ -27,6 +27,6 @@ enum class Rarities(val color: RGBColor) {
 
     companion object : ValuesEnum<Rarities> {
         override val VALUES: Array<Rarities> = values()
-        override val NAME_MAP: Map<String, Rarities> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Rarities> = EnumUtil.getEnumValues(VALUES)
     }
 }

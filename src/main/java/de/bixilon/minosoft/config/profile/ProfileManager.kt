@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.config.profile
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.profile.delegate.delegate.BackingDelegate
 import de.bixilon.minosoft.config.profile.delegate.delegate.ProfileDelegate
 import de.bixilon.minosoft.config.profile.delegate.delegate.entry.ListDelegateProfile
@@ -19,7 +20,6 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.MapChangeListener

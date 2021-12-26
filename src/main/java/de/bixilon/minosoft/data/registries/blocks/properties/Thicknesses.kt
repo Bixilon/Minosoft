@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Thicknesses {
     TIP_MERGE,
@@ -29,7 +29,7 @@ enum class Thicknesses {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Thicknesses> {
         override val VALUES = values()
-        override val NAME_MAP: Map<String, Thicknesses> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Thicknesses> = EnumUtil.getEnumValues(VALUES)
 
         override fun deserialize(value: Any): Thicknesses {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

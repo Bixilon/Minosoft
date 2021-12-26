@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nullCast
 
 class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var joint: String = "rollable"

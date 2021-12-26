@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.util.delegate.delegate.entry
 
-import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.util.delegate.delegate.DelegateSetter
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

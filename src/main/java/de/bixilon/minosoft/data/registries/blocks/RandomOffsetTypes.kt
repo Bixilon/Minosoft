@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class RandomOffsetTypes {
     XZ,
@@ -23,6 +23,6 @@ enum class RandomOffsetTypes {
 
     companion object : ValuesEnum<RandomOffsetTypes> {
         override val VALUES: Array<RandomOffsetTypes> = values()
-        override val NAME_MAP: Map<String, RandomOffsetTypes> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, RandomOffsetTypes> = EnumUtil.getEnumValues(VALUES)
     }
 }

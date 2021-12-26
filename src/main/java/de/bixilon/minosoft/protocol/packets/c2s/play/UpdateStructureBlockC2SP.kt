@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -71,7 +71,7 @@ class UpdateStructureBlockC2SP(
 
         companion object : ValuesEnum<StructureBlockActions> {
             override val VALUES: Array<StructureBlockActions> = values()
-            override val NAME_MAP: Map<String, StructureBlockActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, StructureBlockActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
@@ -84,7 +84,7 @@ class UpdateStructureBlockC2SP(
 
         companion object : ValuesEnum<StructureBlockModes> {
             override val VALUES: Array<StructureBlockModes> = values()
-            override val NAME_MAP: Map<String, StructureBlockModes> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, StructureBlockModes> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
@@ -96,7 +96,7 @@ class UpdateStructureBlockC2SP(
 
         companion object : ValuesEnum<StructureBlockMirrors> {
             override val VALUES: Array<StructureBlockMirrors> = values()
-            override val NAME_MAP: Map<String, StructureBlockMirrors> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, StructureBlockMirrors> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
@@ -109,7 +109,7 @@ class UpdateStructureBlockC2SP(
 
         companion object : ValuesEnum<StructureBlockRotations> {
             override val VALUES: Array<StructureBlockRotations> = values()
-            override val NAME_MAP: Map<String, StructureBlockRotations> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, StructureBlockRotations> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

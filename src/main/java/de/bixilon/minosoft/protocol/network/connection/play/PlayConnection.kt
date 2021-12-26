@@ -13,6 +13,11 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
@@ -54,15 +59,10 @@ import de.bixilon.minosoft.protocol.protocol.*
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.commands.commands.Command
-import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.task.time.TimeWorker
-import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 
 
 class PlayConnection(

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import java.util.*
 
 data class EntityAttribute(

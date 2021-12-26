@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.config.profile.profiles.eros
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
@@ -8,7 +9,6 @@ import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 import de.bixilon.minosoft.config.profile.profiles.eros.text.TextC
 import de.bixilon.minosoft.config.profile.profiles.eros.theme.ThemeC
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for Eros

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
+import de.bixilon.kutil.math.MMath.round10
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.MMath.round10
 import glm_.vec2.Vec2i
 
 class WorldInfoHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextElement>(hudRenderer), Pollable {

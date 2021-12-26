@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.util.delegate
 
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.collections.SynchronizedMap
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.util.delegate.delegate.Delegate
 import de.bixilon.minosoft.util.delegate.delegate.entry.ListDelegate
 import de.bixilon.minosoft.util.delegate.delegate.entry.MapDelegate

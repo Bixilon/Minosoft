@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.config.profile.delegate.delegate.entry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.delegate.delegate.DelegateSetter
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

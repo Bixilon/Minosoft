@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.math.MMath.ceil
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.RGBColor
@@ -21,8 +23,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.util.KUtil.decide
-import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec2.Vec2t

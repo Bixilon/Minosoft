@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.assets.minecraft
 
 import com.fasterxml.jackson.databind.JsonNode
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util

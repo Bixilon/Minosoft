@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Attachments {
     FLOOR,
@@ -27,7 +27,7 @@ enum class Attachments {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Attachments> {
         override val VALUES: Array<Attachments> = values()
-        override val NAME_MAP: Map<String, Attachments> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Attachments> = EnumUtil.getEnumValues(VALUES)
 
         override fun deserialize(value: Any): Attachments {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

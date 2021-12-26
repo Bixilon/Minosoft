@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
@@ -29,11 +32,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import de.bixilon.minosoft.util.task.time.TimeWorker
-import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 

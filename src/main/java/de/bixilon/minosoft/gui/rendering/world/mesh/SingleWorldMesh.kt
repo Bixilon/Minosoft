@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.world.mesh
 
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -25,13 +24,13 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(
     var distance: Float = 0.0f // Used for sorting
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
-        val transformedUV = texture.renderData?.transformUV(uv) ?: uv
+        val transformedUV = texture.renderData.transformUV(uv)
         data.add(position[0])
         data.add(position[1])
         data.add(position[2])
         data.add(transformedUV.x)
         data.add(transformedUV.y)
-        data.add(Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID))
+        data.add(Float.fromBits(texture.renderData.shaderTextureId))
         data.add(Float.fromBits(tintColor or (light shl 24)))
     }
 

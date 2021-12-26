@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.nbt.tag
 
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.nullCast
 
 object NBTUtil {
 

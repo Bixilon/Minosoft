@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.modding.event.invoker
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.loading.Priorities
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import kotlin.reflect.KClass
 
 class CallbackEventInvoker<E : Event> private constructor(

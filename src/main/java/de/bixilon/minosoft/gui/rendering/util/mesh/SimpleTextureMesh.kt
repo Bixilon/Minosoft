@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -31,7 +30,7 @@ open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: Primitiv
                 position.z,
                 uv.x,
                 uv.y,
-                Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
+                Float.fromBits(texture.renderData.shaderTextureId),
                 Float.fromBits(tintColor.rgba)
             ))
     }

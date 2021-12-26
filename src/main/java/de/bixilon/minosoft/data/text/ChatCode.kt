@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
-import de.bixilon.minosoft.util.KUtil.extend
-import de.bixilon.minosoft.util.KUtil.nullCast
 
 interface ChatCode {
     companion object {

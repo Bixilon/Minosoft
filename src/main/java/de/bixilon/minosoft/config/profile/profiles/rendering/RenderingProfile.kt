@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.config.profile.profiles.rendering
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
@@ -13,7 +14,6 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.fog.FogC
 import de.bixilon.minosoft.config.profile.profiles.rendering.light.LightC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 /**
  * Profile for general rendering

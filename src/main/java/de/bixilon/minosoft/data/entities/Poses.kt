@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class Poses {
     STANDING,
@@ -28,6 +28,6 @@ enum class Poses {
 
     companion object : ValuesEnum<Poses> {
         override val VALUES: Array<Poses> = values()
-        override val NAME_MAP: Map<String, Poses> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, Poses> = EnumUtil.getEnumValues(VALUES)
     }
 }

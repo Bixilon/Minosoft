@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -33,10 +35,8 @@ import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.mapCast
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toDouble
 import de.bixilon.minosoft.util.KUtil.toInt
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3i
 import kotlin.random.Random

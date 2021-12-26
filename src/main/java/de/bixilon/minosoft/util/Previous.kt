@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 
 class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, delta: Long) -> T)? = null) {
     private val changeListeners: MutableSet<(value: T, previous: T) -> Unit> = synchronizedSetOf()

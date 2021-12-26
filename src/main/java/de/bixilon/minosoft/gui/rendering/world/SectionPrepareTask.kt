@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.world
 
-import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 
 class SectionPrepareTask(

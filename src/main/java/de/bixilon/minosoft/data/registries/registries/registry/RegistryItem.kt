@@ -51,5 +51,5 @@ abstract class RegistryItem : ResourceLocationAble {
         this::injects.javaField?.setValue(this, null)
     }
 
-    open fun postInit(registries: Registries) { }
+    open fun postInit(registries: Registries) {}
 }

@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
 enum class SoundCategories {
     MASTER,
@@ -30,6 +30,6 @@ enum class SoundCategories {
 
     companion object : ValuesEnum<SoundCategories> {
         override val VALUES: Array<SoundCategories> = values()
-        override val NAME_MAP: Map<String, SoundCategories> = KUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, SoundCategories> = EnumUtil.getEnumValues(VALUES)
     }
 }

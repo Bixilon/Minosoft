@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
+import de.bixilon.kutil.math.MMath.round10
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -47,7 +48,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import glm_.vec2.Vec2i

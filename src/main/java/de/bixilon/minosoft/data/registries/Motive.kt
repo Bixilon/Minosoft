@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 data class Motive(
     override val resourceLocation: ResourceLocation,

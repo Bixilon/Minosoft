@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.data.text.events
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.events.data.EntityHoverData
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -64,7 +64,7 @@ class HoverEvent {
 
         companion object : ValuesEnum<HoverEventActions> {
             override val VALUES: Array<HoverEventActions> = values()
-            override val NAME_MAP: Map<String, HoverEventActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, HoverEventActions> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

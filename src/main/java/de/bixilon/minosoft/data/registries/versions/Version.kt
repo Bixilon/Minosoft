@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.data.registries.versions
 
+import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.RegistriesLoader
@@ -7,7 +8,6 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
-import de.bixilon.minosoft.util.KUtil.decide
 
 class Version(
     val name: String,

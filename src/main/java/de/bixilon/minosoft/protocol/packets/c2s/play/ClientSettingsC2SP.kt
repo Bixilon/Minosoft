@@ -12,13 +12,13 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -78,7 +78,7 @@ class ClientSettingsC2SP(
 
         companion object : ValuesEnum<SkinParts> {
             override val VALUES: Array<SkinParts> = values()
-            override val NAME_MAP: Map<String, SkinParts> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, SkinParts> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
@@ -90,7 +90,7 @@ class ClientSettingsC2SP(
 
         companion object : ValuesEnum<ChatModes> {
             override val VALUES: Array<ChatModes> = values()
-            override val NAME_MAP: Map<String, ChatModes> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, ChatModes> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }
