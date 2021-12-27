@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.element
 
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.util.KUtil.toBoolean
-import de.bixilon.minosoft.util.KUtil.toFloat
 import glm_.vec3.Vec3
 
 data class UnbakedElementRotation(

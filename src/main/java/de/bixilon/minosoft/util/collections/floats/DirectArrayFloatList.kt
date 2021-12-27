@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.BufferOverflowException
@@ -162,7 +162,7 @@ class DirectArrayFloatList(
 
 
     private companion object {
-        private val FLOAT_PUT_METHOD = KUtil.tryCatch { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
+        private val FLOAT_PUT_METHOD = tryCatch { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
         private const val DEFAULT_INITIAL_SIZE = 1000
     }
 }

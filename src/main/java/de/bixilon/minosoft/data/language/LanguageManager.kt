@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.language
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil.tryCatch
 import java.io.FileNotFoundException
 
 class LanguageManager(

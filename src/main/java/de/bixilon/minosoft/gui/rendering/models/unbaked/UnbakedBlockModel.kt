@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
-import de.bixilon.minosoft.util.KUtil.toBoolean
 
 class UnbakedBlockModel(
     parent: GenericUnbakedModel?,

@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.sound.SoundUtil.sound
-import de.bixilon.minosoft.util.KUtil.toBoolean
-import de.bixilon.minosoft.util.KUtil.toFloat
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

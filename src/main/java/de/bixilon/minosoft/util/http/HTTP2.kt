@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.http
 
 import de.bixilon.kutil.collections.CollectionUtil.extend
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import java.net.URI

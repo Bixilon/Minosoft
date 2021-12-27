@@ -14,9 +14,10 @@ package de.bixilon.minosoft.data.player
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.kutil.math.MMath.floor
+import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
@@ -54,7 +55,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
 import glm_.func.cos
@@ -218,7 +218,7 @@ class LocalPlayerEntity(
         if (connection.profiles.rendering.movement.disablePacketSending) {
             return
         }
-        val currentTime = KUtil.time
+        val currentTime = TimeUtil.time
         val isSprinting = isSprinting
         if (isSprinting != lastSprinting) {
             connection.sendPacket(EntityActionC2SP(this, connection, isSprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))

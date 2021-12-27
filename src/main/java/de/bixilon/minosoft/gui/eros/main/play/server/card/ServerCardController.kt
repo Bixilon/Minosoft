@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusRe
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.util.KUtil.text
-import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
 import javafx.fxml.FXML

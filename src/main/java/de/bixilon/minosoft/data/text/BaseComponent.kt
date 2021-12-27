@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.json.JsonUtil.toJsonList
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.listCast
-import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
@@ -139,7 +139,7 @@ class BaseComponent : ChatComponent {
         var currentText = ""
 
         fun parseExtra() {
-            json["extra"]?.listCast()?.let {
+            json["extra"].toJsonList()?.let {
                 for (data in it) {
                     parts += ChatComponent.of(data, translator, currentParent)
                 }
@@ -184,11 +184,11 @@ class BaseComponent : ChatComponent {
 
         parseExtra()
 
-        json["translate"]?.nullCast<String>()?.let {
+        json["translate"]?.toString()?.let {
             val with: MutableList<Any> = mutableListOf()
-            json["with"]?.listCast()?.let { withArray ->
+            json["with"].toJsonList()?.let { withArray ->
                 for (part in withArray) {
-                    with.add(part)
+                    with.add(part ?: continue)
                 }
             }
             parts += translator?.translate(it.toResourceLocation(), currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent)

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.scoreboard
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreTeamChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 

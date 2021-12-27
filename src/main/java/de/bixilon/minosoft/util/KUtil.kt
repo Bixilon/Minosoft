@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -34,24 +34,10 @@ import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
 import org.kamranzafar.jtar.TarHeader
-import sun.misc.Unsafe
-import java.io.*
-import java.lang.reflect.Field
-import java.net.URL
-import java.nio.ByteBuffer
-import java.time.Instant
 import java.util.*
-import kotlin.random.Random
 
 
 object KUtil {
-    val UNSAFE: Unsafe
-
-    init {
-        val unsafeField = Unsafe::class.java.getDeclaredField("theUnsafe")
-        unsafeField.isAccessible = true
-        UNSAFE = unsafeField[null] as Unsafe
-    }
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
@@ -117,17 +103,6 @@ object KUtil {
         var setBreakPointHere = 1
     }
 
-    fun hardCrash() {
-        val field = Unsafe::class.java.getDeclaredField("theUnsafe")
-        field.isAccessible = true
-        val unsafe = field[null] as Unsafe
-        unsafe.putAddress(0, 0)
-    }
-
-    fun Random.nextFloat(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): Float {
-        return min + this.nextFloat() * (max - min)
-    }
-
     /**
      * Converts millis to ticks
      */
@@ -140,28 +115,12 @@ object KUtil {
     val Number.millis: Int
         get() = this.toInt() * ProtocolDefinition.TICK_TIME
 
-    fun Random.chance(intPercent: Int): Boolean {
-        return this.nextInt(100) < intPercent
-    }
-
-    fun String.asUUID(): UUID {
-        return Util.getUUIDFromString(this)
-    }
-
     fun Collection<Int>.entities(connection: PlayConnection): Set<Entity> {
         val entities: MutableList<Entity> = mutableListOf()
         for (id in this) {
             entities += connection.world.entities[id] ?: continue
         }
         return entities.toSet()
-    }
-
-    operator fun <T> List<T>.get(enum: Enum<*>): T {
-        return this[enum.ordinal]
-    }
-
-    operator fun <T> Array<T>.get(enum: Enum<*>): T {
-        return this[enum.ordinal]
     }
 
     fun Any?.format(): ChatComponent {
@@ -190,31 +149,6 @@ object KUtil {
         })
     }
 
-
-    fun Field.setValue(instance: Any, value: Any?) {
-        this.isAccessible = true
-
-        // ToDo
-        // if (Modifier.isFinal(this.modifiers)) {
-        //     FieldUtils.removeFinalModifier(this)
-        // }
-
-        this.set(instance, value)
-    }
-
-
-    fun Any.mapCast(): Map<Any, Any>? {
-        return this.nullCast()
-    }
-
-    fun Any.listCast(): Collection<Any>? {
-        return this.nullCast()
-    }
-
-    fun Any?.asList(): List<Any> {
-        return this.unsafeCast()
-    }
-
     fun Any.toJson(beautiful: Boolean = false): String {
         return if (beautiful) {
             Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(this)
@@ -227,87 +161,9 @@ object KUtil {
         return Jackson.MAPPER.readValue(this, Jackson.JSON_MAP_TYPE)
     }
 
-    fun Any?.toInt(): Int {
-        return when (this) {
-            is Int -> this
-            is Long -> this.toInt()
-            is Number -> this.toInt()
-            is String -> Integer.valueOf(this)
-            else -> TODO()
-        }
-    }
-
-    fun Any?.toLong(): Long {
-        return when (this) {
-            is Long -> this
-            is Int -> this.toLong()
-            is Number -> this.toLong()
-            else -> TODO()
-        }
-    }
-
-    fun Any?.toDouble(): Double {
-        return when (this) {
-            is Double -> this
-            is Number -> this.toDouble()
-            else -> TODO()
-        }
-    }
-
-    fun Any?.toFloat(): Float {
-        return when (this) {
-            is Float -> this
-            is Number -> this.toFloat()
-            else -> TODO()
-        }
-    }
-
-    fun Any?.toBoolean(): Boolean {
-        return when (this) {
-            is Boolean -> this
-            is Number -> this.toInt() == 0x01
-            "true" -> true
-            "false" -> false
-            else -> TODO("$this is not a boolean!")
-        }
-    }
-
-    fun <T> tryCatch(vararg exceptions: Class<out Throwable> = arrayOf(), executor: () -> T): T? {
-        try {
-            return executor()
-        } catch (thrown: Throwable) {
-            if (exceptions.isEmpty()) {
-                // Catch all
-                return null
-            }
-            for (exception in exceptions) {
-                if (exception.isAssignableFrom(thrown::class.java)) {
-                    return null
-                }
-            }
-            throw thrown
-        }
-    }
-
     val Throwable.text: TextComponent
         get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
 
-    fun Throwable.toStackTrace(): String {
-        val stringWriter = StringWriter()
-        this.printStackTrace(PrintWriter(stringWriter))
-        return stringWriter.toString()
-    }
-
-    fun Int.thousands(): String {
-        return String.format("%,d", this)
-    }
-
-    val Class<*>.realName: String
-        get() = this.name.removePrefix(this.packageName).removePrefix(".")
-
-    fun UUID.trim(): String {
-        return this.toString().replace("-", "")
-    }
 
     fun <T : ResourceLocationAble> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
         val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
@@ -317,17 +173,6 @@ object KUtil {
         }
 
         return ret.toMap()
-    }
-
-    fun <T> T?.check(message: (() -> Any)? = null): T {
-        if (this == null) {
-            throw NullPointerException(message?.invoke()?.toString() ?: "Null check failed")
-        }
-        return this
-    }
-
-    fun ByteArray.toBase64(): String {
-        return Base64.getEncoder().encodeToString(this)
     }
 
     fun String?.nullCompare(other: String?): Int? {
@@ -366,11 +211,6 @@ object KUtil {
         return string
     }
 
-    fun ByteBuffer.toByteArray(): ByteArray {
-        val array = ByteArray(this.remaining())
-        this.get(array)
-        return array
-    }
 
     val BooleanArray.isTrue: Boolean
         get() {
@@ -381,57 +221,6 @@ object KUtil {
             }
             return true
         }
-
-    val time: Long
-        get() = Instant.now().toEpochMilli()
-
-    fun safeSaveToFile(destination: File, content: String) {
-        val parent = destination.parentFile
-        if (!parent.exists()) {
-            parent.mkdirs()
-            if (!parent.isDirectory) {
-                throw IOException("Could not create folder: ${parent.path}")
-            }
-        }
-
-        val tempFile = File("${destination.path}.tmp")
-        if (tempFile.exists()) {
-            if (!tempFile.delete()) {
-                throw IOException("Could not delete $tempFile!")
-            }
-        }
-        FileWriter(tempFile).apply {
-            write(content)
-            close()
-        }
-        if (destination.exists() && !destination.delete()) {
-            throw IOException("Could not delete $destination!")
-        }
-        if (!tempFile.renameTo(destination)) {
-            throw IOException("Could not move $tempFile to $destination!")
-        }
-    }
-
-    val Locale.fullName: String
-        get() = language + "_" + country.ifEmpty { language.uppercase() }
-
-
-    fun URL.check() {
-        check(this.protocol == "http" || this.protocol == "https") { "Url is not a web address" }
-    }
-
-    val String.isHexString: Boolean
-        get() {
-            for (digit in toCharArray()) {
-                if (digit !in '0'..'9' && digit !in 'a'..'f') {
-                    return false
-                }
-            }
-            return true
-        }
-
-    val File.slashPath: String
-        get() = absolutePath.replace('\\', '/')
 
     fun TarHeader.generalize() {
         userId = 0

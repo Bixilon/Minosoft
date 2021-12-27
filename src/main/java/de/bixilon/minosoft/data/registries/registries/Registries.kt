@@ -47,8 +47,6 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
-import de.bixilon.minosoft.util.KUtil.listCast
-import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.lang.reflect.Field
@@ -146,9 +144,9 @@ class Registries {
         loadEnumRegistry(version, pixlyzerData["entity_actions"], entityActionsRegistry, DefaultRegistries.ENTITY_ACTIONS_REGISTRY)
 
         // id stuff
-        biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.mapCast(), this, BiomeCategory)
-        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipitations"]?.mapCast(), this, BiomePrecipitation)
-        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.mapCast(), this, CreativeModeTab)
+        biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.unsafeCast(), this, BiomeCategory)
+        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipitations"]?.unsafeCast(), this, BiomePrecipitation)
+        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.unsafeCast(), this, CreativeModeTab)
 
         // id resource location stuff
         containerTypeRegistry.rawInitialize(pixlyzerData["container_types"]?.compoundCast(), this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
@@ -187,7 +185,7 @@ class Registries {
     private fun loadShapes(pixlyzerData: Map<String, Any>?) {
         pixlyzerData ?: return
         val aabbs = loadAABBs(pixlyzerData["aabbs"].nullCast()!!)
-        loadVoxelShapes(pixlyzerData["shapes"]?.listCast()!!, aabbs)
+        loadVoxelShapes(pixlyzerData["shapes"].unsafeCast(), aabbs)
     }
 
     private fun loadVoxelShapes(pixlyzerData: Collection<Any>, aabbs: List<AABB>) {

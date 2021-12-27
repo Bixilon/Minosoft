@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -26,7 +26,7 @@ class ItemCooldownSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val time = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {
-        connection.player.itemCooldown[item] = ItemCooldown(KUtil.time, time)
+        connection.player.itemCooldown[item] = ItemCooldown(TimeUtil.time, time)
     }
 
     override fun log(reducedLog: Boolean) {

@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
 
 class FadingTextElement(
@@ -44,7 +44,7 @@ class FadingTextElement(
             if (hidden || !super.cacheEnabled) {
                 return false
             }
-            val time = KUtil.time
+            val time = TimeUtil.time
             return (time >= fadeInEndTime) && (time < fadeOutStartTime)
         }
         set(value) {
@@ -78,7 +78,7 @@ class FadingTextElement(
     }
 
     fun show() {
-        val time = KUtil.time
+        val time = TimeUtil.time
         if (time in (fadeInEndTime + 1) until fadeOutStartTime) {
             fadeOutStartTime = time + stayTime
         } else {
@@ -95,7 +95,7 @@ class FadingTextElement(
             return
         }
         // ToDo: Eventually fade out when fading in
-        val time = KUtil.time
+        val time = TimeUtil.time
         fadeInStartTime = -1L
         fadeInEndTime = -1L
         fadeOutStartTime = time
@@ -110,7 +110,7 @@ class FadingTextElement(
         if (hidden) {
             return false
         }
-        val hidden = KUtil.time > fadeOutEndTime
+        val hidden = TimeUtil.time > fadeOutEndTime
         if (this.hidden != hidden) {
             this.hidden = hidden
             return true
@@ -122,7 +122,7 @@ class FadingTextElement(
         if (hidden) {
             return 0
         }
-        val time = KUtil.time
+        val time = TimeUtil.time
         if (time > fadeOutEndTime) {
             return 0
         }

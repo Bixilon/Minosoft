@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.frustum
 
 
+import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.AABB
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
-import de.bixilon.minosoft.util.KUtil.get
 import glm_.mat3x3.Mat3
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import de.bixilon.minosoft.util.KUtil.toFloat
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import glm_.vec2.Vec2
 
 object Vec2Util {

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 

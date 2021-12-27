@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.kutil.math.MMath.ceil
+import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.RGBColor

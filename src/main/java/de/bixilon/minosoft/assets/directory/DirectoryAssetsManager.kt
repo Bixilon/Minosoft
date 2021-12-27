@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.assets.directory
 
+import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.slashPath
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream

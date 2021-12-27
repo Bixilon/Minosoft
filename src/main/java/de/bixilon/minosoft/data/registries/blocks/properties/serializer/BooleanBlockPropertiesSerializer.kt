@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties.serializer
 
-import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 
 object BooleanBlockPropertiesSerializer : BlockPropertiesSerializer {
 

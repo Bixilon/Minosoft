@@ -104,20 +104,20 @@ If your start function needs much time, you can set the loading priority in the 
 
 
 Create a Main class, here is an example
+
 ```java
 package de.bixilon.example.mod.main;
 
-import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.modding.loading.ModPhases;
 
 public class TestMod extends MinosoftMod {
-    
-  public boolean start(ModPhases phase) {
-    if (phase == ModPhases.BOOTING) {
-        getLogger().info("Hello world!");
+
+    public boolean start(ModPhases phase) {
+        if (phase == ModPhases.BOOTING) {
+            getLogger().info("Hello world!");
+        }
+        return true;
     }
-    return true;
-  }
 }
 ```
 Your `mod.json` can look like this

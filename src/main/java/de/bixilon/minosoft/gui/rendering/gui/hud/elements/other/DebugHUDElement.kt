@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -42,14 +43,12 @@ import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
-import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 import kotlin.math.abs
@@ -223,7 +222,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "Mods ${ModLoader.MOD_MAP.size}x loaded, ${connection.size}x listeners", HorizontalAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "${connection.size}x listeners", HorizontalAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
 

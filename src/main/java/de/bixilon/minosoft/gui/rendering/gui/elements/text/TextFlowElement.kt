@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
-import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
 
 class TextFlowElement(
@@ -68,7 +68,7 @@ class TextFlowElement(
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
-        val currentTime = KUtil.time
+        val currentTime = TimeUtil.time
         var textSize = Vec2i.EMPTY
 
 
@@ -126,7 +126,7 @@ class TextFlowElement(
     operator fun plusAssign(message: ChatComponent) = addMessage(message)
 
     private fun checkExpiredLines() {
-        val currentTime = KUtil.time
+        val currentTime = TimeUtil.time
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
@@ -142,7 +142,7 @@ class TextFlowElement(
 
     private data class TextFlowTextElement(
         val text: ChatComponent,
-        val addTime: Long = KUtil.time,
+        val addTime: Long = TimeUtil.time,
     )
 
     private data class TextFlowLineElement(

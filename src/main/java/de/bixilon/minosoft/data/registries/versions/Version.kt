@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.data.registries.versions
 
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.RegistriesLoader

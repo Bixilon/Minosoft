@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.util.KUtil.toFloat
 import glm_.func.cos
 import glm_.func.sin
 import glm_.vec2.Vec2

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.commands.CommandArgumentNode
 import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
@@ -262,7 +263,7 @@ open class InByteBuffer {
     }
 
     fun readUUIDString(): UUID {
-        return Util.getUUIDFromString(readString())
+        return readString().toUUID()
     }
 
     fun readUUIDStringArray(length: Int = readVarInt()): Array<UUID> {

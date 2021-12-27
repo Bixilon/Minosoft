@@ -36,12 +36,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
-import java.util.regex.Pattern;
 import java.util.zip.*;
 
 @Deprecated(forRemoval = true)
 public final class Util {
-    public static final Pattern UUID_FIX_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
     public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final Gson GSON = new Gson();
@@ -61,17 +59,6 @@ public final class Util {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    public static UUID getUUIDFromString(String uuid) {
-        uuid = uuid.trim();
-        if (uuid.length() == 36) {
-            return UUID.fromString(uuid);
-        }
-        if (uuid.length() == 32) {
-            return UUID.fromString(UUID_FIX_PATTERN.matcher(uuid.replace("-", "")).replaceAll("$1-$2-$3-$4-$5"));
-        }
-        throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));
     }
 
     public static PlayInByteBuffer decompress(byte[] bytes, PlayConnection connection) {

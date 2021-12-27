@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
-import de.bixilon.minosoft.util.KUtil.mapCast
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -49,16 +50,16 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
                 // can not find version that matches our one
                 continue
             }
-            val versionData = versions[versionToUse.toString()]?.mapCast()!!
+            val versionData = versions[versionToUse.toString()].asJsonObject()
 
             val texture = hudRenderer.renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation())
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
             val slots: MutableMap<Int, Vec2iBinding> = mutableMapOf()
 
-            versionData["slots"]?.mapCast()?.let {
+            versionData["slots"].toJsonObject()?.let {
                 for ((slotId, slotData) in it) {
-                    val slot = slotData.mapCast()!!
+                    val slot = slotData.asJsonObject()
                     slots[slotId.toInt()] = Vec2iBinding(
                         start = slot["start"].toVec2i(),
                         end = slot["end"].toVec2i(),

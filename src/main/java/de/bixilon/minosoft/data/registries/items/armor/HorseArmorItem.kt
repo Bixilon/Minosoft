@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.data.registries.items.armor
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.toInt
 
 open class HorseArmorItem(
     resourceLocation: ResourceLocation,

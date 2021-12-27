@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.text.BaseComponent

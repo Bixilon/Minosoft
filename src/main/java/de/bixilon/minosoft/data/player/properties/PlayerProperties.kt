@@ -1,10 +1,10 @@
 package de.bixilon.minosoft.data.player.properties
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import de.bixilon.kutil.json.JsonUtil.toJsonList
+import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
-import de.bixilon.minosoft.util.KUtil.listCast
-import de.bixilon.minosoft.util.KUtil.trim
 import de.bixilon.minosoft.util.Util
 import java.net.URL
 import java.util.*
@@ -24,7 +24,7 @@ class PlayerProperties(
 
             var textures: PlayerTextures? = null
 
-            data["properties"]?.listCast()?.let {
+            data["properties"]?.toJsonList()?.let {
                 for (property in it) {
                     check(property is Map<*, *>)
                     when (val name = property["name"]) {

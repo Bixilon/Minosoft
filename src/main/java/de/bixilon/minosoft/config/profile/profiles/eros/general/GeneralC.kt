@@ -2,13 +2,13 @@ package de.bixilon.minosoft.config.profile.profiles.eros.general
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.locale.LocaleUtil.fullName
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.fullName
 import java.util.*
 
 class GeneralC {

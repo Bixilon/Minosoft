@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.util
 
 import com.sun.javafx.util.WeakReferenceQueue
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.reflection.ReflectionUtil.setValue
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.util.KUtil.setValue
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.css.StyleableProperty

@@ -16,11 +16,11 @@ package de.bixilon.minosoft.data.accounts.types
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.http.HTTP2.postJson
@@ -117,7 +117,7 @@ class MojangAccount(
 
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang login successful (email=$email)" }
 
-            val uuid = response.body["selectedProfile"].asCompound()["id"].toString().asUUID()
+            val uuid = response.body["selectedProfile"].asCompound()["id"].toString().toUUID()
             return MojangAccount(
                 id = response.body["user"].asCompound()["id"].unsafeCast(),
                 username = response.body["selectedProfile"].asCompound()["name"].unsafeCast(),

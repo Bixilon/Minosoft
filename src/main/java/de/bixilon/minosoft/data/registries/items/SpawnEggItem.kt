@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.items
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
-import de.bixilon.minosoft.util.KUtil.toInt
 
 open class SpawnEggItem(
     resourceLocation: ResourceLocation,

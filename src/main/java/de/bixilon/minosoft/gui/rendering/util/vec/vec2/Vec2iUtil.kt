@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.util.KUtil.toInt
 import glm_.func.rad
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i

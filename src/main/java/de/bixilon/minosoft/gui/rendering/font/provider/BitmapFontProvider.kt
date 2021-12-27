@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.font.provider
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonList
+import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.util.KUtil.asList
-import de.bixilon.minosoft.util.KUtil.toDouble
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 
@@ -35,7 +35,7 @@ class BitmapFontProvider(
         private set
 
     init {
-        val charRows = data["chars"].asList()
+        val charRows = data["chars"].asJsonList()
         val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
         texture.load(renderWindow.connection.assetsManager)
 

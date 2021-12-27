@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.abilities
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 
 data class ItemCooldown(
     val start: Long,
@@ -23,5 +23,5 @@ data class ItemCooldown(
     val end: Long = start + (time * ProtocolDefinition.TICK_TIME)
 
     val ended: Boolean
-        get() = KUtil.time >= end
+        get() = TimeUtil.time >= end
 }

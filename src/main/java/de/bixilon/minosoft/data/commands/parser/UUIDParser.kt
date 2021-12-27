@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.UUIDCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.Util
 import java.util.*
 
 object UUIDParser : CommandParser() {
@@ -24,7 +23,7 @@ object UUIDParser : CommandParser() {
     override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): UUID {
         val argument = stringReader.readString()
         try {
-            return Util.getUUIDFromString(argument)
+            return TODO() //  Util.getUUIDFromString(argument)
         } catch (exception: IllegalArgumentException) {
             throw UUIDCommandParseException(stringReader, argument, exception)
         }

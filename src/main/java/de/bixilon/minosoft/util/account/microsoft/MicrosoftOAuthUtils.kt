@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonList
+import de.bixilon.kutil.primitive.LongUtil.toLong
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asList
-import de.bixilon.minosoft.util.KUtil.asUUID
-import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.LoginException
 import de.bixilon.minosoft.util.http.HTTP2.postData
@@ -44,7 +44,7 @@ object MicrosoftOAuthUtils {
         val accessToken = getMinecraftBearerAccessToken(userHash, xstsToken)
         val accountInfo = AccountUtil.getMojangAccountInfo(accessToken)
 
-        val uuid = accountInfo.id.asUUID()
+        val uuid = accountInfo.id.toUUID()
         val account = MicrosoftAccount(
             uuid = uuid,
             username = accountInfo.name,
@@ -92,7 +92,7 @@ object MicrosoftOAuthUtils {
         if (response.statusCode != 200) {
             throw LoginException(response.statusCode, "Could not authenticate with xbox live token", response.body.toString())
         }
-        return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asCompound()["xui"].asList()[0].asCompound()["uhs"].unsafeCast())
+        return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asCompound()["xui"].asJsonList()[0].asCompound()["uhs"].unsafeCast())
     }
 
     fun getXSTSToken(xBoxLiveToken: String): String {

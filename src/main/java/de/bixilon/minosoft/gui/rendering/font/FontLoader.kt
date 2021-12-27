@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.kutil.check.CheckUtil.check
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
 import de.bixilon.minosoft.gui.rendering.font.provider.FontProvider
 import de.bixilon.minosoft.gui.rendering.font.provider.FontProviderFactory
 import de.bixilon.minosoft.gui.rendering.font.provider.LegacyUnicodeFontProvider
-import de.bixilon.minosoft.util.KUtil.check
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 

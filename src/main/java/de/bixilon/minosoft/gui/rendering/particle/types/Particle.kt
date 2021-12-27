@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
@@ -58,7 +58,7 @@ abstract class Particle(
 
     // moving
     val cameraPosition: Vec3d
-        get() = getCameraPosition(KUtil.time)
+        get() = getCameraPosition(TimeUtil.time)
 
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position

@@ -16,8 +16,9 @@ package de.bixilon.minosoft
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.TaskWorker
 import de.bixilon.kutil.concurrent.worker.tasks.Task
-import de.bixilon.kutil.general.OSUtil
+import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.os.OSUtil
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.AutoConnect
@@ -46,7 +46,6 @@ import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.RenderPolling
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.YggdrasilUtil
-import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -110,8 +109,6 @@ object Minosoft {
 
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Default registries loaded!" }
         })
-
-        taskWorker += Task(identifier = StartupTasks.LOAD_MODS, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = { ModLoader.loadMods(it) })
 
 
         taskWorker += Task(identifier = StartupTasks.LISTEN_LAN_SERVERS, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W03A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil

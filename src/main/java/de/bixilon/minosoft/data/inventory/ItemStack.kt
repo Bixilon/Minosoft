@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_COLOR_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_LORE_TAG
@@ -41,7 +42,6 @@ import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.KUtil.synchronizedDeepCopy
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast

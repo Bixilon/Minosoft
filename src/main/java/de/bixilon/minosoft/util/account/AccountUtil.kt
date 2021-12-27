@@ -15,9 +15,9 @@ package de.bixilon.minosoft.util.account
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.data.accounts.MojangAccountInfo
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.trim
 import de.bixilon.minosoft.util.http.HTTP2.getJson
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.http.exceptions.AuthenticationException

@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 class ResourceLocationRegistry(

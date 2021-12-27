@@ -21,6 +21,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -66,7 +67,6 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
@@ -547,10 +547,10 @@ class WorldRenderer(
         }
 
         var addedMeshes = 0
-        val time = KUtil.time
+        val time = TimeUtil.time
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((KUtil.time - time < maxTime) && meshesToLoad.isNotEmpty()) {
+        while ((TimeUtil.time - time < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
             val mesh = item.mesh ?: continue
 
@@ -584,10 +584,10 @@ class WorldRenderer(
             return
         }
 
-        val time = KUtil.time
+        val time = TimeUtil.time
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((KUtil.time - time < maxTime) && meshesToUnload.isNotEmpty()) {
+        while ((TimeUtil.time - time < maxTime) && meshesToUnload.isNotEmpty()) {
             val mesh = meshesToUnload.removeAt(0)
             visible.removeMesh(mesh)
             mesh.unload()

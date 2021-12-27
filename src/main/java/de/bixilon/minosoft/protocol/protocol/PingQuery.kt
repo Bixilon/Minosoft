@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.kutil.time.TimeUtil
 import java.util.concurrent.ThreadLocalRandom
 
 class PingQuery(
     val pingId: Long = ThreadLocalRandom.current().nextLong(),
-    val time: Long = KUtil.time,
+    val time: Long = TimeUtil.time,
 )

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
+import de.bixilon.kutil.json.JsonUtil.asJsonList
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import kotlin.math.abs
@@ -58,8 +58,8 @@ data class SoundType(
             val subtitle = data["subtitle"]?.toResourceLocation()
             val sounds: MutableSet<Sound> = mutableSetOf()
 
-            for (soundData in data["sounds"].asList()) {
-                sounds += Sound(soundEvent, soundData)
+            for (soundData in data["sounds"].asJsonList()) {
+                sounds += Sound(soundEvent, soundData ?: continue)
             }
             return SoundType(
                 soundEvent = soundEvent,

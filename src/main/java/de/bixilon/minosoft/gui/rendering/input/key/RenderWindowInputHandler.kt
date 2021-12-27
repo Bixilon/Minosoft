@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -110,7 +110,7 @@ class RenderWindowInputHandler(
                 return
             }
         }
-        val currentTime = KUtil.time
+        val currentTime = TimeUtil.time
 
         if (keyDown) {
             keysDown += keyCode
@@ -206,7 +206,7 @@ class RenderWindowInputHandler(
             }
 
             // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
-            pair.lastChange = KUtil.time
+            pair.lastChange = TimeUtil.time
             for (callback in pair.callback) {
                 callback(thisKeyBindingDown)
             }

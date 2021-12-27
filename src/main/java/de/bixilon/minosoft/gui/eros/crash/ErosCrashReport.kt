@@ -15,7 +15,14 @@ package de.bixilon.minosoft.gui.eros.crash
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.general.OSUtil
+import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
+import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
+import de.bixilon.kutil.file.FileUtil.slashPath
+import de.bixilon.kutil.file.watcher.FileWatcherService
+import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.unit.UnitFormatter.formatBytes
+import de.bixilon.kutil.unsafe.UnsafeUtil
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -23,12 +30,10 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.*
-import de.bixilon.minosoft.util.KUtil.slashPath
-import de.bixilon.minosoft.util.KUtil.toStackTrace
-import de.bixilon.minosoft.util.KUtil.tryCatch
-import de.bixilon.minosoft.util.UnitFormatter.formatBytes
-import de.bixilon.minosoft.util.filewatcher.FileWatcherService
+import de.bixilon.minosoft.util.GitInfo
+import de.bixilon.minosoft.util.ShutdownManager
+import de.bixilon.minosoft.util.SystemInformation
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -79,7 +84,7 @@ class ErosCrashReport : JavaFXWindowController() {
     }
 
     fun hardCrash() {
-        KUtil.hardCrash()
+        UnsafeUtil.hardCrash()
     }
 
     companion object {
@@ -143,7 +148,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 val crashReportFolder = File(RunConfiguration.HOME_DIRECTORY + "crash-reports")
                 crashReportFolder.mkdirs()
 
-                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(KUtil.time)}.txt"
+                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.time)}.txt"
 
                 val stream = FileOutputStream(crashReportPath)
 
@@ -197,7 +202,7 @@ class ErosCrashReport : JavaFXWindowController() {
 ----- Minosoft Crash Report -----
 // ${CRASH_REPORT_COMMENTS.random()}
 
-Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(KUtil.time)} (${KUtil.time / 1000L})
+Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.time)} (${TimeUtil.time / 1000L})
 Crash thread: ${Thread.currentThread().name}
 
 ${exception?.toStackTrace() ?: ""}

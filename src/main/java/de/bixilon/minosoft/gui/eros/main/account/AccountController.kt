@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager

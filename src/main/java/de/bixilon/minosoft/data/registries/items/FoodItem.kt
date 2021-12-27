@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.kutil.general.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
@@ -22,9 +25,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHungerElement
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toBoolean
-import de.bixilon.minosoft.util.KUtil.toFloat
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 open class FoodItem(

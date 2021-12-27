@@ -13,10 +13,10 @@
 package de.bixilon.minosoft.data.registries.inventory
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
-import de.bixilon.minosoft.util.KUtil.toBoolean
 
 data class CreativeModeTab(
     override val name: String,

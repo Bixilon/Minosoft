@@ -12,13 +12,13 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -32,7 +32,7 @@ class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${pingQuery.pingId})" }
             // return ToDo: feather-rs is sending a wrong ping id back
         }
-        val latency = KUtil.time - pingQuery.time
+        val latency = TimeUtil.time - pingQuery.time
         connection.disconnect()
         // ToDo: Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
         val pongEvent = StatusPongReceiveEvent(connection, EventInitiators.SERVER, pingId, latency)

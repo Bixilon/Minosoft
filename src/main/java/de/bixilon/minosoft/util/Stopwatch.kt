@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.kutil.unit.UnitFormatter
 import de.bixilon.minosoft.util.logging.Log
 
 class Stopwatch {

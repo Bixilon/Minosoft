@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.stats
 
 import de.bixilon.kutil.avg.LongAverage
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.kutil.time.TimeUtil
 
 class RenderStats : AbstractRenderStats {
     override val avgFrameTime: LongAverage = LongAverage(1L * 1000000000L) // 1 second * SECOND_SCALE
@@ -27,7 +27,7 @@ class RenderStats : AbstractRenderStats {
 
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = KUtil.time
+            val time = TimeUtil.time
             if (time - lastSmoothFPSCalculationTime > 100) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time

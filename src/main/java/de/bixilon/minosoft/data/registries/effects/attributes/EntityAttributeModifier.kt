@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.registries.effects.attributes
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.util.Util
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import java.util.*
 
 data class EntityAttributeModifier(
@@ -30,7 +30,7 @@ data class EntityAttributeModifier(
         fun deserialize(data: Map<String, Any>): EntityAttributeModifier {
             return EntityAttributeModifier(
                 name = data["name"].unsafeCast(),
-                uuid = Util.getUUIDFromString(data["uuid"].unsafeCast()),
+                uuid = data["uuid"].toString().toUUID(),
                 amount = data["amount"].unsafeCast(),
                 operation = StatusEffectOperations[data["operation"].unsafeCast<String>()],
             )

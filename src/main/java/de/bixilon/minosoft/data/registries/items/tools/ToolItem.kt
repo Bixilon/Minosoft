@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.toInt
 
 
 open class ToolItem(
@@ -26,8 +26,8 @@ open class ToolItem(
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
     val durability = data["uses"]?.toInt() ?: 1
-    val speed = data["speed"]?.unsafeCast<Float>() ?: 1.0f
-    open val attackDamage = data["attack_damage_bonus"]?.unsafeCast<Float>() ?: 1.0f
+    val speed = data["speed"]?.toFloat() ?: 1.0f
+    open val attackDamage = data["attack_damage_bonus"]?.toFloat() ?: 1.0f
     val miningLevel = data["level"]?.toInt() ?: 1
     val enchantmentValue = data["enchantment_value"]?.toInt() ?: 1
 }

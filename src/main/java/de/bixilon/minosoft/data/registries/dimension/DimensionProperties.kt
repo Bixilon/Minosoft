@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.data.registries.dimension
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toBoolean
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
 data class DimensionProperties(
@@ -59,7 +59,7 @@ data class DimensionProperties(
             return DimensionProperties(
                 piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,
                 natural = data["natural"]?.toBoolean() ?: false,
-                ambientLight = data["ambient_light"]?.unsafeCast<Float>() ?: 0.0f,
+                ambientLight = data["ambient_light"]?.toFloat() ?: 0.0f,
                 infiniBurn = ResourceLocation(data["infiniburn"].nullCast<String>() ?: "infiniburn_overworld"),
                 respawnAnchorWorks = data["respawn_anchor_works"]?.toBoolean() ?: false,
                 hasSkyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,

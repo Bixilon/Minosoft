@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
-import de.bixilon.minosoft.util.Util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +100,8 @@ public class EntityParser extends CommandParser {
             throw new PlayerOnlyEntityCommandParseException(stringReader, value);
         }
         try {
-            return Util.getUUIDFromString(value);
+            // return Util.getUUIDFromString(value);
+            throw new IllegalArgumentException("TODO");
         } catch (Exception ignored) {
         }
         throw new UnknownEntitySelectorCommandParseException(stringReader, value);

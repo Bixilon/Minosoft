@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.eros.dialog
 
+import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
+import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.TranslatableComponents.GENERAL_IGNORE
 import de.bixilon.minosoft.gui.eros.controller.DialogController
@@ -21,9 +23,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.realName
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.toStackTrace
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea

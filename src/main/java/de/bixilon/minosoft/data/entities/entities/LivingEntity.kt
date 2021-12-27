@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
+import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.sp
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.chance
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 

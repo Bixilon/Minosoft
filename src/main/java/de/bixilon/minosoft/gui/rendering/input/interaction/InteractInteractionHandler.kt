@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractAtC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 
@@ -217,7 +217,7 @@ class InteractInteractionHandler(
     }
 
     fun draw(delta: Double) {
-        val time = KUtil.time
+        val time = TimeUtil.time
         if (time - lastUse < ProtocolDefinition.TICK_TIME) {
             return
         }

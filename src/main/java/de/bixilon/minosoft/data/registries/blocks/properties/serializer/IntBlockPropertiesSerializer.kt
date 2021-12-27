@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties.serializer
 
-import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.kutil.primitive.IntUtil.toInt
 
 object IntBlockPropertiesSerializer : BlockPropertiesSerializer {
 

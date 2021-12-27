@@ -13,8 +13,9 @@
 package de.bixilon.minosoft.data.registries.biomes
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.math.MMath.clamp
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toInt
 import java.util.*
 
 data class Biome(
@@ -63,10 +63,10 @@ data class Biome(
             check(registries != null) { "Registries is null!" }
             return Biome(
                 resourceLocation = resourceLocation,
-                depth = data["depth"]?.unsafeCast<Float>() ?: 0.0f,
-                scale = data["scale"]?.unsafeCast<Float>() ?: 0.0f,
-                temperature = data["temperature"]?.unsafeCast<Float>() ?: 0.0f,
-                downfall = data["downfall"]?.unsafeCast<Float>() ?: 0.0f,
+                depth = data["depth"]?.toFloat() ?: 0.0f,
+                scale = data["scale"]?.toFloat() ?: 0.0f,
+                temperature = data["temperature"]?.toFloat() ?: 0.0f,
+                downfall = data["downfall"]?.toFloat() ?: 0.0f,
                 waterColor = TintManager.getJsonColor(data["water_color"]?.toInt() ?: 0),
                 waterFogColor = TintManager.getJsonColor(data["water_fog_color"]?.toInt() ?: 0),
                 category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,

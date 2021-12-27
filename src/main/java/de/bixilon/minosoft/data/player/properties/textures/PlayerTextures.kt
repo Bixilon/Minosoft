@@ -2,8 +2,8 @@ package de.bixilon.minosoft.data.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.module.kotlin.convertValue
-import de.bixilon.minosoft.util.KUtil.toLong
-import de.bixilon.minosoft.util.Util
+import de.bixilon.kutil.primitive.LongUtil.toLong
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -28,7 +28,7 @@ class PlayerTextures(
             val textures = json["textures"]?.compoundCast()
             return PlayerTextures(
                 name = json["profileName"]?.toString(),
-                uuid = json["profileId"]?.toString()?.let { Util.getUUIDFromString(it) },
+                uuid = json["profileId"]?.toString()?.toUUID(),
                 date = json["timestamp"]?.toLong()?.let { Date(it) },
                 skin = textures?.get("SKIN")?.compoundCast()?.let { return@let Jackson.MAPPER.convertValue(it) },
                 cape = textures?.get("CAPE")?.compoundCast()?.let { return@let Jackson.MAPPER.convertValue(it) },

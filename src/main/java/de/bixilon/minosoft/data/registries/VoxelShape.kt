@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.registries
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonPrimitive
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
-import de.bixilon.minosoft.util.KUtil.toInt
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3t
 

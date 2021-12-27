@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -21,8 +23,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.mapCast
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class AxeItem(
@@ -31,7 +31,7 @@ open class AxeItem(
     data: Map<String, Any>,
 ) : MiningToolItem(resourceLocation, registries, data) {
     override val diggableTag: ResourceLocation = AXE_MINEABLE_TAG
-    val strippableBlocks: Map<Block, Block>? = data["strippables_blocks"]?.mapCast()?.let {
+    val strippableBlocks: Map<Block, Block>? = data["strippables_blocks"]?.toJsonObject()?.let {
         val entries: MutableMap<Block, Block> = mutableMapOf()
         for ((origin, target) in it) {
             entries[registries.blockRegistry[origin.toInt()]] = registries.blockRegistry[target]!!

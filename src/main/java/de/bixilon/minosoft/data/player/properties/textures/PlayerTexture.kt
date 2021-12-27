@@ -1,9 +1,9 @@
 package de.bixilon.minosoft.data.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
-import de.bixilon.minosoft.util.KUtil.check
 import java.net.URL
 
 open class PlayerTexture(
@@ -14,7 +14,7 @@ open class PlayerTexture(
         private set
 
     init {
-        url.check()
+        url.checkWeb()
 
         check(urlMatches(url, ALLOWED_DOMAINS) && !urlMatches(url, BLOCKED_DOMAINS)) { "URL hostname is not allowed!" }
     }

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.reflection.ReflectionUtil.setValue
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.setValue
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 

@@ -13,6 +13,9 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -20,8 +23,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
-import de.bixilon.minosoft.util.KUtil.toBoolean
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
@@ -136,15 +137,15 @@ data class BlockState(
                 collisionShape = collisionShape,
                 occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
-                hardness = data["hardness"]?.unsafeCast<Float>() ?: 1.0f,
+                hardness = data["hardness"]?.toFloat() ?: 1.0f,
                 requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
                 breakSoundEvent = data["break_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 stepSoundEvent = data["step_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 placeSoundEvent = data["place_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 hitSoundEvent = data["hit_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 fallSoundEvent = data["fall_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                soundEventVolume = data["sound_type_volume"]?.unsafeCast<Float>() ?: 1.0f,
-                soundEventPitch = data["sound_type_pitch"]?.unsafeCast<Float>() ?: 1.0f,
+                soundEventVolume = data["sound_type_volume"]?.toFloat() ?: 1.0f,
+                soundEventPitch = data["sound_type_pitch"]?.toFloat() ?: 1.0f,
             )
         }
 

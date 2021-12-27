@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -47,7 +48,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.mat4x4.Mat4
@@ -154,7 +154,7 @@ class HUDRenderer(
     override fun drawOther() {
         val hudElements = hudElements.toSynchronizedMap().values
 
-        val time = KUtil.time
+        val time = TimeUtil.time
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in hudElements) {
                 if (!element.enabled) {

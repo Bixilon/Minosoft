@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.particle
 
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 

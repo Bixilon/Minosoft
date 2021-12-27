@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class DropInteractionManager(
@@ -33,7 +33,7 @@ class DropInteractionManager(
 
 
     fun dropItem(stack: Boolean) {
-        val time = KUtil.time
+        val time = TimeUtil.time
         val type = if (stack) {
             connection.player.inventory.getHotbarSlot()?.count = 0
             PlayerActionC2SP.Actions.DROP_ITEM_STACK

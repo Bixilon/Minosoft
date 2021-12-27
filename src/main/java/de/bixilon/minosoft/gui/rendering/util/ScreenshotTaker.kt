@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.util
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.file.FileUtil.slashPath
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
@@ -24,8 +26,6 @@ import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.slashPath
 import de.bixilon.minosoft.util.Util
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
@@ -43,7 +43,7 @@ class ScreenshotTaker(
             val height = renderWindow.window.size.y
             val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
-            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(KUtil.time)}"
+            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(TimeUtil.time)}"
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {

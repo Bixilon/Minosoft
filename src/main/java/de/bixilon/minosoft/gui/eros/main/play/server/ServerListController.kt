@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.gui.eros.main.play.server
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.general.BooleanUtil.decide
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -48,7 +49,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.watcher.entry.ListDelegateWatcher.Companion.watchListFX
 import javafx.fxml.FXML

@@ -15,10 +15,10 @@ package de.bixilon.minosoft.assets.util
 
 import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
+import de.bixilon.kutil.hex.HexUtil.isHexString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.isHexString
 import de.bixilon.minosoft.util.Util
 import java.io.*
 import java.net.URL

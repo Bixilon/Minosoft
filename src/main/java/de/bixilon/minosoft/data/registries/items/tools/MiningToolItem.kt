@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.toJsonList
+import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
-import de.bixilon.minosoft.util.KUtil.listCast
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3i
 
@@ -31,14 +31,14 @@ abstract class MiningToolItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : ToolItem(resourceLocation, registries, data) {
-    val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.listCast()?.let {
+    val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.toJsonList()?.let {
         val entries: MutableList<Block> = mutableListOf()
         for (id in it) {
             entries += registries.blockRegistry[id]!!
         }
         entries.toSet()
     }
-    override val attackDamage: Float = data["attack_damage"]?.unsafeCast<Float>() ?: 1.0f
+    override val attackDamage: Float = data["attack_damage"]?.toFloat() ?: 1.0f
 
     abstract val diggableTag: ResourceLocation?
 

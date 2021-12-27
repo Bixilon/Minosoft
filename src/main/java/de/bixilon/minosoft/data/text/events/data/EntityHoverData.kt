@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.text.events.data
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
@@ -44,7 +44,7 @@ class EntityHoverData(
                 type = it.toResourceLocation()
             }
 
-            return EntityHoverData(json["id"].unsafeCast<String>().asUUID(), type, ChatComponent.of(json["name"]))
+            return EntityHoverData(json["id"].toString().toUUID(), type, ChatComponent.of(json["name"]))
         }
     }
 }

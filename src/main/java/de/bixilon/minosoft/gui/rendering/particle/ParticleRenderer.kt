@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle
 import de.bixilon.kutil.concurrent.lock.ReadWriteLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.mat4x4.Mat4
@@ -151,7 +151,7 @@ class ParticleRenderer(
 
             particlesLock.acquire()
             try {
-                val time = KUtil.time
+                val time = TimeUtil.time
                 for (particle in particles) {
                     if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) {
                         particle.dead = true
@@ -219,7 +219,7 @@ class ParticleRenderer(
 
         particlesLock.acquire()
 
-        val time = KUtil.time
+        val time = TimeUtil.time
         for (particle in particles) {
             if (particle.dead) {
                 continue

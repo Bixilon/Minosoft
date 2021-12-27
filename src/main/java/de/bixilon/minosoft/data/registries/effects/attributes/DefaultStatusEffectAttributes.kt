@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import de.bixilon.minosoft.util.KUtil.asUUID
+import de.bixilon.kutil.uuid.UUIDUtil.toUUID
+
 
 object DefaultStatusEffectAttributes {
-    val SPRINT_SPEED_BOOST = EntityAttributeModifier("Sprinting speed boost", "662A6B8D-DA3E-4C1C-8813-96EA6097278D".asUUID(), 0.30000001192092896, StatusEffectOperations.MULTIPLY_TOTAL)
+    val SPRINT_SPEED_BOOST = EntityAttributeModifier("Sprinting speed boost", "662A6B8D-DA3E-4C1C-8813-96EA6097278D".toUUID(), 0.30000001192092896, StatusEffectOperations.MULTIPLY_TOTAL)
 }

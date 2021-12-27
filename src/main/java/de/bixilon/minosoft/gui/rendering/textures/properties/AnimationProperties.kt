@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.textures.properties
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.util.KUtil.toInt
 
 data class AnimationProperties(
     val interpolate: Boolean = false,

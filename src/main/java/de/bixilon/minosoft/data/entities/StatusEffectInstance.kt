@@ -12,17 +12,17 @@
  */
 package de.bixilon.minosoft.data.entities
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
-import de.bixilon.minosoft.util.KUtil
 
 data class StatusEffectInstance(
     val statusEffect: StatusEffect,
     val amplifier: Int,
     val duration: Int,
 ) {
-    private val startMillis = KUtil.time
+    private val startMillis = TimeUtil.time
 
     val remainingMillis: Long
-        get() = KUtil.time - startMillis
+        get() = TimeUtil.time - startMillis
 }
 

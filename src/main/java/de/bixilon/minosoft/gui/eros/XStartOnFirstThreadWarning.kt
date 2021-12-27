@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.eros
 
-import de.bixilon.kutil.general.OSUtil
+import de.bixilon.kutil.os.OSUtil
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog
 import de.bixilon.minosoft.terminal.RunConfiguration

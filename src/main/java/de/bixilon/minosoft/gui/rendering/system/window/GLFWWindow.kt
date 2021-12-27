@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
-import de.bixilon.kutil.general.OSUtil
+import de.bixilon.kutil.os.OSUtil
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow

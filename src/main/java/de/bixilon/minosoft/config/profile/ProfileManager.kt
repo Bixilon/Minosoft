@@ -2,6 +2,11 @@ package de.bixilon.minosoft.config.profile
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
+import de.bixilon.kutil.file.FileUtil
+import de.bixilon.kutil.file.watcher.FileWatcher
+import de.bixilon.kutil.file.watcher.FileWatcherService
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.config.profile.delegate.delegate.BackingDelegate
 import de.bixilon.minosoft.config.profile.delegate.delegate.ProfileDelegate
 import de.bixilon.minosoft.config.profile.delegate.delegate.entry.ListDelegateProfile
@@ -11,11 +16,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.filewatcher.FileWatcher
-import de.bixilon.minosoft.util.filewatcher.FileWatcherService
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -183,7 +184,7 @@ interface ProfileManager<T : Profile> {
 
             val profileFile = File(getPath(profile.name))
             profile.ignoreNextReload = true
-            KUtil.safeSaveToFile(profileFile, jsonString)
+            FileUtil.safeSaveToFile(profileFile, jsonString)
             profile.saved = true
         } catch (exception: Exception) {
             exception.printStackTrace()
@@ -237,7 +238,7 @@ interface ProfileManager<T : Profile> {
     fun readAndMigrate(path: String): Pair<Boolean, MutableMap<String, Any?>?> {
         var saveFile = false
         val json: MutableMap<String, Any?>?
-        val jsonString = KUtil.tryCatch(FileNotFoundException::class.java) { Util.readFile(path) }
+        val jsonString = tryCatch(FileNotFoundException::class.java) { Util.readFile(path) }
         if (jsonString != null) {
             json = Jackson.MAPPER.readValue(jsonString, Jackson.JSON_MAP_TYPE)!!
             val version = json["version"]?.toInt() ?: throw IllegalArgumentException("Can not find version attribute in profile: $path")

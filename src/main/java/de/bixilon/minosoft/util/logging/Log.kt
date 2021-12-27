@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.util.logging
 
 import com.google.errorprone.annotations.DoNotCall
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -32,7 +32,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 
 object Log {
-    private val MINOSOFT_START_TIME = KUtil.time
+    private val MINOSOFT_START_TIME = TimeUtil.time
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
@@ -56,7 +56,7 @@ object Log {
                     val message = BaseComponent()
                     val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
                     message += if (RunConfiguration.LOG_RELATIVE_TIME) {
-                        TextComponent("[${KUtil.time - MINOSOFT_START_TIME}] ")
+                        TextComponent("[${TimeUtil.time - MINOSOFT_START_TIME}] ")
                     } else {
                         TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
                     }
@@ -139,7 +139,7 @@ object Log {
         LOG_QUEUE.add(
             MessageToSend(
                 message = formattedMessage,
-                time = KUtil.time,
+                time = TimeUtil.time,
                 logMessageType = logMessageType,
                 level = level,
                 thread = Thread.currentThread(),
