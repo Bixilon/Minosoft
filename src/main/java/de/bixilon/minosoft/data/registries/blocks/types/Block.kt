@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -38,6 +37,7 @@ import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.CastUtil.asAnyMap
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3i
 import kotlin.random.Random
@@ -120,7 +120,7 @@ open class Block(
             val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
             val states: MutableSet<BlockState> = mutableSetOf()
-            for ((stateId, stateJson) in data["states"].asJsonObject()) {
+            for ((stateId, stateJson) in data["states"].asAnyMap()) {
                 check(stateJson is Map<*, *>) { "Not a state element!" }
                 val state = BlockState.deserialize(block, registries, stateJson.asCompound())
                 registries.blockStateRegistry[stateId.toInt()] = state

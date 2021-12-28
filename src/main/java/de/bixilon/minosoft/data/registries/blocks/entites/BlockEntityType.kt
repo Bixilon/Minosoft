@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.entites
 
-import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.CastUtil.asAnyCollection
 
 data class BlockEntityType(
     override val resourceLocation: ResourceLocation,
@@ -42,7 +42,7 @@ data class BlockEntityType(
 
             val blocks: MutableSet<Block> = mutableSetOf()
 
-            for (block in data["blocks"]?.toJsonList()!!) {
+            for (block in data["blocks"].asAnyCollection()) {
                 blocks += registries.blockRegistry[block] ?: continue
             }
 

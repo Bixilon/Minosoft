@@ -10,10 +10,10 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object Versions : Iterable<Version> {
     private val VERSIONS_INDEX = "minosoft:mapping/versions.json".toResourceLocation()
-    val AUTOMATIC = Version("Automatic", -1, -1, mapOf(), mapOf())
     private val VERSIONS_BY_NAME: MutableMap<String, Version> = mutableMapOf()
     private val VERSIONS_BY_ID: MutableMap<Int, Version> = mutableMapOf()
     private val VERSIONS_BY_PROTOCOL: MutableMap<Int, Version> = mutableMapOf()
+    val AUTOMATIC = Version("Automatic", -1, -1, mapOf(), mapOf())
 
     private fun addVersion(version: Version) {
         VERSIONS_BY_NAME.put(version.name, version)?.let { throw IllegalStateException("Duplicated version name: ${version.name}") }
