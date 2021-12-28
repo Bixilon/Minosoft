@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid.lava
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions
@@ -41,7 +42,7 @@ class LavaFluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
-    private val lavaParticleType: ParticleType? = null
+    private val lavaParticleType: ParticleType = unsafeNull()
     override val stillTextureName: ResourceLocation = "minecraft:block/lava_still".toResourceLocation()
     override val flowingTextureName: ResourceLocation = "minecraft:block/lava_flow".toResourceLocation()
 

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -57,7 +58,7 @@ open class Block(
         protected set
     open lateinit var defaultState: BlockState
         protected set
-    val item: Item? = null
+    val item: Item = unsafeNull()
     open lateinit var properties: Map<BlockProperties, List<Any>>
     open val friction = data["friction"]?.toDouble() ?: 0.6
     open val velocityMultiplier = data["velocity_multiplier"]?.toDouble() ?: 1.0 // ToDo: They exist since ~1.15

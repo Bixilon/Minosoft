@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.fluid
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -44,8 +45,8 @@ open class Fluid(
     open val flowingTextureName: ResourceLocation? = null
     var stillTexture: AbstractTexture? = null
     var flowingTexture: AbstractTexture? = null
-    val dripParticle: ParticleType? = null
-    val bucketItem: Item? = null
+    val dripParticle: ParticleType = unsafeNull()
+    val bucketItem: Item = unsafeNull()
 
     init {
         this::bucketItem.inject(data["bucket"])

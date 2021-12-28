@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items.bucket
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.items.Item
@@ -24,7 +25,7 @@ open class BucketItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val fluid: Fluid? = null
+    val fluid: Fluid = unsafeNull()
 
     init {
         this::fluid.inject(data["bucked_fluid_type"])
