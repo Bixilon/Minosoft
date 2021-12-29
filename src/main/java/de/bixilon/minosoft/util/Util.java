@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.util;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -29,13 +28,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import java.util.concurrent.ThreadFactory;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.zip.*;
 
 @Deprecated(forRemoval = true)
@@ -136,14 +135,6 @@ public final class Util {
         return null;
     }
 
-    public static String sha1(File file) throws IOException {
-        return sha1(new FileInputStream(file));
-    }
-
-    public static String sha1Gzip(File file) throws IOException {
-        return sha1(new GZIPInputStream(new FileInputStream(file)));
-    }
-
     public static String sha1(InputStream inputStream) throws IOException {
         try {
             return hash(MessageDigest.getInstance("SHA-1"), inputStream);
@@ -195,13 +186,6 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
-        InputStreamReader reader = getInputSteamFromZip(fileName, zipFile);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
-    }
-
     public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
         return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
     }
@@ -209,16 +193,6 @@ public final class Util {
     public static String readFile(String fileName) throws IOException {
         FileReader reader = new FileReader(fileName);
         return readReader(new BufferedReader(reader), true);
-    }
-
-    public static void downloadFile(String url, String destination) throws IOException {
-        createParentFolderIfNotExist(destination);
-        copyStream(getInputStreamByURL(url), new FileOutputStream(destination));
-    }
-
-    public static void downloadFileAsGz(String url, String destination) throws IOException {
-        createParentFolderIfNotExist(destination);
-        copyStream(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
     }
 
     public static void copyStream(InputStream inputStream, OutputStream output) throws IOException {
@@ -231,17 +205,6 @@ public final class Util {
         output.close();
     }
 
-    public static InputStream getInputStreamByURL(String url) throws IOException {
-        return new URL(url).openConnection().getInputStream();
-    }
-
-    public static ThreadFactory getThreadFactory(String threadName) {
-        return new ThreadFactoryBuilder().setNameFormat(threadName + "/%d").build();
-    }
-
-    public static boolean createParentFolderIfNotExist(String file) {
-        return createParentFolderIfNotExist(new File(file));
-    }
 
     public static boolean createParentFolderIfNotExist(File file) {
         return file.getParentFile().mkdirs();
@@ -258,10 +221,6 @@ public final class Util {
 
     public static char getRandomChar(char[] chars) {
         return chars[(RANDOM.nextInt(chars.length))];
-    }
-
-    public static char getRandomChar() {
-        return (char) RANDOM.nextInt();
     }
 
     public static String getStringBetween(String search, String first, String second) {
@@ -328,15 +287,6 @@ public final class Util {
             }
         }
         return builder.toString();
-    }
-
-    public static String[] headersMapToArray(Map<String, String> headers) {
-        List<String> headerList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : headers.entrySet()) {
-            headerList.add(entry.getKey());
-            headerList.add(entry.getValue());
-        }
-        return headerList.toArray(new String[]{});
     }
 
     public static String formatString(String string, Map<String, Object> format) {
