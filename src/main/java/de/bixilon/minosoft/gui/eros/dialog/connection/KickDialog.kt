@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -28,6 +29,7 @@ class KickDialog(
     val header: Any,
     val description: Any? = null,
     val reason: ChatComponent,
+    val connection: PlayConnection? = null,
 ) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
@@ -48,10 +50,12 @@ class KickDialog(
         descriptionFX.text = description?.let { Minosoft.LANGUAGE_MANAGER.translate(it) } ?: ChatComponent.EMPTY
         reasonFX.text = reason
 
-        reconnectButtonFX.isDisable = true // ToDo
-        closeButtonFX.setOnAction {
-            stage.hide()
+        if (connection == null) {
+            reconnectButtonFX.isDisable = true
+        } else {
+            reconnectButtonFX.setOnAction { connection.connect() }
         }
+        closeButtonFX.setOnAction { stage.hide() }
     }
 
     companion object {

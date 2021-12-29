@@ -215,7 +215,9 @@ class PlayConnection(
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(0)) {
         val count = latch.count
-        check(!wasConnected) { "Connection was already connected!" }
+        if (protocolState != ProtocolStates.DISCONNECTED) {
+            throw IllegalStateException("Still connected!")
+        }
         try {
             state = PlayConnectionStates.LOADING_ASSETS
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))

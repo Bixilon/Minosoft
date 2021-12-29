@@ -149,6 +149,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                         header = "minosoft:connection.kick.header".toResourceLocation(),
                         description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
                         reason = event.reason,
+                        connection = connection,
                     ).show()
                 })
                 connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
@@ -159,11 +160,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                         reason = event.reason,
                     ).show()
                 })
-                val latch = CountUpAndDownLatch(0)
-                val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
-                connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state.disconnected) assetsDialog.close() })
-                ConnectingDialog(connection).show()
-                connection.connect(latch)
+                connect(connection)
             }
         }
     }
@@ -407,5 +404,13 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             "minosoft:server_info.active_connections".toResourceLocation() to { it.connections.size },
         )
+
+        fun connect(connection: PlayConnection) {
+            val latch = CountUpAndDownLatch(0)
+            val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
+            connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state.disconnected) assetsDialog.close() })
+            ConnectingDialog(connection).show()
+            connection.connect(latch)
+        }
     }
 }
