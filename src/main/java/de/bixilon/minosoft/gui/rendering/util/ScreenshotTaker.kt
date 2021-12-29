@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.file.FileUtil.createParent
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.Util
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
 import java.io.File
@@ -68,7 +68,7 @@ class ScreenshotTaker(
                     }
 
                     val file = File(path)
-                    Util.createParentFolderIfNotExist(file)
+                    file.createParent()
 
                     ImageIO.write(bufferedImage, "png", file)
 

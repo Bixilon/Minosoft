@@ -5,7 +5,6 @@ import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
-import de.bixilon.minosoft.util.Util
 import java.net.URL
 import java.util.*
 
@@ -19,7 +18,7 @@ class PlayerProperties(
 
 
         fun fetch(uuid: UUID): PlayerProperties {
-            val url = Util.formatString(URL, mapOf("uuid" to uuid.trim()))
+            val url = URL.format(mapOf("uuid" to uuid.trim()))
             val data = URL(url).openStream().readJsonObject()
 
             var textures: PlayerTextures? = null

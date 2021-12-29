@@ -15,6 +15,7 @@ package de.bixilon.minosoft.assets.minecraft
 
 import com.fasterxml.jackson.databind.JsonNode
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.string.StringUtil.format
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import org.kamranzafar.jtar.TarEntry
 import org.kamranzafar.jtar.TarHeader
@@ -62,7 +62,7 @@ class JarAssetsManager(
         } else {
             var clientJar = FileUtil.safeReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
             if (clientJar == null) {
-                val downloaded = FileAssetsUtil.downloadAndGetAsset(Util.formatString(profile.source.launcherPackages, mapOf(
+                val downloaded = FileAssetsUtil.downloadAndGetAsset(profile.source.launcherPackages.format(mapOf(
                     "fullHash" to clientJarHash,
                     "filename" to "client.jar",
                 )), false, FileAssetsUtil.HashTypes.SHA1)

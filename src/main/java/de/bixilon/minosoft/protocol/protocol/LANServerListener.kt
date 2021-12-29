@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.string.StringUtil.getBetween
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.LANServerType
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -120,14 +120,14 @@ object LANServerListener {
         for (mustContain in BROADCAST_MUST_CONTAIN) {
             require(broadcast.contains(mustContain)) { "Broadcast is invalid!" }
         }
-        var rawAddress = Util.getStringBetween(broadcast, PORT_START_STRING, PORT_END_STRING)
+        var rawAddress = broadcast.getBetween(PORT_START_STRING, PORT_END_STRING)
         if (rawAddress.contains(":")) {
             // weird, just extract the port
             rawAddress = rawAddress.split(":").toTypedArray()[1]
         }
         val port = rawAddress.toInt()
         require(!(port < 0 || port > 65535)) { "Invalid port: $port" }
-        val motd = Util.getStringBetween(broadcast, MOTD_START_STRING, MOTD_END_STRING)
+        val motd = broadcast.getBetween(MOTD_START_STRING, MOTD_END_STRING)
         return Server(address = address.hostAddress + ":" + rawAddress, name = BaseComponent("LAN: #${SERVERS.size}: ", ChatComponent.of(motd)))
     }
 

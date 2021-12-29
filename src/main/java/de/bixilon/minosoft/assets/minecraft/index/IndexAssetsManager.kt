@@ -19,6 +19,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.LongUtil.toLong
+import de.bixilon.kutil.string.StringUtil.format
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -55,11 +55,10 @@ class IndexAssetsManager(
         private set
 
     private fun downloadAssetsIndex(): Map<String, Any> {
-        return Jackson.MAPPER.readValue(FileAssetsUtil.downloadAndGetAsset(Util.formatString(profile.source.mojangPackages,
-            mapOf(
-                "fullHash" to indexHash,
-                "filename" to "$assetsVersion.json",
-            )), hashType = FileAssetsUtil.HashTypes.SHA1).second, Jackson.JSON_MAP_TYPE)
+        return Jackson.MAPPER.readValue(FileAssetsUtil.downloadAndGetAsset(profile.source.mojangPackages.format(mapOf(
+            "fullHash" to indexHash,
+            "filename" to "$assetsVersion.json",
+        )), hashType = FileAssetsUtil.HashTypes.SHA1).second, Jackson.JSON_MAP_TYPE)
     }
 
     fun verifyAsset(hash: String) {
@@ -67,11 +66,10 @@ class IndexAssetsManager(
         if (FileAssetsUtil.verifyAsset(hash, file, verify, hashType = FileAssetsUtil.HashTypes.SHA1)) {
             return
         }
-        val url = Util.formatString(profile.source.minecraftResources,
-            mapOf(
-                "hashPrefix" to hash.substring(0, 2),
-                "fullHash" to hash,
-            ))
+        val url = profile.source.minecraftResources.format(mapOf(
+            "hashPrefix" to hash.substring(0, 2),
+            "fullHash" to hash,
+        ))
         Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading asset $url" }
         val downloadedHash = FileAssetsUtil.downloadAsset(url, hashType = FileAssetsUtil.HashTypes.SHA1)
         if (downloadedHash != hash) {

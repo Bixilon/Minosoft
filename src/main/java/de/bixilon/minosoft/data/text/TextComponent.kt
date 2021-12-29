@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Util
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -147,7 +146,7 @@ open class TextComponent(
                             KeyFrame(Duration.millis(50.0), {
                                 val chars = text.text.toCharArray()
                                 for (i in chars.indices) {
-                                    chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS)
+                                    chars[i] = ProtocolDefinition.OBFUSCATED_CHARS.random()
                                 }
                                 text.text = String(chars)
                             }),

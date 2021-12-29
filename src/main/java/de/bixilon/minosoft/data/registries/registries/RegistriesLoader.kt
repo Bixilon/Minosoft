@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.data.registries.registries
 
+import de.bixilon.kutil.string.StringUtil.format
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.FileUtil.readMBFMap
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -33,12 +33,10 @@ object RegistriesLoader {
             return FileUtil.readFile(file, false).readMBFMap().compoundCast() ?: throw IllegalStateException("Could not read pixlyzer data!")
         }
 
-        val savedHash = FileAssetsUtil.downloadAndGetAsset(Util.formatString(
-            url,
-            mapOf(
-                "hashPrefix" to hash.substring(0, 2),
-                "fullHash" to hash,
-            )
+        val savedHash = FileAssetsUtil.downloadAndGetAsset(url.format(mapOf(
+            "hashPrefix" to hash.substring(0, 2),
+            "fullHash" to hash,
+        )
         ), false, hashType = FileAssetsUtil.HashTypes.SHA1)
         if (savedHash.first != hash) {
             throw IllegalStateException("Data mismatch, expected $hash, got ${savedHash.first}")

@@ -8,6 +8,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.file.FileUtil
+import de.bixilon.kutil.file.FileUtil.read
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileMan
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import java.io.File
 
@@ -74,7 +74,7 @@ object GlobalProfileManager {
             }
 
             this.selectedProfiles.original.clear()
-            this.selectedProfiles.original.putAll(Jackson.MAPPER.readValue(Util.readFile(file.path), SELECTED_PROFILES_TYPE))
+            this.selectedProfiles.original.putAll(Jackson.MAPPER.readValue(file.read(), SELECTED_PROFILES_TYPE))
         } finally {
             selectedProfiles.lock.unlock()
         }

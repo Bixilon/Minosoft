@@ -19,6 +19,7 @@ import de.bixilon.kutil.concurrent.worker.tasks.Task
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
@@ -43,8 +44,8 @@ import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.RenderPolling
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -61,7 +62,7 @@ object Minosoft {
     @JvmStatic
     fun main(args: Array<String>) {
         CommandLineArguments.parse(args)
-        Util.initUtilClasses()
+        KUtil.initUtilClasses()
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft" }
@@ -123,7 +124,7 @@ object Minosoft {
 
             taskWorker += Task(identifier = StartupTasks.STARTUP_PROGRESS, executor = { StartingDialog(START_UP_LATCH).show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
 
-            Util.forceClassInit(Eros::class.java)
+            Eros::class.java.forceInit()
         }
         taskWorker += Task(identifier = StartupTasks.LOAD_YGGDRASIL, executor = { YggdrasilUtil.load() })
 

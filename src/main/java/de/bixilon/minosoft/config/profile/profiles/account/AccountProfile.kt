@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.backingDelegate
@@ -11,7 +12,7 @@ import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.mapDelegate
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.KUtil
 
 /**
  * Profile for accounts
@@ -33,7 +34,7 @@ class AccountProfile(
      * This 128 length long string is generated randomly while the profile was created
      * Will be sent to mojang when logging in/refreshing an account
      */
-    var clientToken by delegate(Util.generateRandomString(128))
+    var clientToken by delegate(KUtil.RANDOM.randomString(128))
 
     /**
      * All accounts

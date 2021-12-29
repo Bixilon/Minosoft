@@ -1,10 +1,10 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import com.github.luben.zstd.ZstdOutputStream
+import de.bixilon.kutil.hash.HashUtil.sha256
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
-import de.bixilon.minosoft.util.Util
 import javafx.scene.image.Image
 import java.io.File
 import java.io.FileOutputStream
@@ -22,7 +22,7 @@ object FaviconManager {
             return null
         }
 
-    fun Server.saveFavicon(favicon: ByteArray?, faviconHash: String = Util.sha256(favicon)) {
+    fun Server.saveFavicon(favicon: ByteArray?, faviconHash: String = favicon!!.sha256()) {
         if (this.faviconHash == faviconHash) {
             return
         }

@@ -4,6 +4,7 @@ import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil
+import de.bixilon.kutil.file.FileUtil.read
 import de.bixilon.kutil.file.watcher.FileWatcher
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -16,7 +17,6 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -238,7 +238,7 @@ interface ProfileManager<T : Profile> {
     fun readAndMigrate(path: String): Pair<Boolean, MutableMap<String, Any?>?> {
         var saveFile = false
         val json: MutableMap<String, Any?>?
-        val jsonString = tryCatch(FileNotFoundException::class.java) { Util.readFile(path) }
+        val jsonString = tryCatch(FileNotFoundException::class.java) { File(path).read() }
         if (jsonString != null) {
             json = Jackson.MAPPER.readValue(jsonString, Jackson.JSON_MAP_TYPE)!!
             val version = json["version"]?.toInt() ?: throw IllegalArgumentException("Can not find version attribute in profile: $path")
