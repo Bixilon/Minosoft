@@ -5,6 +5,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.WorldFramebuffer
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 
 class FramebufferManager(
@@ -32,6 +33,7 @@ class FramebufferManager(
 
 
     override fun draw() {
+        renderWindow.renderSystem.polygonMode = PolygonModes.FILL
         world.draw()
         gui.draw()
     }

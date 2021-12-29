@@ -21,10 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
+import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -50,6 +47,7 @@ class SkyRenderer(
     private var updateSun: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
     override val framebuffer: Framebuffer? = null
+    override val polygonMode: PolygonModes = PolygonModes.DEFAULT
 
     override fun init() {
         skyboxShader.load()

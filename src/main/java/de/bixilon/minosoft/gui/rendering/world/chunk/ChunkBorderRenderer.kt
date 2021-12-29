@@ -53,7 +53,7 @@ class ChunkBorderRenderer(
                 ),
             ), defaultPressed = profile.chunkBorder.enabled) {
             profile.chunkBorder.enabled = it
-            renderWindow.sendDebugMessage("Chunk borders: ${it.format()}")
+            connection.util.sendDebugMessage("Chunk borders: ${it.format()}")
         }
     }
 

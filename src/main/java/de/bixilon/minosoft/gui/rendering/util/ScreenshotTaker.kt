@@ -72,7 +72,7 @@ class ScreenshotTaker(
 
                     ImageIO.write(bufferedImage, "png", file)
 
-                    renderWindow.sendDebugMessage(BaseComponent(
+                    renderWindow.connection.util.sendDebugMessage(BaseComponent(
                         "§aScreenshot saved to ",
                         TextComponent(file.name).apply {
                             color = ChatColors.WHITE
@@ -101,7 +101,7 @@ class ScreenshotTaker(
 
     private fun Throwable?.fail() {
         this?.printStackTrace()
-        renderWindow.sendDebugMessage("§cFailed to make a screenshot: ${this?.message}")
+        renderWindow.connection.util.sendDebugMessage("§cFailed to make a screenshot: ${this?.message}")
     }
 
     companion object {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.renderer
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 
@@ -22,6 +23,8 @@ interface Renderer {
     val renderSystem: RenderSystem
     val framebuffer: Framebuffer?
         get() = renderWindow.framebufferManager.world.framebuffer
+    val polygonMode: PolygonModes
+        get() = renderWindow.framebufferManager.world.polygonMode
 
     fun init() = Unit
 

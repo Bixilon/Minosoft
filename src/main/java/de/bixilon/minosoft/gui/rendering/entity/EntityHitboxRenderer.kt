@@ -100,7 +100,7 @@ class EntityHitboxRenderer(
                 ),
             ), defaultPressed = profile.enabled) {
             profile.enabled = it
-            renderWindow.sendDebugMessage("Entity hit boxes: ${it.format()}")
+            connection.util.sendDebugMessage("Entity hit boxes: ${it.format()}")
         }
     }
 

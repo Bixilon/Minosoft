@@ -18,20 +18,15 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.math.MMath.round10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.renderer.RendererManager
@@ -40,21 +35,17 @@ import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -86,7 +77,6 @@ class RenderWindow(
 
     var initialized = false
         private set
-    private lateinit var renderThread: Thread
     lateinit var renderStats: AbstractRenderStats
         private set
 
@@ -140,7 +130,6 @@ class RenderWindow(
     }
 
     fun init(latch: CountUpAndDownLatch) {
-        renderThread = Thread.currentThread()
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
 
@@ -196,7 +185,7 @@ class RenderWindow(
 
 
         inputHandler.init()
-        registerGlobalKeyCombinations()
+        DefaultKeyCombinations.registerAll(this)
 
 
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
@@ -209,70 +198,6 @@ class RenderWindow(
         this.latch.await()
         window.visible = true
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
-    }
-
-    private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_P),
-                ),
-            )) {
-            val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
-            renderSystem.framebuffer = framebufferManager.world.framebuffer
-            renderSystem.polygonMode = nextMode
-            sendDebugMessage("Polygon mode: ${nextMode.format()}")
-        }
-
-        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
-                ),
-            )) { window.close() }
-
-        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_F2),
-                ),
-                ignoreConsumer = true,
-            )) { screenshotTaker.takeScreenshot() }
-
-        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_I),
-                ),
-                ignoreConsumer = true,
-            )) {
-            sendDebugMessage("Pausing incoming packets: ${it.format()}")
-            connection.network.pauseReceiving(it)
-        }
-
-        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_O),
-                ),
-                ignoreConsumer = true,
-            )) {
-            sendDebugMessage("Pausing outgoing packets: ${it.format()}")
-            connection.network.pauseSending(it)
-        }
-
-        inputHandler.registerKeyCallback("minosoft:toggle_fullscreen".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_F11),
-                ),
-                ignoreConsumer = true,
-            )) {
-            window.fullscreen = !window.fullscreen
-        }
     }
 
     fun startLoop() {
@@ -347,13 +272,5 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
         connection.disconnect()
-    }
-
-    fun sendDebugMessage(message: Any) {
-        connection.fireEvent(InternalMessageReceiveEvent(connection, BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })))
-    }
-
-    fun assertOnRenderThread() {
-        check(Thread.currentThread() === renderThread) { "Current thread (${Thread.currentThread().name} is not the render thread!" }
     }
 }

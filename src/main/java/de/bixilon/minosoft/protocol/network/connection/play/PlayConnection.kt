@@ -78,6 +78,7 @@ class PlayConnection(
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
+    val util = ConnectionUtil(this)
 
     @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)
@@ -255,11 +256,13 @@ class PlayConnection(
         latch.count = count
     }
 
+    @Deprecated("ToDo: Version?")
     override fun getPacketId(packetType: PacketTypes.C2S): Int {
         // ToDo: Improve speed
         return version.c2sPackets[packetType.state]?.indexOf(packetType) ?: Protocol.getPacketId(packetType) ?: error("Can not find packet $packetType for $version")
     }
 
+    @Deprecated("ToDo: Version?")
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
         return version.s2cPackets[protocolState]?.getOrNull(packetId) ?: Protocol.getPacketById(protocolState, packetId) ?: let {
             // wtf, notchain sends play disconnect packet in login state...
@@ -274,6 +277,7 @@ class PlayConnection(
         } ?: error("Can not find packet $packetId in $protocolState for $version")
     }
 
+    @Deprecated("ToDo: Packet handler")
     override fun handlePacket(packet: S2CPacket) {
         if (!protocolState.connected) {
             return
@@ -292,6 +296,7 @@ class PlayConnection(
         }
     }
 
+    @Deprecated("ToDo: Tag manager")
     fun inTag(`object`: Any?, tagType: ResourceLocation, tag: ResourceLocation): Boolean {
 
         fun fallback(): Boolean {

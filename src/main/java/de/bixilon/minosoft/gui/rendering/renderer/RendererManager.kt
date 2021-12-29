@@ -70,7 +70,7 @@ class RendererManager(
         }
     }
 
-    private fun renderAll(rendererList: Collection<Renderer>) {
+    private fun renderNormal(rendererList: Collection<Renderer>) {
         for (phase in RenderPhases.VALUES) {
             for (renderer in rendererList) {
                 if (renderer is SkipAll && renderer.skipAll) {
@@ -83,6 +83,7 @@ class RendererManager(
                     continue
                 }
                 renderSystem.framebuffer = renderer.framebuffer
+                renderSystem.polygonMode = renderer.polygonMode
                 phase.invokeSetup(renderer)
                 phase.invokeDraw(renderer)
             }
@@ -93,10 +94,9 @@ class RendererManager(
         val renderers = renderers.values
 
         for (renderer in renderers) {
-            renderSystem.framebuffer = renderer.framebuffer
             renderer.prepareDraw()
         }
-        renderAll(renderers)
+        renderNormal(renderers)
 
         renderSystem.framebuffer = null
         renderPre(renderers)
@@ -115,6 +115,7 @@ class RendererManager(
             if (renderer.skipPre) {
                 continue
             }
+            renderSystem.polygonMode = renderer.polygonMode
             renderSystem.framebuffer = renderer.framebuffer
             renderer.drawPre()
         }
@@ -131,6 +132,7 @@ class RendererManager(
             if (renderer.skipPost) {
                 continue
             }
+            renderSystem.polygonMode = renderer.polygonMode
             renderSystem.framebuffer = renderer.framebuffer
             renderer.drawPost()
         }

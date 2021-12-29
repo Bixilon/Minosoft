@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
@@ -69,6 +70,8 @@ class HUDRenderer(
         private set
     override val framebuffer: Framebuffer
         get() = renderWindow.framebufferManager.gui.framebuffer
+    override val polygonMode: PolygonModes
+        get() = renderWindow.framebufferManager.gui.polygonMode
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
 
