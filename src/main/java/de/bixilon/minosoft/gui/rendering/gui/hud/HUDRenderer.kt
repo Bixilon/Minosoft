@@ -22,10 +22,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -42,6 +39,9 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardH
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer

@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
-import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader

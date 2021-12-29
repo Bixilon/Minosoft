@@ -2,10 +2,10 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
-import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.modding.event.events.scoreboard.*
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker

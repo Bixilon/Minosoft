@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,20 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.renderer
 
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface Renderer {
-    val renderWindow: RenderWindow
-    val renderSystem: RenderSystem
-    val framebuffer: Framebuffer?
-        get() = renderWindow.framebufferManager.world.framebuffer
+interface RendererBuilder<T : Renderer> : CompanionResourceLocation {
 
-    fun init() = Unit
-
-    fun postInit() = Unit
-
-    fun prepareDraw() = Unit
+    fun build(connection: PlayConnection, renderWindow: RenderWindow): T
 }

@@ -11,12 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.renderer
 
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 
-interface RendererBuilder<T : Renderer> : CompanionResourceLocation {
+interface Renderer {
+    val renderWindow: RenderWindow
+    val renderSystem: RenderSystem
+    val framebuffer: Framebuffer?
+        get() = renderWindow.framebufferManager.world.framebuffer
 
-    fun build(connection: PlayConnection, renderWindow: RenderWindow): T
+    fun init() = Unit
+
+    fun postInit() = Unit
+
+    fun prepareDraw() = Unit
 }

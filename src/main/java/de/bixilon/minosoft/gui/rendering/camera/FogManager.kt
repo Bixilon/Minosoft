@@ -41,7 +41,7 @@ class FogManager(
             fogStart = renderWindow.connection.world.view.viewDistance * 16.0f - 8.0f // ToDo
             fogEnd = fogStart + 10.0f
         }
-        renderWindow[SkyRenderer]?.let { fogColor = it.baseColor }
+        renderWindow.renderer[SkyRenderer]?.let { fogColor = it.baseColor }
     }
 
 

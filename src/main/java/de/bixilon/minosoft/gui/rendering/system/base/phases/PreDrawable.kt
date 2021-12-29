@@ -2,13 +2,9 @@ package de.bixilon.minosoft.gui.rendering.system.base.phases
 
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 
-interface OpaqueDrawable : Renderer {
-    val skipOpaque: Boolean
+interface PreDrawable : Renderer {
+    val skipPre: Boolean
         get() = false
 
-    fun setupOpaque() {
-        renderSystem.reset()
-    }
-
-    fun drawOpaque()
+    fun drawPre()
 }
