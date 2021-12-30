@@ -41,12 +41,14 @@ interface RenderSystem {
         blending: Boolean = false,
         faceCulling: Boolean = true,
         depthMask: Boolean = true,
+        sourceRGB: BlendingFunctions = BlendingFunctions.ONE,
+        destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
         sourceAlpha: BlendingFunctions = BlendingFunctions.ONE,
-        destinationAlpha: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+        destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
         depth: DepthFunctions = DepthFunctions.LESS,
         clearColor: RGBColor = Colors.TRANSPARENT,
     ) {
-        setBlendFunction(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+        setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending
         this[RenderingCapabilities.FACE_CULLING] = faceCulling

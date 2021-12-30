@@ -51,7 +51,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
         val mesh = mesh ?: return
 
         if (crosshairProfile.complementaryColor) {
-            renderWindow.renderSystem.reset(blending = true, sourceAlpha = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
+            renderWindow.renderSystem.reset(blending = true, sourceRGB = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
         } else {
             renderWindow.renderSystem.reset()
         }

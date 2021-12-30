@@ -38,6 +38,8 @@ void work() {
         #ifdef TRANSPARENT
         if (foutColor.a < 0.3f){
             discard;
+        } else {
+            foutColor.a = 1.0f;
         }
             #endif
         return;
@@ -54,6 +56,8 @@ void work() {
     #ifdef TRANSPARENT
     if (foutColor.a < 0.3f) {
         discard;
+    } else {
+        foutColor.a = 1.0f;
     }
         #endif
 }
