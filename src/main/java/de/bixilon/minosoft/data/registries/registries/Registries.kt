@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
@@ -48,7 +49,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.collections.Clearable
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 
@@ -129,7 +129,7 @@ class Registries {
         isFlattened = version.flattened
         blockStateRegistry.flattened = isFlattened
         // pre init stuff
-        loadShapes(pixlyzerData["shapes"]?.compoundCast())
+        loadShapes(pixlyzerData["shapes"]?.toJsonObject())
 
         // enums
         loadEnumRegistry(version, pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)
@@ -149,30 +149,30 @@ class Registries {
         creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.unsafeCast(), this, CreativeModeTab)
 
         // id resource location stuff
-        containerTypeRegistry.rawInitialize(pixlyzerData["container_types"]?.compoundCast(), this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
-        gameEventRegistry.rawInitialize(pixlyzerData["game_events"]?.compoundCast(), this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
+        containerTypeRegistry.rawInitialize(pixlyzerData["container_types"]?.toJsonObject(), this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
+        gameEventRegistry.rawInitialize(pixlyzerData["game_events"]?.toJsonObject(), this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
 
 
-        entityTypeRegistry.rawInitialize(pixlyzerData["entities"]?.compoundCast(), this, EntityType)
+        entityTypeRegistry.rawInitialize(pixlyzerData["entities"]?.toJsonObject(), this, EntityType)
 
-        motiveRegistry.rawInitialize(pixlyzerData["motives"]?.compoundCast(), this, Motive, version.flattened)
-        soundEventRegistry.rawInitialize(pixlyzerData["sound_events"]?.compoundCast())
-        particleTypeRegistry.rawInitialize(pixlyzerData["particles"]?.compoundCast(), this, ParticleType)
-        materialRegistry.rawInitialize(pixlyzerData["materials"]?.compoundCast(), this, Material)
-        enchantmentRegistry.rawInitialize(pixlyzerData["enchantments"]?.compoundCast(), this, Enchantment)
-        statusEffectRegistry.rawInitialize(pixlyzerData["status_effects"]?.compoundCast(), this, StatusEffect)
-        biomeRegistry.rawInitialize(pixlyzerData["biomes"]?.compoundCast(), this, Biome)
-        dimensionRegistry.rawInitialize(pixlyzerData["dimensions"]?.compoundCast(), this, Dimension)
-        fluidRegistry.rawInitialize(pixlyzerData["fluids"]?.compoundCast(), this, Fluid)
-        blockRegistry.rawInitialize(pixlyzerData["blocks"]?.compoundCast(), this, Block, version.flattened, Registry.MetaTypes.BITS_4)
-        itemRegistry.rawInitialize(pixlyzerData["items"]?.compoundCast(), this, Item, version.flattened, Registry.MetaTypes.BITS_16)
+        motiveRegistry.rawInitialize(pixlyzerData["motives"]?.toJsonObject(), this, Motive, version.flattened)
+        soundEventRegistry.rawInitialize(pixlyzerData["sound_events"]?.toJsonObject())
+        particleTypeRegistry.rawInitialize(pixlyzerData["particles"]?.toJsonObject(), this, ParticleType)
+        materialRegistry.rawInitialize(pixlyzerData["materials"]?.toJsonObject(), this, Material)
+        enchantmentRegistry.rawInitialize(pixlyzerData["enchantments"]?.toJsonObject(), this, Enchantment)
+        statusEffectRegistry.rawInitialize(pixlyzerData["status_effects"]?.toJsonObject(), this, StatusEffect)
+        biomeRegistry.rawInitialize(pixlyzerData["biomes"]?.toJsonObject(), this, Biome)
+        dimensionRegistry.rawInitialize(pixlyzerData["dimensions"]?.toJsonObject(), this, Dimension)
+        fluidRegistry.rawInitialize(pixlyzerData["fluids"]?.toJsonObject(), this, Fluid)
+        blockRegistry.rawInitialize(pixlyzerData["blocks"]?.toJsonObject(), this, Block, version.flattened, Registry.MetaTypes.BITS_4)
+        itemRegistry.rawInitialize(pixlyzerData["items"]?.toJsonObject(), this, Item, version.flattened, Registry.MetaTypes.BITS_16)
 
-        blockEntityTypeRegistry.rawInitialize(pixlyzerData["block_entities"]?.compoundCast(), this, BlockEntityType)
+        blockEntityTypeRegistry.rawInitialize(pixlyzerData["block_entities"]?.toJsonObject(), this, BlockEntityType)
 
-        villagerProfessionRegistry.rawInitialize(pixlyzerData["villager_professions"]?.compoundCast(), this, VillagerProfession)
+        villagerProfessionRegistry.rawInitialize(pixlyzerData["villager_professions"]?.toJsonObject(), this, VillagerProfession)
 
 
-        blockEntityMetaDataTypeRegistry.rawInitialize(pixlyzerData["block_entity_meta_data_types"]?.compoundCast(), this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
+        blockEntityMetaDataTypeRegistry.rawInitialize(pixlyzerData["block_entity_meta_data_types"]?.toJsonObject(), this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
 
 
         // post init

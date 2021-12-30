@@ -42,9 +42,9 @@ import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.KUtil.synchronizedDeepCopy
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.toMutableJsonObject
 import java.util.*
 
 class ItemStack(
@@ -182,7 +182,7 @@ class ItemStack(
 
         nbt.getAndRemove(REPAIR_COST_TAG).nullCast<Number>()?.let { repairCost = it.toInt() }
 
-        nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
+        nbt.getAndRemove(DISPLAY_TAG)?.toMutableJsonObject()?.let {
             it.getAndRemove(DISPLAY_MAME_TAG).nullCast<String>()?.let { nameTag ->
                 customDisplayName = ChatComponent.of(nameTag, translator = connection?.language)
             }

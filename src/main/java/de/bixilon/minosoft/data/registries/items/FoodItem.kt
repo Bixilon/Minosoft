@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHungerElement
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 open class FoodItem(
     resourceLocation: ResourceLocation,
@@ -39,7 +39,7 @@ open class FoodItem(
     val timeToEat: Int
 
     init {
-        val foodProperties = data["food_properties"].asCompound()
+        val foodProperties = data["food_properties"].asJsonObject()
         nutrition = foodProperties["nutrition"]?.toInt() ?: 0
         saturationModifier = foodProperties["saturation_modifier"]?.toFloat() ?: 0.0f
         isMeat = foodProperties["is_meat"]?.toBoolean() ?: false

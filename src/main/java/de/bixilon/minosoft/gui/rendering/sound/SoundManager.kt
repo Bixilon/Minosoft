@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.util.*
 
 class SoundManager(
@@ -21,7 +21,7 @@ class SoundManager(
 
         for ((name, data) in soundsIndex) {
             val resourceLocation = name.toResourceLocation()
-            sounds[resourceLocation] = SoundType(resourceLocation, data.asCompound())
+            sounds[resourceLocation] = SoundType(resourceLocation, data.asJsonObject())
         }
     }
 

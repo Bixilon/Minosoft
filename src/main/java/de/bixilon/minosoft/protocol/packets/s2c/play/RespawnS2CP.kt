@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3d
 
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -60,7 +60,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!.type
             }
             else -> {
-                DimensionProperties.deserialize(buffer.readNBT().asCompound()) // current dimension data
+                DimensionProperties.deserialize(buffer.readNBT().asJsonObject()) // current dimension data
             }
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {

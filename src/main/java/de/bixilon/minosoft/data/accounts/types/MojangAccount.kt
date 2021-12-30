@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.accounts.types
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.util.http.exceptions.AuthenticationException
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.util.*
 
 @Deprecated("Mojang authentication is legacy. Will be removed in the future!")
@@ -117,10 +117,10 @@ class MojangAccount(
 
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang login successful (email=$email)" }
 
-            val uuid = response.body["selectedProfile"].asCompound()["id"].toString().toUUID()
+            val uuid = response.body["selectedProfile"].asJsonObject()["id"].toString().toUUID()
             return MojangAccount(
-                id = response.body["user"].asCompound()["id"].unsafeCast(),
-                username = response.body["selectedProfile"].asCompound()["name"].unsafeCast(),
+                id = response.body["user"].asJsonObject()["id"].unsafeCast(),
+                username = response.body["selectedProfile"].asJsonObject()["name"].unsafeCast(),
                 uuid = uuid,
                 email = email,
                 accessToken = response.body["accessToken"].unsafeCast(),

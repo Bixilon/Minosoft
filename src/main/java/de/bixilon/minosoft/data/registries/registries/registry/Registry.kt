@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
@@ -120,7 +120,7 @@ open class Registry<T : RegistryItem>(
 
         for ((resourceLocation, value) in data) {
             check(value is Map<*, *>)
-            val item = deserializer.deserialize(registries, resourceLocation, value.asCompound()) ?: continue
+            val item = deserializer.deserialize(registries, resourceLocation, value.asJsonObject()) ?: continue
             value["id"]?.toInt()?.let { id ->
                 var itemId = id
                 if (!flattened) {

@@ -50,7 +50,7 @@ class ItemElement(
 
         var color = ChatColors.WHITE
         if (item.item is BlockItem) {
-            item.item.block?.defaultState?.material?.color?.let { color = it }
+            item.item.block.defaultState.material.color?.let { color = it }
         }
 
         val image = ColorElement(hudRenderer, _size, color)

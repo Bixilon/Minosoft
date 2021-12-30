@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 class MultipartRootModel(
     private val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<AbstractUnbakedBlockModel>>,
@@ -71,7 +72,7 @@ class MultipartRootModel(
 
     companion object {
 
-        private fun getCondition(data: MutableMap<String, Any>): MutableMap<BlockProperties, Set<Any>> {
+        private fun getCondition(data: JsonObject): MutableMap<BlockProperties, Set<Any>> {
             val condition: MutableMap<BlockProperties, Set<Any>> = mutableMapOf()
             for ((propertyName, value) in data) {
                 var property: BlockProperties? = null
@@ -104,7 +105,7 @@ class MultipartRootModel(
                     apply += WeightedUnbakedBlockStateModel(modelLoader, applyData.unsafeCast())
                 }
 
-                modelData["when"]?.compoundCast()?.let {
+                modelData["when"]?.toJsonObject()?.let {
                     val or = it["OR"]
                     if (or is List<*>) {
                         for (orData in or) {

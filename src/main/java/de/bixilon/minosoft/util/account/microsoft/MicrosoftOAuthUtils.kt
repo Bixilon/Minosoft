@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonList
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
 import java.net.URL
 import java.net.URLConnection
@@ -92,7 +92,7 @@ object MicrosoftOAuthUtils {
         if (response.statusCode != 200) {
             throw LoginException(response.statusCode, "Could not authenticate with xbox live token", response.body.toString())
         }
-        return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asCompound()["xui"].asJsonList()[0].asCompound()["uhs"].unsafeCast())
+        return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asJsonObject()["xui"].asJsonList()[0].asJsonObject()["uhs"].unsafeCast())
     }
 
     fun getXSTSToken(xBoxLiveToken: String): String {

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.particle
 
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 data class ParticleType(
@@ -43,7 +43,7 @@ data class ParticleType(
     companion object : ResourceLocationDeserializer<ParticleType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ParticleType {
             val textures: MutableList<ResourceLocation> = mutableListOf()
-            data["render"]?.compoundCast()?.get("textures")?.listCast<String>()?.let {
+            data["render"]?.toJsonObject()?.get("textures")?.listCast<String>()?.let {
                 for (texture in it) {
                     val textureResourceLocation = ResourceLocation(texture)
                     textures += Texture.getResourceTextureIdentifier(textureResourceLocation.namespace, textureName = "particle/${textureResourceLocation.path}")

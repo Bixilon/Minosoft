@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.gui.rendering.models.display.ModelDisplay
 import de.bixilon.minosoft.gui.rendering.models.display.ModelDisplayPositions
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 abstract class GenericUnbakedModel(
@@ -31,7 +31,7 @@ abstract class GenericUnbakedModel(
     init {
         val display = parent?.display?.toMutableMap() ?: mutableMapOf()
 
-        json["display"]?.compoundCast()?.let {
+        json["display"]?.toJsonObject()?.let {
             for ((name, value) in it) {
                 display[ModelDisplayPositions[name]] = ModelDisplay(data = value.unsafeCast())
             }
@@ -45,7 +45,7 @@ abstract class GenericUnbakedModel(
     init {
         val textures = parent?.textures?.toMutableMap() ?: mutableMapOf()
 
-        json["textures"]?.compoundCast()?.let {
+        json["textures"]?.toJsonObject()?.let {
             for ((name, value) in it) {
                 textures[name] = value.toString()
             }

@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 data class BlockState(
@@ -104,7 +104,7 @@ data class BlockState(
     companion object {
 
         fun deserialize(block: Block, registries: Registries, data: Map<String, Any>): BlockState {
-            val properties = data["properties"]?.compoundCast()?.let {
+            val properties = data["properties"]?.toJsonObject()?.let {
                 getProperties(it)
             } ?: mutableMapOf()
 

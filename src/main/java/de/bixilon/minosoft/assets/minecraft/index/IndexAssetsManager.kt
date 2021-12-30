@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.string.StringUtil.format
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -82,7 +82,7 @@ class IndexAssetsManager(
 
         var assets = FileUtil.safeReadFile(FileAssetsUtil.getPath(indexHash))?.readJsonObject() ?: downloadAssetsIndex()
 
-        assets["objects"].let { assets = it.asCompound() }
+        assets["objects"].let { assets = it.asJsonObject() }
         val tasks = CountUpAndDownLatch(0)
         val assetsLatch = CountUpAndDownLatch(assets.size, parent = latch)
 

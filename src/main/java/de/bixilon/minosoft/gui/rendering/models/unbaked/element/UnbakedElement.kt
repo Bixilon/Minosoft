@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked.element
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3
 
 data class UnbakedElement(
@@ -37,7 +37,7 @@ data class UnbakedElement(
             val from = data["from"].toVec3() / BLOCK_RESOLUTION
             val to = data["to"].toVec3() / BLOCK_RESOLUTION
 
-            data["faces"].asCompound().let {
+            data["faces"].asJsonObject().let {
                 for ((directionString, faceData) in it) {
                     val direction = Directions[directionString]
                     val (fallbackUVStart, fallbackUVEnd) = direction.getFallbackUV(from, to)
@@ -48,7 +48,7 @@ data class UnbakedElement(
             return UnbakedElement(
                 from = from,
                 to = to,
-                rotation = data["rotation"]?.compoundCast()?.let { return@let UnbakedElementRotation(data = it) },
+                rotation = data["rotation"]?.toJsonObject()?.let { return@let UnbakedElementRotation(data = it) },
                 shade = data["shade"]?.toBoolean() ?: true,
                 faces = faces,
             )
