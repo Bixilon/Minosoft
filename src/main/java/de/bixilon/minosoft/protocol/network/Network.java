@@ -58,7 +58,7 @@ public abstract class Network {
     protected Pair<PacketTypes.S2C, S2CPacket> receiveS2CPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled
-            InByteBuffer rawData = new InByteBuffer(bytes, this.connection);
+            InByteBuffer rawData = new InByteBuffer(bytes);
             int packetSize = rawData.readVarInt();
             bytes = rawData.readRest();
             if (packetSize > 0) {
@@ -66,7 +66,7 @@ public abstract class Network {
                 bytes = Util.decompress(bytes);
             }
         }
-        InByteBuffer data = new InByteBuffer(bytes, this.connection);
+        InByteBuffer data = new InByteBuffer(bytes);
         int packetId = data.readVarInt();
 
         PacketTypes.S2C packetType = null;

@@ -43,7 +43,7 @@ class PlayInByteBuffer : InByteBuffer {
     val connection: PlayConnection
     val versionId: Int
 
-    constructor(bytes: ByteArray, connection: PlayConnection) : super(bytes, connection) {
+    constructor(bytes: ByteArray, connection: PlayConnection) : super(bytes) {
         this.connection = connection
         versionId = connection.version.versionId
     }
