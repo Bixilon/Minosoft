@@ -17,11 +17,17 @@ in vec2 finUV;
 
 out vec4 foutColor;
 
-uniform sampler2D uTexture;
+uniform sampler2D uColor;
+uniform sampler2D uDepth;
 
 
 void main() {
-    foutColor = texture(uTexture, finUV);
+    vec4 color = texture(uColor, finUV);
+    if (color.a == 0.0f) {
+        discard;
+    }
+    float depth = texture(uDepth, finUV).r;
+    foutColor = vec4(color.xyz, depth);
 
     if (foutColor.a == 0.0f) {
         discard;

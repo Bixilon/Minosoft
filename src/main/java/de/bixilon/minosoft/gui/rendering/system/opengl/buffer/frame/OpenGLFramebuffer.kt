@@ -4,8 +4,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferTexture
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferColorTexture
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferDepthTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
 import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL30.*
@@ -16,7 +16,8 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
 
     private var id = -1
 
-    private lateinit var texture: OpenGLFramebufferTexture
+    private lateinit var colorTexture: OpenGLFramebufferColorTexture
+    private lateinit var depthTexture: OpenGLFramebufferDepthTexture
     private lateinit var renderbuffer: OpenGLRenderbuffer
 
     override fun init() {
@@ -26,13 +27,19 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
 
         glViewport(0, 0, size.x, size.y)
 
-        texture = OpenGLFramebufferTexture(size)
-        texture.init()
-        attach(texture)
+        colorTexture = OpenGLFramebufferColorTexture(size)
+        colorTexture.init()
+        attach(colorTexture)
 
-        renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_COMPONENT24, size)
-        renderbuffer.init()
-        attach(renderbuffer)
+        //renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_COMPONENT24, size)
+        //renderbuffer.init()
+        //attach(renderbuffer)
+
+        depthTexture = OpenGLFramebufferDepthTexture(size)
+        depthTexture.init()
+        attach(depthTexture)
+
+        glDrawBuffers(intArrayOf(GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT))
 
         check(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete!" }
         state = FramebufferState.COMPLETE
@@ -53,8 +60,11 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
     }
 
     override fun attach(texture: FramebufferTexture) {
-        check(texture is OpenGLFramebufferTexture) { "Can not attach non OpenGL texture!" }
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0)
+        when (texture) {
+            is OpenGLFramebufferDepthTexture -> glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture.id, 0)
+            is OpenGLFramebufferColorTexture -> glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.id, 0)
+            else -> throw IllegalArgumentException("Can not attach non OpenGL texture!")
+        }
     }
 
     override fun delete() {
@@ -66,16 +76,16 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
 
     override fun bindTexture() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
-        glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, texture.id)
+        colorTexture.bind(0)
+        depthTexture.bind(1)
     }
 
     override fun resize(size: Vec2i) {
         if (size == this.size) {
             return
         }
-        if (this::texture.isInitialized) {
-            texture.unload()
+        if (this::colorTexture.isInitialized) {
+            colorTexture.unload()
         }
         if (this::renderbuffer.isInitialized) {
             renderbuffer.unload()

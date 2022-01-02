@@ -17,11 +17,11 @@ in vec2 finUV;
 
 out vec4 foutColor;
 
-uniform sampler2D uTexture;
+uniform sampler2D uColor;
 
 
 void main() {
-    foutColor = texture(uTexture, finUV);
+    foutColor = texture(uColor, finUV);
 
     if (foutColor.a == 0.0f) {
         discard;

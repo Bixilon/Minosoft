@@ -116,7 +116,6 @@ class RendererManager(
                 continue
             }
             renderSystem.polygonMode = renderer.polygonMode
-            renderSystem.framebuffer = renderer.framebuffer
             renderer.drawPre()
         }
     }
@@ -133,7 +132,6 @@ class RendererManager(
                 continue
             }
             renderSystem.polygonMode = renderer.polygonMode
-            renderSystem.framebuffer = renderer.framebuffer
             renderer.drawPost()
         }
     }

@@ -28,13 +28,11 @@ out vec4 finTintColor;
 
 uniform mat4 uViewProjectionMatrix;
 
-#define POSTPROCESSING_FOG
-
 #include "minosoft:animation"
 #include "minosoft:color"
 #include "minosoft:light"
 
-void work() {
+void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
     finTintColor = getRGBColor(vinTintColorAndLight & 0xFFFFFFu) * getLight(vinTintColorAndLight >> 24u);
 
@@ -60,5 +58,3 @@ void work() {
 
     finInterpolation = interpolation / 100.0f;
 }
-
-    #include "minosoft:postprocessing/vertex"

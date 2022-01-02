@@ -219,9 +219,9 @@ class RenderWindow(
             }
 
             renderStats.startFrame()
+            framebufferManager.clear()
             renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
-            framebufferManager.clear()
 
 
             val currentTickTime = TimeUtil.time

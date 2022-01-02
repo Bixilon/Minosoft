@@ -42,7 +42,6 @@ import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -176,7 +175,6 @@ class HUDRenderer(
             lastTickTime = time
         }
 
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
         var z = 0
         for (element in hudElements) {
             if (!element.enabled) {
