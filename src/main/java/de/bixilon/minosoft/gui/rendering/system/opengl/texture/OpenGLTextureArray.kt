@@ -35,7 +35,6 @@ import org.lwjgl.opengl.GL12.*
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
-import java.io.FileNotFoundException
 import java.nio.ByteBuffer
 
 class OpenGLTextureArray(
@@ -55,11 +54,8 @@ class OpenGLTextureArray(
         var texture = textures[resourceLocation]
 
         // load .mcmeta
-        val properties = try {
-            Jackson.MAPPER.readValue(renderWindow.connection.assetsManager["$resourceLocation.mcmeta".toResourceLocation()].readAsString(), ImageProperties::class.java)
-        } catch (exception: FileNotFoundException) { // ToDo: Speed up and not use exceptions
-            ImageProperties()
-        }
+        val properties = readImageProperties(resourceLocation) ?: ImageProperties()
+
         if (texture == null) {
             texture = if (properties.animation == null) {
                 default()
@@ -74,6 +70,16 @@ class OpenGLTextureArray(
         textures[resourceLocation] = texture
 
         return texture
+    }
+
+    private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
+        try {
+            val data = renderWindow.connection.assetsManager.nullGet("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
+            return Jackson.MAPPER.readValue(data, ImageProperties::class.java)
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
+        return null
     }
 
     @Synchronized
