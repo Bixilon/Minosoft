@@ -29,3 +29,20 @@ vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid a
     return texture(uTextures[0], uv);
     #endif
 }
+
+vec4 getTexture(uint textureId, vec3 uv, float mipmapLevel) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
+    #if defined __NVIDIA || defined __AMD
+    return textureLod(uTextures[textureId], uv, mipmapLevel);
+    #else
+    switch (textureId) {
+        case 1u: return textureLod(uTextures[1], uv, mipmapLevel);
+        case 2u: return textureLod(uTextures[2], uv, mipmapLevel);
+        case 3u: return textureLod(uTextures[3], uv, mipmapLevel);
+        case 4u: return textureLod(uTextures[4], uv, mipmapLevel);
+        case 5u: return textureLod(uTextures[5], uv, mipmapLevel);
+        case 6u: return textureLod(uTextures[6], uv, mipmapLevel);
+    }
+    return textureLod(uTextures[0], uv, mipmapLevel);
+    #endif
+}
+
