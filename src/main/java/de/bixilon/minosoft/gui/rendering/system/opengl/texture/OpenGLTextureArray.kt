@@ -155,15 +155,12 @@ class OpenGLTextureArray(
 
             val renderData = texture.renderData as OpenGLTextureData
             for ((level, data) in mipMaps.withIndex()) {
-                if (texture.generateMipMaps) {
-                    val size = texture.size shr level
-
-                    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
-                } else {
-                    val size = texture.size
-
-                    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, mipMaps[0])
+                if (level > 0 && !texture.generateMipMaps) {
+                    break
                 }
+                val size = texture.size shr level
+
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
             }
 
             texture.data = null
