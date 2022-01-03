@@ -29,7 +29,10 @@ import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 
-class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractTexture {
+class PNGTexture(
+    override val resourceLocation: ResourceLocation,
+    override val generateMipMaps: Boolean = true,
+) : AbstractTexture {
     override lateinit var renderData: TextureRenderData
 
     override lateinit var textureArrayUV: Vec2

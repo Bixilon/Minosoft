@@ -30,6 +30,8 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
     override var properties: ImageProperties by original::properties
     override var renderData: TextureRenderData by original::renderData
     override val transparency: TextureTransparencies by original::transparency
+    override val generateMipMaps: Boolean
+        get() = original.generateMipMaps
 
     override var state: TextureStates = TextureStates.DECLARED
         private set

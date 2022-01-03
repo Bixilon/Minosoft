@@ -36,7 +36,7 @@ class BitmapFontProvider(
 
     init {
         val charRows = data["chars"].asJsonList()
-        val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
+        val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture(), mipmaps = false)
         texture.load(renderWindow.connection.assetsManager)
 
         val height = texture.size.y / charRows.size

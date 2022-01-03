@@ -23,7 +23,7 @@ interface TextureArray {
     val state: TextureArrayStates
 
     operator fun get(resourceLocation: ResourceLocation): AbstractTexture?
-    fun createTexture(resourceLocation: ResourceLocation, default: () -> AbstractTexture = { PNGTexture(resourceLocation) }): AbstractTexture
+    fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: () -> AbstractTexture = { PNGTexture(resourceLocation, generateMipMaps = mipmaps) }): AbstractTexture
 
     fun preLoad()
 

@@ -29,6 +29,7 @@ class MemoryTexture(
     override val resourceLocation: ResourceLocation,
     override val size: Vec2i,
     override var properties: ImageProperties = ImageProperties(),
+    override val generateMipMaps: Boolean = true,
     generator: ((x: Int, y: Int) -> RGBColor)? = null,
 ) : AbstractTexture {
     override lateinit var textureArrayUV: Vec2

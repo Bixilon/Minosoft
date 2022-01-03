@@ -51,7 +51,7 @@ class OpenGLTextureArray(
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
 
 
-    override fun createTexture(resourceLocation: ResourceLocation, default: () -> AbstractTexture): AbstractTexture {
+    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> AbstractTexture): AbstractTexture {
         var texture = textures[resourceLocation]
 
         // load .mcmeta
@@ -136,7 +136,7 @@ class OpenGLTextureArray(
 
 
     @Synchronized
-    private fun loadSingleArray(resolution: Int, textures: MutableList<AbstractTexture>): Int {
+    private fun loadSingleArray(resolution: Int, textures: List<AbstractTexture>): Int {
         val textureId = glGenTextures()
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
@@ -155,8 +155,15 @@ class OpenGLTextureArray(
 
             val renderData = texture.renderData as OpenGLTextureData
             for ((level, data) in mipMaps.withIndex()) {
-                val size = texture.size shr level
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
+                if (texture.generateMipMaps) {
+                    val size = texture.size shr level
+
+                    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
+                } else {
+                    val size = texture.size
+
+                    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, mipMaps[0])
+                }
             }
 
             texture.data = null

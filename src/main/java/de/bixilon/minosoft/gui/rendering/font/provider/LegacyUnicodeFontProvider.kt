@@ -41,7 +41,7 @@ class LegacyUnicodeFontProvider(
                 char += UNICODE_PAGE_SIZE
                 continue
             }
-            val texture = renderWindow.textureManager.staticTextures.createTexture(template.format("%02x".format(page)).toResourceLocation().texture())
+            val texture = renderWindow.textureManager.staticTextures.createTexture(template.format("%02x".format(page)).toResourceLocation().texture(), mipmaps = false)
             for (y in 0 until UNICODE_PAGE_SIZE / CHAR_SIZE) {
                 val yStart = PIXEL.y * y * CHAR_SIZE
                 val yEnd = PIXEL.y * (y + 1) * CHAR_SIZE
