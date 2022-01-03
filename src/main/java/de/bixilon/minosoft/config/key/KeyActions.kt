@@ -34,7 +34,7 @@ enum class KeyAction {
     // custom ones
 
     /**
-     * Key must be hold in addition to a other action
+     * Key must be hold in addition to another action
      */
     MODIFIER,
 

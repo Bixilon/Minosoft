@@ -20,16 +20,34 @@ out vec4 foutColor;
 uniform sampler2D uColor;
 uniform sampler2D uDepth;
 
+uniform float uFogStart = 60.0f;
+uniform float uFogEnd = 75.0f;
+
+#define NEAR_PLANE 0.01f
+#define FAR_PLANE 1000.0f
+
+float linearize_depth(float depth) {
+    return (2.0f * NEAR_PLANE * FAR_PLANE) / (FAR_PLANE + NEAR_PLANE - (depth * 2.0f - 1.0f) * (FAR_PLANE - NEAR_PLANE));
+}
+
+float calulate_fog_alpha(float depth) {
+    if (depth < uFogStart){
+        return 1.0f;
+    }
+    if (depth > uFogEnd){
+        discard;
+    }
+
+    return pow(1.0f - (depth - uFogStart) / (uFogEnd - uFogStart), 2);
+}
 
 void main() {
     vec4 color = texture(uColor, finUV);
     if (color.a == 0.0f) {
         discard;
     }
-    float depth = texture(uDepth, finUV).r;
-    foutColor = vec4(color.xyz, depth);
+    float depth = linearize_depth(texture(uDepth, finUV).x);
+    float alpha = calulate_fog_alpha(depth);
 
-    if (foutColor.a == 0.0f) {
-        discard;
-    }
+    foutColor = vec4(color.xyz, alpha);
 }

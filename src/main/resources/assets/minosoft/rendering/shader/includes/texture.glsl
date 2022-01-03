@@ -14,7 +14,7 @@
 
 uniform sampler2DArray uTextures[7];
 
-vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
+vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid and workarounds an opengl crash with mesa drivers
     #if defined __NVIDIA || defined __AMD
     return texture(uTextures[textureId], uv);
     #else
@@ -30,7 +30,7 @@ vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid a
     #endif
 }
 
-vec4 getTexture(uint textureId, vec3 uv, float mipmapLevel) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
+vec4 getTexture(uint textureId, vec3 uv, float mipmapLevel) { // ToDo: This method is just stupid and workarounds an opengl crash with mesa drivers
     #if defined __NVIDIA || defined __AMD
     return textureLod(uTextures[textureId], uv, mipmapLevel);
     #else
