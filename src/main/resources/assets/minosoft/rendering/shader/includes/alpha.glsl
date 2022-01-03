@@ -11,17 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+void discard_if_0(float value) {
+    if (value <= 0.0f) {
+        discard;
+    }
+}
 
-in vec2 finUV;
+void discard_alpha() {
+    if (foutColor.a <= 0.0f) {
+        discard;
+    }
+}
 
-out vec4 foutColor;
-
-uniform sampler2D uColor;
-
-#include "minosoft:alpha"
-
-void main() {
-    foutColor = texture(uColor, finUV);
-    discard_alpha();
+void set_alpha_transparent() {
+    if (foutColor.a < 0.3f) {
+        discard;
+    } else {
+        foutColor.a = 1.0f;
+    }
 }

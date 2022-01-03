@@ -24,38 +24,30 @@ in float finInterpolation;
 in vec4 finTintColor;
 
 #include "minosoft:texture"
+#include "minosoft:alpha"
+#include "minosoft:fog"
 
 void main() {
     vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1);
-    if (firstTexelColor.a == 0.0f) {
-        discard;
-    }
+    discard_if_0(firstTexelColor.a);
 
     if (finInterpolation == 0.0f) {
         foutColor = firstTexelColor * finTintColor;
         #ifdef TRANSPARENT
-        if (foutColor.a < 0.3f){
-            discard;
-        } else {
-            foutColor.a = 1.0f;
-        }
-            #endif
+        set_alpha_transparent();
+        #endif
+        set_fog_alpha();
         return;
     }
 
     vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2);
 
-    if (secondTexelColor.a == 0.0f) {
-        discard;
-    }
+    discard_if_0(secondTexelColor.a);
 
     foutColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
 
     #ifdef TRANSPARENT
-    if (foutColor.a < 0.3f) {
-        discard;
-    } else {
-        foutColor.a = 1.0f;
-    }
-        #endif
+    set_alpha_transparent();
+    #endif
+    set_fog_alpha();
 }

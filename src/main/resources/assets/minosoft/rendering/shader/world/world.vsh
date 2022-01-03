@@ -23,6 +23,7 @@ out vec3 finTextureCoordinates1;
 flat out uint finTextureIndex2;
 out vec3 finTextureCoordinates2;
 out float finInterpolation;
+out vec3 finFragmentPosition;
 
 out vec4 finTintColor;
 
@@ -35,6 +36,7 @@ uniform mat4 uViewProjectionMatrix;
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
     finTintColor = getRGBColor(vinTintColorAndLight & 0xFFFFFFu) * getLight(vinTintColorAndLight >> 24u);
+    finFragmentPosition = vinPosition;
 
 
     uint animationIndex = vinIndexLayerAnimation & 0xFFFu;

@@ -11,17 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+in vec3 finFragmentPosition;
 
-in vec2 finUV;
 
-out vec4 foutColor;
+uniform vec3 uCameraPosition;
+uniform float uFogStart = 60.0f;
+uniform float uFogEnd = 75.0f;
 
-uniform sampler2D uColor;
+float calulate_fog_alpha(float distance) {
+    if (distance < uFogStart) {
+        return 1.0f;
+    }
+    if (distance > uFogEnd) {
+        discard;
+    }
 
-#include "minosoft:alpha"
+    return pow(1.0f - (distance - uFogStart) / (uFogEnd - uFogStart), 2);
+}
 
-void main() {
-    foutColor = texture(uColor, finUV);
-    discard_alpha();
+float calculate_fog() {
+    float distance = length(finFragmentPosition.xz - uCameraPosition.xz);
+    return calulate_fog_alpha(distance);
+}
+
+void set_fog_alpha() {
+    foutColor.a = calculate_fog();
 }

@@ -139,10 +139,10 @@ class MatrixHandler(
 
     private fun updateShaders() {
         for (shader in renderWindow.renderSystem.shaders) {
-            if (shader.uniforms.contains("uViewProjectionMatrix")) {
+            if ("uViewProjectionMatrix" in shader.uniforms) {
                 shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
             }
-            if (shader.uniforms.contains("uCameraPosition")) {
+            if ("uCameraPosition" in shader.uniforms) {
                 shader.use().setVec3("uCameraPosition", connection.player.cameraPosition)
             }
         }
