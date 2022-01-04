@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.watcher.SimpleDelegateWatcher.Companion.watchFX
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
@@ -44,7 +44,7 @@ class ProfilesTypeCardController : AbstractCardController<ProfileManager<*>>() {
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item.namespace)
 
         recalculate(item)
-        item::profiles.watchFX(this) { recalculate(item) } // ToDo: Not a watchable map yet
+        item::profiles.observeFX(this) { recalculate(item) } // ToDo: Not a watchable map yet
     }
 
     private fun recalculate(item: ProfileManager<*>) {

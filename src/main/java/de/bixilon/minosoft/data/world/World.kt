@@ -16,6 +16,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.AABB
@@ -45,7 +46,6 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
-import de.bixilon.minosoft.util.delegate.DelegateManager.delegate
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -61,10 +61,10 @@ class World(
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
     val entities = WorldEntities()
-    var hardcore by delegate(false)
-    var dimension: DimensionProperties? = null
-    var difficulty: Difficulties? = null
-    var difficultyLocked = false
+    var hardcore by watched(false)
+    var dimension: DimensionProperties? by watched(null)
+    var difficulty: Difficulties? by watched(null)
+    var difficultyLocked by watched(false)
     var hashedSeed = 0L
     val time = WorldTime(this)
     val weather = WorldWeather()

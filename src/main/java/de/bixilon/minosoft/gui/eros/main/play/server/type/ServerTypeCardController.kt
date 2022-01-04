@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.watcher.entry.ListDelegateWatcher.Companion.watchListFX
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeListFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
@@ -44,7 +44,7 @@ class ServerTypeCardController : AbstractCardController<ServerType>() {
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
 
         recalculate(item)
-        item::servers.watchListFX(this) { recalculate(item) }
+        item::servers.observeListFX(this) { recalculate(item) }
     }
 
     private fun recalculate(item: ServerType) {

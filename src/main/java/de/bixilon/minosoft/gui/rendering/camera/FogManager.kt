@@ -7,7 +7,6 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.delegate.watcher.SimpleDelegateWatcher.Companion.watchRendering
 
 class FogManager(
     private val renderWindow: RenderWindow,
@@ -41,10 +40,6 @@ class FogManager(
         }
 
     private var updateShaders = true
-
-    fun init() {
-        renderWindow.connection.world.view::viewDistance.watchRendering(this, true) { calculateFog() }
-    }
 
     fun draw() {
         calculateFog()

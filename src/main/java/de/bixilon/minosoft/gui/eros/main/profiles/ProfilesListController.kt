@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.profiles
 
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.watcher.map.MapChange.Companion.values
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.watcher.entry.MapDelegateWatcher.Companion.watchMapFX
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeMapFX
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -74,9 +75,9 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
     }
 
     fun initWatch() {
-        profileManager!!::profiles.watchMapFX(this) {
-            profilesListViewFX.items -= it.valueRemoved
-            profilesListViewFX.items += it.valueAdded
+        profileManager!!::profiles.observeMapFX(this) {
+            profilesListViewFX.items -= it.removes.values()
+            profilesListViewFX.items += it.adds.values()
             profilesListViewFX.refresh()
         }
     }

@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.util.nbt.tag
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.json.MutableJsonObject
 
 object NBTUtil {
 
@@ -36,25 +34,9 @@ object NBTUtil {
         return null
     }
 
-    @Deprecated("Will be in Kutil 1.4")
-    fun Any?.asMutableJsonObject(): MutableJsonObject {
-        return this.unsafeCast()
-    }
-
-    @Deprecated("Will be in Kutil 1.4")
-    fun Any?.toMutableJsonObject(): MutableJsonObject? {
-        return this?.nullCast()
-    }
-
-
     fun <T> Any?.listCast(): MutableList<T>? {
-        try {
-            return this as MutableList<T>
-        } catch (ignored: ClassCastException) {
-        }
-        return null
+        return this.nullCast()
     }
-
 
     operator fun Map<String, Any>.get(vararg keys: String): Any? {
         for (key in keys) {

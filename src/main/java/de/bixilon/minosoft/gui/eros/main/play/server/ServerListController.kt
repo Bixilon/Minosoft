@@ -50,7 +50,7 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.watcher.entry.ListDelegateWatcher.Companion.watchListFX
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeListFX
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -173,14 +173,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     fun initWatch() {
-        serverType!!::servers.watchListFX(this) {
-            while (it.next()) {
-                for (removed in it.removed) {
-                    serverListViewFX.items -= ServerCard.CARDS.remove(removed)
-                }
-                for (added in it.addedSubList) {
-                    updateServer(added)
-                }
+        serverType!!::servers.observeListFX(this) {
+            for (remove in it.removes) {
+                serverListViewFX.items -= ServerCard.CARDS.remove(remove)
+            }
+            for (add in it.adds) {
+                updateServer(add)
             }
         }
     }
