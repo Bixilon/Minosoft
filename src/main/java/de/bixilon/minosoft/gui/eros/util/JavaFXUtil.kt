@@ -47,6 +47,7 @@ object JavaFXUtil {
     lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
+    lateinit var BIXILON_LOGO: Group
     private var watchingTheme = false
 
     private fun startThemeWatcher() {
@@ -56,7 +57,7 @@ object JavaFXUtil {
 
         ErosProfileManager.selected.theme::theme.profileWatchFX(this) {
             stages.cleanup()
-            for (stage in stages.iterator() as Iterator<Stage?>) {
+            for (stage in stages.iterator().unsafeCast<Iterator<Stage?>>()) {
                 stage ?: continue
                 stage.scene.stylesheets.clear()
                 stage.scene.stylesheets.add(DEFAULT_STYLE)
