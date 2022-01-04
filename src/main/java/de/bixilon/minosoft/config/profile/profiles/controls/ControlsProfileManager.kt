@@ -1,7 +1,9 @@
 package de.bixilon.minosoft.config.profile.profiles.controls
 
-import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
+import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
+import de.bixilon.kutil.watcher.map.bi.BiMapDataWatcher.Companion.watchedBiMap
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -18,7 +20,7 @@ object ControlsProfileManager : ProfileManager<ControlsProfile> {
 
 
     override var currentLoadingPath: String? = null
-    override val profiles: HashBiMap<String, ControlsProfile> = HashBiMap.create()
+    override val profiles: AbstractMutableBiMap<String, ControlsProfile> by watchedBiMap(synchronizedBiMapOf())
 
     override var selected: ControlsProfile = null.unsafeCast()
         set(value) {

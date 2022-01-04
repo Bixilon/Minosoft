@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.config.profile
 
-import com.google.common.collect.HashBiMap
+import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil
@@ -44,7 +44,7 @@ interface ProfileManager<T : Profile> {
     val icon: Ikon
         get() = FontAwesomeSolid.QUESTION
 
-    val profiles: HashBiMap<String, T>
+    val profiles: AbstractMutableBiMap<String, T>
     var selected: T
 
     @Deprecated("Should not be accessed") var currentLoadingPath: String?
@@ -195,7 +195,7 @@ interface ProfileManager<T : Profile> {
     }
 
     fun getName(profile: T): String {
-        return profiles.inverse()[profile] ?: "Unknown profile"
+        return profiles.getKey(profile) ?: "Unknown profile"
     }
 
     fun load(selected: String?) {
