@@ -96,6 +96,8 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.player.tabListItem.gamemode = gamemode
         connection.player.velocity = Vec3d.EMPTY
 
+        // connection.world.view.serverViewDistance = 0
+
         connection.fireEvent(RespawnEvent(connection, this))
     }
 

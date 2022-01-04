@@ -36,7 +36,7 @@ void main() {
         #ifdef TRANSPARENT
         set_alpha_transparent();
         #endif
-        set_fog_alpha();
+        set_fog();
         return;
     }
 
@@ -49,5 +49,5 @@ void main() {
     #ifdef TRANSPARENT
     set_alpha_transparent();
     #endif
-    set_fog_alpha();
+    set_fog();
 }

@@ -117,6 +117,10 @@ class OpenGLShader(
         glUniform1i(getUniformLocation(uniformName), value)
     }
 
+    override fun setBoolean(uniformName: String, boolean: Boolean) {
+        setInt(uniformName, if (boolean) 1 else 0)
+    }
+
     override fun setMat4(uniformName: String, mat4: Mat4) {
         glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4 to BufferUtils.createFloatBuffer(16))
     }

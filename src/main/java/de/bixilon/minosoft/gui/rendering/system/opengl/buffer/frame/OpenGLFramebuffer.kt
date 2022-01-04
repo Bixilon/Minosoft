@@ -4,6 +4,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferState
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferColorTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferDepthTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
@@ -31,13 +32,13 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         colorTexture.init()
         attach(colorTexture)
 
-        //renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_COMPONENT24, size)
-        //renderbuffer.init()
-        //attach(renderbuffer)
+        renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_COMPONENT24, size)
+        renderbuffer.init()
+        attach(renderbuffer)
 
-        depthTexture = OpenGLFramebufferDepthTexture(size)
-        depthTexture.init()
-        attach(depthTexture)
+        //depthTexture = OpenGLFramebufferDepthTexture(size)
+        //depthTexture.init()
+        //attach(depthTexture)
 
         glDrawBuffers(intArrayOf(GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT))
 
@@ -77,7 +78,9 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
     override fun bindTexture() {
         check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
         colorTexture.bind(0)
-        depthTexture.bind(1)
+        if (this::depthTexture.isInitialized) {
+            depthTexture.bind(1)
+        }
     }
 
     override fun resize(size: Vec2i) {

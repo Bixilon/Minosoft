@@ -45,7 +45,7 @@ class SkyRenderer(
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
     private var updateSun: Boolean = true
-    var baseColor = RenderConstants.DEFAULT_SKY_COLOR
+    private var baseColor = RenderConstants.DEFAULT_SKY_COLOR
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
 

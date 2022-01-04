@@ -128,6 +128,7 @@ class World(
             neighbour.neighboursLoaded = false
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbour))
         }
+        // connection.world.view.updateServerViewDistance(chunkPosition, false)
         connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
     }
 

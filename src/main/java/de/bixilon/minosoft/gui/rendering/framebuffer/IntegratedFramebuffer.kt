@@ -22,7 +22,7 @@ interface IntegratedFramebuffer : Drawable {
         shader.load()
         shader.use()
         shader.setInt("uColor", 0)
-        shader.setInt("uDepth", 1)
+        // shader.setInt("uDepth", 1)
         mesh.load()
     }
 
