@@ -6,9 +6,9 @@ import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 class Camera(
     renderWindow: RenderWindow,
 ) {
-    val matrixHandler = MatrixHandler(renderWindow)
-    val targetHandler = TargetHandler(renderWindow, this)
     val fogManager = FogManager(renderWindow)
+    val matrixHandler = MatrixHandler(renderWindow, fogManager)
+    val targetHandler = TargetHandler(renderWindow, this)
 
     fun init() {
         matrixHandler.init()

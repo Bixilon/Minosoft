@@ -22,16 +22,16 @@ class FogManager(
             field = value
             updateShaders = true
         }
-    private var fogStart = 0.0f
-        set(value) {
+    var fogStart = 0.0f
+        private set(value) {
             if (field == value) {
                 return
             }
             field = value
             updateShaders = true
         }
-    private var fogEnd = 0.0f
-        set(value) {
+    var fogEnd = 0.0f
+        private set(value) {
             if (field == value) {
                 return
             }

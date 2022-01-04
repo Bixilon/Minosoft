@@ -18,6 +18,7 @@ import glm_.vec3.Vec3
 
 class MatrixHandler(
     private val renderWindow: RenderWindow,
+    private val fogManager: FogManager,
 ) {
     private val connection = renderWindow.connection
     private val profile = renderWindow.connection.profiles.rendering.camera
@@ -34,6 +35,7 @@ class MatrixHandler(
     var rotation = EntityRotation(0.0, 0.0)
         private set
     private var previousFOV = 0.0
+    private var fogEnd = 0.0f
 
     var cameraFront = Vec3(0.0, 0.0, -1.0)
         private set
@@ -75,7 +77,7 @@ class MatrixHandler(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
-        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, 1000.0f)
+        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, minOf(fogEnd + 10.0f, 10000.0f))
     }
 
     fun init() {
@@ -90,12 +92,14 @@ class MatrixHandler(
         val fov = fov
         val eyePosition = entity.eyePosition
         val rotation = entity.rotation
+        val fogEnd = fogManager.fogEnd
         if (upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) {
             return
         }
         this.eyePosition = eyePosition
         this.rotation = rotation
-        if (fov != previousFOV) {
+        if (fov != previousFOV || fogEnd != this.fogEnd) {
+            this.fogEnd = fogEnd
             calculateProjectionMatrix()
         }
         previousFOV = fov
