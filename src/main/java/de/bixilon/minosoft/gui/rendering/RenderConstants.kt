@@ -56,4 +56,6 @@ object RenderConstants {
     const val UV_ADD = 0.001f
 
     const val DISABLE_GUI_CACHE = false
+
+    const val OPENGL_DEBUG_MODE = false
 }

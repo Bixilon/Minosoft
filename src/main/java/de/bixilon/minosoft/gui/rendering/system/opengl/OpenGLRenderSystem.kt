@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
@@ -36,10 +37,15 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
+import org.lwjgl.opengl.GL43.glDebugMessageCallback
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
@@ -121,6 +127,12 @@ class OpenGLRenderSystem(
                 glViewport(0, 0, it.size.x, it.size.y)
             }
         })
+        if (RenderConstants.OPENGL_DEBUG_MODE) {
+            glEnable(GL_DEBUG_OUTPUT)
+            glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
+                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity,length=$length,message=$message,userParameter=$userParameter" }
+            }, 0)
+        }
     }
 
     override fun enable(capability: RenderingCapabilities) {
@@ -254,6 +266,16 @@ class OpenGLRenderSystem(
             bits = bits or buffer.gl
         }
         glClear(bits)
+    }
+
+    override fun getErrors(): List<OpenGLError> {
+        val errors: MutableList<OpenGLError> = mutableListOf()
+        var error: Int = glGetError()
+        while (error != GL_NO_ERROR) {
+            errors += OpenGLError(error)
+            error = glGetError()
+        }
+        return errors
     }
 
     companion object {

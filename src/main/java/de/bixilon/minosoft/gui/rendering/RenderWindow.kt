@@ -260,6 +260,10 @@ class RenderWindow(
                 RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.STOPPED -> window.close()
             }
+
+            for (error in renderSystem.getErrors()) {
+                connection.util.sendDebugMessage(error.printMessage)
+            }
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {

@@ -99,4 +99,6 @@ interface RenderSystem {
     fun createTextureManager(): TextureManager
 
     fun clear(vararg buffers: IntegratedBufferTypes)
+
+    fun getErrors(): List<RenderSystemError>
 }
