@@ -46,12 +46,12 @@ float calculate_fog() {
 void set_fog() {
     float alpha =  calculate_fog();
     if (uUseFogColor) {
-        foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, alpha);
+        foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, foutColor.a * alpha);
         foutColor.a = 1.0f;
     } else {
         if (alpha <= 0.0f) {
             discard;
         }
-        foutColor.a = alpha;
+        foutColor.a = foutColor.a * alpha;
     }
 }
