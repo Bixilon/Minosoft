@@ -12,8 +12,8 @@ interface TranslucentDrawable : Renderer {
             blending = true,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
             destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
-            sourceAlpha = BlendingFunctions.ONE,
-            destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+            sourceAlpha = BlendingFunctions.SOURCE_ALPHA,
+            destinationAlpha = BlendingFunctions.DESTINATION_ALPHA,
         )
     }
 
