@@ -18,6 +18,7 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
 import kotlin.reflect.KProperty1
 
+@Deprecated("Will be integrated in KUtil")
 object DelegateManager {
     // [field][<receiver>][reference][listener]
     private val listeners: SynchronizedMap<String, SynchronizedMap<WeakReference<Any>, MutableSet<Pair<WeakReference<Any>, DelegateListener<Any>>>>> = synchronizedMapOf()
