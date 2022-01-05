@@ -114,6 +114,7 @@ class ErosCrashReport : JavaFXWindowController() {
             "Coded while traveling in the ICE 272 towards Hamburg-Altona",
             "Sorry, the ICE 693 drive towards Munich was really long",
             "Coded while playing bedwars",
+            "I am #1 in bedwars swordless",
         )
 
 

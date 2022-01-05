@@ -19,11 +19,10 @@ out vec4 foutColor;
 
 uniform sampler2D uColor;
 
+#include "minosoft:alpha"
 
 void main() {
     foutColor = texture(uColor, finUV);
 
-    if (foutColor.a == 0.0f) {
-        discard;
-    }
+    discard_alpha();
 }
