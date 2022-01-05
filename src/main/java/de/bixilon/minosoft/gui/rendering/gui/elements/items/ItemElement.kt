@@ -25,12 +25,16 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3i
 
 class ItemElement(
     hudRenderer: HUDRenderer,
@@ -61,14 +65,18 @@ class ItemElement(
         val countSize = countText.size
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer, options)
 
+        var element: Element? = null
+
         var color = ChatColors.WHITE
         if (item.item is BlockItem) {
-            item.item.block.defaultState.material.color?.let { color = it }
+            val defaultState = item.item.block.defaultState
+            defaultState.material.color?.let { color = it }
+            defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
+                element = ImageElement(hudRenderer, it)
+            }
         }
 
-        val image = ColorElement(hudRenderer, _size, color)
-
-        image.render(offset, z + 1, consumer, options)
+        (element ?: ColorElement(hudRenderer, _size, color)).render(offset, z + 1, consumer, options)
 
         // ToDo: Render model
         return TextElement.LAYERS + 1
