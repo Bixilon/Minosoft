@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
@@ -226,8 +227,8 @@ class OpenGLRenderSystem(
         return buffer
     }
 
-    override fun createShader(resourceLocation: ResourceLocation): OpenGLShader {
-        return OpenGLShader(renderWindow, resourceLocation)
+    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): Shader {
+        return OpenGLShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
     override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {

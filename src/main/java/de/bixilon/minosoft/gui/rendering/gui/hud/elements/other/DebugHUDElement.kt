@@ -169,6 +169,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             })
         }
 
+        layout += AutoTextElement(hudRenderer, 1) { "Fun effect: " + (renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation ?: "None") }
+
         return layout
     }
 

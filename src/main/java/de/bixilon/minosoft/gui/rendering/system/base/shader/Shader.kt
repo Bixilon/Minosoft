@@ -28,7 +28,6 @@ import kotlin.math.max
 interface Shader {
     val loaded: Boolean
     val renderWindow: RenderWindow
-    val resourceLocation: ResourceLocation
     val uniforms: List<String>
     val defines: MutableMap<String, Any>
 
@@ -83,5 +82,9 @@ interface Shader {
                 max(it.textureManager.staticTextures.animator.size, 1)
             }
         )
+
+        fun ResourceLocation.shader(): ResourceLocation {
+            return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
+        }
     }
 }

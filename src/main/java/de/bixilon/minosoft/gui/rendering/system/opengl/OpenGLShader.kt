@@ -33,7 +33,9 @@ import java.io.FileNotFoundException
 
 class OpenGLShader(
     override val renderWindow: RenderWindow,
-    override val resourceLocation: ResourceLocation,
+    private val vertex: ResourceLocation,
+    private val geometry: ResourceLocation?,
+    private val fragment: ResourceLocation,
 ) : Shader {
     override var loaded: Boolean = false
         private set
@@ -60,16 +62,13 @@ class OpenGLShader(
         glCompileShader(program)
 
         if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException(getInfoLog(program))
+            throw ShaderLoadingException(getShaderInfoLog(program))
         }
 
         return program
     }
 
     override fun load() {
-        val pathPrefix = "${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${
-            resourceLocation.path.split("/").last()
-        }"
         shader = glCreateProgram()
 
         if (shader.toLong() == MemoryUtil.NULL) {
@@ -79,12 +78,12 @@ class OpenGLShader(
         val programs: MutableList<Int> = mutableListOf()
 
 
-        programs += load(ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER)
+        programs += load(vertex, GL_VERTEX_SHADER)
         try {
-            programs += load(ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER)
+            geometry?.let { programs += load(it, GL_GEOMETRY_SHADER) }
         } catch (exception: FileNotFoundException) {
         }
-        programs += load(ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER)
+        programs += load(fragment, GL_FRAGMENT_SHADER)
 
         for (program in programs) {
             glAttachShader(shader, program)
@@ -95,7 +94,7 @@ class OpenGLShader(
         glValidateProgram(shader)
 
         if (glGetProgrami(shader, GL_LINK_STATUS) == GL_FALSE) {
-            throw ShaderLoadingException(getInfoLog(shader))
+            throw ShaderLoadingException(getProgramInfoLog(shader))
         }
         for (program in programs) {
             glDeleteShader(program)
@@ -164,8 +163,12 @@ class OpenGLShader(
 
     private companion object {
 
-        fun getInfoLog(program: Int): String {
-            return glGetShaderInfoLog(program, glGetShaderi(program, GL_INFO_LOG_LENGTH))
+        fun getShaderInfoLog(shader: Int): String {
+            return glGetShaderInfoLog(shader)
+        }
+
+        fun getProgramInfoLog(program: Int): String {
+            return glGetProgramInfoLog(program)
         }
     }
 }

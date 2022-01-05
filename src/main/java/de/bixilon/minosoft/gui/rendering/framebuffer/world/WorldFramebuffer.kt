@@ -16,22 +16,33 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunManager
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldFramebuffer(
     override val renderWindow: RenderWindow,
 ) : IntegratedFramebuffer {
     private val overlay = OverlayManager(renderWindow)
-    override val shader = renderWindow.renderSystem.createShader("minosoft:framebuffer/world".toResourceLocation())
+    val `fun` = FunManager(renderWindow)
+    private val defaultShader = renderWindow.renderSystem.createShader("minosoft:framebuffer/world".toResourceLocation())
+    override val shader: Shader
+        get() = `fun`.shader ?: defaultShader
     override val framebuffer: Framebuffer = renderWindow.renderSystem.createFramebuffer()
     override val mesh = FramebufferMesh(renderWindow)
     override var polygonMode: PolygonModes = PolygonModes.DEFAULT
 
     override fun init() {
-        super.init()
+        framebuffer.init()
+        defaultShader.load()
+        defaultShader.use()
+        defaultShader.setInt("uColor", 0)
+        // shader.setInt("uDepth", 1)
+        mesh.load()
+
         overlay.init()
     }
 
@@ -41,6 +52,8 @@ class WorldFramebuffer(
     }
 
     override fun draw() {
+        shader.use()
+        `fun`.preDraw()
         super.draw()
         overlay.draw()
     }
