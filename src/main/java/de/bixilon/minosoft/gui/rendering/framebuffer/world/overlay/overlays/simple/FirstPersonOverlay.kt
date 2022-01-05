@@ -11,16 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
+package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.PumpkinOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.WallOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.WaterOverlay
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 
-object DefaultOverlays {
-    val OVERLAYS = listOf(
-        WallOverlay,
-        WaterOverlay,
-        PumpkinOverlay,
-    )
+abstract class FirstPersonOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
+    protected val player = renderWindow.connection.player
+    override val render: Boolean
+        get() = renderWindow.camera.firstPerson
 }

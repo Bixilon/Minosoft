@@ -35,8 +35,17 @@ class WallOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWi
     private var position: Vec3i = Vec3i.EMPTY
     override val render: Boolean
         get() {
-            val blockState = blockState
-            return player.gamemode != Gamemodes.SPECTATOR && blockState != null && blockState.block !is FluidBlock
+            if (player.gamemode == Gamemodes.SPECTATOR) {
+                return false
+            }
+            val blockState = blockState ?: return false
+            if (blockState.block is FluidBlock) {
+                return false
+            }
+            if (!blockState.collisionShape.intersect(player.aabb)) {
+                return false
+            }
+            return true
         }
     override var uvEnd: Vec2
         get() = Vec2(0.3f, renderWindow.window.sizef.x / renderWindow.window.sizef.y / 3.0f) // To make pixels squares and make it look more like minecraft

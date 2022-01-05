@@ -23,6 +23,8 @@ class Camera(
     val matrixHandler = MatrixHandler(renderWindow, fogManager)
     val targetHandler = TargetHandler(renderWindow, this)
 
+    val firstPerson: Boolean = true // ToDo
+
     fun init() {
         matrixHandler.init()
     }

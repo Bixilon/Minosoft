@@ -26,7 +26,15 @@ class ShaderManager(
 
     fun postInit() {
         genericColorShader.load()
-        genericTextureShader.load()
-        genericTexture2dShader.load()
+        genericTextureShader.apply {
+            load()
+            renderWindow.textureManager.staticTextures.use(this)
+            renderWindow.textureManager.staticTextures.animator.use(this)
+        }
+        genericTexture2dShader.apply {
+            load()
+            renderWindow.textureManager.staticTextures.use(this)
+            renderWindow.textureManager.staticTextures.animator.use(this)
+        }
     }
 }
