@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.rad
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 class SkyRenderer(
@@ -48,6 +49,7 @@ class SkyRenderer(
     private var baseColor = RenderConstants.DEFAULT_SKY_COLOR
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
+    private val fogManager = renderWindow.camera.fogManager
 
     override fun init() {
         skyboxShader.load()
@@ -92,9 +94,10 @@ class SkyRenderer(
             skySunMesh.unload()
 
             skySunMesh = SimpleTextureMesh(renderWindow)
-            skySunMesh.addQuad(
-                start = Vec3(-0.15f, 1.0f, -0.15f),
-                end = Vec3(+0.15f, 1.0f, +0.15f),
+            skySunMesh.addYQuad(
+                start = Vec2(-0.15f, -0.15f),
+                y = 1.0f,
+                end = Vec2(+0.15f, +0.15f),
                 vertexConsumer = { position, uv ->
                     skySunMesh.addVertex(
                         position = position,
@@ -116,7 +119,7 @@ class SkyRenderer(
     private fun checkSkyColor() {
         // ToDo: Calculate correct
         val brightness = 1.0f
-        val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
+        var skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
         baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
@@ -128,6 +131,7 @@ class SkyRenderer(
             }
         } ?: let { baseColor = RenderConstants.DEFAULT_SKY_COLOR }
 
+        fogManager.fogColor?.let { skyColor = it }
 
         skyboxShader.use().setRGBColor("uSkyColor", skyColor)
     }

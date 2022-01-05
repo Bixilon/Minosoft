@@ -20,9 +20,13 @@ class ShaderManager(
     val renderWindow: RenderWindow,
 ) {
     val genericColorShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"))
+    val genericTextureShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture"))
+    val genericTexture2dShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture_2d"))
 
 
-    fun init() {
+    fun postInit() {
         genericColorShader.load()
+        genericTextureShader.load()
+        genericTexture2dShader.load()
     }
 }

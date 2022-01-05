@@ -11,14 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
 
-layout (location = 0) in vec2 vinPosition;
-layout (location = 1) in vec2 vinUV;
+flat in uint finTextureIndex1;
+in vec3 finTextureCoordinates1;
+flat in uint finTextureIndex2;
+in vec3 finTextureCoordinates2;
+in float finInterpolation;
 
-out vec2 finUV;
+in vec4 finTintColor;
 
-void main() {
-    gl_Position = vec4(vinPosition, -0.2f, 1.0f);
-    finUV = vinUV;
-}

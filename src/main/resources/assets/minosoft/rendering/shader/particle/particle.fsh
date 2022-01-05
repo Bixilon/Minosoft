@@ -15,48 +15,11 @@
 
 out vec4 foutColor;
 
-flat in uint finTextureIndex1;
-in vec3 finTextureCoordinates1;
-flat in uint finTextureIndex2;
-in vec3 finTextureCoordinates2;
-flat in float finInterpolation;
-
-in vec4 finTintColor;
+#include "minosoft:animation/header_fragment"
 
 #include "minosoft:texture"
+#include "minosoft:alpha"
 
 void main() {
-    vec4 texelColor1 = getTexture(finTextureIndex1, finTextureCoordinates1);
-    if (texelColor1.a == 0.0f) {
-        discard;
-    }
-
-    if (finInterpolation == 0.0f) {
-        foutColor = texelColor1 * finTintColor;
-        #ifdef TRANSPARENT
-        if (foutColor.a < 0.3f){
-            discard;
-        } else {
-            foutColor.a = 1.0f;
-        }
-            #endif
-        return;
-    }
-
-    vec4 texelColor2 = getTexture(finTextureIndex2, finTextureCoordinates2);
-
-    if (texelColor2.a == 0.0f) {
-        discard;
-    }
-
-    foutColor = mix(texelColor1, texelColor2, finInterpolation) * finTintColor;
-
-
-    #ifdef TRANSPARENT
-    if (foutColor.a < 0.3f){
-        discard;
-    } else {
-        foutColor.a = 1.0f;
-    }
-        #endif
+    #include "minosoft:animation/main_fragment"
 }

@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -58,11 +58,17 @@ class FogManager(
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
 
-        player.submergedFluid?.nullCast<WaterFluid>()?.let {
+        val submergedFluid = player.submergedFluid
+
+        if (submergedFluid is LavaFluid) {
+            color = LAVA_FOG_COLOR
+            fogStart = 0.2f
+            fogEnd = 1.0f
+        } else if (submergedFluid is WaterFluid) {
             color = player.positionInfo.biome?.waterFogColor
             fogStart = 5.0f
             fogEnd = 10.0f
-        } ?: player.activeStatusEffects[blindness]?.let {
+        } else if (player.activeStatusEffects[blindness] != null) {
             color = ChatColors.BLACK
             fogStart = 3.0f
             fogEnd = 5.0f
@@ -95,5 +101,9 @@ class FogManager(
             }
         }
         updateShaders = false
+    }
+
+    companion object {
+        private val LAVA_FOG_COLOR = RGBColor(0.6f, 0.1f, 0.0f)
     }
 }

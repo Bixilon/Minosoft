@@ -11,14 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
 
-layout (location = 0) in vec2 vinPosition;
-layout (location = 1) in vec2 vinUV;
-
-out vec2 finUV;
-
-void main() {
-    gl_Position = vec4(vinPosition, -0.2f, 1.0f);
-    finUV = vinUV;
+uint animationIndex = vinIndexLayerAnimation & 0xFFFu;
+if (animationIndex == 0u) {
+    finTextureIndex1 = vinIndexLayerAnimation >> 28u;
+    finTextureCoordinates1 = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
+    finInterpolation = 0.0f;
+    return;
 }
+
+uvec4 data = uAnimationData[animationIndex - 1u];
+uint texture1 = data.x;
+uint texture2 = data.y;
+uint interpolation = data.z;
+
+finTextureIndex1 = texture1 >> 28u;
+finTextureCoordinates1 = vec3(vinUV, ((texture1 >> 12) & 0xFFFFu));
+
+finTextureIndex2 = texture2 >> 28u;
+finTextureCoordinates2 = vec3(vinUV, ((texture2 >> 12) & 0xFFFFu));
+
+finInterpolation = interpolation / 100.0f;

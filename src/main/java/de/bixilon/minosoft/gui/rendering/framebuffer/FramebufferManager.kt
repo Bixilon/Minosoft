@@ -25,6 +25,11 @@ class FramebufferManager(
         })
     }
 
+    fun postInit() {
+        world.postInit()
+        gui.postInit()
+    }
+
 
     fun clear() {
         world.clear()

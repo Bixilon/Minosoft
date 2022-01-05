@@ -83,7 +83,7 @@ class World(
     }
 
     fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
-        return chunks.getOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
+        return chunks.synchronizedGetOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
     }
 
     fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
@@ -270,6 +270,11 @@ class World(
             val neighbour = neighbours[index] ?: continue
             onChunkUpdate(neighboursPositions[index], neighbour, false)
         }
+    }
+
+    fun getBrightness(position: Vec3i): Float {
+        val light = getLight(position) and 0x0F
+        return dimension?.lightLevels?.get(light) ?: 0.0f
     }
 
     companion object {

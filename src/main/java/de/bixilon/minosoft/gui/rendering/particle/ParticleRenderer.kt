@@ -157,7 +157,7 @@ class ParticleRenderer(
             try {
                 val time = TimeUtil.time
                 for (particle in particles) {
-                    if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) {
+                    if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) { // ToDo: Check fog distance
                         particle.dead = true
                         toRemove += particle
                     } else if (particle.dead) {

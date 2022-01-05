@@ -148,7 +148,6 @@ class RenderWindow(
         font = FontLoader.load(this)
 
 
-        shaderManager.init()
         framebufferManager.init()
 
 
@@ -163,7 +162,9 @@ class RenderWindow(
         font.postInit()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (${stopwatch.labTime()})..." }
+        shaderManager.postInit()
         renderer.postInit()
+        framebufferManager.postInit()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (${stopwatch.labTime()})..." }
 

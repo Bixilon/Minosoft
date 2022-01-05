@@ -26,6 +26,8 @@ interface IntegratedFramebuffer : Drawable {
         mesh.load()
     }
 
+    fun postInit() {}
+
     fun clear() {
         renderWindow.renderSystem.framebuffer = framebuffer
         renderWindow.renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
