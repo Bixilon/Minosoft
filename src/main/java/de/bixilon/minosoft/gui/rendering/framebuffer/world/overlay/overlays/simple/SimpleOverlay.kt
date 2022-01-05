@@ -30,10 +30,8 @@ abstract class SimpleOverlay(
     protected open val shader: Shader = renderWindow.shaderManager.genericTexture2dShader
     private var mesh = SimpleTextureMesh(renderWindow)
     protected var tintColor: RGBColor? = null
-
-    override fun postInit() {
-        updateMesh()
-    }
+    protected open var uvStart = Vec2(0.0f, 0.0f)
+    protected open var uvEnd = Vec2(1.0f, 1.0f)
 
 
     protected fun updateMesh() {
@@ -42,13 +40,13 @@ abstract class SimpleOverlay(
         }
         mesh = SimpleTextureMesh(renderWindow)
 
-        mesh.addZQuad(Vec2(-1.0f, -1.0f), z, Vec2(+1.0f, +1.0f)) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
+        mesh.addZQuad(Vec2(-1.0f, -1.0f), z, Vec2(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
         mesh.load()
     }
 
     override fun draw() {
         renderWindow.renderSystem.reset(blending = true)
-        updateMesh()
+        updateMesh() // ToDo: Don't update every time
         shader.use()
         mesh.draw()
     }

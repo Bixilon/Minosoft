@@ -40,6 +40,7 @@ class OverlayManager(
 
     override fun draw() {
         for (overlay in overlays) {
+            overlay.update()
             if (!overlay.render) {
                 continue
             }

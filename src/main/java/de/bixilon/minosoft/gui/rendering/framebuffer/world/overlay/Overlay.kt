@@ -20,4 +20,6 @@ interface Overlay : Drawable {
 
     fun init() {}
     fun postInit() {}
+
+    fun update() {}
 }
