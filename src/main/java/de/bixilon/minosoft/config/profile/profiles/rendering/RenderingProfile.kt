@@ -26,6 +26,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.experimental.Experi
 import de.bixilon.minosoft.config.profile.profiles.rendering.fog.FogC
 import de.bixilon.minosoft.config.profile.profiles.rendering.light.LightC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
+import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.OverlayC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
 
 /**
@@ -52,6 +53,7 @@ class RenderingProfile(
     val light = LightC()
     val movement = MovementC()
     val performance = PerformanceC()
+    val overlay = OverlayC()
 
 
     override fun toString(): String {
