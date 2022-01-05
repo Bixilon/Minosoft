@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.PowderSnowOverlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.PumpkinOverlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.WallOverlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.WaterOverlay
@@ -22,5 +23,6 @@ object DefaultOverlays {
         WallOverlay,
         WaterOverlay,
         PumpkinOverlay,
+        PowderSnowOverlay,
     )
 }

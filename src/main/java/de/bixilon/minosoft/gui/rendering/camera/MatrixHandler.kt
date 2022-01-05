@@ -90,7 +90,7 @@ class MatrixHandler(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
-        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, minOf(fogEnd + 10.0f, 10000.0f))
+        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, minOf(fogEnd + 2.0f, 10000.0f))
     }
 
     fun init() {
