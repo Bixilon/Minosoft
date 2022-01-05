@@ -53,8 +53,6 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         //depthTexture.init()
         //attach(depthTexture)
 
-        glDrawBuffers(intArrayOf(GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT))
-
         check(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete!" }
         state = FramebufferState.COMPLETE
     }
