@@ -99,7 +99,7 @@ abstract class Mesh(
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }
 
-    private fun addQuad(positions: Array<Vec3>, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    fun addQuad(positions: Array<Vec3>, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val texturePositions = arrayOf(
             uvStart,
             Vec2(uvStart.x, uvEnd.y),

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config.profile.profiles.rendering.overlay
 
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.fire.FireC
 
 class OverlayC {
     /**
@@ -25,4 +26,6 @@ class OverlayC {
      * Enabled the pumpkin blur overlay if the player is waring a carved pumpkin
      */
     var pumpkin by delegate(true)
+
+    val fire = FireC()
 }

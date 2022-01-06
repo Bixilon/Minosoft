@@ -11,19 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
+package de.bixilon.minosoft.config.profile.profiles.rendering.overlay.fire
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.PowderSnowOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.PumpkinOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.WallOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.WaterOverlay
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 
-object DefaultOverlays {
-    val OVERLAYS = listOf(
-        WallOverlay,
-        WaterOverlay,
-        PumpkinOverlay,
-        PowderSnowOverlay,
-        FireOverlay,
-    )
+class FireC {
+
+    /**
+     * Enables the fire/burning overlay
+     */
+    var enabled by delegate(true)
+
+    /**
+     * Enables the overlay if in creative
+     */
+    var creative by delegate(true)
+
+    /**
+     * Enables the fire overlay if in lava
+     */
+    var lava by delegate(true)
 }
