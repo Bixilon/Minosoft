@@ -29,5 +29,6 @@ void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
     finTintColor = getRGBColor(vinTintColor & 0xFFFFFFu);
 
+
     #include "minosoft:animation/main_vertex"
 }

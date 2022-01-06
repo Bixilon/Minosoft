@@ -115,6 +115,11 @@ class ErosCrashReport : JavaFXWindowController() {
             "Sorry, the ICE 693 drive towards Munich was really long",
             "Coded while playing bedwars",
             "I am #1 in bedwars swordless",
+            "Der AB kam vor der CD",
+            "You can't do this",
+            "Sing me a happy song!",
+            "This message should not be visible...",
+            "lmfao",
         )
 
 

@@ -20,6 +20,7 @@ if (finInterpolation == 0.0f) {
     #ifdef TRANSPARENT
     set_alpha_transparent();
     #endif
+
     #ifdef FOG
     set_fog();
     #endif
@@ -32,6 +33,12 @@ discard_if_0(secondTexelColor.a);
 
 foutColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
 
+
 #ifdef TRANSPARENT
 set_alpha_transparent();
 #endif
+
+#ifdef FOG
+set_fog();
+#endif
+return;

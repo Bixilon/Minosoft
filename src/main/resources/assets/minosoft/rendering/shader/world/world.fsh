@@ -25,5 +25,4 @@ out vec4 foutColor;
 
 void main() {
     #include "minosoft:animation/main_fragment"
-    set_fog();
 }

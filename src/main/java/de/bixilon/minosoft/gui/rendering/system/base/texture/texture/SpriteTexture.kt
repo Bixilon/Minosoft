@@ -30,7 +30,7 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
     override var properties: ImageProperties by original::properties
     override var renderData: TextureRenderData by original::renderData
     override val transparency: TextureTransparencies by original::transparency
-    override var generateMipMaps: Boolean = original.generateMipMaps
+    override var generateMipMaps: Boolean = true
 
     override var state: TextureStates = TextureStates.DECLARED
         private set
@@ -41,10 +41,6 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
         private set
     var splitTextures: MutableList<MemoryTexture> = mutableListOf()
 
-
-    init {
-        original.generateMipMaps = false
-    }
 
     @Synchronized
     override fun load(assetsManager: AssetsManager) {
