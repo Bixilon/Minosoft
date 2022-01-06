@@ -52,7 +52,7 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
             }
             val versionData = versions[versionToUse.toString()].asJsonObject()
 
-            val texture = hudRenderer.renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation())
+            val texture = hudRenderer.renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
             val slots: MutableMap<Int, Vec2iBinding> = mutableMapOf()
