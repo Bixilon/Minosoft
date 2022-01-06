@@ -24,7 +24,7 @@ class OverlayManager(
 
     fun init() {
         for ((index, factory) in DefaultOverlays.OVERLAYS.withIndex()) {
-            overlays += factory.build(renderWindow, WORLD_FRAMEBUFFER_Z + (-0.01f * (index + 1)))
+            overlays += factory.build(renderWindow, WORLD_FRAMEBUFFER_Z + (-0.01f * (index + 1))) ?: continue
         }
 
         for (overlay in overlays) {
