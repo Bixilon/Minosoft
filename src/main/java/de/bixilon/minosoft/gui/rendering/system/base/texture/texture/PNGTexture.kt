@@ -31,7 +31,7 @@ import javax.imageio.ImageIO
 
 class PNGTexture(
     override val resourceLocation: ResourceLocation,
-    override val generateMipMaps: Boolean = true,
+    override var generateMipMaps: Boolean = true,
 ) : AbstractTexture {
     override lateinit var renderData: TextureRenderData
 
@@ -47,8 +47,10 @@ class PNGTexture(
 
 
     override var data: ByteBuffer? = null
+    override var mipmapData: Array<ByteBuffer>? = null
 
 
+    @Synchronized
     override fun load(assetsManager: AssetsManager) {
         if (state == TextureStates.LOADED) {
             return
@@ -87,8 +89,10 @@ class PNGTexture(
         data.flip()
 
         this.data = data
+        this.mipmapData = generateMipMaps(data)
 
         properties.postInit(this)
+
 
         state = TextureStates.LOADED
     }

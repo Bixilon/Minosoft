@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -25,9 +26,9 @@ interface TextureArray {
     operator fun get(resourceLocation: ResourceLocation): AbstractTexture?
     fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean = true, default: () -> AbstractTexture = { PNGTexture(resourceLocation, generateMipMaps = mipmaps) }): AbstractTexture
 
-    fun preLoad()
+    fun preLoad(latch: CountUpAndDownLatch)
 
-    fun load()
+    fun load(latch: CountUpAndDownLatch)
 
     fun use(shader: Shader, arrayName: String = "uTextures")
 }

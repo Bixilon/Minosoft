@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.font.provider
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.font.CharData
 
 interface FontProvider {
 
-    fun postInit()
+    fun postInit(latch: CountUpAndDownLatch)
 
 
     operator fun get(char: Char): CharData?

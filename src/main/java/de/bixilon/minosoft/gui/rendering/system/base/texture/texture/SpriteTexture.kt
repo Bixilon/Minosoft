@@ -30,18 +30,23 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
     override var properties: ImageProperties by original::properties
     override var renderData: TextureRenderData by original::renderData
     override val transparency: TextureTransparencies by original::transparency
-    override val generateMipMaps: Boolean
-        get() = original.generateMipMaps
+    override var generateMipMaps: Boolean = original.generateMipMaps
 
     override var state: TextureStates = TextureStates.DECLARED
         private set
 
     override var data: ByteBuffer? = null
+    override var mipmapData: Array<ByteBuffer>? = null
     override var size: Vec2i = Vec2i(-1, -1)
         private set
     var splitTextures: MutableList<MemoryTexture> = mutableListOf()
 
 
+    init {
+        original.generateMipMaps = false
+    }
+
+    @Synchronized
     override fun load(assetsManager: AssetsManager) {
         if (state == TextureStates.LOADED) {
             return

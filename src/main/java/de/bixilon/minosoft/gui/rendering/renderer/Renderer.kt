@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -26,9 +27,9 @@ interface Renderer {
     val polygonMode: PolygonModes
         get() = renderWindow.framebufferManager.world.polygonMode
 
-    fun init() = Unit
+    fun init(latch: CountUpAndDownLatch) = Unit
 
-    fun postInit() = Unit
+    fun postInit(latch: CountUpAndDownLatch) = Unit
 
     fun prepareDraw() = Unit
 }

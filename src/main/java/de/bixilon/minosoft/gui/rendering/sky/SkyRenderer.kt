@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -51,7 +52,7 @@ class SkyRenderer(
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val fogManager = renderWindow.camera.fogManager
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         skyboxShader.load()
         skyboxMesh.load()
 
@@ -84,7 +85,7 @@ class SkyRenderer(
         skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix)
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         renderWindow.textureManager.staticTextures.use(skySunShader)
     }
 

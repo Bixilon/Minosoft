@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -119,7 +120,7 @@ class HUDRenderer(
         }
     }
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
         atlasManager.init()
@@ -137,7 +138,7 @@ class HUDRenderer(
         ), defaultPressed = enabled) { enabled = it }
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         atlasManager.postInit()
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)

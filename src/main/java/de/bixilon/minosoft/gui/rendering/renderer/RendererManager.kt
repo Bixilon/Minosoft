@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.renderer
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -58,15 +59,15 @@ class RendererManager(
         return renderers[resourceLocation]
     }
 
-    fun init() {
+    fun init(latch: CountUpAndDownLatch) {
         for (renderer in renderers.values) {
-            renderer.init()
+            renderer.init(latch)
         }
     }
 
-    fun postInit() {
+    fun postInit(latch: CountUpAndDownLatch) {
         for (renderer in renderers.values) {
-            renderer.postInit()
+            renderer.postInit(latch)
         }
     }
 

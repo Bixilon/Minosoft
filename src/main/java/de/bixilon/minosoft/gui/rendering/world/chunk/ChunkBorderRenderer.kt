@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.chunk
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -44,7 +45,7 @@ class ChunkBorderRenderer(
     override val skipOpaque: Boolean
         get() = mesh == null || !profile.chunkBorder.enabled
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         renderWindow.inputHandler.registerKeyCallback(CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 mapOf(

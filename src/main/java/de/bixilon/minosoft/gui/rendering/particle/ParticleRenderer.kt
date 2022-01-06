@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle
 import de.bixilon.kutil.concurrent.lock.ReadWriteLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -100,7 +101,7 @@ class ParticleRenderer(
     val size: Int
         get() = particles.size
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         profile::maxAmount.profileWatch(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
         profile::enabled.profileWatch(this, true, profile) { enabled = it }
 
@@ -131,7 +132,7 @@ class ParticleRenderer(
         DefaultParticleBehavior.register(connection, this)
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
         transparentShader.load()
         renderWindow.textureManager.staticTextures.use(transparentShader)

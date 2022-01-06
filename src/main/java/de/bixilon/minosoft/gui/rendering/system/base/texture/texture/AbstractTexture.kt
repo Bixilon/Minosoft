@@ -38,28 +38,28 @@ interface AbstractTexture {
     var renderData: TextureRenderData
 
     var data: ByteBuffer?
-    val generateMipMaps: Boolean
+    var mipmapData: Array<ByteBuffer>?
+    var generateMipMaps: Boolean
 
     fun load(assetsManager: AssetsManager)
 
 
-    fun generateMipMaps(): Array<ByteBuffer> {
+    fun generateMipMaps(data: ByteBuffer = this.data!!): Array<ByteBuffer> {
         val images: MutableList<ByteBuffer> = mutableListOf()
-
-        var data = data!!
 
         images += data
         if (!generateMipMaps) {
             return images.toTypedArray()
         }
 
+        var currentData = data
         for (i in 1 until OpenGLTextureArray.MAX_MIPMAP_LEVELS) {
             val mipMapSize = Vec2i(size.x shr i, size.y shr i)
             if (mipMapSize.x <= 0 || mipMapSize.y <= 0) {
                 break
             }
-            data = generateMipmap(data, Vec2i(size.x shr (i - 1), size.y shr (i - 1)))
-            images += data
+            currentData = generateMipmap(currentData, Vec2i(size.x shr (i - 1), size.y shr (i - 1)))
+            images += currentData
         }
 
         return images.toTypedArray()

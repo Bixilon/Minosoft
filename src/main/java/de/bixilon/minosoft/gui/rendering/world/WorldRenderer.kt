@@ -21,6 +21,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -125,9 +126,9 @@ class WorldRenderer(
     val queueSize: Int by queue::size
     val preparingTasksSize: Int by preparingTasks::size
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         val modelLoader = ModelLoader(renderWindow)
-        modelLoader.load()
+        modelLoader.load(latch)
 
         for (fluid in connection.registries.fluidRegistry) {
             if (fluid is FlowableFluid) {
@@ -137,7 +138,7 @@ class WorldRenderer(
         }
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         lightMap.init()
 
         shader.load()

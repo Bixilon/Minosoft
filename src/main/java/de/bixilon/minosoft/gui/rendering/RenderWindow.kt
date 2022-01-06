@@ -142,28 +142,35 @@ class RenderWindow(
 
         renderSystem.reset()
 
+        // Init stage
+        val initLatch = CountUpAndDownLatch(1, latch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
         WHITE_TEXTURE = TextureLikeTexture(texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
-        font = FontLoader.load(this)
+        font = FontLoader.load(this, initLatch)
 
 
         framebufferManager.init()
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
-        renderer.init()
+        renderer.init(initLatch)
 
+        // Wait for init stage to complete
+        initLatch.dec()
+        initLatch.await()
+
+        // Post init stage
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (${stopwatch.labTime()})..." }
-        textureManager.staticTextures.preLoad()
+        textureManager.staticTextures.preLoad(latch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (${stopwatch.labTime()})..." }
-        textureManager.staticTextures.load()
-        font.postInit()
+        textureManager.staticTextures.load(latch)
+        font.postInit(latch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (${stopwatch.labTime()})..." }
         shaderManager.postInit()
-        renderer.postInit()
+        renderer.postInit(latch)
         framebufferManager.postInit()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (${stopwatch.labTime()})..." }

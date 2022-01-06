@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.provider
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
@@ -83,7 +84,7 @@ class LegacyUnicodeFontProvider(
     }
 
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         for (char in chars) {
             char?.postInit()
         }

@@ -41,7 +41,7 @@ class OpenGLRenderbuffer(
     }
 
     companion object {
-        private val RenderbufferModes.gl: Int
+        val RenderbufferModes.gl: Int
             get() {
                 return when (this) {
                     RenderbufferModes.DEPTH_COMPONENT16 -> GL_DEPTH_COMPONENT16

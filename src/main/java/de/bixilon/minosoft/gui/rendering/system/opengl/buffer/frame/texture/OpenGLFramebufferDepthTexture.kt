@@ -14,18 +14,21 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer.Companion.gl
 import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL30.*
 import java.nio.ByteBuffer
 
 class OpenGLFramebufferDepthTexture(
     override val size: Vec2i,
+    val mode: RenderbufferModes,
 ) : OpenGLTexture(), FramebufferTexture {
 
     override fun init() {
         id = glGenTextures()
         glBindTexture(GL_TEXTURE_2D, id)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, null as ByteBuffer?)
+        glTexImage2D(GL_TEXTURE_2D, 0, mode.gl, size.x, size.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, null as ByteBuffer?)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE)
 

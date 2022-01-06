@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -57,12 +58,12 @@ class EntityHitboxRenderer(
     override val skipAll: Boolean
         get() = !enabled
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> {
             if (!enabled) {
                 return@of
             }
-            meshes.getOrPut(it.entity) { EntityHitbox(this, it.entity, frustum) }
+            meshes.synchronizedGetOrPut(it.entity) { EntityHitbox(this, it.entity, frustum) }
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
             if (!enabled) {

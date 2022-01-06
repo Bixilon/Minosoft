@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -39,6 +41,7 @@ import java.nio.ByteBuffer
 
 class OpenGLTextureArray(
     val renderWindow: RenderWindow,
+    private val loadTexturesAsync: Boolean = true,
     override val textures: MutableMap<ResourceLocation, AbstractTexture> = synchronizedMapOf(),
 ) : StaticTextureArray {
     override val animator = OpenGLSpriteAnimator()
@@ -68,6 +71,9 @@ class OpenGLTextureArray(
 
         texture.properties = properties
         textures[resourceLocation] = texture
+        if (loadTexturesAsync) {
+            DefaultThreadPool += { texture.load(renderWindow.connection.assetsManager) }
+        }
 
         return texture
     }
@@ -83,7 +89,7 @@ class OpenGLTextureArray(
     }
 
     @Synchronized
-    override fun preLoad() {
+    override fun preLoad(latch: CountUpAndDownLatch) {
         if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
             return
         }
@@ -157,7 +163,7 @@ class OpenGLTextureArray(
         }
 
         for (texture in textures) {
-            val mipMaps = texture.generateMipMaps()
+            val mipMaps = texture.mipmapData ?: throw IllegalStateException("Texture not loaded properly!")
 
             val renderData = texture.renderData as OpenGLTextureData
             for ((level, data) in mipMaps.withIndex()) {
@@ -170,6 +176,7 @@ class OpenGLTextureArray(
             }
 
             texture.data = null
+            texture.mipmapData = null
         }
 
         return textureId
@@ -177,7 +184,7 @@ class OpenGLTextureArray(
 
 
     @Synchronized
-    override fun load() {
+    override fun load(latch: CountUpAndDownLatch) {
         var totalLayers = 0
         for ((index, textures) in texturesByResolution.withIndex()) {
             if (textures.isEmpty()) {

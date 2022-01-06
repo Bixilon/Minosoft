@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.TaskWorker
 import de.bixilon.kutil.concurrent.worker.tasks.Task
@@ -37,16 +38,14 @@ import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.GitInfo
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.RenderPolling
-import de.bixilon.minosoft.util.YggdrasilUtil
+import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -128,6 +127,11 @@ object Minosoft {
         }
         taskWorker += Task(identifier = StartupTasks.LOAD_YGGDRASIL, executor = { YggdrasilUtil.load() })
 
+        // Init some classes that we will need later on
+        DefaultThreadPool += {
+            SystemInformation::class.java.forceInit()
+            StatusConnection::class.java.forceInit()
+        }
 
 
         taskWorker.work(START_UP_LATCH)
