@@ -16,10 +16,12 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.BlackWhite
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.Flip
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.Gray
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.Invert
 
 object DefaultFunEffects : DefaultFactory<FunEffectFactory<*>>(
     BlackWhite,
     Flip,
     Invert,
+    Gray,
 )
