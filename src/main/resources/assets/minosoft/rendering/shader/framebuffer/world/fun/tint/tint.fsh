@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
+#version 330 core
 
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.*
+in vec2 finUV;
 
-object DefaultFunEffects : DefaultFactory<FunEffectFactory<*>>(
-    BlackWhite,
-    Flip,
-    Invert,
-    Gray,
-    Tint,
-)
+out vec4 foutColor;
+
+uniform sampler2D uColor;
+uniform vec4 uTintColor;
+
+#include "minosoft:alpha"
+
+void main() {
+    foutColor = texture(uColor, vec2(finUV.x, finUV.y));
+    foutColor.rgb =  foutColor.rgb * uTintColor.rgb;
+    discard_alpha();
+}

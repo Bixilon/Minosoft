@@ -143,7 +143,7 @@ class OpenGLShader(
     }
 
     override fun setRGBColor(uniformName: String, color: RGBColor) {
-        setVec4(uniformName, Vec4(color.floatRed, color.floatGreen, color.floatBlue, color.alpha))
+        setVec4(uniformName, Vec4(color.floatRed, color.floatGreen, color.floatBlue, color.floatAlpha))
     }
 
     override fun setTexture(uniformName: String, textureId: Int) {

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class FunManager(
+class FunEffectManager(
     private val renderWindow: RenderWindow,
 ) {
     private val effects: MutableMap<ResourceLocation, FunEffect> = mutableMapOf()
@@ -33,7 +33,6 @@ class FunManager(
 
 
     init {
-
         renderWindow.inputHandler.registerKeyCallback("minosoft:switch_fun_settings".toResourceLocation(),
             KeyBinding(
                 mapOf(
@@ -62,6 +61,7 @@ class FunManager(
     }
 
     fun preDraw() {
+        effect?.update()
         effect?.preDraw()
     }
 }

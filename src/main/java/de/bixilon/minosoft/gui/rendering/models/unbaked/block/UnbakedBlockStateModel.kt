@@ -51,6 +51,7 @@ data class UnbakedBlockStateModel(
 ) : AbstractUnbakedBlockModel {
     var baked: BakedBlockModel? = null
 
+    @Synchronized
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {
         baked?.let { return it }
         val textureArray = renderWindow.textureManager.staticTextures

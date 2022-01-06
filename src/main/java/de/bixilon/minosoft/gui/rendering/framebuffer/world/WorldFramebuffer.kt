@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferMesh
 import de.bixilon.minosoft.gui.rendering.framebuffer.IntegratedFramebuffer
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunManager
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectManager
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -27,7 +27,7 @@ class WorldFramebuffer(
     override val renderWindow: RenderWindow,
 ) : IntegratedFramebuffer {
     private val overlay = OverlayManager(renderWindow)
-    val `fun` = FunManager(renderWindow)
+    val `fun` = FunEffectManager(renderWindow)
     private val defaultShader = renderWindow.renderSystem.createShader("minosoft:framebuffer/world".toResourceLocation())
     override val shader: Shader
         get() = `fun`.shader ?: defaultShader
