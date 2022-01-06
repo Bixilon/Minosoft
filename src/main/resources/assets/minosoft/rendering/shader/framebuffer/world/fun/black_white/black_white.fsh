@@ -27,7 +27,7 @@ const vec3 WHITE = vec3(1.0f);
 void main() {
     foutColor = texture(uColor, finUV);
     discard_alpha();
-    float gray = (foutColor.r * foutColor.g * foutColor.b) / 3.0f;
+    float gray = (foutColor.r + foutColor.g + foutColor.b) / 3.0f;
     if (gray < 0.5f) {
         foutColor.rgb = BLACK;
     } else {
