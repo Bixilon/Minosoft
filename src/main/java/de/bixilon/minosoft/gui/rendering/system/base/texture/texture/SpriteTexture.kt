@@ -61,6 +61,7 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
             splitTexture.data!!.let {
                 it.copyFrom(original.data!!, bytesPerTexture * i, 0, bytesPerTexture)
                 it.flip()
+                splitTexture.mipmapData = splitTexture.generateMipMaps(it)
             }
             splitTextures += splitTexture
         }

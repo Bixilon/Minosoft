@@ -61,10 +61,10 @@ class MemoryTexture(
                     data.put(index++, pixel.alpha.toByte())
                 }
             }
+            this.mipmapData = generateMipMaps(data)
         }
 
         this.data = data
-        this.mipmapData = generateMipMaps(data)
     }
 
     override val state: TextureStates = TextureStates.LOADED
