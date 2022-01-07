@@ -63,7 +63,6 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.modding.event.events.*
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -72,6 +71,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -233,7 +233,7 @@ class WorldRenderer(
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
-        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state == PlayConnectionStates.DISCONNECTED) unloadWorld() })
+        connection::state.observeFX(this) { if (it == PlayConnectionStates.DISCONNECTED) unloadWorld() }
         connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
             if (it.state == RenderingStates.PAUSED) {
                 unloadWorld()

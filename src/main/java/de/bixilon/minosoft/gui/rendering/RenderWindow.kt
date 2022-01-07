@@ -41,12 +41,12 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Stopwatch
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -107,11 +107,11 @@ class RenderWindow(
         }
 
     init {
-        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
-            if (it.state == PlayConnectionStates.PLAYING && latch.count > 0) {
+        connection::state.observeFX(this) {
+            if (it == PlayConnectionStates.PLAYING && latch.count > 0) {
                 latch.dec()
             }
-        })
+        }
         profile.experimental::fps.profileWatch(this, true, profile) {
             renderStats = if (it) {
                 ExperimentalRenderStats()

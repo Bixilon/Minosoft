@@ -43,12 +43,12 @@ object CustomServerType : ServerType {
 
     override fun refresh(cards: List<ServerCard>) {
         for (serverCard in cards) {
-            serverCard.ping?.let {
-                if (it.state != StatusConnectionStates.PING_DONE && it.state != StatusConnectionStates.ERROR) {
-                    return@let
-                }
-                it.ping()
+            val ping = serverCard.ping
+            if (ping.state != StatusConnectionStates.PING_DONE && ping.state != StatusConnectionStates.ERROR) {
+                return
             }
+            ping.disconnect()
+            ping.ping()
         }
     }
 }

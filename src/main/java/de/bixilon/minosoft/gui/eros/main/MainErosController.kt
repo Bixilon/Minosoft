@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -58,7 +56,7 @@ class MainErosController : JavaFXWindowController() {
 
     private lateinit var iconMap: Map<ErosMainActivities, FontIcon>
 
-    private val controllers: SynchronizedMap<ErosMainActivities, EmbeddedJavaFXController<*>> = synchronizedMapOf()
+    private val controllers: MutableMap<ErosMainActivities, EmbeddedJavaFXController<*>> = mutableMapOf()
 
     private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (just not the default)
         set(value) {

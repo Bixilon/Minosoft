@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
@@ -46,7 +47,6 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -102,11 +102,7 @@ class PlayConnection(
     val collisionDetector = CollisionDetector(this)
     var retry = true
 
-    var state = PlayConnectionStates.WAITING
-        set(value) {
-            field = value
-            fireEvent(PlayConnectionStateChangeEvent(this, value))
-        }
+    var state by watched(PlayConnectionStates.WAITING)
 
     override var error: Throwable?
         get() = super.error

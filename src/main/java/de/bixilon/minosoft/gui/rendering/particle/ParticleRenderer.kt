@@ -32,13 +32,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
@@ -183,12 +183,12 @@ class ParticleRenderer(
         }
         TimeWorker += particleTask
 
-        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
-            if (!it.state.disconnected) {
-                return@of
+        connection::state.observeFX(this) {
+            if (!it.disconnected) {
+                return@observeFX
             }
             TimeWorker.removeTask(particleTask)
-        })
+        }
     }
 
     fun add(particle: Particle) {

@@ -104,6 +104,7 @@ object JavaFXUtil {
         val controller = fxmlLoader.getController<T>()
 
         controller::root.javaField!!.setValue(controller, pane)
+        controller.postInit()
 
         return controller
     }

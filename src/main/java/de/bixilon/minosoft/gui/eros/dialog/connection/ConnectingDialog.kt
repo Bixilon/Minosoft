@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.gui.eros.dialog.connection
 
 import de.bixilon.minosoft.gui.eros.controller.DialogController
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
@@ -44,7 +43,7 @@ class ConnectingDialog(
 
     override fun init() {
         headerFX.text = HEADER
-        connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { update(it.state) }) // ToDo: This creates a memory leak...
+        connection::state.observeFX(this) { update(it) }
     }
 
     private fun update(state: PlayConnectionStates) {
