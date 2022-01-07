@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.status
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
@@ -43,8 +43,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class StatusConnection(
-    val address: String,
+    address: String,
 ) : Connection() {
+    var address = address
+        set(value) {
+            check(state == StatusConnectionStates.ERROR || state == StatusConnectionStates.ERROR) { "Can not change address while being connected!" }
+            field = value
+        }
     var lastServerStatus: ServerStatus? = null
     var pingQuery: PingQuery? = null
     var lastPongEvent: StatusPongReceiveEvent? = null
@@ -55,11 +60,7 @@ class StatusConnection(
 
     var serverVersion: Version? = null
 
-    var state = StatusConnectionStates.WAITING
-        set(value) {
-            field = value
-            fireEvent(StatusConnectionStateChangeEvent(this, value))
-        }
+    var state by watched(StatusConnectionStates.WAITING)
 
     override var error: Throwable?
         get() = super.error
@@ -184,7 +185,7 @@ class StatusConnection(
             return super.registerEvent(invoker)
         }
 
-        if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionStateChangeEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
+        if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
             return super.registerEvent(invoker)
         }
 
@@ -198,10 +199,6 @@ class StatusConnection(
             }
             invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
                 lastPongEvent?.let { invoker.invoke(it) } ?: super.registerEvent(invoker)
-            }
-            invoker.eventType.isAssignableFrom(StatusConnectionStateChangeEvent::class.java) -> {
-                super.registerEvent(invoker)
-                invoker.invoke(StatusConnectionStateChangeEvent(this, state))
             }
             else -> TODO()
         }

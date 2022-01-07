@@ -13,16 +13,25 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.font.provider.FontProvider
 
 class Font(
     val providers: MutableList<FontProvider>,
 ) : FontProvider {
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
+        val fontLatch = CountUpAndDownLatch(1, latch)
         for (provider in providers) {
-            provider.postInit()
+            fontLatch.inc()
+            DefaultThreadPool += {
+                provider.postInit(latch)
+                fontLatch.dec()
+            }
         }
+        fontLatch.dec()
+        fontLatch.await()
     }
 
     override fun get(char: Char): CharData? {

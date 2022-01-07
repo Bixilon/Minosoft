@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -25,9 +26,9 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
+import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
@@ -57,12 +58,12 @@ class EntityHitboxRenderer(
     override val skipAll: Boolean
         get() = !enabled
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> {
             if (!enabled) {
                 return@of
             }
-            meshes.getOrPut(it.entity) { EntityHitbox(this, it.entity, frustum) }
+            meshes.synchronizedGetOrPut(it.entity) { EntityHitbox(this, it.entity, frustum) }
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
             if (!enabled) {
@@ -100,7 +101,7 @@ class EntityHitboxRenderer(
                 ),
             ), defaultPressed = profile.enabled) {
             profile.enabled = it
-            renderWindow.sendDebugMessage("Entity hit boxes: ${it.format()}")
+            connection.util.sendDebugMessage("Entity hit boxes: ${it.format()}")
         }
     }
 

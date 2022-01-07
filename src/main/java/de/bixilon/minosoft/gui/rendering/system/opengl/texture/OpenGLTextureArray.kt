@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -35,11 +37,11 @@ import org.lwjgl.opengl.GL12.*
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
-import java.io.FileNotFoundException
 import java.nio.ByteBuffer
 
 class OpenGLTextureArray(
     val renderWindow: RenderWindow,
+    private val loadTexturesAsync: Boolean = true,
     override val textures: MutableMap<ResourceLocation, AbstractTexture> = synchronizedMapOf(),
 ) : StaticTextureArray {
     override val animator = OpenGLSpriteAnimator()
@@ -51,20 +53,17 @@ class OpenGLTextureArray(
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
 
 
-    override fun createTexture(resourceLocation: ResourceLocation, default: () -> AbstractTexture): AbstractTexture {
+    override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> AbstractTexture): AbstractTexture {
         var texture = textures[resourceLocation]
 
         // load .mcmeta
-        val properties = try {
-            Jackson.MAPPER.readValue(renderWindow.connection.assetsManager["$resourceLocation.mcmeta".toResourceLocation()].readAsString(), ImageProperties::class.java)
-        } catch (exception: FileNotFoundException) { // ToDo: Speed up and not use exceptions
-            ImageProperties()
-        }
+        val properties = readImageProperties(resourceLocation) ?: ImageProperties()
+
         if (texture == null) {
             texture = if (properties.animation == null) {
                 default()
             } else {
-                SpriteTexture(default())
+                SpriteTexture(default().apply { generateMipMaps = false })
             }
         } else {
             return texture
@@ -72,12 +71,25 @@ class OpenGLTextureArray(
 
         texture.properties = properties
         textures[resourceLocation] = texture
+        if (loadTexturesAsync) {
+            DefaultThreadPool += { texture.load(renderWindow.connection.assetsManager) }
+        }
 
         return texture
     }
 
+    private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
+        try {
+            val data = renderWindow.connection.assetsManager.nullGet("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
+            return Jackson.MAPPER.readValue(data, ImageProperties::class.java)
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
+        return null
+    }
+
     @Synchronized
-    override fun preLoad() {
+    override fun preLoad(latch: CountUpAndDownLatch) {
         if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
             return
         }
@@ -136,7 +148,7 @@ class OpenGLTextureArray(
 
 
     @Synchronized
-    private fun loadSingleArray(resolution: Int, textures: MutableList<AbstractTexture>): Int {
+    private fun loadSingleArray(resolution: Int, textures: List<AbstractTexture>): Int {
         val textureId = glGenTextures()
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
@@ -151,15 +163,17 @@ class OpenGLTextureArray(
         }
 
         for (texture in textures) {
-            val mipMaps = texture.generateMipMaps()
+            val mipMaps = texture.mipmapData ?: throw IllegalStateException("Texture not loaded properly!")
 
             val renderData = texture.renderData as OpenGLTextureData
             for ((level, data) in mipMaps.withIndex()) {
                 val size = texture.size shr level
+
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
             }
 
             texture.data = null
+            texture.mipmapData = null
         }
 
         return textureId
@@ -167,7 +181,7 @@ class OpenGLTextureArray(
 
 
     @Synchronized
-    override fun load() {
+    override fun load(latch: CountUpAndDownLatch) {
         var totalLayers = 0
         for ((index, textures) in texturesByResolution.withIndex()) {
             if (textures.isEmpty()) {

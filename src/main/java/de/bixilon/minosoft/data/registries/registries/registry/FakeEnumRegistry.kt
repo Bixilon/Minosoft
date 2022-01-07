@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.collections.Clearable
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     override var parent: FakeEnumRegistry<T>? = null,
@@ -49,7 +49,7 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
             check(value is Map<*, *>)
             var itemId = id.toInt()
 
-            val item = deserializer.deserialize(registries, value.asCompound())
+            val item = deserializer.deserialize(registries, value.asJsonObject())
             value["id"]?.toInt()?.let { providedItemId ->
                 itemId = providedItemId
             }

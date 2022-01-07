@@ -14,6 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -38,8 +40,6 @@ import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -104,12 +104,12 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
                 dimensionProperties = buffer.connection.registries.dimensionRegistry[buffer.readInt()].type
             } else {
-                val dimensionCodec = buffer.readNBT().asCompound()
+                val dimensionCodec = buffer.readNBT().asJsonObject()
                 dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
                 dimensionProperties = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
                     dimensions[buffer.readResourceLocation()]!!.type
                 } else {
-                    DimensionProperties.deserialize(buffer.readNBT().asCompound())
+                    DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
                 }
                 world = buffer.readResourceLocation()
             }
@@ -183,7 +183,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val listTag: MutableList<Map<*, *>> = if (versionId < ProtocolVersions.V_20W28A) {
             nbt["dimension"]?.listCast()
         } else {
-            nbt["minecraft:dimension_type"]?.compoundCast()?.get("value")?.listCast()
+            nbt["minecraft:dimension_type"]?.toJsonObject()?.get("value")?.listCast()
         }!!
         for (tag in listTag) {
             val dimensionResourceLocation = ResourceLocation(tag[if (versionId < ProtocolVersions.V_1_16_PRE3) {
@@ -192,9 +192,9 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 "name"
             }].unsafeCast())
             val dimensionPropertyTag = if (versionId < ProtocolVersions.V_1_16_PRE3 || versionId >= ProtocolVersions.V_1_16_2_PRE1) {
-                tag["element"].asCompound()
+                tag["element"].asJsonObject()
             } else {
-                tag.asCompound()
+                tag.asJsonObject()
             }
             dimensionMap[dimensionResourceLocation] = Dimension.deserialize(null, dimensionResourceLocation, dimensionPropertyTag)
         }

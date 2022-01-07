@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
+import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
 
 
@@ -43,7 +43,7 @@ class PlayInByteBuffer : InByteBuffer {
     val connection: PlayConnection
     val versionId: Int
 
-    constructor(bytes: ByteArray, connection: PlayConnection) : super(bytes, connection) {
+    constructor(bytes: ByteArray, connection: PlayConnection) : super(bytes) {
         this.connection = connection
         versionId = connection.version.versionId
     }
@@ -121,7 +121,7 @@ class PlayInByteBuffer : InByteBuffer {
             if (!connection.version.flattened) {
                 metaData = readUnsignedShort()
             }
-            val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()
+            val nbt = readNBTTag(versionId < V_14W28B)?.toMutableJsonObject()
             return ItemStack(
                 item = connection.registries.itemRegistry[id shl 16 or metaData],
                 connection = connection,
@@ -136,7 +136,7 @@ class PlayInByteBuffer : InByteBuffer {
                 item = connection.registries.itemRegistry[readVarInt()],
                 connection = connection,
                 count = readUnsignedByte(),
-                nbt = readNBT()?.compoundCast() ?: mutableMapOf(),
+                nbt = readNBT()?.toMutableJsonObject() ?: mutableMapOf(),
             )
         }
     }

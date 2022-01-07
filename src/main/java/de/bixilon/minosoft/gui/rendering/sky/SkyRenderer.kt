@@ -13,19 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
-import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.system.base.phases.CustomDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.*
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
+import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
@@ -34,12 +33,13 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.rad
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 class SkyRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, CustomDrawable {
+) : Renderer, PreDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val skyboxShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
     private val skySunShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
@@ -47,10 +47,12 @@ class SkyRenderer(
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
     private var updateSun: Boolean = true
-    var baseColor = RenderConstants.DEFAULT_SKY_COLOR
+    private var baseColor = RenderConstants.DEFAULT_SKY_COLOR
+    override val framebuffer: Framebuffer? = null
+    override val polygonMode: PolygonModes = PolygonModes.DEFAULT
+    private val fogManager = renderWindow.camera.fogManager
 
-
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         skyboxShader.load()
         skyboxMesh.load()
 
@@ -83,7 +85,7 @@ class SkyRenderer(
         skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix)
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         renderWindow.textureManager.staticTextures.use(skySunShader)
     }
 
@@ -93,9 +95,10 @@ class SkyRenderer(
             skySunMesh.unload()
 
             skySunMesh = SimpleTextureMesh(renderWindow)
-            skySunMesh.addQuad(
-                start = Vec3(-0.15f, 1.0f, -0.15f),
-                end = Vec3(+0.15f, 1.0f, +0.15f),
+            skySunMesh.addYQuad(
+                start = Vec2(-0.15f, -0.15f),
+                y = 1.0f,
+                end = Vec2(+0.15f, +0.15f),
                 vertexConsumer = { position, uv ->
                     skySunMesh.addVertex(
                         position = position,
@@ -107,10 +110,9 @@ class SkyRenderer(
             )
             skySunMesh.load()
             updateSun = false
-
         }
         renderSystem.enable(RenderingCapabilities.BLENDING)
-        renderSystem.setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+        renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         skySunShader.use()
         skySunMesh.draw()
     }
@@ -118,7 +120,7 @@ class SkyRenderer(
     private fun checkSkyColor() {
         // ToDo: Calculate correct
         val brightness = 1.0f
-        val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
+        var skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
         baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
@@ -130,6 +132,7 @@ class SkyRenderer(
             }
         } ?: let { baseColor = RenderConstants.DEFAULT_SKY_COLOR }
 
+        fogManager.fogColor?.let { skyColor = it }
 
         skyboxShader.use().setRGBColor("uSkyColor", skyColor)
     }
@@ -140,7 +143,7 @@ class SkyRenderer(
         skyboxMesh.draw()
     }
 
-    override fun drawCustom() {
+    override fun drawPre() {
         renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
         drawSkybox()
         drawSun()

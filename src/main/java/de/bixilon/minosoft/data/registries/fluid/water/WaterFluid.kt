@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.fluid.water
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
@@ -45,8 +46,8 @@ class WaterFluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
-    private val depthStriderEnchantment: Enchantment? = null
-    private val dolphinsGraceStatusEffect: StatusEffect? = null
+    private val depthStriderEnchantment: Enchantment = unsafeNull()
+    private val dolphinsGraceStatusEffect: StatusEffect = unsafeNull()
     override val stillTextureName: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
     override val flowingTextureName: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
     override val tintProvider: TintProvider = WaterTintProvider

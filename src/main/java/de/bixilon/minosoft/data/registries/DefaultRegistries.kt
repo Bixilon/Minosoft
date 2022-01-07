@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.entities.EntityObjectType
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 object DefaultRegistries {
     private val ENUM_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/enums.json")
@@ -62,29 +62,29 @@ object DefaultRegistries {
 
         val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
-        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("equipment_slots")].asCompound())
-        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")].asCompound())
-        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")].asCompound())
-        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")].asCompound())
+        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("equipment_slots")].asJsonObject())
+        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")].asJsonObject())
+        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")].asJsonObject())
+        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")].asJsonObject())
 
-        ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")].asCompound())
+        ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")].asJsonObject())
 
-        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")].asCompound())
+        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")].asJsonObject())
 
-        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation("entity_animations")].asCompound())
-        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("entity_actions")].asCompound())
+        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation("entity_animations")].asJsonObject())
+        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("entity_actions")].asJsonObject())
 
 
         val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
-        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")].asCompound(), PluginChannel)
+        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")].asJsonObject(), PluginChannel)
 
-        ENTITY_OBJECT_REGISTRY.rawInitialize(registriesJson[ResourceLocation("entity_objects")].asCompound(), null, EntityObjectType)
+        ENTITY_OBJECT_REGISTRY.rawInitialize(registriesJson[ResourceLocation("entity_objects")].asJsonObject(), null, EntityObjectType)
 
-        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")].asCompound(), BlockEntityMetaType)
+        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")].asJsonObject(), BlockEntityMetaType)
 
-        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")].asCompound(), ContainerType)
-        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")].asCompound(), GameEvent)
+        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")].asJsonObject(), ContainerType)
+        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")].asJsonObject(), GameEvent)
 
         initialized = true
     }

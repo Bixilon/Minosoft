@@ -18,4 +18,8 @@ enum class PolygonModes {
     LINE,
     POINT,
     ;
+
+    companion object {
+        val DEFAULT = FILL
+    }
 }

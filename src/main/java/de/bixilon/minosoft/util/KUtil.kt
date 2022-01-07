@@ -17,7 +17,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -29,7 +31,10 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
@@ -38,6 +43,7 @@ import java.util.*
 
 
 object KUtil {
+    val RANDOM = Random()
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
@@ -228,5 +234,14 @@ object KUtil {
         modTime = 0L
         userName = StringBuffer("nobody")
         groupName = StringBuffer("nobody")
+    }
+
+
+    fun initUtilClasses() {
+        Log::class.java.forceInit()
+        URLProtocolStreamHandlers::class.java.forceInit()
+        MicrosoftOAuthUtils::class.java.forceInit()
+        TimeWorker::class.java.forceInit()
+        ShutdownManager::class.java.forceInit()
     }
 }

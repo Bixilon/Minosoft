@@ -34,22 +34,9 @@ object NBTUtil {
         return null
     }
 
-    fun Any?.compoundCast(): MutableMap<String, Any>? {
+    fun <T> Any?.listCast(): MutableList<T>? {
         return this.nullCast()
     }
-
-    fun Any?.asCompound(): MutableMap<String, Any> {
-        return this.compoundCast()!!
-    }
-
-    fun <T> Any?.listCast(): MutableList<T>? {
-        try {
-            return this as MutableList<T>
-        } catch (ignored: ClassCastException) {
-        }
-        return null
-    }
-
 
     operator fun Map<String, Any>.get(vararg keys: String): Any? {
         for (key in keys) {

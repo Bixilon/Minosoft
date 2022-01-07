@@ -16,16 +16,14 @@ package de.bixilon.minosoft.gui.rendering.gui.hud
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -42,8 +40,12 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardH
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -66,6 +68,10 @@ class HUDRenderer(
     private var enabled = true
     var matrixChange = true
         private set
+    override val framebuffer: Framebuffer
+        get() = renderWindow.framebufferManager.gui.framebuffer
+    override val polygonMode: PolygonModes
+        get() = renderWindow.framebufferManager.gui.polygonMode
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
 
@@ -114,7 +120,7 @@ class HUDRenderer(
         }
     }
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
         atlasManager.init()
@@ -132,7 +138,7 @@ class HUDRenderer(
         ), defaultPressed = enabled) { enabled = it }
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         atlasManager.postInit()
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
@@ -147,7 +153,6 @@ class HUDRenderer(
 
     private fun setup() {
         renderWindow.renderSystem.reset(blending = true)
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
         shader.use()
     }
 
@@ -171,7 +176,6 @@ class HUDRenderer(
             lastTickTime = time
         }
 
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
         var z = 0
         for (element in hudElements) {
             if (!element.enabled) {

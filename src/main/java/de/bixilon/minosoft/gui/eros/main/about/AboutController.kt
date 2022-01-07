@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.eros.main.about
 
-import afester.javafx.svg.SvgLoader
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -39,7 +37,7 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
     override fun init() {
         minosoftLogoFX.image = JavaFXUtil.MINOSOFT_LOGO
 
-        bixilonLogoFX.children.setAll(SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]))
+        bixilonLogoFX.children.setAll(JavaFXUtil.BIXILON_LOGO)
 
         versionStringFX.text = RunConfiguration.VERSION_STRING
         aboutTextFX.text = """

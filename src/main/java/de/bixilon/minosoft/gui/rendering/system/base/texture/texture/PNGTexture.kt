@@ -29,7 +29,10 @@ import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 
-class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractTexture {
+class PNGTexture(
+    override val resourceLocation: ResourceLocation,
+    override var generateMipMaps: Boolean = true,
+) : AbstractTexture {
     override lateinit var renderData: TextureRenderData
 
     override lateinit var textureArrayUV: Vec2
@@ -44,8 +47,10 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
 
 
     override var data: ByteBuffer? = null
+    override var mipmapData: Array<ByteBuffer>? = null
 
 
+    @Synchronized
     override fun load(assetsManager: AssetsManager) {
         if (state == TextureStates.LOADED) {
             return
@@ -84,8 +89,10 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
         data.flip()
 
         this.data = data
+        this.mipmapData = generateMipMaps(data)
 
         properties.postInit(this)
+
 
         state = TextureStates.LOADED
     }

@@ -24,11 +24,13 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Pane
 import javafx.scene.text.TextFlow
 
-class PlayController : EmbeddedJavaFXController<Pane>() {
+class PlayController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML private lateinit var playTypeContentFX: Pane
     @FXML private lateinit var playTypeListViewFX: ListView<ServerType>
 
@@ -77,11 +79,21 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
         refreshHeaderFX.text = REFRESH_HEADER
         refreshText1FX.text = REFRESH_TEXT1
         refreshText2FX.text = REFRESH_TEXT2
-        refreshPaneFX.setOnMouseClicked {
-            val currentController = currentController
-            if (currentController is Refreshable) {
-                currentController.refresh()
+        refreshPaneFX.setOnMouseClicked { refresh() }
+    }
+
+    override fun postInit() {
+        root.addEventFilter(KeyEvent.KEY_PRESSED) {
+            if (it.code == KeyCode.F5) {
+                refresh()
             }
+        }
+    }
+
+    override fun refresh() {
+        val currentController = currentController
+        if (currentController is Refreshable) {
+            currentController.refresh()
         }
     }
 

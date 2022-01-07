@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 class PerVersionRegistry<T : RegistryItem> {
@@ -36,7 +36,7 @@ class PerVersionRegistry<T : RegistryItem> {
 
         val versions: SortedMap<Int, Registry<T>> = sortedMapOf({ t, t2 -> t2 - t })
         for ((versionId, json) in data) {
-            versions[Integer.parseInt(versionId)] = Registry<T>().rawInitialize(json.compoundCast(), null, deserializer)
+            versions[Integer.parseInt(versionId)] = Registry<T>().rawInitialize(json.toJsonObject(), null, deserializer)
         }
         this.versions = versions.toMap()
     }

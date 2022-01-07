@@ -22,17 +22,14 @@ import glm_.vec3.Vec3
 
 open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType) : Mesh(renderWindow, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2, tintColor: RGBColor) {
-        data.addAll(
-            floatArrayOf(
-                position.x,
-                position.y,
-                position.z,
-                uv.x,
-                uv.y,
-                Float.fromBits(texture.renderData.shaderTextureId),
-                Float.fromBits(tintColor.rgba)
-            ))
+    fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2, tintColor: RGBColor?) {
+        data.add(position.x)
+        data.add(position.y)
+        data.add(position.z)
+        data.add(uv.x)
+        data.add(uv.y)
+        data.add(Float.fromBits(texture.renderData.shaderTextureId))
+        data.add(Float.fromBits(tintColor?.rgba ?: 0xFFFFFFFF.toInt()))
     }
 
 

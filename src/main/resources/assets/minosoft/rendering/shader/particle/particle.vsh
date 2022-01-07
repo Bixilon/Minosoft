@@ -22,7 +22,7 @@ layout (location = 4) in float vinScale;
 layout (location = 5) in uint vinTintColor;
 
 
-#include "minosoft:animation"
+#include "minosoft:animation/buffer"
 
 out Vertex
 {

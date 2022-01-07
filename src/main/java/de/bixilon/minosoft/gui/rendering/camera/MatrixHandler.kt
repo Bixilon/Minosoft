@@ -1,3 +1,16 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -18,6 +31,7 @@ import glm_.vec3.Vec3
 
 class MatrixHandler(
     private val renderWindow: RenderWindow,
+    private val fogManager: FogManager,
 ) {
     private val connection = renderWindow.connection
     private val profile = renderWindow.connection.profiles.rendering.camera
@@ -34,6 +48,7 @@ class MatrixHandler(
     var rotation = EntityRotation(0.0, 0.0)
         private set
     private var previousFOV = 0.0
+    private var fogEnd = 0.0f
 
     var cameraFront = Vec3(0.0, 0.0, -1.0)
         private set
@@ -51,9 +66,9 @@ class MatrixHandler(
 
     private var upToDate = false
 
-    var viewMatrix = calculateViewMatrix()
+    var viewMatrix = Mat4()
         private set
-    var projectionMatrix = calculateProjectionMatrix(renderWindow.window.sizef)
+    var projectionMatrix = Mat4()
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
@@ -70,17 +85,17 @@ class MatrixHandler(
         }
 
 
-    private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition): Mat4 {
-        return glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
+    private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition) {
+        viewMatrix = glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
-        return glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, 10000.0f)
+    private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
+        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, minOf(fogEnd + 2.0f, 10000.0f))
     }
 
     fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
-            projectionMatrix = calculateProjectionMatrix(Vec2(it.size))
+            calculateProjectionMatrix(Vec2(it.size))
             upToDate = false
         })
         draw() // set initial values
@@ -90,15 +105,21 @@ class MatrixHandler(
         val fov = fov
         val eyePosition = entity.eyePosition
         val rotation = entity.rotation
+        val fogEnd = fogManager.fogEnd
         if (upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) {
             return
         }
         this.eyePosition = eyePosition
         this.rotation = rotation
+        if (fov != previousFOV || fogEnd != this.fogEnd) {
+            this.fogEnd = fogEnd
+            calculateProjectionMatrix()
+        }
         previousFOV = fov
 
         updateRotation(rotation)
         updateViewMatrix(eyePosition)
+        updateViewProjectionMatrix()
         updateFrustum()
 
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
@@ -114,7 +135,10 @@ class MatrixHandler(
     }
 
     private fun updateViewMatrix(eyePosition: Vec3) {
-        viewMatrix = calculateViewMatrix(eyePosition)
+        calculateViewMatrix(eyePosition)
+    }
+
+    private fun updateViewProjectionMatrix() {
         viewProjectionMatrix = projectionMatrix * viewMatrix
     }
 
@@ -132,10 +156,10 @@ class MatrixHandler(
 
     private fun updateShaders() {
         for (shader in renderWindow.renderSystem.shaders) {
-            if (shader.uniforms.contains("uViewProjectionMatrix")) {
+            if ("uViewProjectionMatrix" in shader.uniforms) {
                 shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
             }
-            if (shader.uniforms.contains("uCameraPosition")) {
+            if ("uCameraPosition" in shader.uniforms) {
                 shader.use().setVec3("uCameraPosition", connection.player.cameraPosition)
             }
         }

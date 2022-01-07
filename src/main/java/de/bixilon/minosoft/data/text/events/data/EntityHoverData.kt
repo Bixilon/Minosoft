@@ -14,12 +14,12 @@ package de.bixilon.minosoft.data.text.events.data
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.util.*
 
 class EntityHoverData(
@@ -30,11 +30,11 @@ class EntityHoverData(
 
     companion object {
         fun deserialize(data: Any): EntityHoverData {
-            var json: Map<String, Any> = if (data is String) {
+            var json: Map<String, Any> = (if (data is String) {
                 Jackson.MAPPER.readValue(data, Jackson.JSON_MAP_TYPE)
             } else {
                 data
-            }.asCompound()
+            }).asJsonObject()
             json["text"]?.let {
                 // 1.14.3.... lol
                 json = Jackson.MAPPER.readValue(it.unsafeCast<String>(), Jackson.JSON_MAP_TYPE)

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -31,6 +33,7 @@ interface RenderSystem {
     val shaders: MutableSet<Shader>
     val vendor: GPUVendor
     var shader: Shader?
+    var framebuffer: Framebuffer?
 
     fun init()
 
@@ -39,12 +42,14 @@ interface RenderSystem {
         blending: Boolean = false,
         faceCulling: Boolean = true,
         depthMask: Boolean = true,
-        sourceAlpha: BlendingFunctions = BlendingFunctions.SOURCE_ALPHA,
-        destinationAlpha: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+        sourceRGB: BlendingFunctions = BlendingFunctions.ONE,
+        destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+        sourceAlpha: BlendingFunctions = BlendingFunctions.ONE,
+        destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
         depth: DepthFunctions = DepthFunctions.LESS,
-        clearColor: RGBColor = Colors.TRUE_YELLOW,
+        clearColor: RGBColor = Colors.TRANSPARENT,
     ) {
-        setBlendFunc(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+        setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending
         this[RenderingCapabilities.FACE_CULLING] = faceCulling
@@ -61,7 +66,7 @@ interface RenderSystem {
 
     operator fun set(source: BlendingFunctions, destination: BlendingFunctions)
 
-    fun setBlendFunc(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlphaFactor: BlendingFunctions, destinationAlphaFactor: BlendingFunctions)
+    fun setBlendFunction(sourceRGB: BlendingFunctions = BlendingFunctions.ONE, destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, sourceAlpha: BlendingFunctions = BlendingFunctions.ONE, destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO)
 
     var depth: DepthFunctions
     var depthMask: Boolean
@@ -85,13 +90,24 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 
-    fun createShader(resourceLocation: ResourceLocation): Shader
+    fun createShader(resourceLocation: ResourceLocation): Shader {
+        return createShader(
+            vertex = "$resourceLocation.vsh".toResourceLocation(),
+            geometry = "$resourceLocation.gsh".toResourceLocation(),
+            fragment = "$resourceLocation.fsh".toResourceLocation(),
+        )
+    }
+
+    fun createShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): Shader
 
     fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
     fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
     fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatBuffer): FloatUniformBuffer
+    fun createFramebuffer(): Framebuffer
 
     fun createTextureManager(): TextureManager
 
     fun clear(vararg buffers: IntegratedBufferTypes)
+
+    fun getErrors(): List<RenderSystemError>
 }

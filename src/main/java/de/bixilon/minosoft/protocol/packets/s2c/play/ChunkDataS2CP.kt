@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkData
@@ -39,8 +41,6 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
@@ -88,7 +88,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 else -> null
             }
             if (buffer.versionId >= V_18W44A) {
-                heightMap = buffer.readNBT()?.compoundCast()
+                heightMap = buffer.readNBT()?.toJsonObject()
             }
             if (!isFullChunk && buffer.versionId < V_21W37A) {
                 this.chunkData.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
@@ -118,7 +118,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
                     val positionOffset = Vec3i.of(chunkPosition, dimension.lowestSection, Vec3i.EMPTY)
                     for (i in 0 until buffer.readVarInt()) {
-                        val nbt = buffer.readNBT().asCompound()
+                        val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                         val resourceLocation = (nbt["id"]?.toResourceLocation() ?: continue).fix()
                         val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
@@ -138,7 +138,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                         val xz = buffer.readUnsignedByte()
                         val y = buffer.readShort()
                         val type = buffer.connection.registries.blockEntityTypeRegistry[buffer.readVarInt()]
-                        val nbt = buffer.readNBT()?.asCompound() ?: continue
+                        val nbt = buffer.readNBT()?.asJsonObject() ?: continue
                         val entity = type.build(buffer.connection)
                         entity.updateNBT(nbt)
                         blockEntities[Vec3i(xz shr 4, y, xz and 0x0F)] = entity

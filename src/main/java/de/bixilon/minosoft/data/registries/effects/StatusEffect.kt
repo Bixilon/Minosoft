@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.data.registries.effects
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -23,8 +25,6 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 data class StatusEffect(
@@ -45,9 +45,9 @@ data class StatusEffect(
             val attributes: MutableMap<ResourceLocation, EntityAttributeModifier> = mutableMapOf()
             val uuidAttributes: MutableMap<UUID, EntityAttributeModifier> = mutableMapOf()
 
-            data["attributes"]?.compoundCast()?.let {
+            data["attributes"]?.toJsonObject()?.let {
                 for ((key, value) in it) {
-                    val attribute = EntityAttributeModifier.deserialize(value.asCompound())
+                    val attribute = EntityAttributeModifier.deserialize(value.asJsonObject())
                     attributes[ResourceLocation.getResourceLocation(key).fix()] = attribute
                     uuidAttributes[attribute.uuid] = attribute
                 }

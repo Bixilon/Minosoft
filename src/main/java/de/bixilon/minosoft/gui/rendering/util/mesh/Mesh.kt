@@ -69,18 +69,42 @@ abstract class Mesh(
     }
 
 
-    fun addQuad(start: Vec3, end: Vec3, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+    fun addXQuad(start: Vec2, x: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val positions = arrayOf(
-            start,
-            Vec3(start.x, start.y, end.z),
-            end,
-            Vec3(end.x, end.y, start.z),
+            Vec3(x, start.x, start.y),
+            Vec3(x, start.x, end.y),
+            Vec3(x, end.x, end.y),
+            Vec3(x, end.x, start.y),
         )
+        addQuad(positions, uvStart, uvEnd, vertexConsumer)
+    }
+
+    fun addYQuad(start: Vec2, y: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+        val positions = arrayOf(
+            Vec3(start.x, y, start.y),
+            Vec3(start.x, y, end.y),
+            Vec3(end.x, y, end.y),
+            Vec3(end.x, y, start.y),
+        )
+        addQuad(positions, uvStart, uvEnd, vertexConsumer)
+    }
+
+    fun addZQuad(start: Vec2, z: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+        val positions = arrayOf(
+            Vec3(start.x, start.y, z),
+            Vec3(start.x, end.y, z),
+            Vec3(end.x, end.y, z),
+            Vec3(end.x, start.y, z),
+        )
+        addQuad(positions, uvStart, uvEnd, vertexConsumer)
+    }
+
+    fun addQuad(positions: Array<Vec3>, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val texturePositions = arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
             uvStart,
             Vec2(uvStart.x, uvEnd.y),
             uvEnd,
+            Vec2(uvEnd.x, uvStart.y),
         )
 
         for ((vertexIndex, textureIndex) in order) {

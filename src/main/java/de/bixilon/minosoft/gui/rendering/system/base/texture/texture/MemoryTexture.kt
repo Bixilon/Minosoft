@@ -29,6 +29,7 @@ class MemoryTexture(
     override val resourceLocation: ResourceLocation,
     override val size: Vec2i,
     override var properties: ImageProperties = ImageProperties(),
+    override var generateMipMaps: Boolean = true,
     generator: ((x: Int, y: Int) -> RGBColor)? = null,
 ) : AbstractTexture {
     override lateinit var textureArrayUV: Vec2
@@ -37,6 +38,7 @@ class MemoryTexture(
     override var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
         private set
     override var data: ByteBuffer? = null
+    override var mipmapData: Array<ByteBuffer>? = null
 
     init {
         val data = BufferUtils.createByteBuffer(size.x * size.y * PNGDecoder.Format.RGBA.numComponents)
@@ -59,6 +61,7 @@ class MemoryTexture(
                     data.put(index++, pixel.alpha.toByte())
                 }
             }
+            this.mipmapData = generateMipMaps(data)
         }
 
         this.data = data

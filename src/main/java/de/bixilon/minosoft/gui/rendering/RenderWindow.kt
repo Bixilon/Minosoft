@@ -13,58 +13,40 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.math.MMath.round10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererManager
+import de.bixilon.minosoft.gui.rendering.renderer.RendererManager.Companion.registerDefault
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
-import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
-import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
-import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Stopwatch
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -76,23 +58,40 @@ class RenderWindow(
     val rendering: Rendering,
 ) {
     private val profile = connection.profiles.rendering
+    val preferQuads = profile.advanced.preferQuads
+
     val window: BaseWindow = GLFWWindow(this, connection)
     val renderSystem: RenderSystem = OpenGLRenderSystem(this)
     val camera = Camera(this)
+
+    val inputHandler = RenderWindowInputHandler(this)
+    val screenshotTaker = ScreenshotTaker(this)
+    val tintManager = TintManager(connection)
+    val textureManager = renderSystem.createTextureManager()
+
+    val queue = Queue()
+
+    val shaderManager = ShaderManager(this)
+    val framebufferManager = FramebufferManager(this)
+    val renderer = RendererManager(this)
+
     var initialized = false
         private set
-    private lateinit var renderThread: Thread
     lateinit var renderStats: AbstractRenderStats
         private set
 
-    val preferQuads = profile.advanced.preferQuads
+    lateinit var font: Font
 
-    val inputHandler = RenderWindowInputHandler(this)
+    lateinit var WHITE_TEXTURE: TextureLike
 
     private var deltaFrameTime = 0.0
 
     private var lastFrame = 0.0
     private val latch = CountUpAndDownLatch(1)
+
+    var tickCount = 0L
+    var lastTickTimer = TimeUtil.time
+
 
     var renderingState = RenderingStates.RUNNING
         private set(value) {
@@ -107,37 +106,12 @@ class RenderWindow(
             connection.fireEvent(RenderingStateChangeEvent(connection, previousState, value))
         }
 
-
-    private val screenshotTaker = ScreenshotTaker(this)
-    val tintManager = TintManager(connection)
-    val textureManager = renderSystem.createTextureManager()
-    lateinit var font: Font
-
-    val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
-
-    val queue = Queue()
-
-    val shaderManager = ShaderManager(this)
-
-    lateinit var WHITE_TEXTURE: TextureLike
-
-
-    var tickCount = 0L
-    var lastTickTimer = TimeUtil.time
-
-    private var initialPositionReceived = false
-
     init {
-        connection.registerEvent(CallbackEventInvoker.of<PacketReceiveEvent> {
-            val packet = it.packet
-            if (packet !is PositionAndRotationS2CP) {
-                return@of
-            }
-            if (!initialPositionReceived) {
+        connection::state.observeFX(this) {
+            if (it == PlayConnectionStates.PLAYING && latch.count > 0) {
                 latch.dec()
-                initialPositionReceived = true
             }
-        })
+        }
         profile.experimental::fps.profileWatch(this, true, profile) {
             renderStats = if (it) {
                 ExperimentalRenderStats()
@@ -145,21 +119,10 @@ class RenderWindow(
                 RenderStats()
             }
         }
-
-        // order dependent (from back to front)
-        registerRenderer(SkyRenderer)
-        registerRenderer(WorldRenderer)
-        registerRenderer(BlockOutlineRenderer)
-        if (!connection.profiles.particle.skipLoading) {
-            registerRenderer(ParticleRenderer)
-        }
-        registerRenderer(EntityHitboxRenderer)
-        registerRenderer(ChunkBorderRenderer)
-        registerRenderer(HUDRenderer)
+        renderer.registerDefault(connection.profiles)
     }
 
     fun init(latch: CountUpAndDownLatch) {
-        renderThread = Thread.currentThread()
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
 
@@ -179,32 +142,36 @@ class RenderWindow(
 
         renderSystem.reset()
 
+        // Init stage
+        val initLatch = CountUpAndDownLatch(1, latch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
         WHITE_TEXTURE = TextureLikeTexture(texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
-        font = FontLoader.load(this)
+        font = FontLoader.load(this, initLatch)
 
 
-        shaderManager.init()
+        framebufferManager.init()
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
-        for (renderer in rendererMap.values) {
-            renderer.init()
-        }
+        renderer.init(initLatch)
 
+        // Wait for init stage to complete
+        initLatch.dec()
+        initLatch.await()
+
+        // Post init stage
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (${stopwatch.labTime()})..." }
-        textureManager.staticTextures.preLoad()
+        textureManager.staticTextures.preLoad(latch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (${stopwatch.labTime()})..." }
-        textureManager.staticTextures.load()
-        font.postInit()
+        textureManager.staticTextures.load(latch)
+        font.postInit(latch)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (${stopwatch.labTime()})..." }
-        for (renderer in rendererMap.values) {
-            renderer.postInit()
-        }
-
+        shaderManager.postInit()
+        renderer.postInit(latch)
+        framebufferManager.postInit()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (${stopwatch.labTime()})..." }
 
@@ -219,7 +186,7 @@ class RenderWindow(
 
 
         inputHandler.init()
-        registerGlobalKeyCombinations()
+        DefaultKeyCombinations.registerAll(this)
 
 
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
@@ -232,69 +199,6 @@ class RenderWindow(
         this.latch.await()
         window.visible = true
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
-    }
-
-    private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_P),
-                ),
-            )) {
-            val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
-            renderSystem.polygonMode = nextMode
-            sendDebugMessage("Polygon mode: ${nextMode.format()}")
-        }
-
-        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
-                ),
-            )) { window.close() }
-
-        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_F2),
-                ),
-                ignoreConsumer = true,
-            )) { screenshotTaker.takeScreenshot() }
-
-        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_I),
-                ),
-                ignoreConsumer = true,
-            )) {
-            sendDebugMessage("Pausing incoming packets: ${it.format()}")
-            connection.network.pauseReceiving(it)
-        }
-
-        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_O),
-                ),
-                ignoreConsumer = true,
-            )) {
-            sendDebugMessage("Pausing outgoing packets: ${it.format()}")
-            connection.network.pauseSending(it)
-        }
-
-        inputHandler.registerKeyCallback("minosoft:toggle_fullscreen".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_F11),
-                ),
-                ignoreConsumer = true,
-            )) {
-            window.fullscreen = !window.fullscreen
-        }
     }
 
     fun startLoop() {
@@ -316,6 +220,8 @@ class RenderWindow(
             }
 
             renderStats.startFrame()
+            framebufferManager.clear()
+            renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
 
@@ -333,27 +239,8 @@ class RenderWindow(
 
             textureManager.staticTextures.animator.draw()
 
-            val rendererList = rendererMap.values
+            renderer.render()
 
-            for (renderer in rendererList) {
-                renderer.prepareDraw()
-            }
-
-            for (renderer in rendererList) {
-                if (renderer is SkipAll && renderer.skipAll) {
-                    continue
-                }
-                for (phase in RenderPhases.VALUES) {
-                    if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
-                        continue
-                    }
-                    if (phase.invokeSkip(renderer)) {
-                        continue
-                    }
-                    phase.invokeSetup(renderer)
-                    phase.invokeDraw(renderer)
-                }
-            }
             renderSystem.reset() // Reset to enable depth mask, etc again
 
             renderStats.endDraw()
@@ -374,6 +261,10 @@ class RenderWindow(
                 RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.STOPPED -> window.close()
             }
+
+            for (error in renderSystem.getErrors()) {
+                connection.util.sendDebugMessage(error.printMessage)
+            }
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
@@ -386,26 +277,5 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
         connection.disconnect()
-    }
-
-    fun registerRenderer(rendererBuilder: RendererBuilder<*>) {
-        val resourceLocation = rendererBuilder.RESOURCE_LOCATION
-        if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
-            return
-        }
-        val renderer = rendererBuilder.build(connection, this)
-        rendererMap[resourceLocation] = renderer
-    }
-
-    fun sendDebugMessage(message: Any) {
-        connection.fireEvent(InternalMessageReceiveEvent(connection, BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })))
-    }
-
-    fun assertOnRenderThread() {
-        check(Thread.currentThread() === renderThread) { "Current thread (${Thread.currentThread().name} is not the render thread!" }
-    }
-
-    operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return rendererMap[renderer.RESOURCE_LOCATION].unsafeCast()
     }
 }

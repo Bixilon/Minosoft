@@ -13,30 +13,26 @@
 
 package de.bixilon.minosoft.util;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import de.bixilon.kutil.concurrent.time.TimeWorker;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
-import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils;
-import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import java.util.concurrent.ThreadFactory;
-import java.util.zip.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
 
 @Deprecated(forRemoval = true)
 public final class Util {
@@ -116,69 +112,6 @@ public final class Util {
         return ret;
     }
 
-    public static String sha1(byte[] data) {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-        try {
-            return sha1(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static String sha256(byte[] data) {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-        try {
-            return sha256(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static String sha1(File file) throws IOException {
-        return sha1(new FileInputStream(file));
-    }
-
-    public static String sha1Gzip(File file) throws IOException {
-        return sha1(new GZIPInputStream(new FileInputStream(file)));
-    }
-
-    public static String sha1(InputStream inputStream) throws IOException {
-        try {
-            return hash(MessageDigest.getInstance("SHA-1"), inputStream);
-        } catch (NoSuchAlgorithmException | FileNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String hash(MessageDigest digest, InputStream inputStream) throws IOException {
-        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
-        int length;
-        while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
-            digest.update(buffer, 0, length);
-        }
-        return byteArrayToHexString(digest.digest());
-    }
-
-    public static String sha256(InputStream inputStream) throws IOException {
-        try {
-            return hash(MessageDigest.getInstance("SHA-256"), inputStream);
-        } catch (NoSuchAlgorithmException | FileNotFoundException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String byteArrayToHexString(byte[] b) {
-        StringBuilder result = new StringBuilder();
-        for (byte value : b) {
-            result.append(Integer.toString((value & 0xff) + 0x100, 16).substring(1));
-        }
-        return result.toString();
-    }
-
     public static String readReader(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
@@ -195,113 +128,12 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
-        InputStreamReader reader = getInputSteamFromZip(fileName, zipFile);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
-    }
-
-    public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
-        return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
-    }
-
-    public static String readFile(String fileName) throws IOException {
-        FileReader reader = new FileReader(fileName);
-        return readReader(new BufferedReader(reader), true);
-    }
-
-    public static void downloadFile(String url, String destination) throws IOException {
-        createParentFolderIfNotExist(destination);
-        copyStream(getInputStreamByURL(url), new FileOutputStream(destination));
-    }
-
-    public static void downloadFileAsGz(String url, String destination) throws IOException {
-        createParentFolderIfNotExist(destination);
-        copyStream(getInputStreamByURL(url), new GZIPOutputStream(new FileOutputStream(destination)));
-    }
-
-    public static void copyStream(InputStream inputStream, OutputStream output) throws IOException {
-        byte[] buffer = new byte[ProtocolDefinition.DEFAULT_BUFFER_SIZE];
-        int length;
-        while ((length = inputStream.read(buffer, 0, buffer.length)) != -1) {
-            output.write(buffer, 0, length);
-        }
-        inputStream.close();
-        output.close();
-    }
-
-    public static InputStream getInputStreamByURL(String url) throws IOException {
-        return new URL(url).openConnection().getInputStream();
-    }
-
-    public static ThreadFactory getThreadFactory(String threadName) {
-        return new ThreadFactoryBuilder().setNameFormat(threadName + "/%d").build();
-    }
-
-    public static boolean createParentFolderIfNotExist(String file) {
-        return createParentFolderIfNotExist(new File(file));
-    }
-
-    public static boolean createParentFolderIfNotExist(File file) {
-        return file.getParentFile().mkdirs();
-    }
-
-    @NotNull
-    public static String generateRandomString(int length) {
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sb.append(getRandomChar(RANDOM_STRING_CHARS));
-        }
-        return sb.toString();
-    }
-
-    public static char getRandomChar(char[] chars) {
-        return chars[(RANDOM.nextInt(chars.length))];
-    }
-
-    public static char getRandomChar() {
-        return (char) RANDOM.nextInt();
-    }
-
-    public static String getStringBetween(String search, String first, String second) {
-        String result = search.substring(search.indexOf(first) + first.length());
-        return result.substring(0, result.indexOf(second));
-    }
-
-    public static boolean doesStringContainsUppercaseLetters(String string) {
-        return !string.toLowerCase().equals(string);
-    }
-
     public static int getJsonReaderPosition(JsonReader jsonReader) {
         try {
             return JSON_READER_POS_FIELD.getInt(jsonReader) - JSON_READER_LINE_START_FIELD.getInt(jsonReader) + 1;
         } catch (IllegalAccessException e) {
             throw new IllegalStateException();
         }
-    }
-
-    public static String checkURL(String url) {
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            throw new IllegalArgumentException("Not a valid url:" + url);
-        }
-        return url;
-    }
-
-    public static <T> void forceClassInit(Class<T> clazz) {
-        try {
-            Class.forName(clazz.getName(), true, clazz.getClassLoader());
-        } catch (ClassNotFoundException exception) {
-            throw new RuntimeException(exception);
-        }
-    }
-
-    public static void initUtilClasses() {
-        forceClassInit(Log.class);
-        forceClassInit(URLProtocolStreamHandlers.class);
-        forceClassInit(MicrosoftOAuthUtils.class);
-        forceClassInit(TimeWorker.class);
-        forceClassInit(ShutdownManager.class);
     }
 
     public static Map<String, String> urlQueryToMap(String query) {
@@ -328,23 +160,6 @@ public final class Util {
             }
         }
         return builder.toString();
-    }
-
-    public static String[] headersMapToArray(Map<String, String> headers) {
-        List<String> headerList = new ArrayList<>();
-        for (Map.Entry<String, String> entry : headers.entrySet()) {
-            headerList.add(entry.getKey());
-            headerList.add(entry.getValue());
-        }
-        return headerList.toArray(new String[]{});
-    }
-
-    public static String formatString(String string, Map<String, Object> format) {
-        String output = string;
-        for (Map.Entry<String, Object> entry : format.entrySet()) {
-            output = output.replace("${" + entry.getKey() + "}", entry.getValue().toString());
-        }
-        return output;
     }
 
     @NotNull

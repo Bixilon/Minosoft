@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonUtil.toJsonList
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import javafx.collections.ObservableList
 import javafx.scene.Node
@@ -167,8 +167,8 @@ class BaseComponent : ChatComponent {
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.SHADOWED, json["shadowed"]?.toBoolean())
 
-        val clickEvent = json["clickEvent", "click_event"]?.compoundCast()?.let { click -> ClickEvent(click, restrictedMode) }
-        val hoverEvent = json["hoverEvent", "hover_event"]?.compoundCast()?.let { hover -> HoverEvent(hover) }
+        val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvent(click, restrictedMode) }
+        val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvent(hover) }
 
         val textComponent = TextComponent(
             message = currentText,

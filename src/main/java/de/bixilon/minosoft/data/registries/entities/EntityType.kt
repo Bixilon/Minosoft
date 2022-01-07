@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.entities
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.DefaultEntityFactories
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3d
 import java.util.*
 
@@ -59,7 +59,7 @@ data class EntityType(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityType? {
             check(registries != null) { "Registries is null!" }
 
-            data["meta"]?.compoundCast()?.let {
+            data["meta"]?.toJsonObject()?.let {
                 for ((minosoftFieldName, index) in it) {
                     val minosoftField = EntityMetaDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
                     registries.entityMetaIndexMap[minosoftField] = index.unsafeCast()
@@ -72,7 +72,7 @@ data class EntityType(
 
             val attributes: MutableMap<ResourceLocation, Double> = mutableMapOf()
 
-            data["attributes"]?.compoundCast()?.let {
+            data["attributes"]?.toJsonObject()?.let {
                 for ((attributeResourceLocation, value) in it) {
                     attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.unsafeCast()
                 }

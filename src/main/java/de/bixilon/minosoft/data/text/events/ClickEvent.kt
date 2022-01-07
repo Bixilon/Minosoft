@@ -14,7 +14,8 @@ package de.bixilon.minosoft.data.text.events
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.util.Util
+import de.bixilon.kutil.url.URLUtil.checkWeb
+import de.bixilon.kutil.url.URLUtil.toURL
 
 class ClickEvent {
     val action: ClickEventActions
@@ -28,7 +29,7 @@ class ClickEvent {
             return
         }
         if (action == ClickEventActions.OPEN_URL) {
-            Util.checkURL(value.toString())
+            value.toString().toURL().checkWeb()
         }
         check(action != ClickEventActions.OPEN_CONFIRMATION) { "Can not use OPEN_CONFIRMATION in restricted mode!" }
         check(action != ClickEventActions.OPEN_FILE) { "Can not use OPEN_FILE in restricted mode!" }

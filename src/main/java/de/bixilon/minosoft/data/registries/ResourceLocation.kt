@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.kutil.string.StringUtil.isLowercase
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Util
 import java.util.*
 
 open class ResourceLocation(
@@ -77,7 +77,7 @@ open class ResourceLocation(
             // if (!ProtocolDefinition.RESOURCE_LOCATION_PATTERN.matcher(resourceLocation).matches()) {
             //     throw new IllegalArgumentException(String.format("%s in not a valid resource location!", resourceLocation));
             // }
-            return if (Util.doesStringContainsUppercaseLetters(resourceLocation)) {
+            return if (!resourceLocation.isLowercase()) {
                 // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
                 LegacyResourceLocation(resourceLocation)
             } else ResourceLocation(resourceLocation)

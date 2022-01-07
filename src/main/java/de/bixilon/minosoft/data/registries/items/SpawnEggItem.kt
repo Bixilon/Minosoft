@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -26,7 +27,7 @@ open class SpawnEggItem(
 ) : Item(resourceLocation, registries, data) {
     val color1 = data["spawn_egg_color_1"]?.toInt()?.asRGBColor()
     val color2 = data["spawn_egg_color_2"]?.toInt()?.asRGBColor()
-    val entityType: EntityType? = null
+    val entityType: EntityType = unsafeNull()
 
     init {
         this::entityType.inject(data["spawn_egg_entity_type"])

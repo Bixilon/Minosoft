@@ -58,7 +58,7 @@ class ItemPickInteractionHandler(
 
         when (target) {
             is BlockTarget -> {
-                itemStack = ItemStack(target.blockState.block.item!!, connection, 1)
+                itemStack = ItemStack(target.blockState.block.item, connection, 1)
 
                 if (copyNBT) {
                     val blockEntity = connection.world.getBlockEntity(target.blockPosition)

@@ -1,9 +1,23 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.config.profile.profiles.account
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.backingDelegate
@@ -11,7 +25,7 @@ import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.mapDelegate
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.KUtil
 
 /**
  * Profile for accounts
@@ -33,7 +47,7 @@ class AccountProfile(
      * This 128 length long string is generated randomly while the profile was created
      * Will be sent to mojang when logging in/refreshing an account
      */
-    var clientToken by delegate(Util.generateRandomString(128))
+    var clientToken by delegate(KUtil.RANDOM.randomString(128))
 
     /**
      * All accounts

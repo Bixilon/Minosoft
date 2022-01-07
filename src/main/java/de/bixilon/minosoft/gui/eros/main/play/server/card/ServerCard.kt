@@ -26,34 +26,24 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionSt
 class ServerCard(
     val server: Server,
 ) {
-    var ping: StatusConnection? = null
+    val ping: StatusConnection = StatusConnection(server.address)
     val connections: MutableSet<PlayConnection> = synchronizedSetOf()
+    private var pinged = false
 
     var statusReceiveInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
-        }
-    var statusUpdateInvoker: EventInvoker? = null
-        set(value) {
-            field = value
-            ping?.registerEvent(value ?: return)
+            ping.registerEvent(value ?: return)
         }
     var statusErrorInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
+            ping.registerEvent(value ?: return)
         }
     var pongInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
-        }
-
-    var serverListStatusInvoker: EventInvoker? = null
-        set(value) {
-            field = value
-            ping?.registerEvent(value ?: return)
+            ping.registerEvent(value ?: return)
         }
 
     init {
@@ -62,30 +52,24 @@ class ServerCard(
 
 
     fun unregister() {
-        val ping = ping ?: return
         statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregisterEvent(it) }
-        statusUpdateInvoker?.let { statusUpdateInvoker = null; ping.unregisterEvent(it) }
         statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregisterEvent(it) }
-        serverListStatusInvoker?.let { serverListStatusInvoker = null; ping.unregisterEvent(it) }
         pongInvoker?.let { pongInvoker = null; ping.unregisterEvent(it) }
     }
 
-
     @Synchronized
-    fun ping(): StatusConnection {
-        this.ping?.let { return it }
-
-        val ping = StatusConnection(server.address)
-        serverListStatusInvoker?.let { ping.registerEvent(it) }
+    fun ping() {
+        if (pinged) {
+            return
+        }
         ping.ping()
-        this.ping = ping
-        return ping
+        pinged = true
     }
 
 
     fun canConnect(account: Account): Boolean {
-        return (ping?.state === StatusConnectionStates.PING_DONE
-                && ((server.forcedVersion ?: ping?.serverVersion) != null))
+        return (ping.state === StatusConnectionStates.PING_DONE
+                && ((server.forcedVersion ?: ping.serverVersion) != null))
                 && server !in account.connections
     }
 

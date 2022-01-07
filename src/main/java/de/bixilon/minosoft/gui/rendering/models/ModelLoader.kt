@@ -14,6 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -33,7 +37,7 @@ class ModelLoader(
     val renderWindow: RenderWindow,
 ) {
     private val assetsManager = renderWindow.connection.assetsManager
-    private val unbakedBlockModels: MutableMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toMutableMap()
+    private val unbakedBlockModels: SynchronizedMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toSynchronizedMap()
 
     private val registry: Registries = renderWindow.connection.registries
 
@@ -85,17 +89,29 @@ class ModelLoader(
         return model
     }
 
-    fun load() {
+    fun load(latch: CountUpAndDownLatch) {
+        val blockLatch = CountUpAndDownLatch(1, latch)
         // ToDo: Optimize performance
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
+
         for (block in registry.blockRegistry) {
-            loadBlockStates(block)
+            blockLatch.inc()
+            DefaultThreadPool += { loadBlockStates(block); blockLatch.dec() }
         }
+        blockLatch.dec()
+        blockLatch.await()
+
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
+        val itemLatch = CountUpAndDownLatch(1, latch)
+
+
         for (item in registry.itemRegistry) {
-            loadItemModel(item.resourceLocation.prefix("item/"))
+            itemLatch.inc()
+            DefaultThreadPool += { loadItemModel(item.resourceLocation.prefix("item/")); itemLatch.dec() }
         }
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading unbaked models!" }
+        itemLatch.dec()
+        itemLatch.await()
 
         cleanup()
     }

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3i
 
 class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -36,7 +36,7 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     } else {
         buffer.connection.registries.blockEntityMetaDataTypeRegistry[buffer.readUnsignedByte()].resourceLocation
     }
-    val nbt = buffer.readNBT().asCompound()
+    val nbt = buffer.readNBT().asJsonObject()
 
     override fun handle(connection: PlayConnection) {
         connection.world.getBlockEntity(position)?.updateNBT(nbt) ?: let {

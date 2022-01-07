@@ -17,15 +17,19 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
@@ -34,10 +38,15 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
-import org.lwjgl.opengl.GL20.*
+import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL43.GL_DEBUG_OUTPUT
+import org.lwjgl.opengl.GL43.glDebugMessageCallback
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
@@ -80,6 +89,19 @@ class OpenGLRenderSystem(
 
             field = value
         }
+    override var framebuffer: Framebuffer? = null
+        set(value) {
+            if (value == field) {
+                return
+            }
+            if (value == null) {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0)
+            } else {
+                check(value is OpenGLFramebuffer) { "Can not use non OpenGL framebuffer!" }
+                value.bind()
+            }
+            field = value
+        }
 
 
     override fun init() {
@@ -106,6 +128,12 @@ class OpenGLRenderSystem(
                 glViewport(0, 0, it.size.x, it.size.y)
             }
         })
+        if (RenderConstants.OPENGL_DEBUG_MODE) {
+            glEnable(GL_DEBUG_OUTPUT)
+            glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
+                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity,length=$length,message=$message,userParameter=$userParameter" }
+            }, 0)
+        }
     }
 
     override fun enable(capability: RenderingCapabilities) {
@@ -146,8 +174,8 @@ class OpenGLRenderSystem(
         glBlendFunc(source.gl, destination.gl)
     }
 
-    override fun setBlendFunc(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlphaFactor: BlendingFunctions, destinationAlphaFactor: BlendingFunctions) {
-        glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlphaFactor.gl, destinationAlphaFactor.gl)
+    override fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions) {
+        glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlpha.gl, destinationAlpha.gl)
     }
 
     override var depth: DepthFunctions = DepthFunctions.LESS
@@ -199,8 +227,8 @@ class OpenGLRenderSystem(
         return buffer
     }
 
-    override fun createShader(resourceLocation: ResourceLocation): OpenGLShader {
-        return OpenGLShader(renderWindow, resourceLocation)
+    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): Shader {
+        return OpenGLShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
     override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {
@@ -215,6 +243,10 @@ class OpenGLRenderSystem(
         return IntOpenGLUniformBuffer(bindingIndex, data)
     }
 
+    override fun createFramebuffer(): Framebuffer {
+        return OpenGLFramebuffer(renderWindow.window.size)
+    }
+
     override fun createTextureManager(): TextureManager {
         return OpenGLTextureManager(renderWindow)
     }
@@ -224,7 +256,7 @@ class OpenGLRenderSystem(
             if (value == field) {
                 return
             }
-            glClearColor(clearColor.floatRed, clearColor.floatGreen, clearColor.floatBlue, clearColor.floatAlpha)
+            glClearColor(value.floatRed, value.floatGreen, value.floatBlue, value.floatAlpha)
 
             field = value
         }
@@ -235,6 +267,16 @@ class OpenGLRenderSystem(
             bits = bits or buffer.gl
         }
         glClear(bits)
+    }
+
+    override fun getErrors(): List<OpenGLError> {
+        val errors: MutableList<OpenGLError> = mutableListOf()
+        var error: Int = glGetError()
+        while (error != GL_NO_ERROR) {
+            errors += OpenGLError(error)
+            error = glGetError()
+        }
+        return errors
     }
 
     companion object {

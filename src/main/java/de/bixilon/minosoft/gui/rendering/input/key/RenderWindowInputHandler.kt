@@ -65,7 +65,7 @@ class RenderWindowInputHandler(
                 CursorModes.HIDDEN -> CursorModes.NORMAL
             }
             renderWindow.window.cursorMode = nextMode
-            renderWindow.sendDebugMessage("Cursor mode: ${nextMode.format()}")
+            connection.util.sendDebugMessage("Cursor mode: ${nextMode.format()}")
         }
     }
 

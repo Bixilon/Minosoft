@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.provider
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonList
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -36,7 +37,7 @@ class BitmapFontProvider(
 
     init {
         val charRows = data["chars"].asJsonList()
-        val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
+        val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture(), mipmaps = false)
         texture.load(renderWindow.connection.assetsManager)
 
         val height = texture.size.y / charRows.size
@@ -110,10 +111,12 @@ class BitmapFontProvider(
         textureData.rewind()
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
+        latch.inc()
         for (char in chars.values) {
             char.postInit()
         }
+        latch.dec()
     }
 
     override fun get(char: Char): CharData? {

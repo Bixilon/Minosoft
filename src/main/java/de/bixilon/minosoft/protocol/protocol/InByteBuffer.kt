@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
@@ -35,17 +34,14 @@ import java.util.*
 
 
 open class InByteBuffer {
-    private val connection: Connection?
     private val bytes: ByteArray
     var pointer = 0
 
-    constructor(bytes: ByteArray, connection: Connection) {
+    constructor(bytes: ByteArray) {
         this.bytes = bytes
-        this.connection = connection
     }
 
     constructor(buffer: InByteBuffer) {
-        connection = buffer.connection
         bytes = buffer.bytes.clone()
         pointer = buffer.pointer
     }
@@ -419,7 +415,7 @@ open class InByteBuffer {
                 // no nbt data here...
                 null
             } else {
-                InByteBuffer(Util.decompressGzip(readByteArray(length)), connection!!).readNBTTag(false)
+                InByteBuffer(Util.decompressGzip(readByteArray(length))).readNBTTag(false)
             }
         }
         val type = NBTTagTypes[readUnsignedByte()]

@@ -35,14 +35,7 @@ in Vertex
     vec4 tintColor;
 } ginVertex[];
 
-
-flat out uint finTextureIndex1;
-out vec3 finTextureCoordinates1;
-flat out uint finTextureIndex2;
-out vec3 finTextureCoordinates2;
-flat out float finInterpolation;
-
-out vec4 finTintColor;
+#include "minosoft:animation/header_vertex"
 
 void main()
 {

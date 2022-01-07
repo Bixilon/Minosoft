@@ -19,6 +19,7 @@ import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.file.watcher.FileWatcherService
+import de.bixilon.kutil.hash.HashUtil.sha1
 import de.bixilon.kutil.os.OSUtil
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.SystemInformation
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -114,6 +114,12 @@ class ErosCrashReport : JavaFXWindowController() {
             "Coded while traveling in the ICE 272 towards Hamburg-Altona",
             "Sorry, the ICE 693 drive towards Munich was really long",
             "Coded while playing bedwars",
+            "I am #1 in bedwars swordless",
+            "Der AB kam vor der CD",
+            "You can't do this",
+            "Sing me a happy song!",
+            "This message should not be visible...",
+            "lmfao",
         )
 
 
@@ -225,7 +231,7 @@ ${exception?.toStackTrace() ?: ""}
 ${GitInfo.formatForCrashReport()}
             """.trimIndent()
 
-            val hash = Util.sha1(stack.toByteArray(StandardCharsets.UTF_8))
+            val hash = stack.toByteArray(StandardCharsets.UTF_8).sha1()
 
             return """
 $stack

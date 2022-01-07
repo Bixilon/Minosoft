@@ -30,16 +30,19 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
     override var properties: ImageProperties by original::properties
     override var renderData: TextureRenderData by original::renderData
     override val transparency: TextureTransparencies by original::transparency
+    override var generateMipMaps: Boolean = true
 
     override var state: TextureStates = TextureStates.DECLARED
         private set
 
     override var data: ByteBuffer? = null
+    override var mipmapData: Array<ByteBuffer>? = null
     override var size: Vec2i = Vec2i(-1, -1)
         private set
     var splitTextures: MutableList<MemoryTexture> = mutableListOf()
 
 
+    @Synchronized
     override fun load(assetsManager: AssetsManager) {
         if (state == TextureStates.LOADED) {
             return
@@ -58,6 +61,7 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
             splitTexture.data!!.let {
                 it.copyFrom(original.data!!, bytesPerTexture * i, 0, bytesPerTexture)
                 it.flip()
+                splitTexture.mipmapData = splitTexture.generateMipMaps(it)
             }
             splitTextures += splitTexture
         }

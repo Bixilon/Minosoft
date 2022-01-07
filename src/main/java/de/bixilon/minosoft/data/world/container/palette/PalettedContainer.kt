@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container.palette
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.world.container.palette.data.PaletteData
 import de.bixilon.minosoft.data.world.container.palette.palettes.Palette
 
@@ -31,6 +32,6 @@ class PalettedContainer<T>(
         for (i in array.indices) {
             array[i] = palette.get(data.get(i)) as V
         }
-        return array as Array<V>
+        return array.unsafeCast()
     }
 }

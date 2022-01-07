@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kutil.check.CheckUtil.check
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -32,15 +35,22 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
     private val FONT_INDEX = "font/default.json".toResourceLocation()
 
 
-    fun load(renderWindow: RenderWindow): Font {
+    fun load(renderWindow: RenderWindow, latch: CountUpAndDownLatch): Font {
         val fontIndex = renderWindow.connection.assetsManager[FONT_INDEX].readJsonObject()
 
-        val providers: MutableList<FontProvider> = mutableListOf()
+        val providers: MutableList<FontProvider> = synchronizedListOf()
 
+        val fontLatch = CountUpAndDownLatch(1, latch)
         for (provider in fontIndex["providers"].listCast<Map<String, Any>>()!!) {
             val type = provider["type"].toResourceLocation()
-            providers += this[type].check { "Unknown font provider type $type" }.build(renderWindow, provider)
+            fontLatch.inc()
+            DefaultThreadPool += {
+                providers += this[type].check { "Unknown font provider type $type" }.build(renderWindow, provider)
+                fontLatch.dec()
+            }
         }
+        fontLatch.dec()
+        fontLatch.await()
 
         return Font(
             providers = providers,

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items.block
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
@@ -31,7 +32,7 @@ open class BlockItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val block: Block? = null
+    val block: Block = unsafeNull()
 
     init {
         this::block.inject(data["block"])
@@ -60,7 +61,7 @@ open class BlockItem(
         }
 
 
-        var placeBlockState: BlockState = block!!.defaultState
+        var placeBlockState: BlockState = block.defaultState
         try {
             placeBlockState = block.getPlacementState(connection, target) ?: return InteractionResults.PASS
         } catch (exception: Throwable) {

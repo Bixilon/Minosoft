@@ -15,11 +15,13 @@ package de.bixilon.minosoft.assets.util
 
 import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
+import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.hex.HexUtil.isHexString
+import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.KUtil
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -47,7 +49,7 @@ object FileAssetsUtil {
     fun saveAndGet(stream: InputStream, compress: Boolean = true, get: Boolean = true, hashType: HashTypes = HashTypes.SHA256): Pair<String, ByteArray> {
         var tempFile: File
         do {
-            tempFile = File(RunConfiguration.TEMPORARY_FOLDER + Util.generateRandomString(32))
+            tempFile = File(RunConfiguration.TEMPORARY_FOLDER + KUtil.RANDOM.randomString(32))
         } while (tempFile.exists())
         tempFile.parentFile.apply {
             mkdirs()
@@ -80,7 +82,7 @@ object FileAssetsUtil {
             }
         }
         output.close()
-        val hash = Util.byteArrayToHexString(digest.digest())
+        val hash = digest.digest().toHex()
 
         val file = File(getPath(hash))
         if (file.exists()) {
@@ -157,7 +159,7 @@ object FileAssetsUtil {
                 }
                 digest.update(buffer, 0, length)
             }
-            val equals = hash == Util.byteArrayToHexString(digest.digest())
+            val equals = hash == digest.digest().toHex()
             if (!equals) {
                 file.delete()
             }

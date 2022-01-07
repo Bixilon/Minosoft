@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.status
 
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 class ServerStatus(
@@ -38,11 +38,11 @@ class ServerStatus(
         private set
 
     init {
-        data["version"]?.compoundCast()?.let {
+        data["version"]?.toJsonObject()?.let {
             protocolId = it["protocol"]?.toInt()
             serverBrand = it["name"]?.toString()
         }
-        data["players"]?.compoundCast()?.let {
+        data["players"]?.toJsonObject()?.let {
             usedSlots = it["online"]?.toInt()
             slots = it["max"]?.toInt()
 

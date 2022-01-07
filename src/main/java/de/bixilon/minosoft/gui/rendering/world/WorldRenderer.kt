@@ -21,6 +21,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -34,12 +35,12 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
+import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
@@ -62,7 +63,6 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.modding.event.events.*
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -71,6 +71,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -125,9 +126,9 @@ class WorldRenderer(
     val queueSize: Int by queue::size
     val preparingTasksSize: Int by preparingTasks::size
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         val modelLoader = ModelLoader(renderWindow)
-        modelLoader.load()
+        modelLoader.load(latch)
 
         for (fluid in connection.registries.fluidRegistry) {
             if (fluid is FlowableFluid) {
@@ -137,7 +138,7 @@ class WorldRenderer(
         }
     }
 
-    override fun postInit() {
+    override fun postInit(latch: CountUpAndDownLatch) {
         lightMap.init()
 
         shader.load()
@@ -232,7 +233,7 @@ class WorldRenderer(
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
-        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state == PlayConnectionStates.DISCONNECTED) unloadWorld() })
+        connection::state.observeFX(this) { if (it == PlayConnectionStates.DISCONNECTED) unloadWorld() }
         connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
             if (it.state == RenderingStates.PAUSED) {
                 unloadWorld()

@@ -28,7 +28,6 @@ import kotlin.math.max
 interface Shader {
     val loaded: Boolean
     val renderWindow: RenderWindow
-    val resourceLocation: ResourceLocation
     val uniforms: List<String>
     val defines: MutableMap<String, Any>
 
@@ -49,6 +48,7 @@ interface Shader {
     fun setVec4(uniformName: String, vec4: Vec4)
     fun setArray(uniformName: String, array: Array<*>)
     fun setRGBColor(uniformName: String, color: RGBColor)
+    fun setBoolean(uniformName: String, boolean: Boolean)
     fun setTexture(uniformName: String, textureId: Int)
     fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer)
 
@@ -70,6 +70,7 @@ interface Shader {
             is RGBColor -> setRGBColor(uniformName, data)
             is OpenGLUniformBuffer -> setUniformBuffer(uniformName, data)
             // ToDo: PNGTexture
+            is Boolean -> setBoolean(uniformName, data)
             else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
         }
     }
@@ -81,5 +82,9 @@ interface Shader {
                 max(it.textureManager.staticTextures.animator.size, 1)
             }
         )
+
+        fun ResourceLocation.shader(): ResourceLocation {
+            return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
+        }
     }
 }

@@ -18,7 +18,10 @@ import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 
 open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
+    private val factories = factories
     private val factoryMap: Map<ResourceLocation, T>
+
+    val size: Int = factories.size
 
     init {
         val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
@@ -38,5 +41,9 @@ open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
 
     operator fun get(resourceLocation: ResourceLocation): T? {
         return factoryMap[resourceLocation]
+    }
+
+    operator fun get(index: Int): T {
+        return factories[index]
     }
 }

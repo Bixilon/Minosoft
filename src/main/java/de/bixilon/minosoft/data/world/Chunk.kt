@@ -55,6 +55,10 @@ class Chunk(
     val isFullyLoaded: Boolean
         get() = isLoaded && neighboursLoaded
 
+    init {
+        // connection.world.view.updateServerViewDistance(chunkPosition, true)
+    }
+
     operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
     fun unsafeGet(x: Int, y: Int, z: Int): BlockState? {

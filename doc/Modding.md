@@ -52,7 +52,7 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
 - `version_name`, `authors` and `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
 - `modding_api_version` Modding API version of minosoft. Currently `1` **Required**
 - `resource_namespace` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
-- `main_class` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
+- `main_class` the Main class of your mod (self explaining). The main class needs to extend the abstract class `MinosoftMod`. **Required**
 - `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
 - `dependencies` Used if you need another mod to work **Optional**

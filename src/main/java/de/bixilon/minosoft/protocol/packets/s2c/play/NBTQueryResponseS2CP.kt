@@ -12,16 +12,16 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 class NBTQueryResponseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val transactionId: Int = buffer.readVarInt()
-    val nbt: Map<String, Any> = buffer.readNBT().asCompound()
+    val nbt: Map<String, Any> = buffer.readNBT().asJsonObject()
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "NBT query response (transactionId=$transactionId nbt=$nbt)" }

@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
@@ -46,7 +47,6 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -78,6 +78,7 @@ class PlayConnection(
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
+    val util = ConnectionUtil(this)
 
     @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)
@@ -101,11 +102,7 @@ class PlayConnection(
     val collisionDetector = CollisionDetector(this)
     var retry = true
 
-    var state = PlayConnectionStates.WAITING
-        set(value) {
-            field = value
-            fireEvent(PlayConnectionStateChangeEvent(this, value))
-        }
+    var state by watched(PlayConnectionStates.WAITING)
 
     override var error: Throwable?
         get() = super.error
@@ -255,11 +252,13 @@ class PlayConnection(
         latch.count = count
     }
 
+    @Deprecated("ToDo: Version?")
     override fun getPacketId(packetType: PacketTypes.C2S): Int {
         // ToDo: Improve speed
         return version.c2sPackets[packetType.state]?.indexOf(packetType) ?: Protocol.getPacketId(packetType) ?: error("Can not find packet $packetType for $version")
     }
 
+    @Deprecated("ToDo: Version?")
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
         return version.s2cPackets[protocolState]?.getOrNull(packetId) ?: Protocol.getPacketById(protocolState, packetId) ?: let {
             // wtf, notchain sends play disconnect packet in login state...
@@ -274,6 +273,7 @@ class PlayConnection(
         } ?: error("Can not find packet $packetId in $protocolState for $version")
     }
 
+    @Deprecated("ToDo: Packet handler")
     override fun handlePacket(packet: S2CPacket) {
         if (!protocolState.connected) {
             return
@@ -292,6 +292,7 @@ class PlayConnection(
         }
     }
 
+    @Deprecated("ToDo: Tag manager")
     fun inTag(`object`: Any?, tagType: ResourceLocation, tag: ResourceLocation): Boolean {
 
         fun fallback(): Boolean {

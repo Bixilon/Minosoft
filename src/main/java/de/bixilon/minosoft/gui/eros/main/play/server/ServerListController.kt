@@ -41,16 +41,14 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.KickEvent
 import de.bixilon.minosoft.modding.event.events.LoginKickEvent
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.watcher.entry.ListDelegateWatcher.Companion.watchListFX
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeListFX
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -122,8 +120,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     fun connect(serverCard: ServerCard) {
         val server = serverCard.server
-        val ping = serverCard.ping ?: return
-        val pingVersion = serverCard.ping?.serverVersion ?: return
+        val ping = serverCard.ping
+        val pingVersion = serverCard.ping.serverVersion ?: return
         Eros.mainErosController.verifyAccount { account ->
             DefaultThreadPool += {
                 val connection = PlayConnection(
@@ -135,13 +133,13 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 account.connections[server] = connection
                 serverCard.connections += connection
 
-                connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { event ->
-                    if (event.state.disconnected) {
+                connection::state.observeFX(this) {
+                    if (it.disconnected) {
                         account.connections -= server
                         serverCard.connections -= connection
                     }
                     JavaFXUtil.runLater { updateServer(server) }
-                })
+                }
 
                 connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
                     KickDialog(
@@ -161,7 +159,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 })
                 val latch = CountUpAndDownLatch(0)
                 val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
-                connection.registerEvent(JavaFXEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state.disconnected) assetsDialog.close() })
+                connection::state.observeFX(this) { if (it.disconnected) assetsDialog.close() }
                 ConnectingDialog(connection).show()
                 connection.connect(latch)
             }
@@ -173,14 +171,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     fun initWatch() {
-        serverType!!::servers.watchListFX(this) {
-            while (it.next()) {
-                for (removed in it.removed) {
-                    serverListViewFX.items -= ServerCard.CARDS.remove(removed)
-                }
-                for (added in it.addedSubList) {
-                    updateServer(added)
-                }
+        serverType!!::servers.observeListFX(this) {
+            for (remove in it.removes) {
+                serverListViewFX.items -= ServerCard.CARDS.remove(remove)
+            }
+            for (add in it.adds) {
+                updateServer(add)
             }
         }
     }
@@ -210,16 +206,15 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             return
         }
         val card = ServerCard.CARDS[server] ?: ServerCard(server).apply {
-            serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
+            ping::state.observeFX(this) { updateServer(server) } // ToDo: Don't register twice
         }
         val wasSelected = serverListViewFX.selectionModel.selectedItem === card
         // Platform.runLater {serverListViewFX.items.remove(card)}
 
-        card.ping?.let {
-            if (it.hide) {
-                return
-            }
+        if (card.ping.hide) {
+            return
         }
+
 
         if (!serverListViewFX.items.contains(card)) {
             serverListViewFX.items.add(card)
@@ -294,10 +289,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                 // disconnect all ping connections, re ping
                                 // ToDo: server.connections.clear()
 
-                                serverCard.unregister()
-                                serverCard.ping?.disconnect()
-                                serverCard.ping = null
-                                serverCard.ping()
+                                val ping = serverCard.ping
+                                ping.disconnect()
+                                ping.address = server.address
+                                ping.ping()
                             }
                             JavaFXUtil.runLater { refreshList() }
                         }).show()
@@ -308,10 +303,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             it.add(Button("Refresh").apply {
                 setOnAction {
-                    serverCard.ping().ping()
+                    serverCard.ping.disconnect()
+                    serverCard.ping.ping()
                 }
-                isDisable = serverCard.ping != null && serverCard.ping?.state != StatusConnectionStates.PING_DONE && serverCard.ping?.state != StatusConnectionStates.ERROR
+                isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR
                 ctext = TranslatableComponents.GENERAL_REFRESH
+                serverCard.ping::state.observeFX(this) { isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR }
             }, 3, 0)
             it.add(Button("Connect").apply {
                 setOnAction {
@@ -322,6 +319,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 isDisable = selected == null || !serverCard.canConnect(selected)
                 // ToDo: Also disable, if currently connecting
                 ctext = CONNECT
+                serverCard.ping::state.observeFX(this) { selected == null || !serverCard.canConnect(selected) }
             }, 4, 0)
 
 
@@ -356,7 +354,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         }
 
     fun onPingUpdate(card: ServerCard) {
-        val ping = card.ping ?: return
+        val ping = card.ping
         if (ping.hide) {
             if (serverListViewFX.selectionModel.selectedItem == card) {
                 serverListViewFX.selectionModel.select(null)
@@ -392,15 +390,15 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (ServerCard) -> Any?>> = listOf(
             "minosoft:server_info.server_name".toResourceLocation() to { it.server.name },
             "minosoft:server_info.server_address".toResourceLocation() to { it.server.address },
-            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping?.realAddress },
+            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.realAddress },
             "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
             "minosoft:general.empty".toResourceLocation() to { " " },
 
-            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping?.serverVersion ?: "unknown" },
-            "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
-            "minosoft:server_info.players_online".toResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
-            "minosoft:server_info.ping".toResourceLocation() to { it.ping?.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
+            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "unknown" },
+            "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.lastServerStatus?.serverBrand },
+            "minosoft:server_info.players_online".toResourceLocation() to { it.ping.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
+            "minosoft:server_info.ping".toResourceLocation() to { it.ping.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
 
 
             "minosoft:general.empty".toResourceLocation() to { " " },

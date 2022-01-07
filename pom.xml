@@ -244,7 +244,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-        <javafx.version>18-ea+8</javafx.version>
+        <javafx.version>18-ea+9</javafx.version>
         <kotlin.version>1.6.10</kotlin.version>
         <lwjgl.version>3.3.0</lwjgl.version>
     </properties>
@@ -392,7 +392,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.8.6</version>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -407,7 +407,7 @@
         <dependency>
             <groupId>de.bixilon.bixilon</groupId>
             <artifactId>mbf-kotlin</artifactId>
-            <version>0.2.1</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -447,7 +447,7 @@
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.0-5</version>
+            <version>1.5.1-1</version>
         </dependency>
         <dependency>
             <groupId>com.github.afester.javafx</groupId>
@@ -457,7 +457,7 @@
         <dependency>
             <groupId>de.bixilon</groupId>
             <artifactId>kutil</artifactId>
-            <version>1.1</version>
+            <version>1.5.1</version>
         </dependency>
     </dependencies>
 </project>

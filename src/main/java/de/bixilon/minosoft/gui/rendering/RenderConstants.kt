@@ -32,19 +32,11 @@ object RenderConstants {
 
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
-    const val TEXT_LINE_PADDING = 2
-    val WORD_SEPARATORS = arrayOf(' ', '.', ',', '!', '-', '?')
 
     const val FRUSTUM_CULLING_ENABLED = true
     const val SHOW_FPS_IN_WINDOW_TITLE = true
 
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
-
-    const val DISABLE_LIGHTING = false
-
-    const val RENDER_BLOCKS = true
-    const val RENDER_FLUIDS = true
-    const val RENDER_HUD = true
 
 
     val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
@@ -64,4 +56,6 @@ object RenderConstants {
     const val UV_ADD = 0.001f
 
     const val DISABLE_GUI_CACHE = false
+
+    const val OPENGL_DEBUG_MODE = false
 }

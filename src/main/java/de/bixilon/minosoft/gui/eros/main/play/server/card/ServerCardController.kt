@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.IntUtil.thousands
+import de.bixilon.kutil.watcher.WatcherReference
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -29,18 +30,18 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
-import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
-class ServerCardController : AbstractCardController<ServerCard>() {
+class ServerCardController : AbstractCardController<ServerCard>(), WatcherReference<ServerCardController> {
     @FXML private lateinit var faviconFX: PixelImageView
     @FXML private lateinit var serverNameFX: TextFlow
     @FXML private lateinit var motdFX: TextFlow
@@ -94,12 +95,13 @@ class ServerCardController : AbstractCardController<ServerCard>() {
             serverList?.onPingUpdate(item)
         }
 
-        item.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent> {
-            if (this.item != item || it.connection.error != null || it.connection.lastServerStatus != null) {
-                // error or motd is already displayed
-                return@of
+        val ping = item.ping
+        ping::state.observeFX(this) { // ToDo: Don't register twice
+            if (ping.error != null || ping.lastServerStatus != null) {
+                return@observeFX
             }
-            motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it.state))
+
+            motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it))
             serverList?.onPingUpdate(item)
         }
 
@@ -119,6 +121,10 @@ class ServerCardController : AbstractCardController<ServerCard>() {
             pingFX.text = "${it.latency} ms"
             serverList?.onPingUpdate(item)
         }
+    }
+
+    override fun isValid(value: ServerCardController): Boolean {
+        return value.item == item
     }
 
     companion object : CardFactory<ServerCardController> {

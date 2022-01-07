@@ -83,12 +83,12 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         layout.margin = Vec4i(2)
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
-        renderWindow[WorldRenderer]?.apply {
+        renderWindow.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(hudRenderer, 1) { "C v=$visibleSize, m=$loadedMeshesSize, cQ=$culledQueuedSize, q=$queueSize, pT=$preparingTasksSize/$maxPreparingTasks, l=$meshesToLoadSize/$maxMeshesToLoad, w=${connection.world.chunks.size}" }
         }
         layout += AutoTextElement(hudRenderer, 1) { "E t=${connection.world.entities.size}" }
 
-        renderWindow[ParticleRenderer]?.apply {
+        renderWindow.renderer[ParticleRenderer]?.apply {
             layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
         }
 
@@ -98,7 +98,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             BaseComponent().apply {
                 this += "S "
                 if (connection.profiles.audio.skipLoading || !audioProfile.enabled) {
-                    this += "$§cdisabled"
+                    this += "§cdisabled"
                 } else {
                     val audioPlayer = renderWindow.rendering.audioPlayer
 
@@ -168,6 +168,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
                 text = BaseComponent("Time ", abs(it.time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", it.time >= 0, ", day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY)
             })
         }
+
+        layout += AutoTextElement(hudRenderer, 1) { "Fun effect: " + (renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation ?: "None") }
 
         return layout
     }

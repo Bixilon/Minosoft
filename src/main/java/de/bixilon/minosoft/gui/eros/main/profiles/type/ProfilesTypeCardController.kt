@@ -13,16 +13,22 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles.type
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
+import de.bixilon.kutil.watcher.map.MapChange
+import de.bixilon.kutil.watcher.map.bi.BiMapDataWatcher.Companion.observeBiMap
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.delegate.watcher.SimpleDelegateWatcher.Companion.watchFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
+import kotlin.reflect.KProperty0
 
 class ProfilesTypeCardController : AbstractCardController<ProfileManager<*>>() {
     @FXML private lateinit var iconFX: FontIcon
@@ -44,7 +50,7 @@ class ProfilesTypeCardController : AbstractCardController<ProfileManager<*>>() {
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item.namespace)
 
         recalculate(item)
-        item::profiles.watchFX(this) { recalculate(item) } // ToDo: Not a watchable map yet
+        item::profiles.observeBiMapFX(this) { recalculate(item) }
     }
 
     private fun recalculate(item: ProfileManager<*>) {
@@ -60,5 +66,10 @@ class ProfilesTypeCardController : AbstractCardController<ProfileManager<*>>() {
 
     companion object : CardFactory<ProfilesTypeCardController> {
         override val LAYOUT = "minosoft:eros/main/profiles/profiles_type_card.fxml".toResourceLocation()
+
+
+        private fun <K> KProperty0<AbstractMutableBiMap<K, *>>.observeBiMapFX(owner: Any, observer: (MapChange<K, Profile>) -> Unit) {
+            this.unsafeCast<KProperty0<AbstractMutableBiMap<K, Profile>>>().observeBiMap(owner) { JavaFXUtil.runLater { observer(it) } }
+        }
     }
 }

@@ -22,7 +22,7 @@ in vec4 finTintColor;
 #include "minosoft:texture"
 
 void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
+    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
 
     //texelColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 

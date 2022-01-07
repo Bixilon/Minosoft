@@ -1,3 +1,16 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kutil.primitive.BooleanUtil.decide
@@ -12,12 +25,16 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3i
 
 class ItemElement(
     hudRenderer: HUDRenderer,
@@ -48,14 +65,18 @@ class ItemElement(
         val countSize = countText.size
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer, options)
 
+        var element: Element? = null
+
         var color = ChatColors.WHITE
         if (item.item is BlockItem) {
-            item.item.block?.defaultState?.material?.color?.let { color = it }
+            val defaultState = item.item.block.defaultState
+            defaultState.material.color?.let { color = it }
+            defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
+                element = ImageElement(hudRenderer, it)
+            }
         }
 
-        val image = ColorElement(hudRenderer, _size, color)
-
-        image.render(offset, z + 1, consumer, options)
+        (element ?: ColorElement(hudRenderer, _size, color)).render(offset, z + 1, consumer, options)
 
         // ToDo: Render model
         return TextElement.LAYERS + 1

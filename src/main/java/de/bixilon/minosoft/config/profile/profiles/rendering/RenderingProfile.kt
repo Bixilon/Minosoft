@@ -1,3 +1,16 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
 package de.bixilon.minosoft.config.profile.profiles.rendering
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -13,6 +26,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.experimental.Experi
 import de.bixilon.minosoft.config.profile.profiles.rendering.fog.FogC
 import de.bixilon.minosoft.config.profile.profiles.rendering.light.LightC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
+import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.OverlayC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
 
 /**
@@ -39,6 +53,7 @@ class RenderingProfile(
     val light = LightC()
     val movement = MovementC()
     val performance = PerformanceC()
+    val overlay = OverlayC()
 
 
     override fun toString(): String {

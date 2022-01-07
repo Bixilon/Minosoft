@@ -14,15 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.world.outline
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
-import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
@@ -51,7 +52,7 @@ class BlockOutlineRenderer(
      */
     private var reload = false
 
-    override fun init() {
+    override fun init(latch: CountUpAndDownLatch) {
         val profile = connection.profiles.block
         this.profile::enabled.profileWatch(this, profile = profile) { reload = true }
         this.profile::showCollisionBoxes.profileWatch(this, profile = profile) { reload = true }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.TeleportConfirmC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
@@ -87,7 +86,7 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
         connection.sendPacket(PositionAndRotationC2SP(position, rotation, isOnGround))
 
-        if (connection.state != PlayConnectionStates.PLAYING && connection.protocolState != ProtocolStates.DISCONNECTED) {
+        if (connection.state == PlayConnectionStates.SPAWNING) {
             connection.state = PlayConnectionStates.PLAYING
         }
     }

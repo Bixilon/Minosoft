@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
-import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 
 abstract class CustomHUDElement(final override val hudRenderer: HUDRenderer) : HUDElement, Drawable {
     override val renderWindow: RenderWindow = hudRenderer.renderWindow
