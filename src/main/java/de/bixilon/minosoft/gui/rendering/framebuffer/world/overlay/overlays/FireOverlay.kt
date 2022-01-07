@@ -35,7 +35,18 @@ class FireOverlay(
     private val shader: Shader = renderWindow.shaderManager.genericTexture2dShader
     private var texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
     override val render: Boolean
-        get() = config.enabled && player.isOnFire && !((player.gamemode == Gamemodes.CREATIVE && config.creative) || (player.fluidHeights[DefaultFluids.LAVA] != null && config.lava))
+        get() {
+            if (!config.enabled) {
+                return false
+            }
+            if (player.gamemode == Gamemodes.CREATIVE && !config.creative) {
+                return false
+            }
+            if (player.fluidHeights[DefaultFluids.LAVA] != null && !config.lava) {
+                return false
+            }
+            return player.isOnFire
+        }
     private lateinit var mesh: SimpleTextureMesh
     private val tintColor = RGBColor(1.0f, 1.0f, 1.0f, 0.9f)
 
@@ -43,28 +54,30 @@ class FireOverlay(
     override fun postInit() {
         mesh = SimpleTextureMesh(renderWindow)
 
-        // left
+        // ToDo: Minecraft does this completely different...
         mesh.addQuad(arrayOf(
-            Vec3(-1.0f, -1.0f, +0.0f),
-            Vec3(-1.0f, +1.0f, +0.0f),
-            Vec3(+0.0f, +1.0f, +1.0f),
-            Vec3(+0.0f, -1.0f, +1.0f),
+            Vec3(-2.0f, -2.4f, +0.0f),
+            Vec3(-2.0f, +0.4f, +0.0f),
+            Vec3(+0.0f, +0.4f, +0.0f),
+            Vec3(+0.0f, -2.4f, +0.0f),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
 
-        // right
         mesh.addQuad(arrayOf(
-            Vec3(+0.0f, -1.0f, +1.0f),
-            Vec3(+0.0f, +1.0f, +1.0f),
-            Vec3(+1.0f, +1.0f, +0.0f),
-            Vec3(+1.0f, -1.0f, +0.0f),
+            Vec3(-0.0f, -2.4f, +0.0f),
+            Vec3(-0.0f, +0.4f, +0.0f),
+            Vec3(+2.0f, +0.4f, +0.0f),
+            Vec3(+2.0f, -2.4f, +0.0f),
         )) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
+
 
         mesh.load()
     }
 
 
     override fun draw() {
-        renderWindow.renderSystem.reset(blending = true, depthMask = false)
+        mesh.unload()
+        postInit()
+        renderWindow.renderSystem.reset(blending = true, depthTest = false)
         shader.use()
         mesh.draw()
     }
