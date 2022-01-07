@@ -29,7 +29,7 @@ class LoginSuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val name: String = buffer.readString()
 
     override fun handle(connection: PlayConnection) {
-        connection.protocolState = ProtocolStates.PLAY
+        connection.network.state = ProtocolStates.PLAY
 
         val playerEntity = connection.player
         playerEntity.tabListItem.name = name

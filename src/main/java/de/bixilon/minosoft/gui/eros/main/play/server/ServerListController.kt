@@ -125,7 +125,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         Eros.mainErosController.verifyAccount { account ->
             DefaultThreadPool += {
                 val connection = PlayConnection(
-                    address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
+                    address = ping.tryAddress ?: DNSUtil.getServerAddress(server.address),
                     account = account,
                     version = serverCard.server.forcedVersion ?: pingVersion,
                     profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
@@ -390,7 +390,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (ServerCard) -> Any?>> = listOf(
             "minosoft:server_info.server_name".toResourceLocation() to { it.server.name },
             "minosoft:server_info.server_address".toResourceLocation() to { it.server.address },
-            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.realAddress },
+            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.tryAddress },
             "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
             "minosoft:general.empty".toResourceLocation() to { " " },

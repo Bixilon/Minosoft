@@ -22,19 +22,16 @@ import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.network.Network
+import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 
 abstract class Connection : AbstractEventMaster {
-    val network = Network.getNetworkInstance(this)
+    val network = NettyClient(this)
     private val eventMaster = EventMaster(GlobalEventMaster)
     val connectionId = lastConnectionId++
     var wasConnected = false
-    abstract var protocolState: ProtocolStates
 
     open var error: Throwable? = null
         set(value) {
@@ -42,16 +39,12 @@ abstract class Connection : AbstractEventMaster {
             value?.let { fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
         }
 
-    abstract fun getPacketId(packetType: C2S): Int
-
-    abstract fun getPacketById(packetId: Int): S2C?
-
     open fun sendPacket(packet: C2SPacket) {
         val event = PacketSendEvent(this, packet)
         if (fireEvent(event)) {
             return
         }
-        network.sendPacket(packet)
+        network.send(packet)
     }
 
     /**

@@ -69,7 +69,7 @@ class ClientSettingsManager(
     }
 
     fun sendClientSettings() {
-        if (connection.protocolState != ProtocolStates.PLAY) {
+        if (connection.network.state != ProtocolStates.PLAY) {
             return
         }
         connection.sendPacket(ClientSettingsC2SP(

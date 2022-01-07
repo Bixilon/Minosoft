@@ -31,7 +31,7 @@ class HandshakeC2SP(
         buffer.writeVarInt(protocolId)
         buffer.writeString(address.hostname)
         buffer.writeShort(address.port)
-        buffer.writeVarInt(nextState.protocolId)
+        buffer.writeVarInt(nextState.ordinal)
     }
 
     override fun log(reducedLog: Boolean) {

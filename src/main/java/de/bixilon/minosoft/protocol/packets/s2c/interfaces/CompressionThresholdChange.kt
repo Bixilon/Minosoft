@@ -19,6 +19,6 @@ abstract class CompressionThresholdChange : PlayS2CPacket() {
     abstract val threshold: Int
 
     override fun handle(connection: PlayConnection) {
-        connection.network.setCompressionThreshold(threshold)
+        connection.network.compressionThreshold = threshold
     }
 }
