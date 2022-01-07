@@ -39,6 +39,7 @@ class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
         connection.lastPongEvent = pongEvent
         connection.fireEvent(pongEvent)
         connection.state = StatusConnectionStates.PING_DONE
+        connection.disconnect()
     }
 
     override fun log(reducedLog: Boolean) {

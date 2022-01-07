@@ -70,7 +70,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class PlayConnection(
     val address: ServerAddress,
     val account: Account,
-    val version: Version,
+    override val version: Version,
     val profiles: ConnectionProfiles = ConnectionProfiles(),
 ) : Connection() {
     val settingsManager = ClientSettingsManager(this)

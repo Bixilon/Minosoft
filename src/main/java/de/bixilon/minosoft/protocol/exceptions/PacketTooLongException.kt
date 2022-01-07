@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,12 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s
+package de.bixilon.minosoft.protocol.exceptions
 
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-
-// packet to send to server
-interface PlayC2SPacket : C2SPacket {
-
-    fun write(buffer: PlayOutByteBuffer) = Unit
-}
+class PacketTooLongException(
+    val length: Int,
+    private val maxLength: Int,
+) : Exception("Packet too long $length > $maxLength")

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.registries.RegistriesLoader
 import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 
 class Version(
@@ -55,4 +56,5 @@ class Version(
 
     val flattened: Boolean = versionId >= ProtocolDefinition.FLATTING_VERSION_ID
     val hasOffhand: Boolean = versionId >= V_15W31A
+    val maxPacketLength = (sortingId < ProtocolVersions.V_1_17_1_RC2).decide(1 shl 21, 1 shl 23)
 }

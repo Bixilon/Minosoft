@@ -153,7 +153,7 @@ class PlayInByteBuffer : InByteBuffer {
             else -> 0
         }
 
-        check(length <= ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) { "Trying to allocate too much memory" }
+        check(length <= this.size) { "Trying to allocate too much memory" }
 
         val ret: MutableList<Biome> = mutableListOf()
         for (i in 0 until length) {

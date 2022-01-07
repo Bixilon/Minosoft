@@ -13,28 +13,89 @@
 
 package de.bixilon.minosoft.protocol.network.network.client
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.PacketDeflater
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.PacketInflater
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.ServerAddress
+import io.netty.bootstrap.Bootstrap
+import io.netty.channel.Channel
+import io.netty.channel.ChannelFuture
+import io.netty.channel.ChannelOption
+import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.socket.nio.NioSocketChannel
+
 
 class NettyClient(
-    private val connection: Connection,
+    val connection: Connection,
 ) {
-    val connected by watched(false)
+    var connected by watched(false)
+        private set
     var state by watched(ProtocolStates.HANDSHAKING)
     var compressionThreshold = -1
+        set(value) {
+            field = value
+            val channel = channel ?: return
+            if (value < 0) {
+                // disable
+                channel.pipeline().remove(PacketInflater.NAME)
+                channel.pipeline().remove(PacketDeflater.NAME)
+            } else {
+                // enable or update
+                val delater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
+                if (delater == null) {
+                    channel.pipeline().addAfter("length_decoder", PacketDeflater.NAME, PacketDeflater())
+                }
+                val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
+                if (inflater != null) {
+                    inflater.threshold = value
+                } else {
+                    channel.pipeline().addAfter("length_encoder", PacketInflater.NAME, PacketInflater(value))
+                }
+            }
+        }
+    private var channel: Channel? = null
 
     fun connect(address: ServerAddress) {
+        val workerGroup = NioEventLoopGroup(DefaultThreadPool.threadCount - 1, DefaultThreadPool)
+        val bootstrap = Bootstrap()
+            .group(workerGroup)
+            .channel(NioSocketChannel::class.java)
+            .handler(NetworkPipeline(this))
+
+        val future: ChannelFuture = bootstrap.connect(address.hostname, address.port).sync()
+        future.addListener {
+            if (!it.isSuccess) {
+                disconnect()
+                return@addListener
+            }
+            val channel = future.channel()
+            this.channel = channel
+            channel.config().setOption(ChannelOption.TCP_NODELAY, true)
+            connected = true
+            println("Connected!")
+        }
     }
 
     fun disconnect() {
-
+        channel?.close()
+        // ToDo: workerGroup.shutdownGracefully()
+        connected = false
     }
 
     fun pauseSending(pause: Boolean) {}
     fun pauseReceiving(pause: Boolean) {}
 
-    fun send(packet: C2SPacket) {}
+    fun send(packet: C2SPacket) {
+        val channel = this.channel
+        if (channel?.isActive != true) {
+            throw IllegalStateException("Channel not active!")
+        }
+
+        channel.writeAndFlush(packet)
+    }
 }

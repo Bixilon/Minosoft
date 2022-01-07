@@ -79,6 +79,9 @@ class StatusConnection(
                 network.state = ProtocolStates.STATUS
                 return@observe
             }
+            if (lastServerStatus != null) {
+                return@observe
+            }
 
             val nextIndex = addresses!!.indexOf(tryAddress) + 1
             if (addresses!!.size > nextIndex) {
@@ -118,7 +121,7 @@ class StatusConnection(
     }
 
     fun ping() {
-        if ((state != StatusConnectionStates.ERROR && state == StatusConnectionStates.PING_DONE) || network.connected) {
+        if (state == StatusConnectionStates.RESOLVING || state == StatusConnectionStates.ESTABLISHING || network.connected) {
             error("Already connecting!")
         }
 
@@ -129,7 +132,7 @@ class StatusConnection(
         lastPongEvent = null
         serverVersion = null
         error = null
-        state = StatusConnectionStates.WAITING
+        state = StatusConnectionStates.RESOLVING
 
         DefaultThreadPool += execute@{
             try {

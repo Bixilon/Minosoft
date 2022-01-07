@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
@@ -32,6 +33,7 @@ abstract class Connection : AbstractEventMaster {
     private val eventMaster = EventMaster(GlobalEventMaster)
     val connectionId = lastConnectionId++
     var wasConnected = false
+    open val version: Version? = null
 
     open var error: Throwable? = null
         set(value) {

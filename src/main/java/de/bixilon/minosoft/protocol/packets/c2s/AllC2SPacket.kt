@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.c2s
 
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 
-// packet to send to server
 interface AllC2SPacket : C2SPacket {
 
     fun write(buffer: OutByteBuffer) = Unit

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.exceptions;
+package de.bixilon.minosoft.protocol.network.network.client.pipeline.prefix
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException
+import de.bixilon.minosoft.util.KUtil.withLengthPrefix
+import io.netty.buffer.ByteBuf
+import io.netty.channel.ChannelHandlerContext
+import io.netty.handler.codec.MessageToByteEncoder
 
-public class PacketTooLongException extends PacketParseException {
 
-    public PacketTooLongException(int length) {
-        super(String.format("Server sent us a too big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
+class PacketLengthEncoder(
+    private val maxLength: Int,
+) : MessageToByteEncoder<ByteArray>() {
+
+    override fun encode(context: ChannelHandlerContext, data: ByteArray, out: ByteBuf) {
+        if (data.size > maxLength) {
+            throw PacketTooLongException(data.size, maxLength)
+        }
+        out.writeBytes(data.withLengthPrefix())
     }
 }
