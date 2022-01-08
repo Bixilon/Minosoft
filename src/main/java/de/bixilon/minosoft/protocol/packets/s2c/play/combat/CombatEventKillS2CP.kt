@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class CombatEventKillS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class CombatEventKillS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val killerEntityId = buffer.readVarInt()
     val deadEntityId = buffer.readInt()
     val message = buffer.readChatComponent()

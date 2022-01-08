@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3d
 
-class ExperienceOrbSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ExperienceOrbSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val entity: ExperienceOrb = ExperienceOrb(
         connection = buffer.connection,

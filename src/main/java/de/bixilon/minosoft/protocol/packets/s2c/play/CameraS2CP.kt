@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class CameraS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class CameraS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {

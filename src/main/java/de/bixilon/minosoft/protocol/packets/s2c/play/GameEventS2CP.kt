@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val event: GameEvent = buffer.connection.registries.gameEventRegistry[buffer.readUnsignedByte()]
     val data: Float = buffer.readFloat()
 

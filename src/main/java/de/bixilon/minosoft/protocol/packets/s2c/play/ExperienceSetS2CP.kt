@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ExperienceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ExperienceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val bar = buffer.readFloat()
     val level: Int
     val total: Int

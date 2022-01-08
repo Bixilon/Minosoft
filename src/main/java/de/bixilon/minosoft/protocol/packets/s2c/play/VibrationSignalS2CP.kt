@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class VibrationSignalS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class VibrationSignalS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val sourcePosition: Vec3i = buffer.readBlockPosition()
     val targetType: ResourceLocation = buffer.readResourceLocation()
 

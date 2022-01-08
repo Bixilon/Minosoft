@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class PacketLoginPluginRequest(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class PacketLoginPluginRequest(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val messageId = buffer.readVarInt()
     val channel = buffer.readString()
     val data: PlayInByteBuffer = PlayInByteBuffer(buffer.readRest(), buffer.connection)

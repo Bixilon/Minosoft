@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var category: SoundCategories? = null
         private set
     val position: Vec3i

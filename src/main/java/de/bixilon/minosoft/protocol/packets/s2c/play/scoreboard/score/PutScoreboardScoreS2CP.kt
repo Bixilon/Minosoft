@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket {
     val value: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) { // ToDo
         buffer.readInt()
     } else {

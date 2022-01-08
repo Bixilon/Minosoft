@@ -14,4 +14,4 @@ package de.bixilon.minosoft.protocol.packets.s2c
 
 import de.bixilon.minosoft.protocol.packets.Packet
 
-abstract class S2CPacket : Packet
+interface S2CPacket : Packet

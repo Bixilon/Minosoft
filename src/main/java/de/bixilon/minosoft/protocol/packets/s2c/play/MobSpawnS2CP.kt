@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3d
 import java.util.*
 
-class MobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class MobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val entityUUID: UUID? = if (buffer.versionId >= ProtocolVersions.V_15W31A) {
         buffer.readUUID()

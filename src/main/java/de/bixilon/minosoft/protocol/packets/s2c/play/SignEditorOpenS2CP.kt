@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class SignEditorOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class SignEditorOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var blockPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readIntBlockPosition()
     } else {

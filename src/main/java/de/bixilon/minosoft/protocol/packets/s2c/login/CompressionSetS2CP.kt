@@ -13,12 +13,14 @@
 package de.bixilon.minosoft.protocol.packets.s2c.login
 
 import de.bixilon.minosoft.protocol.packets.s2c.interfaces.CompressionThresholdChange
+import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class CompressionSetS2CP(buffer: PlayInByteBuffer) : CompressionThresholdChange() {
+    override val type = PacketTypes.S2C.PLAY_COMPRESSION_SET
     override val threshold: Int = buffer.readVarInt()
 
 

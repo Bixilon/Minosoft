@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class WarningTimeSetWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class WarningTimeSetWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val warningTime = buffer.readVarInt()
 
     override fun log(reducedLog: Boolean) {

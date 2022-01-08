@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import java.util.*
 
-class ChunkLightDataS2CP(buffer: PlayInByteBuffer, chunkPositionGetter: () -> Vec2i = { Vec2i(buffer.readVarInt(), buffer.readVarInt()) }) : PlayS2CPacket() {
+class ChunkLightDataS2CP(buffer: PlayInByteBuffer, chunkPositionGetter: () -> Vec2i = { Vec2i(buffer.readVarInt(), buffer.readVarInt()) }) : PlayS2CPacket {
     val chunkPosition: Vec2i = chunkPositionGetter()
     var trustEdges: Boolean = false
         private set

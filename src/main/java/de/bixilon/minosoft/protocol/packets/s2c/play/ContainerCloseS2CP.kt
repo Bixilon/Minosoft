@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ContainerCloseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ContainerCloseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId: Int = buffer.readUnsignedByte()
 
     override fun handle(connection: PlayConnection) {

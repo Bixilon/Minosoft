@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TeamMemberRemoveS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class TeamMemberRemoveS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket {
     val members: Set<String> = buffer.readStringArray(
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.readUnsignedShort()

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityHeadRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityHeadRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val headYaw: Int = buffer.readAngle()
 

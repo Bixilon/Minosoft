@@ -30,7 +30,7 @@ import java.util.*
 class BossbarAddS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
-) : PlayS2CPacket() {
+) : PlayS2CPacket {
     val title = buffer.readChatComponent()
     val value = buffer.readFloat()
     val color = BossbarColors[buffer.readVarInt()]

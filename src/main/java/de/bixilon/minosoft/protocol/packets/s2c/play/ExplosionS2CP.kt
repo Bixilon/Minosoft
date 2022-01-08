@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = buffer.readVec3f()
     val power = buffer.readFloat()
     val explodedBlocks: List<Vec3i> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3i(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList() // ToDo: Find out version

@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3d
 import java.util.*
 
-class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     var entityUUID: UUID? = null
         private set

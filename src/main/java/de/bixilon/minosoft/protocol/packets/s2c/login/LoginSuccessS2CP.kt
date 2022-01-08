@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-class LoginSuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class LoginSuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val uuid: UUID = (buffer.versionId < ProtocolVersions.V_20W12A).decide({ buffer.readUUIDString() }, { buffer.readUUID() })
     val name: String = buffer.readString()
 

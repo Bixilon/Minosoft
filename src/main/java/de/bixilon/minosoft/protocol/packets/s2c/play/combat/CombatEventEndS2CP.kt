@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class CombatEventEndS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class CombatEventEndS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val duration = buffer.readVarInt()
     val entityId = buffer.readInt()
 

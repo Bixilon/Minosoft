@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityStatusEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityStatusEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     var effect: StatusEffectInstance = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         StatusEffectInstance(buffer.connection.registries.statusEffectRegistry[buffer.readUnsignedByte()], buffer.readByte() + 1, buffer.readUnsignedShort())

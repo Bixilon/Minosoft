@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class RemoveScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class RemoveScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val objective = connection.scoreboardManager.objectives[objective] ?: let {

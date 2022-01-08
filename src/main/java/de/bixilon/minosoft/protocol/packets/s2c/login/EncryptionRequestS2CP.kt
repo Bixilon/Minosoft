@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.math.BigInteger
 import javax.crypto.Cipher
 
-class EncryptionRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EncryptionRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val serverId: String = buffer.readString()
     val publicKey: ByteArray = buffer.readByteArray()
     val verifyToken: ByteArray = buffer.readByteArray()

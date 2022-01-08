@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HeartbeatS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class HeartbeatS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var id: Long = when {
         buffer.versionId < ProtocolVersions.V_14W31A -> {
             buffer.readInt().toLong()

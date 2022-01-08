@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class UpdateScoreboardObjectiveS2CP(val objective: String, private var _displayName: ChatComponent?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class UpdateScoreboardObjectiveS2CP(val objective: String, private var _displayName: ChatComponent?, buffer: PlayInByteBuffer) : PlayS2CPacket {
     val displayName: ChatComponent
         get() = _displayName!!
     var unit: CreateScoreboardObjectiveS2CP.ObjectiveUnits = CreateScoreboardObjectiveS2CP.ObjectiveUnits.INTEGER

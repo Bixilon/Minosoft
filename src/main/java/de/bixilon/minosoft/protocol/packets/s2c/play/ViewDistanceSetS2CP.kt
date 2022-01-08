@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ViewDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ViewDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val viewDistance: Int = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {

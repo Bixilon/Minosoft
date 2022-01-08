@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3d
 
-class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position: Vec3d
     val rotation: EntityRotation
     var isOnGround = false

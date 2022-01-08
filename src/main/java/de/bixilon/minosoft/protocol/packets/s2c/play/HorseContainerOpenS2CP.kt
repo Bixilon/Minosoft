@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HorseContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class HorseContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
     val slotCount: Int = buffer.readVarInt()
     val entityId: Int = buffer.readInt()

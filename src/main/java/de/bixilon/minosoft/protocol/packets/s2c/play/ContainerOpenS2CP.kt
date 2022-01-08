@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = if (buffer.versionId <= V_1_14) { // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
         buffer.readUnsignedByte()
     } else {

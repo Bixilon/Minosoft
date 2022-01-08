@@ -15,7 +15,11 @@ package de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.NettyClient
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketNotAvailableException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.WrongConnectionException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.WrongProtocolStateException
 import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
@@ -34,6 +38,7 @@ class PacketEncoder(
 
 
     override fun encode(context: ChannelHandlerContext, packet: C2SPacket, out: MutableList<Any>) {
+        val state = client.state
         val packetData: OutByteBuffer
         when (packet) {
             is AllC2SPacket -> {
@@ -41,14 +46,16 @@ class PacketEncoder(
                 packet.write(packetData)
             }
             is PlayC2SPacket -> {
-                packetData = PlayOutByteBuffer(client.connection.nullCast() ?: throw IllegalStateException("Trying to send a play packet in non play connection"))
+                packetData = PlayOutByteBuffer(client.connection.nullCast() ?: throw WrongConnectionException(PlayConnection::class.java, client.connection::class.java))
                 packet.write(packetData)
             }
             else -> throw IllegalArgumentException("Unknown packet type $packet")
         }
-        val state = client.state
         val packetType = PacketTypes.C2S.getPacketType(packet::class.java)
-        val packetId = version?.c2sPackets?.get(state)?.index(packetType) ?: Protocol.getPacketId(packetType) ?: throw IllegalArgumentException("Can not get packet id for $packetType")
+        if (packetType.state != state) {
+            throw WrongProtocolStateException(packetType.state, state)
+        }
+        val packetId = version?.c2sPackets?.get(state)?.index(packetType) ?: Protocol.getPacketId(packetType) ?: throw PacketNotAvailableException(packetType, state, version)
 
         val data = OutByteBuffer()
         data.writeVarInt(packetId)

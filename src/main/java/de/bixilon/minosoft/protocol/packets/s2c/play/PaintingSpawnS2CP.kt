@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 import java.util.*
 
-class PaintingSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class PaintingSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val entityId: Int = buffer.readVarInt()
     private var entityUUID: UUID? = if (buffer.versionId >= ProtocolVersions.V_16W02A) {
         buffer.readUUID()

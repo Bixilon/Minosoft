@@ -28,7 +28,7 @@ import java.util.*
 class BossbarStyleSetS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
-) : PlayS2CPacket() {
+) : PlayS2CPacket {
     val color = BossbarColors[buffer.readVarInt()]
     val notches = BossbarNotches[buffer.readVarInt()]
 

@@ -26,7 +26,7 @@ import java.util.*
 class BossbarValueSetS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
-) : PlayS2CPacket() {
+) : PlayS2CPacket {
     val value = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {

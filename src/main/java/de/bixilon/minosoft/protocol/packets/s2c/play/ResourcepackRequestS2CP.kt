@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ResourcepackRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ResourcepackRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val url: String = buffer.readString().apply { toURL().checkWeb() }
     val hash: String = buffer.readString()
     val forced = if (buffer.versionId >= ProtocolVersions.V_20W45A) {

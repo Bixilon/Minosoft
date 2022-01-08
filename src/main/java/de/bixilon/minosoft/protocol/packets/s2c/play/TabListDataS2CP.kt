@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 
-class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val items: MutableMap<UUID, TabListItemData> = mutableMapOf()
 
     init {

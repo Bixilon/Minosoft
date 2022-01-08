@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class BlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class BlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val blockPosition: Vec3i
     val blockState: BlockState?
 

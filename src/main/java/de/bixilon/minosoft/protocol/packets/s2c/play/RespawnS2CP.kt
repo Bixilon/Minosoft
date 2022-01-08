@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3d
 
-class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var dimension: DimensionProperties
         private set
     var difficulty: Difficulties = Difficulties.NORMAL

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class WorldTimeSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class WorldTimeSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val age = buffer.readLong()
     val time = buffer.readLong()
 

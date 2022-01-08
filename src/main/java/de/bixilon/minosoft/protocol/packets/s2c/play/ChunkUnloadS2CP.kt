@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 
-class ChunkUnloadS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ChunkUnloadS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val chunkPosition: Vec2i = buffer.readChunkPosition()
 
     override fun handle(connection: PlayConnection) {
@@ -28,6 +28,9 @@ class ChunkUnloadS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk unload (chunkPosition=$chunkPosition)" }
     }
 }

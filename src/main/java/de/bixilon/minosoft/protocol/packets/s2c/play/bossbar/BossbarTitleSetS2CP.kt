@@ -26,7 +26,7 @@ import java.util.*
 class BossbarTitleSetS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
-) : PlayS2CPacket() {
+) : PlayS2CPacket {
     val title = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {

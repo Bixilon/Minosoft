@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityCollectAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityCollectAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val itemEntityId: Int = buffer.readEntityId()
     var collectorEntityId: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readInt()

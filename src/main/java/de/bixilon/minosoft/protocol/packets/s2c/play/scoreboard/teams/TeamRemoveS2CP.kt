@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TeamRemoveS2CP(val name: String) : PlayS2CPacket() {
+class TeamRemoveS2CP(val name: String) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val team = connection.scoreboardManager.teams.remove(name) ?: return

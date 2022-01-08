@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val eventId: Int = buffer.readInt()
     var position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readByteBlockPosition()

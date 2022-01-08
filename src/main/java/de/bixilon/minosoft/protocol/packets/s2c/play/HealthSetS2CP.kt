@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val hp: Float = clamp(buffer.readFloat(), 0.0f, Float.MAX_VALUE)
     val hunger = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readUnsignedShort()

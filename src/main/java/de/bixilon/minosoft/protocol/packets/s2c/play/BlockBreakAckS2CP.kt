@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class BlockBreakAckS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class BlockBreakAckS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val blockPosition: Vec3i = buffer.readBlockPosition()
     val blockState: BlockState? = buffer.connection.registries.blockStateRegistry[buffer.readVarInt()]
     val actions: Actions = Actions[buffer.readVarInt()]

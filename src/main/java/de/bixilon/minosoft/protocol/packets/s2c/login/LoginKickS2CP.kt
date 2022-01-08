@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class LoginKickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class LoginKickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val reason: ChatComponent = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val message: ChatComponent = buffer.readChatComponent()
     var position: ChatTextPositions = ChatTextPositions.CHAT_BOX
         private set

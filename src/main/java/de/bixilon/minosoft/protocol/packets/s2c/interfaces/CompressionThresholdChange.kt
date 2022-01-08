@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.interfaces
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 
-abstract class CompressionThresholdChange : PlayS2CPacket() {
+abstract class CompressionThresholdChange : PlayS2CPacket {
     abstract val threshold: Int
 
     override fun handle(connection: PlayConnection) {

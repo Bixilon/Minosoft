@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ServerStatusResponseS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
+class ServerStatusResponseS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val status: ServerStatus = ServerStatus(buffer.readJson())
 
     override fun handle(connection: StatusConnection) {

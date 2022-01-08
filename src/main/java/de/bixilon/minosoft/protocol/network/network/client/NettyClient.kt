@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -52,8 +53,8 @@ class NettyClient(
                 channel.pipeline().remove(PacketDeflater.NAME)
             } else {
                 // enable or update
-                val delater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
-                if (delater == null) {
+                val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
+                if (deflater == null) {
                     channel.pipeline().addAfter(LengthDecoder.NAME, PacketDeflater.NAME, PacketDeflater())
                 }
                 val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
@@ -69,8 +70,8 @@ class NettyClient(
     private var channel: Channel? = null
 
     fun connect(address: ServerAddress) {
-        // val workerGroup = NioEventLoopGroup(DefaultThreadPool.threadCount - 1, DefaultThreadPool)
-        val workerGroup = NioEventLoopGroup()
+        val workerGroup = NioEventLoopGroup(DefaultThreadPool.threadCount - 1, DefaultThreadPool)
+        // val workerGroup = NioEventLoopGroup()
         val bootstrap = Bootstrap()
             .group(workerGroup)
             .channel(NioSocketChannel::class.java)

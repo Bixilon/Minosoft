@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
+class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
     val pingId: Long = buffer.readLong()
 
     override fun handle(connection: StatusConnection) {

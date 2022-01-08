@@ -18,7 +18,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val entityId: Int = buffer.readInt()
     private val eventId: Int = buffer.readUnsignedByte()
 

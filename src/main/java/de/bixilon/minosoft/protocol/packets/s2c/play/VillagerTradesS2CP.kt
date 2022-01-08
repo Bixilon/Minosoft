@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class VillagerTradesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class VillagerTradesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId: Int = buffer.readVarInt()
     val trades: List<Trade> = buffer.readArray(buffer.readUnsignedByte()) {
         val input1 = buffer.readItemStack()

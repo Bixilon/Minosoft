@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.protocol.network.network.client
 
-import de.bixilon.minosoft.protocol.network.network.client.pipeline.PacketHandler
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.ClientPacketHandler
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.ExceptionHandler
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding.PacketDecoder
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding.PacketEncoder
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.LengthDecoder
@@ -35,10 +36,12 @@ class NetworkPipeline(private val client: NettyClient) : ChannelInitializer<Sock
 
         pipeline.addLast(LengthDecoder.NAME, LengthDecoder(maxLength))
         pipeline.addLast(PacketDecoder.NAME, PacketDecoder(client))
-        pipeline.addLast(PacketHandler.NAME, PacketHandler(client.connection))
+        pipeline.addLast(ClientPacketHandler.NAME, ClientPacketHandler(client))
 
         pipeline.addLast(LengthEncoder.NAME, LengthEncoder(maxLength))
         pipeline.addLast(PacketEncoder.NAME, PacketEncoder(client))
+
+        pipeline.addLast(ExceptionHandler.NAME, ExceptionHandler(client))
     }
 
     override fun channelActive(context: ChannelHandlerContext) {

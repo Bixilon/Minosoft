@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class SignTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class SignTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readShortBlockPosition()
     } else {

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class AutocompletionsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class AutocompletionsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var matches: Array<String> = when {
         buffer.versionId < ProtocolVersions.V_14W33A -> {
             buffer.readVarInt() // ToDo:  count?

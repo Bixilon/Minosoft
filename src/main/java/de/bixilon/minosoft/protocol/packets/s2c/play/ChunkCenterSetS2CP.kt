@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 
-class ChunkCenterSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ChunkCenterSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
 
     override fun log(reducedLog: Boolean) {

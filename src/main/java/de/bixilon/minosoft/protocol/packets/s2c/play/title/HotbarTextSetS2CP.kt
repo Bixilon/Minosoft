@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HotbarTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class HotbarTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val text = buffer.readChatComponent()
 
     override fun log(reducedLog: Boolean) {

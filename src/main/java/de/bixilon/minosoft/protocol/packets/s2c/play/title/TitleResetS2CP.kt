@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TitleResetS2CP : PlayS2CPacket() {
+class TitleResetS2CP : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(TitleResetEvent(connection, this))

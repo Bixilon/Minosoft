@@ -27,7 +27,7 @@ import java.util.*
 class BossbarFlagSetS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
-) : PlayS2CPacket() {
+) : PlayS2CPacket {
     val shouldDarkenSky: Boolean
     val dragonBar: Boolean
     val fog: Boolean

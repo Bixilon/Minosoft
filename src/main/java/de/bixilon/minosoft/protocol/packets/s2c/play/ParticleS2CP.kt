@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
         buffer.connection.registries.particleTypeRegistry[buffer.readResourceLocation()]!!
     } else {

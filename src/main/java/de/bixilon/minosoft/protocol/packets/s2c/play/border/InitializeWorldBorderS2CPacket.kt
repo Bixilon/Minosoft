@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class InitializeWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class InitializeWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val x = buffer.readDouble()
     val z = buffer.readDouble()
     val oldRadius = buffer.readDouble()

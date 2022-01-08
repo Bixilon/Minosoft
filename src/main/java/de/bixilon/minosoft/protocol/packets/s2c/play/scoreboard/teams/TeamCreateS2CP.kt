@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket {
     val displayName = buffer.readChatComponent()
     lateinit var prefix: ChatComponent
         private set

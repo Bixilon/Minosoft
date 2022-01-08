@@ -42,7 +42,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
-class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int
     val isHardcore: Boolean
     val gamemode: Gamemodes

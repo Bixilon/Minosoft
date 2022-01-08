@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TitleSubtitleSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class TitleSubtitleSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val subtitle = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {

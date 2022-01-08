@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TitleTimesSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class TitleTimesSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val fadeInTime = buffer.readInt()
     val stayTime = buffer.readInt()
     val fadeOutTime = buffer.readInt()

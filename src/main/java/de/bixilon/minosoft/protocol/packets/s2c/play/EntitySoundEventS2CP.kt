@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntitySoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntitySoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val soundEvent: ResourceLocation = buffer.connection.registries.soundEventRegistry[buffer.readVarInt()]!!
     val category: SoundCategories = SoundCategories[buffer.readVarInt()]
     val entityId: Int = buffer.readVarInt()

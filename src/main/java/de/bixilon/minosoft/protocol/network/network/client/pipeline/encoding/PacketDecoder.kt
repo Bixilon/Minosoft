@@ -16,7 +16,14 @@ package de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.NettyClient
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketBufferUnderflowException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketReadException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.UnknownPacketIdException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.implementation.S2CPacketNotImplementedException
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.Protocol
 import io.netty.channel.ChannelHandlerContext
@@ -34,14 +41,36 @@ class PacketDecoder(
 
         val state = client.state
 
-        val packetType = version?.s2cPackets?.get(state)?.get(packetId) ?: Protocol.getPacketById(state, packetId) ?: throw IllegalArgumentException("Unknown packet id: $packetId")
-        val packet = if (client.connection is PlayConnection) {
-            packetType.playFactory?.invoke(PlayInByteBuffer(data, client.connection))
-        } else {
-            packetType.statusFactory?.invoke(InByteBuffer(data))
+        val packetType = version?.s2cPackets?.get(state)?.get(packetId) ?: Protocol.getPacketById(state, packetId) ?: throw UnknownPacketIdException(packetId, state, version)
+
+        val packet = try {
+            readPacket(packetType, data)
+        } catch (exception: NetworkException) {
+            packetType.errorHandler?.onError(client.connection)
+            throw exception
+        } catch (error: Throwable) {
+            packetType.errorHandler?.onError(client.connection)
+            throw PacketReadException(error)
         }
-        out += packet ?: TODO("Packet $packetType not yet implemented!")
+
+        out += packet
     }
+
+    private fun readPacket(type: PacketTypes.S2C, data: ByteArray): S2CPacket {
+        val dataBuffer: InByteBuffer
+        val packet = if (client.connection is PlayConnection) {
+            dataBuffer = PlayInByteBuffer(data, client.connection)
+            type.playFactory?.invoke(dataBuffer)
+        } else {
+            dataBuffer = InByteBuffer(data)
+            type.statusFactory?.invoke(dataBuffer)
+        }
+        if (dataBuffer.pointer < dataBuffer.size) {
+            throw PacketBufferUnderflowException(type, dataBuffer.size, dataBuffer.pointer)
+        }
+        return packet ?: throw S2CPacketNotImplementedException(type)
+    }
+
 
     companion object {
         const val NAME = "packet_decoder"

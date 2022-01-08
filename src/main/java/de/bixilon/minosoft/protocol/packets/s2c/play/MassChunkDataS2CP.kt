@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import java.util.*
 
-class MassChunkDataS2CP() : PlayS2CPacket() {
+class MassChunkDataS2CP() : PlayS2CPacket {
     val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
 
     constructor(buffer: PlayInByteBuffer) : this() {

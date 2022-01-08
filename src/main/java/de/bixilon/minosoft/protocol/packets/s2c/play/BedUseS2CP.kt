@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class BedUseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class BedUseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readInt()
     val blockPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readByteBlockPosition()

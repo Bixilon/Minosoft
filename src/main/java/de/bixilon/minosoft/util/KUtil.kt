@@ -290,4 +290,7 @@ object KUtil {
         return prefixed.toArray()
     }
 
+    fun Int.toHex(): String {
+        return Integer.toHexString(this)
+    }
 }

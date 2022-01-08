@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3d
 
-class EntityTeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityTeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
     val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
         Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())

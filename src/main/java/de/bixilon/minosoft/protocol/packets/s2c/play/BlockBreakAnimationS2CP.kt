@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class BlockBreakAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class BlockBreakAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     /**
      * Entity id of the entity who is breaking the block
      */

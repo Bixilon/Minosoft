@@ -24,7 +24,7 @@ import java.util.*
 
 class BossbarRemoveS2CP(
     val uuid: UUID,
-) : PlayS2CPacket() {
+) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbarManager.bossbars.remove(uuid) ?: return

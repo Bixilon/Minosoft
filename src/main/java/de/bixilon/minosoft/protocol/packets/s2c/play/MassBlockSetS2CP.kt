@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
-class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val blocks: MutableMap<Vec3i, BlockState?> = mutableMapOf()
     var chunkPosition: Vec2i
         private set
