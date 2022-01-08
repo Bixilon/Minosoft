@@ -15,7 +15,7 @@ package de.bixilon.minosoft.assets.minecraft
 
 import com.fasterxml.jackson.databind.JsonNode
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.string.StringUtil.format
+import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -62,10 +62,10 @@ class JarAssetsManager(
         } else {
             var clientJar = FileUtil.safeReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
             if (clientJar == null) {
-                val downloaded = FileAssetsUtil.downloadAndGetAsset(profile.source.launcherPackages.format(mapOf(
+                val downloaded = FileAssetsUtil.downloadAndGetAsset(profile.source.launcherPackages.formatPlaceholder(
                     "fullHash" to clientJarHash,
                     "filename" to "client.jar",
-                )), false, FileAssetsUtil.HashTypes.SHA1)
+                ), false, FileAssetsUtil.HashTypes.SHA1)
                 check(downloaded.first == clientJarHash) { "Minecraft client.jar verification failed!" }
                 clientJar = ByteArrayInputStream(downloaded.second).readZipArchive()
             }

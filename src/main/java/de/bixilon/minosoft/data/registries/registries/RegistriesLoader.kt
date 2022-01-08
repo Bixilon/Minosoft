@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.string.StringUtil.format
+import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
@@ -46,10 +46,9 @@ object RegistriesLoader {
             return FileUtil.readFile(file, false).readMBFMap().toJsonObject() ?: throw IllegalStateException("Could not read pixlyzer data!")
         }
 
-        val savedHash = FileAssetsUtil.downloadAndGetAsset(url.format(mapOf(
+        val savedHash = FileAssetsUtil.downloadAndGetAsset(url.formatPlaceholder(
             "hashPrefix" to hash.substring(0, 2),
             "fullHash" to hash,
-        )
         ), false, hashType = FileAssetsUtil.HashTypes.SHA1)
         if (savedHash.first != hash) {
             throw IllegalStateException("Data mismatch, expected $hash, got ${savedHash.first}")
