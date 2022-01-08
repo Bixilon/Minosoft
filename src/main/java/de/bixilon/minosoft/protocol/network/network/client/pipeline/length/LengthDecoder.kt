@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.pipeline.prefix
+package de.bixilon.minosoft.protocol.network.network.client.pipeline.length
 
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException
 import io.netty.buffer.ByteBuf
@@ -19,13 +19,23 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
 
 
-class PacketLengthDecoder(
+class LengthDecoder(
     private val maxLength: Int,
 ) : ByteToMessageDecoder() {
 
     override fun decode(context: ChannelHandlerContext?, buffer: ByteBuf, out: MutableList<Any>) {
         buffer.markReaderIndex()
-        val length = buffer.readVarInt()
+        if (buffer.readableBytes() < 2) { // 1 length byte and 1 packet id byte is the minimum
+            buffer.resetReaderIndex()
+            return
+        }
+        val length: Int
+        try {
+            length = buffer.readVarInt()
+        } catch (error: BufferTooShortException) {
+            buffer.resetReaderIndex()
+            return
+        }
 
         if (length > maxLength) {
             throw PacketTooLongException(length, maxLength)
@@ -42,20 +52,30 @@ class PacketLengthDecoder(
         out += array
     }
 
-    private fun ByteBuf.readVarInt(): Int {
-        var readCount = 0
-        var varInt = 0
-        var currentByte: Int
-        do {
-            currentByte = this.readByte().toInt()
-            val value = currentByte and 0x7F
-            varInt = varInt or (value shl 7 * readCount)
-            readCount++
-            if (readCount > 5) {
-                throw RuntimeException("VarInt is too big")
-            }
-        } while (currentByte and 0x80 != 0)
 
-        return varInt
+    companion object {
+        const val NAME = "length_decoder"
+
+        private fun ByteBuf.readVarInt(): Int {
+            var readCount = 0
+            var varInt = 0
+            var currentByte: Int
+            do {
+                if (this.readableBytes() <= 0) {
+                    throw BufferTooShortException()
+                }
+                currentByte = this.readByte().toInt()
+                val value = currentByte and 0x7F
+                varInt = varInt or (value shl 7 * readCount)
+                readCount++
+                if (readCount > 5) {
+                    throw RuntimeException("VarInt is too big")
+                }
+            } while (currentByte and 0x80 != 0)
+
+            return varInt
+        }
+
+        private class BufferTooShortException : Exception()
     }
 }

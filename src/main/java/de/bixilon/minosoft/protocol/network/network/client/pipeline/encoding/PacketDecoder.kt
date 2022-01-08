@@ -42,4 +42,8 @@ class PacketDecoder(
         }
         out += packet ?: TODO("Packet $packetType not yet implemented!")
     }
+
+    companion object {
+        const val NAME = "packet_decoder"
+    }
 }

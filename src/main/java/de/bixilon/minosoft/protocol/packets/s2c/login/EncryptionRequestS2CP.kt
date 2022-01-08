@@ -24,6 +24,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.math.BigInteger
+import javax.crypto.Cipher
 
 class EncryptionRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val serverId: String = buffer.readString()
@@ -35,7 +36,14 @@ class EncryptionRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val publicKey = CryptManager.decodePublicKey(publicKey)
         val serverHash = BigInteger(CryptManager.getServerHash(serverId, publicKey, secretKey)).toString(16)
         connection.account.join(serverHash)
+
+        val encryptCipher = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey)
+        val decryptCipher = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey)
+
+
         connection.sendPacket(EncryptionResponseC2SP(secretKey, verifyToken, publicKey))
+
+        connection.network.setupEncryption(encryptCipher, decryptCipher)
     }
 
     override fun log(reducedLog: Boolean) {

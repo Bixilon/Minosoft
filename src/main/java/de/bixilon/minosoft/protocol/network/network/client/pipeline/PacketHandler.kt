@@ -44,4 +44,8 @@ class PacketHandler(
         context.close()
         cause.printStackTrace()
     }
+
+    companion object {
+        const val NAME = "packet_handler"
+    }
 }

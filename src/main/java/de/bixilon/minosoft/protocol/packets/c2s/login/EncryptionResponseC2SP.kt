@@ -23,12 +23,11 @@ import java.security.PublicKey
 import javax.crypto.SecretKey
 
 class EncryptionResponseC2SP(
-    @Deprecated(message = "This is used for enabling encryption in the socket. But it should not be part of the packet") val secretKey: SecretKey,
     val secret: ByteArray,
     val token: ByteArray,
 ) : PlayC2SPacket {
 
-    constructor(secretKey: SecretKey, token: ByteArray, key: PublicKey) : this(secretKey, CryptManager.encryptData(key, secretKey.encoded), CryptManager.encryptData(key, token))
+    constructor(secretKey: SecretKey, token: ByteArray, key: PublicKey) : this(CryptManager.encryptData(key, secretKey.encoded), CryptManager.encryptData(key, token))
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByteArray(secret)

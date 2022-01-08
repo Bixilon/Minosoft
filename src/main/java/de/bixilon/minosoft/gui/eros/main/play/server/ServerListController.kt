@@ -55,6 +55,7 @@ import javafx.geometry.Insets
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListView
+import javafx.scene.input.KeyCode
 import javafx.scene.layout.*
 
 
@@ -167,7 +168,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     override fun postInit() {
-        root.setOnKeyPressed { serverListViewFX.selectionModel.select(null) } // ToDo: Only on escape; not working
+        root.setOnKeyPressed { if (it.code == KeyCode.ESCAPE) serverListViewFX.selectionModel.select(null) } // ToDo: Not working
     }
 
     fun initWatch() {

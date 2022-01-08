@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.network.network.client
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.PacketHandler
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding.PacketDecoder
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding.PacketEncoder
-import de.bixilon.minosoft.protocol.network.network.client.pipeline.prefix.PacketLengthDecoder
-import de.bixilon.minosoft.protocol.network.network.client.pipeline.prefix.PacketLengthEncoder
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.LengthDecoder
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.LengthEncoder
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInitializer
@@ -33,12 +33,12 @@ class NetworkPipeline(private val client: NettyClient) : ChannelInitializer<Sock
         pipeline.addLast("timeout", ReadTimeoutHandler(ProtocolDefinition.SOCKET_TIMEOUT / 1000))
 
 
-        pipeline.addLast("length_decoder", PacketLengthDecoder(maxLength))
-        pipeline.addLast("packet_decoder", PacketDecoder(client))
-        pipeline.addLast("packet_handler", PacketHandler(client.connection))
+        pipeline.addLast(LengthDecoder.NAME, LengthDecoder(maxLength))
+        pipeline.addLast(PacketDecoder.NAME, PacketDecoder(client))
+        pipeline.addLast(PacketHandler.NAME, PacketHandler(client.connection))
 
-        pipeline.addLast("length_encoder", PacketLengthEncoder(maxLength))
-        pipeline.addLast("packet_encoder", PacketEncoder(client))
+        pipeline.addLast(LengthEncoder.NAME, LengthEncoder(maxLength))
+        pipeline.addLast(PacketEncoder.NAME, PacketEncoder(client))
     }
 
     override fun channelActive(context: ChannelHandlerContext) {

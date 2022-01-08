@@ -56,4 +56,8 @@ class PacketEncoder(
 
         out += data.toArray()
     }
+
+    companion object {
+        const val NAME = "packet_encoder"
+    }
 }

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.pipeline.prefix
+package de.bixilon.minosoft.protocol.network.network.client.pipeline.length
 
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException
 import de.bixilon.minosoft.util.KUtil.withLengthPrefix
@@ -20,7 +20,7 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
 
 
-class PacketLengthEncoder(
+class LengthEncoder(
     private val maxLength: Int,
 ) : MessageToByteEncoder<ByteArray>() {
 
@@ -29,5 +29,9 @@ class PacketLengthEncoder(
             throw PacketTooLongException(data.size, maxLength)
         }
         out.writeBytes(data.withLengthPrefix())
+    }
+
+    companion object {
+        const val NAME = "length_encoder"
     }
 }
