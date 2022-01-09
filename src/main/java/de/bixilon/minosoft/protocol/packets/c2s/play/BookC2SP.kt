@@ -10,9 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play.move
 
-import de.bixilon.minosoft.data.entities.EntityRotation
+package de.bixilon.minosoft.protocol.packets.c2s.play
+
+import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -21,21 +22,25 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class RotationC2SP(
-    val rotation: EntityRotation,
-    val onGround: Boolean,
+class BookC2SP(
+    val hand: Hands,
+    val pages: Array<String>,
+    val title: String?,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeFloat(rotation.yaw)
-        buffer.writeFloat(rotation.pitch)
-        buffer.writeBoolean(onGround)
+        buffer.writeVarInt(hand.ordinal)
+        buffer.writeVarInt(pages.size)
+        for (page in pages) {
+            buffer.writeString(page)
+        }
+        buffer.writeBoolean(title != null)
+        if (title != null) {
+            buffer.writeString(title)
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        if (reducedLog) {
-            return
-        }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Rotation (rotation=$rotation, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Book (hand=$hand, pages=$pages, title=$title)" }
     }
 }

@@ -53,10 +53,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.RotationC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.move.ToggleFlyC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -258,8 +255,7 @@ class LocalPlayerEntity(
         } else if (rotationChanged) {
             RotationC2SP(rotation, onGround)
         } else if (onGround != lastOnGround) {
-            // send PLAY_PLAYER_GROUND_CHANGE
-            RotationC2SP(rotation, onGround)
+            GroundChangeC2SP(onGround)
         } else {
             null
         }

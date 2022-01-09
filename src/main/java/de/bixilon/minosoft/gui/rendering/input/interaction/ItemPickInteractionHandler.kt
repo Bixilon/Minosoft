@@ -91,6 +91,8 @@ class ItemPickInteractionHandler(
 
         rateLimiter += { connection.sendPacket(ItemStackCreateC2SP(selectedSlot, itemStack)) }
         connection.player.inventory[selectedSlot] = itemStack
+
+        // ToDo: Use ItemPickC2SP
     }
 
     fun draw(delta: Double) {

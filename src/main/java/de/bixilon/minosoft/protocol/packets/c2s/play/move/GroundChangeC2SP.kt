@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.move
 
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -21,14 +20,11 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class RotationC2SP(
-    val rotation: EntityRotation,
+class GroundChangeC2SP(
     val onGround: Boolean,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeFloat(rotation.yaw)
-        buffer.writeFloat(rotation.pitch)
         buffer.writeBoolean(onGround)
     }
 
@@ -36,6 +32,6 @@ class RotationC2SP(
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Rotation (rotation=$rotation, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Ground change (onGround=$onGround))" }
     }
 }

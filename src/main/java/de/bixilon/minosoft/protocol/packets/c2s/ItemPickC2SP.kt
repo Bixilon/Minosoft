@@ -10,10 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play.move
 
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+package de.bixilon.minosoft.protocol.packets.c2s
+
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -21,21 +20,15 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class RotationC2SP(
-    val rotation: EntityRotation,
-    val onGround: Boolean,
+class ItemPickC2SP(
+    val slot: Int,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeFloat(rotation.yaw)
-        buffer.writeFloat(rotation.pitch)
-        buffer.writeBoolean(onGround)
+        buffer.writeVarInt(slot)
     }
 
     override fun log(reducedLog: Boolean) {
-        if (reducedLog) {
-            return
-        }
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Rotation (rotation=$rotation, onGround=$onGround)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Pick item (slot=$slot)" }
     }
 }

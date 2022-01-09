@@ -33,6 +33,9 @@ class SwingArmC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Swing arm (arm=$arm)" }
     }
 }
