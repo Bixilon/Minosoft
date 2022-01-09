@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.protocol.network.network.client.exceptions
 
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 
 class PacketNotAvailableException(
-    val type: PacketTypes.C2S,
+    val type: C2SPacketType,
     val state: ProtocolStates,
     val version: Version?,
 ) : NetworkException() {

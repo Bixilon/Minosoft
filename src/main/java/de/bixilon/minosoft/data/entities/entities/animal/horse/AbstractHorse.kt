@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
@@ -24,7 +24,7 @@ import java.util.*
 abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "Is tame")
@@ -54,5 +54,5 @@ abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType,
 
     @get:EntityMetaDataFunction(name = "Owner UUID")
     val owner: UUID?
-        get() = entityMetaData.sets.getUUID(EntityMetaDataFields.ABSTRACT_HORSE_OWNER_UUID)
+        get() = data.sets.getUUID(EntityDataFields.ABSTRACT_HORSE_OWNER_UUID)
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kutil.random.RandomUtil.chance
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.player.Hands
@@ -34,7 +34,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     private val ambientEntityEffectParticle = connection.registries.particleTypeRegistry[AmbientEntityEffectParticle]
 
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.LIVING_ENTITY_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "Is hand active")
@@ -52,9 +52,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     @get:EntityMetaDataFunction(name = "Health")
     open val health: Double
         get() {
-            val meta = entityMetaData.sets.getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH)
+            val meta = data.sets.getFloat(EntityDataFields.LIVING_ENTITY_HEALTH)
             return if (meta == Float.MIN_VALUE) {
-                entityType.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
+                type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
             } else {
                 meta.toDouble()
             }
@@ -62,23 +62,23 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
 
     @get:EntityMetaDataFunction(name = "Effect color")
     val effectColor: RGBColor
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR).asRGBColor()
+        get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_EFFECT_COLOR).asRGBColor()
 
     @get:EntityMetaDataFunction(name = "Is effect ambient")
     val effectAmbient: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE)
+        get() = data.sets.getBoolean(EntityDataFields.LIVING_ENTITY_EFFECT_AMBIENCE)
 
     @get:EntityMetaDataFunction(name = "Arrows in entity")
     val arrowCount: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT)
+        get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_ARROW_COUNT)
 
     @get:EntityMetaDataFunction(name = "Absorption hearts")
     val absorptionHearts: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS)
+        get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_ABSORPTION_HEARTS)
 
     @get:EntityMetaDataFunction(name = "Bed location")
     val bedPosition: Vec3i?
-        get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION)
+        get() = data.sets.getBlockPosition(EntityDataFields.LIVING_ENTITY_BED_POSITION)
 
     open val isSleeping: Boolean
         get() = bedPosition != null

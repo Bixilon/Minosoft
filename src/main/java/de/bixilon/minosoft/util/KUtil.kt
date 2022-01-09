@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -44,6 +44,8 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.Deflater
 import java.util.zip.Inflater
+import kotlin.jvm.internal.Reflection
+import kotlin.reflect.KClass
 
 
 object KUtil {
@@ -270,7 +272,7 @@ object KUtil {
     }
 
 
-    fun ByteArray.compress(): ByteArray {
+    fun ByteArray.compressZlib(): ByteArray {
         val deflater = Deflater()
         deflater.setInput(this)
         deflater.finish()
@@ -293,4 +295,7 @@ object KUtil {
     fun Int.toHex(): String {
         return Integer.toHexString(this)
     }
+
+    val <T : Any>Class<T>.kClass: KClass<T>
+        get() = Reflection.createKotlinClass(this).unsafeCast()
 }

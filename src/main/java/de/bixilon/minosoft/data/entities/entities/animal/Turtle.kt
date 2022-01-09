@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -26,27 +26,27 @@ class Turtle(connection: PlayConnection, entityType: EntityType, position: Vec3d
 
     @get:EntityMetaDataFunction(name = "Home Position")
     val homePosition: Vec3i?
-        get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.TURTLE_HOME_POSITION)
+        get() = data.sets.getBlockPosition(EntityDataFields.TURTLE_HOME_POSITION)
 
     @EntityMetaDataFunction(name = "Has egg")
     val hasEgg: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG)
+        get() = data.sets.getBoolean(EntityDataFields.TURTLE_HAS_EGG)
 
     @get:EntityMetaDataFunction(name = "Is laying egg")
     val isLayingEgg: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG)
+        get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_LAYING_EGG)
 
     @get:EntityMetaDataFunction(name = "Travel position")
     val travelPosition: Vec3i?
-        get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION)
+        get() = data.sets.getBlockPosition(EntityDataFields.TURTLE_TRAVEL_POSITION)
 
     @get:EntityMetaDataFunction(name = "Is going home")
     val isGoingHome: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME)
+        get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_GOING_HOME)
 
     @get:EntityMetaDataFunction(name = "Is traveling")
     val isTraveling: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING)
+        get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_TRAVELING)
 
 
     companion object : EntityFactory<Turtle> {

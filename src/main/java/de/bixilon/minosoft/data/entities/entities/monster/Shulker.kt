@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem
@@ -30,19 +30,19 @@ class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3
 
     @get:EntityMetaDataFunction(name = "Attachment face")
     val attachmentFace: Directions
-        get() = entityMetaData.sets.getDirection(EntityMetaDataFields.SHULKER_ATTACH_FACE)
+        get() = data.sets.getDirection(EntityDataFields.SHULKER_ATTACH_FACE)
 
     @get:EntityMetaDataFunction(name = "Attachment position")
     val attachmentPosition: Vec3i?
-        get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.SHULKER_ATTACHMENT_POSITION)
+        get() = data.sets.getBlockPosition(EntityDataFields.SHULKER_ATTACHMENT_POSITION)
 
     @get:EntityMetaDataFunction(name = "Peek")
     val peek: Byte
-        get() = entityMetaData.sets.getByte(EntityMetaDataFields.SHULKER_PEEK)
+        get() = data.sets.getByte(EntityDataFields.SHULKER_PEEK)
 
     @get:EntityMetaDataFunction(name = "Color")
     val color: RGBColor
-        get() = ChatColors[entityMetaData.sets.getByte(EntityMetaDataFields.SHULKER_COLOR).toInt()]
+        get() = ChatColors[data.sets.getByte(EntityDataFields.SHULKER_COLOR).toInt()]
 
 
     companion object : EntityFactory<Shulker> {

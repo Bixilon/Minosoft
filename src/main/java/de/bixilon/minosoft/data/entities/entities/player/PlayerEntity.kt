@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
@@ -39,7 +39,7 @@ abstract class PlayerEntity(
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, position, rotation) {
     override val dimensions: Vec2
-        get() = pose?.let { DIMENSIONS[it] } ?: Vec2(entityType.width, entityType.height)
+        get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
 
     @get:EntityMetaDataFunction(name = "Gamemode")
     val gamemode: Gamemodes
@@ -51,27 +51,27 @@ abstract class PlayerEntity(
 
     @get:EntityMetaDataFunction(name = "Absorption hearts")
     val playerAbsorptionHearts: Float
-        get() = entityMetaData.sets.getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS)
+        get() = data.sets.getFloat(EntityDataFields.PLAYER_ABSORPTION_HEARTS)
 
     @get:EntityMetaDataFunction(name = "Score")
     val score: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.PLAYER_SCORE)
+        get() = data.sets.getInt(EntityDataFields.PLAYER_SCORE)
 
     private fun getSkinPartsFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "Main arm")
     open val mainArm: Arms
-        get() = if (entityMetaData.sets.getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
+        get() = if (data.sets.getByte(EntityDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
 
     @get:EntityMetaDataFunction(name = "Left shoulder entity data")
     val leftShoulderData: Map<String, Any>?
-        get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA)
+        get() = data.sets.getNBT(EntityDataFields.PLAYER_LEFT_SHOULDER_DATA)
 
     @get:EntityMetaDataFunction(name = "Right shoulder entity data")
     val rightShoulderData: Map<String, Any>?
-        get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA)
+        get() = data.sets.getNBT(EntityDataFields.PLAYER_RIGHT_SHOULDER_DATA)
 
     override val spawnSprintingParticles: Boolean
         get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR

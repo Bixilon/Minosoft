@@ -200,17 +200,17 @@
   },
   "minecraft:title_actions": {
     "18": [
-      "SET_TITLE",
-      "SET_SUBTITLE",
-      "SET_TIMES_AND_DISPLAY",
+      "TITLE_TEXT",
+      "SUBTITLE",
+      "TIMES",
       "HIDE",
       "RESET"
     ],
     "302": [
-      "SET_TITLE",
-      "SET_SUBTITLE",
-      "SET_ACTION_BAR",
-      "SET_TIMES_AND_DISPLAY",
+      "TITLE_TEXT",
+      "SUBTITLE",
+      "HOTBAR_TEXT",
+      "TIMES",
       "HIDE",
       "RESET"
     ]

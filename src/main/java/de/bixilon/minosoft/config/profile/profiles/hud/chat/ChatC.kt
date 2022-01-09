@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.hud.chat
 
 import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.hud.chat.internal.InternalC
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 
 class ChatC {
     val internal = InternalC()
@@ -51,6 +51,6 @@ class ChatC {
      * Chat mode
      * Will be sent to the server
      */
-    var chatMode by delegate(ClientSettingsC2SP.ChatModes.EVERYTHING)
+    var chatMode by delegate(SettingsC2SP.ChatModes.EVERYTHING)
 
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,11 +16,9 @@ package de.bixilon.minosoft.protocol.network.connection.status
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
@@ -29,15 +27,12 @@ import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PingQuery
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class StatusConnection(
@@ -140,7 +135,7 @@ class StatusConnection(
             } catch (exception: Exception) {
                 Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $tryAddress" }
                 error = exception
-                disconnect()
+                network.disconnect()
                 return@execute
             }
             val tryAddress = tryAddress ?: return@execute
@@ -149,22 +144,6 @@ class StatusConnection(
 
             state = StatusConnectionStates.ESTABLISHING
             network.connect(tryAddress)
-        }
-    }
-
-
-    override fun handlePacket(packet: S2CPacket) {
-        try {
-            packet.log(OtherProfileManager.selected.log.reducedProtocolLog)
-            val event = PacketReceiveEvent(this, packet)
-            if (fireEvent(event)) {
-                return
-            }
-            if (packet is StatusS2CPacket) {
-                packet.handle(this)
-            }
-        } catch (exception: Throwable) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
         }
     }
 

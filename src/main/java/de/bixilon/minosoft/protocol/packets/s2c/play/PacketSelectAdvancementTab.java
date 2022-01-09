@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class PacketSelectAdvancementTab extends PlayS2CPacket {
+@Deprecated
+public class PacketSelectAdvancementTab implements PlayS2CPacket {
     private AdvancementTabs tab;
 
     public PacketSelectAdvancementTab(PlayInByteBuffer buffer) {
@@ -36,6 +39,16 @@ public class PacketSelectAdvancementTab extends PlayS2CPacket {
 
     public AdvancementTabs getTab() {
         return this.tab;
+    }
+
+    @Override
+    public void handle(@NotNull PlayConnection connection) {
+
+    }
+
+    @Override
+    public void check(@NotNull PlayConnection connection) {
+
     }
 
     public enum AdvancementTabs {

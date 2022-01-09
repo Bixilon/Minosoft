@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab
 
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class AdvancementCloseTabC2SP : AdvancementTabC2SP(AdvancementTabStatus.CLOSE_TAB) {
+@LoadPacket(parent = true)
+class AdvancementCloseTabC2SP : AdvancementTabC2SP(Action.CLOSE_TAB) {
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Close advancement tab" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Advancement close tab" }
     }
 }

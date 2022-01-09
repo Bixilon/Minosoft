@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.play.BlockBreakAckS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockBreakS2CP
 import glm_.vec3.Vec3i
 
 class BlockBreakAckEvent(
@@ -27,6 +27,6 @@ class BlockBreakAckEvent(
     val successful: Boolean,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: BlockBreakAckS2CP) : this(connection, packet.blockPosition, packet.blockState, packet.actions, packet.successful)
+    constructor(connection: PlayConnection, packet: BlockBreakS2CP) : this(connection, packet.blockPosition, packet.blockState, packet.actions, packet.successful)
 
 }

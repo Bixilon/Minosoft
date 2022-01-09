@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
@@ -29,19 +29,19 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, 
 
     @get:EntityMetaDataFunction(name = "Is beging")
     val isBegging: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.WOLF_IS_BEGGING)
+        get() = data.sets.getBoolean(EntityDataFields.WOLF_IS_BEGGING)
 
     @get:EntityMetaDataFunction(name = "Collar color")
     val collarColor: RGBColor
-        get() = ChatColors[entityMetaData.sets.getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR)]
+        get() = ChatColors[data.sets.getInt(EntityDataFields.WOLF_COLLAR_COLOR)]
 
     // ToDo
     @get:EntityMetaDataFunction(name = "Anger time")
     val angerTime: Int
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
-            if (entityMetaData.sets.getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
+            if (data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
         } else {
-            entityMetaData.sets.getInt(EntityMetaDataFields.WOLF_ANGER_TIME)
+            data.sets.getInt(EntityDataFields.WOLF_ANGER_TIME)
         }
 
     @EntityMetaDataFunction(name = "Health")
@@ -49,7 +49,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, 
         get() = if (versionId > ProtocolVersions.V_19W45B) {
             super.health
         } else {
-            entityMetaData.sets.getFloat(EntityMetaDataFields.WOLF_HEALTH).toDouble()
+            data.sets.getFloat(EntityDataFields.WOLF_HEALTH).toDouble()
         }
 
     companion object : EntityFactory<Wolf> {

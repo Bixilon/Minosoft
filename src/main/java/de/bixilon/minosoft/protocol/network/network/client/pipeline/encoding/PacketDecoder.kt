@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.NettyClient
@@ -21,9 +22,9 @@ import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketBuff
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketReadException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.UnknownPacketIdException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.implementation.S2CPacketNotImplementedException
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.Protocol
 import io.netty.channel.ChannelHandlerContext
@@ -41,34 +42,32 @@ class PacketDecoder(
 
         val state = client.state
 
-        val packetType = version?.s2cPackets?.get(state)?.get(packetId) ?: Protocol.getPacketById(state, packetId) ?: throw UnknownPacketIdException(packetId, state, version)
+        val packetType = version?.s2cPackets?.get(state)?.getKey(packetId) ?: Protocol.S2C_PACKET_MAPPING[state]?.getKey(packetId) ?: throw UnknownPacketIdException(packetId, state, version)
 
         val packet = try {
             readPacket(packetType, data)
         } catch (exception: NetworkException) {
-            packetType.errorHandler?.onError(client.connection)
+            packetType.onError(exception, client.connection)
             throw exception
         } catch (error: Throwable) {
-            packetType.errorHandler?.onError(client.connection)
+            packetType.onError(error, client.connection)
             throw PacketReadException(error)
         }
 
         out += packet
     }
 
-    private fun readPacket(type: PacketTypes.S2C, data: ByteArray): S2CPacket {
-        val dataBuffer: InByteBuffer
-        val packet = if (client.connection is PlayConnection) {
-            dataBuffer = PlayInByteBuffer(data, client.connection)
-            type.playFactory?.invoke(dataBuffer)
+    private fun readPacket(type: S2CPacketType, data: ByteArray): S2CPacket {
+        val buffer: InByteBuffer = if (client.connection is PlayConnection) {
+            PlayInByteBuffer(data, client.connection)
         } else {
-            dataBuffer = InByteBuffer(data)
-            type.statusFactory?.invoke(dataBuffer)
+            InByteBuffer(data)
         }
-        if (dataBuffer.pointer < dataBuffer.size) {
-            throw PacketBufferUnderflowException(type, dataBuffer.size, dataBuffer.pointer)
+        val packet = type.factory?.createPacket(buffer) ?: throw S2CPacketNotImplementedException(type)
+        if (buffer.pointer < buffer.size) {
+            throw PacketBufferUnderflowException(type, buffer.size, buffer.pointer)
         }
-        return packet ?: throw S2CPacketNotImplementedException(type)
+        return packet.unsafeCast()
     }
 
 

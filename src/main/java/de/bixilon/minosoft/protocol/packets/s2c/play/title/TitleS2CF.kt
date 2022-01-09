@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,36 +15,31 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
+import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object TitleS2CF {
+@LoadPacket(threadSafe = false)
+object TitleS2CF : PlayPacketFactory {
+    override val direction: PacketDirection = PacketDirection.SERVER_TO_CLIENT
 
-    fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
+    override fun createPacket(buffer: PlayInByteBuffer): TitleS2CP {
         return when (buffer.connection.registries.titleActionsRegistry[buffer.readVarInt()]!!) {
-            TitleActions.SET_TITLE -> TitleSetS2CP(buffer)
-            TitleActions.SET_SUBTITLE -> TitleSubtitleSetS2CP(buffer)
-            TitleActions.SET_ACTION_BAR -> HotbarTextSetS2CP(buffer)
-            TitleActions.SET_TIMES_AND_DISPLAY -> TitleTimesSetS2CP(buffer)
-            TitleActions.HIDE -> TitleHideS2CP()
-            TitleActions.RESET -> TitleResetS2CP()
-        }
-    }
-
-    fun createClearTitlePacket(buffer: PlayInByteBuffer): PlayS2CPacket {
-        val resetTimes = buffer.readBoolean()
-        return if (resetTimes) {
-            TitleResetS2CP()
-        } else {
-            TitleHideS2CP()
+            TitleActions.TITLE_TEXT -> TitleTextS2CP(buffer)
+            TitleActions.SUBTITLE -> SubtitleS2CP(buffer)
+            TitleActions.HOTBAR_TEXT -> HotbarTextS2CP(buffer)
+            TitleActions.TIMES -> TitleTimesS2CP(buffer)
+            TitleActions.HIDE -> HideTitleS2CP(buffer)
+            TitleActions.RESET -> ResetTitleS2CP(buffer)
         }
     }
 
     enum class TitleActions {
-        SET_TITLE,
-        SET_SUBTITLE,
-        SET_ACTION_BAR,
-        SET_TIMES_AND_DISPLAY,
+        TITLE_TEXT,
+        SUBTITLE,
+        HOTBAR_TEXT,
+        TIMES,
         HIDE,
         RESET,
         ;

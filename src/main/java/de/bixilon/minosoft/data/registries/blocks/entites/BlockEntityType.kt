@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.entites
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
+import de.bixilon.minosoft.data.entities.block.DefaultBlockDataFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -31,14 +31,14 @@ data class BlockEntityType(
 ) : RegistryItem() {
 
     fun build(connection: PlayConnection): BlockEntity {
-        return DefaultBlockEntityMetaDataFactory.buildBlockEntity(factory, connection)
+        return DefaultBlockDataFactory.buildBlockEntity(factory, connection)
     }
 
     companion object : ResourceLocationDeserializer<BlockEntityType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityType? {
             // ToDo: Fix resource location
             check(registries != null)
-            val factory = DefaultBlockEntityMetaDataFactory[resourceLocation] ?: return null // ToDo
+            val factory = DefaultBlockDataFactory[resourceLocation] ?: return null // ToDo
 
             val blocks: MutableSet<Block> = mutableSetOf()
 

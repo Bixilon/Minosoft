@@ -47,7 +47,7 @@ object CustomServerType : ServerType {
             if (ping.state != StatusConnectionStates.PING_DONE && ping.state != StatusConnectionStates.ERROR) {
                 return
             }
-            ping.disconnect()
+            ping.network.disconnect()
             ping.ping()
         }
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.registries.registries
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -45,8 +45,8 @@ import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
+import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.collections.Clearable
 import java.lang.reflect.Field
@@ -75,7 +75,7 @@ class Registries {
     val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
 
-    val entityMetaDataDataDataTypesRegistry: EnumRegistry<EntityMetaData.EntityMetaDataDataTypes> = EnumRegistry(values = EntityMetaData.EntityMetaDataDataTypes)
+    val entityDataDataDataTypesRegistry: EnumRegistry<EntityData.EntityDataDataTypes> = EnumRegistry(values = EntityData.EntityDataDataTypes)
 
     val titleActionsRegistry: EnumRegistry<TitleS2CF.TitleActions> = EnumRegistry(values = TitleS2CF.TitleActions)
 
@@ -89,7 +89,7 @@ class Registries {
 
     val blockStateRegistry = BlockStateRegistry(false)
 
-    val entityMetaIndexMap: MutableMap<EntityMetaDataFields, Int> = mutableMapOf()
+    val entityMetaIndexMap: MutableMap<EntityDataFields, Int> = mutableMapOf()
     val entityTypeRegistry: Registry<EntityType> = Registry()
 
     val blockEntityTypeRegistry = BlockEntityTypeRegistry()
@@ -113,7 +113,7 @@ class Registries {
             }
         }
 
-    fun getEntityMetaDataIndex(field: EntityMetaDataFields): Int? {
+    fun getEntityMetaDataIndex(field: EntityDataFields): Int? {
         return entityMetaIndexMap[field] ?: parentRegistries?.getEntityMetaDataIndex(field)
     }
 
@@ -137,7 +137,7 @@ class Registries {
         loadEnumRegistry(version, pixlyzerData["armor_equipment_slots"], armorEquipmentSlotRegistry, DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY)
         loadEnumRegistry(version, pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
 
-        loadEnumRegistry(version, pixlyzerData["entity_meta_data_data_types"], entityMetaDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["entity_meta_data_data_types"], entityDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
 
         loadEnumRegistry(version, pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
         loadEnumRegistry(version, pixlyzerData["entity_animations"], entityAnimationRegistry, DefaultRegistries.ENTITY_ANIMATION_REGISTRY)

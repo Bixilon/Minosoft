@@ -20,14 +20,13 @@ import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketNotAvailableException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.WrongConnectionException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.WrongProtocolStateException
-import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.unknown.UnknownPacketException
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.Protocol
-import de.bixilon.minosoft.util.KUtil.index
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder
 
@@ -36,26 +35,24 @@ class PacketEncoder(
 ) : MessageToMessageEncoder<C2SPacket>() {
     private val version: Version? = client.connection.version
 
-
     override fun encode(context: ChannelHandlerContext, packet: C2SPacket, out: MutableList<Any>) {
         val state = client.state
         val packetData: OutByteBuffer
         when (packet) {
-            is AllC2SPacket -> {
-                packetData = OutByteBuffer()
-                packet.write(packetData)
-            }
             is PlayC2SPacket -> {
                 packetData = PlayOutByteBuffer(client.connection.nullCast() ?: throw WrongConnectionException(PlayConnection::class.java, client.connection::class.java))
                 packet.write(packetData)
             }
-            else -> throw IllegalArgumentException("Unknown packet type $packet")
+            else -> {
+                packetData = OutByteBuffer()
+                packet.write(packetData)
+            }
         }
-        val packetType = PacketTypes.C2S.getPacketType(packet::class.java)
+        val packetType = PacketTypeRegistry.getC2S(packet::class.java) ?: throw UnknownPacketException(packet::class.java)
         if (packetType.state != state) {
             throw WrongProtocolStateException(packetType.state, state)
         }
-        val packetId = version?.c2sPackets?.get(state)?.index(packetType) ?: Protocol.getPacketId(packetType) ?: throw PacketNotAvailableException(packetType, state, version)
+        val packetId = version?.c2sPackets?.get(state)?.get(packetType) ?: Protocol.C2S_PACKET_MAPPING[state]?.get(packetType) ?: throw PacketNotAvailableException(packetType, state, version)
 
         val data = OutByteBuffer()
         data.writeVarInt(packetId)

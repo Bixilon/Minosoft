@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,10 +18,10 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.DefaultEntityFactories
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -51,8 +51,8 @@ data class EntityType(
         return resourceLocation.toString()
     }
 
-    fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
-        return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
+    fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
+        return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityData, versionId)
     }
 
     companion object : ResourceLocationDeserializer<EntityType> {
@@ -61,7 +61,7 @@ data class EntityType(
 
             data["meta"]?.toJsonObject()?.let {
                 for ((minosoftFieldName, index) in it) {
-                    val minosoftField = EntityMetaDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
+                    val minosoftField = EntityDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
                     registries.entityMetaIndexMap[minosoftField] = index.unsafeCast()
                 }
             }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,6 +23,6 @@ abstract class AbstractChestedHorse(connection: PlayConnection, entityType: Enti
 
     @EntityMetaDataFunction(name = "Has chest")
     fun hasChest(): Boolean {
-        return entityMetaData.sets.getBoolean(EntityMetaDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST)
+        return data.sets.getBoolean(EntityDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST)
     }
 }

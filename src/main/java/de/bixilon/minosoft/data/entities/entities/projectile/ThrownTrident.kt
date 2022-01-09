@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,11 +25,11 @@ class ThrownTrident(connection: PlayConnection, entityType: EntityType, position
 
     @get:EntityMetaDataFunction(name = "Loyalty level")
     val loyaltyLevel: Byte
-        get() = entityMetaData.sets.getByte(EntityMetaDataFields.THROWN_TRIDENT_LOYALTY_LEVEL)
+        get() = data.sets.getByte(EntityDataFields.THROWN_TRIDENT_LOYALTY_LEVEL)
 
     @get:EntityMetaDataFunction(name = "Is enchanted")
     val isEnchanted: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.THROWN_TRIDENT_FOIL)
+        get() = data.sets.getBoolean(EntityDataFields.THROWN_TRIDENT_FOIL)
 
     companion object : EntityFactory<ThrownTrident> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("trident")

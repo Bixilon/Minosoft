@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.exceptions
 
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 
 class PacketBufferUnderflowException(
-    val type: PacketTypes.S2C,
+    val type: S2CPacketType,
     val size: Int,
     val available: Int,
 ) : NetworkException() {

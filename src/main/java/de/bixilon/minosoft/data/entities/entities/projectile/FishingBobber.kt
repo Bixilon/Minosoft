@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,11 +25,11 @@ class FishingBobber(connection: PlayConnection, entityType: EntityType, position
 
     @get:EntityMetaDataFunction(name = "Hooked entity id")
     val hookedEntityId: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.FISHING_HOOK_HOOKED_ENTITY)
+        get() = data.sets.getInt(EntityDataFields.FISHING_HOOK_HOOKED_ENTITY)
 
     @get:EntityMetaDataFunction(name = "Is catchable")
     val isCatchable: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.FISHING_HOOK_CATCHABLE)
+        get() = data.sets.getBoolean(EntityDataFields.FISHING_HOOK_CATCHABLE)
 
 
     companion object : EntityFactory<FishingBobber> {

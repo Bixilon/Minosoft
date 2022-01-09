@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
@@ -28,19 +28,19 @@ class Cat(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
 
     @get:EntityMetaDataFunction(name = "Variant")
     val variant: CatVariants
-        get() = CatVariants.byId(entityMetaData.sets.getInt(EntityMetaDataFields.CAT_VARIANT))
+        get() = CatVariants.byId(data.sets.getInt(EntityDataFields.CAT_VARIANT))
 
     @get:EntityMetaDataFunction(name = "Lying")
     val isLying: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.CAT_IS_LYING)
+        get() = data.sets.getBoolean(EntityDataFields.CAT_IS_LYING)
 
     @get:EntityMetaDataFunction(name = "Relaxed")
     val isRelaxed: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.CAT_IS_RELAXED)
+        get() = data.sets.getBoolean(EntityDataFields.CAT_IS_RELAXED)
 
     @get:EntityMetaDataFunction(name = "Collar color")
     val collarColor: RGBColor
-        get() = ChatColors[entityMetaData.sets.getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR)]
+        get() = ChatColors[data.sets.getInt(EntityDataFields.CAT_GET_COLLAR_COLOR)]
 
     enum class CatVariants {
         TABBY,

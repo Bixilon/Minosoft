@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.compression
 
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
-import de.bixilon.minosoft.util.KUtil.compress
+import de.bixilon.minosoft.util.KUtil.compressZlib
 import de.bixilon.minosoft.util.KUtil.withLengthPrefix
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder
@@ -35,7 +35,7 @@ class PacketInflater(
             return
         }
 
-        val compressed = data.compress()
+        val compressed = data.compressZlib()
 
         out += compressed.withLengthPrefix()
     }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.monster.raid
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,11 +25,11 @@ class Witch(connection: PlayConnection, entityType: EntityType, position: Vec3d,
 
     @get:EntityMetaDataFunction(name = "Is drinking Potion")
     val isDrinkingPotion: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.WITCH_IS_DRINKING_POTION)
+        get() = data.sets.getBoolean(EntityDataFields.WITCH_IS_DRINKING_POTION)
 
     @get:EntityMetaDataFunction(name = "Is aggressive")
     override val isAggressive: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.LEGACY_WITCH_IS_AGGRESSIVE)
+        get() = data.sets.getBoolean(EntityDataFields.LEGACY_WITCH_IS_AGGRESSIVE)
 
     companion object : EntityFactory<Witch> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("witch")

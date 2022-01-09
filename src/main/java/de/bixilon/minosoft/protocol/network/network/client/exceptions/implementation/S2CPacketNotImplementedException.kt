@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.protocol.network.network.client.exceptions.implementation
 
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 
-class S2CPacketNotImplementedException(val packetType: PacketTypes.S2C) : NetworkException() {
+class S2CPacketNotImplementedException(
+    val packetType: S2CPacketType,
+) : NetworkException() {
     override val message: String = "$packetType"
 }

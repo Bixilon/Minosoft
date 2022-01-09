@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -52,7 +52,11 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.*
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.RotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.ToggleFlyC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -247,7 +251,7 @@ class LocalPlayerEntity(
 
         val movementPacket = if (positionChanged) {
             if (rotationChanged) {
-                PositionAndRotationC2SP(position, rotation, onGround)
+                PositionRotationC2SP(position, rotation, onGround)
             } else {
                 PositionC2SP(position, onGround)
             }
@@ -445,7 +449,7 @@ class LocalPlayerEntity(
         if (baseAbilities.canFly && input.toggleFlyDown != lastFlyToggleDown) { // ToDo: Swimming, etc
             lastFlyToggleDown = input.toggleFlyDown
             baseAbilities.isFlying = !baseAbilities.isFlying
-            connection.sendPacket(FlyToggleC2SP(baseAbilities.isFlying))
+            connection.sendPacket(ToggleFlyC2SP(baseAbilities.isFlying))
         }
 
         if (baseAbilities.isFlying) {
@@ -497,7 +501,7 @@ class LocalPlayerEntity(
 
         if (onGround && baseAbilities.isFlying) {
             baseAbilities.isFlying = false
-            connection.sendPacket(FlyToggleC2SP(baseAbilities.isFlying))
+            connection.sendPacket(ToggleFlyC2SP(baseAbilities.isFlying))
         }
     }
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.length
 
-import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.PacketTooLongException
 import de.bixilon.minosoft.util.KUtil.withLengthPrefix
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext

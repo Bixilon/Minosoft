@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,12 +25,12 @@ class Pig(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
 
     @EntityMetaDataFunction(name = "Has saddle")
     fun hasSaddle(): Boolean {
-        return entityMetaData.sets.getBoolean(EntityMetaDataFields.PIG_HAS_SADDLE)
+        return data.sets.getBoolean(EntityDataFields.PIG_HAS_SADDLE)
     }
 
     @get:EntityMetaDataFunction(name = "Boost time")
     val boostTime: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.PIG_BOOST_TIME)
+        get() = data.sets.getInt(EntityDataFields.PIG_BOOST_TIME)
 
 
     companion object : EntityFactory<Pig> {

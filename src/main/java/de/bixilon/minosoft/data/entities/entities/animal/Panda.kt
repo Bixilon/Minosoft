@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,26 +25,26 @@ class Panda(connection: PlayConnection, entityType: EntityType, position: Vec3d,
 
     @get:EntityMetaDataFunction(name = "Unhappy timer")
     val unhappyTimer: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER)
+        get() = data.sets.getInt(EntityDataFields.PANDA_UNHAPPY_TIMER)
 
     @get:EntityMetaDataFunction(name = "Sneeze timer")
     val sneezeTimer: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER)
+        get() = data.sets.getInt(EntityDataFields.PANDA_SNEEZE_TIMER)
 
     @get:EntityMetaDataFunction(name = "Eat timer")
     val eatTimer: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.PANDA_EAT_TIMER)
+        get() = data.sets.getInt(EntityDataFields.PANDA_EAT_TIMER)
 
     @get:EntityMetaDataFunction(name = "Main gene")
     val mainGene: Genes
-        get() = Genes.byId(entityMetaData.sets.getInt(EntityMetaDataFields.PANDA_MAIN_GENE))
+        get() = Genes.byId(data.sets.getInt(EntityDataFields.PANDA_MAIN_GENE))
 
     @get:EntityMetaDataFunction(name = "Hidden gene")
     val hiddenGene: Genes
-        get() = Genes.byId(entityMetaData.sets.getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME))
+        get() = Genes.byId(data.sets.getInt(EntityDataFields.PANDA_HIDDEN_GAME))
 
     private fun getPandaFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.PANDA_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "Is sneezing")

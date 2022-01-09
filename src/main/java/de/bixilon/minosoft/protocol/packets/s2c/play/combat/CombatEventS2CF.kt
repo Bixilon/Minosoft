@@ -1,13 +1,13 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
- *  
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
@@ -15,16 +15,20 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.combat
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
+import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object CombatEventS2CF {
+@LoadPacket
+object CombatEventS2CF : PlayPacketFactory {
+    override val direction = PacketDirection.SERVER_TO_CLIENT
 
-    fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
+    override fun createPacket(buffer: PlayInByteBuffer): CombatEventS2CP {
         return when (CombatEvents[buffer.readVarInt()]) {
-            CombatEvents.ENTER_COMBAT -> CombatEventEnterS2CP()
-            CombatEvents.END_COMBAT -> CombatEventEndS2CP(buffer)
-            CombatEvents.ENTITY_DEATH -> CombatEventKillS2CP(buffer)
+            CombatEvents.ENTER_COMBAT -> EnterCombatEventS2CP(buffer)
+            CombatEvents.END_COMBAT -> EndCombatEventS2CP(buffer)
+            CombatEvents.ENTITY_DEATH -> KillCombatEventS2CP(buffer)
         }
     }
 

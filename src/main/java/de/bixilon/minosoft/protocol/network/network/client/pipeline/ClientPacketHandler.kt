@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
+import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -27,6 +28,8 @@ import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketHandleException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.WrongConnectionException
+import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
@@ -50,32 +53,37 @@ class ClientPacketHandler(
     }
 
     override fun channelRead0(context: ChannelHandlerContext, packet: S2CPacket) {
-        if (packet.type.isThreadSafe) {
+        val type = PacketTypeRegistry.getS2C(packet::class.java) ?: throw IllegalStateException("Packet type is null?")
+        if (type.threadSafe) {
             val runnable = ThreadPoolRunnable()
-            runnable.runnable = Runnable { tryHandle(packet);handlers -= runnable }
+            runnable.runnable = Runnable { tryHandle(type, packet);handlers -= runnable }
             handlers += runnable
             DefaultThreadPool += runnable
         } else {
-            tryHandle(packet)
+            tryHandle(type, packet)
         }
     }
 
-    private fun tryHandle(packet: S2CPacket) {
+    private fun tryHandle(type: S2CPacketType, packet: S2CPacket) {
         if (!client.connected) {
             return
         }
         try {
             handle(packet)
         } catch (exception: NetworkException) {
-            packet.type.errorHandler?.onError(connection)
+            type.onError(exception, connection)
             throw exception
         } catch (error: Throwable) {
-            packet.type.errorHandler?.onError(connection)
+            type.onError(error, connection)
             throw PacketHandleException(error)
         }
     }
 
     private fun handle(packet: S2CPacket) {
+        val event = PacketReceiveEvent(connection, packet)
+        if (connection.fireEvent(event)) {
+            return
+        }
         when (packet) {
             is PlayS2CPacket -> handle(packet)
             is StatusS2CPacket -> handle(packet)
@@ -95,10 +103,6 @@ class ClientPacketHandler(
         packet.log(OtherProfileManager.selected.log.reducedProtocolLog)
         packet.check(connection)
         packet.handle(connection)
-    }
-
-    override fun exceptionCaught(context: ChannelHandlerContext, cause: Throwable) {
-        cause.printStackTrace()
     }
 
     companion object {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -26,10 +26,10 @@ class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
 
     @get:EntityMetaDataFunction(name = "Variant")
     val variant: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.FOX_VARIANT)
+        get() = data.sets.getInt(EntityDataFields.FOX_VARIANT)
 
     private fun getFoxFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.FOX_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.FOX_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "Is sitting")
@@ -62,11 +62,11 @@ class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
 
     @get:EntityMetaDataFunction(name = "Trusted 1")
     val firstTrusted: UUID?
-        get() = entityMetaData.sets.getUUID(EntityMetaDataFields.FOX_TRUSTED_1)
+        get() = data.sets.getUUID(EntityDataFields.FOX_TRUSTED_1)
 
     @get:EntityMetaDataFunction(name = "Trusted 2")
     val secondTrusted: UUID?
-        get() = entityMetaData.sets.getUUID(EntityMetaDataFields.FOX_TRUSTED_2)
+        get() = data.sets.getUUID(EntityDataFields.FOX_TRUSTED_2)
 
 
     companion object : EntityFactory<Fox> {

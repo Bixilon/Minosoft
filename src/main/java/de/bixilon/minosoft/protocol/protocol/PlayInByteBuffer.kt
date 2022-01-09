@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
@@ -167,14 +167,14 @@ class PlayInByteBuffer : InByteBuffer {
         return ret.toTypedArray()
     }
 
-    fun readMetaData(): EntityMetaData {
-        val metaData = EntityMetaData(connection)
+    fun readMetaData(): EntityData {
+        val metaData = EntityData(connection)
         val sets = metaData.sets
         if (versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.registries.entityMetaDataDataDataTypesRegistry[item and 0xFF shr 5]!!
+                val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
                 sets[index] = metaData.getData(type, this)!!
                 item = readUnsignedByte()
             }
@@ -186,7 +186,7 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.registries.entityMetaDataDataDataTypesRegistry[id] ?: error("Can not get meta data index for id $id")
+                val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: error("Can not get meta data index for id $id")
                 metaData.getData(type, this)?.let {
                     sets[index] = it
                 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,16 +45,13 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
+import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.PacketSender
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -165,7 +162,7 @@ class PlayConnection(
                 ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
                     state = PlayConnectionStates.LOGGING_IN
-                    this.network.send(LoginStartC2SP(this.player))
+                    this.network.send(StartC2SP(this.player))
                 }
                 ProtocolStates.PLAY -> {
                     state = PlayConnectionStates.JOINING
@@ -244,25 +241,6 @@ class PlayConnection(
             retry = false
         }
         latch.count = count
-    }
-
-    @Deprecated("ToDo: Packet handler")
-    override fun handlePacket(packet: S2CPacket) {
-        if (!network.connected) {
-            return
-        }
-        try {
-            packet.log(profiles.other.log.reducedProtocolLog)
-            val event = PacketReceiveEvent(this, packet)
-            if (fireEvent(event)) {
-                return
-            }
-            if (packet is PlayS2CPacket) {
-                packet.handle(this)
-            }
-        } catch (exception: Throwable) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
-        }
     }
 
     @Deprecated("ToDo: Tag manager")

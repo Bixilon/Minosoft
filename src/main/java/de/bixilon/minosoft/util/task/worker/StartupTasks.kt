@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util.task.worker
 enum class StartupTasks {
     LOAD_PROFILES,
     LOAD_LANGUAGE_FILES,
+    LOAD_PACKETS,
     LOAD_VERSIONS,
     LOAD_DEFAULT_REGISTRIES,
     LISTEN_LAN_SERVERS,

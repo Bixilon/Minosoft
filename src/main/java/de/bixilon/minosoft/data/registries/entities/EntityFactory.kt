@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.entities
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -26,7 +26,7 @@ interface EntityFactory<T : Entity> : CompanionResourceLocation {
     /**
      * Tweaks the entity resource location. Used for pre flattening versions.
      */
-    fun tweak(connection: PlayConnection, entityMetaData: EntityMetaData?, versionId: Int): ResourceLocation {
+    fun tweak(connection: PlayConnection, entityData: EntityData?, versionId: Int): ResourceLocation {
         return RESOURCE_LOCATION
     }
 

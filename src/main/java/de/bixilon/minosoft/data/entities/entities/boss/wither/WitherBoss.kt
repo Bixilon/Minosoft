@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.boss.wither
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.monster.Monster
@@ -26,19 +26,19 @@ class WitherBoss(connection: PlayConnection, entityType: EntityType, position: V
 
     @get:EntityMetaDataFunction(name = "Center head target entity id")
     val centerHeadTargetEntityId: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID)
+        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID)
 
     @get:EntityMetaDataFunction(name = "Left head target entity id")
     val leftHeadTargetEntityId: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID)
+        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID)
 
     @get:EntityMetaDataFunction(name = "Right head target entity id")
     val rightHeadTargetEntityId: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID)
+        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID)
 
     @get:EntityMetaDataFunction(name = "Invulnerable time")
     val invulnerableTime: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.WITHER_BOSS_INVULNERABLE_TIME)
+        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_INVULNERABLE_TIME)
 
 
     companion object : EntityFactory<WitherBoss> {

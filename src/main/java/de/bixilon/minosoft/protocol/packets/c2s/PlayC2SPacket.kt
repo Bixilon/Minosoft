@@ -12,10 +12,13 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s
 
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 
 // packet to send to server
 interface PlayC2SPacket : C2SPacket {
 
     fun write(buffer: PlayOutByteBuffer) = Unit
+
+    override fun write(buffer: OutByteBuffer) = throw IllegalStateException("Can not write packet with non play buffer!")
 }

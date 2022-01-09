@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -291,7 +291,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                 // ToDo: server.connections.clear()
 
                                 val ping = serverCard.ping
-                                ping.disconnect()
+                                ping.network.disconnect()
                                 ping.address = server.address
                                 ping.ping()
                             }
@@ -304,7 +304,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             it.add(Button("Refresh").apply {
                 setOnAction {
-                    serverCard.ping.disconnect()
+                    serverCard.ping.network.disconnect()
                     serverCard.ping.ping()
                 }
                 isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR

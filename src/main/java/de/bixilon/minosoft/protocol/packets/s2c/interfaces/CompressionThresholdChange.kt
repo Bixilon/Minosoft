@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.interfaces
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 
-abstract class CompressionThresholdChange : PlayS2CPacket {
-    abstract val threshold: Int
+interface CompressionThresholdChange : PlayS2CPacket {
+    val threshold: Int
 
     override fun handle(connection: PlayConnection) {
         connection.network.compressionThreshold = threshold

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -34,7 +34,7 @@ public class CommandEntities extends Command {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
                             for (Entity entry : connection.getWorld().getEntities()) {
-                                tableData.add(new Object[]{connection.getWorld().getEntities().getId(entry), connection.getWorld().getEntities().getUUID(entry), entry.getEntityType().toString(), entry.getEquipment(), entry.getPosition(), entry.getRotation()});
+                                tableData.add(new Object[]{connection.getWorld().getEntities().getId(entry), connection.getWorld().getEntities().getUUID(entry), entry.getType().toString(), entry.getEquipment(), entry.getPosition(), entry.getRotation()});
                             }
 
                             print(AsciiTable.getTable(new String[]{"ID", "UUID", "TYPE", "EQUIPMENT", "LOCATION", "ROTATION"}, tableData.toArray(new Object[0][0])));
@@ -51,7 +51,7 @@ public class CommandEntities extends Command {
 
                             tableData.add(new Object[]{"Entity id", connection.getWorld().getEntities().getId(entity)});
                             tableData.add(new Object[]{"UUID", connection.getWorld().getEntities().getUUID(entity)});
-                            tableData.add(new Object[]{"Type", entity.getEntityType()});
+                            tableData.add(new Object[]{"Type", entity.getType()});
                             tableData.add(new Object[]{"Class", entity.getClass().getName()});
                             tableData.add(new Object[]{"Location", entity.getPosition()});
                             tableData.add(new Object[]{"Rotation", entity.getRotation()});

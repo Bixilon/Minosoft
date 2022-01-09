@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -26,18 +26,18 @@ class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, p
 
     @get:EntityMetaDataFunction(name = "Item")
     val fireworkItem: ItemStack?
-        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_ITEM)
+        get() = data.sets.getItemStack(EntityDataFields.FIREWORK_ROCKET_ENTITY_ITEM)
 
     @get:EntityMetaDataFunction(name = "Attached entity id")
     override var attachedEntity: Int?
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY)
+        get() = data.sets.getInt(EntityDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY)
         set(attachedEntity) {
             super.attachedEntity = attachedEntity
         }
 
     @get:EntityMetaDataFunction(name = "Shot at angle")
     val isShotAtAngle: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE)
+        get() = data.sets.getBoolean(EntityDataFields.FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE)
 
     companion object : EntityFactory<FireworkRocketEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("firework_rocket")

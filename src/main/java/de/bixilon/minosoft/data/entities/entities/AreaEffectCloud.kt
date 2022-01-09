@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -29,24 +29,24 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, positi
 
     @get:EntityMetaDataFunction(name = "Ignore radius")
     val ignoreRadius: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.AREA_EFFECT_CLOUD_IGNORE_RADIUS)
+        get() = data.sets.getBoolean(EntityDataFields.AREA_EFFECT_CLOUD_IGNORE_RADIUS)
 
     @get:EntityMetaDataFunction(name = "Radius")
     val radius: Float
-        get() = entityMetaData.sets.getFloat(EntityMetaDataFields.AREA_EFFECT_CLOUD_RADIUS)
+        get() = data.sets.getFloat(EntityDataFields.AREA_EFFECT_CLOUD_RADIUS)
 
     @get:EntityMetaDataFunction(name = "Color")
     val color: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.AREA_EFFECT_CLOUD_COLOR)
+        get() = data.sets.getInt(EntityDataFields.AREA_EFFECT_CLOUD_COLOR)
 
     // ignore radius???
     @get:EntityMetaDataFunction(name = "Is waiting")
     val isWaiting: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.AREA_EFFECT_CLOUD_WAITING)
+        get() = data.sets.getBoolean(EntityDataFields.AREA_EFFECT_CLOUD_WAITING)
 
     @get:EntityMetaDataFunction(name = "ParticleType")
     val particle: ParticleData
-        get() = entityMetaData.sets.getParticle(EntityMetaDataFields.AREA_EFFECT_CLOUD_PARTICLE)
+        get() = data.sets.getParticle(EntityDataFields.AREA_EFFECT_CLOUD_PARTICLE)
 
 
     companion object : EntityFactory<AreaEffectCloud> {

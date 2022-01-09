@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import de.bixilon.minosoft.data.registries.recipes.Recipe;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketUnlockRecipes extends PlayS2CPacket {
+@Deprecated
+public class PacketUnlockRecipes implements PlayS2CPacket {
     private final UnlockRecipeActions action;
     private final boolean isCraftingBookOpen;
     private final boolean isCraftingFilteringActive;
@@ -118,6 +121,16 @@ public class PacketUnlockRecipes extends PlayS2CPacket {
 
     public UnlockRecipeActions getAction() {
         return this.action;
+    }
+
+    @Override
+    public void handle(@NotNull PlayConnection connection) {
+
+    }
+
+    @Override
+    public void check(@NotNull PlayConnection connection) {
+
     }
 
     public enum UnlockRecipeActions {

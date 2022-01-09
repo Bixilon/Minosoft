@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,12 @@ package de.bixilon.minosoft.data.scoreboard
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.CreateScoreboardObjectiveS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.CreateObjectiveS2CP
 
 class ScoreboardObjective(
     val name: String,
     var displayName: ChatComponent,
-    var unit: CreateScoreboardObjectiveS2CP.ObjectiveUnits,
+    var unit: CreateObjectiveS2CP.ObjectiveUnits,
 ) {
     val scores: MutableMap<String, ScoreboardScore> = synchronizedMapOf()
 

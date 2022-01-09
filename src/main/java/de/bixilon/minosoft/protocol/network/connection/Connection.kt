@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.connection
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
@@ -25,8 +24,6 @@ import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
-import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 
 abstract class Connection : AbstractEventMaster {
     val network = NettyClient(this)
@@ -57,17 +54,6 @@ abstract class Connection : AbstractEventMaster {
         return eventMaster.fireEvent(event)
     }
 
-    open fun handle(packetType: S2C, packet: S2CPacket) {
-        if (!packetType.isThreadSafe) {
-            handlePacket(packet)
-            return
-        }
-        DefaultThreadPool += { handlePacket(packet) }
-    }
-
-
-    abstract fun handlePacket(packet: S2CPacket)
-
     override fun unregisterEvent(invoker: EventInvoker?) {
         eventMaster.unregisterEvent(invoker)
     }
@@ -78,10 +64,6 @@ abstract class Connection : AbstractEventMaster {
 
     override fun registerEvents(vararg invokers: EventInvoker) {
         eventMaster.registerEvents(*invokers)
-    }
-
-    open fun disconnect() {
-        network.disconnect()
     }
 
     override fun iterator(): Iterator<EventInvoker> {
