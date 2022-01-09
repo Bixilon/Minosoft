@@ -35,6 +35,11 @@ class OtherProfile(
     override val version: Int = latestVersion
     override var description by delegate(description ?: "")
 
+    /**
+     * Use native network transport if available
+     */
+    var epoll by delegate(true)
+
 
     /**
      * MacOS only: Ignores the warning if the jvm argument

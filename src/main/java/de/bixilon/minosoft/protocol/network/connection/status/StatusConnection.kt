@@ -143,7 +143,7 @@ class StatusConnection(
             Log.log(LogMessageType.NETWORK_RESOLVING) { "Trying to ping $tryAddress (from $address)" }
 
             state = StatusConnectionStates.ESTABLISHING
-            network.connect(tryAddress)
+            network.connect(tryAddress, false)
         }
     }
 

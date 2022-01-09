@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.network.network.client
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -32,6 +31,10 @@ import io.netty.bootstrap.Bootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelOption
+import io.netty.channel.EventLoopGroup
+import io.netty.channel.epoll.Epoll
+import io.netty.channel.epoll.EpollEventLoopGroup
+import io.netty.channel.epoll.EpollSocketChannel
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioSocketChannel
 import javax.crypto.Cipher
@@ -69,12 +72,19 @@ class NettyClient(
         private set
     private var channel: Channel? = null
 
-    fun connect(address: ServerAddress) {
-        val workerGroup = NioEventLoopGroup(DefaultThreadPool.threadCount - 1, DefaultThreadPool)
-        // val workerGroup = NioEventLoopGroup()
+    fun connect(address: ServerAddress, epoll: Boolean) {
+        val threadPool: EventLoopGroup
+        val channelClass: Class<out Channel>
+        if (Epoll.isAvailable() && epoll) {
+            threadPool = EPOLL_THREAD_POOL
+            channelClass = EpollSocketChannel::class.java
+        } else {
+            threadPool = NIO_THREAD_POOL
+            channelClass = NioSocketChannel::class.java
+        }
         val bootstrap = Bootstrap()
-            .group(workerGroup)
-            .channel(NioSocketChannel::class.java)
+            .group(threadPool)
+            .channel(channelClass)
             .handler(NetworkPipeline(this))
 
         val future: ChannelFuture = bootstrap.connect(address.hostname, address.port).sync()
@@ -85,9 +95,11 @@ class NettyClient(
             }
             val channel = future.channel()
             this.channel = channel
-            channel.config().setOption(ChannelOption.TCP_NODELAY, true)
+            try {
+                channel.config().setOption(ChannelOption.TCP_NODELAY, true)
+            } catch (_: Throwable) {
+            }
             connected = true
-            println("Connected!")
         }
     }
 
@@ -103,7 +115,6 @@ class NettyClient(
 
     fun disconnect() {
         channel?.close()
-        // ToDo: workerGroup.shutdownGracefully()
         connected = false
     }
 
@@ -118,5 +129,10 @@ class NettyClient(
 
         packet.log((connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected).log.reducedProtocolLog)
         channel.writeAndFlush(packet)
+    }
+
+    companion object {
+        private val NIO_THREAD_POOL by lazy { NioEventLoopGroup(NamedThreadFactory("Nio#%d")) }
+        private val EPOLL_THREAD_POOL by lazy { EpollEventLoopGroup(NamedThreadFactory("Epoll#%d")) }
     }
 }
