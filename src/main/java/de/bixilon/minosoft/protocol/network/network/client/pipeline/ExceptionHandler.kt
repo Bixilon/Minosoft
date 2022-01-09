@@ -21,22 +21,27 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
+import io.netty.handler.codec.DecoderException
+import io.netty.handler.codec.EncoderException
 
 class ExceptionHandler(
     private val client: NettyClient,
 ) : ChannelDuplexHandler() {
 
     override fun exceptionCaught(context: ChannelHandlerContext, cause: Throwable) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
-        if (cause !is NetworkException) {
-            client.disconnect()
-            return
+        var realCause = cause
+        if (cause is DecoderException) {
+            realCause = cause.cause ?: cause
+        } else if (cause is EncoderException) {
+            realCause = cause.cause ?: cause
         }
-        if (cause is CriticalNetworkException) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { realCause }
+        if (realCause !is NetworkException || realCause is CriticalNetworkException) {
             client.disconnect()
             return
         }
     }
+
 
     companion object {
         const val NAME = "exception_handler"

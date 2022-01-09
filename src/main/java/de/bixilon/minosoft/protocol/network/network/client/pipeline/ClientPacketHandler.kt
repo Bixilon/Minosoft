@@ -28,7 +28,6 @@ import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketHandleException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.WrongConnectionException
-import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
@@ -38,7 +37,7 @@ import io.netty.channel.SimpleChannelInboundHandler
 
 class ClientPacketHandler(
     private val client: NettyClient,
-) : SimpleChannelInboundHandler<S2CPacket>() {
+) : SimpleChannelInboundHandler<QueuedS2CP<*>>() {
     private val connection: Connection = client.connection
     private val handlers: MutableSet<ThreadPoolRunnable> = synchronizedSetOf()
 
@@ -52,15 +51,14 @@ class ClientPacketHandler(
         }
     }
 
-    override fun channelRead0(context: ChannelHandlerContext, packet: S2CPacket) {
-        val type = PacketTypeRegistry.getS2C(packet::class.java) ?: throw IllegalStateException("Packet type is null?")
-        if (type.threadSafe) {
+    override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
+        if (queued.type.threadSafe) {
             val runnable = ThreadPoolRunnable()
-            runnable.runnable = Runnable { tryHandle(type, packet);handlers -= runnable }
+            runnable.runnable = Runnable { tryHandle(queued.type, queued.packet);handlers -= runnable }
             handlers += runnable
             DefaultThreadPool += runnable
         } else {
-            tryHandle(type, packet)
+            tryHandle(queued.type, queued.packet)
         }
     }
 

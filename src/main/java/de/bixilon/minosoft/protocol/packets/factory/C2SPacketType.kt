@@ -19,12 +19,16 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 class C2SPacketType(
     val state: ProtocolStates,
     val clazz: Class<out C2SPacket>,
-    val annotation: LoadPacket = clazz.getAnnotation(LoadPacket::class.java),
+    val annotation: LoadPacket?,
+    override val threadSafe: Boolean = annotation!!.threadSafe,
 ) : AbstractPacketType {
     override val direction = PacketDirection.CLIENT_TO_SERVER
-    override val threadSafe: Boolean get() = annotation.threadSafe
 
     override fun toString(): String {
         return clazz.toString()
+    }
+
+    companion object {
+        val EMPTY = { C2SPacketType(ProtocolStates.HANDSHAKING, C2SPacket::class.java, null, false) }
     }
 }

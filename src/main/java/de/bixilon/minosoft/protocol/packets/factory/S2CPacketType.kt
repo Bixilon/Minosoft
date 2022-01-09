@@ -23,11 +23,11 @@ class S2CPacketType(
     val state: ProtocolStates,
     val clazz: Class<out S2CPacket>,
     private val packetErrorHandler: PacketErrorHandler?,
-    val annotation: LoadPacket = clazz.getAnnotation(LoadPacket::class.java),
+    val annotation: LoadPacket?,
     val factory: PacketFactory? = null,
+    override val threadSafe: Boolean = annotation!!.threadSafe,
 ) : AbstractPacketType, PacketErrorHandler {
     override val direction = PacketDirection.SERVER_TO_CLIENT
-    override val threadSafe: Boolean get() = annotation.threadSafe
 
 
     override fun onError(error: Throwable, connection: Connection) {
@@ -36,5 +36,10 @@ class S2CPacketType(
 
     override fun toString(): String {
         return clazz.toString()
+    }
+
+
+    companion object {
+        val EMPTY = { S2CPacketType(ProtocolStates.HANDSHAKING, S2CPacket::class.java, null, null, null, false) }
     }
 }

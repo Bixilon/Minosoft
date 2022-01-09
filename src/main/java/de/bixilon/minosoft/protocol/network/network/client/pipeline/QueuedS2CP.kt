@@ -11,17 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.network.client.exceptions.implementation
+package de.bixilon.minosoft.protocol.network.network.client.pipeline
 
-import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.KUtil.toHex
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 
-class S2CPacketNotImplementedException(
-    val packetId: Int,
-    val state: ProtocolStates,
-    val version: Version?,
-) : NetworkException() {
-    override val message: String = "packetId=0x${packetId.toHex()}, state=$state, version=$version"
-}
+data class QueuedS2CP<T : S2CPacket>(
+    val type: S2CPacketType,
+    val packet: T,
+)

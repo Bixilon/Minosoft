@@ -22,6 +22,7 @@ import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketBuff
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.PacketReadException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.UnknownPacketIdException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.implementation.S2CPacketNotImplementedException
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.QueuedS2CP
 import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -44,6 +45,10 @@ class PacketDecoder(
 
         val packetType = version?.s2cPackets?.get(state)?.getKey(packetId) ?: Protocol.S2C_PACKET_MAPPING[state]?.getKey(packetId) ?: throw UnknownPacketIdException(packetId, state, version)
 
+        if (packetType.clazz == S2CPacket::class.java) {
+            throw S2CPacketNotImplementedException(packetId, state, version)
+        }
+
         val packet = try {
             readPacket(packetType, data)
         } catch (exception: NetworkException) {
@@ -54,7 +59,7 @@ class PacketDecoder(
             throw PacketReadException(error)
         }
 
-        out += packet
+        out += QueuedS2CP(packetType, packet)
     }
 
     private fun readPacket(type: S2CPacketType, data: ByteArray): S2CPacket {
@@ -63,7 +68,7 @@ class PacketDecoder(
         } else {
             InByteBuffer(data)
         }
-        val packet = type.factory?.createPacket(buffer) ?: throw S2CPacketNotImplementedException(type)
+        val packet = type.factory?.createPacket(buffer) ?: throw IllegalStateException("Packet factory is null?")
         if (buffer.pointer < buffer.size) {
             throw PacketBufferUnderflowException(type, buffer.size, buffer.pointer)
         }

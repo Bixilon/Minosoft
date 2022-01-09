@@ -21,7 +21,6 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
-import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -64,14 +63,14 @@ object Versions : Iterable<Version> {
                     when (val s2c = mapping["s2c"]) {
                         is List<*> -> {
                             // just play
-                            s2cPackets = mapOf(ProtocolStates.PLAY to readPacketMapping(versionId, PacketDirection.SERVER_TO_CLIENT, s2c.unsafeCast()) { PacketTypeRegistry.getS2C(ProtocolStates.PLAY, it) })
+                            s2cPackets = mapOf(ProtocolStates.PLAY to readS2PPacketMapping(versionId, ProtocolStates.PLAY, s2c.unsafeCast()))
                         }
                         is Map<*, *> -> {
                             // map other states
                             val packets: MutableMap<ProtocolStates, AbstractBiMap<S2CPacketType, Int>> = mutableMapOf()
                             for ((stateName, packetMapping) in s2c) {
                                 val state = ProtocolStates[stateName.toString()]
-                                packets[state] = readPacketMapping(versionId, PacketDirection.SERVER_TO_CLIENT, packetMapping.unsafeCast()) { PacketTypeRegistry.getS2C(state, it) }
+                                packets[state] = readS2PPacketMapping(versionId, state, packetMapping.unsafeCast())
                             }
                             s2cPackets = packets
                         }
@@ -79,14 +78,14 @@ object Versions : Iterable<Version> {
                     }
                     when (val c2s = mapping["c2s"]) {
                         is List<*> -> {
-                            c2sPackets = mapOf(ProtocolStates.PLAY to readPacketMapping(versionId, PacketDirection.CLIENT_TO_SERVER, c2s.unsafeCast()) { PacketTypeRegistry.getC2S(ProtocolStates.PLAY, it) })
+                            c2sPackets = mapOf(ProtocolStates.PLAY to readC2SPacketMapping(versionId, ProtocolStates.PLAY, c2s.unsafeCast()))
                         }
                         is Map<*, *> -> {
                             // map other states
                             val packets: MutableMap<ProtocolStates, AbstractBiMap<C2SPacketType, Int>> = mutableMapOf()
                             for ((stateName, packetMapping) in c2s) {
                                 val state = ProtocolStates[stateName.toString()]
-                                packets[state] = readPacketMapping(versionId, PacketDirection.CLIENT_TO_SERVER, packetMapping.unsafeCast()) { PacketTypeRegistry.getC2S(state, it) }
+                                packets[state] = readC2SPacketMapping(versionId, state, packetMapping.unsafeCast())
                             }
                             c2sPackets = packets
                         }
@@ -115,19 +114,29 @@ object Versions : Iterable<Version> {
         }
     }
 
-    private fun <T> readPacketMapping(versionId: Int, direction: PacketDirection, list: List<String>, typeGetter: (name: String) -> T?): MutableBiMap<T, Int> {
+    private fun <T> readPacketMapping(versionId: Int, list: List<String>, typeGetter: (name: String) -> T): MutableBiMap<T, Int> {
         val map: MutableBiMap<T, Int> = mutableBiMapOf()
-        var packetId = 0 // To not mess up ids when packet is not registered
         for (name in list) {
             val packetType = typeGetter(name)
-            if (packetType == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $name is not registered (versionId=$versionId, direction=$direction)!" }
-                packetId++
-                continue
-            }
-            map.put(packetType, packetId++)?.let { Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $name registered twice (version=$versionId)" } }
+            map.put(packetType, map.size)?.let { Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $name registered twice (version=$versionId)" } }
         }
         return map
+    }
+
+    private fun readS2PPacketMapping(versionId: Int, state: ProtocolStates, list: List<String>): AbstractBiMap<S2CPacketType, Int> {
+        return readPacketMapping(versionId, list) {
+            PacketTypeRegistry.getS2C(state, it)?.let { type -> return@readPacketMapping type }
+            Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=SERVER_TO_CLIENT)!" }
+            return@readPacketMapping S2CPacketType.EMPTY()
+        }
+    }
+
+    private fun readC2SPacketMapping(versionId: Int, state: ProtocolStates, list: List<String>): AbstractBiMap<C2SPacketType, Int> {
+        return readPacketMapping(versionId, list) {
+            PacketTypeRegistry.getC2S(state, it)?.let { type -> return@readPacketMapping type }
+            Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Packet $it is not registered (versionId=$versionId, state=$state, direction=CLIENT_TO_SERVER)!" }
+            return@readPacketMapping C2SPacketType.EMPTY()
+        }
     }
 
     operator fun get(name: String?): Version? {
