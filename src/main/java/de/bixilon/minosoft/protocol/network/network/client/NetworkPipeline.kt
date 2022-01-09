@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.protocol.network.network.client
 
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.ClientPacketHandler
-import de.bixilon.minosoft.protocol.network.network.client.pipeline.ExceptionHandler
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding.PacketDecoder
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encoding.PacketEncoder
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.exception.InExceptionHandler
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.exception.OutExceptionHandler
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.LengthDecoder
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.LengthEncoder
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -41,7 +42,8 @@ class NetworkPipeline(private val client: NettyClient) : ChannelInitializer<Sock
         pipeline.addLast(LengthEncoder.NAME, LengthEncoder(maxLength))
         pipeline.addLast(PacketEncoder.NAME, PacketEncoder(client))
 
-        pipeline.addLast(ExceptionHandler.NAME, ExceptionHandler(client))
+        pipeline.addLast(InExceptionHandler.NAME, InExceptionHandler(client))
+        pipeline.addLast(OutExceptionHandler.NAME, OutExceptionHandler(client))
 
 
         pipeline.addLast("client", client)

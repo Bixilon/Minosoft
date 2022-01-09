@@ -16,8 +16,12 @@ package de.bixilon.minosoft.protocol.network.network.client
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.CriticalNetworkException
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.PacketDeflater
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.PacketInflater
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encryption.PacketDecryptor
@@ -27,6 +31,9 @@ import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.Lengt
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.ServerAddress
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.*
 import io.netty.channel.epoll.Epoll
@@ -34,6 +41,8 @@ import io.netty.channel.epoll.EpollEventLoopGroup
 import io.netty.channel.epoll.EpollSocketChannel
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioSocketChannel
+import io.netty.handler.codec.DecoderException
+import io.netty.handler.codec.EncoderException
 import javax.crypto.Cipher
 
 
@@ -41,6 +50,7 @@ import javax.crypto.Cipher
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>() {
+    private var errorReported = connection is StatusConnection // dont report errors in status
     var connected by watched(false)
         private set
     var state by watched(ProtocolStates.HANDSHAKING)
@@ -142,6 +152,24 @@ class NettyClient(
 
     override fun channelInactive(context: ChannelHandlerContext) {
         connected = false
+    }
+
+    fun handleError(error: Throwable) {
+        var cause = error
+        if (cause is DecoderException) {
+            cause = error.cause ?: cause
+        } else if (cause is EncoderException) {
+            cause = error.cause ?: cause
+        }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
+        if (cause !is NetworkException || cause is CriticalNetworkException) {
+            if (!errorReported) {
+                cause.report()
+                errorReported = false
+            }
+            disconnect()
+            return
+        }
     }
 
     companion object {
