@@ -16,6 +16,9 @@ package de.bixilon.minosoft.protocol.network.network.client.pipeline
 import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.CriticalNetworkException
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 
@@ -24,7 +27,7 @@ class ExceptionHandler(
 ) : ChannelDuplexHandler() {
 
     override fun exceptionCaught(context: ChannelHandlerContext, cause: Throwable) {
-        cause.printStackTrace()
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
         if (cause !is NetworkException) {
             client.disconnect()
             return

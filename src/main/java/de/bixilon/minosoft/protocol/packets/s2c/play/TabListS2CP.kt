@@ -24,111 +24,72 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 @LoadPacket(threadSafe = false)
 @Deprecated("Split into legacy and modern")
 class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val items: MutableMap<UUID, TabListItemData> = mutableMapOf()
+    val items: MutableMap<UUID, TabListItemData?> = mutableMapOf()
 
     init {
-        if (buffer.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
-            val name: String = buffer.readString()
-            val ping: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) {
-                buffer.readUnsignedShort()
-            } else {
-                buffer.readVarInt()
-            }
-            val action = if (buffer.readBoolean()) {
-                TabListItemActions.UPDATE_LATENCY
-            } else {
-                TabListItemActions.REMOVE_PLAYER
-            }
-            val uuid: UUID = UUID.nameUUIDFromBytes(name.toByteArray(StandardCharsets.UTF_8))
-            val item = TabListItemData(name = name, ping = ping, remove = action == TabListItemActions.REMOVE_PLAYER)
-            items[uuid] = item
-        } else {
-            val action = TabListItemActions[buffer.readVarInt()]
-            val count: Int = buffer.readVarInt()
-            for (i in 0 until count) {
-                val uuid: UUID = buffer.readUUID()
-                val data: TabListItemData
-                when (action) {
-                    TabListItemActions.ADD -> {
-                        val name = buffer.readString()
-                        val properties = buffer.readPlayerProperties()
-                        val gamemode = Gamemodes[buffer.readVarInt()]
-                        val ping = buffer.readVarInt()
-                        val hasDisplayName = buffer.readBoolean()
-                        val displayName = if (hasDisplayName) {
-                            buffer.readChatComponent()
-                        } else {
-                            null
-                        }
-                        data = TabListItemData(
-                            name = name,
-                            properties = properties,
-                            gamemode = gamemode,
-                            ping = ping,
-                            hasDisplayName = hasDisplayName,
-                            displayName = displayName,
-                        )
+        val action = TabListItemActions[buffer.readVarInt()]
+        val count: Int = buffer.readVarInt()
+        for (i in 0 until count) {
+            val uuid: UUID = buffer.readUUID()
+            val data: TabListItemData?
+            when (action) {
+                TabListItemActions.ADD -> {
+                    val name = buffer.readString()
+                    val properties = buffer.readPlayerProperties()
+                    val gamemode = Gamemodes[buffer.readVarInt()]
+                    val ping = buffer.readVarInt()
+                    val hasDisplayName = buffer.readBoolean()
+                    val displayName = if (hasDisplayName) {
+                        buffer.readChatComponent()
+                    } else {
+                        null
                     }
-                    TabListItemActions.UPDATE_GAMEMODE -> {
-                        data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
-                    }
-                    TabListItemActions.UPDATE_LATENCY -> {
-                        data = TabListItemData(ping = buffer.readVarInt())
-                    }
-                    TabListItemActions.UPDATE_DISPLAY_NAME -> {
-                        val hasDisplayName = buffer.readBoolean()
-                        val displayName = if (hasDisplayName) {
-                            buffer.readChatComponent()
-                        } else {
-                            null
-                        }
-                        data = TabListItemData(
-                            hasDisplayName = hasDisplayName,
-                            displayName = displayName,
-                        )
-                    }
-                    TabListItemActions.REMOVE_PLAYER -> {
-                        data = TabListItemData(remove = true)
-                    }
+                    data = TabListItemData(
+                        name = name,
+                        properties = properties,
+                        gamemode = gamemode,
+                        ping = ping,
+                        hasDisplayName = hasDisplayName,
+                        displayName = displayName,
+                    )
                 }
-                items[uuid] = data
+                TabListItemActions.UPDATE_GAMEMODE -> {
+                    data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
+                }
+                TabListItemActions.UPDATE_LATENCY -> {
+                    data = TabListItemData(ping = buffer.readVarInt())
+                }
+                TabListItemActions.UPDATE_DISPLAY_NAME -> {
+                    val hasDisplayName = buffer.readBoolean()
+                    val displayName = if (hasDisplayName) {
+                        buffer.readChatComponent()
+                    } else {
+                        null
+                    }
+                    data = TabListItemData(
+                        hasDisplayName = hasDisplayName,
+                        displayName = displayName,
+                    )
+                }
+                TabListItemActions.REMOVE_PLAYER -> {
+                    data = null
+                }
             }
+            items[uuid] = data
         }
     }
 
     override fun handle(connection: PlayConnection) {
         for ((uuid, data) in items) {
-            // legacy
-
-            if (connection.version.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
-                val item: TabListItem = if (data.remove) {
-                    // add or remove
-                    connection.tabList.tabListItemsByUUID[uuid]?.apply {
-                        connection.tabList.tabListItemsByUUID.remove(uuid)
-                        connection.tabList.tabListItemsByName.remove(data.name)
-                    } ?: TabListItem(name = data.name!!).apply {
-                        // add
-                        connection.tabList.tabListItemsByUUID[uuid] = this
-                        connection.tabList.tabListItemsByName[data.name] = this
-                    }
-                } else {
-                    connection.tabList.tabListItemsByUUID[uuid]!!
-                }
-
-                item.merge(data)
-                continue
-            }
-            if (data.remove) {
+            if (data == null) {
                 val item = connection.tabList.tabListItemsByUUID.remove(uuid) ?: continue
                 connection.tabList.tabListItemsByName.remove(item.name)
                 continue

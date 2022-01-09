@@ -22,7 +22,7 @@ import java.util.*
 class TabListEntryChangeEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    val items: Map<UUID, TabListItemData>,
+    val items: Map<UUID, TabListItemData?>,
 ) : PlayConnectionEvent(connection, initiator) {
 
     constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, EventInitiators.SERVER, packet.items)
