@@ -54,15 +54,15 @@ class ClientPacketHandler(
     override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
         if (queued.type.threadSafe) {
             val runnable = ThreadPoolRunnable()
-            runnable.runnable = Runnable { tryHandle(queued.type, queued.packet);handlers -= runnable }
+            runnable.runnable = Runnable { tryHandle(context, queued.type, queued.packet);handlers -= runnable }
             handlers += runnable
             DefaultThreadPool += runnable
         } else {
-            tryHandle(queued.type, queued.packet)
+            tryHandle(context, queued.type, queued.packet)
         }
     }
 
-    private fun tryHandle(type: S2CPacketType, packet: S2CPacket) {
+    private fun tryHandle(context: ChannelHandlerContext, type: S2CPacketType, packet: S2CPacket) {
         if (!client.connected) {
             return
         }
@@ -70,10 +70,10 @@ class ClientPacketHandler(
             handle(packet)
         } catch (exception: NetworkException) {
             type.onError(exception, connection)
-            throw exception
+            context.fireExceptionCaught(exception)
         } catch (error: Throwable) {
             type.onError(error, connection)
-            throw PacketHandleException(error)
+            context.fireExceptionCaught(PacketHandleException(error))
         }
     }
 
