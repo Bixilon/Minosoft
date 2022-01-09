@@ -42,6 +42,9 @@ class NetworkPipeline(private val client: NettyClient) : ChannelInitializer<Sock
         pipeline.addLast(PacketEncoder.NAME, PacketEncoder(client))
 
         pipeline.addLast(ExceptionHandler.NAME, ExceptionHandler(client))
+
+
+        pipeline.addLast("client", client)
     }
 
     override fun channelActive(context: ChannelHandlerContext) {

@@ -28,10 +28,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.ServerAddress
 import io.netty.bootstrap.Bootstrap
-import io.netty.channel.Channel
-import io.netty.channel.ChannelFuture
-import io.netty.channel.ChannelOption
-import io.netty.channel.EventLoopGroup
+import io.netty.channel.*
 import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
 import io.netty.channel.epoll.EpollSocketChannel
@@ -42,7 +39,7 @@ import javax.crypto.Cipher
 
 class NettyClient(
     val connection: Connection,
-) {
+) : SimpleChannelInboundHandler<Any>() {
     var connected by watched(false)
         private set
     var state by watched(ProtocolStates.HANDSHAKING)
@@ -88,19 +85,6 @@ class NettyClient(
             .handler(NetworkPipeline(this))
 
         val future: ChannelFuture = bootstrap.connect(address.hostname, address.port).sync()
-        future.addListener {
-            if (!it.isSuccess) {
-                disconnect()
-                return@addListener
-            }
-            val channel = future.channel()
-            this.channel = channel
-            try {
-                channel.config().setOption(ChannelOption.TCP_NODELAY, true)
-            } catch (_: Throwable) {
-            }
-            connected = true
-        }
     }
 
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
@@ -122,13 +106,32 @@ class NettyClient(
     fun pauseReceiving(pause: Boolean) {}
 
     fun send(packet: C2SPacket) {
+        if (!connected) {
+            throw IllegalStateException("Can not send packet when not connected!")
+        }
         val channel = this.channel
-        if (channel?.isActive != true) {
-            throw IllegalStateException("Channel not active!")
+        if (channel == null || !channel.isActive) {
+            throw IllegalStateException("Channel not null or not active!")
         }
 
         packet.log((connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected).log.reducedProtocolLog)
         channel.writeAndFlush(packet)
+    }
+
+    override fun channelRead0(context: ChannelHandlerContext?, message: Any?) {
+    }
+
+    override fun channelActive(context: ChannelHandlerContext) {
+        try {
+            context.channel().config().setOption(ChannelOption.TCP_NODELAY, true)
+        } catch (_: Throwable) {
+        }
+        this.channel = context.channel()
+        connected = true
+    }
+
+    override fun channelInactive(context: ChannelHandlerContext) {
+        connected = false
     }
 
     companion object {
