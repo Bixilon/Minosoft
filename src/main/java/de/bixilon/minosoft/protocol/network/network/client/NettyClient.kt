@@ -37,6 +37,7 @@ import io.netty.channel.socket.nio.NioSocketChannel
 import javax.crypto.Cipher
 
 
+@ChannelHandler.Sharable
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>() {
@@ -47,10 +48,15 @@ class NettyClient(
         set(value) {
             field = value
             val channel = channel ?: return
+            val pipeline = channel.pipeline()
             if (value < 0) {
                 // disable
-                channel.pipeline().remove(PacketInflater.NAME)
-                channel.pipeline().remove(PacketDeflater.NAME)
+                if (pipeline.get(PacketInflater.NAME) != null) {
+                    channel.pipeline().remove(PacketInflater.NAME)
+                }
+                if (pipeline.get(PacketDeflater.NAME) != null) {
+                    channel.pipeline().remove(PacketDeflater.NAME)
+                }
             } else {
                 // enable or update
                 val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
@@ -70,9 +76,10 @@ class NettyClient(
     private var channel: Channel? = null
 
     fun connect(address: ServerAddress, epoll: Boolean) {
+        state = ProtocolStates.HANDSHAKING
         val threadPool: EventLoopGroup
         val channelClass: Class<out Channel>
-        if (Epoll.isAvailable() && epoll) {
+        if (epoll && Epoll.isAvailable()) {
             threadPool = EPOLL_THREAD_POOL
             channelClass = EpollSocketChannel::class.java
         } else {
@@ -84,7 +91,7 @@ class NettyClient(
             .channel(channelClass)
             .handler(NetworkPipeline(this))
 
-        val future: ChannelFuture = bootstrap.connect(address.hostname, address.port).sync()
+        bootstrap.connect(address.hostname, address.port).sync()
     }
 
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
@@ -99,6 +106,9 @@ class NettyClient(
 
     fun disconnect() {
         channel?.close()
+        encrypted = false
+        channel = null
+        compressionThreshold = -1
         connected = false
     }
 
