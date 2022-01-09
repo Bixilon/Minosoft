@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.factory
 
 enum class PacketDirection {
-    CLIENT_TO_SERVER,
     SERVER_TO_CLIENT,
+    CLIENT_TO_SERVER,
     ;
 }
