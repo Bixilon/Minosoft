@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,6 +39,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.AutoConnect
@@ -73,7 +74,13 @@ object Minosoft {
         val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
 
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_VERSIONS, priority = ThreadPool.HIGH, executor = {
+        taskWorker += Task(identifier = StartupTasks.LOAD_PACKETS, priority = ThreadPool.HIGH, executor = {
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Initializing packets..." }
+            PacketTypeRegistry.init()
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Packets initialized!" }
+        })
+
+        taskWorker += Task(identifier = StartupTasks.LOAD_VERSIONS, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_PACKETS), executor = {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
             Versions.load()
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Versions loaded!" }

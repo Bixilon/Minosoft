@@ -62,7 +62,7 @@ object AutoConnect {
             val ping = StatusConnection(address)
             ping.ping()
             ping.registerEvent(CallbackEventInvoker.of<ServerStatusReceiveEvent> {
-                autoConnect(ping.realAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account)
+                autoConnect(ping.tryAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account)
             })
             return
         }

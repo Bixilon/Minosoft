@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,6 +55,7 @@ import javafx.geometry.Insets
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListView
+import javafx.scene.input.KeyCode
 import javafx.scene.layout.*
 
 
@@ -125,7 +126,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         Eros.mainErosController.verifyAccount { account ->
             DefaultThreadPool += {
                 val connection = PlayConnection(
-                    address = ping.realAddress ?: DNSUtil.getServerAddress(server.address),
+                    address = ping.tryAddress ?: DNSUtil.getServerAddress(server.address),
                     account = account,
                     version = serverCard.server.forcedVersion ?: pingVersion,
                     profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
@@ -167,7 +168,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     override fun postInit() {
-        root.setOnKeyPressed { serverListViewFX.selectionModel.select(null) } // ToDo: Only on escape; not working
+        root.setOnKeyPressed { if (it.code == KeyCode.ESCAPE) serverListViewFX.selectionModel.select(null) } // ToDo: Not working
     }
 
     fun initWatch() {
@@ -290,7 +291,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                 // ToDo: server.connections.clear()
 
                                 val ping = serverCard.ping
-                                ping.disconnect()
+                                ping.network.disconnect()
                                 ping.address = server.address
                                 ping.ping()
                             }
@@ -303,7 +304,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             it.add(Button("Refresh").apply {
                 setOnAction {
-                    serverCard.ping.disconnect()
+                    serverCard.ping.network.disconnect()
                     serverCard.ping.ping()
                 }
                 isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR
@@ -390,7 +391,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (ServerCard) -> Any?>> = listOf(
             "minosoft:server_info.server_name".toResourceLocation() to { it.server.name },
             "minosoft:server_info.server_address".toResourceLocation() to { it.server.address },
-            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.realAddress },
+            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.tryAddress },
             "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
             "minosoft:general.empty".toResourceLocation() to { " " },

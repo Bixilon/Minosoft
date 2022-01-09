@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities.decoration
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -27,11 +27,11 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, positio
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: ItemStack?
-        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.ITEM_FRAME_ITEM)
+        get() = data.sets.getItemStack(EntityDataFields.ITEM_FRAME_ITEM)
 
     @get:EntityMetaDataFunction(name = "Item rotation level")
     val itemRotation: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION)
+        get() = data.sets.getInt(EntityDataFields.ITEM_FRAME_ROTATION)
 
     @get:EntityMetaDataFunction(name = "Facing")
     var facing: Directions = Directions.NORTH

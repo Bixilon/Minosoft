@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.vehicle
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
@@ -26,31 +26,31 @@ class Boat(connection: PlayConnection, entityType: EntityType, position: Vec3d, 
 
     @get:EntityMetaDataFunction(name = "Time since last hit")
     val timeSinceLastHit: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.BOAT_HURT)
+        get() = data.sets.getInt(EntityDataFields.BOAT_HURT)
 
     @get:EntityMetaDataFunction(name = "Forward direction")
     val forwardDirection: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.BOAT_HURT_DIRECTION)
+        get() = data.sets.getInt(EntityDataFields.BOAT_HURT_DIRECTION)
 
     @get:EntityMetaDataFunction(name = "Damage taken")
     val damageTaken: Float
-        get() = entityMetaData.sets.getFloat(EntityMetaDataFields.BOAT_DAMAGE_TAKEN)
+        get() = data.sets.getFloat(EntityDataFields.BOAT_DAMAGE_TAKEN)
 
     @get:EntityMetaDataFunction(name = "Material")
     val material: BoatMaterials
-        get() = BoatMaterials.byId(entityMetaData.sets.getInt(EntityMetaDataFields.BOAT_MATERIAL))
+        get() = BoatMaterials.byId(data.sets.getInt(EntityDataFields.BOAT_MATERIAL))
 
     @get:EntityMetaDataFunction(name = "Left paddle turning")
     val isLeftPaddleTurning: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.BOAT_PADDLE_LEFT)
+        get() = data.sets.getBoolean(EntityDataFields.BOAT_PADDLE_LEFT)
 
     @get:EntityMetaDataFunction(name = "Right paddle turning")
     val isRightPaddleTurning: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.BOAT_PADDLE_RIGHT)
+        get() = data.sets.getBoolean(EntityDataFields.BOAT_PADDLE_RIGHT)
 
     @get:EntityMetaDataFunction(name = "Splash timer")
     val splashTimer: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.BOAT_BUBBLE_TIME)
+        get() = data.sets.getInt(EntityDataFields.BOAT_BUBBLE_TIME)
 
     enum class BoatMaterials {
         OAK,

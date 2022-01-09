@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.assets.properties.version.generator
 
-import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.data.registries.versions.VersionTypes
 
 object AssetsPropertiesGenerator {
 
@@ -32,7 +32,7 @@ object AssetsPropertiesGenerator {
         profile.verify = false
         val (versionId, clientJarHash) = args
 
-        val assetsManager = JarAssetsManager("abcdef", clientJarHash, profile, Version(versionId, -1, -1, HashBiMap.create(), HashBiMap.create()))
+        val assetsManager = JarAssetsManager("abcdef", clientJarHash, profile, Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, mapOf(), mapOf()))
         try {
             assetsManager.load(CountUpAndDownLatch(1))
         } catch (exception: InvalidAssetException) {

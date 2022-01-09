@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.monster.piglin
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -29,21 +29,21 @@ class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3d
         get() = if (versionId < ProtocolVersions.V_20W27A) {
             super.isImmuneToZombification
         } else {
-            entityMetaData.sets.getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION)
+            data.sets.getBoolean(EntityDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION)
 
         }
 
     @get:EntityMetaDataFunction(name = "Is baby")
     val isBaby: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.PIGLIN_IS_BABY)
+        get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_BABY)
 
     @get:EntityMetaDataFunction(name = "Is charging crossbow")
     val isChargingCrossbow: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.PIGLIN_IS_CHARGING_CROSSBOW)
+        get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_CHARGING_CROSSBOW)
 
     @get:EntityMetaDataFunction(name = "Is dancing")
     val isDancing: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.PIGLIN_IS_DANCING)
+        get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_DANCING)
 
 
     companion object : EntityFactory<Piglin> {

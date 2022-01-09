@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,13 +16,13 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsEntity
@@ -70,7 +70,7 @@ import kotlin.random.Random
 
 abstract class Entity(
     protected val connection: PlayConnection,
-    val entityType: EntityType,
+    val type: EntityType,
     position: Vec3d,
     var rotation: EntityRotation,
 ) : PhysicsEntity {
@@ -89,7 +89,7 @@ abstract class Entity(
     protected val versionId: Int = connection.version.versionId
     open var attachedEntity: Int? = null
 
-    val entityMetaData: EntityMetaData = EntityMetaData(connection)
+    val data: EntityData = EntityData(connection)
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
 
@@ -113,7 +113,7 @@ abstract class Entity(
             return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
         }
 
-    open val dimensions = Vec2(entityType.width, entityType.height)
+    open val dimensions = Vec2(type.width, type.height)
 
     open val eyeHeight: Float
         get() = dimensions.y * 0.85f
@@ -162,7 +162,7 @@ abstract class Entity(
     fun getAttributeValue(name: ResourceLocation, baseValue: Double? = null): Double {
         // ToDo: Check order and verify value
         val attribute = attributes[name]
-        val realBaseValue = baseValue ?: attribute?.baseValue ?: entityType.attributes[name] ?: 1.0
+        val realBaseValue = baseValue ?: attribute?.baseValue ?: type.attributes[name] ?: 1.0
         var ret = realBaseValue
 
         fun addToValue(modifier: EntityAttributeModifier, amplifier: Int) {
@@ -205,7 +205,7 @@ abstract class Entity(
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.ENTITY_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.ENTITY_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "On fire")
@@ -236,23 +236,23 @@ abstract class Entity(
 
     @get:EntityMetaDataFunction(name = "Air supply")
     val airSupply: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.ENTITY_AIR_SUPPLY)
+        get() = data.sets.getInt(EntityDataFields.ENTITY_AIR_SUPPLY)
 
     @get:EntityMetaDataFunction(name = "Custom name")
     val customName: ChatComponent?
-        get() = entityMetaData.sets.getChatComponent(EntityMetaDataFields.ENTITY_CUSTOM_NAME)
+        get() = data.sets.getChatComponent(EntityDataFields.ENTITY_CUSTOM_NAME)
 
     @get:EntityMetaDataFunction(name = "Is custom name visible")
     val isCustomNameVisible: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_CUSTOM_NAME_VISIBLE)
+        get() = data.sets.getBoolean(EntityDataFields.ENTITY_CUSTOM_NAME_VISIBLE)
 
     @get:EntityMetaDataFunction(name = "Is silent")
     val isSilent: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_SILENT)
+        get() = data.sets.getBoolean(EntityDataFields.ENTITY_SILENT)
 
     @EntityMetaDataFunction(name = "Has gravity")
     open val hasGravity: Boolean
-        get() = !entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY)
+        get() = !data.sets.getBoolean(EntityDataFields.ENTITY_NO_GRAVITY)
 
     @get:EntityMetaDataFunction(name = "Pose")
     open val pose: Poses?
@@ -261,13 +261,13 @@ abstract class Entity(
                 isFlyingWithElytra -> Poses.ELYTRA_FLYING
                 isSwimming -> Poses.SWIMMING
                 isSneaking -> Poses.SNEAKING
-                else -> entityMetaData.sets.getPose(EntityMetaDataFields.ENTITY_POSE)
+                else -> data.sets.getPose(EntityDataFields.ENTITY_POSE)
             }
         }
 
     @get:EntityMetaDataFunction(name = "Ticks frozen")
     val ticksFrozen: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN)
+        get() = data.sets.getInt(EntityDataFields.ENTITY_TICKS_FROZEN)
 
     val entityMetaDataAsString: String
         get() = entityMetaDataFormatted.toString()
@@ -416,7 +416,7 @@ abstract class Entity(
     open fun setObjectData(data: Int) = Unit
 
     override fun toString(): String {
-        return entityType.toString()
+        return type.toString()
     }
 
     fun fall(deltaY: Double) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.data.registries.recipes.Ingredient
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -36,6 +35,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
+import de.bixilon.minosoft.recipes.Ingredient
 import glm_.vec3.Vec3i
 
 
@@ -153,7 +153,7 @@ class PlayInByteBuffer : InByteBuffer {
             else -> 0
         }
 
-        check(length <= ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) { "Trying to allocate too much memory" }
+        check(length <= this.size) { "Trying to allocate too much memory" }
 
         val ret: MutableList<Biome> = mutableListOf()
         for (i in 0 until length) {
@@ -167,14 +167,14 @@ class PlayInByteBuffer : InByteBuffer {
         return ret.toTypedArray()
     }
 
-    fun readMetaData(): EntityMetaData {
-        val metaData = EntityMetaData(connection)
+    fun readMetaData(): EntityData {
+        val metaData = EntityData(connection)
         val sets = metaData.sets
         if (versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.registries.entityMetaDataDataDataTypesRegistry[item and 0xFF shr 5]!!
+                val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
                 sets[index] = metaData.getData(type, this)!!
                 item = readUnsignedByte()
             }
@@ -186,7 +186,7 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.registries.entityMetaDataDataDataTypesRegistry[id] ?: error("Can not get meta data index for id $id")
+                val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: error("Can not get meta data index for id $id")
                 metaData.getData(type, this)?.let {
                     sets[index] = it
                 }
@@ -239,5 +239,13 @@ class PlayInByteBuffer : InByteBuffer {
         return PlayerProperties(
             textures = textures,
         )
+    }
+
+    fun <T> readPlayOptional(reader: PlayInByteBuffer.() -> T): T? {
+        return if (readBoolean()) {
+            reader(this)
+        } else {
+            null
+        }
     }
 }

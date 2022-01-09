@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
 
 class InteractionManager(
     val renderWindow: RenderWindow,
@@ -57,7 +57,7 @@ class InteractionManager(
     }
 
     fun swingHand(hand: Hands) {
-        swingArmRateLimiter += { connection.sendPacket(ArmSwingC2SP(hand)) }
+        swingArmRateLimiter += { connection.sendPacket(SwingArmC2SP(hand)) }
     }
 
     fun isCoolingDown(item: Item): Boolean {

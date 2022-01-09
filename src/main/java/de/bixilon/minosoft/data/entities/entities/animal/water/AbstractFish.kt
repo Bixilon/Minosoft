@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal.water
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,5 +23,5 @@ abstract class AbstractFish(connection: PlayConnection, entityType: EntityType, 
 
     @get:EntityMetaDataFunction(name = "Is from bucket")
     val isFromBucket: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.ABSTRACT_FISH_FROM_BUCKET)
+        get() = data.sets.getBoolean(EntityDataFields.ABSTRACT_FISH_FROM_BUCKET)
 }

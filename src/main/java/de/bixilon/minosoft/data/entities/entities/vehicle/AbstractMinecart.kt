@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.vehicle
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
@@ -24,25 +24,25 @@ abstract class AbstractMinecart(connection: PlayConnection, entityType: EntityTy
 
     @get:EntityMetaDataFunction(name = "Shaking power")
     val shakingPower: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.MINECART_HURT)
+        get() = data.sets.getInt(EntityDataFields.MINECART_HURT)
 
     @get:EntityMetaDataFunction(name = "Shaking direction")
     val shakingDirection: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.MINECART_HURT_DIRECTION)
+        get() = data.sets.getInt(EntityDataFields.MINECART_HURT_DIRECTION)
 
     @get:EntityMetaDataFunction(name = "Shaking multiplier")
     val shakingMultiplier: Float
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.MINECART_DAMAGE_TAKEN).toFloat()
+        get() = data.sets.getInt(EntityDataFields.MINECART_DAMAGE_TAKEN).toFloat()
 
     @get:EntityMetaDataFunction(name = "Block id")
     val blockId: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.MINECART_BLOCK_ID)
+        get() = data.sets.getInt(EntityDataFields.MINECART_BLOCK_ID)
 
     @get:EntityMetaDataFunction(name = "Block Y offset")
     val blockYOffset: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.MINECART_BLOCK_Y_OFFSET)
+        get() = data.sets.getInt(EntityDataFields.MINECART_BLOCK_Y_OFFSET)
 
     @get:EntityMetaDataFunction(name = "Is showing block")
     val isShowingBlock: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.MINECART_SHOW_BLOCK)
+        get() = data.sets.getBoolean(EntityDataFields.MINECART_SHOW_BLOCK)
 }

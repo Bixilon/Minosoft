@@ -13,24 +13,27 @@
 
 package de.bixilon.minosoft.data.registries.versions
 
+import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.RegistriesLoader
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 
 class Version(
     val name: String,
     val versionId: Int,
     val protocolId: Int,
-    val s2cPackets: Map<ProtocolStates, Array<PacketTypes.S2C>>,
-    val c2sPackets: Map<ProtocolStates, Array<PacketTypes.C2S>>,
+    val type: VersionTypes,
+    val s2cPackets: Map<ProtocolStates, AbstractBiMap<S2CPacketType, Int>>,
+    val c2sPackets: Map<ProtocolStates, AbstractBiMap<C2SPacketType, Int>>,
 ) {
     val sortingId: Int = (versionId == -1).decide(Int.MAX_VALUE, versionId)
-    val type = VersionTypes[this]
     var registries: Registries? = null
         private set
 
@@ -55,4 +58,5 @@ class Version(
 
     val flattened: Boolean = versionId >= ProtocolDefinition.FLATTING_VERSION_ID
     val hasOffhand: Boolean = versionId >= V_15W31A
+    val maxPacketLength = (versionId < ProtocolVersions.V_1_17_1_RC2).decide(1 shl 21, 1 shl 23)
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,48 +12,47 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
+import de.bixilon.kutil.collections.CollectionUtil.biMapOf
+import de.bixilon.kutil.collections.map.bi.BiMap
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.PluginC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
+import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
+import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
+import de.bixilon.minosoft.protocol.packets.factory.S2CPacketType
+import de.bixilon.minosoft.protocol.packets.s2c.login.*
+import de.bixilon.minosoft.protocol.packets.s2c.status.PongS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.status.StatusS2CP
 
 object Protocol {
-    private val C2S_PACKET_MAPPING: Map<ProtocolStates, HashBiMap<C2S, Int>> = mapOf(
-        ProtocolStates.HANDSHAKING to HashBiMap.create(mapOf(
-            C2S.HANDSHAKING_HANDSHAKE to 0x00
-        )),
-        ProtocolStates.STATUS to HashBiMap.create(mapOf(
-            C2S.STATUS_REQUEST to 0x00,
-            C2S.STATUS_PING to 0x01
-        )),
-        ProtocolStates.LOGIN to HashBiMap.create(mapOf(
-            C2S.LOGIN_LOGIN_START to 0x00,
-            C2S.LOGIN_ENCRYPTION_RESPONSE to 0x01,
-            C2S.LOGIN_PLUGIN_RESPONSE to 0x02
-        ))
-
+    val C2S_PACKET_MAPPING: Map<ProtocolStates, BiMap<C2SPacketType, Int>> = mapOf(
+        ProtocolStates.HANDSHAKING to biMapOf(
+            PacketTypeRegistry.getC2S(HandshakeC2SP::class.java)!! to 0x00,
+        ),
+        ProtocolStates.STATUS to biMapOf(
+            PacketTypeRegistry.getC2S(StatusRequestC2SP::class.java)!! to 0x00,
+            PacketTypeRegistry.getC2S(PingC2SP::class.java)!! to 0x01,
+        ),
+        ProtocolStates.LOGIN to biMapOf(
+            PacketTypeRegistry.getC2S(StartC2SP::class.java)!! to 0x00,
+            PacketTypeRegistry.getC2S(EncryptionC2SP::class.java)!! to 0x01,
+            PacketTypeRegistry.getC2S(PluginC2SP::class.java)!! to 0x02,
+        ),
     )
-    private val S2C_PACKET_MAPPING: Map<ProtocolStates, HashBiMap<S2C, Int>> = mapOf(
-        ProtocolStates.STATUS to HashBiMap.create(mapOf(
-            S2C.STATUS_RESPONSE to 0x00,
-            S2C.STATUS_PONG to 0x01
-        )),
-        ProtocolStates.LOGIN to HashBiMap.create(mapOf(
-            S2C.LOGIN_KICK to 0x00,
-            S2C.LOGIN_ENCRYPTION_REQUEST to 0x01,
-            S2C.LOGIN_LOGIN_SUCCESS to 0x02,
-            S2C.LOGIN_COMPRESSION_SET to 0x03,
-            S2C.LOGIN_PLUGIN_REQUEST to 0x04
-        )),
-        ProtocolStates.PLAY to HashBiMap.create(),
+    val S2C_PACKET_MAPPING: Map<ProtocolStates, BiMap<S2CPacketType, Int>> = mapOf(
+        ProtocolStates.STATUS to biMapOf(
+            PacketTypeRegistry.getS2C(StatusS2CP::class.java)!! to 0x00,
+            PacketTypeRegistry.getS2C(PongS2CP::class.java)!! to 0x01,
+        ),
+        ProtocolStates.LOGIN to biMapOf(
+            PacketTypeRegistry.getS2C(KickS2CP::class.java)!! to 0x00,
+            PacketTypeRegistry.getS2C(EncryptionS2CP::class.java)!! to 0x01,
+            PacketTypeRegistry.getS2C(SuccessS2CP::class.java)!! to 0x02,
+            PacketTypeRegistry.getS2C(CompressionS2CP::class.java)!! to 0x03,
+            PacketTypeRegistry.getS2C(PluginS2CP::class.java)!! to 0x04,
+        ),
     )
-
-    @JvmStatic
-    fun getPacketId(packet: C2S): Int? {
-        return C2S_PACKET_MAPPING[packet.state]?.get(packet)
-    }
-
-    @JvmStatic
-    fun getPacketById(state: ProtocolStates, command: Int): S2C? {
-        return S2C_PACKET_MAPPING[state]?.inverse()?.get(command)
-    }
 }

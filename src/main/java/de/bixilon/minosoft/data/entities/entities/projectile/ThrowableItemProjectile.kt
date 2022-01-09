@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -24,7 +24,7 @@ abstract class ThrowableItemProjectile(connection: PlayConnection, entityType: E
 
     @get:EntityMetaDataFunction(name = "Item")
     open val item: ItemStack?
-        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM) ?: defaultItem
+        get() = data.sets.getItemStack(EntityDataFields.THROWABLE_ITEM_PROJECTILE_ITEM) ?: defaultItem
 
     protected abstract val defaultItem: ItemStack?
 }

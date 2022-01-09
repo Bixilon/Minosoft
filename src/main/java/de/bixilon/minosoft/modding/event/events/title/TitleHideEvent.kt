@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,12 +15,12 @@ package de.bixilon.minosoft.modding.event.events.title
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleHideS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.title.HideTitleS2CP
 
 class TitleHideEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
 ) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: TitleHideS2CP) : this(connection, EventInitiators.SERVER)
+    constructor(connection: PlayConnection, packet: HideTitleS2CP) : this(connection, EventInitiators.SERVER)
 }

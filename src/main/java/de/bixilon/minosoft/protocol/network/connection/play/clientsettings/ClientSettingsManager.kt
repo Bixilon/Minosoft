@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.network.connection.play.clientsettings
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 
 class ClientSettingsManager(
@@ -69,10 +69,10 @@ class ClientSettingsManager(
     }
 
     fun sendClientSettings() {
-        if (connection.protocolState != ProtocolStates.PLAY) {
+        if (connection.network.state != ProtocolStates.PLAY) {
             return
         }
-        connection.sendPacket(ClientSettingsC2SP(
+        connection.sendPacket(SettingsC2SP(
             locale = language,
             chatColors = connection.profiles.hud.chat.chatColors,
             viewDistance = connection.profiles.block.viewDistance,

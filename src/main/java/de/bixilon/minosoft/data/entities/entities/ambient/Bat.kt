@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.ambient
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -24,7 +24,7 @@ import glm_.vec3.Vec3d
 class Bat(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AmbientCreature(connection, entityType, position, rotation) {
 
     private fun getBatFlag(bitMask: Int): Boolean {
-        return entityMetaData.sets.getBitMask(EntityMetaDataFields.BAT_FLAGS, bitMask)
+        return data.sets.getBitMask(EntityDataFields.BAT_FLAGS, bitMask)
     }
 
     @get:EntityMetaDataFunction(name = "Hanging")

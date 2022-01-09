@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.recipes.Recipes
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.versions.MinecraftRegistryFixer
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -44,18 +44,16 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.*
+import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
+import de.bixilon.minosoft.protocol.protocol.PacketSender
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.commands.commands.Command
@@ -68,27 +66,25 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class PlayConnection(
     val address: ServerAddress,
     val account: Account,
-    val version: Version,
+    override val version: Version,
     val profiles: ConnectionProfiles = ConnectionProfiles(),
 ) : Connection() {
     val settingsManager = ClientSettingsManager(this)
     val registries = Registries()
-    val recipes = Recipes()
     val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
 
-    @Deprecated(message = "PacketSender is deprecated")
-    val sender = PacketSender(this)
+    @Deprecated(message = "PacketSender is deprecated") val sender = PacketSender(this)
     val serverInfo = ServerInfo()
     lateinit var assetsManager: AssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: LanguageManager
 
-    var commandRootNode: CommandRootNode? = null
+    var commandRoot: CommandRootNode? = null
 
 
     var rendering: Rendering? = null
@@ -114,39 +110,54 @@ class PlayConnection(
 
     init {
         MinecraftRegistryFixer(this)
-    }
 
-    override var protocolState: ProtocolStates = ProtocolStates.DISCONNECTED
-        set(value) {
-            val previousConnectionState = protocolState
-            field = value
-            // handle callbacks
-            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, value))
-            when (value) {
-                ProtocolStates.HANDSHAKING -> {
-                    state = PlayConnectionStates.HANDSHAKING
-                    ACTIVE_CONNECTIONS += this
-                    for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
-                        var valid = false
-                        for (serverAddress in validators) {
-                            if (serverAddress.check(address)) {
-                                valid = true
-                                break
-                            }
-                        }
-                        if (valid) {
-                            registerEvents(*invokers.toTypedArray())
+        network::connected.observe(this) {
+            if (it) {
+                ACTIVE_CONNECTIONS += this
+                for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
+                    var valid = false
+                    for (serverAddress in validators) {
+                        if (serverAddress.check(address)) {
+                            valid = true
+                            break
                         }
                     }
-
-
-                    network.sendPacket(HandshakeC2SP(address, ProtocolStates.LOGIN, version.protocolId))
-                    // after sending it, switch to next state
-                    protocolState = ProtocolStates.LOGIN
+                    if (valid) {
+                        registerEvents(*invokers.toTypedArray())
+                    }
                 }
+
+                state = PlayConnectionStates.HANDSHAKING
+                network.send(HandshakeC2SP(address, ProtocolStates.LOGIN, version.protocolId))
+                // after sending it, switch to next state
+                network.state = ProtocolStates.LOGIN
+            } else {
+                wasConnected = true
+                //ToDo: Minosoft.CONNECTIONS.remove(connectionId)
+                if (CLI.getCurrentConnection() == this) {
+                    CLI.setCurrentConnection(null)
+                    Command.print("Disconnected from current connection!")
+                }
+                if (this::entityTickTask.isInitialized) {
+                    TimeWorker.removeTask(entityTickTask)
+                }
+                if (this::worldTickTask.isInitialized) {
+                    TimeWorker.removeTask(worldTickTask)
+                }
+                if (this::randomTickTask.isInitialized) {
+                    TimeWorker.removeTask(randomTickTask)
+                }
+                assetsManager.unload()
+                state = PlayConnectionStates.DISCONNECTED
+                ACTIVE_CONNECTIONS -= this
+            }
+        }
+        network::state.observe(this) {
+            when (it) {
+                ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
                     state = PlayConnectionStates.LOGGING_IN
-                    this.network.sendPacket(LoginStartC2SP(this.player))
+                    this.network.send(StartC2SP(this.player))
                 }
                 ProtocolStates.PLAY -> {
                     state = PlayConnectionStates.JOINING
@@ -181,34 +192,9 @@ class PlayConnection(
                         Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message }
                     })
                 }
-                ProtocolStates.DISCONNECTED -> {
-                    if (previousConnectionState.connected) {
-                        wasConnected = true
-                    }
-                    // unregister all custom recipes
-                    this.recipes.removeCustomRecipes()
-                    //ToDo: Minosoft.CONNECTIONS.remove(connectionId)
-                    if (CLI.getCurrentConnection() == this) {
-                        CLI.setCurrentConnection(null)
-                        Command.print("Disconnected from current connection!")
-                    }
-                    if (this::entityTickTask.isInitialized) {
-                        TimeWorker.removeTask(entityTickTask)
-                    }
-                    if (this::worldTickTask.isInitialized) {
-                        TimeWorker.removeTask(worldTickTask)
-                    }
-                    if (this::randomTickTask.isInitialized) {
-                        TimeWorker.removeTask(randomTickTask)
-                    }
-                    assetsManager.unload()
-                    state = PlayConnectionStates.DISCONNECTED
-                    ACTIVE_CONNECTIONS -= this
-                }
-                else -> {
-                }
             }
         }
+    }
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(0)) {
         val count = latch.count
@@ -238,7 +224,7 @@ class PlayConnection(
                 renderLatch.awaitWithChange()
             }
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
-            network.connect(address)
+            network.connect(address, profiles.other.epoll)
             state = PlayConnectionStates.ESTABLISHING
         } catch (exception: Throwable) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
@@ -250,46 +236,6 @@ class PlayConnection(
             retry = false
         }
         latch.count = count
-    }
-
-    @Deprecated("ToDo: Version?")
-    override fun getPacketId(packetType: PacketTypes.C2S): Int {
-        // ToDo: Improve speed
-        return version.c2sPackets[packetType.state]?.indexOf(packetType) ?: Protocol.getPacketId(packetType) ?: error("Can not find packet $packetType for $version")
-    }
-
-    @Deprecated("ToDo: Version?")
-    override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return version.s2cPackets[protocolState]?.getOrNull(packetId) ?: Protocol.getPacketById(protocolState, packetId) ?: let {
-            // wtf, notchain sends play disconnect packet in login state...
-            if (protocolState != ProtocolStates.LOGIN) {
-                return@let null
-            }
-            val playPacket = version.s2cPackets[ProtocolStates.PLAY]?.getOrNull(packetId)
-            if (playPacket == PacketTypes.S2C.PLAY_KICK) {
-                return@let playPacket
-            }
-            null
-        } ?: error("Can not find packet $packetId in $protocolState for $version")
-    }
-
-    @Deprecated("ToDo: Packet handler")
-    override fun handlePacket(packet: S2CPacket) {
-        if (!protocolState.connected) {
-            return
-        }
-        try {
-            packet.log(profiles.other.log.reducedProtocolLog)
-            val event = PacketReceiveEvent(this, packet)
-            if (fireEvent(event)) {
-                return
-            }
-            if (packet is PlayS2CPacket) {
-                packet.handle(this)
-            }
-        } catch (exception: Throwable) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
-        }
     }
 
     @Deprecated("ToDo: Tag manager")

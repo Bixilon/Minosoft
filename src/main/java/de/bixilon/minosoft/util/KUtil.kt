@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,6 +30,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
@@ -39,7 +40,12 @@ import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
 import org.kamranzafar.jtar.TarHeader
+import java.io.ByteArrayOutputStream
 import java.util.*
+import java.util.zip.Deflater
+import java.util.zip.Inflater
+import kotlin.jvm.internal.Reflection
+import kotlin.reflect.KClass
 
 
 object KUtil {
@@ -244,4 +250,52 @@ object KUtil {
         TimeWorker::class.java.forceInit()
         ShutdownManager::class.java.forceInit()
     }
+
+    fun <T> Array<T>.index(value: T): Int? {
+        val index = indexOf(value)
+        if (index < 0) {
+            return null
+        }
+        return index
+    }
+
+    fun ByteArray.decompressZlib(): ByteArray {
+        val inflater = Inflater()
+        inflater.setInput(this, 0, this.size)
+        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+        val stream = ByteArrayOutputStream(this.size)
+        while (!inflater.finished()) {
+            stream.write(buffer, 0, inflater.inflate(buffer))
+        }
+        stream.close()
+        return stream.toByteArray()
+    }
+
+
+    fun ByteArray.compressZlib(): ByteArray {
+        val deflater = Deflater()
+        deflater.setInput(this)
+        deflater.finish()
+        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+        val stream = ByteArrayOutputStream(this.size)
+        while (!deflater.finished()) {
+            stream.write(buffer, 0, deflater.deflate(buffer))
+        }
+        stream.close()
+        return stream.toByteArray()
+    }
+
+
+    fun ByteArray.withLengthPrefix(): ByteArray {
+        val prefixed = OutByteBuffer()
+        prefixed.writeByteArray(this)
+        return prefixed.toArray()
+    }
+
+    fun Int.toHex(): String {
+        return Integer.toHexString(this)
+    }
+
+    val <T : Any>Class<T>.kClass: KClass<T>
+        get() = Reflection.createKotlinClass(this).unsafeCast()
 }

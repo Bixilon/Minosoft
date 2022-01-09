@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,13 +14,11 @@
 package de.bixilon.minosoft.protocol.network.connection.status
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
@@ -29,17 +27,12 @@ import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.PingQuery
-import de.bixilon.minosoft.protocol.protocol.Protocol
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class StatusConnection(
@@ -54,7 +47,7 @@ class StatusConnection(
     var pingQuery: PingQuery? = null
     var lastPongEvent: StatusPongReceiveEvent? = null
 
-    var realAddress: ServerAddress? = null
+    var tryAddress: ServerAddress? = null
         private set
     private var addresses: List<ServerAddress>? = null
 
@@ -68,115 +61,89 @@ class StatusConnection(
             super.error = value
             value?.let {
                 state = StatusConnectionStates.ERROR
-                protocolState = ProtocolStates.DISCONNECTED
+                network.disconnect()
             }
         }
 
 
-    private fun resolve() {
+    init {
+        network::connected.observe(this) {
+            if (it) {
+                state = StatusConnectionStates.HANDSHAKING
+                network.send(HandshakeC2SP(tryAddress!!, ProtocolStates.STATUS, Versions.AUTOMATIC.protocolId))
+                network.state = ProtocolStates.STATUS
+                return@observe
+            }
+            if (lastServerStatus != null) {
+                return@observe
+            }
+
+            val nextIndex = addresses!!.indexOf(tryAddress) + 1
+            if (addresses!!.size > nextIndex) {
+                val nextAddress = addresses!![nextIndex]
+                Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
+                tryAddress = nextAddress
+                ping()
+            } else {
+                // no connection and no servers available anymore... sorry, but you can not play today :(
+                error = Exception("Tried all hostnames")
+            }
+        }
+
+        network::state.observe(this) {
+            when (it) {
+                ProtocolStates.HANDSHAKING -> {}
+                ProtocolStates.PLAY, ProtocolStates.LOGIN -> throw IllegalStateException("Invalid state!")
+                ProtocolStates.STATUS -> {
+                    state = StatusConnectionStates.QUERYING_STATUS
+                    network.send(StatusRequestC2SP())
+                }
+            }
+        }
+    }
+
+
+    private fun resolve(): List<ServerAddress> {
         state = StatusConnectionStates.RESOLVING
 
         var addresses = this.addresses
         if (addresses == null) {
             addresses = DNSUtil.resolveServerAddress(address)
-            realAddress = addresses.first()
+            tryAddress = addresses.first()
             this.addresses = addresses
         }
+        return addresses
     }
 
     fun ping() {
-        if (protocolState != ProtocolStates.DISCONNECTED) {
+        if (state == StatusConnectionStates.RESOLVING || state == StatusConnectionStates.ESTABLISHING || network.connected) {
             error("Already connecting!")
         }
 
-        realAddress = null
+        tryAddress = null
         this.addresses = null
         lastServerStatus = null
         pingQuery = null
         lastPongEvent = null
         serverVersion = null
         error = null
-        state = StatusConnectionStates.WAITING
+        state = StatusConnectionStates.RESOLVING
 
         DefaultThreadPool += execute@{
             try {
                 resolve()
             } catch (exception: Exception) {
-                Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $realAddress" }
+                Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $tryAddress" }
                 error = exception
-                disconnect()
+                network.disconnect()
                 return@execute
             }
+            val tryAddress = tryAddress ?: return@execute
 
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Trying to ping $realAddress (from $address)" }
+            Log.log(LogMessageType.NETWORK_RESOLVING) { "Trying to ping $tryAddress (from $address)" }
 
             state = StatusConnectionStates.ESTABLISHING
-            network.connect(realAddress)
-        }
-    }
-
-
-    override var protocolState: ProtocolStates = ProtocolStates.DISCONNECTED
-        set(value) {
-            val previousConnectionState = protocolState
-            field = value
-            // handle callbacks
-            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
-            when (value) {
-                ProtocolStates.HANDSHAKING -> {
-                    state = StatusConnectionStates.HANDSHAKING
-                    network.sendPacket(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, Versions.AUTOMATIC.protocolId))
-                    protocolState = ProtocolStates.STATUS
-                }
-                ProtocolStates.STATUS -> {
-                    state = StatusConnectionStates.QUERYING_STATUS
-                    network.sendPacket(StatusRequestC2SP())
-                }
-                ProtocolStates.DISCONNECTED -> {
-                    if (previousConnectionState.connected) {
-                        wasConnected = true
-                        return
-                    }
-                    if (addresses == null || error != null) {
-                        return
-                    }
-
-                    val nextIndex = addresses!!.indexOf(realAddress) + 1
-                    if (addresses!!.size > nextIndex) {
-                        val nextAddress = addresses!![nextIndex]
-                        Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
-                        realAddress = nextAddress
-                        ping()
-                    } else {
-                        // no connection and no servers available anymore... sorry, but you can not play today :(
-                        error = Exception("Tried all hostnames")
-                    }
-                }
-                else -> {
-                }
-            }
-        }
-
-    override fun getPacketId(packetType: PacketTypes.C2S): Int {
-        return Protocol.getPacketId(packetType)!!
-    }
-
-    override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return Protocol.getPacketById(protocolState, packetId) ?: error("Can not find packet $packetId in $protocolState")
-    }
-
-    override fun handlePacket(packet: S2CPacket) {
-        try {
-            packet.log(OtherProfileManager.selected.log.reducedProtocolLog)
-            val event = PacketReceiveEvent(this, packet)
-            if (fireEvent(event)) {
-                return
-            }
-            if (packet is StatusS2CPacket) {
-                packet.handle(this)
-            }
-        } catch (exception: Throwable) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
+            network.connect(tryAddress, false)
         }
     }
 

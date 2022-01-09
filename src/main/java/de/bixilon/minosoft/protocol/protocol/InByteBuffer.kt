@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,6 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
-import de.bixilon.minosoft.data.commands.CommandArgumentNode
-import de.bixilon.minosoft.data.commands.CommandLiteralNode
-import de.bixilon.minosoft.data.commands.CommandNode
-import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,6 +21,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
@@ -299,12 +296,16 @@ open class InByteBuffer {
         return (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT).toInt()
     }
 
-    fun readVec3d(): Vec3d {
-        return Vec3d(readDouble(), readDouble(), readDouble())
+    fun readVec2f(): Vec2 {
+        return Vec2(readFloat(), readFloat())
     }
 
     fun readVec3f(): Vec3 {
         return Vec3(readFloat(), readFloat(), readFloat())
+    }
+
+    fun readVec3d(): Vec3d {
+        return Vec3d(readDouble(), readDouble(), readDouble())
     }
 
     fun readByteBlockPosition(): Vec3i {
@@ -321,39 +322,6 @@ open class InByteBuffer {
 
     fun readResourceLocation(): ResourceLocation {
         return ResourceLocation.getResourceLocation(readString())
-    }
-
-
-    fun readCommandNode(): CommandNode {
-        val flags = readByte().toInt()
-        return when (CommandNode.NodeTypes.byId(flags and 0x03)!!) {
-            CommandNode.NodeTypes.ROOT -> CommandRootNode(flags, this)
-            CommandNode.NodeTypes.LITERAL -> CommandLiteralNode(flags, this)
-            CommandNode.NodeTypes.ARGUMENT -> CommandArgumentNode(flags, this)
-        }
-    }
-
-    @JvmOverloads
-    fun readCommandNodeArray(length: Int = readVarInt()): Array<CommandNode> {
-        val nodes = readArray(length) { readCommandNode() }
-        for (node in nodes) {
-            if (node.redirectNodeId != -1) {
-                node.redirectNode = nodes[node.redirectNodeId]
-            }
-
-            for (childId in node.childrenIds) {
-                when (val child = nodes[childId]) {
-                    is CommandArgumentNode -> {
-                        node.argumentsChildren.add(child)
-                    }
-                    is CommandLiteralNode -> {
-                        node.literalChildren[child.name] = child
-                    }
-                }
-            }
-        }
-
-        return nodes
     }
 
     fun readChunkPosition(): Vec2i {
@@ -443,9 +411,9 @@ open class InByteBuffer {
         return mapOf(*(readArray(length) { readTag(idResolver) }))
     }
 
-    fun <T> readOptional(reader: () -> T): T? {
+    fun <T> readOptional(reader: InByteBuffer.() -> T): T? {
         return if (readBoolean()) {
-            reader()
+            reader(this)
         } else {
             null
         }

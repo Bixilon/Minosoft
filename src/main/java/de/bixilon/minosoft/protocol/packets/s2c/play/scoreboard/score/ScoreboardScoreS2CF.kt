@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,12 +15,16 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
+import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object ScoreboardScoreS2CF {
+@LoadPacket
+object ScoreboardScoreS2CF : PlayPacketFactory {
+    override val direction = PacketDirection.SERVER_TO_CLIENT
 
-    fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
+    override fun createPacket(buffer: PlayInByteBuffer): ScoreboardScoreS2CP {
         val entity = buffer.readString()
         val action = ScoreboardScoreActions[buffer.readVarInt()]
         val objective = buffer.readNullString()

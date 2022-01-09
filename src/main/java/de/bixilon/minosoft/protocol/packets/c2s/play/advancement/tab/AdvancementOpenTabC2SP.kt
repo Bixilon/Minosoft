@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab
 
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
+@LoadPacket(parent = true)
 class AdvancementOpenTabC2SP(
     val tabName: String,
-) : AdvancementTabC2SP(AdvancementTabStatus.OPEN_TAB) {
+) : AdvancementTabC2SP(Action.OPEN_TAB) {
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)
@@ -29,6 +31,6 @@ class AdvancementOpenTabC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Open advancement tab (tab=$tabName)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Advancement open tab (tab=$tabName)" }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.monster.raid
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,7 @@ abstract class SpellcasterIllager(connection: PlayConnection, entityType: Entity
 
     @get:EntityMetaDataFunction(name = "Spell")
     val spell: Spells
-        get() = Spells.byId(entityMetaData.sets.getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL))
+        get() = Spells.byId(data.sets.getInt(EntityDataFields.SPELLCASTER_ILLAGER_SPELL))
 
     enum class Spells {
         NONE,

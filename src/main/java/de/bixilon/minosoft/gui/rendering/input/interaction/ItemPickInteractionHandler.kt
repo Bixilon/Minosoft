@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.protocol.packets.c2s.play.ItemStackCreateC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.item.ItemStackCreateC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ItemPickInteractionHandler(
@@ -67,7 +67,7 @@ class ItemPickInteractionHandler(
             }
             is EntityTarget -> {
                 val entity = target.entity
-                itemStack = entity.entityType.spawnEgg?.let { ItemStack(it, connection) } ?: let {
+                itemStack = entity.type.spawnEgg?.let { ItemStack(it, connection) } ?: let {
                     entity.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?.copy()
                 }
             }
@@ -91,6 +91,8 @@ class ItemPickInteractionHandler(
 
         rateLimiter += { connection.sendPacket(ItemStackCreateC2SP(selectedSlot, itemStack)) }
         connection.player.inventory[selectedSlot] = itemStack
+
+        // ToDo: Use ItemPickC2SP
     }
 
     fun draw(delta: Double) {

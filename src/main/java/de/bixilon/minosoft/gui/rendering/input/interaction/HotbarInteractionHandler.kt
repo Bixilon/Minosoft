@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotSetC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -48,7 +48,7 @@ class HotbarInteractionHandler(
             return
         }
         connection.player.selectedHotbarSlot = slot
-        slotLimiter += { connection.sendPacket(HotbarSlotSetC2SP(slot)) }
+        slotLimiter += { connection.sendPacket(HotbarSlotC2SP(slot)) }
         connection.fireEvent(SelectHotbarSlotEvent(connection, EventInitiators.CLIENT, slot))
     }
 

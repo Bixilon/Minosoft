@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,18 +12,18 @@
  */
 package de.bixilon.minosoft.data.registries.tweaker
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 object VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
     @JvmStatic
-    fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityMetaData?, versionId: Int): Class<out Entity> {
+    fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityData?, versionId: Int): Class<out Entity> {
         if (versionId > ProtocolVersions.V_1_8_9) { // ToDo: No clue here
             return fakeClass
         }
@@ -35,22 +35,22 @@ object VersionTweaker {
                 return ZombifiedPiglin::class.java
             }
             Zombie::class.java -> {
-                if (metaData.sets.getInt(EntityMetaDataFields.ZOMBIE_SPECIAL_TYPE) == 1) {
+                if (metaData.sets.getInt(EntityDataFields.ZOMBIE_SPECIAL_TYPE) == 1) {
                     return ZombieVillager::class.java
                 }
             }
             Skeleton::class.java -> {
-                if (metaData.sets.getInt(EntityMetaDataFields.LEGACY_SKELETON_TYPE) == 1) {
+                if (metaData.sets.getInt(EntityDataFields.LEGACY_SKELETON_TYPE) == 1) {
                     return WitherSkeleton::class.java
                 }
             }
             Guardian::class.java -> {
-                if (metaData.sets.getBitMask(EntityMetaDataFields.LEGACY_GUARDIAN_FLAGS, 0x02)) {
+                if (metaData.sets.getBitMask(EntityDataFields.LEGACY_GUARDIAN_FLAGS, 0x02)) {
                     return ElderGuardian::class.java
                 }
             }
             Horse::class.java -> {
-                return when (metaData.sets.getByte(EntityMetaDataFields.LEGACY_HORSE_SPECIAL_TYPE).toInt()) {
+                return when (metaData.sets.getByte(EntityDataFields.LEGACY_HORSE_SPECIAL_TYPE).toInt()) {
                     1 -> Donkey::class.java
                     2 -> Mule::class.java
                     3 -> ZombieHorse::class.java

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.handshaking
 
-import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -21,17 +22,18 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
+@LoadPacket(state = ProtocolStates.HANDSHAKING)
 class HandshakeC2SP(
     val address: ServerAddress,
     val nextState: ProtocolStates = ProtocolStates.STATUS,
     val protocolId: Int = ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID,
-) : AllC2SPacket {
+) : C2SPacket {
 
     override fun write(buffer: OutByteBuffer) {
         buffer.writeVarInt(protocolId)
         buffer.writeString(address.hostname)
         buffer.writeShort(address.port)
-        buffer.writeVarInt(nextState.protocolId)
+        buffer.writeVarInt(nextState.ordinal)
     }
 
     override fun log(reducedLog: Boolean) {

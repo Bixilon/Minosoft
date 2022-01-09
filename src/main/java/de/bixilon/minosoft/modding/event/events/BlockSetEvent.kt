@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.BlockSetS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockS2CP
 import glm_.vec3.Vec3i
 
 /**
@@ -29,5 +29,5 @@ class BlockSetEvent(
     val blockState: BlockState?,
 ) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: BlockSetS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition, packet.blockState)
+    constructor(connection: PlayConnection, packet: BlockS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition, packet.blockState)
 }

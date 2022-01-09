@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,30 +16,23 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 abstract class AdvancementTabC2SP(
-    val action: AdvancementTabStatus,
+    val action: Action,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeVarInt(action.ordinal)
     }
 
-    override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Advancement tab (action=$action)" }
-    }
-
-    enum class AdvancementTabStatus {
+    enum class Action {
         OPEN_TAB,
         CLOSE_TAB,
         ;
 
-        companion object : ValuesEnum<AdvancementTabStatus> {
-            override val VALUES: Array<AdvancementTabStatus> = values()
-            override val NAME_MAP: Map<String, AdvancementTabStatus> = EnumUtil.getEnumValues(VALUES)
+        companion object : ValuesEnum<Action> {
+            override val VALUES: Array<Action> = values()
+            override val NAME_MAP: Map<String, Action> = EnumUtil.getEnumValues(VALUES)
         }
     }
 }

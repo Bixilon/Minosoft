@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.backingDelegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
@@ -28,9 +29,13 @@ import de.bixilon.minosoft.data.text.ChatComponent
 class Server(
     address: String,
     name: ChatComponent = ChatComponent.of(address),
-    forcedVersion: Version? = null,
+    forcedVersion: Any? = null, // must be version
     profiles: MutableMap<ResourceLocation, String> = mutableMapOf(),
 ) {
+    init {
+        check(forcedVersion == null || forcedVersion is Version)
+    }
+
     /**
      * Server-address as string. May contain the port
      */
@@ -51,7 +56,7 @@ class Server(
 
     @get:JsonProperty("forced_version")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    private var _forcedVersion by delegate(forcedVersion?.name)
+    private var _forcedVersion by delegate(forcedVersion.unsafeCast<Version?>()?.name)
 
     @get:JsonIgnore
     var forcedVersion by backingDelegate(getter = { Versions[_forcedVersion] }, setter = { _forcedVersion = it?.name })

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,19 +15,23 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
+import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object TeamsS2CF {
+@LoadPacket
+object TeamsS2CF : PlayPacketFactory {
+    override val direction = PacketDirection.SERVER_TO_CLIENT
 
-    fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
+    override fun createPacket(buffer: PlayInByteBuffer): TeamsS2CP {
         val name = buffer.readString()
         return when (TeamActions[buffer.readUnsignedByte()]) {
-            TeamActions.CREATE -> TeamCreateS2CP(name, buffer)
-            TeamActions.REMOVE -> TeamRemoveS2CP(name)
-            TeamActions.UPDATE -> TeamUpdateS2CP(name, buffer)
-            TeamActions.MEMBER_ADD -> TeamMemberAddS2CP(name, buffer)
-            TeamActions.MEMBER_REMOVE -> TeamMemberRemoveS2CP(name, buffer)
+            TeamActions.CREATE -> CreateTeamS2CP(name, buffer)
+            TeamActions.REMOVE -> RemoveTeamS2CP(name)
+            TeamActions.UPDATE -> UpdateTeamS2CP(name, buffer)
+            TeamActions.MEMBER_ADD -> AddTeamMemberS2CP(name, buffer)
+            TeamActions.MEMBER_REMOVE -> RemoveTeamMemberS2CP(name, buffer)
         }
     }
 

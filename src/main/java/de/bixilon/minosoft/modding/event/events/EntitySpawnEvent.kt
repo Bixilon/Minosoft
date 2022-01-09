@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,8 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityPlayerS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn.*
 
 class EntitySpawnEvent(
     connection: PlayConnection,
@@ -24,15 +25,15 @@ class EntitySpawnEvent(
     val entity: Entity,
 ) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: MobSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityMobSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
 
     constructor(connection: PlayConnection, packet: GlobalEntitySpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
 
-    constructor(connection: PlayConnection, packet: PlayerEntitySpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityPlayerS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
 
-    constructor(connection: PlayConnection, packet: ExperienceOrbSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityExperienceOrbS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
 
     constructor(connection: PlayConnection, packet: EntityObjectSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
 
-    constructor(connection: PlayConnection, packet: PaintingSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityPaintingS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
 }

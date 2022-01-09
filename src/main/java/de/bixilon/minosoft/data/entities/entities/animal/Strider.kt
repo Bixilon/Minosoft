@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,15 +25,15 @@ class Strider(connection: PlayConnection, entityType: EntityType, position: Vec3
 
     @get:EntityMetaDataFunction(name = "Boost stime")
     val boostTime: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.STRIDER_TIME_TO_BOOST)
+        get() = data.sets.getInt(EntityDataFields.STRIDER_TIME_TO_BOOST)
 
     @get:EntityMetaDataFunction(name = "Is suffocating")
     val isSuffocating: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.STRIDER_IS_SUFFOCATING)
+        get() = data.sets.getBoolean(EntityDataFields.STRIDER_IS_SUFFOCATING)
 
     @EntityMetaDataFunction(name = "Has saddle")
     val hasSaddle: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.STRIDER_HAS_SADDLE)
+        get() = data.sets.getBoolean(EntityDataFields.STRIDER_HAS_SADDLE)
 
 
     companion object : EntityFactory<Strider> {

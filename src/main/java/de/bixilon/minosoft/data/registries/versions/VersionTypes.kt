@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,21 +13,17 @@
 
 package de.bixilon.minosoft.data.registries.versions
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+
 enum class VersionTypes {
     RELEASE,
+    APRIL_FOOL,
     SNAPSHOT,
     ;
 
-    companion object {
-        private val SNAPSHOT_DETECT_REGEX = "(\\d{2}w\\d{2})[a-f]|(1.\\d{1,2}(.\\d+)?-?(rc|pre)\\d*)".toRegex()
-
-        @Deprecated(message = "Should be saved in the versions.json")
-        operator fun get(version: de.bixilon.minosoft.data.registries.versions.Version): VersionTypes {
-            if (SNAPSHOT_DETECT_REGEX.matches(version.name)) {
-                return SNAPSHOT
-            }
-
-            return RELEASE
-        }
+    companion object : ValuesEnum<VersionTypes> {
+        override val VALUES: Array<VersionTypes> = values()
+        override val NAME_MAP: Map<String, VersionTypes> = EnumUtil.getEnumValues(VALUES)
     }
 }

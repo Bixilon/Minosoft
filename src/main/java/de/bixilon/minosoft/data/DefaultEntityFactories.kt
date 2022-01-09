@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -36,7 +36,7 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.WanderingTrader
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.projectile.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
@@ -44,7 +44,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 @SuppressWarnings("deprecation")
-object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
+object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     AreaEffectCloud,
     ArmorStand,
     Arrow,
@@ -161,13 +161,13 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
     GlowSquid,
     EvokerFangs,
 ) {
-    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
         val factory = this[resourceLocation] ?: throw UnknownEntityException("Can not find entity type: $resourceLocation")
-        return buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
+        return buildEntity(factory, connection, position, rotation, entityData, versionId)
     }
 
-    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
-        val tweakedResourceLocation = factory.tweak(connection, entityMetaData, versionId)
+    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
+        val tweakedResourceLocation = factory.tweak(connection, entityData, versionId)
 
         val tweakedFactory = this[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")
 

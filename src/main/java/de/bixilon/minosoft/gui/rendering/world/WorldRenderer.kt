@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -183,7 +183,7 @@ class WorldRenderer(
             }
         })
 
-        connection.registerEvent(CallbackEventInvoker.of<MassBlockSetEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<BlocksSetEvent> {
             val chunk = world[it.chunkPosition] ?: return@of // should not happen
             if (!chunk.isFullyLoaded) {
                 return@of

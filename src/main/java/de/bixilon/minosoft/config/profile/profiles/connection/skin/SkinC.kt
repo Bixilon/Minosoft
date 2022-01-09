@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.connection.skin
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
-import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 
 class SkinC {
     /**
@@ -61,29 +61,29 @@ class SkinC {
     var hat by delegate(true)
 
 
-    @get:JsonIgnore val skinParts: Array<ClientSettingsC2SP.SkinParts>
+    @get:JsonIgnore val skinParts: Array<SettingsC2SP.SkinParts>
         get() {
-            val parts: MutableSet<ClientSettingsC2SP.SkinParts> = mutableSetOf()
+            val parts: MutableSet<SettingsC2SP.SkinParts> = mutableSetOf()
             if (cape) {
-                parts += ClientSettingsC2SP.SkinParts.CAPE
+                parts += SettingsC2SP.SkinParts.CAPE
             }
             if (jacket) {
-                parts += ClientSettingsC2SP.SkinParts.JACKET
+                parts += SettingsC2SP.SkinParts.JACKET
             }
             if (leftSleeve) {
-                parts += ClientSettingsC2SP.SkinParts.LEFT_SLEEVE
+                parts += SettingsC2SP.SkinParts.LEFT_SLEEVE
             }
             if (rightSleeve) {
-                parts += ClientSettingsC2SP.SkinParts.RIGHT_SLEEVE
+                parts += SettingsC2SP.SkinParts.RIGHT_SLEEVE
             }
             if (leftPants) {
-                parts += ClientSettingsC2SP.SkinParts.LEFT_PANTS
+                parts += SettingsC2SP.SkinParts.LEFT_PANTS
             }
             if (rightPants) {
-                parts += ClientSettingsC2SP.SkinParts.RIGHT_PANTS
+                parts += SettingsC2SP.SkinParts.RIGHT_PANTS
             }
             if (hat) {
-                parts += ClientSettingsC2SP.SkinParts.HAT
+                parts += SettingsC2SP.SkinParts.HAT
             }
             return parts.toTypedArray()
         }
