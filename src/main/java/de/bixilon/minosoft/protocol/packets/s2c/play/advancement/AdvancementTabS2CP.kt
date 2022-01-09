@@ -10,15 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.interfaces
 
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+package de.bixilon.minosoft.protocol.packets.s2c.play.advancement
+
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-interface CompressionThresholdChange : PlayS2CPacket {
-    val threshold: Int
+@LoadPacket
+class AdvancementTabS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val tab = buffer.readPlayOptional { readResourceLocation() }
 
-    override fun handle(connection: PlayConnection) {
-        connection.network.compressionThreshold = threshold
+
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Advancement tab (tab=$tab)" }
     }
 }

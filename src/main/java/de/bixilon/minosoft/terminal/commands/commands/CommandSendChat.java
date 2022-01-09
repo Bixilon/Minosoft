@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,9 +32,9 @@ public class CommandSendChat extends Command {
                                 // command
                                 String command = message.substring(1);
                                 try {
-                                    CommandRootNode rootNode = connection.getCommandRootNode();
+                                    CommandRootNode rootNode = connection.getCommandRoot();
                                     if (rootNode != null) {
-                                        connection.getCommandRootNode().parse(connection, command);
+                                        connection.getCommandRoot().parse(connection, command);
                                     }
                                 } catch (CommandParseException e) {
                                     printError("Command \"%s\" is invalid, %s: %s", command, e.getClass().getSimpleName(), e.getMessage());

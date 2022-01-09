@@ -87,7 +87,7 @@ class PlayConnection(
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: LanguageManager
 
-    var commandRootNode: CommandRootNode? = null
+    var commandRoot: CommandRootNode? = null
 
 
     var rendering: Rendering? = null

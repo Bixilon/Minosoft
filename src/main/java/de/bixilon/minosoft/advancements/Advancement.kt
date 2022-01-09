@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,22 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.advancements;
+package de.bixilon.minosoft.advancements
 
-public class CriterionProgress {
-    private final boolean archived;
-    private final Long archiveTime;
-
-    public CriterionProgress(boolean archived, Long archiveTime) {
-        this.archived = archived;
-        this.archiveTime = archiveTime;
-    }
-
-    public boolean isArchived() {
-        return this.archived;
-    }
-
-    public Long getArchiveTime() {
-        return this.archiveTime;
-    }
-}
+data class Advancement(
+    val parent: String?,
+    val display: AdvancementDisplay?,
+    val criteria: Set<String>,
+    val requirements: Set<Set<String>>,
+)

@@ -240,4 +240,12 @@ class PlayInByteBuffer : InByteBuffer {
             textures = textures,
         )
     }
+
+    fun <T> readPlayOptional(reader: PlayInByteBuffer.() -> T): T? {
+        return if (readBoolean()) {
+            reader(this)
+        } else {
+            null
+        }
+    }
 }

@@ -10,20 +10,15 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.protocol.packets.s2c.interfaces
 
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.packets.s2c.interfaces.CompressionS2CP
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 
-@LoadPacket(threadSafe = false)
-class CompressionS2CP(buffer: PlayInByteBuffer) : CompressionS2CP {
-    override val threshold: Int = buffer.readVarInt()
+interface CompressionS2CP : PlayS2CPacket {
+    val threshold: Int
 
-    override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Compression set (threshold=$threshold)" }
+    override fun handle(connection: PlayConnection) {
+        connection.network.compressionThreshold = threshold
     }
 }
