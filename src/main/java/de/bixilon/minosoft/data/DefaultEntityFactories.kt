@@ -44,7 +44,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 @SuppressWarnings("deprecation")
-object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
+object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     AreaEffectCloud,
     ArmorStand,
     Arrow,

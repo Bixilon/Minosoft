@@ -33,7 +33,6 @@ import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.recipes.Recipes
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.versions.MinecraftRegistryFixer
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -72,15 +71,13 @@ class PlayConnection(
 ) : Connection() {
     val settingsManager = ClientSettingsManager(this)
     val registries = Registries()
-    val recipes = Recipes()
     val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
 
-    @Deprecated(message = "PacketSender is deprecated")
-    val sender = PacketSender(this)
+    @Deprecated(message = "PacketSender is deprecated") val sender = PacketSender(this)
     val serverInfo = ServerInfo()
     lateinit var assetsManager: AssetsManager
         private set
@@ -136,8 +133,6 @@ class PlayConnection(
                 network.state = ProtocolStates.LOGIN
             } else {
                 wasConnected = true
-                // unregister all custom recipes
-                this.recipes.removeCustomRecipes()
                 //ToDo: Minosoft.CONNECTIONS.remove(connectionId)
                 if (CLI.getCurrentConnection() == this) {
                     CLI.setCurrentConnection(null)

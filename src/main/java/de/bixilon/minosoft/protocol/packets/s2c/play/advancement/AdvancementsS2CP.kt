@@ -71,7 +71,7 @@ class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Advancements (reset=$reset)" }
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Advancements (reset=$reset, advancements=${advancements.size}, progress=${progress.size})" }
         } else {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Advancements (reset=$reset, advancements=$advancements, progress=$progress)" }
         }

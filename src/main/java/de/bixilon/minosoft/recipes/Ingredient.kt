@@ -10,24 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play.recipe
+package de.bixilon.minosoft.recipes
 
-import de.bixilon.minosoft.data.registries.recipes.Recipe
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.data.inventory.ItemStack
 
-class DisplayRecipeSetC2SP(
-    val recipe: Recipe,
-) : PlayC2SPacket {
+data class Ingredient(val itemStacks: Array<ItemStack?>) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeResourceLocation(recipe.result.item.resourceLocation)
+        other as Ingredient
+
+        if (!itemStacks.contentEquals(other.itemStacks)) return false
+
+        return true
     }
 
-    override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Display recipe set (recipe=$recipe)" }
+    override fun hashCode(): Int {
+        return itemStacks.contentHashCode()
     }
 }

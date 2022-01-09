@@ -48,6 +48,7 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
+import de.bixilon.minosoft.recipes.RecipeRegistry
 import de.bixilon.minosoft.util.collections.Clearable
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -67,6 +68,7 @@ class Registries {
     val materialRegistry: Registry<Material> = Registry()
     val fluidRegistry: Registry<Fluid> = Registry()
     val soundEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
+    val recipes = RecipeRegistry()
 
     val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
 
