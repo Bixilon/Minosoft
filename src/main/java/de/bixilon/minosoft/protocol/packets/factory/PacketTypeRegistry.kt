@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.factory
 
 import com.google.common.reflect.ClassPath
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.string.StringUtil.toSnakeCase
@@ -61,7 +62,7 @@ object PacketTypeRegistry {
         if (annotation.parent) {
             val parent = clazz.superclass.unsafeCast<Class<out Any>>()
             if (parent == Packet::class.java || parent == S2CPacket::class.java || parent == C2SPacket::class.java) {
-                return null
+                return clazz
             }
             return parent.unsafeCast()
         }
@@ -98,24 +99,32 @@ object PacketTypeRegistry {
                 else -> ReflectionFactory(clazz.unsafeCast<Class<Packet>>(), direction, annotation.state)
             }
 
+            val name = clazz.getPacketName(annotation)
 
-            var name = annotation.name
-            if (name.isBlank()) {
-                name = clazz.simpleName.removePrefix("Base").removeSuffix("S2CP").removeSuffix("C2SP").removeSuffix("C2SF").removeSuffix("S2CF").toSnakeCase()
-            }
-
-            val mapClass = getPacketMapClass(clazz.unsafeCast()) // ToDo
+            val parentClass = getPacketMapClass(clazz.unsafeCast())
 
             if (direction == PacketDirection.CLIENT_TO_SERVER) {
                 val c2sClass = clazz.unsafeCast<Class<out C2SPacket>>()
                 val type = C2SPacketType(annotation.state, c2sClass, annotation)
                 C2S_STATE_MAP.getOrPut(annotation.state) { mutableMapOf() }.put(name, type)?.let { throw IllegalStateException("Packet already mapped: $it (name=$name)") }
                 C2S_CLASS_MAP[c2sClass] = type
+                if (parentClass != null && parentClass != c2sClass) {
+                    val parentType = C2SPacketType(annotation.state, parentClass.unsafeCast(), annotation)
+                    C2S_CLASS_MAP[parentClass.unsafeCast()] = parentType
+                    C2S_STATE_MAP[annotation.state]!!.putIfAbsent(parentClass.getPacketName(null), type)
+                }
             } else {
                 val s2cClass = clazz.unsafeCast<Class<out S2CPacket>>()
                 val type = S2CPacketType(annotation.state, s2cClass, errorHandler, annotation, factory)
                 S2C_STATE_MAP.getOrPut(annotation.state) { mutableMapOf() }.put(name, type)?.let { throw IllegalStateException("Packet already mapped: $it (name=$name)") }
                 S2C_CLASS_MAP[s2cClass] = type
+                if (parentClass != null && parentClass != s2cClass) {
+                    val parentKClass = parentClass.kClass
+                    val parentObject = parentKClass.objectInstance ?: parentKClass.companionObjectInstance
+                    val parentErrorHandler = parentObject.nullCast<PacketErrorHandler>()
+                    S2C_CLASS_MAP[parentClass.unsafeCast()] = S2CPacketType(annotation.state, parentClass.unsafeCast(), parentErrorHandler, annotation)
+                    S2C_STATE_MAP[annotation.state]!!.putIfAbsent(parentClass.getPacketName(null), type)
+                }
             }
 
 
@@ -123,5 +132,14 @@ object PacketTypeRegistry {
         }
 
         initialized = true
+    }
+
+
+    fun Class<*>.getPacketName(annotation: LoadPacket?): String {
+        var name = annotation?.name
+        if (name == null || name.isBlank()) {
+            name = simpleName.removePrefix("Base").removeSuffix("S2CP").removeSuffix("C2SP").removeSuffix("C2SF").removeSuffix("S2CF").toSnakeCase()
+        }
+        return name
     }
 }
