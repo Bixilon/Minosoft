@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.TabListS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
 import java.util.*
 
 class TabListEntryChangeEvent(

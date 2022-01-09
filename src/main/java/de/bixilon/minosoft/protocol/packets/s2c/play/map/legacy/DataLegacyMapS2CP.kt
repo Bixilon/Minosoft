@@ -10,20 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListTextS2CP
+package de.bixilon.minosoft.protocol.packets.s2c.play.map.legacy
 
-class TabListInfoChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val header: ChatComponent,
-    val footer: ChatComponent,
-) : PlayConnectionEvent(connection, initiator) {
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2i
 
-    constructor(connection: PlayConnection, packet: TabListTextS2CP) : this(connection, EventInitiators.SERVER, packet.header, packet.footer)
+class DataLegacyMapS2CP(
+    val id: Int,
+    buffer: PlayInByteBuffer,
+) : LegacyMapS2CP {
+    val start = Vec2i(buffer.readUnsignedByte(), buffer.readUnsignedByte())
+    val colors = buffer.readRest()
+
+    override fun log(reducedLog: Boolean) {
+        if (reducedLog) {
+            return
+        }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Data legacy map (start=$start, colors=$colors)" }
+    }
 }

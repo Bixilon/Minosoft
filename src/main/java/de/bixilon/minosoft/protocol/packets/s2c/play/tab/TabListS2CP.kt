@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.enums.EnumUtil
@@ -30,7 +30,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 @LoadPacket(threadSafe = false)
-@Deprecated("Split into legacy and modern")
 class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val items: MutableMap<UUID, TabListItemData?> = mutableMapOf()
 
