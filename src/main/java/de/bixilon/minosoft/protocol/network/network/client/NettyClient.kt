@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
@@ -84,6 +85,8 @@ class NettyClient(
     var encrypted: Boolean = false
         private set
     private var channel: Channel? = null
+    private val packetQueue: MutableList<C2SPacket> = mutableListOf() // Used for pause sending
+    private var sendingPaused = false
 
     fun connect(address: ServerAddress, epoll: Boolean) {
         state = ProtocolStates.HANDSHAKING
@@ -105,10 +108,10 @@ class NettyClient(
     }
 
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
+        val channel = requireChannel()
         if (encrypted) {
             throw IllegalStateException("Already encrypted!")
         }
-        val channel = channel ?: throw IllegalStateException("No channel!")
         channel.pipeline().addBefore(LengthEncoder.NAME, PacketEncryptor.NAME, PacketEncryptor(encrypt))
         channel.pipeline().addBefore(LengthDecoder.NAME, PacketDecryptor.NAME, PacketDecryptor(decrypt))
         encrypted = true
@@ -122,16 +125,27 @@ class NettyClient(
         connected = false
     }
 
-    fun pauseSending(pause: Boolean) {}
-    fun pauseReceiving(pause: Boolean) {}
+    fun pauseSending(pause: Boolean) {
+        this.sendingPaused = pause
+        if (!sendingPaused) {
+            DefaultThreadPool += {
+                for (packet in packetQueue) {
+                    send(packet)
+                }
+            }
+        }
+    }
+
+    fun pauseReceiving(pause: Boolean) {
+        val channel = requireChannel()
+        channel.config()?.isAutoRead = !pause
+    }
 
     fun send(packet: C2SPacket) {
-        if (!connected) {
-            throw IllegalStateException("Can not send packet when not connected!")
-        }
-        val channel = this.channel
-        if (channel == null || !channel.isActive) {
-            throw IllegalStateException("Channel not null or not active!")
+        val channel = requireChannel()
+        if (sendingPaused) {
+            packetQueue += packet
+            return
         }
 
         packet.log((connection.nullCast<PlayConnection>()?.profiles?.other ?: OtherProfileManager.selected).log.reducedProtocolLog)
@@ -170,6 +184,14 @@ class NettyClient(
             disconnect()
             return
         }
+    }
+
+    fun requireChannel(): Channel {
+        val channel = this.channel
+        if (!connected || channel == null) {
+            throw IllegalStateException("Not connected!")
+        }
+        return channel
     }
 
     companion object {
