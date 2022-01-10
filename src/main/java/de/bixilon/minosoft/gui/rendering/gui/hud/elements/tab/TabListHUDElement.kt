@@ -32,7 +32,7 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListEl
     override val layout = TabListElement(hudRenderer)
 
     override val layoutOffset: Vec2i
-        get() = Vec2i((hudRenderer.scaledSize.x - layout.size.x) / 2, 20)
+        get() = Vec2i((guiRenderer.scaledSize.x - layout.size.x) / 2, 20)
 
     init {
         enabled = false

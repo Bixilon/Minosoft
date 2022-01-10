@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.gui.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
@@ -190,6 +191,11 @@ class RenderWindow(
 
         inputHandler.init()
         DefaultKeyCombinations.registerAll(this)
+        connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
+            if (it.state != RenderingStates.RUNNING) {
+                pause(true)
+            }
+        })
 
 
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
@@ -281,5 +287,9 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
         connection.network.disconnect()
+    }
+
+    fun pause(pause: Boolean? = null) {
+        renderer[GUIRenderer]?.pause(pause)
     }
 }

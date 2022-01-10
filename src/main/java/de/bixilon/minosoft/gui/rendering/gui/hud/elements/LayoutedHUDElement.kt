@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,10 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2i
 
-abstract class LayoutedHUDElement<T : Element>(final override val hudRenderer: HUDRenderer) : HUDElement {
-    final override val renderWindow: RenderWindow = hudRenderer.renderWindow
+abstract class LayoutedHUDElement<T : Element>(final override val guiRenderer: HUDRenderer) : HUDElement {
+    final override val renderWindow: RenderWindow = guiRenderer.renderWindow
     override var enabled = true
-    var mesh: GUIMesh = GUIMesh(renderWindow, hudRenderer.matrix, DirectArrayFloatList(1000))
+    var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
     private var lastRevision = 0L
 
 
@@ -41,7 +41,7 @@ abstract class LayoutedHUDElement<T : Element>(final override val hudRenderer: H
         if (mesh.state == Mesh.MeshStates.LOADED) {
             mesh.unload()
         }
-        this.mesh = GUIMesh(renderWindow, hudRenderer.matrix, mesh.data)
+        this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
     }
 
     fun prepare(z: Int): Int {

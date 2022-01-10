@@ -17,27 +17,27 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class BossbarElement(
-    hudRenderer: HUDRenderer,
+    guiRenderer: AbstractGUIRenderer,
     val bossbar: Bossbar,
     val atlas: Array<Array<Array<AtlasElement?>>>,
-) : Element(hudRenderer), Pollable {
+) : Element(guiRenderer), Pollable {
     private var color: BossbarColors = bossbar.color
     private var notches: BossbarNotches = bossbar.notches
 
-    private val titleElement = TextElement(hudRenderer, text = bossbar.title, background = false, parent = this)
+    private val titleElement = TextElement(guiRenderer, text = bossbar.title, background = false, parent = this)
     private lateinit var progress: BossbarProgressElement
 
     init {
@@ -96,7 +96,7 @@ class BossbarElement(
         } else {
             atlas[1][notches.ordinal - 1]
         }
-        progress = BossbarProgressElement(hudRenderer, atlas[0][color.ordinal].unsafeCast(), notches.unsafeCast(), 0.0f)
+        progress = BossbarProgressElement(guiRenderer, atlas[0][color.ordinal].unsafeCast(), notches.unsafeCast(), 0.0f)
     }
 
     override fun forceSilentApply() {

@@ -36,12 +36,12 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
     private var reapply = true
 
     override fun init() {
-        crosshairAtlasElement = hudRenderer.atlasManager[ATLAS_NAME]!!
+        crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]!!
         crosshairProfile::color.profileWatch(this, profile = profile) { reapply = true }
     }
 
     override fun draw() {
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val debugHUDElement: DebugHUDElement? = guiRenderer[DebugHUDElement]
 
         if (debugHUDElement?.enabled != previousDebugEnabled || reapply) {
             apply()
@@ -56,7 +56,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
             renderWindow.renderSystem.reset()
         }
 
-        hudRenderer.shader.use()
+        guiRenderer.shader.use()
         mesh.draw()
     }
 
@@ -65,7 +65,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
         this.mesh = null
 
 
-        val mesh = GUIMesh(renderWindow, hudRenderer.matrix, DirectArrayFloatList(42))
+        val mesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(42))
 
         // Custom draw to make the crosshair inverted
         if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
@@ -75,14 +75,14 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
             }
         }
 
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val debugHUDElement: DebugHUDElement? = guiRenderer[DebugHUDElement]
 
         if (debugHUDElement?.enabled == true) {
             // ToDo: Debug crosshair
             return
         }
 
-        val start = (hudRenderer.scaledSize - CROSSHAIR_SIZE) / 2
+        val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
 
         mesh.addQuad(start, start + CROSSHAIR_SIZE, 0, crosshairAtlasElement, crosshairProfile.color, null)
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.CameraInput
+import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2i
 
 class RenderWindowInputHandler(
     val renderWindow: RenderWindow,
@@ -46,9 +48,21 @@ class RenderWindowInputHandler(
     private val keyBindingsDown: MutableList<ResourceLocation> = mutableListOf()
     private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()
 
-    private var skipNextCharPress = false
 
     val interactionManager = InteractionManager(renderWindow)
+    var inputHandler: InputHandler? = null
+        set(value) {
+            field = value
+            // ToDo: Toggle key bindings (disable)
+            renderWindow.window.cursorMode = if (value == null) {
+                CursorModes.DISABLED
+            } else {
+                CursorModes.NORMAL
+            }
+        }
+    private var skipKeyPress = false
+    private var skipCharPress = false
+    private var skipMouseMove = false
 
     init {
         registerKeyCallback("minosoft:debug_change_cursor_mode".toResourceLocation(),
@@ -77,9 +91,15 @@ class RenderWindowInputHandler(
         connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
 
         connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
-            //if (renderWindow.inputHandler.currentKeyConsumer != null) {
-            //   return
-            //}
+            val inputHandler = inputHandler
+            if (inputHandler != null) {
+                if (skipMouseMove) {
+                    skipMouseMove = false
+                    return@of
+                }
+                inputHandler.onMouseMove(Vec2i(it.position))
+                return@of
+            }
 
             cameraInput.mouseCallback(it.delta)
         })
@@ -99,17 +119,23 @@ class RenderWindowInputHandler(
 
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
-        val keyDown = when (keyChangeType) {
-            KeyChangeTypes.PRESS -> {
-                //  currentKeyConsumer?.keyInput(keyCode)
-                true
-            }
-            KeyChangeTypes.RELEASE -> false
-            KeyChangeTypes.REPEAT -> {
-                // currentKeyConsumer?.keyInput(keyCode)
+        val inputHandler = inputHandler
+        if (inputHandler != null) {
+            if (skipKeyPress) {
+                skipKeyPress = false
                 return
             }
+            if (keyChangeType == KeyChangeTypes.PRESS || keyChangeType == KeyChangeTypes.REPEAT) {
+                inputHandler.onKeyPress(keyCode)
+            }
         }
+
+        val keyDown = when (keyChangeType) {
+            KeyChangeTypes.PRESS -> true
+            KeyChangeTypes.RELEASE -> false
+            KeyChangeTypes.REPEAT -> return
+        }
+
         val currentTime = TimeUtil.time
 
         if (keyDown) {
@@ -118,12 +144,10 @@ class RenderWindowInputHandler(
             keysDown -= keyCode
         }
 
-        //val previousKeyConsumer = currentKeyConsumer
-
         for ((resourceLocation, pair) in keyBindingCallbacks) {
-            // if (currentKeyConsumer != null && !pair.keyBinding.ignoreConsumer) {
-            //     continue
-            // }
+            if (inputHandler != null && !pair.keyBinding.ignoreConsumer) {
+                continue
+            }
             var thisKeyBindingDown = keyDown
             var checksRun = 0
             var thisIsChange = true
@@ -221,32 +245,29 @@ class RenderWindowInputHandler(
             keysLastDownTime[keyCode] = currentTime
         }
 
-        // if (previousKeyConsumer != currentKeyConsumer) {
-        //     skipNextCharPress = true
-        //}
+
+        if (inputHandler != this.inputHandler) {
+            skipKeyPress = true
+            skipCharPress = true
+            skipMouseMove = true
+        }
     }
 
     private fun charInput(char: Int) {
-        if (skipNextCharPress) {
-            skipNextCharPress = false
+        val inputHandler = inputHandler ?: return
+        if (skipCharPress) {
+            skipCharPress = false
             return
         }
-        //currentKeyConsumer?.charInput(char.toChar())
+        inputHandler.onCharPress(char)
+        return
+
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
         val keyBinding = profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }
         val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding) }
-        if (keyBinding.ignoreConsumer) {
-            callbackPair.callback += callback
-        } else {
-            callbackPair.callback += add@{
-                //if (currentKeyConsumer != null) {
-                //    return@add
-                //}
-                callback(it)
-            }
-        }
+        callbackPair.callback += callback
 
         if (keyBinding.action.containsKey(KeyAction.STICKY) && defaultPressed) {
             keyBindingsDown += resourceLocation

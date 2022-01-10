@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
@@ -27,20 +27,20 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.copy
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarCoreElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val base = HotbarBaseElement(hudRenderer)
-    val experience = HotbarExperienceBarElement(hudRenderer)
-    val health = HotbarHealthElement(hudRenderer)
-    val hunger = HotbarHungerElement(hudRenderer)
-    val protection = HotbarProtectionElement(hudRenderer)
-    val air = HotbarAirElement(hudRenderer)
-    val vehicleHealth = HotbarVehicleHealthElement(hudRenderer)
+class HotbarCoreElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+    val base = HotbarBaseElement(guiRenderer)
+    val experience = HotbarExperienceBarElement(guiRenderer)
+    val health = HotbarHealthElement(guiRenderer)
+    val hunger = HotbarHungerElement(guiRenderer)
+    val protection = HotbarProtectionElement(guiRenderer)
+    val air = HotbarAirElement(guiRenderer)
+    val vehicleHealth = HotbarVehicleHealthElement(guiRenderer)
 
-    private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
-    private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
+    private val topLeft = RowLayout(guiRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
+    private val topRight = RowLayout(guiRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
 
 
-    private var gamemode = hudRenderer.connection.player.tabListItem.gamemode
+    private var gamemode = guiRenderer.renderWindow.connection.player.tabListItem.gamemode
 
     private var renderElements = setOf(
         base,
@@ -102,7 +102,7 @@ class HotbarCoreElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         val size = Vec2i(base.size)
 
-        gamemode = hudRenderer.connection.player.tabListItem.gamemode
+        gamemode = guiRenderer.renderWindow.connection.player.tabListItem.gamemode
         if (gamemode.survival) {
             size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
 

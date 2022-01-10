@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,7 @@ class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Tex
     private val breakInteractionHandler = hudRenderer.renderWindow.inputHandler.interactionManager.`break`
 
     override val layoutOffset: Vec2i
-        get() = Vec2i((hudRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (hudRenderer.scaledSize.y - layout.size.y) / 2)
+        get() = Vec2i((guiRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (guiRenderer.scaledSize.y - layout.size.y) / 2)
 
     private var percent = -1
 

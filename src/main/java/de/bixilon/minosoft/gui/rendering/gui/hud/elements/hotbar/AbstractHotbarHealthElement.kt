@@ -16,22 +16,22 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.kutil.math.MMath.ceil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
-abstract class AbstractHotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+abstract class AbstractHotbarHealthElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
     abstract val totalHealth: Float
     abstract val totalMaxHealth: Float
     var totalMaxHearts = 0
     var rows = 0
     var text = false
-    private var textElement = TextElement(hudRenderer, "", parent = this)
+    private var textElement = TextElement(guiRenderer, "", parent = this)
 
 
     override fun forceSilentApply() {
@@ -59,7 +59,7 @@ abstract class AbstractHotbarHealthElement(hudRenderer: HUDRenderer) : Element(h
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW
 
-            val image = ImageElement(hudRenderer, atlasElement)
+            val image = ImageElement(guiRenderer, atlasElement)
 
             image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z, consumer, options)
         }

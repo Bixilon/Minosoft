@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ class TitleHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TitleElemen
         get() {
             val layoutOffset = Vec2i.EMPTY
 
-            val scaledSize = hudRenderer.scaledSize
+            val scaledSize = guiRenderer.scaledSize
 
             layoutOffset.x = (scaledSize.x - layout.size.x / 2) / 2
             layoutOffset.y = (scaledSize.y / 2 - layout.title.size.y)
@@ -39,7 +39,7 @@ class TitleHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TitleElemen
         }
 
     override fun init() {
-        val connection = hudRenderer.connection
+        val connection = guiRenderer.connection
 
         connection.registerEvent(CallbackEventInvoker.of<TitleResetEvent> {
             layout.reset()

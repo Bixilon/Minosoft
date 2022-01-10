@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -29,16 +29,16 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val core = HotbarCoreElement(hudRenderer)
+class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+    val core = HotbarCoreElement(guiRenderer)
 
-    val offhand = HotbarOffhandElement(hudRenderer)
+    val offhand = HotbarOffhandElement(guiRenderer)
     private var renderOffhand = false
 
-    val hoverText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
+    val hoverText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
     private var hoverTextShown = false
 
-    private val itemText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
+    private val itemText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
     private var itemTextShown = true
@@ -97,7 +97,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         val size = Vec2i(core.size)
 
-        renderOffhand = hudRenderer.connection.player.inventory[InventorySlots.EquipmentSlots.OFF_HAND] != null
+        renderOffhand = guiRenderer.renderWindow.connection.player.inventory[InventorySlots.EquipmentSlots.OFF_HAND] != null
 
         if (renderOffhand) {
             size.x += offhand.size.x
@@ -121,8 +121,8 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply(): Boolean {
-        val itemSlot = hudRenderer.connection.player.selectedHotbarSlot
-        val currentItem = hudRenderer.connection.player.inventory.getHotbarSlot(itemSlot)
+        val itemSlot = guiRenderer.renderWindow.connection.player.selectedHotbarSlot
+        val currentItem = guiRenderer.renderWindow.connection.player.inventory.getHotbarSlot(itemSlot)
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot

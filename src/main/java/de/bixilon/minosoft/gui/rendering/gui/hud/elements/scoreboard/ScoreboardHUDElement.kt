@@ -30,7 +30,7 @@ class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Scoreb
     override val layout = ScoreboardSideElement(hudRenderer)
 
     override val layoutOffset: Vec2i
-        get() = Vec2i(hudRenderer.scaledSize.x - layout.size.x, (hudRenderer.scaledSize.y - layout.size.y) / 2)
+        get() = Vec2i(guiRenderer.scaledSize.x - layout.size.x, (guiRenderer.scaledSize.y - layout.size.y) / 2)
 
     override val skipDraw: Boolean
         get() = layout.objective == null

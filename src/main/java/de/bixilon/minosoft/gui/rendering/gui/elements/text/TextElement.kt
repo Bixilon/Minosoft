@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,11 +20,11 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.TextRenderInfo
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import glm_.vec2.Vec2i
 
 open class TextElement(
-    hudRenderer: HUDRenderer,
+    guiRenderer: AbstractGUIRenderer,
     text: Any,
     override var fontAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     background: Boolean = true,
@@ -40,7 +40,7 @@ open class TextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
-) : LabeledElement(hudRenderer) {
+) : LabeledElement(guiRenderer) {
     lateinit var renderInfo: TextRenderInfo
         private set
 
@@ -100,7 +100,7 @@ open class TextElement(
                     charMargin = charMargin,
                     scale = scale,
                 )
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), renderWindow, null, null, renderInfo, value)
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
             }
             _prefSize = prefSize
             forceApply()

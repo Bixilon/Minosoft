@@ -24,6 +24,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
@@ -58,14 +59,14 @@ import glm_.vec2.Vec2i
 class HUDRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OtherDrawable {
+) : Renderer, OtherDrawable, AbstractGUIRenderer {
     private val profile = connection.profiles.hud
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
-    var scaledSize: Vec2i = renderWindow.window.size
-    var matrix: Mat4 = Mat4()
+    override var scaledSize: Vec2i = renderWindow.window.size
+    override var matrix: Mat4 = Mat4()
     private var enabled = true
-    var matrixChange = true
+    override var matrixChange = true
         private set
     override val framebuffer: Framebuffer
         get() = renderWindow.framebufferManager.gui.framebuffer

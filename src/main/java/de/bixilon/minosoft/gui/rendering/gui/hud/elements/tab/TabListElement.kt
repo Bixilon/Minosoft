@@ -17,13 +17,13 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -31,11 +31,11 @@ import glm_.vec2.Vec2i
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
-class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val header = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
-    val footer = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
+class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+    val header = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
+    val footer = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
 
-    private val background = ColorElement(hudRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
+    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
 
     private var entriesSize = Vec2i.EMPTY
     private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
@@ -45,13 +45,14 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         private set
     private var columns = 0
 
+    private val atlasManager = guiRenderer.renderWindow.atlasManager
     val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
-        hudRenderer.atlasManager["minecraft:tab_list_ping_0"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_1"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_2"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_3"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_4"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_5"]!!,
+        atlasManager["minecraft:tab_list_ping_0"]!!,
+        atlasManager["minecraft:tab_list_ping_1"]!!,
+        atlasManager["minecraft:tab_list_ping_2"]!!,
+        atlasManager["minecraft:tab_list_ping_3"]!!,
+        atlasManager["minecraft:tab_list_ping_4"]!!,
+        atlasManager["minecraft:tab_list_ping_5"]!!,
     )
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
@@ -182,8 +183,8 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     fun update(uuid: UUID) {
-        val item = hudRenderer.connection.tabList.tabListItemsByUUID[uuid] ?: return
-        val entry = entries.getOrPut(uuid) { TabListEntryElement(hudRenderer, this, item, 0) }
+        val item = guiRenderer.renderWindow.connection.tabList.tabListItemsByUUID[uuid] ?: return
+        val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, item, 0) }
         lock.lock()
         entry.silentApply()
         lock.unlock()

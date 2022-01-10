@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,16 +20,16 @@ import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffec
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.lang.Float.max
 
-class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElement(hudRenderer), Pollable {
-    private val atlasManager = hudRenderer.atlasManager
+class HotbarVehicleHealthElement(guiRenderer: AbstractGUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
+    private val atlasManager = guiRenderer.renderWindow.atlasManager
 
     /**
      *  [full|half]
@@ -65,7 +65,7 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
             val image = hearts[when {
                 halfHeart -> 1
                 else -> 0
-            }]?.let { ImageElement(hudRenderer, it) }
+            }]?.let { ImageElement(guiRenderer, it) }
 
             image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
 
@@ -77,7 +77,7 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
     }
 
     override fun poll(): Boolean {
-        val riddenEntity = hudRenderer.connection.player.vehicle
+        val riddenEntity = guiRenderer.renderWindow.connection.player.vehicle
         if (riddenEntity == null || riddenEntity !is LivingEntity) {
             if (this.shown) {
                 totalHealth = 0.0f

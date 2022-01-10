@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ class BossbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<RowLayout
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2i
-        get() = Vec2i((hudRenderer.scaledSize.x - layout.size.x) / 2, 2)
+        get() = Vec2i((guiRenderer.scaledSize.x - layout.size.x) / 2, 2)
 
     val atlasManager = hudRenderer.atlasManager
 
@@ -92,7 +92,7 @@ class BossbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<RowLayout
 
     override fun postInit() {
         connection.registerEvent(CallbackEventInvoker.of<BossbarAddEvent> {
-            val element = BossbarElement(hudRenderer, it.bossbar, atlas)
+            val element = BossbarElement(guiRenderer, it.bossbar, atlas)
             layout += element
             val previous = bossbars.put(it.bossbar, element) ?: return@of
             layout -= previous

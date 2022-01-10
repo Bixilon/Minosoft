@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -33,10 +33,10 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<HotbarElem
 
 
     override val layoutOffset: Vec2i
-        get() = Vec2i((hudRenderer.scaledSize.x - layout.size.x) / 2, hudRenderer.scaledSize.y - layout.size.y)
+        get() = Vec2i((guiRenderer.scaledSize.x - layout.size.x) / 2, guiRenderer.scaledSize.y - layout.size.y)
 
     override fun postInit() {
-        layout = HotbarElement(hudRenderer) // ToDo: The base uses image elements, that are available after init stage
+        layout = HotbarElement(guiRenderer) // ToDo: The base uses image elements, that are available after init stage
         layout.prefMaxSize = Vec2i(-1, -1)
 
         connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> {

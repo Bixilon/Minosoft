@@ -11,20 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.input
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.config.key.KeyCodes
+import glm_.vec2.Vec2i
 
-abstract class CustomHUDElement(final override val guiRenderer: HUDRenderer) : HUDElement, Drawable {
-    override val renderWindow: RenderWindow = guiRenderer.renderWindow
-    override var enabled = true
+interface InputHandler {
 
-    /**
-     * Function to draw the custom content.
-     * May create buffers, changes shaders, resets the render system, etc
-     */
-    override fun draw() = Unit
+    fun onMouseMove(position: Vec2i) {}
+    fun onKeyPress(key: KeyCodes) {}
+    fun onCharPress(char: Int) {}
 }

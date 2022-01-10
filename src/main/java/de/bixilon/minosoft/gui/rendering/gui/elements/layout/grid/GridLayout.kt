@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.horizontal
@@ -24,7 +24,7 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.min
 import kotlin.math.max
 
-class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRenderer) {
+class GridLayout(guiRenderer: AbstractGUIRenderer, val grid: Vec2i) : Element(guiRenderer) {
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 
@@ -39,7 +39,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     fun add(position: Vec2i, element: Element) {
         children[position.x][position.y]?.parent = null
 
-        val cell = GridCell(hudRenderer, columnConstraints[position.x], rowConstraints[position.y], element, this)
+        val cell = GridCell(guiRenderer, columnConstraints[position.x], rowConstraints[position.y], element, this)
 
         children[position.x][position.y] = cell
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -79,22 +79,22 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
     }
 
     private fun initLeft(): Element {
-        val layout = RowLayout(hudRenderer)
+        val layout = RowLayout(guiRenderer)
         layout.margin = Vec4i(2)
-        layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
-        layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
+        layout += TextElement(guiRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
+        layout += AutoTextElement(guiRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow.renderer[WorldRenderer]?.apply {
-            layout += AutoTextElement(hudRenderer, 1) { "C v=$visibleSize, m=$loadedMeshesSize, cQ=$culledQueuedSize, q=$queueSize, pT=$preparingTasksSize/$maxPreparingTasks, l=$meshesToLoadSize/$maxMeshesToLoad, w=${connection.world.chunks.size}" }
+            layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=$loadedMeshesSize, cQ=$culledQueuedSize, q=$queueSize, pT=$preparingTasksSize/$maxPreparingTasks, l=$meshesToLoadSize/$maxMeshesToLoad, w=${connection.world.chunks.size}" }
         }
-        layout += AutoTextElement(hudRenderer, 1) { "E t=${connection.world.entities.size}" }
+        layout += AutoTextElement(guiRenderer, 1) { "E t=${connection.world.entities.size}" }
 
         renderWindow.renderer[ParticleRenderer]?.apply {
-            layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
+            layout += AutoTextElement(guiRenderer, 1) { "P t=$size" }
         }
 
         val audioProfile = connection.profiles.audio
 
-        layout += AutoTextElement(hudRenderer, 1) {
+        layout += AutoTextElement(guiRenderer, 1) {
             BaseComponent().apply {
                 this += "S "
                 if (connection.profiles.audio.skipLoading || !audioProfile.enabled) {
@@ -109,31 +109,31 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             }
         }
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(hudRenderer, BaseComponent("Account ", connection.account.username))
-        layout += TextElement(hudRenderer, BaseComponent("Address ", connection.address))
-        layout += TextElement(hudRenderer, BaseComponent("Network version ", connection.version))
-        layout += TextElement(hudRenderer, BaseComponent("Server brand ", connection.serverInfo.brand))
+        layout += TextElement(guiRenderer, BaseComponent("Account ", connection.account.username))
+        layout += TextElement(guiRenderer, BaseComponent("Address ", connection.address))
+        layout += TextElement(guiRenderer, BaseComponent("Network version ", connection.version))
+        layout += TextElement(guiRenderer, BaseComponent("Server brand ", connection.serverInfo.brand))
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
 
         connection.player.apply {
             // ToDo: Only update when the position changes
-            layout += AutoTextElement(hudRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
-            layout += AutoTextElement(hudRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
-            layout += AutoTextElement(hudRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
-            layout += AutoTextElement(hudRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
+            layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
-                Directions.byDirection(hudRenderer.renderWindow.camera.matrixHandler.cameraFront).apply {
+                Directions.byDirection(guiRenderer.renderWindow.camera.matrixHandler.cameraFront).apply {
                     text += this
                     text += " "
                     text += vector
                 }
 
-                hudRenderer.renderWindow.connection.player.rotation.apply {
+                guiRenderer.renderWindow.connection.player.rotation.apply {
                     text += " yaw=${yaw.round10}, pitch=${pitch.round10}"
                 }
 
@@ -141,95 +141,95 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             }
         }
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
         val chunk = connection.world[connection.player.positionInfo.chunkPosition]
 
         if (chunk == null) {
-            layout += DebugWorldInfo(hudRenderer)
+            layout += DebugWorldInfo(guiRenderer)
         }
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(hudRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
+        layout += TextElement(guiRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
             connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
                 text = BaseComponent("Gamemode ", it.gamemode)
             })
         }
 
-        layout += TextElement(hudRenderer, BaseComponent("Difficulty ", connection.world.difficulty, ", locked=", connection.world.difficultyLocked)).apply {
+        layout += TextElement(guiRenderer, BaseComponent("Difficulty ", connection.world.difficulty, ", locked=", connection.world.difficultyLocked)).apply {
             connection.registerEvent(CallbackEventInvoker.of<DifficultyChangeEvent> {
                 text = BaseComponent("Difficulty ", it.difficulty, ", locked=", it.locked)
             })
         }
 
-        layout += TextElement(hudRenderer, "Time TBA").apply {
+        layout += TextElement(guiRenderer, "Time TBA").apply {
             connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
                 text = BaseComponent("Time ", abs(it.time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", it.time >= 0, ", day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY)
             })
         }
 
-        layout += AutoTextElement(hudRenderer, 1) { "Fun effect: " + (renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation ?: "None") }
+        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + (renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation ?: "None") }
 
         return layout
     }
 
     private fun initRight(): Element {
-        val layout = RowLayout(hudRenderer, HorizontalAlignments.RIGHT)
+        val layout = RowLayout(guiRenderer, HorizontalAlignments.RIGHT)
         layout.margin = Vec4i(2)
-        layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", HorizontalAlignments.RIGHT)
-        layout += TextElement(hudRenderer, "OS ${SystemInformation.OS_TEXT}", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "OS ${SystemInformation.OS_TEXT}", HorizontalAlignments.RIGHT)
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
         SystemInformation.RUNTIME.apply {
-            layout += AutoTextElement(hudRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1) {
                 val total = maxMemory()
                 val used = totalMemory() - freeMemory()
                 "Memory ${(used * 100.0 / total).round10}% ${used.formatBytes()} / ${total.formatBytes()}"
             }
-            layout += AutoTextElement(hudRenderer, 1) {
+            layout += AutoTextElement(guiRenderer, 1) {
                 val total = maxMemory()
                 val allocated = totalMemory()
                 "Allocated ${(allocated * 100.0 / total).round10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
             }
         }
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(hudRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", HorizontalAlignments.RIGHT)
-        layout += TextElement(hudRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
+        layout += TextElement(guiRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
 
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(hudRenderer, "Display TBA", HorizontalAlignments.RIGHT).apply {
-            hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+        layout += TextElement(guiRenderer, "Display TBA", HorizontalAlignments.RIGHT).apply {
+            guiRenderer.renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
                 text = "Display ${it.size.x}x${it.size.y}"
             })
         }
 
         renderWindow.renderSystem.apply {
-            layout += TextElement(hudRenderer, "GPU $gpuType", HorizontalAlignments.RIGHT)
-            layout += TextElement(hudRenderer, "Version $version", HorizontalAlignments.RIGHT)
+            layout += TextElement(guiRenderer, "GPU $gpuType", HorizontalAlignments.RIGHT)
+            layout += TextElement(guiRenderer, "Version $version", HorizontalAlignments.RIGHT)
         }
 
         if (GitInfo.IS_INITIALIZED) {
-            layout += LineSpacerElement(hudRenderer)
+            layout += LineSpacerElement(guiRenderer)
 
             GitInfo.apply {
-                layout += TextElement(hudRenderer, "Git $GIT_COMMIT_ID_ABBREV: $GIT_COMMIT_MESSAGE_SHORT", HorizontalAlignments.RIGHT)
+                layout += TextElement(guiRenderer, "Git $GIT_COMMIT_ID_ABBREV: $GIT_COMMIT_MESSAGE_SHORT", HorizontalAlignments.RIGHT)
             }
         }
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(hudRenderer, "${connection.size}x listeners", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "${connection.size}x listeners", HorizontalAlignments.RIGHT)
 
-        layout += LineSpacerElement(hudRenderer)
+        layout += LineSpacerElement(guiRenderer)
 
         renderWindow.camera.targetHandler.apply {
-            layout += AutoTextElement(hudRenderer, 1, HorizontalAlignments.RIGHT) {
+            layout += AutoTextElement(guiRenderer, 1, HorizontalAlignments.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
             }
@@ -248,7 +248,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
         private fun showWait() {
             clear()
-            this += TextElement(hudRenderer, "Waiting for chunk...")
+            this += TextElement(guiRenderer, "Waiting for chunk...")
         }
 
         private fun updateInformation() {
@@ -266,10 +266,10 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
                 }
                 clear()
 
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Fully loaded: ", world[entity.positionInfo.chunkPosition]?.isFullyLoaded) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[entity.positionInfo.chunkPosition]?.isFullyLoaded) }
 
                 lastChunk = chunk
             }

@@ -129,7 +129,7 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     fun updateScore(score: ScoreboardScore) {
-        scores.getOrPut(score) { ScoreboardScoreElement(hudRenderer, score, this) }
+        scores.getOrPut(score) { ScoreboardScoreElement(guiRenderer, score, this) }
         queueSizeRecalculation()
     }
 

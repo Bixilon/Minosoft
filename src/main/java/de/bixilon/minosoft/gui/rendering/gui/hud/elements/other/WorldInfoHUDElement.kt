@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -40,9 +40,9 @@ class WorldInfoHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextEle
     }
 
     override fun poll(): Boolean {
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val debugHUDElement: DebugHUDElement? = guiRenderer[DebugHUDElement]
         val hide = debugHUDElement?.enabled == true
-        val fps = hudRenderer.renderWindow.renderStats.smoothAvgFPS.round10
+        val fps = guiRenderer.renderWindow.renderStats.smoothAvgFPS.round10
         if (this.hide == hide && this.fps == fps) {
             return false
         }

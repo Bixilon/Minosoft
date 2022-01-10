@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,17 +17,17 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
 class FadingTextElement(
-    hudRenderer: HUDRenderer,
+    guiRenderer: AbstractGUIRenderer,
     text: Any = "",
     var fadeInTime: Long = 100,
     var stayTime: Long = 1000,
@@ -38,7 +38,7 @@ class FadingTextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
-) : TextElement(hudRenderer = hudRenderer, text = text, fontAlignment = fontAlignment, background = background, backgroundColor = backgroundColor, noBorder = noBorder, parent, scale), Pollable {
+) : TextElement(guiRenderer = guiRenderer, text = text, fontAlignment = fontAlignment, background = background, backgroundColor = backgroundColor, noBorder = noBorder, parent, scale), Pollable {
     override var cacheEnabled: Boolean
         get() {
             if (hidden || !super.cacheEnabled) {

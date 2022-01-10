@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
-class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
-    private val emptyProtection = hudRenderer.atlasManager["minecraft:empty_protection"]!!
-    private val halfProtection = hudRenderer.atlasManager["minecraft:half_protection"]!!
-    private val fullProtection = hudRenderer.atlasManager["minecraft:full_protection"]!!
+class HotbarProtectionElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Pollable {
+    private val emptyProtection = guiRenderer.renderWindow.atlasManager["minecraft:empty_protection"]!!
+    private val halfProtection = guiRenderer.renderWindow.atlasManager["minecraft:half_protection"]!!
+    private val fullProtection = guiRenderer.renderWindow.atlasManager["minecraft:full_protection"]!!
 
     init {
         forceSilentApply()
@@ -47,7 +47,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), 
                 else -> fullProtection
             }
 
-            val image = ImageElement(hudRenderer, atlasElement)
+            val image = ImageElement(guiRenderer, atlasElement)
 
             image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), z, consumer, options)
 
@@ -58,7 +58,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), 
     }
 
     override fun poll(): Boolean {
-        val protection = hudRenderer.connection.player.protectionLevel // ToDo: Check for equipment change
+        val protection = guiRenderer.renderWindow.connection.player.protectionLevel // ToDo: Check for equipment change
 
 
         if (this.protection == protection) {
