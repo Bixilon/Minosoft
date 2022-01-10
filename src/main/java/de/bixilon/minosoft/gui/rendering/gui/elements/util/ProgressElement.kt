@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.util
 
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -25,8 +25,8 @@ import glm_.vec2.Vec2i
 
 open class ProgressElement(
     hudRenderer: HUDRenderer,
-    val emptyAtlasElement: HUDAtlasElement,
-    val fullAtlasElement: HUDAtlasElement,
+    val emptyAtlasElement: AtlasElement,
+    val fullAtlasElement: AtlasElement,
     progress: Float = 0.0f,
 ) : Element(hudRenderer) {
     var progress = progress
@@ -42,7 +42,7 @@ open class ProgressElement(
     protected lateinit var progressImage: ImageElement
 
 
-    constructor(hudRenderer: HUDRenderer, atlasElements: Array<HUDAtlasElement>, progress: Float = 0.0f) : this(hudRenderer, atlasElements[0], atlasElements[1], progress)
+    constructor(hudRenderer: HUDRenderer, atlasElements: Array<AtlasElement>, progress: Float = 0.0f) : this(hudRenderer, atlasElements[0], atlasElements[1], progress)
 
     init {
         _size = emptyAtlasElement.size

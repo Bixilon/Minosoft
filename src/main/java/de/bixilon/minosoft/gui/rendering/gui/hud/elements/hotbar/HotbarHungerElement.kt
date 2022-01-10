@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -111,14 +111,14 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
                 continue
             }
 
-            val hungerElement: HUDAtlasElement
+            val hungerElement: AtlasElement
 
             if (hungerLeft == 1) {
                 hungerLeft--
-                hungerElement = selectArray[1] as HUDAtlasElement
+                hungerElement = selectArray[1] as AtlasElement
             } else {
                 hungerLeft -= 2
-                hungerElement = selectArray[0] as HUDAtlasElement
+                hungerElement = selectArray[0] as AtlasElement
             }
 
             ImageElement(hudRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)

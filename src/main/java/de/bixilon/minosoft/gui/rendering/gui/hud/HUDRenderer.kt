@@ -25,7 +25,6 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarHUDElement
@@ -77,7 +76,7 @@ class HUDRenderer(
 
     private var lastTickTime = 0L
 
-    val atlasManager = HUDAtlasManager(this)
+    val atlasManager = renderWindow.atlasManager
 
     override val skipOther: Boolean
         get() = !enabled
@@ -123,7 +122,9 @@ class HUDRenderer(
     override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
-        atlasManager.init()
+        if (!atlasManager.initialized) {
+            atlasManager.init()
+        }
 
         registerDefaultElements()
 

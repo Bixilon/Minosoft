@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,13 +17,13 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -32,7 +32,7 @@ import java.lang.Integer.max
 class BossbarElement(
     hudRenderer: HUDRenderer,
     val bossbar: Bossbar,
-    val atlas: Array<Array<Array<HUDAtlasElement?>>>,
+    val atlas: Array<Array<Array<AtlasElement?>>>,
 ) : Element(hudRenderer), Pollable {
     private var color: BossbarColors = bossbar.color
     private var notches: BossbarNotches = bossbar.notches

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,13 +17,13 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -45,7 +45,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         private set
     private var columns = 0
 
-    val pingBarsAtlasElements: Array<HUDAtlasElement> = arrayOf(
+    val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
         hudRenderer.atlasManager["minecraft:tab_list_ping_0"]!!,
         hudRenderer.atlasManager["minecraft:tab_list_ping_1"]!!,
         hudRenderer.atlasManager["minecraft:tab_list_ping_2"]!!,

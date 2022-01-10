@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,27 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
+package de.bixilon.minosoft.gui.rendering.gui.atlas
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
-    private lateinit var elements: Map<ResourceLocation, HUDAtlasElement>
+class AtlasManager(private val renderWindow: RenderWindow) {
+    private lateinit var elements: Map<ResourceLocation, AtlasElement>
+    var initialized = false
+        private set
 
+    @Synchronized
     fun init() {
-        val data = hudRenderer.connection.assetsManager[ATLAS_DATA].readJsonObject()
-        val versionId = hudRenderer.connection.version.versionId
+        check(!initialized)
+        val data = renderWindow.connection.assetsManager[ATLAS_DATA].readJsonObject()
+        val versionId = renderWindow.connection.version.versionId
 
-        val elements: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()
+        val elements: MutableMap<ResourceLocation, AtlasElement> = mutableMapOf()
 
         for ((resourceLocationString, versions) in data) {
             val resourceLocation = resourceLocationString.toResourceLocation()
@@ -52,7 +56,7 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
             }
             val versionData = versions[versionToUse.toString()].asJsonObject()
 
-            val texture = hudRenderer.renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation(), mipmaps = false)
+            val texture = renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
             val slots: MutableMap<Int, Vec2iBinding> = mutableMapOf()
@@ -67,7 +71,7 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
                 }
             }
 
-            val atlasElement = HUDAtlasElement(
+            val atlasElement = AtlasElement(
                 texture = texture,
                 start = start,
                 end = end,
@@ -78,6 +82,7 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
         }
 
         this.elements = elements
+        this.initialized = true
     }
 
     fun postInit() {
@@ -87,11 +92,11 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
         }
     }
 
-    operator fun get(resourceLocation: ResourceLocation): HUDAtlasElement? {
+    operator fun get(resourceLocation: ResourceLocation): AtlasElement? {
         return elements[resourceLocation]
     }
 
-    operator fun get(resourceLocation: String): HUDAtlasElement? {
+    operator fun get(resourceLocation: String): AtlasElement? {
         return elements[resourceLocation.toResourceLocation()]
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,8 +18,8 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CustomHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRenderer) {
     private val profile = hudRenderer.connection.profiles.hud
     private val crosshairProfile = profile.crosshair
-    private lateinit var crosshairAtlasElement: HUDAtlasElement
+    private lateinit var crosshairAtlasElement: AtlasElement
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
     private var reapply = true

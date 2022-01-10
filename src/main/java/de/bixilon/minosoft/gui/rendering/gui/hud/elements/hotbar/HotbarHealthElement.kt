@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,10 +22,10 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -194,7 +194,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
 
 
             val halfHeart = healthLeft < 1.5f
-            val image = selectArray.unsafeCast<Array<HUDAtlasElement?>>()[when {
+            val image = selectArray.unsafeCast<Array<AtlasElement?>>()[when {
                 halfHeart -> 1
                 else -> 0
             }]?.let { ImageElement(hudRenderer, it) }
