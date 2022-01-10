@@ -13,23 +13,37 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
+import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
+import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     val core = HotbarCoreElement(guiRenderer)
 
     val offhand = HotbarOffhandElement(guiRenderer)
@@ -42,6 +56,10 @@ class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
     private var itemTextShown = true
+
+
+    override val layoutOffset: Vec2i
+        get() = size.let { Vec2i((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
 
     private var renderElements = setOf(
         itemText,
@@ -151,8 +169,42 @@ class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
         offhand.tick()
     }
 
-    companion object {
+
+    override fun postInit() {
+        prefMaxSize = Vec2i(-1, -1)
+
+        val connection = renderWindow.connection
+        connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> { core.experience.apply() })
+
+        connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { forceApply() })
+
+        connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
+
+        connection.registerEvent(CallbackEventInvoker.of<ContainerRevisionChangeEvent> {
+            if (it.container != connection.player.inventory) {
+                return@of
+            }
+            core.base.apply()
+            offhand.apply()
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
+            if (it.position != ChatTextPositions.ABOVE_HOTBAR) {
+                return@of
+            }
+            hoverText.text = it.message
+            hoverText.show()
+        })
+    }
+
+
+    companion object : HUDBuilder<LayoutedHUDElement<HotbarElement>> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:hotbar".toResourceLocation()
         private const val HOVER_TEXT_OFFSET = 15
         private const val ITEM_NAME_OFFSET = 5
+
+        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<HotbarElement> {
+            return LayoutedHUDElement(HotbarElement(hudRenderer))
+        }
     }
 }

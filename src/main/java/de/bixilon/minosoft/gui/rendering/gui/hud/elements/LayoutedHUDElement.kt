@@ -13,27 +13,44 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import glm_.vec2.Vec2i
 
-abstract class LayoutedHUDElement<T : Element>(final override val guiRenderer: HUDRenderer) : HUDElement {
-    final override val renderWindow: RenderWindow = guiRenderer.renderWindow
+class LayoutedHUDElement<T : LayoutedElement>(
+    val layout: T,
+) : HUDElement, Drawable {
+    val elementLayout = layout.unsafeCast<Element>()
+    override val guiRenderer: AbstractGUIRenderer = elementLayout.guiRenderer
+    override val renderWindow: RenderWindow = guiRenderer.renderWindow
     override var enabled = true
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
     private var lastRevision = 0L
-
-
-    abstract val layout: T
-    abstract val layoutOffset: Vec2i
+    override val skipDraw: Boolean
+        get() = if (layout is Drawable) layout.skipDraw else false
 
     override fun tick() {
-        layout.tick()
+        elementLayout.tick()
+    }
+
+    override fun init() {
+        if (layout is Initializable) {
+            layout.init()
+        }
+    }
+
+    override fun postInit() {
+        if (layout is Initializable) {
+            layout.postInit()
+        }
     }
 
     private fun createNewMesh() {
@@ -45,10 +62,10 @@ abstract class LayoutedHUDElement<T : Element>(final override val guiRenderer: H
     }
 
     fun prepare(z: Int): Int {
-        val layoutOffset = layoutOffset
-        val usedZ = layout.render(layoutOffset, z, mesh, null)
+        val layoutOffset = layout.layoutOffset
+        val usedZ = elementLayout.render(layoutOffset, z, mesh, null)
 
-        val revision = layout.cache.revision
+        val revision = elementLayout.cache.revision
         if (revision != lastRevision) {
             createNewMesh()
             this.mesh.load()
@@ -58,9 +75,15 @@ abstract class LayoutedHUDElement<T : Element>(final override val guiRenderer: H
         return usedZ
     }
 
+    override fun draw() {
+        if (layout is Drawable) {
+            layout.draw()
+        }
+    }
+
 
     fun initMesh() {
-        layout.cache.data = mesh.data
+        elementLayout.cache.data = mesh.data
         mesh.load()
     }
 }

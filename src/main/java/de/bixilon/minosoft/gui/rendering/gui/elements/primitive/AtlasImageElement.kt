@@ -16,35 +16,33 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-open class ImageElement(
+open class AtlasImageElement(
     guiRenderer: AbstractGUIRenderer,
-    texture: AbstractTexture,
-    uvStart: Vec2 = Vec2.EMPTY,
-    uvEnd: Vec2 = Vec2(1.0f, 1.0f),
-    size: Vec2i = texture.size,
+    val textureLike: TextureLike,
+    size: Vec2i = textureLike.size,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer) {
     override var initialCacheSize: Int = GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6
-    var texture: AbstractTexture = texture
+    var texture: AbstractTexture = textureLike.texture
         set(value) {
             field = value
             cacheUpToDate = false
         }
-    var uvStart: Vec2 = uvStart
+    var uvStart: Vec2? = null
         set(value) {
             field = value
             cacheUpToDate = false
         }
-    var uvEnd: Vec2 = uvEnd
+    var uvEnd: Vec2? = null
         set(value) {
             field = value
             cacheUpToDate = false
@@ -74,10 +72,8 @@ open class ImageElement(
     }
 
 
-    constructor(guiRenderer: AbstractGUIRenderer, texture: AbstractTexture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2i = texture.size, tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
-
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        consumer.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint, options)
+        consumer.addQuad(offset, offset + size, z, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)
         return 1
     }
 

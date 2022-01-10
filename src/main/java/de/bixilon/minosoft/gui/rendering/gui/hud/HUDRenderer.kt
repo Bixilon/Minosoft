@@ -28,17 +28,17 @@ import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalMessagesHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarLayout
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalMessagesElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.BreakProgressHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.WorldInfoHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardSideElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
@@ -95,16 +95,16 @@ class HUDRenderer(
     private fun registerDefaultElements() {
         registerElement(DebugHUDElement)
         registerElement(CrosshairHUDElement)
-        registerElement(BossbarHUDElement)
-        registerElement(ChatHUDElement)
+        registerElement(BossbarLayout)
+        registerElement(ChatElement)
 
-        registerElement(InternalMessagesHUDElement)
+        registerElement(InternalMessagesElement)
         registerElement(BreakProgressHUDElement)
-        registerElement(TabListHUDElement)
-        registerElement(HotbarHUDElement)
+        registerElement(TabListElement)
+        registerElement(HotbarElement)
         registerElement(WorldInfoHUDElement)
-        registerElement(TitleHUDElement)
-        registerElement(ScoreboardHUDElement)
+        registerElement(TitleElement)
+        registerElement(ScoreboardSideElement)
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
@@ -114,7 +114,7 @@ class HUDRenderer(
 
         for (element in hudElements.toSynchronizedMap().values) {
             if (element is LayoutedHUDElement<*>) {
-                element.layout.silentApply()
+                element.elementLayout.silentApply()
             }
             element.apply()
         }
@@ -205,8 +205,8 @@ class HUDRenderer(
         }
     }
 
-    operator fun <T : LayoutedHUDElement<*>> get(hudBuilder: HUDBuilder<*>): T? {
-        return hudElements[hudBuilder.RESOURCE_LOCATION].unsafeCast()
+    operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {
+        return hudElements[hudBuilder.RESOURCE_LOCATION]?.unsafeCast()
     }
 
     companion object : RendererBuilder<HUDRenderer> {

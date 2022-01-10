@@ -15,27 +15,42 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
+import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.modding.event.events.scoreboard.*
+import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer), LayoutedElement, Initializable, Drawable {
     private val backgroundElement = ColorElement(hudRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameBackgroundElement = ColorElement(hudRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameElement = TextElement(hudRenderer, "", background = false, parent = this)
     private val scores: MutableMap<ScoreboardScore, ScoreboardScoreElement> = synchronizedMapOf()
 
+    override val layoutOffset: Vec2i
+        get() = super.size.let { return@let Vec2i(guiRenderer.scaledSize.x - it.x, (guiRenderer.scaledSize.y - it.y) / 2) }
+    override val skipDraw: Boolean
+        get() = objective == null
 
     var objective: ScoreboardObjective? = null
         set(value) {
@@ -138,10 +153,66 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         queueSizeRecalculation()
     }
 
-    companion object {
+    override fun init() {
+        val connection = renderWindow.connection
+        connection.registerEvent(CallbackEventInvoker.of<ObjectivePositionSetEvent> {
+            if (it.position != ScoreboardPositions.SIDEBAR) {
+                return@of
+            }
+
+            this.objective = it.objective
+        })
+        connection.registerEvent(CallbackEventInvoker.of<ScoreboardObjectiveUpdateEvent> {
+            if (it.objective != this.objective) {
+                return@of
+            }
+            this.updateName()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<ScoreboardScoreRemoveEvent> {
+            if (it.score.objective != this.objective) {
+                return@of
+            }
+            this.removeScore(it.score)
+        })
+        connection.registerEvent(CallbackEventInvoker.of<ScoreboardScorePutEvent> {
+            if (it.score.objective != this.objective) {
+                return@of
+            }
+            this.updateScore(it.score)
+        })
+        connection.registerEvent(CallbackEventInvoker.of<ScoreTeamChangeEvent> {
+            if (it.score.objective != this.objective) {
+                return@of
+            }
+            this.updateScore(it.score)
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TeamUpdateEvent> {
+            val objective = this.objective ?: return@of
+            for ((_, score) in objective.scores) {
+                if (it.team != score.team) {
+                    continue
+                }
+                this.updateScore(score)
+            }
+        })
+    }
+
+    override fun draw() {
+        // check if content was changed, and we need to re-prepare before drawing
+        if (!cacheUpToDate) {
+            recalculateSize()
+        }
+    }
+
+    companion object : HUDBuilder<LayoutedHUDElement<ScoreboardSideElement>> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:scoreboard".toResourceLocation()
         const val MAX_SCORES = 15
         const val MIN_WIDTH = 30
         const val SCORE_HEIGHT = Font.TOTAL_CHAR_HEIGHT
         const val MAX_SCOREBOARD_WIDTH = 200
+
+        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<ScoreboardSideElement> {
+            return LayoutedHUDElement(ScoreboardSideElement(hudRenderer))
+        }
     }
 }

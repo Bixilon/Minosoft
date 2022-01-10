@@ -25,8 +25,10 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridGrow
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridLayout
@@ -34,6 +36,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
@@ -53,10 +56,11 @@ import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 import kotlin.math.abs
 
-class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>(hudRenderer) {
+class DebugHUDElement(hudRenderer: HUDRenderer) : GridLayout(hudRenderer, Vec2i(3, 1)), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
     override val layoutOffset: Vec2i = Vec2i.EMPTY
-    override val layout = GridLayout(hudRenderer, Vec2i(3, 1)).apply {
+
+    init {
         columnConstraints[0].apply {
             grow = GridGrow.NEVER
         }
@@ -70,12 +74,11 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
 
     override fun init() {
-        enabled = false
-        layout[Vec2i(0, 0)] = initLeft()
-        layout[Vec2i(2, 0)] = initRight()
+        this[Vec2i(0, 0)] = initLeft()
+        this[Vec2i(2, 0)] = initRight()
 
-        layout.prefMaxSize = Vec2i(-1, Int.MAX_VALUE)
-        layout.ignoreDisplaySize = true
+        this.prefMaxSize = Vec2i(-1, Int.MAX_VALUE)
+        this.ignoreDisplaySize = true
     }
 
     private fun initLeft(): Element {
@@ -237,10 +240,10 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         return layout
     }
 
-    private class DebugWorldInfo(hudRenderer: HUDRenderer) : RowLayout(hudRenderer) {
+    private class DebugWorldInfo(guiRenderer: AbstractGUIRenderer) : RowLayout(guiRenderer) {
         private var lastChunk: Chunk? = null
-        private val world = hudRenderer.connection.world
-        private val entity = hudRenderer.connection.player
+        private val world = guiRenderer.renderWindow.connection.world
+        private val entity = guiRenderer.renderWindow.connection.player
 
         init {
             showWait()
@@ -283,7 +286,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         }
     }
 
-    companion object : HUDBuilder<DebugHUDElement> {
+    companion object : HUDBuilder<LayoutedHUDElement<DebugHUDElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
         override val DEFAULT_ENABLED: Boolean = false
@@ -293,8 +296,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             ),
         )
 
-        override fun build(hudRenderer: HUDRenderer): DebugHUDElement {
-            return DebugHUDElement(hudRenderer)
+        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<DebugHUDElement> {
+            return LayoutedHUDElement(DebugHUDElement(hudRenderer)).apply { enabled = false }
         }
     }
 }

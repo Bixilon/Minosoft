@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
 class LineSpacerElement(
-    hudRenderer: HUDRenderer,
+    guiRenderer: AbstractGUIRenderer,
     lines: Int = 1,
-) : SpacerElement(hudRenderer, Vec2i.EMPTY) {
+) : SpacerElement(guiRenderer, Vec2i.EMPTY) {
     var lines: Int = 0
         set(value) {
             field = value

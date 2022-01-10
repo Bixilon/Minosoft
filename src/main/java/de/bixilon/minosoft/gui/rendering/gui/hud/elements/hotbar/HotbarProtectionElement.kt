@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -47,7 +47,7 @@ class HotbarProtectionElement(guiRenderer: AbstractGUIRenderer) : Element(guiRen
                 else -> fullProtection
             }
 
-            val image = ImageElement(guiRenderer, atlasElement)
+            val image = AtlasImageElement(guiRenderer, atlasElement)
 
             image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), z, consumer, options)
 

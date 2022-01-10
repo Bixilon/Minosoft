@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -98,7 +98,7 @@ class HotbarHungerElement(guiRenderer: AbstractGUIRenderer) : Element(guiRendere
                 }
                 else -> normalHungerContainer
             }
-            ImageElement(guiRenderer, container).render(hungerOffset, z, consumer, options)
+            AtlasImageElement(guiRenderer, container).render(hungerOffset, z, consumer, options)
 
 
             val selectArray: Array<*> = if (hungerEffect) {
@@ -121,7 +121,7 @@ class HotbarHungerElement(guiRenderer: AbstractGUIRenderer) : Element(guiRendere
                 hungerElement = selectArray[0] as AtlasElement
             }
 
-            ImageElement(guiRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)
+            AtlasImageElement(guiRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)
         }
 
 

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -48,7 +48,7 @@ class HotbarAirElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer),
                 atlasElement = poppingAirBubble
             }
 
-            val image = ImageElement(guiRenderer, atlasElement)
+            val image = AtlasImageElement(guiRenderer, atlasElement)
 
             image.render(offset + Vec2i(i * BUBBLE_SIZE.x, 0), z, consumer, options)
         }

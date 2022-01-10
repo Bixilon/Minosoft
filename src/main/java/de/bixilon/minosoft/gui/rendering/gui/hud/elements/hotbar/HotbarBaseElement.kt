@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -26,8 +26,8 @@ import glm_.vec2.Vec2i
 
 class HotbarBaseElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Pollable {
     private val baseAtlasElement = guiRenderer.renderWindow.atlasManager[BASE]!!
-    private val base = ImageElement(guiRenderer, baseAtlasElement)
-    private val frame = ImageElement(guiRenderer, guiRenderer.renderWindow.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
+    private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
+    private val frame = AtlasImageElement(guiRenderer, guiRenderer.renderWindow.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
     private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.renderWindow.connection.player.inventory, baseAtlasElement.slots)
 

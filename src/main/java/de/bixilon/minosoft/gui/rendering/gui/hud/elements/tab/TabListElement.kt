@@ -16,22 +16,36 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
+import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
-class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
     val header = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
     val footer = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
 
@@ -45,6 +59,9 @@ class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
         private set
     private var columns = 0
 
+    override val layoutOffset: Vec2i
+        get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
+
     private val atlasManager = guiRenderer.renderWindow.atlasManager
     val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
         atlasManager["minecraft:tab_list_ping_0"]!!,
@@ -54,6 +71,10 @@ class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
         atlasManager["minecraft:tab_list_ping_4"]!!,
         atlasManager["minecraft:tab_list_ping_5"]!!,
     )
+
+    init {
+        super.prefMaxSize = Vec2i(-1, -1)
+    }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         background.render(offset, z, consumer, options)
@@ -201,11 +222,49 @@ class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
     }
 
 
-    companion object {
+    override fun init() {
+        val connection = renderWindow.connection
+        connection.registerEvent(CallbackEventInvoker.of<TabListInfoChangeEvent> {
+            header.text = it.header
+            footer.text = it.footer
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
+            for ((uuid, entry) in it.items) {
+                if (entry == null) {
+                    remove(uuid)
+                    continue
+                }
+                update(uuid)
+            }
+        })
+
+        // ToDo: Also check team changes, scoreboard changes, etc
+    }
+
+
+    override fun draw() {
+        // check if content was changed, and we need to re-prepare before drawing
+        if (needsApply) {
+            forceApply()
+        }
+    }
+
+    companion object : HUDBuilder<LayoutedHUDElement<TabListElement>> {
         private const val ENTRIES_PER_COLUMN = 20
         private const val ENTRY_HORIZONTAL_SPACING = 5
         private const val ENTRY_VERTICAL_SPACING = 1
         private const val BACKGROUND_PADDING = 3
         private const val MAX_ENTRIES = 80
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tab_list".toResourceLocation()
+        override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
+        override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
+            mapOf(
+                KeyAction.CHANGE to setOf(KeyCodes.KEY_TAB),
+            ),
+        )
+
+        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<TabListElement> {
+            return LayoutedHUDElement(TabListElement(hudRenderer)).apply { enabled = false }
+        }
     }
 }

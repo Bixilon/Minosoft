@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -65,7 +65,7 @@ class HotbarVehicleHealthElement(guiRenderer: AbstractGUIRenderer) : AbstractHot
             val image = hearts[when {
                 halfHeart -> 1
                 else -> 0
-            }]?.let { ImageElement(guiRenderer, it) }
+            }]?.let { AtlasImageElement(guiRenderer, it) }
 
             image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
 

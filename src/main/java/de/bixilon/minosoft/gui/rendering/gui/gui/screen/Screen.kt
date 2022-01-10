@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 
 abstract class Screen(
     override val guiRenderer: AbstractGUIRenderer,
 ) : GUIElement {
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
-    val background = ImageElement(guiRenderer, renderWindow.WHITE_TEXTURE, size = guiRenderer.scaledSize, tint = RGBColor(1.0f, 1.0f, 1.0f, 0.8f))
+    val background = AtlasImageElement(guiRenderer, renderWindow.WHITE_TEXTURE, size = guiRenderer.scaledSize, tint = RGBColor(1.0f, 1.0f, 1.0f, 0.8f))
 }

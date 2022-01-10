@@ -19,23 +19,23 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import glm_.vec2.Vec2i
 
-class TextFlowElement(
-    hudRenderer: HUDRenderer,
+open class TextFlowElement(
+    guiRenderer: AbstractGUIRenderer,
     var messageExpireTime: Long,
-) : Element(hudRenderer) {
+) : Element(guiRenderer) {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = listOf() // all visible lines **from bottom to top**
 
-    private val background = ColorElement(hudRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
     // Used for scrolling in GUI (not hud)
     private val active: Boolean = false // if always all lines should be displayed when possible

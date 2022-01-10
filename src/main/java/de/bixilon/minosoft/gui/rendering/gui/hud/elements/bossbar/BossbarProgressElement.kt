@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.util.ProgressElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -29,8 +29,8 @@ open class BossbarProgressElement(
     fullNotchesElement: AtlasElement?,
     progress: Float = 0.0f,
 ) : ProgressElement(guiRenderer, emptyProgressAtlasElement, fullProgressAtlasElement, progress) {
-    private val emptyNotchesImage = emptyNotchesElement?.let { ImageElement(guiRenderer, it, emptyProgressAtlasElement.size) }
-    private val fullNotchesImage = fullNotchesElement?.let { ImageElement(guiRenderer, it, emptyProgressAtlasElement.size) }
+    private val emptyNotchesImage = emptyNotchesElement?.let { AtlasImageElement(guiRenderer, it, emptyProgressAtlasElement.size) }
+    private val fullNotchesImage = fullNotchesElement?.let { AtlasImageElement(guiRenderer, it, emptyProgressAtlasElement.size) }
 
     constructor(guiRenderer: AbstractGUIRenderer, progressElements: Array<AtlasElement>, notchesElements: Array<AtlasElement>?, progress: Float = 0.0f) : this(guiRenderer, progressElements[0], progressElements[1], notchesElements?.get(0), notchesElements?.get(1), progress)
 

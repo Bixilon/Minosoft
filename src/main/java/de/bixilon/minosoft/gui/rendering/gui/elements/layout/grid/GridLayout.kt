@@ -24,7 +24,7 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.min
 import kotlin.math.max
 
-class GridLayout(guiRenderer: AbstractGUIRenderer, val grid: Vec2i) : Element(guiRenderer) {
+open class GridLayout(guiRenderer: AbstractGUIRenderer, val grid: Vec2i) : Element(guiRenderer) {
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 

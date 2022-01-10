@@ -17,8 +17,10 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.modding.event.events.bossbar.*
@@ -26,13 +28,12 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class BossbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<RowLayout>(hudRenderer) {
+class BossbarLayout(hudRenderer: HUDRenderer) : RowLayout(hudRenderer, HorizontalAlignments.CENTER, 2), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
-    override val layout: RowLayout = RowLayout(hudRenderer, HorizontalAlignments.CENTER, 2)
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2i
-        get() = Vec2i((guiRenderer.scaledSize.x - layout.size.x) / 2, 2)
+        get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
 
     val atlasManager = hudRenderer.atlasManager
 
@@ -93,14 +94,14 @@ class BossbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<RowLayout
     override fun postInit() {
         connection.registerEvent(CallbackEventInvoker.of<BossbarAddEvent> {
             val element = BossbarElement(guiRenderer, it.bossbar, atlas)
-            layout += element
+            this += element
             val previous = bossbars.put(it.bossbar, element) ?: return@of
-            layout -= previous
+            this -= previous
         })
 
         connection.registerEvent(CallbackEventInvoker.of<BossbarRemoveEvent> {
             val element = bossbars.remove(it.bossbar) ?: return@of
-            layout -= element
+            this -= element
         })
 
         connection.registerEvent(CallbackEventInvoker.of<BossbarValueSetEvent> {
@@ -115,11 +116,11 @@ class BossbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<RowLayout
     }
 
 
-    companion object : HUDBuilder<BossbarHUDElement> {
+    companion object : HUDBuilder<LayoutedHUDElement<BossbarLayout>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:bossbar".toResourceLocation()
 
-        override fun build(hudRenderer: HUDRenderer): BossbarHUDElement {
-            return BossbarHUDElement(hudRenderer)
+        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<BossbarLayout> {
+            return LayoutedHUDElement(BossbarLayout(hudRenderer))
         }
     }
 }

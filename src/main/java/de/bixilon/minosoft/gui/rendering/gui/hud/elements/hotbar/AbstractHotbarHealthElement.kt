@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -59,7 +59,7 @@ abstract class AbstractHotbarHealthElement(guiRenderer: AbstractGUIRenderer) : E
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW
 
-            val image = ImageElement(guiRenderer, atlasElement)
+            val image = AtlasImageElement(guiRenderer, atlasElement)
 
             image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z, consumer, options)
         }

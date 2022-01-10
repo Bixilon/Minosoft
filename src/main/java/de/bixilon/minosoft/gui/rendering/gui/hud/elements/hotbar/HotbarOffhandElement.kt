@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.player.Arms.Companion.opposite
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.marginOf
@@ -34,7 +34,7 @@ class HotbarOffhandElement(guiRenderer: AbstractGUIRenderer) : Element(guiRender
     val offArm = guiRenderer.renderWindow.connection.player.mainArm.opposite // ToDo: Support arm change
     private val frame = frames[offArm.ordinal]!!
 
-    private var frameImage = ImageElement(guiRenderer, frame)
+    private var frameImage = AtlasImageElement(guiRenderer, frame)
     private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.renderWindow.connection.player.inventory, frame.slots)
 
     init {

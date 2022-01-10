@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -46,7 +46,7 @@ class TabListEntryElement(
     private val background: ColorElement
 
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
-    private lateinit var pingElement: ImageElement
+    private lateinit var pingElement: AtlasImageElement
 
     private var displayName: ChatComponent = item.displayName
     private var ping = item.ping
@@ -86,7 +86,7 @@ class TabListEntryElement(
 
     override fun forceSilentApply() {
         // ToDo (Performance): If something changed, should we just prepare the changed
-        pingElement = ImageElement(guiRenderer, tabList.pingBarsAtlasElements[when {
+        pingElement = AtlasImageElement(guiRenderer, tabList.pingBarsAtlasElements[when {
             ping < 0 -> 0
             ping < 150 -> 5
             ping < 300 -> 4

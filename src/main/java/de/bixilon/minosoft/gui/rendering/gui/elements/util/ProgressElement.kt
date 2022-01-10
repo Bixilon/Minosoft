@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.util
 import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -38,7 +39,7 @@ open class ProgressElement(
             forceSilentApply()
             // ToDo: Animate
         }
-    protected val emptyImage = ImageElement(guiRenderer, emptyAtlasElement)
+    protected val emptyImage = AtlasImageElement(guiRenderer, emptyAtlasElement)
     protected lateinit var progressImage: ImageElement
 
 
