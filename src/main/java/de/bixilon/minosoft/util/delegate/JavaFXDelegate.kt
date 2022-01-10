@@ -23,32 +23,38 @@ import de.bixilon.kutil.watcher.map.bi.BiMapDataWatcher.Companion.observeBiMap
 import de.bixilon.kutil.watcher.set.SetChange
 import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.terminal.RunConfiguration
 import kotlin.reflect.KProperty0
 
 object JavaFXDelegate {
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<V>.observeFX(owner: Any, observer: (V) -> Unit) {
+        check(!RunConfiguration.DISABLE_EROS)
         this.observe(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<Set<V>>.observeSetFX(owner: Any, observer: (SetChange<V>) -> Unit) {
+        check(!RunConfiguration.DISABLE_EROS)
         this.observeSet(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<List<V>>.observeListFX(owner: Any, observer: (ListChange<V>) -> Unit) {
+        check(!RunConfiguration.DISABLE_EROS)
         this.observeList(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<Map<K, V>>.observeMapFX(owner: Any, observer: (MapChange<K, V>) -> Unit) {
+        check(!RunConfiguration.DISABLE_EROS)
         this.observeMap(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapFX(owner: Any, observer: (MapChange<K, V>) -> Unit) {
+        check(!RunConfiguration.DISABLE_EROS)
         this.observeBiMap(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 }

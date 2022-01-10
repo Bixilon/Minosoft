@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -38,7 +39,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
@@ -183,9 +183,9 @@ class ParticleRenderer(
         }
         TimeWorker += particleTask
 
-        connection::state.observeFX(this) {
+        connection::state.observe(this) {
             if (!it.disconnected) {
-                return@observeFX
+                return@observe
             }
             TimeWorker.removeTask(particleTask)
         }

@@ -18,6 +18,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.math.MMath.round10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -46,7 +47,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Stopwatch
-import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -107,7 +107,7 @@ class RenderWindow(
         }
 
     init {
-        connection::state.observeFX(this) {
+        connection::state.observe(this) {
             if (it == PlayConnectionStates.PLAYING && latch.count > 0) {
                 latch.dec()
             }

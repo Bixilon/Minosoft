@@ -39,10 +39,12 @@ object AutoConnect {
             account = account,
             version = version,
         )
-        connection::state.observeFX(this) {
-            if (it.disconnected && RunConfiguration.DISABLE_EROS) {
-                Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
-                exitProcess(0)
+        if (!RunConfiguration.DISABLE_EROS) {
+            connection::state.observeFX(this) {
+                if (it.disconnected) {
+                    Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
+                    exitProcess(0)
+                }
             }
         }
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }

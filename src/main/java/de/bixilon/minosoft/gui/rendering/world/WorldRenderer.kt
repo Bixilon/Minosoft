@@ -23,6 +23,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -71,7 +72,6 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
-import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -233,7 +233,7 @@ class WorldRenderer(
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
-        connection::state.observeFX(this) { if (it == PlayConnectionStates.DISCONNECTED) unloadWorld() }
+        connection::state.observe(this) { if (it == PlayConnectionStates.DISCONNECTED) unloadWorld() }
         connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
             if (it.state == RenderingStates.PAUSED) {
                 unloadWorld()
@@ -728,7 +728,7 @@ class WorldRenderer(
 
 
     companion object : RendererBuilder<WorldRenderer> {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:world_renderer")
+        override val RESOURCE_LOCATION = ResourceLocation("minosoft:world")
         private val CHUNK_CENTER = Vec3(8.0f)
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
