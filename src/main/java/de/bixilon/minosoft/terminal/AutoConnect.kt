@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.terminal
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
-import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -39,8 +39,8 @@ object AutoConnect {
             account = account,
             version = version,
         )
-        if (!RunConfiguration.DISABLE_EROS) {
-            connection::state.observeFX(this) {
+        if (RunConfiguration.DISABLE_EROS) {
+            connection::state.observe(this) {
                 if (it.disconnected) {
                     Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
                     exitProcess(0)
