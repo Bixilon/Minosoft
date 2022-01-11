@@ -25,10 +25,9 @@ import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
-import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
-import de.bixilon.minosoft.gui.rendering.gui.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
@@ -93,8 +92,6 @@ class RenderWindow(
 
     var tickCount = 0L
     var lastTickTimer = TimeUtil.time
-
-    val atlasManager = AtlasManager(this)
 
 
     var renderingState = RenderingStates.RUNNING
@@ -290,6 +287,6 @@ class RenderWindow(
     }
 
     fun pause(pause: Boolean? = null) {
-        renderer[GUIRenderer]?.pause(pause)
+        renderer[GUIRenderer]?.gui?.pause(pause)
     }
 }

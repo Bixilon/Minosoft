@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -32,10 +32,10 @@ import glm_.vec2.Vec2i
 import java.lang.Float.max
 import java.lang.Float.min
 
-class HotbarHealthElement(guiRenderer: AbstractGUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
+class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
     private val witherStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
     private val poisonStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.POISON]
-    private val atlasManager = guiRenderer.renderWindow.atlasManager
+    private val atlasManager = guiRenderer.atlasManager
 
     /**
      *  [normal|hardcore] [normal|poison|wither] [normal|damage] [full|half]

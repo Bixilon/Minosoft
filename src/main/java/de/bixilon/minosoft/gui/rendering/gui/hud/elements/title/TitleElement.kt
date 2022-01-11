@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -35,9 +35,9 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 // ToDo: Remove subtitle when hidden
-class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer), LayoutedElement, Initializable {
-    val title = FadingTextElement(hudRenderer, "", background = false, scale = 4.0f, parent = this)
-    val subtitle = FadingTextElement(hudRenderer, "", background = false, scale = 2.0f, parent = this)
+class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
+    val title = FadingTextElement(guiRenderer, "", background = false, scale = 4.0f, parent = this)
+    val subtitle = FadingTextElement(guiRenderer, "", background = false, scale = 2.0f, parent = this)
     var fadeInTime = 0L
         set(value) {
             title.fadeInTime = value
@@ -148,15 +148,15 @@ class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer), LayoutedEle
         })
     }
 
-    companion object : HUDBuilder<LayoutedHUDElement<TitleElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:title".toResourceLocation()
         const val SUBTITLE_VERTICAL_OFFSET = 10
         const val DEFAULT_FADE_IN_TIME = 20L * ProtocolDefinition.TICK_TIME
         const val DEFAULT_STAY_TIME = 60L * ProtocolDefinition.TICK_TIME
         const val DEFAULT_FADE_OUT_TIME = 20L * ProtocolDefinition.TICK_TIME
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<TitleElement> {
-            return LayoutedHUDElement(TitleElement(hudRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TitleElement> {
+            return LayoutedGUIElement(TitleElement(guiRenderer))
         }
     }
 }

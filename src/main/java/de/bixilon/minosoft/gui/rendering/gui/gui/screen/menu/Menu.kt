@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 
-abstract class Menu(guiRenderer: AbstractGUIRenderer) : Screen(guiRenderer)
+abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer)

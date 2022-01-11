@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 
 class AutoTextElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     var interval: Int,
     alignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     private val updater: () -> Any,

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.util.ProgressElement
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
 open class BossbarProgressElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     emptyProgressAtlasElement: AtlasElement,
     fullProgressAtlasElement: AtlasElement,
     emptyNotchesElement: AtlasElement?,
@@ -32,7 +32,7 @@ open class BossbarProgressElement(
     private val emptyNotchesImage = emptyNotchesElement?.let { AtlasImageElement(guiRenderer, it, emptyProgressAtlasElement.size) }
     private val fullNotchesImage = fullNotchesElement?.let { AtlasImageElement(guiRenderer, it, emptyProgressAtlasElement.size) }
 
-    constructor(guiRenderer: AbstractGUIRenderer, progressElements: Array<AtlasElement>, notchesElements: Array<AtlasElement>?, progress: Float = 0.0f) : this(guiRenderer, progressElements[0], progressElements[1], notchesElements?.get(0), notchesElements?.get(1), progress)
+    constructor(guiRenderer: GUIRenderer, progressElements: Array<AtlasElement>, notchesElements: Array<AtlasElement>?, progress: Float = 0.0f) : this(guiRenderer, progressElements[0], progressElements[1], notchesElements?.get(0), notchesElements?.get(1), progress)
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         emptyImage.render(offset, z, consumer, options)

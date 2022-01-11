@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -35,10 +35,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -56,7 +55,7 @@ import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 import kotlin.math.abs
 
-class DebugHUDElement(hudRenderer: HUDRenderer) : GridLayout(hudRenderer, Vec2i(3, 1)), LayoutedElement, Initializable {
+class DebugHUDElement(guiRenderer: GUIRenderer) : GridLayout(guiRenderer, Vec2i(3, 1)), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
     override val layoutOffset: Vec2i = Vec2i.EMPTY
 
@@ -240,7 +239,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : GridLayout(hudRenderer, Vec2i(
         return layout
     }
 
-    private class DebugWorldInfo(guiRenderer: AbstractGUIRenderer) : RowLayout(guiRenderer) {
+    private class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
         private var lastChunk: Chunk? = null
         private val world = guiRenderer.renderWindow.connection.world
         private val entity = guiRenderer.renderWindow.connection.player
@@ -286,7 +285,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : GridLayout(hudRenderer, Vec2i(
         }
     }
 
-    companion object : HUDBuilder<LayoutedHUDElement<DebugHUDElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<DebugHUDElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
         override val DEFAULT_ENABLED: Boolean = false
@@ -296,8 +295,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : GridLayout(hudRenderer, Vec2i(
             ),
         )
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<DebugHUDElement> {
-            return LayoutedHUDElement(DebugHUDElement(hudRenderer)).apply { enabled = false }
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugHUDElement> {
+            return LayoutedGUIElement(DebugHUDElement(guiRenderer)).apply { enabled = false }
         }
     }
 }

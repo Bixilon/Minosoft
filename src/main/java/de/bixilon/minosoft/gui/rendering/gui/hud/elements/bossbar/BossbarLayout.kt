@@ -16,26 +16,26 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.modding.event.events.bossbar.*
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class BossbarLayout(hudRenderer: HUDRenderer) : RowLayout(hudRenderer, HorizontalAlignments.CENTER, 2), LayoutedElement, Initializable {
+class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
     private val bossbars: MutableMap<Bossbar, BossbarElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2i
         get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 2)
 
-    val atlasManager = hudRenderer.atlasManager
+    val atlasManager = guiRenderer.atlasManager
 
     /**
      * [bar|notches][color.ordinal|notches.ordinal-1][empty|full]
@@ -116,11 +116,11 @@ class BossbarLayout(hudRenderer: HUDRenderer) : RowLayout(hudRenderer, Horizonta
     }
 
 
-    companion object : HUDBuilder<LayoutedHUDElement<BossbarLayout>> {
+    companion object : HUDBuilder<LayoutedGUIElement<BossbarLayout>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:bossbar".toResourceLocation()
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<BossbarLayout> {
-            return LayoutedHUDElement(BossbarLayout(hudRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<BossbarLayout> {
+            return LayoutedGUIElement(BossbarLayout(guiRenderer))
         }
     }
 }

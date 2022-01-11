@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -26,7 +26,7 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 open class AtlasImageElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     val textureLike: TextureLike,
     size: Vec2i = textureLike.size,
     tint: RGBColor = ChatColors.WHITE,

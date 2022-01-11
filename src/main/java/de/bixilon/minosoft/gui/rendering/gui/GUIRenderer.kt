@@ -11,77 +11,85 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui
+package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
+import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class GUIRenderer(
-    private val connection: PlayConnection,
+    val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, InputHandler, AbstractGUIRenderer {
+) : Renderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.hud
     override val renderSystem = renderWindow.renderSystem
-    override var scaledSize: Vec2i = renderWindow.window.size
-    override var matrix: Mat4 = Mat4()
-    override var matrixChange = true
+    var scaledSize: Vec2i = renderWindow.window.size
+    val gui = GUIManager(this)
+    val hud = HUDManager(this)
+    var matrix: Mat4 = Mat4()
         private set
-    private var paused = false
+    var matrixChange = true
+    override val framebuffer: Framebuffer
+        get() = renderWindow.framebufferManager.gui.framebuffer
+    override val polygonMode: PolygonModes
+        get() = renderWindow.framebufferManager.gui.polygonMode
+    val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
+    val atlasManager = AtlasManager(renderWindow)
 
+    override fun init(latch: CountUpAndDownLatch) {
+        atlasManager.init()
+        gui.init()
+        hud.init()
+    }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        renderWindow.inputHandler.registerKeyCallback("minosoft:back".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
-                ),
-                ignoreConsumer = true,
-            )) { goBack() }
-
+        atlasManager.postInit()
+        shader.load()
+        renderWindow.textureManager.staticTextures.use(shader)
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
+
+        gui.postInit()
+        hud.postInit()
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
         scaledSize = Vec2i(Vec2(windowSize) / scale)
         matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
         matrixChange = true
+
+        gui.onMatrixChange()
+        hud.onMatrixChange()
     }
 
-    fun goBack() {
-        pause()
+    fun setup() {
+        renderWindow.renderSystem.reset(blending = true)
+        shader.use()
     }
 
-    fun pause(pause: Boolean? = null) {
-        val nextPause = pause ?: !paused
-        Log.log(LogMessageType.RENDERING_GENERAL) { "Pausing: $nextPause" }
-
-
-        renderWindow.inputHandler.inputHandler = if (nextPause) {
-            this
-        } else {
-            null
-        }
-        paused = nextPause
+    override fun drawOther() {
+        setup()
+        var z = 0
+        z += hud.draw(z)
+        z += gui.draw(z)
     }
 
     companion object : RendererBuilder<GUIRenderer> {

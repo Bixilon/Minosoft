@@ -17,7 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -30,7 +30,7 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class BossbarElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     val bossbar: Bossbar,
     val atlas: Array<Array<Array<AtlasElement?>>>,
 ) : Element(guiRenderer), Pollable {

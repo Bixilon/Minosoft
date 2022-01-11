@@ -17,7 +17,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 
 interface GUIElement : InputHandler {
-    val guiRenderer: AbstractGUIRenderer
+    val guiRenderer: GUIRenderer
     val renderWindow: RenderWindow
     var enabled: Boolean
 

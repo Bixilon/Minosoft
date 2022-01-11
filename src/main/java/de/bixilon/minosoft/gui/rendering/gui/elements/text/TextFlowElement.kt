@@ -19,7 +19,7 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import glm_.vec2.Vec2i
 
 open class TextFlowElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
 ) : Element(guiRenderer) {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**

@@ -21,16 +21,16 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
@@ -41,10 +41,10 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer), LayoutedElement, Initializable, Drawable {
-    private val backgroundElement = ColorElement(hudRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
-    private val nameBackgroundElement = ColorElement(hudRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
-    private val nameElement = TextElement(hudRenderer, "", background = false, parent = this)
+class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
+    private val backgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
     private val scores: MutableMap<ScoreboardScore, ScoreboardScoreElement> = synchronizedMapOf()
 
     override val layoutOffset: Vec2i
@@ -204,15 +204,15 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer), La
         }
     }
 
-    companion object : HUDBuilder<LayoutedHUDElement<ScoreboardSideElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<ScoreboardSideElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:scoreboard".toResourceLocation()
         const val MAX_SCORES = 15
         const val MIN_WIDTH = 30
         const val SCORE_HEIGHT = Font.TOTAL_CHAR_HEIGHT
         const val MAX_SCOREBOARD_WIDTH = 200
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<ScoreboardSideElement> {
-            return LayoutedHUDElement(ScoreboardSideElement(hudRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ScoreboardSideElement> {
+            return LayoutedGUIElement(ScoreboardSideElement(guiRenderer))
         }
     }
 }

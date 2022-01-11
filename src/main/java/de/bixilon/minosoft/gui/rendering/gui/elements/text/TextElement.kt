@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.TextRenderInfo
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import glm_.vec2.Vec2i
 
 open class TextElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     text: Any,
     override var fontAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     background: Boolean = true,

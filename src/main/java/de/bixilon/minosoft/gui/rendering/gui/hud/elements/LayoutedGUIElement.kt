@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
@@ -25,11 +25,11 @@ import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
-class LayoutedHUDElement<T : LayoutedElement>(
+class LayoutedGUIElement<T : LayoutedElement>(
     val layout: T,
 ) : HUDElement, Drawable {
     val elementLayout = layout.unsafeCast<Element>()
-    override val guiRenderer: AbstractGUIRenderer = elementLayout.guiRenderer
+    override val guiRenderer: GUIRenderer = elementLayout.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
     override var enabled = true
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))

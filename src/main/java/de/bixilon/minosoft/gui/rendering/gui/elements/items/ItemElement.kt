@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -37,7 +37,7 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
 class ItemElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     size: Vec2i,
     item: ItemStack?,
 ) : Element(guiRenderer), Pollable {

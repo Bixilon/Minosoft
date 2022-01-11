@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import glm_.vec2.Vec2i
 
 class ColorElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     size: Vec2i,
     color: RGBColor = ChatColors.WHITE,
 ) : AtlasImageElement(guiRenderer, guiRenderer.renderWindow.WHITE_TEXTURE, size, color) {

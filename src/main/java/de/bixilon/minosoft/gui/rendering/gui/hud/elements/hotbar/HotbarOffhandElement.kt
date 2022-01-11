@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.Arms.Companion.opposite
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -25,10 +25,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.marginOf
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarOffhandElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val frames = arrayOf(
-        guiRenderer.renderWindow.atlasManager["minecraft:offhand_right_arm_frame"],
-        guiRenderer.renderWindow.atlasManager["minecraft:offhand_left_arm_frame"],
+        guiRenderer.atlasManager["minecraft:offhand_right_arm_frame"],
+        guiRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
     )
 
     val offArm = guiRenderer.renderWindow.connection.player.mainArm.opposite // ToDo: Support arm change

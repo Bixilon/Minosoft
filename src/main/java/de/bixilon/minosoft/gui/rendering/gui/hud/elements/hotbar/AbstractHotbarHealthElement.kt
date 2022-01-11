@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.kutil.math.MMath.ceil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
-abstract class AbstractHotbarHealthElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     abstract val totalHealth: Float
     abstract val totalMaxHealth: Float
     var totalMaxHearts = 0

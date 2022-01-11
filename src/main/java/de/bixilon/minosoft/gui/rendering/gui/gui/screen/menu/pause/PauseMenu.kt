@@ -11,15 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui
+package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 
-interface AbstractGUIRenderer {
-    val renderWindow: RenderWindow
-    val matrix: Mat4
-    val scaledSize: Vec2i
-    val matrixChange: Boolean
-}
+class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer)

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffec
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -28,8 +28,8 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.lang.Float.max
 
-class HotbarVehicleHealthElement(guiRenderer: AbstractGUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
-    private val atlasManager = guiRenderer.renderWindow.atlasManager
+class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
+    private val atlasManager = guiRenderer.atlasManager
 
     /**
      *  [full|half]

@@ -15,19 +15,19 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class InternalMessagesElement(hudRenderer: HUDRenderer) : TextFlowElement(hudRenderer, 15000), LayoutedElement, Initializable, Drawable {
+class InternalMessagesElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRenderer, 15000), LayoutedElement, Initializable, Drawable {
     private val connection = renderWindow.connection
     private val profile = connection.profiles.hud
     private val internalChatProfile = profile.chat.internal
@@ -53,12 +53,12 @@ class InternalMessagesElement(hudRenderer: HUDRenderer) : TextFlowElement(hudRen
     }
 
 
-    companion object : HUDBuilder<LayoutedHUDElement<InternalMessagesElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<InternalMessagesElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:internal_messages_hud".toResourceLocation()
         private const val BOTTOM_OFFSET = 30
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<InternalMessagesElement> {
-            return LayoutedHUDElement(InternalMessagesElement(hudRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<InternalMessagesElement> {
+            return LayoutedGUIElement(InternalMessagesElement(guiRenderer))
         }
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
@@ -24,11 +24,11 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.util.concurrent.ThreadLocalRandom
 
-class HotbarHungerElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Pollable {
+class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val random = ThreadLocalRandom.current()
     private var ticks = 0
     private val hungerStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.HUNGER]
-    private val atlasManager = guiRenderer.renderWindow.atlasManager
+    private val atlasManager = guiRenderer.atlasManager
 
 
     private val normalHungerContainer = atlasManager["minecraft:normal_hunger_container"]!!

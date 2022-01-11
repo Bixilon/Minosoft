@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
 class LineSpacerElement(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     lines: Int = 1,
 ) : SpacerElement(guiRenderer, Vec2i.EMPTY) {
     var lines: Int = 0

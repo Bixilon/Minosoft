@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -35,7 +35,7 @@ import java.lang.Integer.max
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
  */
 open class RowLayout(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     override var childAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     spacing: Int = 0,
 ) : Element(guiRenderer), ChildAlignable {

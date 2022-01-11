@@ -18,18 +18,18 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CustomHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
-class CrosshairHUDElement(private val hudRenderer: HUDRenderer) : CustomHUDElement(hudRenderer) {
-    private val profile = hudRenderer.connection.profiles.hud
+class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
+    private val profile = guiRenderer.connection.profiles.hud
     private val crosshairProfile = profile.crosshair
     private lateinit var crosshairAtlasElement: AtlasElement
     private var mesh: GUIMesh? = null
@@ -42,7 +42,7 @@ class CrosshairHUDElement(private val hudRenderer: HUDRenderer) : CustomHUDEleme
     }
 
     override fun draw() {
-        val debugHUDElement: LayoutedHUDElement<DebugHUDElement>? = hudRenderer[DebugHUDElement]
+        val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
 
         if (debugHUDElement?.enabled != previousDebugEnabled || reapply) {
             apply()
@@ -76,7 +76,7 @@ class CrosshairHUDElement(private val hudRenderer: HUDRenderer) : CustomHUDEleme
             }
         }
 
-        val debugHUDElement: LayoutedHUDElement<DebugHUDElement>? = guiRenderer[DebugHUDElement]
+        val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
 
         if (debugHUDElement?.enabled == true) {
             // ToDo: Debug crosshair
@@ -102,8 +102,8 @@ class CrosshairHUDElement(private val hudRenderer: HUDRenderer) : CustomHUDEleme
 
         private val ATLAS_NAME = "minecraft:crosshair".toResourceLocation()
 
-        override fun build(hudRenderer: HUDRenderer): CrosshairHUDElement {
-            return CrosshairHUDElement(hudRenderer)
+        override fun build(guiRenderer: GUIRenderer): CrosshairHUDElement {
+            return CrosshairHUDElement(guiRenderer)
         }
     }
 }

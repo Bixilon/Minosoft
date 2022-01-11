@@ -14,14 +14,30 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen
 
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.GUIElement
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import glm_.vec2.Vec2i
 
 abstract class Screen(
-    override val guiRenderer: AbstractGUIRenderer,
-) : GUIElement {
-    override val renderWindow: RenderWindow = guiRenderer.renderWindow
-    val background = AtlasImageElement(guiRenderer, renderWindow.WHITE_TEXTURE, size = guiRenderer.scaledSize, tint = RGBColor(1.0f, 1.0f, 1.0f, 0.8f))
+    guiRenderer: GUIRenderer,
+) : Element(guiRenderer), LayoutedElement {
+    val background = AtlasImageElement(guiRenderer, renderWindow.WHITE_TEXTURE, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
+    override val layoutOffset: Vec2i = Vec2i(0, 0)
+
+    init {
+        _size = guiRenderer.scaledSize
+    }
+
+    override fun forceSilentApply() {
+        background.size = guiRenderer.scaledSize
+        _size = guiRenderer.scaledSize
+    }
+
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        return background.render(offset, z, consumer, options)
+    }
 }

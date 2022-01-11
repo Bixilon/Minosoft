@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -24,7 +24,7 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.min
 import kotlin.math.max
 
-open class GridLayout(guiRenderer: AbstractGUIRenderer, val grid: Vec2i) : Element(guiRenderer) {
+open class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRenderer) {
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 

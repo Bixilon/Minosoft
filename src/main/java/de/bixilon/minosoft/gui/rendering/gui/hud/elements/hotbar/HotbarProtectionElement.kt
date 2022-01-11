@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -22,10 +22,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
-class HotbarProtectionElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Pollable {
-    private val emptyProtection = guiRenderer.renderWindow.atlasManager["minecraft:empty_protection"]!!
-    private val halfProtection = guiRenderer.renderWindow.atlasManager["minecraft:half_protection"]!!
-    private val fullProtection = guiRenderer.renderWindow.atlasManager["minecraft:full_protection"]!!
+class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
+    private val emptyProtection = guiRenderer.atlasManager["minecraft:empty_protection"]!!
+    private val halfProtection = guiRenderer.atlasManager["minecraft:half_protection"]!!
+    private val fullProtection = guiRenderer.atlasManager["minecraft:full_protection"]!!
 
     init {
         forceSilentApply()

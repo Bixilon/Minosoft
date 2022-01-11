@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
-abstract class LabeledElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Labeled
+abstract class LabeledElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Labeled

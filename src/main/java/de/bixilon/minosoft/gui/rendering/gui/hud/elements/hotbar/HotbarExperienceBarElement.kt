@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -27,19 +27,19 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
-class HotbarExperienceBarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Pollable {
+class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
 
     /**
      * [experience|horse_jump][full|empty]
      */
     private val atlasElements = arrayOf(
         arrayOf(
-            guiRenderer.renderWindow.atlasManager["minecraft:empty_experience_bar"]!!,
-            guiRenderer.renderWindow.atlasManager["minecraft:full_experience_bar"]!!,
+            guiRenderer.atlasManager["minecraft:empty_experience_bar"]!!,
+            guiRenderer.atlasManager["minecraft:full_experience_bar"]!!,
         ),
         arrayOf(
-            guiRenderer.renderWindow.atlasManager["minecraft:empty_horse_jump_bar"]!!,
-            guiRenderer.renderWindow.atlasManager["minecraft:full_horse_jump_bar"]!!,
+            guiRenderer.atlasManager["minecraft:empty_horse_jump_bar"]!!,
+            guiRenderer.atlasManager["minecraft:full_horse_jump_bar"]!!,
         ),
     )
 

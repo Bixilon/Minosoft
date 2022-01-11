@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -21,7 +21,7 @@ import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
 class GridCell(
-    guiRenderer: AbstractGUIRenderer,
+    guiRenderer: GUIRenderer,
     private val columnConstraint: GridColumnConstraint,
     private val rowConstraint: GridRowConstraint,
     private val child: Element,

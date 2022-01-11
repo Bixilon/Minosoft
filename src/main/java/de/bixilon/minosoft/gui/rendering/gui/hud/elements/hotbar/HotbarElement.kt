@@ -19,16 +19,15 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -43,7 +42,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
+class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     val core = HotbarCoreElement(guiRenderer)
 
     val offhand = HotbarOffhandElement(guiRenderer)
@@ -198,13 +197,13 @@ class HotbarElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), La
     }
 
 
-    companion object : HUDBuilder<LayoutedHUDElement<HotbarElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<HotbarElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:hotbar".toResourceLocation()
         private const val HOVER_TEXT_OFFSET = 15
         private const val ITEM_NAME_OFFSET = 5
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<HotbarElement> {
-            return LayoutedHUDElement(HotbarElement(hudRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<HotbarElement> {
+            return LayoutedGUIElement(HotbarElement(guiRenderer))
         }
     }
 }

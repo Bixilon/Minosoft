@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -29,10 +29,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
@@ -45,7 +44,7 @@ import glm_.vec2.Vec2i
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
-class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
+class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
     val header = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
     val footer = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
 
@@ -62,7 +61,7 @@ class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), L
     override val layoutOffset: Vec2i
         get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
 
-    private val atlasManager = guiRenderer.renderWindow.atlasManager
+    private val atlasManager = guiRenderer.atlasManager
     val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
         atlasManager["minecraft:tab_list_ping_0"]!!,
         atlasManager["minecraft:tab_list_ping_1"]!!,
@@ -249,7 +248,7 @@ class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), L
         }
     }
 
-    companion object : HUDBuilder<LayoutedHUDElement<TabListElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<TabListElement>> {
         private const val ENTRIES_PER_COLUMN = 20
         private const val ENTRY_HORIZONTAL_SPACING = 5
         private const val ENTRY_VERTICAL_SPACING = 1
@@ -263,8 +262,8 @@ class TabListElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), L
             ),
         )
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<TabListElement> {
-            return LayoutedHUDElement(TabListElement(hudRenderer)).apply { enabled = false }
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TabListElement> {
+            return LayoutedGUIElement(TabListElement(guiRenderer)).apply { enabled = false }
         }
     }
 }

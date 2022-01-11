@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -30,7 +30,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
-abstract class Element(val guiRenderer: AbstractGUIRenderer) {
+abstract class Element(val guiRenderer: GUIRenderer) {
     var ignoreDisplaySize = false
     val renderWindow = guiRenderer.renderWindow
 

@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.MAX
 import glm_.vec2.Vec2i
 
-class InfiniteSizeElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer) {
+class InfiniteSizeElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     override var parent: Element?
         get() = null
         set(value) = Unit

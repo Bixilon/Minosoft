@@ -16,13 +16,12 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
@@ -30,7 +29,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class ChatElement(guiRenderer: AbstractGUIRenderer) : TextFlowElement(guiRenderer, 20000), LayoutedElement, Initializable, Drawable {
+class ChatElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRenderer, 20000), LayoutedElement, Initializable, Drawable {
     private val connection = renderWindow.connection
     private val profile = connection.profiles.hud
     private val chatProfile = profile.chat
@@ -67,12 +66,12 @@ class ChatElement(guiRenderer: AbstractGUIRenderer) : TextFlowElement(guiRendere
     }
 
 
-    companion object : HUDBuilder<LayoutedHUDElement<ChatElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<ChatElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
         private const val BOTTOM_OFFSET = 30
 
-        override fun build(hudRenderer: HUDRenderer): LayoutedHUDElement<ChatElement> {
-            return LayoutedHUDElement(ChatElement(hudRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ChatElement> {
+            return LayoutedGUIElement(ChatElement(guiRenderer))
         }
     }
 }

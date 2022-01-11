@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kutil.math.MMath.ceil
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.gui.rendering.gui.AbstractGUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -24,10 +24,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
-class HotbarAirElement(guiRenderer: AbstractGUIRenderer) : Element(guiRenderer), Pollable {
+class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val water = guiRenderer.renderWindow.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
-    private val airBubble = guiRenderer.renderWindow.atlasManager["minecraft:air_bubble"]!!
-    private val poppingAirBubble = guiRenderer.renderWindow.atlasManager["minecraft:popping_air_bubble"]!!
+    private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]!!
+    private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]!!
 
     init {
         forceSilentApply()
