@@ -90,6 +90,9 @@ class GUIRenderer(
         var z = 0
         z += hud.draw(z)
         z += gui.draw(z)
+        if (this.matrixChange) {
+            this.matrixChange = false
+        }
     }
 
     companion object : RendererBuilder<GUIRenderer> {
