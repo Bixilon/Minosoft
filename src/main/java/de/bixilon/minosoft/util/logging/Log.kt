@@ -81,7 +81,6 @@ object Log {
                     if (RunConfiguration.LOG_COLOR_MESSAGE) {
                         messageToSend.message.applyDefaultColor(messageColor)
                     }
-                    message += messageToSend.message
 
                     val stream = if (messageToSend.logMessageType.error) {
                         SYSTEM_ERR_STREAM
@@ -89,7 +88,10 @@ object Log {
                         SYSTEM_OUT_STREAM
                     }
 
-                    stream.println(message.ansiColoredMessage)
+                    val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
+                    for (line in messageToSend.message.ansiColoredMessage.lines()) {
+                        stream.println(prefix + line)
+                    }
 
                     if (StaticConfiguration.SHOW_LOG_MESSAGES_IN_CHAT) {
                         val cliConnection = CLI.getCurrentConnection()

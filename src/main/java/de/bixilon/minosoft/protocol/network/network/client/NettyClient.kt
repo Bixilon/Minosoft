@@ -51,7 +51,8 @@ import javax.crypto.Cipher
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>() {
-    private var errorReported = connection is StatusConnection // dont report errors in status
+    private var errorReported = false // dont report errors in status
+    private val reportErrors: Boolean get() = connection is PlayConnection && !errorReported
     var connected by watched(false)
         private set
     var state by watched(ProtocolStates.HANDSHAKING)
@@ -104,7 +105,12 @@ class NettyClient(
             .channel(channelClass)
             .handler(NetworkPipeline(this))
 
-        bootstrap.connect(address.hostname, address.port).sync()
+        val future = bootstrap.connect(address.hostname, address.port)
+        future.addListener {
+            if (!it.isSuccess) {
+                handleError(it.cause())
+            }
+        }
     }
 
     fun setupEncryption(encrypt: Cipher, decrypt: Cipher) {
@@ -175,11 +181,14 @@ class NettyClient(
         } else if (cause is EncoderException) {
             cause = error.cause ?: cause
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
+        if (connection !is StatusConnection) {
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
+        }
+        connection.error = cause
         if (cause !is NetworkException || cause is CriticalNetworkException) {
-            if (!errorReported) {
+            if (reportErrors) {
                 cause.report()
-                errorReported = false
+                errorReported = true
             }
             disconnect()
             return
