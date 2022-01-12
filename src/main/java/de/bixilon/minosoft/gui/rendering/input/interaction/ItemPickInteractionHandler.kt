@@ -87,6 +87,17 @@ class ItemPickInteractionHandler(
             interactionManager.hotbar.selectSlot(i)
             return
         }
+        var slot = connection.player.selectedHotbarSlot
+        if (connection.player.inventory.getHotbarSlot(slot) != null) {
+            for (i in 0 until PlayerInventory.HOTBAR_SLOTS) {
+                val item = connection.player.inventory.getHotbarSlot(i)
+                if (item == null) {
+                    slot = i
+                    break
+                }
+            }
+        }
+        interactionManager.hotbar.selectSlot(slot)
         val selectedSlot = connection.player.selectedHotbarSlot + PlayerInventory.HOTBAR_OFFSET
 
         rateLimiter += { connection.sendPacket(ItemStackCreateC2SP(selectedSlot, itemStack)) }

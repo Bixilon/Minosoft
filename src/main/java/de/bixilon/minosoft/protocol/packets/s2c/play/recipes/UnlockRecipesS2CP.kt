@@ -31,7 +31,7 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val action = Actions[if (buffer.versionId < V_1_12) buffer.readInt() else buffer.readVarInt()]
 
     val crafting = RecipeBookState(buffer)
-    val smelting: RecipeBookState? = if (buffer.versionId >= V_17W48A) RecipeBookState(buffer) else null
+    val smelting: RecipeBookState? = if (buffer.versionId >= V_17W48A) RecipeBookState(buffer) else null // ToDo
     val blasting: RecipeBookState? = if (buffer.versionId >= V_20W27A) RecipeBookState(buffer) else null
     val smoking: RecipeBookState? = if (buffer.versionId >= V_20W27A) RecipeBookState(buffer) else null
 
@@ -51,9 +51,11 @@ class UnlockRecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val tagged: MutableList<Recipe> = mutableListOf()
-        val recipes = buffer.connection.registries.recipes
-        for (i in 0 until buffer.readVarInt()) {
-            tagged += recipes[if (buffer.versionId < V_17W48A) buffer.readVarInt() else buffer.readResourceLocation()] ?: continue
+        if (action == Actions.INITIALIZE) {
+            val recipes = buffer.connection.registries.recipes
+            for (i in 0 until buffer.readVarInt()) {
+                tagged += recipes[if (buffer.versionId < V_17W48A) buffer.readVarInt() else buffer.readResourceLocation()] ?: continue
+            }
         }
         this.tagged = tagged
     }

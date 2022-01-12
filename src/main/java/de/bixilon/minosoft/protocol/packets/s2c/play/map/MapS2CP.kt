@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W34A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W19A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W02A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W46A
 import de.bixilon.minosoft.util.logging.Log
@@ -31,7 +32,8 @@ import glm_.vec2.Vec2i
 class MapS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val id = buffer.readVarInt()
     val scale = buffer.readUnsignedByte()
-    val trackPosition = if (buffer.versionId >= V_15W34A) buffer.readBoolean() else true
+    val trackPosition = if (buffer.versionId in V_15W34A until V_20W46A) buffer.readBoolean() else true
+    val locked = if (buffer.versionId >= V_19W02A) buffer.readBoolean() else true
     val pins: Map<Vec2i, MapPin>
 
 

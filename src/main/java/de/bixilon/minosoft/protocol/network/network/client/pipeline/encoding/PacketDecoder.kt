@@ -30,6 +30,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.Protocol
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
+import java.lang.reflect.InvocationTargetException
 
 class PacketDecoder(
     private val client: NettyClient,
@@ -55,8 +56,12 @@ class PacketDecoder(
             packetType.onError(exception, client.connection)
             throw exception
         } catch (error: Throwable) {
-            packetType.onError(error, client.connection)
-            throw PacketReadException(error)
+            var realError = error
+            if (error is InvocationTargetException) {
+                error.cause?.let { realError = it }
+            }
+            packetType.onError(realError, client.connection)
+            throw PacketReadException(realError)
         }
 
         out += QueuedS2CP(packetType, packet)
