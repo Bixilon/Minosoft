@@ -51,8 +51,8 @@ import javax.crypto.Cipher
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>() {
-    private var errorReported = false // dont report errors in status
-    private val reportErrors: Boolean get() = connection is PlayConnection && !errorReported
+    private var errorReported = false
+    private val reportErrors: Boolean get() = connection is PlayConnection && !errorReported  // dont report errors in status
     var connected by watched(false)
         private set
     var state by watched(ProtocolStates.HANDSHAKING)
@@ -195,7 +195,7 @@ class NettyClient(
         }
     }
 
-    fun requireChannel(): Channel {
+    private fun requireChannel(): Channel {
         val channel = this.channel
         if (!connected || channel == null) {
             throw IllegalStateException("Not connected!")
