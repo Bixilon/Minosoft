@@ -59,6 +59,9 @@ open class InByteBuffer {
     }
 
     fun readByte(): Byte {
+        if (pointer >= size) {
+            throw ByteBufferUnderflowException(pointer, size)
+        }
         return bytes[pointer++]
     }
 
