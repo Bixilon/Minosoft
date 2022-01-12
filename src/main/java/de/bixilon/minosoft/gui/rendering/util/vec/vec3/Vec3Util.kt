@@ -117,4 +117,10 @@ object Vec3Util {
     operator fun Vec3.times(matrix: Mat4): Vec3 {
         return (matrix * Vec4(this, 1.0f)).xyz
     }
+
+    fun Vec3.clear() {
+        x = 0.0f
+        y = 0.0f
+        z = 0.0f
+    }
 }

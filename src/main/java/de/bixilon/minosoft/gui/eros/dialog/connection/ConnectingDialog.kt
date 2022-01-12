@@ -34,10 +34,7 @@ class ConnectingDialog(
     @FXML private lateinit var cancelButtonFX: Button
 
     fun show() {
-        JavaFXUtil.runLater {
-            JavaFXUtil.openModal(TITLE, LAYOUT, this)
-            update(connection.state)
-        }
+        JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) { update(connection.state) }
     }
 
 

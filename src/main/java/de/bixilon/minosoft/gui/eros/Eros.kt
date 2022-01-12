@@ -50,9 +50,9 @@ object Eros {
     }
 
     fun start() {
-        JavaFXUtil.runLater {
-            mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
-            mainErosController.stage.show()
+        JavaFXUtil.openModalAsync<MainErosController>(TITLE, LAYOUT) {
+            mainErosController = it
+            it.stage.show()
         }
     }
 }

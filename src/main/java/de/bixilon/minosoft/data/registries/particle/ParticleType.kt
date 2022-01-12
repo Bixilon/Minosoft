@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 data class ParticleType(
@@ -46,8 +47,7 @@ data class ParticleType(
             val textures: MutableList<ResourceLocation> = mutableListOf()
             data["render"]?.toJsonObject()?.get("textures")?.listCast<String>()?.let {
                 for (texture in it) {
-                    val textureResourceLocation = ResourceLocation(texture)
-                    textures += textureResourceLocation.prefix("particle/").texture()
+                    textures += texture.toResourceLocation().prefix("particle/").texture()
                 }
             }
             val factory = DefaultParticleFactory[resourceLocation]

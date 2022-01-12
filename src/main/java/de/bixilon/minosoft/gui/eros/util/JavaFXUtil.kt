@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.util
 
 import com.sun.javafx.util.WeakReferenceQueue
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.reflection.ReflectionUtil.setValue
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -68,12 +69,7 @@ object JavaFXUtil {
         watchingTheme = true
     }
 
-    fun <T : JavaFXController> openModal(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL): T {
-        startThemeWatcher()
-        val fxmlLoader = FXMLLoader()
-        controller?.let { fxmlLoader.setController(it) }
-        val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
-
+    private fun <T : JavaFXController> loadController(title: Any, fxmlLoader: FXMLLoader, parent: Parent, modality: Modality = Modality.WINDOW_MODAL): T {
         val stage = Stage()
         stage.initModality(modality)
         stage.title = Minosoft.LANGUAGE_MANAGER.translate(title).message
@@ -95,6 +91,29 @@ object JavaFXUtil {
         controller.postInit()
 
         return controller
+    }
+
+    fun <T : JavaFXController> openModal(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL): T {
+        startThemeWatcher()
+        val fxmlLoader = FXMLLoader()
+        controller?.let { fxmlLoader.setController(it) }
+        val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+        return loadController(title, fxmlLoader, parent, modality)
+    }
+
+    fun <T : JavaFXController> openModalAsync(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL, callback: ((T) -> Unit)? = null) {
+        DefaultThreadPool += add@{
+            startThemeWatcher()
+            val fxmlLoader = FXMLLoader()
+            controller?.let { fxmlLoader.setController(it) }
+            val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
+
+            if (callback == null) {
+                return@add
+            }
+
+            runLater { callback(loadController(title, fxmlLoader, parent, modality)) }
+        }
     }
 
     fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation): T {

@@ -36,10 +36,9 @@ class StartingDialog(
     @FXML private lateinit var exitButtonFX: Button
 
     fun show() {
-        JavaFXUtil.runLater {
-            JavaFXUtil.openModal(TITLE, LAYOUT, this)
+        JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) {
             if (latch.count == 0) {
-                return@runLater
+                return@openModalAsync
             }
             update()
             stage.show()

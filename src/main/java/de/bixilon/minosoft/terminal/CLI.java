@@ -49,10 +49,7 @@ public class CLI {
         ROOT_NODE = new CommandRootNode();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            for (ClassPath.ClassInfo info : ClassPath.from(classLoader).getTopLevelClasses()) {
-                if (!info.getName().startsWith(Command.class.getPackage().getName())) {
-                    continue;
-                }
+            for (ClassPath.ClassInfo info : ClassPath.from(classLoader).getTopLevelClasses(Command.class.getPackage().getName())) {
                 Class<?> clazz = info.load();
                 if (clazz == Command.class) {
                     continue;

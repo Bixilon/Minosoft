@@ -30,7 +30,6 @@ import java.util.*
 open class OutByteBuffer() {
     private val bytes = HeapArrayByteList()
 
-
     constructor(buffer: OutByteBuffer) : this() {
         bytes.addAll(buffer.bytes)
     }

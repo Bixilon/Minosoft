@@ -22,6 +22,7 @@ import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.file.FileUtil
 import de.bixilon.kutil.file.FileUtil.read
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
@@ -119,9 +120,14 @@ object GlobalProfileManager {
             throw IllegalStateException("Already initialized!")
         }
         loadSelectedProfiles()
+        val latch = CountUpAndDownLatch(1)
         for ((namespace, manager) in DEFAULT_MANAGERS) {
-            manager.load(selectedProfiles[namespace])
+            latch.inc()
+            DefaultThreadPool += { manager.load(selectedProfiles[namespace]);latch.dec() }
         }
+        latch.dec()
+        latch.await()
+
         loading = false
         if (selectedProfilesChanges) {
             saveSelectedProfiles()

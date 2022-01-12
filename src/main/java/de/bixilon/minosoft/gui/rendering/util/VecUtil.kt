@@ -37,12 +37,6 @@ import kotlin.random.Random
 @Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
 
-    fun Vec3.clear() {
-        x = 0.0f
-        y = 0.0f
-        z = 0.0f
-    }
-
     infix fun <T : Number> Vec3t<T>.assign(other: Vec3t<T>) {
         x = other.x
         y = other.y
@@ -98,13 +92,6 @@ object VecUtil {
         )
     }
 
-    infix fun Vec3i.plusDouble(double: () -> Double): Vec3d {
-        return Vec3d(
-            x = x + double(),
-            y = y + double(),
-            z = z + double(),
-        )
-    }
 
     infix operator fun Vec3i.minus(lambda: () -> Int): Vec3i {
         return Vec3i(
@@ -127,12 +114,6 @@ object VecUtil {
 
     val Vec3.ticks: Vec3
         get() = this / ProtocolDefinition.TICKS_PER_SECOND
-
-    val Vec3.millis: Vec3
-        get() = this * ProtocolDefinition.TICKS_PER_SECOND
-
-    val Vec3d.millis: Vec3d
-        get() = this * ProtocolDefinition.TICKS_PER_SECOND
 
 
     fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
@@ -232,7 +213,7 @@ object VecUtil {
         }
 
         val positionHash = generatePositionHash(x, 0, z)
-        val maxModelOffset = 0.25f // ToDo: use block.model.max_model_offset
+        val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
 
         fun horizontal(axisHash: Long): Float {
             return (((axisHash and 0xF) / 15.0f) - 0.5f) / 2.0f
@@ -301,9 +282,6 @@ object VecUtil {
     val Vec3.max: Float
         get() = glm.max(this.x, this.y, this.z)
 
-    val Vec3.signs: Vec3
-        get() = Vec3(glm.sign(this.x), glm.sign(this.y), glm.sign(this.z))
-
     val Vec3.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
 
@@ -346,9 +324,6 @@ object VecUtil {
         return Vec3d(this.x + xz(), this.y + y, this.z + xz())
     }
 
-    val Float.noise: Float
-        get() = Random.nextFloat() / this * if (Random.nextBoolean()) 1.0f else -1.0f
-
     val Double.noise: Double
         get() = Random.nextDouble() / this * if (Random.nextBoolean()) 1.0 else -1.0
 
@@ -389,18 +364,6 @@ object VecUtil {
         return start + delta * (end - start)
     }
 
-    fun Vec3.clearZero() {
-        if (abs(x) < 0.003f) {
-            x = 0.0f
-        }
-        if (abs(y) < 0.003f) {
-            y = 0.0f
-        }
-        if (abs(z) < 0.003f) {
-            z = 0.0f
-        }
-    }
-
     fun Vec3d.clearZero() {
         if (abs(x) < 0.003) {
             x = 0.0
@@ -416,7 +379,4 @@ object VecUtil {
     operator fun Directions.plus(direction: Directions): Vec3i {
         return this.vector + direction.vector
     }
-
-    val Vec3.rad: Vec3
-        get() = glm.radians(this)
 }

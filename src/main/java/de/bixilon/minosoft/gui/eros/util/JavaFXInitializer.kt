@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.util
 
 import afester.javafx.svg.SvgLoader
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -33,8 +34,8 @@ class JavaFXInitializer internal constructor() : Application() {
 
         JavaFXUtil.JAVA_FX_THREAD = Thread.currentThread()
         JavaFXUtil.HOST_SERVICES = hostServices
-        JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/window_icon.png".toResourceLocation()])
-        JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()])
+        LATCH.inc(); DefaultThreadPool += { JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/window_icon.png".toResourceLocation()]);LATCH.dec() }
+        LATCH.inc(); DefaultThreadPool += { JavaFXUtil.BIXILON_LOGO = SvgLoader().loadSvg(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:textures/icons/bixilon_logo.svg".toResourceLocation()]);LATCH.dec() }
 
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
@@ -48,12 +49,12 @@ class JavaFXInitializer internal constructor() : Application() {
             get() = LATCH.count == 0
 
         val initializing: Boolean
-            get() = LATCH.count == 1
+            get() = LATCH.count >= 1
 
         @JvmStatic
         @Synchronized
         fun start() {
-            check(LATCH.count == 2) { "Already initialized!" }
+            check(initializing) { "Already initialized!" }
             Thread.setDefaultUncaughtExceptionHandler { _, exception ->
                 exception.printStackTrace(Log.FATAL_PRINT_STREAM)
                 exception.crash()

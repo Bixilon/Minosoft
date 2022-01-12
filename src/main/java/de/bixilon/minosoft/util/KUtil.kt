@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
@@ -29,7 +30,9 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
@@ -239,11 +242,15 @@ object KUtil {
 
 
     fun initUtilClasses() {
-        Log::class.java.forceInit()
-        URLProtocolStreamHandlers::class.java.forceInit()
-        MicrosoftOAuthUtils::class.java.forceInit()
-        TimeWorker::class.java.forceInit()
-        ShutdownManager::class.java.forceInit()
+        DefaultThreadPool += { GlobalEventMaster::class.java.forceInit() }
+        DefaultThreadPool += { Log::class.java.forceInit() }
+        DefaultThreadPool += { ShutdownManager::class.java.forceInit() }
+        DefaultThreadPool += { Jackson::class.java.forceInit() }
+        DefaultThreadPool += { URLProtocolStreamHandlers::class.java.forceInit() }
+        DefaultThreadPool += { MicrosoftOAuthUtils::class.java.forceInit() }
+        DefaultThreadPool += { TimeWorker::class.java.forceInit() }
+        DefaultThreadPool += { SystemInformation::class.java.forceInit() }
+        DefaultThreadPool += { StatusConnection::class.java.forceInit() }
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {

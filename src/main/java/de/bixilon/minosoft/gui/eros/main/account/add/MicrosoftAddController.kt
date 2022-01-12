@@ -37,10 +37,7 @@ class MicrosoftAddController(
 
 
     fun show() {
-        JavaFXUtil.runLater {
-            JavaFXUtil.openModal(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL)
-            stage.show()
-        }
+        JavaFXUtil.openModalAsync(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL) { stage.show() }
     }
 
     override fun init() {

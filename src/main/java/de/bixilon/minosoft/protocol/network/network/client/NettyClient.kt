@@ -31,6 +31,7 @@ import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.Lengt
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.LengthEncoder
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -181,7 +182,7 @@ class NettyClient(
         } else if (cause is EncoderException) {
             cause = error.cause ?: cause
         }
-        if (connection !is StatusConnection) {
+        if (RunConfiguration.DISABLE_EROS || connection !is StatusConnection) {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
         }
         connection.error = cause

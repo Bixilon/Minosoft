@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile
 
+import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
@@ -52,6 +53,8 @@ interface ProfileManager<T : Profile> {
     val latestVersion: Int
     val saveLock: ReentrantLock
     val profileClass: Class<T>
+    val jacksonProfileType: JavaType
+        get() = Jackson.MAPPER.typeFactory.constructType(profileClass)
     val profileSelectable: Boolean
         get() = true
     val icon: Ikon
@@ -81,7 +84,7 @@ interface ProfileManager<T : Profile> {
         val profile = if (data == null) {
             return createProfile(name)
         } else {
-            Jackson.MAPPER.convertValue(data, profileClass)
+            Jackson.MAPPER.convertValue(data, jacksonProfileType) as T
         }
         profile.saved = true
         profiles[name] = profile
@@ -135,11 +138,9 @@ interface ProfileManager<T : Profile> {
         }
     }
 
-
     fun serialize(profile: T): Map<String, Any?> {
         return Jackson.MAPPER.convertValue(profile, Jackson.JSON_MAP_TYPE)
     }
-
 
     fun deleteAsync(profile: T) {
         if (saveLock.isLocked) {

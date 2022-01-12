@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.account
 
+import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.json.Jackson
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
@@ -29,6 +31,7 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
     override val profileClass = AccountProfile::class.java
+    override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.USER_CIRCLE
 
 

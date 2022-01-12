@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros
 
+import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.config.profile.delegate.delegate.entry.MapDelegatePro
 import de.bixilon.minosoft.config.profile.delegate.delegate.entry.SetDelegateProfile
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.json.Jackson
 import javafx.collections.FXCollections
 import javafx.collections.ListChangeListener
 import javafx.collections.MapChangeListener
@@ -38,6 +40,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
     override val profileClass = ErosProfile::class.java
+    override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val profileSelectable: Boolean
         get() = false
     override val icon = FontAwesomeSolid.WINDOW_RESTORE

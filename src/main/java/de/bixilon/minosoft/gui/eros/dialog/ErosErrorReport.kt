@@ -76,10 +76,9 @@ class ErosErrorReport : DialogController() {
                 return
             }
 
-            JavaFXUtil.runLater {
-                val controller = JavaFXUtil.openModal<ErosErrorReport>(TITLE(this), LAYOUT)
-                controller.exception = this
-                controller.stage.show()
+            JavaFXUtil.openModalAsync<ErosErrorReport>(TITLE(this), LAYOUT) {
+                it.exception = this
+                it.stage.show()
             }
         }
     }

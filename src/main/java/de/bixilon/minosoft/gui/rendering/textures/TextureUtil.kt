@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object TextureUtil {
+
     fun ResourceLocation.texture(): ResourceLocation {
         var path = ""
 

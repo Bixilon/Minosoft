@@ -38,7 +38,6 @@ import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -46,7 +45,10 @@ import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.*
+import de.bixilon.minosoft.util.GitInfo
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.RenderPolling
+import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -126,6 +128,7 @@ object Minosoft {
 
         if (!RunConfiguration.DISABLE_EROS) {
             taskWorker += Task(identifier = StartupTasks.INITIALIZE_JAVAFX, executor = { JavaFXInitializer.start() })
+            DefaultThreadPool += { javafx.scene.text.Font::class.java.forceInit() }
             taskWorker += Task(identifier = StartupTasks.X_START_ON_FIRST_THREAD_WARNING, executor = { XStartOnFirstThreadWarning.show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
 
             taskWorker += Task(identifier = StartupTasks.STARTUP_PROGRESS, executor = { StartingDialog(START_UP_LATCH).show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
@@ -133,12 +136,6 @@ object Minosoft {
             Eros::class.java.forceInit()
         }
         taskWorker += Task(identifier = StartupTasks.LOAD_YGGDRASIL, executor = { YggdrasilUtil.load() })
-
-        // Init some classes that we will need later on
-        DefaultThreadPool += {
-            SystemInformation::class.java.forceInit()
-            StatusConnection::class.java.forceInit()
-        }
 
 
         taskWorker.work(START_UP_LATCH)

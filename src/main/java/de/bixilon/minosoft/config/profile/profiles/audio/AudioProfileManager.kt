@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.audio
 
+import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.json.Jackson
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
@@ -30,6 +32,7 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
     override val profileClass = AudioProfile::class.java
+    override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon: Ikon = FontAwesomeSolid.HEADPHONES
 
 
