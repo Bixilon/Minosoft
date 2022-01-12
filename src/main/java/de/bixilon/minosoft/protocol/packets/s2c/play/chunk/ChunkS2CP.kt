@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
+import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -37,7 +38,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W03A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -68,7 +68,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             // decompress chunk data
             val decompressed: PlayInByteBuffer = if (buffer.versionId < V_14W28A) {
-                Util.decompress(buffer.readByteArray(buffer.readInt()), buffer.connection)
+                PlayInByteBuffer(buffer.readByteArray(buffer.readInt()).decompress(), buffer.connection)
             } else {
                 buffer
             }

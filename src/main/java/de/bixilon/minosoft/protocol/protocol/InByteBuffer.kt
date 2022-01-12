@@ -12,13 +12,13 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
+import de.bixilon.kutil.compression.zlib.GzipUtil.decompress
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import glm_.vec2.Vec2
@@ -383,7 +383,7 @@ open class InByteBuffer {
                 // no nbt data here...
                 null
             } else {
-                InByteBuffer(Util.decompressGzip(readByteArray(length))).readNBTTag(false)
+                InByteBuffer(readByteArray(length).decompress()).readNBTTag(false)
             }
         }
         val type = NBTTagTypes[readUnsignedByte()]

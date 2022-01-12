@@ -40,12 +40,7 @@ import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
 import org.kamranzafar.jtar.TarHeader
-import java.io.ByteArrayOutputStream
 import java.util.*
-import java.util.zip.Deflater
-import java.util.zip.Inflater
-import kotlin.jvm.internal.Reflection
-import kotlin.reflect.KClass
 
 
 object KUtil {
@@ -251,51 +246,9 @@ object KUtil {
         ShutdownManager::class.java.forceInit()
     }
 
-    fun <T> Array<T>.index(value: T): Int? {
-        val index = indexOf(value)
-        if (index < 0) {
-            return null
-        }
-        return index
-    }
-
-    fun ByteArray.decompressZlib(): ByteArray {
-        val inflater = Inflater()
-        inflater.setInput(this, 0, this.size)
-        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
-        val stream = ByteArrayOutputStream(this.size)
-        while (!inflater.finished()) {
-            stream.write(buffer, 0, inflater.inflate(buffer))
-        }
-        stream.close()
-        return stream.toByteArray()
-    }
-
-
-    fun ByteArray.compressZlib(): ByteArray {
-        val deflater = Deflater()
-        deflater.setInput(this)
-        deflater.finish()
-        val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
-        val stream = ByteArrayOutputStream(this.size)
-        while (!deflater.finished()) {
-            stream.write(buffer, 0, deflater.deflate(buffer))
-        }
-        stream.close()
-        return stream.toByteArray()
-    }
-
-
     fun ByteArray.withLengthPrefix(): ByteArray {
         val prefixed = OutByteBuffer()
         prefixed.writeByteArray(this)
         return prefixed.toArray()
     }
-
-    fun Int.toHex(): String {
-        return Integer.toHexString(this)
-    }
-
-    val <T : Any>Class<T>.kClass: KClass<T>
-        get() = Reflection.createKotlinClass(this).unsafeCast()
 }

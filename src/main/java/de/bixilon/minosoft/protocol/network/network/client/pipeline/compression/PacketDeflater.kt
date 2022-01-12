@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.compression
 
+import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.util.KUtil.decompressZlib
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 
@@ -31,7 +31,7 @@ class PacketDeflater : MessageToMessageDecoder<ByteArray>() {
             return
         }
 
-        out += rest.decompressZlib()
+        out += rest.decompress()
     }
 
     companion object {

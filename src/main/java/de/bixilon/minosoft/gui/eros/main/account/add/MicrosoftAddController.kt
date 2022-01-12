@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.account.add
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.http.QueryUtil.fromQuery
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import javafx.concurrent.Worker
 import javafx.fxml.FXML
@@ -62,7 +62,7 @@ class MicrosoftAddController(
                 DefaultThreadPool += {
                     try {
                         // ms-xal-00000000402b5328://auth/?code=M.R3_BL2.9c86df10-b29b-480d-9094-d8accb31e4a5
-                        val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(Util.urlQueryToMap(URL(location).query)["code"]!!)
+                        val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(URL(location).query.fromQuery()["code"]!!)
                         profile.entries[account.id] = account
                         profile.selected = account
                         JavaFXUtil.runLater { accountController.refreshList() }

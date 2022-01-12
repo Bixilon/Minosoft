@@ -20,6 +20,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.reflection.KotlinReflection.kClass
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.string.StringUtil.toSnakeCase
 import de.bixilon.minosoft.protocol.PacketErrorHandler
@@ -30,7 +31,6 @@ import de.bixilon.minosoft.protocol.packets.factory.factories.PacketFactory
 import de.bixilon.minosoft.protocol.packets.factory.factories.ReflectionFactory
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.KUtil.kClass
 import kotlin.reflect.full.companionObjectInstance
 
 object PacketTypeRegistry {

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.exceptions.implementation
 
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.KUtil.toHex
 
 class S2CPacketNotImplementedException(
     val packetId: Int,
