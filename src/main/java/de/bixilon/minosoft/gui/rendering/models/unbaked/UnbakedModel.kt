@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 
 interface UnbakedModel : Model {
+    val textures: Map<String, String>
 
     fun bake(renderWindow: RenderWindow): BakedModel
 }

@@ -21,6 +21,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.builtin.BuiltinModels
@@ -77,6 +78,12 @@ class ModelLoader(
         return model
     }
 
+    fun loadItem(item: Item) {
+        val model = loadItemModel(item.resourceLocation.prefix("item/"))
+
+        item.model = model.bake(renderWindow).unsafeCast()
+    }
+
     fun loadItemModel(name: ResourceLocation): GenericUnbakedModel {
         unbakedBlockModels[name]?.let { return it.unsafeCast() }
         val data = assetsManager[name.model()].readJsonObject()
@@ -107,7 +114,7 @@ class ModelLoader(
 
         for (item in registry.itemRegistry) {
             itemLatch.inc()
-            DefaultThreadPool += { loadItemModel(item.resourceLocation.prefix("item/")); itemLatch.dec() }
+            DefaultThreadPool += { loadItem(item); itemLatch.dec() }
         }
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading unbaked models!" }
         itemLatch.dec()

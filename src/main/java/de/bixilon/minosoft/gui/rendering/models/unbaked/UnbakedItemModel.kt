@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.GUILights
-import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.baked.item.BakedItemModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 
 class UnbakedItemModel(
     parent: GenericUnbakedModel?,
@@ -25,7 +27,15 @@ class UnbakedItemModel(
 
     // ToDo: Overrides (predicates)
 
-    override fun bake(renderWindow: RenderWindow): BakedModel {
-        return object : BakedModel {} // ToDo
+    override fun bake(renderWindow: RenderWindow): BakedItemModel {
+        val textures = TextureUtil.resolveTextures(renderWindow.textureManager.staticTextures, textures)
+
+        var itemTexture: AbstractTexture? = null
+        textures.iterator().let {
+            if (it.hasNext()) {
+                itemTexture = it.next().value
+            }
+        }
+        return BakedItemModel(itemTexture)
     }
 }

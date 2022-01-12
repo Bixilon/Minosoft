@@ -46,6 +46,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.gui.rendering.models.baked.item.BakedItemModel
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -60,6 +62,9 @@ open class Item(
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
     override val translationKey: ResourceLocation? = data["translation_key"]?.toResourceLocation()
     val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }
+
+    open var model: BakedItemModel? = null
+    var tintProvider: TintProvider? = null
 
     override fun toString(): String {
         return resourceLocation.toString()

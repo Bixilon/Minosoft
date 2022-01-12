@@ -26,8 +26,7 @@ import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2iN
@@ -39,9 +38,6 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.swizzle.xz
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 
 data class UnbakedBlockStateModel(
     val model: UnbakedBlockModel,
@@ -50,39 +46,16 @@ data class UnbakedBlockStateModel(
     val weight: Int,
 ) : AbstractUnbakedBlockModel {
     var baked: BakedBlockModel? = null
+    override val textures: Map<String, String>
+        get() = model.textures
 
     @Synchronized
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {
         baked?.let { return it }
-        val textureArray = renderWindow.textureManager.staticTextures
 
-        val resolvedTextures: MutableMap<String, AbstractTexture> = mutableMapOf()
+        val textures = TextureUtil.resolveTextures(renderWindow.textureManager.staticTextures, model.textures)
 
-
-        fun resolveTexture(key: String, value: String): AbstractTexture {
-            resolvedTextures[key]?.let { return it }
-
-            val variable = value.removePrefix("#")
-            var texture: AbstractTexture? = null
-            if (variable.length != value.length) {
-                // resolve variable first
-                texture = resolveTexture(variable, model.textures[variable]!!)
-            }
-
-            if (texture == null) {
-                texture = textureArray.createTexture(value.toResourceLocation().texture())
-            }
-
-            resolvedTextures[key] = texture
-            return texture
-        }
-
-
-        for ((key, value) in model.textures) {
-            resolveTexture(key, value)
-        }
-
-        val particleTexture = resolvedTextures["particle"]
+        val particleTexture = textures["particle"]
 
 
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
@@ -90,7 +63,7 @@ data class UnbakedBlockStateModel(
 
         for (element in model.elements) {
             for (face in element.faces) {
-                val texture = resolvedTextures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
+                val texture = textures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
                 val positions = face.direction.getPositions(element.from, element.to)
 
                 element.rotation?.let {

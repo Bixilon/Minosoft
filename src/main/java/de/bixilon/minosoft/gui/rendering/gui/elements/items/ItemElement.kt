@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -42,7 +42,7 @@ class ItemElement(
     item: ItemStack?,
 ) : Element(hudRenderer), Pollable {
     private var count = -1
-    private var countText = TextElement(hudRenderer, "", background = false, noBorder = true)
+    private val countText = TextElement(hudRenderer, "", background = false, noBorder = true)
 
     var item: ItemStack? = item
         set(value) {
@@ -62,24 +62,29 @@ class ItemElement(
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val item = item ?: return 0
         val size = size
+
+        val model = item.item.model
+        if (model == null) {
+            var element: Element? = null
+
+            var color = ChatColors.WHITE
+            if (item.item is BlockItem) {
+                val defaultState = item.item.block.defaultState
+                defaultState.material.color?.let { color = it }
+                defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
+                    element = ImageElement(hudRenderer, it, size = size)
+                }
+            }
+
+            (element ?: ColorElement(hudRenderer, size, color)).render(offset, z, consumer, options)
+        } else {
+            model.render2d(offset, z, consumer, options, size, item)
+        }
+
         val countSize = countText.size
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer, options)
 
-        var element: Element? = null
-
-        var color = ChatColors.WHITE
-        if (item.item is BlockItem) {
-            val defaultState = item.item.block.defaultState
-            defaultState.material.color?.let { color = it }
-            defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
-                element = ImageElement(hudRenderer, it)
-            }
-        }
-
-        (element ?: ColorElement(hudRenderer, _size, color)).render(offset, z + 1, consumer, options)
-
-        // ToDo: Render model
-        return TextElement.LAYERS + 1
+        return TextElement.LAYERS + 1 // 1 for background
     }
 
     override fun poll(): Boolean {
@@ -95,10 +100,12 @@ class ItemElement(
 
     override fun forceSilentApply() {
         countText.text = when {
-            count < 0 -> TextComponent((count < -99).decide({ "-∞" }, { count }), color = ChatColors.RED) // No clue why I do this...
-            count == 0 -> TextComponent("0", color = ChatColors.YELLOW)
-            count == 1 -> TextComponent("")
-            count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent((count > 99).decide({ "∞" }, { count }), color = ChatColors.RED)
+            count < -99 -> NEGATIVE_INFINITE_TEXT
+            count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
+            count == 0 -> ZERO_TEXT
+            count == 1 -> ChatComponent.EMPTY
+            count > 99 -> INFINITE_TEXT
+            count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent(count, color = ChatColors.RED)
             else -> TextComponent(count)
         }
 
@@ -107,5 +114,11 @@ class ItemElement(
 
     override fun toString(): String {
         return item.toString()
+    }
+
+    private companion object {
+        private val NEGATIVE_INFINITE_TEXT = TextComponent("-∞").color(ChatColors.RED)
+        private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
+        private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
     }
 }

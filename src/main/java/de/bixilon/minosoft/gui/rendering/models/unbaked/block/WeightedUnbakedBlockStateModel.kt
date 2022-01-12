@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockMode
 class WeightedUnbakedBlockStateModel(
     val models: List<UnbakedBlockStateModel>,
 ) : AbstractUnbakedBlockModel {
+    override val textures: Map<String, String> = mapOf()
 
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {
         val baked: MutableMap<BakedBlockModel, Int> = mutableMapOf()

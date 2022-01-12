@@ -40,7 +40,7 @@ abstract class GenericUnbakedModel(
         this.display = display
     }
 
-    val textures: Map<String, String>
+    final override val textures: Map<String, String>
 
     init {
         val textures = parent?.textures?.toMutableMap() ?: mutableMapOf()

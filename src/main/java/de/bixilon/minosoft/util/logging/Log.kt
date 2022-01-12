@@ -179,27 +179,10 @@ object Log {
         log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun debug(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.VERBOSE, message = message, formatting = formatting)
-    }
 
     @Deprecated(message = "Java only")
     @JvmStatic
     fun verbose(message: Any, vararg formatting: Any) {
         log(LogMessageType.OTHER, level = LogLevels.VERBOSE, message = message, formatting = formatting)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun protocol(message: Any, vararg formatting: Any) {
-        log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE, message = message, formatting = formatting)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun warn(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.WARN, message = message, formatting = formatting)
     }
 }
