@@ -185,8 +185,8 @@ class NettyClient(
         if (RunConfiguration.DISABLE_EROS || connection !is StatusConnection) {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { cause }
         }
-        connection.error = cause
         if (cause !is NetworkException || cause is CriticalNetworkException) {
+            connection.error = cause
             if (reportErrors) {
                 cause.report()
                 errorReported = true
