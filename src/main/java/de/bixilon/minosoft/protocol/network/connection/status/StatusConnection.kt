@@ -152,22 +152,19 @@ class StatusConnection(
             return super.registerEvent(invoker)
         }
 
-        if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
-            return super.registerEvent(invoker)
-        }
+         super.registerEvent(invoker)
 
 
         when {
             invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) -> {
-                error?.let { invoker.invoke(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
+                error?.let { invoker.invoke(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
             }
             invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) -> {
-                lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
+                lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, EventInitiators.UNKNOWN, it)) }
             }
             invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
-                lastPongEvent?.let { invoker.invoke(it) } ?: super.registerEvent(invoker)
+                lastPongEvent?.let { invoker.invoke(it) }
             }
-            else -> TODO()
         }
         return invoker
     }

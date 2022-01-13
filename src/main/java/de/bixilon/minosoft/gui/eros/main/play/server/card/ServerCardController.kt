@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -70,7 +70,6 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
         if (previous === item) {
             return
         }
-        previous?.unregister()
         item ?: return
 
         serverNameFX.text = item.server.name
@@ -97,7 +96,7 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
 
         val ping = item.ping
         ping::state.observeFX(this) { // ToDo: Don't register twice
-            if (ping.error != null || ping.lastServerStatus != null) {
+            if (this.item != item || ping.error != null || ping.lastServerStatus != null) {
                 return@observeFX
             }
 
