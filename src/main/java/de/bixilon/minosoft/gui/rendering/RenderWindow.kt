@@ -273,6 +273,7 @@ class RenderWindow(
         }
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
+        renderingState = RenderingStates.STOPPED
         window.destroy()
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
