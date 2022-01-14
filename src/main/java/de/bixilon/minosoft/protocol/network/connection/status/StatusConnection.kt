@@ -43,8 +43,8 @@ class StatusConnection(
             check(state == StatusConnectionStates.ERROR || state == StatusConnectionStates.ERROR) { "Can not change address while being connected!" }
             field = value
         }
-    var lastServerStatus: ServerStatus? = null
-    var pingQuery: PingQuery? = null
+    var lastServerStatus: ServerStatus? by watched(null)
+    var pingQuery: PingQuery? by watched(null)
     var lastPongEvent: StatusPongReceiveEvent? = null
 
     var tryAddress: ServerAddress? = null

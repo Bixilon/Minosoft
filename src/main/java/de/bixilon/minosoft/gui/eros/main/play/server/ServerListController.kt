@@ -244,15 +244,21 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
 
         GridPane().let {
-            // ToDo: Refresh information after state change
-            var row = 0
 
-            for ((key, property) in SERVER_INFO_PROPERTIES) {
-                val propertyValue = property(serverCard) ?: continue
+            fun updateProperties() {
+                it.children.clear()
+                var row = 0
+                for ((key, property) in SERVER_INFO_PROPERTIES) {
+                    val propertyValue = property(serverCard) ?: continue
 
-                it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
-                it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
+                    it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
+                    it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
+                }
             }
+            updateProperties()
+
+            serverCard.ping::pingQuery.observeFX(this) { updateProperties() }
+            serverCard.ping::lastServerStatus.observeFX(this) { updateProperties() }
 
             it.columnConstraints += ColumnConstraints(10.0, 180.0, 250.0)
             it.columnConstraints += ColumnConstraints(10.0, 200.0, 300.0)
