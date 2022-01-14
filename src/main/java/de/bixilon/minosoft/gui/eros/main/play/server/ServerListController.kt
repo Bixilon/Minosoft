@@ -244,6 +244,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
 
         GridPane().let {
+            // ToDo: Refresh information after state change
             var row = 0
 
             for ((key, property) in SERVER_INFO_PROPERTIES) {

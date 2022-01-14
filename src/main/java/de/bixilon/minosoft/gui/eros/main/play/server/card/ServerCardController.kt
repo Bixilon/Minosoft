@@ -57,6 +57,10 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
 
         serverNameFX.children.clear()
         motdFX.children.clear()
+        resetPing()
+    }
+
+    private fun resetPing() {
         pingFX.ctext = ""
         playerCountFX.ctext = ""
         serverVersionFX.ctext = ""
@@ -109,6 +113,8 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
                 return@of
             }
             motdFX.text = it.exception.text
+            resetPing()
+
             serverList?.onPingUpdate(item)
         }
 
