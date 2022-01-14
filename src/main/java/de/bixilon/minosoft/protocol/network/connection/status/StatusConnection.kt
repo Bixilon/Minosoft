@@ -58,6 +58,8 @@ class StatusConnection(
     override var error: Throwable?
         get() = super.error
         set(value) {
+            pingQuery = null
+            lastServerStatus = null
             super.error = value
             value?.let {
                 state = StatusConnectionStates.ERROR

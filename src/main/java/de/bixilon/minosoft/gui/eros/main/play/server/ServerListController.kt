@@ -320,7 +320,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 isDisable = selected == null || !serverCard.canConnect(selected)
                 // ToDo: Also disable, if currently connecting
                 ctext = CONNECT
-                serverCard.ping::state.observeFX(this) { selected == null || !serverCard.canConnect(selected) }
+                serverCard.ping::state.observeFX(this) { isDisable = selected == null || !serverCard.canConnect(selected) }
             }, 4, 0)
 
 
