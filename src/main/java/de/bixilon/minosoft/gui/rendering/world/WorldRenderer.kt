@@ -72,6 +72,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
+import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -477,17 +478,14 @@ class WorldRenderer(
         if (!chunk.isFullyLoaded || section.blocks.isEmpty) { // ToDo: Unload if empty
             return false
         }
-        /*
-        // ToDo: The chunk needs to be fully loaded!
         val neighbours = world.getChunkNeighbours(chunkPosition)
-        if(!neighbours.loaded){
+        if (!neighbours.received) {
             return false
         }
-         */
 
         val visible = ignoreFrustum || isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
-            val item = WorldQueueItem(chunkPosition, sectionHeight, chunk, section, Vec3i.of(chunkPosition, sectionHeight).toVec3() + CHUNK_CENTER, null)
+            val item = WorldQueueItem(chunkPosition, sectionHeight, chunk, section, Vec3i.of(chunkPosition, sectionHeight).toVec3() + CHUNK_CENTER, ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight))
             queueLock.lock()
             queue.removeAll { it == item } // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
             if (chunkPosition == cameraChunkPosition) {
