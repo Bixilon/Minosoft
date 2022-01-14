@@ -88,6 +88,7 @@ class PlayInByteBuffer : InByteBuffer {
         return readParticleData(type)
     }
 
+    @Deprecated("Should be makde with factories")
     fun readParticleData(type: ParticleType): ParticleData {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
@@ -141,6 +142,7 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
+    @Deprecated("Use readArray")
     fun readItemStackArray(length: Int = readVarInt()): Array<ItemStack?> {
         return readArray(length) { readItemStack() }
     }
@@ -200,7 +202,7 @@ class PlayInByteBuffer : InByteBuffer {
         return Ingredient(readItemStackArray())
     }
 
-    @JvmOverloads
+    @Deprecated("Use readArray")
     fun readIngredientArray(length: Int = readVarInt()): Array<Ingredient> {
         return readArray(length) { readIngredient() }
     }

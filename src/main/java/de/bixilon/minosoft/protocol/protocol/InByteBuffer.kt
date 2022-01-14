@@ -237,6 +237,7 @@ open class InByteBuffer {
         return string
     }
 
+    @Deprecated("Use readArray")
     fun readStringArray(length: Int = readVarInt()): Array<String> {
         return readArray(length) { readString() }
     }
@@ -254,6 +255,7 @@ open class InByteBuffer {
         return UUID(readLong(), readLong())
     }
 
+    @Deprecated("Use readArray")
     fun readUUIDArray(length: Int = readVarInt()): Array<UUID> {
         return readArray(length) { readUUID() }
     }
@@ -262,6 +264,7 @@ open class InByteBuffer {
         return readString().toUUID()
     }
 
+    @Deprecated("Use readArray")
     fun readUUIDStringArray(length: Int = readVarInt()): Array<UUID> {
         return readArray(length) { readUUIDString() }
     }
@@ -271,6 +274,7 @@ open class InByteBuffer {
         return Jackson.MAPPER.readValue(readString(), Jackson.JSON_MAP_TYPE)
     }
 
+    @Deprecated("Use readArray")
     fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {
         return readArray(length) { readJson() }
     }
@@ -279,6 +283,7 @@ open class InByteBuffer {
         return ChatComponent.of(readString(), restrictedMode = true)
     }
 
+    @Deprecated("Use readArray")
     fun readChatComponentArray(length: Int = readVarInt()): Array<ChatComponent> {
         return readArray(length) { readChatComponent() }
     }
@@ -410,6 +415,7 @@ open class InByteBuffer {
         return Pair(resourceLocation, Tag(items.toSet()))
     }
 
+    @Deprecated("Use readArray")
     fun <T> readTagArray(length: Int = readVarInt(), idResolver: (Int) -> T): Map<ResourceLocation, Tag<T>> {
         return mapOf(*(readArray(length) { readTag(idResolver) }))
     }
