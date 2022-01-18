@@ -28,33 +28,39 @@ import kotlin.reflect.KProperty0
 
 object JavaFXDelegate {
 
+    private fun checkErosState() {
+        if (RunConfiguration.DISABLE_EROS) {
+            throw IllegalStateException("Eros is disabled!")
+        }
+    }
+
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<V>.observeFX(owner: Any, observer: (V) -> Unit) {
-        check(!RunConfiguration.DISABLE_EROS)
+        checkErosState()
         this.observe(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<Set<V>>.observeSetFX(owner: Any, observer: (SetChange<V>) -> Unit) {
-        check(!RunConfiguration.DISABLE_EROS)
+        checkErosState()
         this.observeSet(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <V> KProperty0<List<V>>.observeListFX(owner: Any, observer: (ListChange<V>) -> Unit) {
-        check(!RunConfiguration.DISABLE_EROS)
+        checkErosState()
         this.observeList(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<Map<K, V>>.observeMapFX(owner: Any, observer: (MapChange<K, V>) -> Unit) {
-        check(!RunConfiguration.DISABLE_EROS)
+        checkErosState()
         this.observeMap(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapFX(owner: Any, observer: (MapChange<K, V>) -> Unit) {
-        check(!RunConfiguration.DISABLE_EROS)
+        checkErosState()
         this.observeBiMap(owner) { JavaFXUtil.runLater { observer(it) } }
     }
 }

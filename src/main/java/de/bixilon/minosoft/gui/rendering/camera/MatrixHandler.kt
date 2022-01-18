@@ -90,7 +90,7 @@ class MatrixHandler(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
-        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, 0.01f, minOf(fogEnd + 2.0f, 10000.0f))
+        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, NEAR_PLANE, minOf(fogEnd + 2.0f, FAR_PLANE))
     }
 
     fun init() {
@@ -166,6 +166,8 @@ class MatrixHandler(
     }
 
     companion object {
+        const val NEAR_PLANE = 0.01f
+        const val FAR_PLANE = 10000.0f
         val CAMERA_UP_VEC3 = Vec3(0.0, 1.0, 0.0)
     }
 }
