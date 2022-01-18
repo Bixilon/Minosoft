@@ -23,12 +23,14 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2i
 
 class GUIManager(
-    val guiRenderer: GUIRenderer,
+    override val guiRenderer: GUIRenderer,
 ) : Initializable, InputHandler, GUIElementDrawer {
     var elements: MutableList<GUIElement> = mutableListOf()
     private val renderWindow = guiRenderer.renderWindow
@@ -36,6 +38,8 @@ class GUIManager(
     override var lastTickTime: Long = -1L
 
     override fun init() {
+        elements += LayoutedGUIElement(PauseMenu(guiRenderer)).apply { enabled = false }
+
         for (element in elements) {
             element.init()
         }
@@ -53,11 +57,17 @@ class GUIManager(
 
         for (element in elements) {
             element.postInit()
+            if (element is LayoutedGUIElement<*>) {
+                element.initMesh()
+            }
         }
     }
 
     fun onMatrixChange() {
         for (element in elements) {
+            if (element is LayoutedGUIElement<*>) {
+                element.elementLayout.silentApply()
+            }
             element.apply()
         }
     }
@@ -68,6 +78,9 @@ class GUIManager(
 
     fun pause(pause: Boolean? = null) {
         val nextPause = pause ?: !paused
+        if (nextPause == paused) {
+            return
+        }
         Log.log(LogMessageType.RENDERING_GENERAL) { "Pausing: $nextPause" }
 
 
@@ -77,9 +90,19 @@ class GUIManager(
             null
         }
         paused = nextPause
-        if (nextPause) {
-            elements += LayoutedGUIElement(PauseMenu(guiRenderer))
-        }
+        elements.find { it is LayoutedGUIElement<*> && it.elementLayout is PauseMenu }?.enabled = nextPause
+    }
+
+    override fun onCharPress(char: Int) {
+        elements.getOrNull(0)?.onCharPress(char)
+    }
+
+    override fun onMouseMove(position: Vec2i) {
+        elements.getOrNull(0)?.onMouseMove(position)
+    }
+
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
+        elements.getOrNull(0)?.onKeyPress(type, key)
     }
 
     fun goBack() {

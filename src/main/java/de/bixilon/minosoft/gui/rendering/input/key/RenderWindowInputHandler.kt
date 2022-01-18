@@ -125,9 +125,7 @@ class RenderWindowInputHandler(
                 skipKeyPress = false
                 return
             }
-            if (keyChangeType == KeyChangeTypes.PRESS || keyChangeType == KeyChangeTypes.REPEAT) {
-                inputHandler.onKeyPress(keyCode)
-            }
+            inputHandler.onKeyPress(keyChangeType, keyCode)
         }
 
         val keyDown = when (keyChangeType) {

@@ -35,6 +35,7 @@ object DefaultKeyCombinations {
                     KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
                     KeyAction.STICKY to setOf(KeyCodes.KEY_P),
                 ),
+                ignoreConsumer = true,
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderWindow.framebufferManager.world.polygonMode = nextMode

@@ -38,10 +38,9 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HUDManager(
-    val guiRenderer: GUIRenderer,
+    override val guiRenderer: GUIRenderer,
 ) : GUIElementDrawer, Initializable {
     val renderWindow = guiRenderer.renderWindow
-    private val connection = renderWindow.connection
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
 

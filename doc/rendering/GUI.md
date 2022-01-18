@@ -29,3 +29,6 @@
   - Label
   - Checkbox
 
+## ToDo:
+
+- make `TextElement`, `GridLayout` final

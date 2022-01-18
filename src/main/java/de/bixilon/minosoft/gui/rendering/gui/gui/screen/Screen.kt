@@ -25,12 +25,12 @@ import glm_.vec2.Vec2i
 abstract class Screen(
     guiRenderer: GUIRenderer,
 ) : Element(guiRenderer), LayoutedElement {
-    val background = AtlasImageElement(guiRenderer, renderWindow.WHITE_TEXTURE, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
+    protected val background = AtlasImageElement(guiRenderer, renderWindow.WHITE_TEXTURE, size = guiRenderer.scaledSize, tint = RGBColor(0.0f, 0.0f, 0.0f, 0.8f))
     override val layoutOffset: Vec2i = Vec2i(0, 0)
 
-    init {
-        _size = guiRenderer.scaledSize
-    }
+    override var _size: Vec2i
+        get() = guiRenderer.scaledSize
+        set(value) {}
 
     override fun forceSilentApply() {
         background.size = guiRenderer.scaledSize

@@ -11,15 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input
+package de.bixilon.minosoft.gui.rendering.gui.elements.button
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2i
-
-interface InputHandler {
-
-    fun onMouseMove(position: Vec2i) {}
-    fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {}
-    fun onCharPress(char: Int) {}
+enum class ButtonStates {
+    NORMAL,
+    HOVERED,
 }

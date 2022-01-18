@@ -14,6 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 
-class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer)
+class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
+    init {
+        addButton(ButtonElement(guiRenderer, "Print message") {
+            println("Printed!")
+        })
+    }
+}

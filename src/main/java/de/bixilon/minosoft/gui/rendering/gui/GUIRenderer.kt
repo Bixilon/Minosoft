@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -85,11 +87,22 @@ class GUIRenderer(
         shader.use()
     }
 
+    override fun onMouseMove(position: Vec2i) {
+        gui.onMouseMove(position / profile.scale)
+    }
+
+    override fun onCharPress(char: Int) {
+        gui.onCharPress(char)
+    }
+
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
+        gui.onKeyPress(type, key)
+    }
+
     override fun drawOther() {
-        setup()
         var z = 0
-        z += hud.draw(z)
-        z += gui.draw(z)
+        z += hud.draw(z) + 1
+        z += gui.draw(z) + 1
         if (this.matrixChange) {
             this.matrixChange = false
         }

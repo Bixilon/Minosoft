@@ -27,7 +27,7 @@ import glm_.vec2.Vec2i
 
 open class AtlasImageElement(
     guiRenderer: GUIRenderer,
-    val textureLike: TextureLike,
+    textureLike: TextureLike,
     size: Vec2i = textureLike.size,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer) {
@@ -64,6 +64,19 @@ open class AtlasImageElement(
     var tint: RGBColor = tint
         set(value) {
             field = value
+            cacheUpToDate = false
+        }
+
+    var textureLike: TextureLike = textureLike
+        set(value) {
+            if (field === value) {
+                return
+            }
+            texture = value.texture
+            field = value
+            uvStart = null
+            uvEnd = null
+
             cacheUpToDate = false
         }
 

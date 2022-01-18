@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -22,8 +23,10 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import glm_.vec2.Vec2i
 
 class LayoutedGUIElement<T : LayoutedElement>(
     val layout: T,
@@ -85,5 +88,17 @@ class LayoutedGUIElement<T : LayoutedElement>(
     fun initMesh() {
         elementLayout.cache.data = mesh.data
         mesh.load()
+    }
+
+    override fun onMouseMove(position: Vec2i) {
+        elementLayout.onMouseMove(position)
+    }
+
+    override fun onCharPress(char: Int) {
+        elementLayout.onCharPress(char)
+    }
+
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
+        elementLayout.onKeyPress(type, key)
     }
 }

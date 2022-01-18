@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
@@ -30,7 +31,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
-abstract class Element(val guiRenderer: GUIRenderer) {
+abstract class Element(val guiRenderer: GUIRenderer) : InputHandler {
     var ignoreDisplaySize = false
     val renderWindow = guiRenderer.renderWindow
 
@@ -148,7 +149,7 @@ abstract class Element(val guiRenderer: GUIRenderer) {
             val maxZ = forceRender(offset, z, cache, options)
             cache.maxZ = maxZ
             if (cache.data !is DirectArrayFloatList) {
-                // raw mesh data
+                // not raw mesh data
                 cache.data.finish()
             }
             cacheUpToDate = true

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 interface GUIElementDrawer {
+    val guiRenderer: GUIRenderer
     var lastTickTime: Long
 
     fun drawElements(elements: Collection<GUIElement>, zOffset: Int): Int {
@@ -53,6 +54,7 @@ interface GUIElementDrawer {
             }
         }
 
+        guiRenderer.setup()
         for (element in elements) {
             if (element !is LayoutedGUIElement<*> || !element.enabled || element.mesh.data.isEmpty) {
                 continue
