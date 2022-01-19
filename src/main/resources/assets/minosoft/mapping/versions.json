@@ -1,4 +1,9 @@
 {
+  "821": {
+    "name": "22w03a",
+    "protocol_id": 1073741889,
+    "packets": 798
+  },
   "820": {
     "name": "1.18.1",
     "protocol_id": 757,
