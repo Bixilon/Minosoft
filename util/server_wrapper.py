@@ -74,15 +74,9 @@ while True:
     process = ""
     try:
         process = subprocess.Popen(javaPath + " -jar server.jar nogui",
-                                   shell=True, stdout=subprocess.PIPE, cwd=version, universal_newlines=True,
+                                   shell=True, cwd=version, universal_newlines=True,
                                    stderr=subprocess.STDOUT)
 
-        while True:
-            nextline = process.stdout.readline()
-            if nextline == '' and process.poll() is not None:
-                break
-            sys.stdout.write(nextline)
-            sys.stdout.flush()
         process.wait()
 
     except KeyboardInterrupt:

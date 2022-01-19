@@ -27,78 +27,83 @@ PIXLYZER_INDEX = ujson.loads(urllib.request.urlopen('https://gitlab.bixilon.de/b
 SKIP_COMPILE = True
 
 
-def generateJarAssets(versionId, assetsProperties):
-    process = subprocess.Popen(r'mvn -e -q exec:java -Dexec.mainClass="de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator" -Dexec.args="\"%s\" \"%s\""' % (versionId, assetsProperties["client_jar_hash"]), shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    exitCode = process.wait()
-    if exitCode != 0:
+def generate_jar_assets(version_id, assets_properties):
+    process = subprocess.Popen(r'mvn -e -q exec:java -Dexec.mainClass="de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator" -Dexec.args="\"%s\" \"%s\""' % (version_id, assets_properties["client_jar_hash"]), shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    exit_code = process.wait()
+    if exit_code != 0:
         print(process.stdout.read().decode('utf-8'))
         print(process.stderr.read().decode('utf-8'))
         exit(1)
         return
 
-    assetsProperties["jar_assets_hash"] = process.stdout.read().decode('utf-8')
+    assets_properties["jar_assets_hash"] = process.stdout.read().decode('utf-8')
 
 
-if not SKIP_COMPILE:
+def compile_minosoft():
     print("Compiling minosoft...")
-    compileProcess = subprocess.Popen(r'mvn compile', shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    compileExitCode = compileProcess.wait()
-    if compileExitCode != 0:
-        print(compileProcess.stdout.read().decode('utf-8'))
-        print(compileProcess.stderr.read().decode('utf-8'))
+    compile_process = subprocess.Popen(r'mvn compile', shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    exit_code = compile_process.wait()
+    if exit_code != 0:
+        print(compile_process.stdout.read().decode('utf-8'))
+        print(compile_process.stderr.read().decode('utf-8'))
     print("Minosoft compiled!")
 
 
-def generateVersion(version):
+def generate_version(version):
     if version["id"] in SKIP_VERSIONS:
         print("Force skipping %s" % version["id"])
         return
     changed = False
 
-    assetsProperties = {}
+    assets_properties = {}
     if version["id"] in ASSETS_PROPERTIES:
-        assetsProperties = ASSETS_PROPERTIES[version["id"]]
+        assets_properties = ASSETS_PROPERTIES[version["id"]]
 
-    ASSETS_PROPERTIES[version["id"]] = assetsProperties
+    ASSETS_PROPERTIES[version["id"]] = assets_properties
 
-    if "pixlyzer_hash" not in assetsProperties or assetsProperties["pixlyzer_hash"] != PIXLYZER_INDEX[version["id"]]:
+    if "pixlyzer_hash" not in assets_properties or assets_properties["pixlyzer_hash"] != PIXLYZER_INDEX[version["id"]]:
         if version["id"] in PIXLYZER_INDEX:
-            assetsProperties["pixlyzer_hash"] = PIXLYZER_INDEX[version["id"]]
+            assets_properties["pixlyzer_hash"] = PIXLYZER_INDEX[version["id"]]
             changed = True
         else:
             print("PixLyzer does not support %s. This version probably won't work in Minosoft" % version["id"])
 
-    versionJson = ujson.loads(urllib.request.urlopen(version["url"]).read().decode("utf-8"))
-    if "index_version" in assetsProperties and "jar_assets_hash" in assetsProperties:
+    version_json = ujson.loads(urllib.request.urlopen(version["url"]).read().decode("utf-8"))
+    if "index_version" in assets_properties and "jar_assets_hash" in assets_properties:
         return changed
 
-    assetsProperties["index_version"] = versionJson["assetIndex"]["id"]
-    assetsProperties["index_hash"] = versionJson["assetIndex"]["sha1"]
-    assetsProperties["client_jar_hash"] = versionJson["downloads"]["client"]["sha1"]
+    assets_properties["index_version"] = version_json["assetIndex"]["id"]
+    assets_properties["index_hash"] = version_json["assetIndex"]["sha1"]
+    assets_properties["client_jar_hash"] = version_json["downloads"]["client"]["sha1"]
 
-    if "jar_assets_hash" not in assetsProperties:
+    if "jar_assets_hash" not in assets_properties:
         try:
-            generateJarAssets(version["id"], assetsProperties)
+            generate_jar_assets(version["id"], assets_properties)
             changed = True
         except Exception:
-            failedVersionIds.append(version["id"])
             print("%s failed!" % version["id"])
             return
 
     return changed
 
 
-for version in VERSION_MANIFEST["versions"]:
-    if version["id"] == DOWNLOAD_UNTIL_VERSION:
-        break
-    save = generateVersion(version)
-    if save:
-        print("Generated %s" % version["id"])
-        with open(ASSETS_PROPERTIES_PATH, 'w') as file:
-            ujson.dump(ASSETS_PROPERTIES, file)
-    else:
-        print("Skipped %s" % version["id"])
+def main():
+    if not SKIP_COMPILE:
+        compile_minosoft()
+    for version in VERSION_MANIFEST["versions"]:
+        if version["id"] == DOWNLOAD_UNTIL_VERSION:
+            break
+        save = generate_version(version)
+        if save:
+            print("Generated %s" % version["id"])
+            with open(ASSETS_PROPERTIES_PATH, 'w') as file:
+                ujson.dump(ASSETS_PROPERTIES, file)
+        else:
+            print("Skipped %s" % version["id"])
+    print()
+    print()
+    print("Done")
 
-print()
-print()
-print("Done")
+
+if __name__ == '__main__':
+    main()
