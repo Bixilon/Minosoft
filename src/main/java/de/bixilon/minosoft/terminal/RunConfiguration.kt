@@ -68,4 +68,6 @@ object RunConfiguration {
 
     var SKIP_RENDERERS: List<ResourceLocation> = listOf()
     var OPEN_Gl_ON_FIRST_THREAD = OSUtil.OS == OSUtil.OSs.MAC
+
+    var VERBOSE_LOGGING = false
 }

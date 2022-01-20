@@ -75,6 +75,10 @@ object CommandLineArguments {
             addArgument("--disable_profile_hot_reloading")
                 .action(Arguments.storeTrue())
                 .help("Disables profile hot reloading")
+
+            addArgument("--verbose")
+                .action(Arguments.storeTrue())
+                .help("Enables verbose logging (only affects pre profiles loading stage)")
         }
 
     fun parse(args: Array<String>) {
@@ -117,5 +121,6 @@ object CommandLineArguments {
 
 
         RunConfiguration.PROFILES_HOT_RELOADING = !namespace.getBoolean("disable_profile_hot_reloading")
+        RunConfiguration.VERBOSE_LOGGING = namespace.getBoolean("verbose")
     }
 }

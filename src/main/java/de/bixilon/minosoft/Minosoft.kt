@@ -67,7 +67,7 @@ object Minosoft {
         KUtil.initUtilClasses()
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft" }
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you have to add the jvm argument §9-XstartOnFirstThread§r. Please ensure it is set!" }
         }
@@ -97,7 +97,7 @@ object Minosoft {
         taskWorker += Task(identifier = StartupTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = {
             Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
             FileWatcherService.start()
-            Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "File watcher service started!" }
+            Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "File watcher service started!" }
         })
 
 
@@ -142,7 +142,7 @@ object Minosoft {
 
         START_UP_LATCH.dec() // remove initial count
         START_UP_LATCH.await()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "All startup tasks executed!" }
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Loaded everything!" }
         GlobalEventMaster.fireEvent(FinishInitializingEvent())
 
 

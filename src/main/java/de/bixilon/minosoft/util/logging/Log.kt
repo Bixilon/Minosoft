@@ -106,17 +106,29 @@ object Log {
         GlobalEventMaster.registerEvent(CallbackEventInvoker.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
     }
 
+
+    private fun skipLogging(type: LogMessageType, level: LogLevels): Boolean {
+        val levels = levels
+        if (levels == null) {
+            if (level.ordinal > LogLevels.INFO.ordinal) {
+                return !RunConfiguration.VERBOSE_LOGGING
+            }
+            return false
+        }
+        levels[type]?.let {
+            if (it.ordinal < level.ordinal) {
+                return true
+            }
+        }
+        return false
+    }
+
     @DoNotCall
     @JvmOverloads
     @JvmStatic
-    fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
-        val levels = levels
-        if (levels != null) {
-            levels[logMessageType]?.let {
-                if (it.ordinal < level.ordinal) {
-                    return
-                }
-            }
+    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
+        if (skipLogging(type, level)) {
+            return
         }
         val formattedMessage = when (message) {
             is ChatComponent -> message
@@ -142,7 +154,7 @@ object Log {
             MessageToSend(
                 message = formattedMessage,
                 time = TimeUtil.time,
-                logMessageType = logMessageType,
+                logMessageType = type,
                 level = level,
                 thread = Thread.currentThread(),
                 additionalPrefix = additionalPrefix,
@@ -151,26 +163,21 @@ object Log {
     }
 
     @JvmStatic
-    fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
-        val levels = levels
-        if (levels != null) {
-            levels[logMessageType]?.let {
-                if (it.ordinal < level.ordinal) {
-                    return
-                }
-            }
+    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
+        if (skipLogging(type, level)) {
+            return
         }
-        log(logMessageType, level, additionalPrefix, messageBuilder())
+        log(type, level, additionalPrefix, messageBuilder())
     }
 
     @JvmStatic
-    fun log(logMessageType: LogMessageType, level: LogLevels, messageBuilder: () -> Any) {
-        log(logMessageType, level = level, additionalPrefix = null, messageBuilder = messageBuilder)
+    fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any) {
+        log(type, level = level, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
     @JvmStatic
-    fun log(logMessageType: LogMessageType, messageBuilder: () -> Any) {
-        log(logMessageType, additionalPrefix = null, messageBuilder = messageBuilder)
+    fun log(type: LogMessageType, messageBuilder: () -> Any) {
+        log(type, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
     @Deprecated(message = "Java only")

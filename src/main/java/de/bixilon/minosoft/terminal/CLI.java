@@ -76,7 +76,7 @@ public class CLI {
     public static void initialize() throws InterruptedException {
         CountUpAndDownLatch latch = new CountUpAndDownLatch(1);
         new Thread(() -> {
-            Log.log(LogMessageType.OTHER, LogLevels.INFO, () -> "Initializing CLI...");
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE, () -> "Initializing CLI...");
             try {
                 TerminalBuilder builder = TerminalBuilder.builder();
 

@@ -20,6 +20,6 @@ class LogPrintStream(
 ) : PrintStream(nullOutputStream()) {
 
     override fun print(string: String) {
-        Log.log(message = string, logMessageType = type, level = level)
+        Log.log(message = string, type = type, level = level)
     }
 }
