@@ -27,7 +27,10 @@ import java.io.File
 object RegistriesLoader {
 
     fun load(profile: ResourcesProfile, version: Version): Registries {
-        // ToDo: Pre flattening support
+        if (!version.flattened) {
+            // ToDo: Pre flattening support
+            throw PreFlatteningLoadingError()
+        }
         val pixlyzerHash = AssetsVersionProperties[version]?.pixlyzerHash ?: throw IllegalStateException("$version has no pixlyzer data available!")
 
         val pixlyzerData = getPixlyzerData(profile.source.pixlyzer, pixlyzerHash)
