@@ -16,6 +16,10 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.button
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -34,36 +38,69 @@ class ButtonElement(
     private val textElement = TextElement(guiRenderer, text, background = false).apply { parent = this@ButtonElement }
     private val disabledAtlas = guiRenderer.atlasManager["button_disabled"]
     private val normalAtlas = guiRenderer.atlasManager["button_normal"]
-    private val hoveredButton = guiRenderer.atlasManager["button_hovered"]
+    private val hoveredAtlas = guiRenderer.atlasManager["button_hovered"]
 
-    private val background = AtlasImageElement(guiRenderer, normalAtlas ?: guiRenderer.renderWindow.WHITE_TEXTURE).apply { parent = this@ButtonElement }
+    private var _dynamicSized = true
+    var dynamicSized: Boolean
+        get() = _dynamicSized
+        set(value) {
+            if (_dynamicSized == value) {
+                return
+            }
+            _dynamicSized = value
+            forceApply()
+        }
 
-    var state: ButtonStates = ButtonStates.NORMAL
+
+    override var size: Vec2i
+        get() = super.size
+        set(value) {
+            _dynamicSized = false
+            super.size = value // will call forceApply
+        }
+
+    var disabled: Boolean = false
         set(value) {
             if (field == value) {
                 return
             }
             field = value
-            background.textureLike = when (value) {
-                ButtonStates.NORMAL -> normalAtlas
-                ButtonStates.HOVERED -> hoveredButton
-            } ?: renderWindow.WHITE_TEXTURE
             forceApply()
         }
 
+    var hovered: Boolean = false
+        private set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            forceApply()
+        }
+
+
     init {
-        size = textElement.size + Vec2i(4, 4)
+        size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        val texture = when {
+            disabled -> disabledAtlas
+            hovered -> hoveredAtlas
+            else -> normalAtlas
+        } ?: guiRenderer.renderWindow.WHITE_TEXTURE
+
+        val size = size
+        val background = AtlasImageElement(guiRenderer, texture)
+        background.size = size
         var zUsed = background.render(offset, z, consumer, options)
-        zUsed += textElement.render(offset + Vec2i(2, 2), z + zUsed, consumer, options)
+        val textSize = textElement.size
+        zUsed += textElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), z + zUsed, consumer, options)
         return zUsed
     }
 
     override fun forceSilentApply() {
+        textElement.silentApply()
         cacheUpToDate = false
-        background.size = size
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
@@ -73,15 +110,20 @@ class ButtonElement(
     }
 
     override fun onMouseMove(position: Vec2i) {
-        state = if (position isGreater size || position isSmaller Vec2i.EMPTY) {
-            // move away
-            ButtonStates.NORMAL
-        } else {
-            ButtonStates.HOVERED
-        }
+        hovered = !(position isGreater size || position isSmaller Vec2i.EMPTY)
     }
 
     fun submit() {
         onSubmit()
+    }
+
+    override fun onChildChange(child: Element) {
+        if (child == textElement && dynamicSized) {
+            size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+        }
+    }
+
+    private companion object {
+        const val TEXT_PADDING = 4
     }
 }
