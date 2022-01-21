@@ -142,7 +142,7 @@ class StatusConnection(
             }
             val tryAddress = tryAddress ?: return@execute
 
-            Log.log(LogMessageType.NETWORK_RESOLVING) { "Pinging$tryAddress (from $address)" }
+            Log.log(LogMessageType.NETWORK_RESOLVING) { "Pinging $tryAddress (from $address)" }
 
             state = StatusConnectionStates.ESTABLISHING
             network.connect(tryAddress, false)
