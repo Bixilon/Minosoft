@@ -66,7 +66,7 @@ class GUIManager(
     fun onMatrixChange() {
         for (element in elements) {
             if (element is LayoutedGUIElement<*>) {
-                element.elementLayout.silentApply()
+                element.elementLayout.forceSilentApply()
             }
             element.apply()
         }

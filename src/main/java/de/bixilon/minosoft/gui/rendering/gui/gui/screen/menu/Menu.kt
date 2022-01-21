@@ -23,12 +23,13 @@ import glm_.vec2.Vec2i
 
 abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
     private val buttons: MutableList<ButtonElement> = mutableListOf()
+    private var lastMouseMove: ButtonElement? = null
 
     private var buttonWidth = -1
     private var totalHeight = -1
 
     override fun forceSilentApply() {
-        buttonWidth = _size.x / 3 // 1 left and right
+        buttonWidth = size.x / 3 // 1 left and right
 
         var totalHeight = 0
         for (button in buttons) {
@@ -62,11 +63,37 @@ abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
     }
 
     override fun onMouseMove(position: Vec2i) {
-        buttons.getOrNull(0)?.onMouseMove(position)
+        val (delta, button) = getButtonAndPositionAt(position)
+
+        lastMouseMove?.onMouseMove(delta)
+        button?.onMouseMove(delta)
+        lastMouseMove = button
     }
 
     override fun onChildChange(child: Element) {
-        cacheUpToDate = false
+        forceSilentApply()
+    }
+
+    fun getButtonAndPositionAt(position: Vec2i): Pair<Vec2i, ButtonElement?> {
+        var delta = position
+        var button: ButtonElement? = null
+        if (position.x in buttonWidth..buttonWidth * 2) {
+            // x matches
+            val yStart = (size.y - totalHeight) / 2
+            var yOffset = position.y - yStart
+            for (buttonEntry in buttons) {
+                val buttonSize = buttonEntry.size
+                if (yOffset < buttonSize.y) {
+                    button = buttonEntry
+                    break
+                }
+                yOffset -= buttonSize.y
+                yOffset -= BUTTON_Y_MARGIN
+            }
+            delta = Vec2i(position.x - buttonWidth, yOffset)
+        }
+
+        return Pair(delta, button)
     }
 
     private companion object {
