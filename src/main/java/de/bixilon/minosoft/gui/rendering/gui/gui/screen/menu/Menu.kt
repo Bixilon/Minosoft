@@ -25,10 +25,11 @@ import glm_.vec2.Vec2i
 
 abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
     private val buttons: MutableList<ButtonElement> = mutableListOf()
-    private var lastMouseMove: ButtonElement? = null
 
     private var buttonWidth = -1
     private var totalHeight = -1
+
+    private var activeButton: ButtonElement? = null
 
     override fun forceSilentApply() {
         buttonWidth = size.x / 3 // 1 left and right
@@ -64,12 +65,21 @@ abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
         return zUsed
     }
 
+    override fun onMouseLeave() {
+        activeButton?.onMouseLeave()
+        activeButton = null
+    }
+
     override fun onMouseMove(position: Vec2i) {
         val (delta, button) = getButtonAndPositionAt(position)
 
-        lastMouseMove?.onMouseMove(delta)
+        if (activeButton != button) {
+            activeButton?.onMouseLeave()
+            button?.onMouseEnter(delta)
+            activeButton = button
+            return
+        }
         button?.onMouseMove(delta)
-        lastMouseMove = button
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
@@ -89,6 +99,9 @@ abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
             val yStart = (size.y - totalHeight) / 2
             var yOffset = position.y - yStart
             for (buttonEntry in buttons) {
+                if (yOffset < 0) {
+                    break
+                }
                 val buttonSize = buttonEntry.size
                 if (yOffset < buttonSize.y) {
                     button = buttonEntry
