@@ -21,11 +21,15 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isOutside
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class LayoutedGUIElement<T : LayoutedElement>(
@@ -39,6 +43,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
     private var lastRevision = 0L
     override val skipDraw: Boolean
         get() = if (layout is Drawable) layout.skipDraw else false
+    private var lastPosition: Vec2i = Vec2i(-1, -1)
 
     override fun tick() {
         elementLayout.tick()
@@ -91,7 +96,25 @@ class LayoutedGUIElement<T : LayoutedElement>(
     }
 
     override fun onMouseMove(position: Vec2i) {
-        elementLayout.onMouseMove(position)
+        val offset = layout.layoutOffset
+        val size = elementLayout.size
+        val lastPosition = lastPosition
+
+        if (position.isOutside(offset, size)) {
+            // move out
+            this.lastPosition = Vec2i(-1, -1)
+            elementLayout.onMouseLeave()
+            return
+        }
+        val delta = position - offset
+        this.lastPosition = position
+
+        if (lastPosition.isOutside(offset, size)) {
+            elementLayout.onMouseEnter(delta)
+            return
+        }
+
+        elementLayout.onMouseMove(delta)
     }
 
     override fun onCharPress(char: Int) {
@@ -99,6 +122,26 @@ class LayoutedGUIElement<T : LayoutedElement>(
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        elementLayout.onKeyPress(type, key)
+        val mouseButton = MouseButtons[key] ?: return
+        val mouseAction = MouseActions[type] ?: return
+        val offset = layout.layoutOffset
+        val size = elementLayout.size
+        val position = lastPosition
+        if (position.isOutside(offset, size)) {
+            return
+        }
+        val delta = position - offset
+        elementLayout.onMouseAction(delta, mouseButton, mouseAction)
+    }
+
+    override fun onScroll(scrollOffset: Vec2d) {
+        val offset = layout.layoutOffset
+        val size = elementLayout.size
+        val position = lastPosition
+        if (position.isOutside(offset, size)) {
+            return
+        }
+        val delta = position - offset
+        elementLayout.onScroll(delta, scrollOffset)
     }
 }

@@ -17,6 +17,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -68,6 +70,11 @@ abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
         lastMouseMove?.onMouseMove(delta)
         button?.onMouseMove(delta)
         lastMouseMove = button
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        val (delta, buttonElement) = getButtonAndPositionAt(position)
+        buttonElement?.onMouseAction(delta, button, action)
     }
 
     override fun onChildChange(child: Element) {

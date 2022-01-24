@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.input.CameraInput
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
@@ -34,6 +35,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class RenderWindowInputHandler(
@@ -87,8 +89,8 @@ class RenderWindowInputHandler(
         interactionManager.init()
 
         connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
-
         connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
+        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent> { scroll(it.offset) })
 
         connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
             val inputHandler = inputHandler
@@ -259,7 +261,10 @@ class RenderWindowInputHandler(
         }
         inputHandler.onCharPress(char)
         return
+    }
 
+    private fun scroll(scrollOffset: Vec2d) {
+        inputHandler?.onScroll(scrollOffset)
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {

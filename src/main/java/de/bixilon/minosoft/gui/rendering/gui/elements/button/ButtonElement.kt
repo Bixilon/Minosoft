@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.button
 
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -22,9 +21,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
@@ -103,11 +103,17 @@ class ButtonElement(
         cacheUpToDate = false
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        if (type == KeyChangeTypes.PRESS && key == KeyCodes.KEY_LEFT) {
-            submit()
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (button != MouseButtons.LEFT) {
+            return
         }
+        if (action != MouseActions.PRESS) {
+            return
+        }
+
+        submit()
     }
+
 
     override fun onMouseMove(position: Vec2i) {
         hovered = !(position isGreater size || position isSmaller Vec2i.EMPTY)

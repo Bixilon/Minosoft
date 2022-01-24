@@ -11,17 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input
+package de.bixilon.minosoft.gui.rendering.gui.input
 
-import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 
-interface InputHandler {
+enum class MouseActions {
+    PRESS,
+    RELEASE,
+    ;
 
-    fun onMouseMove(position: Vec2i) {}
-    fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {}
-    fun onScroll(scrollOffset: Vec2d) {}
-    fun onCharPress(char: Int) {}
+    companion object : ValuesEnum<MouseActions> {
+        override val VALUES: Array<MouseActions> = values()
+        override val NAME_MAP: Map<String, MouseActions> = EnumUtil.getEnumValues(VALUES)
+
+        operator fun get(type: KeyChangeTypes): MouseActions? {
+            return when (type) {
+                KeyChangeTypes.PRESS -> PRESS
+                KeyChangeTypes.RELEASE -> RELEASE
+                KeyChangeTypes.REPEAT -> null
+            }
+        }
+    }
 }

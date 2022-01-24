@@ -11,17 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input
+package de.bixilon.minosoft.gui.rendering.gui.input
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface InputHandler {
+interface InputElement {
 
     fun onMouseMove(position: Vec2i) {}
-    fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {}
-    fun onScroll(scrollOffset: Vec2d) {}
+    fun onMouseEnter(position: Vec2i) {}
+    fun onMouseLeave() {}
+    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {}
+    fun onScroll(position: Vec2i, scrollOffset: Vec2d) {}
+
     fun onCharPress(char: Int) {}
+
+    // ToDo: drag
 }

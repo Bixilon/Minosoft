@@ -86,4 +86,8 @@ object Vec2iUtil {
             else -> null
         }
     }
+
+    fun Vec2i.isOutside(min: Vec2i, max: Vec2i): Boolean {
+        return this isSmaller min || this isGreater max
+    }
 }
