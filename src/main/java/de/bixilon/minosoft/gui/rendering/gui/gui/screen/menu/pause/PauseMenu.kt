@@ -16,11 +16,14 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
+import de.bixilon.minosoft.util.ShutdownManager
 
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
-        addButton(ButtonElement(guiRenderer, "Print \"Hello\" message") { println("Hello") })
-        addButton(ButtonElement(guiRenderer, "Print \"World\" message") { println("World") })
+        addButton(ButtonElement(guiRenderer, "Back to game") { guiRenderer.gui.pause(false) })
+        addButton(ButtonElement(guiRenderer, "§cDisconnect") { guiRenderer.connection.network.disconnect() })
+        addButton(ButtonElement(guiRenderer, "§4Exit") { ShutdownManager.shutdown() })
+        // ToDo: Double click button to disconnect
     }
 }

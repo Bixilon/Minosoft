@@ -62,7 +62,6 @@ class RenderWindowInputHandler(
                 CursorModes.NORMAL
             }
         }
-    private var skipKeyPress = false
     private var skipCharPress = false
     private var skipMouseMove = false
 
@@ -122,13 +121,7 @@ class RenderWindowInputHandler(
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
         val inputHandler = inputHandler
-        if (inputHandler != null) {
-            if (skipKeyPress) {
-                skipKeyPress = false
-                return
-            }
-            inputHandler.onKeyPress(keyChangeType, keyCode)
-        }
+        inputHandler?.onKeyPress(keyChangeType, keyCode)
 
         val keyDown = when (keyChangeType) {
             KeyChangeTypes.PRESS -> true
@@ -247,7 +240,6 @@ class RenderWindowInputHandler(
 
 
         if (inputHandler != this.inputHandler) {
-            skipKeyPress = true
             skipCharPress = true
             skipMouseMove = true
         }
