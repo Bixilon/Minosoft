@@ -18,9 +18,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
+
     init {
-        addButton(ButtonElement(guiRenderer, "Print message") {
-            println("Printed!")
-        })
+        addButton(ButtonElement(guiRenderer, "Print \"Hello\" message") { println("Hello") })
+        addButton(ButtonElement(guiRenderer, "Print \"World\" message") { println("World") })
     }
 }

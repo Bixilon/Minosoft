@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
@@ -24,6 +27,7 @@ interface InputElement {
     fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {}
     fun onScroll(position: Vec2i, scrollOffset: Vec2d) {}
 
+    fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {}
     fun onCharPress(char: Int) {}
 
     // ToDo: drag

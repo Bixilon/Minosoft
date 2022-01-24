@@ -21,8 +21,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
-import de.bixilon.minosoft.gui.rendering.gui.input.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.MouseButtons
+import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -122,8 +123,6 @@ class LayoutedGUIElement<T : LayoutedElement>(
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        val mouseButton = MouseButtons[key] ?: return
-        val mouseAction = MouseActions[type] ?: return
         val offset = layout.layoutOffset
         val size = elementLayout.size
         val position = lastPosition
@@ -131,7 +130,24 @@ class LayoutedGUIElement<T : LayoutedElement>(
             return
         }
         val delta = position - offset
-        elementLayout.onMouseAction(delta, mouseButton, mouseAction)
+
+        fun checkMouse(): Boolean {
+            val mouseButton = MouseButtons[key] ?: return false
+            val mouseAction = MouseActions[type] ?: return true
+            elementLayout.onMouseAction(delta, mouseButton, mouseAction)
+            return true
+        }
+
+        fun checkSpecial(): Boolean {
+            val specialKey = InputSpecialKey[key] ?: return false
+            elementLayout.onSpecialKey(specialKey, type)
+            return true
+        }
+
+        if (checkMouse()) {
+            return
+        }
+        checkSpecial()
     }
 
     override fun onScroll(scrollOffset: Vec2d) {

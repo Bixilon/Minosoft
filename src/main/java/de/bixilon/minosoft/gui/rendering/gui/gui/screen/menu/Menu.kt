@@ -17,8 +17,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
-import de.bixilon.minosoft.gui.rendering.gui.input.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.MouseButtons
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i

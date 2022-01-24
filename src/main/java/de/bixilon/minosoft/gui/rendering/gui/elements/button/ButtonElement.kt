@@ -21,13 +21,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.input.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.MouseButtons
+import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2i
 
 class ButtonElement(
@@ -114,9 +113,25 @@ class ButtonElement(
         submit()
     }
 
+    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+        if (!hovered) {
+            return
+        }
+        if (key != InputSpecialKey.KEY_ENTER) {
+            return
+        }
+        if (type != KeyChangeTypes.PRESS) {
+            return
+        }
+        submit()
+    }
 
-    override fun onMouseMove(position: Vec2i) {
-        hovered = !(position isGreater size || position isSmaller Vec2i.EMPTY)
+    override fun onMouseEnter(position: Vec2i) {
+        hovered = true
+    }
+
+    override fun onMouseLeave() {
+        hovered = false
     }
 
     fun submit() {
