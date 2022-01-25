@@ -287,6 +287,11 @@ class RenderWindow(
     }
 
     fun pause(pause: Boolean? = null) {
-        renderer[GUIRenderer]?.gui?.pause(pause)
+        val guiRenderer = renderer[GUIRenderer]?.gui ?: return
+        if (pause == null) {
+            guiRenderer.pause()
+        } else {
+            guiRenderer.pause(pause)
+        }
     }
 }

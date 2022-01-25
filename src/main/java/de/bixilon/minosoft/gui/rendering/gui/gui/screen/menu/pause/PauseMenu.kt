@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.button.ConfirmButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.util.ShutdownManager
 
@@ -22,8 +23,7 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
         addButton(ButtonElement(guiRenderer, "Back to game") { guiRenderer.gui.pause(false) })
-        addButton(ButtonElement(guiRenderer, "§cDisconnect") { guiRenderer.connection.network.disconnect() })
-        addButton(ButtonElement(guiRenderer, "§4Exit") { ShutdownManager.shutdown() })
-        // ToDo: Double click button to disconnect
+        addButton(ConfirmButtonElement(guiRenderer, "§cDisconnect", "§cClick again to disconnect!") { guiRenderer.connection.network.disconnect() })
+        addButton(ConfirmButtonElement(guiRenderer, "§4Exit", "§4Click again to exit!") { ShutdownManager.shutdown() })
     }
 }

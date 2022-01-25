@@ -29,12 +29,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2i
 
-class ButtonElement(
+open class ButtonElement(
     guiRenderer: GUIRenderer,
     text: Any,
     var onSubmit: () -> Unit,
 ) : Element(guiRenderer) {
-    private val textElement = TextElement(guiRenderer, text, background = false).apply { parent = this@ButtonElement }
+    protected val textElement = TextElement(guiRenderer, text, background = false).apply { parent = this@ButtonElement }
     private val disabledAtlas = guiRenderer.atlasManager["button_disabled"]
     private val normalAtlas = guiRenderer.atlasManager["button_normal"]
     private val hoveredAtlas = guiRenderer.atlasManager["button_hovered"]
@@ -134,14 +134,18 @@ class ButtonElement(
         hovered = false
     }
 
-    fun submit() {
+    open fun submit() {
         onSubmit()
     }
 
     override fun onChildChange(child: Element) {
-        if (child == textElement && dynamicSized) {
-            size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+        if (child == textElement) {
+            if (dynamicSized) {
+                size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+            }
+            cacheUpToDate = false
         }
+        parent?.onChildChange(this)
     }
 
     private companion object {

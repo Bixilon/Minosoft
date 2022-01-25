@@ -76,21 +76,20 @@ class GUIManager(
         return drawElements(elements, z)
     }
 
-    fun pause(pause: Boolean? = null) {
-        val nextPause = pause ?: !paused
-        if (nextPause == paused) {
+    fun pause(pause: Boolean = !paused) {
+        if (pause == paused) {
             return
         }
-        Log.log(LogMessageType.RENDERING_GENERAL) { "Pausing: $nextPause" }
+        Log.log(LogMessageType.RENDERING_GENERAL) { "Pausing: $pause" }
 
 
-        renderWindow.inputHandler.inputHandler = if (nextPause) {
+        renderWindow.inputHandler.inputHandler = if (pause) {
             guiRenderer
         } else {
             null
         }
-        paused = nextPause
-        elements.find { it is LayoutedGUIElement<*> && it.elementLayout is PauseMenu }?.enabled = nextPause
+        paused = pause
+        elements.find { it is LayoutedGUIElement<*> && it.elementLayout is PauseMenu }?.enabled = pause
     }
 
     override fun onCharPress(char: Int) {
