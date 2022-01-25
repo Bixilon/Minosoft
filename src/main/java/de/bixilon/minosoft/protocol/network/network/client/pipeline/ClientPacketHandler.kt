@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
@@ -52,8 +53,8 @@ class ClientPacketHandler(
     }
 
     override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
-        if (queued.type.threadSafe) {
-            val runnable = ThreadPoolRunnable()
+        if (queued.type.threadSafe && DefaultThreadPool.queueSize <= DefaultThreadPool.threadCount) { // only handle async when thread pool not busy
+            val runnable = ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGH)
             runnable.runnable = Runnable { tryHandle(context, queued.type, queued.packet);handlers -= runnable }
             handlers += runnable
             DefaultThreadPool += runnable
