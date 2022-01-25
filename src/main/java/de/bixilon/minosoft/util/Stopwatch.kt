@@ -15,6 +15,8 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.kutil.unit.UnitFormatter
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class Stopwatch {
     val id = LAST_ID++
@@ -37,7 +39,7 @@ class Stopwatch {
 
     fun labPrint() {
         val delta = lab()
-        Log.info("Stop watch ($id) lab: ${UnitFormatter.formatNanos(delta)}")
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Stop watch ($id) lab: ${UnitFormatter.formatNanos(delta)}" }
     }
 
     fun totalTime(): String {
