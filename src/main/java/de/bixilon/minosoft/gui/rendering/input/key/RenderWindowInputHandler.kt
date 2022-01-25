@@ -55,7 +55,21 @@ class RenderWindowInputHandler(
     var inputHandler: InputHandler? = null
         set(value) {
             field = value
-            // ToDo: Toggle key bindings (disable)
+
+            keysDown.clear()
+            val toRemove: MutableSet<ResourceLocation> = mutableSetOf()
+            for (name in keyBindingsDown) {
+                val pair = keyBindingCallbacks[name] ?: continue
+                if (pair.keyBinding.action[KeyAction.STICKY] != null) {
+                    continue
+                }
+                for (callback in pair.callback) {
+                    callback(false)
+                }
+                toRemove += name
+            }
+            keyBindingsDown -= toRemove
+
             renderWindow.window.cursorMode = if (value == null) {
                 CursorModes.DISABLED
             } else {
