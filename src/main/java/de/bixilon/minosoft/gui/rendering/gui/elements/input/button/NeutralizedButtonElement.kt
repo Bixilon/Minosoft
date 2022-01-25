@@ -15,32 +15,43 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
-open class ConfirmButtonElement(
+open class NeutralizedButtonElement(
     guiRenderer: GUIRenderer,
-    val text: Any,
-    val confirmText: Any,
+    val neutralizedText: Any,
+    val confirmText: Any = "§cAre you sure?",
     disabled: Boolean = false,
     onSubmit: () -> Unit,
-) : ButtonElement(guiRenderer, text, disabled, onSubmit) {
-    private var confirming = false
+) : ButtonElement(guiRenderer, neutralizedText, disabled, onSubmit) {
+    private var neutrealized = true
+    private var autoNeutralizeTicks = 0
 
     override fun submit() {
-        if (confirming) {
-            super.submit()
-            cancelConfirm()
-        } else {
-            confirming = true
+        if (neutrealized) {
+            neutrealized = false
+            autoNeutralizeTicks = 20
             textElement.text = confirmText
+        } else {
+            super.submit()
+            neutralize()
         }
     }
 
-    private fun cancelConfirm() {
-        confirming = false
-        textElement.text = text
+    private fun neutralize() {
+        neutrealized = true
+        textElement.text = neutralizedText
     }
 
-    override fun onMouseLeave() {
-        cancelConfirm()
-        super.onMouseLeave()
+    override fun tick() {
+        if (autoNeutralizeTicks-- < 0) {
+            neutralize()
+        }
+        super.tick()
+    }
+
+    override fun onClose() {
+        if (neutrealized) {
+            return
+        }
+        neutralize()
     }
 }

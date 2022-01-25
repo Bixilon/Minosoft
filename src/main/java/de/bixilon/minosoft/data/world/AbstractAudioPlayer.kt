@@ -26,6 +26,10 @@ interface AbstractAudioPlayer {
 
     fun playSoundEvent(sound: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
 
+    fun playSoundEvent(sound: ResourceLocation, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        playSoundEvent(sound, null as Vec3?, volume, pitch)
+    }
+
     fun stopSound(sound: ResourceLocation)
 
     // ToDo: Stop category

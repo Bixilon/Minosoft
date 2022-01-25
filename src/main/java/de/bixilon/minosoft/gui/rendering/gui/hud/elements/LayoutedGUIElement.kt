@@ -39,12 +39,21 @@ class LayoutedGUIElement<T : LayoutedElement>(
     val elementLayout = layout.unsafeCast<Element>()
     override val guiRenderer: GUIRenderer = elementLayout.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
-    override var enabled = true
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
     private var lastRevision = 0L
     override val skipDraw: Boolean
         get() = if (layout is Drawable) layout.skipDraw else false
     private var lastPosition: Vec2i = Vec2i(-1, -1)
+    override var enabled = true
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            if (!value) {
+                elementLayout.onClose()
+            }
+        }
 
     override fun tick() {
         elementLayout.tick()

@@ -236,4 +236,6 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
      * Called every tick to execute time based actions
      */
     open fun tick() = Unit
+
+    open fun onClose() = Unit
 }

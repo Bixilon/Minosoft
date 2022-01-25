@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
 open class ButtonElement(
@@ -143,6 +144,7 @@ open class ButtonElement(
 
     open fun submit() {
         onSubmit()
+        guiRenderer.connection.world.playSoundEvent(CLICK_SOUND)
     }
 
     override fun onChildChange(child: Element) {
@@ -156,6 +158,7 @@ open class ButtonElement(
     }
 
     private companion object {
+        val CLICK_SOUND = "minecraft:ui.button.click".toResourceLocation()
         const val TEXT_PADDING = 4
     }
 }

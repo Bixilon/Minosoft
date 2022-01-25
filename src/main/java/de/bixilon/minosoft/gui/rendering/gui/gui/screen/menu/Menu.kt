@@ -124,6 +124,20 @@ abstract class Menu(
         return Pair(delta, element)
     }
 
+    override fun tick() {
+        for (element in elements) {
+            element.tick()
+        }
+        super.tick()
+    }
+
+    override fun onClose() {
+        super.onClose()
+        for (element in elements) {
+            element.onClose()
+        }
+    }
+
     private companion object {
         const val BUTTON_Y_MARGIN = 5
     }
