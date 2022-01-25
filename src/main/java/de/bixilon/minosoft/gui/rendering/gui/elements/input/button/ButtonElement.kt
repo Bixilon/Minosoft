@@ -144,7 +144,7 @@ open class ButtonElement(
 
     open fun submit() {
         onSubmit()
-        guiRenderer.connection.world.playSoundEvent(CLICK_SOUND)
+        guiRenderer.connection.world.play2DSound(CLICK_SOUND)
     }
 
     override fun onChildChange(child: Element) {

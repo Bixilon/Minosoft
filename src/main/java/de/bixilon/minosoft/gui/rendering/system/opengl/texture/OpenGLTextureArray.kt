@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
@@ -42,7 +41,7 @@ import java.nio.ByteBuffer
 class OpenGLTextureArray(
     val renderWindow: RenderWindow,
     private val loadTexturesAsync: Boolean = true,
-    override val textures: MutableMap<ResourceLocation, AbstractTexture> = synchronizedMapOf(),
+    override val textures: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf(),
 ) : StaticTextureArray {
     override val animator = OpenGLSpriteAnimator()
     private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
@@ -53,6 +52,7 @@ class OpenGLTextureArray(
     private val lastTextureId = IntArray(TEXTURE_RESOLUTION_ID_MAP.size)
 
 
+    @Synchronized
     override fun createTexture(resourceLocation: ResourceLocation, mipmaps: Boolean, default: () -> AbstractTexture): AbstractTexture {
         var texture = textures[resourceLocation]
 
