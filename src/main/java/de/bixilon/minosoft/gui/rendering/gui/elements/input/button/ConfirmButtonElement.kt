@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.button
+package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 
@@ -19,8 +19,9 @@ open class ConfirmButtonElement(
     guiRenderer: GUIRenderer,
     val text: Any,
     val confirmText: Any,
+    disabled: Boolean = false,
     onSubmit: () -> Unit,
-) : ButtonElement(guiRenderer, text, onSubmit) {
+) : ButtonElement(guiRenderer, text, disabled, onSubmit) {
     private var confirming = false
 
     override fun submit() {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.button
+package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -32,6 +32,7 @@ import glm_.vec2.Vec2i
 open class ButtonElement(
     guiRenderer: GUIRenderer,
     text: Any,
+    disabled: Boolean = false,
     var onSubmit: () -> Unit,
 ) : Element(guiRenderer) {
     protected val textElement = TextElement(guiRenderer, text, background = false).apply { parent = this@ButtonElement }
@@ -58,7 +59,7 @@ open class ButtonElement(
             super.size = value // will call forceApply
         }
 
-    var disabled: Boolean = false
+    var disabled: Boolean = disabled
         set(value) {
             if (field == value) {
                 return
@@ -103,6 +104,9 @@ open class ButtonElement(
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (disabled) {
+            return
+        }
         if (button != MouseButtons.LEFT) {
             return
         }
@@ -115,6 +119,9 @@ open class ButtonElement(
 
     override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
         if (!hovered) {
+            return
+        }
+        if (disabled) {
             return
         }
         if (key != InputSpecialKey.KEY_ENTER) {

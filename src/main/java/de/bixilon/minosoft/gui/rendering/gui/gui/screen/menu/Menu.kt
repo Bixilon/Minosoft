@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.button.ButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -23,26 +23,29 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
-abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
-    private val buttons: MutableList<ButtonElement> = mutableListOf()
+abstract class Menu(
+    guiRenderer: GUIRenderer,
+    val preferredElementWidth: Int = 150,
+) : Screen(guiRenderer) {
+    private val elements: MutableList<Element> = mutableListOf()
 
-    private var buttonWidth = -1
+    private var elementWidth = -1
     private var totalHeight = -1
 
-    private var activeButton: ButtonElement? = null
+    private var activeElement: Element? = null
 
     override fun forceSilentApply() {
-        buttonWidth = size.x / 3 // 1 left and right
+        elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)
 
         var totalHeight = 0
-        for (button in buttons) {
-            val currentButtonSize = button.size
-            val buttonSize = Vec2i(buttonWidth, currentButtonSize.y)
-            button.prefMaxSize = buttonSize
-            button.size = buttonSize
+        for (element in elements) {
+            val currentButtonSize = element.size
+            val elementSize = Vec2i(elementWidth, currentButtonSize.y)
+            element.prefMaxSize = elementSize
+            element.size = elementSize
             totalHeight += currentButtonSize.y
         }
-        totalHeight += maxOf(0, (buttons.size - 1) * BUTTON_Y_MARGIN)
+        totalHeight += maxOf(0, (elements.size - 1) * BUTTON_Y_MARGIN)
         this.totalHeight = totalHeight
         super.forceSilentApply()
         cacheUpToDate = false
@@ -50,70 +53,75 @@ abstract class Menu(guiRenderer: GUIRenderer) : Screen(guiRenderer) {
 
     fun addButton(button: ButtonElement) {
         button.parent = this
-        buttons += button
+        elements += button
         forceSilentApply()
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val size = size
         var zUsed = super.forceRender(offset, z, consumer, options)
-        val startOffset = (size - Vec2i(buttonWidth, totalHeight)) / 2
-        for (button in buttons) {
-            zUsed = maxOf(zUsed, button.render(offset + startOffset, z + zUsed, consumer, options) + zUsed)
-            startOffset.y += BUTTON_Y_MARGIN + button.size.y
+        val startOffset = (size - Vec2i(elementWidth, totalHeight)) / 2
+        for (element in elements) {
+            zUsed = maxOf(zUsed, element.render(offset + startOffset, z + zUsed, consumer, options) + zUsed)
+            startOffset.y += BUTTON_Y_MARGIN + element.size.y
         }
         return zUsed
     }
 
     override fun onMouseLeave() {
-        activeButton?.onMouseLeave()
-        activeButton = null
+        activeElement?.onMouseLeave()
+        activeElement = null
     }
 
     override fun onMouseMove(position: Vec2i) {
-        val (delta, button) = getButtonAndPositionAt(position)
+        val (delta, element) = getAt(position)
 
-        if (activeButton != button) {
-            activeButton?.onMouseLeave()
-            button?.onMouseEnter(delta)
-            activeButton = button
+        if (activeElement != element) {
+            activeElement?.onMouseLeave()
+            element?.onMouseEnter(delta)
+            activeElement = element
             return
         }
-        button?.onMouseMove(delta)
+        element?.onMouseMove(delta)
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val (delta, buttonElement) = getButtonAndPositionAt(position)
-        buttonElement?.onMouseAction(delta, button, action)
+        val (delta, element) = getAt(position)
+        element?.onMouseAction(delta, button, action)
     }
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
     }
 
-    fun getButtonAndPositionAt(position: Vec2i): Pair<Vec2i, ButtonElement?> {
-        var delta = position
-        var button: ButtonElement? = null
-        if (position.x in buttonWidth..buttonWidth * 2) {
-            // x matches
-            val yStart = (size.y - totalHeight) / 2
-            var yOffset = position.y - yStart
-            for (buttonEntry in buttons) {
-                if (yOffset < 0) {
-                    break
-                }
-                val buttonSize = buttonEntry.size
-                if (yOffset < buttonSize.y) {
-                    button = buttonEntry
-                    break
-                }
-                yOffset -= buttonSize.y
-                yOffset -= BUTTON_Y_MARGIN
-            }
-            delta = Vec2i(position.x - buttonWidth, yOffset)
+    fun getAt(position: Vec2i): Pair<Vec2i, Element?> {
+        val delta = Vec2i(position)
+        var element: Element? = null
+        val elementWidth = elementWidth
+        val size = size
+        val xStart = (size.x - elementWidth) / 2
+        if (position.x < xStart || position.x >= xStart + elementWidth) {
+            return Pair(Vec2i(0, 0), null)
         }
+        delta.x = position.x - xStart
+        // x matches
+        val yStart = (size.y - totalHeight) / 2
+        var yOffset = position.y - yStart
+        for (buttonEntry in elements) {
+            if (yOffset < 0) {
+                break
+            }
+            val buttonSize = buttonEntry.size
+            if (yOffset < buttonSize.y) {
+                element = buttonEntry
+                break
+            }
+            yOffset -= buttonSize.y
+            yOffset -= BUTTON_Y_MARGIN
+        }
+        delta.y = yOffset
 
-        return Pair(delta, button)
+        return Pair(delta, element)
     }
 
     private companion object {
