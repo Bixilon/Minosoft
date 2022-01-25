@@ -38,6 +38,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -55,15 +57,16 @@ import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 import kotlin.math.abs
 
-class DebugHUDElement(guiRenderer: GUIRenderer) : GridLayout(guiRenderer, Vec2i(3, 1)), LayoutedElement, Initializable {
+class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
+    private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
     override val layoutOffset: Vec2i = Vec2i.EMPTY
 
     init {
-        columnConstraints[0].apply {
+        layout.columnConstraints[0].apply {
             grow = GridGrow.NEVER
         }
-        columnConstraints[2].apply {
+        layout.columnConstraints[2].apply {
             grow = GridGrow.NEVER
             alignment = HorizontalAlignments.RIGHT
         }
@@ -73,8 +76,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : GridLayout(guiRenderer, Vec2i(
 
 
     override fun init() {
-        this[Vec2i(0, 0)] = initLeft()
-        this[Vec2i(2, 0)] = initRight()
+        layout[Vec2i(0, 0)] = initLeft()
+        layout[Vec2i(2, 0)] = initRight()
 
         this.prefMaxSize = Vec2i(-1, Int.MAX_VALUE)
         this.ignoreDisplaySize = true
@@ -283,6 +286,23 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : GridLayout(guiRenderer, Vec2i(
 
             super.tick()
         }
+    }
+
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        return layout.forceRender(offset, z, consumer, options)
+    }
+
+    override fun forceSilentApply() {
+        cacheUpToDate = false
+    }
+
+    override fun onChildChange(child: Element) {
+        super.onChildChange(child)
+        forceSilentApply()
+    }
+
+    override fun tick() {
+        layout.tick()
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<DebugHUDElement>> {

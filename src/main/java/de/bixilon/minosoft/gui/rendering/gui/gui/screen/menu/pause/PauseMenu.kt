@@ -24,6 +24,6 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     init {
         addButton(ButtonElement(guiRenderer, "Back to game") { guiRenderer.gui.pause(false) })
         addButton(ConfirmButtonElement(guiRenderer, "§cDisconnect", "§cClick again to disconnect!") { guiRenderer.connection.network.disconnect() })
-        addButton(ConfirmButtonElement(guiRenderer, "§4Exit", "§4Click again to exit!") { ShutdownManager.shutdown() })
+        addButton(ConfirmButtonElement(guiRenderer, "§4Exit", "§4Click again to exit!") { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
     }
 }
