@@ -15,23 +15,11 @@
 
 out vec4 foutColor;
 
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-in vec4 finTintColor;
+#include "minosoft:animation/header_fragment"
 
 #include "minosoft:texture"
+#include "minosoft:alpha"
 
 void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
-
-    //texelColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-
-    if (texelColor.a == 0.0f) {
-        discard;
-    }
-    if (finTintColor.a != 0.0f) {
-        texelColor *= finTintColor;
-    }
-
-    foutColor = texelColor;
+    #include "minosoft:animation/main_fragment"
 }

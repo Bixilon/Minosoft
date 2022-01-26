@@ -18,18 +18,15 @@ layout (location = 1) in vec2 vinUV;
 layout (location = 2) in uint vinIndexLayerAnimation;
 layout (location = 3) in uint vinTintColor;
 
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
-out vec4 finTintColor;
+#include "minosoft:animation/header_vertex"
 
 #include "minosoft:color"
+#include "minosoft:animation/buffer"
+
 
 void main() {
     gl_Position = vec4(vinPosition.xyz, 1.0f);
-
-    // ToDo: Texture animations
-
-    finTextureIndex = vinIndexLayerAnimation >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
     finTintColor = getRGBAColor(vinTintColor);
+
+    #include "minosoft:animation/main_vertex"
 }
