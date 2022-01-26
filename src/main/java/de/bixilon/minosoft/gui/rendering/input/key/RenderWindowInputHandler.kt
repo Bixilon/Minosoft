@@ -56,19 +56,7 @@ class RenderWindowInputHandler(
         set(value) {
             field = value
 
-            keysDown.clear()
-            val toRemove: MutableSet<ResourceLocation> = mutableSetOf()
-            for (name in keyBindingsDown) {
-                val pair = keyBindingCallbacks[name] ?: continue
-                if (pair.keyBinding.action[KeyAction.STICKY] != null) {
-                    continue
-                }
-                for (callback in pair.callback) {
-                    callback(false)
-                }
-                toRemove += name
-            }
-            keyBindingsDown -= toRemove
+            deactivateAll()
 
             renderWindow.window.cursorMode = if (value == null) {
                 CursorModes.DISABLED
@@ -132,6 +120,29 @@ class RenderWindowInputHandler(
         cameraInput.init()
     }
 
+    private fun deactivateAll() {
+        keysDown.clear()
+        keysLastDownTime.clear()
+        val toRemove: MutableSet<ResourceLocation> = mutableSetOf()
+        for ((name, pair) in keyBindingCallbacks) {
+            val down = keyBindingsDown.contains(name)
+            if (!down || pair.defaultPressed) {
+                continue
+            }
+
+            // ToDo
+            if (pair.keyBinding.action[KeyAction.DOUBLE_PRESS] != null) {
+                continue
+            }
+
+
+            for (callback in pair.callback) {
+                callback(false)
+            }
+            toRemove += name
+        }
+        keyBindingsDown -= toRemove
+    }
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
         val inputHandler = inputHandler
@@ -236,7 +247,6 @@ class RenderWindowInputHandler(
                 continue
             }
 
-            // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
             pair.lastChange = TimeUtil.time
             for (callback in pair.callback) {
                 callback(thisKeyBindingDown)
@@ -275,7 +285,7 @@ class RenderWindowInputHandler(
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
         val keyBinding = profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }
-        val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding) }
+        val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding, defaultPressed) }
         callbackPair.callback += callback
 
         if (keyBinding.action.containsKey(KeyAction.STICKY) && defaultPressed) {
