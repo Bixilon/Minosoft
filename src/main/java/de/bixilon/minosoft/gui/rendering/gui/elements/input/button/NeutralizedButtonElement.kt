@@ -42,7 +42,7 @@ open class NeutralizedButtonElement(
     }
 
     override fun tick() {
-        if (autoNeutralizeTicks-- < 0) {
+        if (!neutrealized && autoNeutralizeTicks-- < 0) {
             neutralize()
         }
         super.tick()

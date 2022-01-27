@@ -75,7 +75,15 @@ class GUIRenderer(
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
-        scaledSize = Vec2i(Vec2(windowSize) / scale)
+        val hudNormalSize = Vec2i(windowSize)
+        // ToDo: This is just a dirty workaround and does not fix the problem at all
+        if (hudNormalSize.x % 2 != 0) {
+            hudNormalSize.x--
+        }
+        if (hudNormalSize.y % 2 != 0) {
+            hudNormalSize.y--
+        }
+        scaledSize = Vec2i(Vec2(hudNormalSize) / scale)
         matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
         matrixChange = true
 
