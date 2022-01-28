@@ -33,22 +33,24 @@ abstract class Menu(
     private val elements: MutableList<Element> = mutableListOf()
     private var focusedIndex: Int = -1
 
-    private var elementWidth = -1
+    private var maxElementWidth = -1
     private var totalHeight = -1
 
     private var activeElement: Element? = null
 
     override fun forceSilentApply() {
-        elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)
+        val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)
+        var maxElementWidth = elementWidth
 
         var totalHeight = 0
         for (element in elements) {
-            val currentButtonSize = element.size
-            val elementSize = Vec2i(elementWidth, currentButtonSize.y)
-            element.prefMaxSize = elementSize
+            val currentElementSize = element.size
+            val elementSize = Vec2i(elementWidth, currentElementSize.y)
             element.size = elementSize
-            totalHeight += currentButtonSize.y
+            maxElementWidth = maxOf(maxElementWidth, element.size.x) // width may not be changeable
+            totalHeight += currentElementSize.y
         }
+        this.maxElementWidth = maxElementWidth
         totalHeight += maxOf(0, (elements.size - 1) * BUTTON_Y_MARGIN)
         this.totalHeight = totalHeight
         super.forceSilentApply()
@@ -66,9 +68,10 @@ abstract class Menu(
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val size = size
         var zUsed = super.forceRender(offset, z, consumer, options)
-        val startOffset = (size - Vec2i(elementWidth, totalHeight)) / 2
+        val maxElementWidth = maxElementWidth
+        val startOffset = (size - Vec2i(maxElementWidth, totalHeight)) / 2
         for (element in elements) {
-            zUsed = maxOf(zUsed, element.render(offset + startOffset, z + zUsed, consumer, options) + zUsed)
+            zUsed = maxOf(zUsed, element.render(offset + startOffset + Vec2i((maxElementWidth - element.size.x) / 2, 0), z + zUsed, consumer, options) + zUsed)
             startOffset.y += BUTTON_Y_MARGIN + element.size.y
         }
         return zUsed
@@ -104,7 +107,7 @@ abstract class Menu(
     fun getAt(position: Vec2i): Pair<Vec2i, Element?> {
         val delta = Vec2i(position)
         var element: Element? = null
-        val elementWidth = elementWidth
+        val elementWidth = maxElementWidth
         val size = size
         val xStart = (size.x - elementWidth) / 2
         if (position.x < xStart || position.x >= xStart + elementWidth) {

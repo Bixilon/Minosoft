@@ -21,13 +21,14 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.NeutralizedBu
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.ShutdownManager
 import glm_.vec2.Vec2i
 
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
-        add(TextElement(guiRenderer, "Minosoft", HorizontalAlignments.CENTER, false, scale = 3.0f))
+        add(TextElement(guiRenderer, RunConfiguration.VERSION_STRING, HorizontalAlignments.CENTER, false, scale = 3.0f))
         add(SpacerElement(guiRenderer, Vec2i(0, 20)))
         add(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
         add(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n(), disabled = true) { TODO() })

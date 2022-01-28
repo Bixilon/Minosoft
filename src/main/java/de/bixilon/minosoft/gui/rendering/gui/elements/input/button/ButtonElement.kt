@@ -48,6 +48,12 @@ open class ButtonElement(
             if (_dynamicSized == value) {
                 return
             }
+
+            textElement.prefMaxSize = if (value) {
+                Vec2i(-1, -1)
+            } else {
+                size - Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
+            }
             _dynamicSized = value
             forceApply()
         }

@@ -78,6 +78,10 @@ open class TextElement(
     var charMargin: Int = 0
         private set
 
+    override var size: Vec2i
+        get() = super.size
+        set(value) {}
+
     override var text: Any = text
         set(value) {
             chatComponent = ChatComponent.of(value, translator = Minosoft.LANGUAGE_MANAGER /*guiRenderer.connection.language*/) // Should the server be allowed to send minosoft namespaced translation keys?
