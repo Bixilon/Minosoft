@@ -367,7 +367,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             if (serverListViewFX.selectionModel.selectedItem == card) {
                 serverListViewFX.selectionModel.select(null)
             }
-            serverListViewFX.items.remove(card)
+            if (serverListViewFX.items.contains(card)) {
+                serverListViewFX.items.remove(card)
+            }
         }
     }
 
