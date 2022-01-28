@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
@@ -56,11 +55,13 @@ abstract class Menu(
         cacheUpToDate = false
     }
 
-    fun addButton(button: ButtonElement) {
-        button.parent = this
-        elements += button
+    fun add(element: Element) {
+        element.parent = this
+        elements += element
         forceSilentApply()
     }
+
+    operator fun plusAssign(element: Element) = add(element)
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val size = size

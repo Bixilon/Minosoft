@@ -15,17 +15,23 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.NeutralizedButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.util.ShutdownManager
+import glm_.vec2.Vec2i
 
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
-        addButton(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
-        addButton(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n(), disabled = true) { TODO() })
-        addButton(NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.connection.network.disconnect() })
-        addButton(NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
+        add(TextElement(guiRenderer, "Minosoft", HorizontalAlignments.CENTER, false, scale = 3.0f))
+        add(SpacerElement(guiRenderer, Vec2i(0, 20)))
+        add(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
+        add(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n(), disabled = true) { TODO() })
+        add(NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.connection.network.disconnect() })
+        add(NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
     }
 }

@@ -33,7 +33,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class GUIRenderer(
@@ -75,15 +74,7 @@ class GUIRenderer(
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
-        val hudNormalSize = Vec2i(windowSize)
-        // ToDo: This is just a dirty workaround and does not fix the problem at all
-        if (hudNormalSize.x % 2 != 0) {
-            hudNormalSize.x--
-        }
-        if (hudNormalSize.y % 2 != 0) {
-            hudNormalSize.y--
-        }
-        scaledSize = Vec2i(Vec2(hudNormalSize) / scale)
+        scaledSize = windowSize.scale(scale)
         matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
         matrixChange = true
 
@@ -97,7 +88,7 @@ class GUIRenderer(
     }
 
     override fun onMouseMove(position: Vec2i) {
-        gui.onMouseMove(position / profile.scale)
+        gui.onMouseMove(position.scale())
     }
 
     override fun onCharPress(char: Int) {
@@ -115,6 +106,24 @@ class GUIRenderer(
         if (this.matrixChange) {
             this.matrixChange = false
         }
+    }
+
+    private fun Vec2i.scale(scale: Float = profile.scale): Vec2i {
+        val output = Vec2i(this)
+        // ToDo: This is just a dirty workaround and does not fix the problem at all
+        while (output.x % scale.toInt() != 0) {
+            output.x--
+            if (output.x < 0) {
+                output.x = 0
+            }
+        }
+        while (output.y % scale.toInt() != 0) {
+            output.y--
+            if (output.y < 0) {
+                output.y = 0
+            }
+        }
+        return output / scale
     }
 
     companion object : RendererBuilder<GUIRenderer> {
