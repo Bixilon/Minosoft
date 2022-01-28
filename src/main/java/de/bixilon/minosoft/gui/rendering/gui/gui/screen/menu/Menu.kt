@@ -31,7 +31,6 @@ abstract class Menu(
     val preferredElementWidth: Int = 150,
 ) : Screen(guiRenderer) {
     private val elements: MutableList<Element> = mutableListOf()
-    private var focusedIndex: Int = -1
 
     private var maxElementWidth = -1
     private var totalHeight = -1
@@ -88,7 +87,6 @@ abstract class Menu(
         if (activeElement != element) {
             activeElement?.onMouseLeave()
             element?.onMouseEnter(delta)
-            focusedIndex = elements.indexOf(element)
             activeElement = element
             return
         }
@@ -146,17 +144,35 @@ abstract class Menu(
         for (element in elements) {
             element.onClose()
         }
-        focusedIndex = -1
+        activeElement?.onMouseLeave()
+        activeElement = null
     }
 
     override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
         super.onSpecialKey(key, type)
         if (type != KeyChangeTypes.RELEASE && key == InputSpecialKey.KEY_TAB) {
-            focusedIndex++
-            if (focusedIndex >= elements.size) {
-                focusedIndex = 0
+            var element: Element?
+            var initialIndex = elements.indexOf(activeElement)
+            if (initialIndex == -1) {
+                initialIndex = 0
             }
-            val element = elements.getOrNull(focusedIndex) ?: return
+            var index = initialIndex
+            while (true) {
+                index++
+                if (index >= elements.size) {
+                    index = 0
+                }
+                if (index == initialIndex) {
+                    return
+                }
+                element = elements.getOrNull(index) ?: return
+                if (element.canFocus) {
+                    break
+                }
+            }
+            if (element == null) {
+                return
+            }
 
             activeElement?.onMouseLeave()
             element.onMouseEnter(Vec2i.EMPTY)

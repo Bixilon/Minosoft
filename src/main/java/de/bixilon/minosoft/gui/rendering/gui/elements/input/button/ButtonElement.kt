@@ -84,6 +84,9 @@ open class ButtonElement(
             forceApply()
         }
 
+    override val canFocus: Boolean
+        get() = !disabled
+
 
     init {
         size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)

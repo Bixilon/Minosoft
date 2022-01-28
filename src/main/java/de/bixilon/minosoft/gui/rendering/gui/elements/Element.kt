@@ -54,6 +54,8 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
 
     protected open var _prefSize: Vec2i = Vec2i.EMPTY
 
+    open val canFocus: Boolean get() = false
+
     /**
      * If maxSize was infinity, what size would the element have? (Excluded margin!)
      */
