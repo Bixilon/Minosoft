@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.network.connection.status
 
+import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 enum class StatusConnectionStates : Translatable {

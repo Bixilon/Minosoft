@@ -68,7 +68,7 @@ class LanguageManager(
                     val lines = assetsManager[ResourceLocation(path.namespace, path.path + "${language.lowercase()}.lang")].readAsString().lines()
 
                     for (line in lines) {
-                        if (line.isBlank()) {
+                        if (line.isBlank() || line.startsWith("#")) {
                             continue
                         }
                         val split = line.split('=', limit = 2)

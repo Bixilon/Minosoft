@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
+import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.NeutralizedButtonElement
@@ -22,9 +23,9 @@ import de.bixilon.minosoft.util.ShutdownManager
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     init {
-        addButton(ButtonElement(guiRenderer, "Back to game") { guiRenderer.gui.pause(false) })
-        addButton(ButtonElement(guiRenderer, "Debug options", disabled = true) { TODO() })
-        addButton(NeutralizedButtonElement(guiRenderer, "Disconnect", "§cClick again to disconnect!") { guiRenderer.connection.network.disconnect() })
-        addButton(NeutralizedButtonElement(guiRenderer, "Exit", "§cClick again to exit!") { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
+        addButton(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
+        addButton(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n(), disabled = true) { TODO() })
+        addButton(NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.connection.network.disconnect() })
+        addButton(NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
     }
 }

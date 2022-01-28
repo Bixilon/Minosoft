@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
-import de.bixilon.minosoft.data.registries.registries.registry.Translatable
+import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import org.kordamp.ikonli.Ikon
 

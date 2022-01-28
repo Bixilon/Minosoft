@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import org.kordamp.ikonli.Ikon
 
 data class ErosAccountType<T : Account>(

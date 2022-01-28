@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.latestVersion
+import de.bixilon.minosoft.config.profile.profiles.audio.gui.GuiC
 import de.bixilon.minosoft.config.profile.profiles.audio.types.TypesC
 import de.bixilon.minosoft.config.profile.profiles.audio.volume.VolumeC
 
@@ -50,6 +51,8 @@ class AudioProfile(
 
     val types = TypesC()
     val volume = VolumeC()
+
+    val gui = GuiC()
 
 
     override fun toString(): String {

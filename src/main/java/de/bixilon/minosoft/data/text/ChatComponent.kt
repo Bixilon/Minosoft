@@ -14,7 +14,10 @@ package de.bixilon.minosoft.data.text
 
 import com.fasterxml.jackson.core.JacksonException
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.language.Translator
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.json.Jackson
 import javafx.collections.FXCollections
@@ -75,6 +78,9 @@ interface ChatComponent {
             }
             if (raw is ChatComponent) {
                 return raw
+            }
+            if (raw is Translatable && raw !is ResourceLocation) {
+                return (translator ?: Minosoft.LANGUAGE_MANAGER).translate(raw.translationKey, parent)
             }
             if (raw is Map<*, *>) {
                 return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode)

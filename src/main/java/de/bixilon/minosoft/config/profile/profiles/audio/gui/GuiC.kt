@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.statistics
 
-import de.bixilon.minosoft.data.language.Translatable
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+package de.bixilon.minosoft.config.profile.profiles.audio.gui
 
-data class Statistic(
-    override val resourceLocation: ResourceLocation,
-    override val translationKey: ResourceLocation?,
-    val unit: StatisticUnits,
-    @Deprecated("TODO") val subStatistics: Map<ResourceLocation, SubStatistic>,
-) : RegistryItem(), Translatable {
+import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
 
-    override fun toString(): String {
-        return resourceLocation.full
-    }
+class GuiC {
+
+    /**
+     * Enables all gui sounds
+     */
+    var enabled by delegate(true)
+
+    /**
+     * Enables all sounds related to button (currently only clicking
+     */
+    var button by delegate(true)
 }
