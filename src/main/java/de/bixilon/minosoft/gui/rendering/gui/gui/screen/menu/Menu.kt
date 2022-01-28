@@ -17,10 +17,14 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
+import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 abstract class Menu(
@@ -28,6 +32,7 @@ abstract class Menu(
     val preferredElementWidth: Int = 150,
 ) : Screen(guiRenderer) {
     private val elements: MutableList<Element> = mutableListOf()
+    private var focusedIndex: Int = -1
 
     private var elementWidth = -1
     private var totalHeight = -1
@@ -79,6 +84,7 @@ abstract class Menu(
         if (activeElement != element) {
             activeElement?.onMouseLeave()
             element?.onMouseEnter(delta)
+            focusedIndex = elements.indexOf(element)
             activeElement = element
             return
         }
@@ -136,6 +142,34 @@ abstract class Menu(
         for (element in elements) {
             element.onClose()
         }
+        focusedIndex = -1
+    }
+
+    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+        super.onSpecialKey(key, type)
+        if (type != KeyChangeTypes.RELEASE && key == InputSpecialKey.KEY_TAB) {
+            focusedIndex++
+            if (focusedIndex >= elements.size) {
+                focusedIndex = 0
+            }
+            val element = elements.getOrNull(focusedIndex) ?: return
+
+            activeElement?.onMouseLeave()
+            element.onMouseEnter(Vec2i.EMPTY)
+            activeElement = element
+            return // no passthrough the key to current active element
+        }
+        activeElement?.onSpecialKey(key, type)
+    }
+
+    override fun onCharPress(char: Int) {
+        super.onCharPress(char)
+        activeElement?.onCharPress(char)
+    }
+
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
+        val (delta, element) = getAt(position)
+        element?.onScroll(delta, scrollOffset)
     }
 
     private companion object {
