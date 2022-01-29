@@ -82,40 +82,40 @@ abstract class Menu(
     }
 
     override fun onMouseMove(position: Vec2i) {
-        val (delta, element) = getAt(position)
+        val pair = getAt(position)
 
-        if (activeElement != element) {
+        if (activeElement != pair?.first) {
             activeElement?.onMouseLeave()
-            element?.onMouseEnter(delta)
-            activeElement = element
+            pair?.first?.onMouseEnter(pair.second)
+            activeElement = pair?.first
             return
         }
-        element?.onMouseMove(delta)
+        pair?.first?.onMouseMove(pair.second)
     }
 
     override fun onMouseEnter(position: Vec2i) {
-        val (delta, element) = getAt(position)
-        element?.onMouseEnter(delta)
-        activeElement = element
+        val pair = getAt(position)
+        pair?.first?.onMouseEnter(pair.second)
+        activeElement = pair?.first
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val (delta, element) = getAt(position)
-        element?.onMouseAction(delta, button, action)
+        val (element, delta) = getAt(position) ?: return
+        element.onMouseAction(delta, button, action)
     }
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
     }
 
-    fun getAt(position: Vec2i): Pair<Vec2i, Element?> {
-        val delta = Vec2i(position)
+    fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
         var element: Element? = null
+        val delta = Vec2i(position)
         val elementWidth = maxElementWidth
         val size = size
         val xStart = (size.x - elementWidth) / 2
         if (position.x < xStart || position.x >= xStart + elementWidth) {
-            return Pair(Vec2i(0, 0), null)
+            return null
         }
         delta.x = position.x - xStart
         // x matches
@@ -135,12 +135,18 @@ abstract class Menu(
         }
         delta.y = yOffset
 
-        if (element != null) {
-            val elementSize = element.size
-            // ToDo: Check x
+        if (element == null) {
+            return null
         }
 
-        return Pair(delta, element)
+        val width = element.size.x
+        val halfWidthDelta = (elementWidth - width) / 2
+        delta.x -= halfWidthDelta
+        if (delta.x < 0 || delta.x >= width) {
+            return null
+        }
+
+        return Pair(element, delta)
     }
 
     override fun tick() {
@@ -190,8 +196,8 @@ abstract class Menu(
     }
 
     override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
-        val (delta, element) = getAt(position)
-        element?.onScroll(delta, scrollOffset)
+        val (element, delta) = getAt(position) ?: return
+        element.onScroll(delta, scrollOffset)
     }
 
     private fun reset() {
