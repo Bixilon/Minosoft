@@ -20,7 +20,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.NeutralizedButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug.DebugMenu
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.ShutdownManager
 import glm_.vec2.Vec2i
@@ -31,8 +34,24 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
         add(TextElement(guiRenderer, RunConfiguration.VERSION_STRING, HorizontalAlignments.CENTER, false, scale = 3.0f))
         add(SpacerElement(guiRenderer, Vec2i(0, 20)))
         add(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
-        add(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n(), disabled = true) { TODO() })
+        add(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n()) { guiRenderer.gui.push(DebugMenu) })
         add(NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.connection.network.disconnect() })
         add(NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
+    }
+
+    override fun onOpen() {
+        super.onOpen()
+        guiRenderer.gui.paused = true
+    }
+
+    override fun onClose() {
+        super.onClose()
+        guiRenderer.gui.paused = false
+    }
+
+    companion object : GUIBuilder<LayoutedGUIElement<PauseMenu>> {
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<PauseMenu> {
+            return LayoutedGUIElement((PauseMenu(guiRenderer)))
+        }
     }
 }

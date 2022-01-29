@@ -43,4 +43,8 @@ interface GUIElement : InputHandler {
      * May be used to poll data (see Pollable)
      */
     fun apply() = Unit
+
+    fun onOpen() = Unit
+    fun onHide() = Unit
+    fun onClose() = Unit
 }

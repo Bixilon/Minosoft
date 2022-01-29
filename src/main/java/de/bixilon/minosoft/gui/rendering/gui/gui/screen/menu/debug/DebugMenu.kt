@@ -1,0 +1,41 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
+
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import glm_.vec2.Vec2i
+
+class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
+
+    init {
+        add(TextElement(guiRenderer, "Debug options", HorizontalAlignments.CENTER, false))
+        add(SpacerElement(guiRenderer, Vec2i(0, 10)))
+        add(ButtonElement(guiRenderer, "Write hello!") { guiRenderer.connection.util.sendDebugMessage("Hi there!") })
+
+        add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
+    }
+
+    companion object : GUIBuilder<LayoutedGUIElement<DebugMenu>> {
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugMenu> {
+            return LayoutedGUIElement((DebugMenu(guiRenderer)))
+        }
+    }
+}

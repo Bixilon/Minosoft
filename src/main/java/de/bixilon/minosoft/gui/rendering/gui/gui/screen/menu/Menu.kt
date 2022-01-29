@@ -93,6 +93,12 @@ abstract class Menu(
         element?.onMouseMove(delta)
     }
 
+    override fun onMouseEnter(position: Vec2i) {
+        val (delta, element) = getAt(position)
+        element?.onMouseEnter(delta)
+        activeElement = element
+    }
+
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
         val (delta, element) = getAt(position)
         element?.onMouseAction(delta, button, action)
@@ -129,6 +135,11 @@ abstract class Menu(
         }
         delta.y = yOffset
 
+        if (element != null) {
+            val elementSize = element.size
+            // ToDo: Check x
+        }
+
         return Pair(delta, element)
     }
 
@@ -137,15 +148,6 @@ abstract class Menu(
             element.tick()
         }
         super.tick()
-    }
-
-    override fun onClose() {
-        super.onClose()
-        for (element in elements) {
-            element.onClose()
-        }
-        activeElement?.onMouseLeave()
-        activeElement = null
     }
 
     override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
@@ -190,6 +192,29 @@ abstract class Menu(
     override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
         val (delta, element) = getAt(position)
         element?.onScroll(delta, scrollOffset)
+    }
+
+    private fun reset() {
+        for (element in elements) {
+            element.onClose()
+        }
+        activeElement?.onMouseLeave()
+        activeElement = null
+    }
+
+    override fun onOpen() {
+        super.onOpen()
+        reset()
+    }
+
+    override fun onHide() {
+        super.onHide()
+        reset()
+    }
+
+    override fun onClose() {
+        super.onClose()
+        reset()
     }
 
     private companion object {

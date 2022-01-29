@@ -55,6 +55,10 @@ class LayoutedGUIElement<T : LayoutedElement>(
             }
         }
 
+    init {
+        elementLayout.cache.data = mesh.data
+    }
+
     override fun tick() {
         elementLayout.tick()
     }
@@ -101,7 +105,6 @@ class LayoutedGUIElement<T : LayoutedElement>(
 
 
     fun initMesh() {
-        elementLayout.cache.data = mesh.data
         mesh.load()
     }
 
@@ -168,5 +171,18 @@ class LayoutedGUIElement<T : LayoutedElement>(
         }
         val delta = position - offset
         elementLayout.onScroll(delta, scrollOffset)
+    }
+
+    override fun onClose() {
+        elementLayout.onClose()
+    }
+
+    override fun onOpen() {
+        elementLayout.onOpen()
+        onMouseMove(guiRenderer.currentCursorPosition)
+    }
+
+    override fun onHide() {
+        elementLayout.onHide()
     }
 }

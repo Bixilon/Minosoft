@@ -239,5 +239,7 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
      */
     open fun tick() = Unit
 
+    open fun onOpen() = Unit
+    open fun onHide() = Unit
     open fun onClose() = Unit
 }

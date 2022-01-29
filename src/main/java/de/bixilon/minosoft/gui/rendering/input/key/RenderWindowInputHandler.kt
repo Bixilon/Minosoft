@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
@@ -49,6 +50,10 @@ class RenderWindowInputHandler(
     private val keysDown: MutableList<KeyCodes> = mutableListOf()
     private val keyBindingsDown: MutableList<ResourceLocation> = mutableListOf()
     private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()
+
+
+    var currentMousePosition: Vec2d = Vec2d.EMPTY
+        private set
 
 
     val interactionManager = InteractionManager(renderWindow)
@@ -95,6 +100,7 @@ class RenderWindowInputHandler(
 
         connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
             val inputHandler = inputHandler
+            currentMousePosition = it.position
             if (inputHandler != null) {
                 if (skipMouseMove) {
                     skipMouseMove = false

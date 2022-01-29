@@ -54,6 +54,9 @@ class GUIRenderer(
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     val atlasManager = AtlasManager(renderWindow)
 
+    val currentCursorPosition: Vec2i
+        get() = Vec2i(renderWindow.inputHandler.currentMousePosition).scale()
+
     override fun init(latch: CountUpAndDownLatch) {
         atlasManager.init()
         gui.init()
@@ -108,7 +111,7 @@ class GUIRenderer(
         }
     }
 
-    private fun Vec2i.scale(scale: Float = profile.scale): Vec2i {
+    fun Vec2i.scale(scale: Float = profile.scale): Vec2i {
         val output = Vec2i(this)
         // ToDo: This is just a dirty workaround and does not fix the problem at all
         while (output.x % scale.toInt() != 0) {
