@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
 
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
@@ -21,14 +22,23 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import glm_.vec2.Vec2i
 
 class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
+    private val connection = guiRenderer.connection
 
     init {
         add(TextElement(guiRenderer, "Debug options", HorizontalAlignments.CENTER, false))
         add(SpacerElement(guiRenderer, Vec2i(0, 10)))
-        add(ButtonElement(guiRenderer, "Write hello!") { guiRenderer.connection.util.sendDebugMessage("Hi there!") })
+        add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.sendPacket(ChatMessageC2SP("/gamemode ${connection.player.gamemode.next().name.lowercase()}")) })
+        add(ButtonElement(guiRenderer, "Hack to next gamemode") {
+            val previous = connection.player.tabListItem.gamemode
+            val next = previous.next()
+            connection.player.tabListItem.gamemode = next
+            connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previous, next))
+        })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
     }
