@@ -140,6 +140,9 @@ class RenderWindowInputHandler(
             if (pair.keyBinding.action[KeyAction.DOUBLE_PRESS] != null) {
                 continue
             }
+            if (pair.keyBinding.action[KeyAction.STICKY] != null) {
+                continue
+            }
 
 
             for (callback in pair.callback) {
