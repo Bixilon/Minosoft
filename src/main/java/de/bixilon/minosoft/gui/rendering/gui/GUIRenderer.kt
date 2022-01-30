@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
@@ -86,7 +87,13 @@ class GUIRenderer(
     }
 
     fun setup() {
-        renderWindow.renderSystem.reset(blending = true)
+        renderSystem.reset(
+            blending = true,
+            sourceRGB = BlendingFunctions.SOURCE_ALPHA,
+            destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+            sourceAlpha = BlendingFunctions.ONE,
+            destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+        )
         shader.use()
     }
 
