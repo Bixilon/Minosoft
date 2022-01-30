@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3d
 
 class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     private val connection = guiRenderer.connection
@@ -38,6 +39,13 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
             val next = previous.next()
             connection.player.tabListItem.gamemode = next
             connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previous, next))
+        })
+        add(ButtonElement(guiRenderer, "Fake y=100") {
+            val entity = connection.player
+            val position = Vec3d(entity.position.x, 100.0, entity.position.z)
+
+            entity.position = position
+            entity.previousPosition = position
         })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })
