@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,23 +19,23 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import glm_.vec2.Vec2i
 
-class TextFlowElement(
-    hudRenderer: HUDRenderer,
+open class TextFlowElement(
+    guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
-) : Element(hudRenderer) {
+) : Element(guiRenderer) {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = listOf() // all visible lines **from bottom to top**
 
-    private val background = ColorElement(hudRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
     // Used for scrolling in GUI (not hud)
     private val active: Boolean = false // if always all lines should be displayed when possible
@@ -82,7 +82,7 @@ class TextFlowElement(
             }
 
             // ToDo: Cache lines
-            val textElement = TextElement(hudRenderer, message.text, background = false, parent = this)
+            val textElement = TextElement(guiRenderer, message.text, background = false, parent = this)
             val lines = textElement.renderInfo.lines
 
             val lineIterator = lines.reversed().iterator()
@@ -102,7 +102,7 @@ class TextFlowElement(
                 if (visibleLines.size >= maxLines) {
                     break
                 }
-                val lineElement = TextElement(hudRenderer, line.text, background = false, parent = this)
+                val lineElement = TextElement(guiRenderer, line.text, background = false, parent = this)
                 textSize = textSize.max(lineElement.size)
                 visibleLines += TextFlowLineElement(lineElement, message)
             }

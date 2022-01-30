@@ -26,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.BlockInteractC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractAtC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityEmptyInteractC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityInteractPositionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -108,7 +108,7 @@ class InteractInteractionHandler(
     fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
         // used in armor stands
         val player = connection.player
-        connection.sendPacket(EntityInteractAtC2SP(connection, target.entity, Vec3(target.position), hand, player.isSneaking))
+        connection.sendPacket(EntityInteractPositionC2SP(connection, target.entity, Vec3(target.position), hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.PASS
@@ -119,7 +119,7 @@ class InteractInteractionHandler(
 
     fun interactEntity(target: EntityTarget, hand: Hands): InteractionResults {
         val player = connection.player
-        connection.sendPacket(EntityInteractC2SP(connection, target.entity, hand, player.isSneaking))
+        connection.sendPacket(EntityEmptyInteractC2SP(connection, target.entity, hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.PASS

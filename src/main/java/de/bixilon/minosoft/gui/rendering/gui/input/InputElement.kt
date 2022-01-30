@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
+package de.bixilon.minosoft.gui.rendering.gui.input
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface TextureLike {
-    val texture: AbstractTexture
-    val uvStart: Vec2
-    val uvEnd: Vec2
-    val size: Vec2i
+interface InputElement {
+
+    fun onMouseMove(position: Vec2i) {}
+    fun onMouseEnter(position: Vec2i) {}
+    fun onMouseLeave() {}
+    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {}
+    fun onScroll(position: Vec2i, scrollOffset: Vec2d) {}
+
+    fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {}
+    fun onCharPress(char: Int) {}
+
+    // ToDo: drag
 }

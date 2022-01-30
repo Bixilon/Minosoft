@@ -26,6 +26,8 @@ import de.bixilon.minosoft.terminal.commands.executors.CommandConnectionExecutor
 import de.bixilon.minosoft.terminal.commands.executors.CommandExecutor;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +41,7 @@ public class CommandArgumentNode extends CommandLiteralNode {
         ResourceLocation parserResourceLocation = buffer.readResourceLocation();
         this.parser = CommandParsers.INSTANCE.getParserInstance(parserResourceLocation);
         if (this.parser == null) {
-            Log.verbose("Unknown command parser: %s", parserResourceLocation);
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE, () -> "Unknown command parser:" + parserResourceLocation);
         } else {
             this.properties = this.parser.readParserProperties(buffer);
         }

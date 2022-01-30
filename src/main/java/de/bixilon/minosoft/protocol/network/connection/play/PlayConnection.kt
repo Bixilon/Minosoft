@@ -50,7 +50,6 @@ import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
-import de.bixilon.minosoft.protocol.protocol.PacketSender
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.CLI
@@ -76,7 +75,6 @@ class PlayConnection(
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
 
-    @Deprecated(message = "PacketSender is deprecated") val sender = PacketSender(this)
     val serverInfo = ServerInfo()
     lateinit var assetsManager: AssetsManager
         private set

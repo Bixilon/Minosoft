@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,27 +16,32 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextElement>(hudRenderer), Drawable {
-    override val layout: TextElement = TextElement(hudRenderer, "")
-    private val breakInteractionHandler = hudRenderer.renderWindow.inputHandler.interactionManager.`break`
+class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Drawable {
+    private val textElement = TextElement(guiRenderer, "").apply { parent = this@BreakProgressHUDElement }
+    private val breakInteractionHandler = guiRenderer.renderWindow.inputHandler.interactionManager.`break`
 
     override val layoutOffset: Vec2i
-        get() = Vec2i((hudRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (hudRenderer.scaledSize.y - layout.size.y) / 2)
+        get() = Vec2i((guiRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (guiRenderer.scaledSize.y - textElement.size.y) / 2)
+
 
     private var percent = -1
 
     override fun draw() {
         val breakProgress = breakInteractionHandler.breakProgress
         if (breakProgress <= 0 || breakProgress >= 1.0) {
-            layout.text = ""
+            textElement.text = ""
             this.percent = -1
             return
         }
@@ -44,7 +49,7 @@ class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Tex
         if (percent == this.percent) {
             return
         }
-        layout.text = TextComponent("$percent%").apply {
+        textElement.text = TextComponent("$percent%").apply {
             color = when {
                 percent <= 30 -> ChatColors.RED
                 percent <= 70 -> ChatColors.YELLOW
@@ -54,11 +59,24 @@ class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Tex
         this.percent = percent
     }
 
-    companion object : HUDBuilder<BreakProgressHUDElement> {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        return textElement.forceRender(offset, z, consumer, options)
+    }
+
+    override fun onChildChange(child: Element) {
+        forceSilentApply()
+        super.onChildChange(this)
+    }
+
+    override fun forceSilentApply() {
+        cacheUpToDate = false
+    }
+
+    companion object : HUDBuilder<LayoutedGUIElement<BreakProgressHUDElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:progress_indicator".toResourceLocation()
 
-        override fun build(hudRenderer: HUDRenderer): BreakProgressHUDElement {
-            return BreakProgressHUDElement(hudRenderer)
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<BreakProgressHUDElement> {
+            return LayoutedGUIElement(BreakProgressHUDElement(guiRenderer))
         }
     }
 }

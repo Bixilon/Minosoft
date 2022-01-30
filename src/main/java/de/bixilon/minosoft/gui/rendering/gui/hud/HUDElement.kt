@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,33 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 
-interface HUDElement {
-    val hudRenderer: HUDRenderer
-    val renderWindow: RenderWindow
-    var enabled: Boolean
-
-    /**
-     * Initializes the element (e.g. getting atlas elements, creating shaders, creating textures, etc)
-     */
-    fun init() = Unit
-
-    /**
-     * Phase after everything is initialized. May be used to load shaders, ...
-     * Can not be used to load static textures
-     */
-    fun postInit() = Unit
-
-    /**
-     * Functions that gets called every tick
-     */
-    fun tick() = Unit
-
-
-    /**
-     * Functions that sets new texts, changes data in the element
-     * May be used to poll data (see Pollable)
-     */
-    fun apply() = Unit
-}
+interface HUDElement : GUIElement

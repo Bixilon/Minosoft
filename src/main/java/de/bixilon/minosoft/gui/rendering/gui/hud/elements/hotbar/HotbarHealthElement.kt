@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,20 +22,20 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.lang.Float.max
 import java.lang.Float.min
 
-class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElement(hudRenderer), Pollable {
-    private val witherStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
-    private val poisonStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.POISON]
-    private val atlasManager = hudRenderer.atlasManager
+class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
+    private val witherStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
+    private val poisonStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.POISON]
+    private val atlasManager = guiRenderer.atlasManager
 
     /**
      *  [normal|hardcore] [normal|poison|wither] [normal|damage] [full|half]
@@ -194,10 +194,10 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
 
 
             val halfHeart = healthLeft < 1.5f
-            val image = selectArray.unsafeCast<Array<HUDAtlasElement?>>()[when {
+            val image = selectArray.unsafeCast<Array<AtlasElement?>>()[when {
                 halfHeart -> 1
                 else -> 0
-            }]?.let { ImageElement(hudRenderer, it) }
+            }]?.let { AtlasImageElement(guiRenderer, it) }
 
             image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
 
@@ -216,8 +216,8 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
     }
 
     override fun poll(): Boolean {
-        val player = hudRenderer.connection.player
-        val hardcode = hudRenderer.connection.world.hardcore
+        val player = guiRenderer.renderWindow.connection.player
+        val hardcode = guiRenderer.renderWindow.connection.world.hardcore
         val poison = poisonStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
         val wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
         val frozen = player.ticksFrozen > 0

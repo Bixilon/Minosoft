@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,35 +13,52 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
+import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
+import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val core = HotbarCoreElement(hudRenderer)
+class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
+    val core = HotbarCoreElement(guiRenderer)
 
-    val offhand = HotbarOffhandElement(hudRenderer)
+    val offhand = HotbarOffhandElement(guiRenderer)
     private var renderOffhand = false
 
-    val hoverText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
+    val hoverText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
     private var hoverTextShown = false
 
-    private val itemText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
+    private val itemText = FadingTextElement(guiRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
     private var itemTextShown = true
+
+
+    override val layoutOffset: Vec2i
+        get() = size.let { Vec2i((guiRenderer.scaledSize.x - it.x) / 2, guiRenderer.scaledSize.y - it.y) }
 
     private var renderElements = setOf(
         itemText,
@@ -97,7 +114,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         val size = Vec2i(core.size)
 
-        renderOffhand = hudRenderer.connection.player.inventory[InventorySlots.EquipmentSlots.OFF_HAND] != null
+        renderOffhand = guiRenderer.renderWindow.connection.player.inventory[InventorySlots.EquipmentSlots.OFF_HAND] != null
 
         if (renderOffhand) {
             size.x += offhand.size.x
@@ -121,8 +138,8 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply(): Boolean {
-        val itemSlot = hudRenderer.connection.player.selectedHotbarSlot
-        val currentItem = hudRenderer.connection.player.inventory.getHotbarSlot(itemSlot)
+        val itemSlot = guiRenderer.renderWindow.connection.player.selectedHotbarSlot
+        val currentItem = guiRenderer.renderWindow.connection.player.inventory.getHotbarSlot(itemSlot)
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
@@ -151,8 +168,42 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         offhand.tick()
     }
 
-    companion object {
+
+    override fun postInit() {
+        prefMaxSize = Vec2i(-1, -1)
+
+        val connection = renderWindow.connection
+        connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> { core.experience.apply() })
+
+        connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { forceApply() })
+
+        connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
+
+        connection.registerEvent(CallbackEventInvoker.of<ContainerRevisionChangeEvent> {
+            if (it.container != connection.player.inventory) {
+                return@of
+            }
+            core.base.apply()
+            offhand.apply()
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
+            if (it.position != ChatTextPositions.ABOVE_HOTBAR) {
+                return@of
+            }
+            hoverText.text = it.message
+            hoverText.show()
+        })
+    }
+
+
+    companion object : HUDBuilder<LayoutedGUIElement<HotbarElement>> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:hotbar".toResourceLocation()
         private const val HOVER_TEXT_OFFSET = 15
         private const val ITEM_NAME_OFFSET = 5
+
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<HotbarElement> {
+            return LayoutedGUIElement(HotbarElement(guiRenderer))
+        }
     }
 }

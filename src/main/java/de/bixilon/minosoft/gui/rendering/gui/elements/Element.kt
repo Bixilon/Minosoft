@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -30,9 +31,9 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
-abstract class Element(val hudRenderer: HUDRenderer) {
+abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
     var ignoreDisplaySize = false
-    val renderWindow = hudRenderer.renderWindow
+    val renderWindow = guiRenderer.renderWindow
 
     protected open var _parent: Element? = null
     open var parent: Element?
@@ -44,7 +45,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
         }
 
     @Deprecated("Warning: Should not be directly accessed!")
-    val cache = GUIMeshCache(hudRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, 1000)
+    val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, 1000)
     open var cacheEnabled: Boolean = true
     open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
@@ -52,6 +53,8 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     private var previousMaxSize = Vec2i.EMPTY
 
     protected open var _prefSize: Vec2i = Vec2i.EMPTY
+
+    open val canFocus: Boolean get() = false
 
     /**
      * If maxSize was infinity, what size would the element have? (Excluded margin!)
@@ -77,14 +80,14 @@ abstract class Element(val hudRenderer: HUDRenderer) {
 
             var parentMaxSize = parent?.maxSize
             if (parentMaxSize == null && !ignoreDisplaySize) {
-                parentMaxSize = hudRenderer.scaledSize
+                parentMaxSize = guiRenderer.scaledSize
             }
 
             if (maxSize.x < 0) {
-                maxSize.x = parentMaxSize?.x ?: hudRenderer.scaledSize.x
+                maxSize.x = parentMaxSize?.x ?: guiRenderer.scaledSize.x
             }
             if (maxSize.y < 0) {
-                maxSize.y = parentMaxSize?.y ?: hudRenderer.scaledSize.y
+                maxSize.y = parentMaxSize?.y ?: guiRenderer.scaledSize.y
             }
 
             parentMaxSize?.let {
@@ -140,15 +143,15 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             }
             return maxZ
         }
-        if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix !== hudRenderer.matrix || z != cache.z) {
+        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.matrix !== guiRenderer.matrix || z != cache.z) {
             this.cache.clear()
-            cache.matrix = hudRenderer.matrix
+            cache.matrix = guiRenderer.matrix
             cache.offset = Vec2i(offset)
             cache.z = z
             val maxZ = forceRender(offset, z, cache, options)
             cache.maxZ = maxZ
             if (cache.data !is DirectArrayFloatList) {
-                // raw mesh data
+                // not raw mesh data
                 cache.data.finish()
             }
             cacheUpToDate = true
@@ -235,4 +238,8 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      * Called every tick to execute time based actions
      */
     open fun tick() = Unit
+
+    open fun onOpen() = Unit
+    open fun onHide() = Unit
+    open fun onClose() = Unit
 }

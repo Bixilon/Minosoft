@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,22 +13,31 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.modding.event.events.title.*
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 // ToDo: Remove subtitle when hidden
-class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val title = FadingTextElement(hudRenderer, "", background = false, scale = 4.0f, parent = this)
-    val subtitle = FadingTextElement(hudRenderer, "", background = false, scale = 2.0f, parent = this)
+class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
+    val title = FadingTextElement(guiRenderer, "", background = false, scale = 4.0f, parent = this)
+    val subtitle = FadingTextElement(guiRenderer, "", background = false, scale = 2.0f, parent = this)
     var fadeInTime = 0L
         set(value) {
             title.fadeInTime = value
@@ -56,6 +65,18 @@ class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         get() = super.cacheUpToDate && title.cacheUpToDate && subtitle.cacheUpToDate
         set(value) {
             super.cacheEnabled = value
+        }
+
+    override val layoutOffset: Vec2i
+        get() {
+            val layoutOffset = Vec2i.EMPTY
+
+            val scaledSize = guiRenderer.scaledSize
+
+            layoutOffset.x = (scaledSize.x - super.size.x / 2) / 2
+            layoutOffset.y = (scaledSize.y / 2 - title.size.y)
+
+            return layoutOffset
         }
 
     init {
@@ -103,10 +124,39 @@ class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         fadeOutTime = DEFAULT_FADE_OUT_TIME
     }
 
-    companion object {
+    override fun init() {
+        val connection = renderWindow.connection
+
+        connection.registerEvent(CallbackEventInvoker.of<TitleResetEvent> {
+            this.reset()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleHideEvent> {
+            this.hide()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleSetEvent> {
+            this.title.text = it.title
+            this.show()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleSubtitleSetEvent> {
+            this.subtitle.text = it.subtitle
+            // layout.show() // non vanilla behavior
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleTimesSetEvent> {
+            this.fadeInTime = it.fadeInTime * ProtocolDefinition.TICK_TIME.toLong()
+            this.stayTime = it.stayTime * ProtocolDefinition.TICK_TIME.toLong()
+            this.fadeOutTime = it.fadeOutTime * ProtocolDefinition.TICK_TIME.toLong()
+        })
+    }
+
+    companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:title".toResourceLocation()
         const val SUBTITLE_VERTICAL_OFFSET = 10
         const val DEFAULT_FADE_IN_TIME = 20L * ProtocolDefinition.TICK_TIME
         const val DEFAULT_STAY_TIME = 60L * ProtocolDefinition.TICK_TIME
         const val DEFAULT_FADE_OUT_TIME = 20L * ProtocolDefinition.TICK_TIME
+
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TitleElement> {
+            return LayoutedGUIElement(TitleElement(guiRenderer))
+        }
     }
 }

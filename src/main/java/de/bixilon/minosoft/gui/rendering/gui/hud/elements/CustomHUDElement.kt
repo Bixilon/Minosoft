@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 
-abstract class CustomHUDElement(final override val hudRenderer: HUDRenderer) : HUDElement, Drawable {
-    override val renderWindow: RenderWindow = hudRenderer.renderWindow
+abstract class CustomHUDElement(final override val guiRenderer: GUIRenderer) : HUDElement, Drawable {
+    override val renderWindow: RenderWindow = guiRenderer.renderWindow
     override var enabled = true
 
     /**

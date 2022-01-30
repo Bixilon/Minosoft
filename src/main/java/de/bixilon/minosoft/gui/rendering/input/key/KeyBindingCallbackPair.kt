@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 data class KeyBindingCallbackPair(
     var keyBinding: KeyBinding,
     val default: KeyBinding,
+    val defaultPressed: Boolean = false,
     val callback: MutableSet<(keyDown: Boolean) -> Unit> = mutableSetOf(),
 ) {
     var lastChange = 0L

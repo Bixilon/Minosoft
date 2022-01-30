@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,48 +15,50 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class InternalMessagesHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextFlowElement>(hudRenderer) {
+class InternalMessagesElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRenderer, 15000), LayoutedElement, Initializable, Drawable {
     private val connection = renderWindow.connection
     private val profile = connection.profiles.hud
     private val internalChatProfile = profile.chat.internal
-    override val layout = TextFlowElement(hudRenderer, 15000)
-    override var enabled: Boolean
-        get() = !internalChatProfile.hidden
+    override var skipDraw: Boolean
+        get() = internalChatProfile.hidden
         set(value) {
             internalChatProfile.hidden = !value
         }
 
 
     override val layoutOffset: Vec2i
-        get() = hudRenderer.scaledSize - Vec2i(layout.size.x, layout.size.y + BOTTOM_OFFSET)
+        get() = super.size.let { return@let guiRenderer.scaledSize - Vec2i(it.x, it.y + BOTTOM_OFFSET) }
 
     init {
-        layout.prefMaxSize = Vec2i(internalChatProfile.width, internalChatProfile.height)
-        internalChatProfile::width.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(it, layout.prefMaxSize.y) }
-        internalChatProfile::height.profileWatchRendering(this, profile = profile) { layout.prefMaxSize = Vec2i(layout.prefMaxSize.x, it) }
+        super.prefMaxSize = Vec2i(internalChatProfile.width, internalChatProfile.height)
+        internalChatProfile::width.profileWatchRendering(this, profile = profile) { super.prefMaxSize = Vec2i(it, super.prefMaxSize.y) }
+        internalChatProfile::height.profileWatchRendering(this, profile = profile) { super.prefMaxSize = Vec2i(super.prefMaxSize.x, it) }
     }
 
 
     override fun init() {
-        connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> { layout += it.message })
+        connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> { this += it.message })
     }
 
 
-    companion object : HUDBuilder<InternalMessagesHUDElement> {
+    companion object : HUDBuilder<LayoutedGUIElement<InternalMessagesElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:internal_messages_hud".toResourceLocation()
         private const val BOTTOM_OFFSET = 30
 
-        override fun build(hudRenderer: HUDRenderer): InternalMessagesHUDElement {
-            return InternalMessagesHUDElement(hudRenderer)
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<InternalMessagesElement> {
+            return LayoutedGUIElement(InternalMessagesElement(guiRenderer))
         }
     }
 }

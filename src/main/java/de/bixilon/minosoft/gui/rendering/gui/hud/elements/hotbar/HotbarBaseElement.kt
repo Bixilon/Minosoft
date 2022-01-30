@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,22 +14,22 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
-    private val baseAtlasElement = hudRenderer.atlasManager[BASE]!!
-    private val base = ImageElement(hudRenderer, baseAtlasElement)
-    private val frame = ImageElement(hudRenderer, hudRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
+class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
+    private val baseAtlasElement = guiRenderer.atlasManager[BASE]!!
+    private val base = AtlasImageElement(guiRenderer, baseAtlasElement)
+    private val frame = AtlasImageElement(guiRenderer, guiRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
-    private val containerElement = ContainerItemsElement(hudRenderer, hudRenderer.connection.player.inventory, baseAtlasElement.slots)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.renderWindow.connection.player.inventory, baseAtlasElement.slots)
 
     private var selectedSlot = 0
 
@@ -55,7 +55,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     }
 
     override fun poll(): Boolean {
-        val selectedSlot = hudRenderer.connection.player.selectedHotbarSlot
+        val selectedSlot = guiRenderer.renderWindow.connection.player.selectedHotbarSlot
 
         if (this.selectedSlot != selectedSlot || containerElement.silentApply()) {
             this.selectedSlot = selectedSlot

@@ -52,6 +52,10 @@ enum class Gamemodes(
     ),
     ;
 
+    fun next(): Gamemodes {
+        return VALUES.getOrNull(ordinal + 1) ?: VALUES[0]
+    }
+
     companion object : ValuesEnum<Gamemodes> {
         override val VALUES: Array<Gamemodes> = values()
         override val NAME_MAP: Map<String, Gamemodes> = EnumUtil.getEnumValues(VALUES)

@@ -41,13 +41,6 @@ object DefaultKeyCombinations {
             connection.util.sendDebugMessage("Polygon mode: ${nextMode.format()}")
         }
 
-        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
-                ),
-            )) { window.close() }
-
         inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
             KeyBinding(
                 mapOf(

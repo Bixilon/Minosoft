@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -41,8 +42,8 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         connection.fireEvent(UpdateHealthEvent(connection, this))
         if (hp == 0.0f) {
-            // do respawn
-            connection.sender.respawn()
+            // ToDo: remove auto respawn
+            connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
         }
     }
 

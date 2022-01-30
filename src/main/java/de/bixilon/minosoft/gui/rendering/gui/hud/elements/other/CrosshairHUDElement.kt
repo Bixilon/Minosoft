@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,30 +18,31 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CustomHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
-class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRenderer) {
-    private val profile = hudRenderer.connection.profiles.hud
+class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
+    private val profile = guiRenderer.connection.profiles.hud
     private val crosshairProfile = profile.crosshair
-    private lateinit var crosshairAtlasElement: HUDAtlasElement
+    private lateinit var crosshairAtlasElement: AtlasElement
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
     private var reapply = true
 
     override fun init() {
-        crosshairAtlasElement = hudRenderer.atlasManager[ATLAS_NAME]!!
+        crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]!!
         crosshairProfile::color.profileWatch(this, profile = profile) { reapply = true }
     }
 
     override fun draw() {
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
 
         if (debugHUDElement?.enabled != previousDebugEnabled || reapply) {
             apply()
@@ -56,7 +57,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
             renderWindow.renderSystem.reset()
         }
 
-        hudRenderer.shader.use()
+        guiRenderer.shader.use()
         mesh.draw()
     }
 
@@ -65,7 +66,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
         this.mesh = null
 
 
-        val mesh = GUIMesh(renderWindow, hudRenderer.matrix, DirectArrayFloatList(42))
+        val mesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(42))
 
         // Custom draw to make the crosshair inverted
         if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
@@ -75,14 +76,14 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
             }
         }
 
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
 
         if (debugHUDElement?.enabled == true) {
             // ToDo: Debug crosshair
             return
         }
 
-        val start = (hudRenderer.scaledSize - CROSSHAIR_SIZE) / 2
+        val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
 
         mesh.addQuad(start, start + CROSSHAIR_SIZE, 0, crosshairAtlasElement, crosshairProfile.color, null)
 
@@ -101,8 +102,8 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
 
         private val ATLAS_NAME = "minecraft:crosshair".toResourceLocation()
 
-        override fun build(hudRenderer: HUDRenderer): CrosshairHUDElement {
-            return CrosshairHUDElement(hudRenderer)
+        override fun build(guiRenderer: GUIRenderer): CrosshairHUDElement {
+            return CrosshairHUDElement(guiRenderer)
         }
     }
 }

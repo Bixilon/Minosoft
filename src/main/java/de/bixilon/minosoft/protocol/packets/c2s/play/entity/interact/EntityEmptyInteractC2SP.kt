@@ -22,25 +22,20 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
 
 @LoadPacket(parent = true)
-class EntityInteractAtC2SP(
+class EntityEmptyInteractC2SP(
     entityId: Int,
-    val position: Vec3,
     val hand: Hands,
     override val sneaking: Boolean,
-) : BaseInteractEntityC2SP(entityId, EntityInteractionActions.INTERACT_AT) {
+) : EntityInteractC2SP(entityId, EntityInteractionActions.EMPTY) {
 
-    constructor(connection: PlayConnection, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, position, hand, sneaking)
+    constructor(connection: PlayConnection, entity: Entity, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, hand, sneaking)
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)
 
         if (buffer.versionId >= ProtocolVersions.V_14W32A) {
-            // position
-            buffer.writeVec3f(position)
-
             if (buffer.versionId >= ProtocolVersions.V_15W31A) {
                 buffer.writeVarInt(hand.ordinal)
             }
@@ -53,6 +48,6 @@ class EntityInteractAtC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity interaction (entityId=$entityId, position=$position, hand=$hand, sneaking=$sneaking)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity interaction (entityId=$entityId, hand=$hand, sneaking=$sneaking)" }
     }
 }

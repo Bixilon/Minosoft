@@ -150,15 +150,13 @@ object Log {
             else -> ChatComponent.of(message, ignoreJson = true)
         }
 
-        LOG_QUEUE.add(
-            MessageToSend(
-                message = formattedMessage,
-                time = TimeUtil.time,
-                logMessageType = type,
-                level = level,
-                thread = Thread.currentThread(),
-                additionalPrefix = additionalPrefix,
-            )
+        LOG_QUEUE += MessageToSend(
+            message = formattedMessage,
+            time = TimeUtil.time,
+            logMessageType = type,
+            level = level,
+            thread = Thread.currentThread(),
+            additionalPrefix = additionalPrefix,
         )
     }
 
@@ -178,18 +176,5 @@ object Log {
     @JvmStatic
     fun log(type: LogMessageType, messageBuilder: () -> Any) {
         log(type, additionalPrefix = null, messageBuilder = messageBuilder)
-    }
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun info(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
-    }
-
-
-    @Deprecated(message = "Java only")
-    @JvmStatic
-    fun verbose(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER, level = LogLevels.VERBOSE, message = message, formatting = formatting)
     }
 }

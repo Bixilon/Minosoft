@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class EntityAttackC2SP(
     entityId: Int,
     override val sneaking: Boolean,
-) : BaseInteractEntityC2SP(entityId, EntityInteractionActions.ATTACK) {
+) : EntityInteractC2SP(entityId, EntityInteractionActions.ATTACK) {
 
     constructor(connection: PlayConnection, entity: Entity, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, sneaking)
 

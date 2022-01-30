@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,26 +16,39 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
+import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 
-class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val header = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
-    val footer = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
+class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
+    val header = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
+    val footer = TextElement(guiRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
 
-    private val background = ColorElement(hudRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
+    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
 
     private var entriesSize = Vec2i.EMPTY
     private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
@@ -45,14 +58,22 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         private set
     private var columns = 0
 
-    val pingBarsAtlasElements: Array<HUDAtlasElement> = arrayOf(
-        hudRenderer.atlasManager["minecraft:tab_list_ping_0"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_1"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_2"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_3"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_4"]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_5"]!!,
+    override val layoutOffset: Vec2i
+        get() = Vec2i((guiRenderer.scaledSize.x - super.size.x) / 2, 20)
+
+    private val atlasManager = guiRenderer.atlasManager
+    val pingBarsAtlasElements: Array<AtlasElement> = arrayOf(
+        atlasManager["minecraft:tab_list_ping_0"]!!,
+        atlasManager["minecraft:tab_list_ping_1"]!!,
+        atlasManager["minecraft:tab_list_ping_2"]!!,
+        atlasManager["minecraft:tab_list_ping_3"]!!,
+        atlasManager["minecraft:tab_list_ping_4"]!!,
+        atlasManager["minecraft:tab_list_ping_5"]!!,
     )
+
+    init {
+        super.prefMaxSize = Vec2i(-1, -1)
+    }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         background.render(offset, z, consumer, options)
@@ -182,8 +203,8 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     fun update(uuid: UUID) {
-        val item = hudRenderer.connection.tabList.tabListItemsByUUID[uuid] ?: return
-        val entry = entries.getOrPut(uuid) { TabListEntryElement(hudRenderer, this, item, 0) }
+        val item = guiRenderer.renderWindow.connection.tabList.tabListItemsByUUID[uuid] ?: return
+        val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, item, 0) }
         lock.lock()
         entry.silentApply()
         lock.unlock()
@@ -200,11 +221,49 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
 
-    companion object {
+    override fun init() {
+        val connection = renderWindow.connection
+        connection.registerEvent(CallbackEventInvoker.of<TabListInfoChangeEvent> {
+            header.text = it.header
+            footer.text = it.footer
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
+            for ((uuid, entry) in it.items) {
+                if (entry == null) {
+                    remove(uuid)
+                    continue
+                }
+                update(uuid)
+            }
+        })
+
+        // ToDo: Also check team changes, scoreboard changes, etc
+    }
+
+
+    override fun draw() {
+        // check if content was changed, and we need to re-prepare before drawing
+        if (needsApply) {
+            forceApply()
+        }
+    }
+
+    companion object : HUDBuilder<LayoutedGUIElement<TabListElement>> {
         private const val ENTRIES_PER_COLUMN = 20
         private const val ENTRY_HORIZONTAL_SPACING = 5
         private const val ENTRY_VERTICAL_SPACING = 1
         private const val BACKGROUND_PADDING = 3
         private const val MAX_ENTRIES = 80
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tab_list".toResourceLocation()
+        override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
+        override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
+            mapOf(
+                KeyAction.CHANGE to setOf(KeyCodes.KEY_TAB),
+            ),
+        )
+
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TabListElement> {
+            return LayoutedGUIElement(TabListElement(guiRenderer)).apply { enabled = false }
+        }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,41 +13,33 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact
 
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.player.Hands
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(parent = true)
-class EntityInteractC2SP(
-    entityId: Int,
-    val hand: Hands,
-    override val sneaking: Boolean,
-) : BaseInteractEntityC2SP(entityId, EntityInteractionActions.INTERACT) {
-
-    constructor(connection: PlayConnection, entity: Entity, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, hand, sneaking)
+abstract class EntityInteractC2SP(
+    val entityId: Int,
+    val action: EntityInteractionActions,
+) : PlayC2SPacket {
+    abstract val sneaking: Boolean
 
     override fun write(buffer: PlayOutByteBuffer) {
-        super.write(buffer)
+        buffer.writeVarInt(entityId)
 
-        if (buffer.versionId >= ProtocolVersions.V_14W32A) {
-            if (buffer.versionId >= ProtocolVersions.V_15W31A) {
-                buffer.writeVarInt(hand.ordinal)
-            }
-
-            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
-                buffer.writeBoolean(sneaking)
-            }
+        val realAction = if (buffer.versionId < ProtocolVersions.V_14W32A && this.action == EntityInteractionActions.POSITION) {
+            EntityInteractionActions.EMPTY
+        } else {
+            action
         }
 
+        buffer.writeVarInt(realAction.ordinal)
     }
 
-    override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity interaction (entityId=$entityId, hand=$hand, sneaking=$sneaking)" }
+
+    enum class EntityInteractionActions {
+        EMPTY,
+        ATTACK,
+        POSITION,
+        ;
     }
 }

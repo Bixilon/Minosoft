@@ -17,22 +17,22 @@ import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
 class ScoreboardScoreElement(
-    hudRenderer: HUDRenderer,
+    guiRenderer: GUIRenderer,
     val score: ScoreboardScore,
     parent: Element?,
-) : Element(hudRenderer) {
-    private val nameElement = TextElement(hudRenderer, "", background = false, parent = this)
-    private val scoreElement = TextElement(hudRenderer, "", background = false, parent = this)
+) : Element(guiRenderer) {
+    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val scoreElement = TextElement(guiRenderer, "", background = false, parent = this)
 
     init {
         nameElement.prefMaxSize = Vec2i(-1, ScoreboardSideElement.SCORE_HEIGHT)

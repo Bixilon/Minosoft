@@ -29,3 +29,11 @@
   - Label
   - Checkbox
 
+## ToDo:
+
+- make `TextElement`, `GridLayout` final
+- TextInput
+- Keyboard navigation
+- Chat
+- Inventory
+- Pause menu

@@ -40,7 +40,8 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
         bixilonLogoFX.children.setAll(JavaFXUtil.BIXILON_LOGO)
 
         versionStringFX.text = RunConfiguration.VERSION_STRING
-        aboutTextFX.text = """
+        aboutTextFX.text =
+            """
 No clue what to put here :(
 """
     }

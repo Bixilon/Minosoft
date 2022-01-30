@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,19 +15,19 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kutil.math.MMath.ceil
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
-class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
-    private val water = hudRenderer.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
-    private val airBubble = hudRenderer.atlasManager["minecraft:air_bubble"]!!
-    private val poppingAirBubble = hudRenderer.atlasManager["minecraft:popping_air_bubble"]!!
+class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
+    private val water = guiRenderer.renderWindow.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
+    private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]!!
+    private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]!!
 
     init {
         forceSilentApply()
@@ -48,7 +48,7 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
                 atlasElement = poppingAirBubble
             }
 
-            val image = ImageElement(hudRenderer, atlasElement)
+            val image = AtlasImageElement(guiRenderer, atlasElement)
 
             image.render(offset + Vec2i(i * BUBBLE_SIZE.x, 0), z, consumer, options)
         }
@@ -57,7 +57,7 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
     }
 
     override fun poll(): Boolean {
-        val player = hudRenderer.connection.player
+        val player = guiRenderer.renderWindow.connection.player
 
         val air = player.airSupply
 

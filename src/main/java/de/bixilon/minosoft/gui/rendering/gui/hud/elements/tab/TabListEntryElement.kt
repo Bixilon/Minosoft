@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -33,11 +33,11 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class TabListEntryElement(
-    hudRenderer: HUDRenderer,
+    guiRenderer: GUIRenderer,
     val tabList: TabListElement,
     val item: TabListItem,
     width: Int,
-) : Element(hudRenderer), Pollable, Comparable<TabListEntryElement> {
+) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
     init {
         _parent = tabList
     }
@@ -45,8 +45,8 @@ class TabListEntryElement(
     // ToDo: Skin
     private val background: ColorElement
 
-    private val nameElement = TextElement(hudRenderer, "", background = false, parent = this)
-    private lateinit var pingElement: ImageElement
+    private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private lateinit var pingElement: AtlasImageElement
 
     private var displayName: ChatComponent = item.displayName
     private var ping = item.ping
@@ -72,7 +72,7 @@ class TabListEntryElement(
         }
 
     init {
-        background = ColorElement(hudRenderer, size, RGBColor(120, 120, 120, 130))
+        background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
         forceSilentApply()
     }
 
@@ -86,7 +86,7 @@ class TabListEntryElement(
 
     override fun forceSilentApply() {
         // ToDo (Performance): If something changed, should we just prepare the changed
-        pingElement = ImageElement(hudRenderer, tabList.pingBarsAtlasElements[when {
+        pingElement = AtlasImageElement(guiRenderer, tabList.pingBarsAtlasElements[when {
             ping < 0 -> 0
             ping < 150 -> 5
             ping < 300 -> 4

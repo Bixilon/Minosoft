@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import javafx.application.Platform
 import kotlin.system.exitProcess
 
 object ShutdownManager {
@@ -35,6 +36,7 @@ object ShutdownManager {
         }
         FileWatcherService.stop()
         DefaultThreadPool.shutdownNow()
+        Platform.exit()
         exitProcess(reason.exitCode)
     }
 

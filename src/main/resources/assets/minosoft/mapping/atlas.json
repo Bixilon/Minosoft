@@ -685,5 +685,26 @@
         }
       }
     }
+  },
+  "minecraft:button_disabled": {
+    "0": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [0, 46],
+      "end": [200, 66]
+    }
+  },
+  "minecraft:button_normal": {
+    "0": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [0, 66],
+      "end": [200, 86]
+    }
+  },
+  "minecraft:button_hovered": {
+    "0": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [0, 86],
+      "end": [200, 106]
+    }
   }
 }

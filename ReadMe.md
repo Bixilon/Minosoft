@@ -44,22 +44,16 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 Works. Still missing many features, but heavily developed.
 
 ![Rendering](doc/img/rendering5.png)  
-New hud system: full hotbar, scoreboard, bossbar, chat (+ better mipmaps)
+A world, with a ton of hud features exposed
 
 ![Rendering](doc/img/hypixel_skyblock.png)  
-The Hypixel skyblock hub
+The Hypixel skyblock hub (don't try to make such a screenshot)
 
 ![Rendering](doc/img/afk_pool.png)  
 AFK Pooling, Hit boxes, particles, ...
 
 ![Rendering](doc/img/rendering1.png)  
 Lighting demo.
-
-![Rendering](doc/img/rendering2.png)  
-Old picture with bugs
-
-![Rendering](doc/img/rendering3.png)  
-Picture with hotbar, biomes, biome blending, lighting, fluids, ...
 
 ![Rendering](doc/img/rendering4.png)  
 Particles. (ignore the numbers on the campfire, I've used them to debug animations)

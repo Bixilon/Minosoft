@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.util.concurrent.ThreadLocalRandom
 
-class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
+class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val random = ThreadLocalRandom.current()
     private var ticks = 0
-    private val hungerStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.HUNGER]
-    private val atlasManager = hudRenderer.atlasManager
+    private val hungerStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.HUNGER]
+    private val atlasManager = guiRenderer.atlasManager
 
 
     private val normalHungerContainer = atlasManager["minecraft:normal_hunger_container"]!!
@@ -98,7 +98,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
                 }
                 else -> normalHungerContainer
             }
-            ImageElement(hudRenderer, container).render(hungerOffset, z, consumer, options)
+            AtlasImageElement(guiRenderer, container).render(hungerOffset, z, consumer, options)
 
 
             val selectArray: Array<*> = if (hungerEffect) {
@@ -111,17 +111,17 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
                 continue
             }
 
-            val hungerElement: HUDAtlasElement
+            val hungerElement: AtlasElement
 
             if (hungerLeft == 1) {
                 hungerLeft--
-                hungerElement = selectArray[1] as HUDAtlasElement
+                hungerElement = selectArray[1] as AtlasElement
             } else {
                 hungerLeft -= 2
-                hungerElement = selectArray[0] as HUDAtlasElement
+                hungerElement = selectArray[0] as AtlasElement
             }
 
-            ImageElement(hudRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)
+            AtlasImageElement(guiRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)
         }
 
 
@@ -133,7 +133,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
     }
 
     override fun tick() {
-        val healthCondition = hudRenderer.connection.player.healthCondition
+        val healthCondition = guiRenderer.renderWindow.connection.player.healthCondition
 
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
 
@@ -141,12 +141,12 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
     }
 
     override fun poll(): Boolean {
-        val healthCondition = hudRenderer.connection.player.healthCondition
+        val healthCondition = guiRenderer.renderWindow.connection.player.healthCondition
 
         val hunger = healthCondition.hunger
         val saturation = healthCondition.saturation
 
-        val hungerEffect = hudRenderer.connection.player.activeStatusEffects.contains(hungerStatusEffect)
+        val hungerEffect = guiRenderer.renderWindow.connection.player.activeStatusEffects.contains(hungerStatusEffect)
 
         if (this.hunger == hunger && this.saturation == saturation && this.hungerEffect == hungerEffect) {
             return false

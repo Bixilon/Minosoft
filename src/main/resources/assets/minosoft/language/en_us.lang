@@ -178,3 +178,15 @@ minosoft:profiles.profile.disk_path=Disk path
 minosoft:profiles.profile.list.button.edit=Edit
 minosoft:profiles.profile.list.button.set_primary=Set primary
 minosoft:profiles.profile.list.button.create=Create profile
+
+
+# In-game
+
+### Pause
+
+minosoft:menu.pause.back_to_game=Back to game
+minosoft:menu.pause.options.debug=Debug options
+minosoft:menu.pause.disconnect=Disconnect
+minosoft:menu.pause.disconnect.confirm=§cClick again to disconnect
+minosoft:menu.pause.exit=Exit
+minosoft:menu.pause.exit.confirm=§cClick again to exit

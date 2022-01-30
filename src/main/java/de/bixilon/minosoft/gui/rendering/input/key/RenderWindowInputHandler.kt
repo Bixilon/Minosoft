@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,16 +23,21 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.CameraInput
+import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2d
+import glm_.vec2.Vec2i
 
 class RenderWindowInputHandler(
     val renderWindow: RenderWindow,
@@ -46,9 +51,26 @@ class RenderWindowInputHandler(
     private val keyBindingsDown: MutableList<ResourceLocation> = mutableListOf()
     private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()
 
-    private var skipNextCharPress = false
+
+    var currentMousePosition: Vec2d = Vec2d.EMPTY
+        private set
+
 
     val interactionManager = InteractionManager(renderWindow)
+    var inputHandler: InputHandler? = null
+        set(value) {
+            field = value
+
+            deactivateAll()
+
+            renderWindow.window.cursorMode = if (value == null) {
+                CursorModes.DISABLED
+            } else {
+                CursorModes.NORMAL
+            }
+        }
+    private var skipCharPress = false
+    private var skipMouseMove = false
 
     init {
         registerKeyCallback("minosoft:debug_change_cursor_mode".toResourceLocation(),
@@ -73,13 +95,20 @@ class RenderWindowInputHandler(
         interactionManager.init()
 
         connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
-
         connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
+        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent> { scroll(it.offset) })
 
         connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
-            //if (renderWindow.inputHandler.currentKeyConsumer != null) {
-            //   return
-            //}
+            val inputHandler = inputHandler
+            currentMousePosition = it.position
+            if (inputHandler != null) {
+                if (skipMouseMove) {
+                    skipMouseMove = false
+                    return@of
+                }
+                inputHandler.onMouseMove(Vec2i(it.position))
+                return@of
+            }
 
             cameraInput.mouseCallback(it.delta)
         })
@@ -97,19 +126,43 @@ class RenderWindowInputHandler(
         cameraInput.init()
     }
 
+    private fun deactivateAll() {
+        keysDown.clear()
+        keysLastDownTime.clear()
+        val toRemove: MutableSet<ResourceLocation> = mutableSetOf()
+        for ((name, pair) in keyBindingCallbacks) {
+            val down = keyBindingsDown.contains(name)
+            if (!down || pair.defaultPressed) {
+                continue
+            }
+
+            // ToDo
+            if (pair.keyBinding.action[KeyAction.DOUBLE_PRESS] != null) {
+                continue
+            }
+            if (pair.keyBinding.action[KeyAction.STICKY] != null) {
+                continue
+            }
+
+
+            for (callback in pair.callback) {
+                callback(false)
+            }
+            toRemove += name
+        }
+        keyBindingsDown -= toRemove
+    }
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
+        val inputHandler = inputHandler
+        inputHandler?.onKeyPress(keyChangeType, keyCode)
+
         val keyDown = when (keyChangeType) {
-            KeyChangeTypes.PRESS -> {
-                //  currentKeyConsumer?.keyInput(keyCode)
-                true
-            }
+            KeyChangeTypes.PRESS -> true
             KeyChangeTypes.RELEASE -> false
-            KeyChangeTypes.REPEAT -> {
-                // currentKeyConsumer?.keyInput(keyCode)
-                return
-            }
+            KeyChangeTypes.REPEAT -> return
         }
+
         val currentTime = TimeUtil.time
 
         if (keyDown) {
@@ -118,21 +171,22 @@ class RenderWindowInputHandler(
             keysDown -= keyCode
         }
 
-        //val previousKeyConsumer = currentKeyConsumer
-
         for ((resourceLocation, pair) in keyBindingCallbacks) {
-            // if (currentKeyConsumer != null && !pair.keyBinding.ignoreConsumer) {
-            //     continue
-            // }
+            if (inputHandler != null && !pair.keyBinding.ignoreConsumer) {
+                continue
+            }
             var thisKeyBindingDown = keyDown
             var checksRun = 0
             var thisIsChange = true
+            var saveDown = true
 
             pair.keyBinding.action[KeyAction.PRESS]?.let {
                 if (!keyDown) {
                     thisIsChange = false
                 }
-                if (!it.contains(keyCode)) {
+                if (it.contains(keyCode)) {
+                    saveDown = false
+                } else {
                     thisIsChange = false
                 }
                 checksRun++
@@ -142,7 +196,9 @@ class RenderWindowInputHandler(
                 if (keyDown) {
                     thisIsChange = false
                 }
-                if (!it.contains(keyCode)) {
+                if (it.contains(keyCode)) {
+                    saveDown = false
+                } else {
                     thisIsChange = false
                 }
                 checksRun++
@@ -205,48 +261,48 @@ class RenderWindowInputHandler(
                 continue
             }
 
-            // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
             pair.lastChange = TimeUtil.time
             for (callback in pair.callback) {
                 callback(thisKeyBindingDown)
             }
 
-            if (thisKeyBindingDown) {
-                keyBindingsDown += resourceLocation
-            } else {
-                keyBindingsDown -= resourceLocation
+            if (saveDown) {
+                if (thisKeyBindingDown) {
+                    keyBindingsDown += resourceLocation
+                } else {
+                    keyBindingsDown -= resourceLocation
+                }
             }
         }
         if (keyDown) {
             keysLastDownTime[keyCode] = currentTime
         }
 
-        // if (previousKeyConsumer != currentKeyConsumer) {
-        //     skipNextCharPress = true
-        //}
+
+        if (inputHandler != this.inputHandler) {
+            skipCharPress = true
+            skipMouseMove = true
+        }
     }
 
     private fun charInput(char: Int) {
-        if (skipNextCharPress) {
-            skipNextCharPress = false
+        val inputHandler = inputHandler ?: return
+        if (skipCharPress) {
+            skipCharPress = false
             return
         }
-        //currentKeyConsumer?.charInput(char.toChar())
+        inputHandler.onCharPress(char)
+        return
+    }
+
+    private fun scroll(scrollOffset: Vec2d) {
+        inputHandler?.onScroll(scrollOffset)
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
         val keyBinding = profile.keyBindings.getOrPut(resourceLocation) { defaultKeyBinding }
-        val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding) }
-        if (keyBinding.ignoreConsumer) {
-            callbackPair.callback += callback
-        } else {
-            callbackPair.callback += add@{
-                //if (currentKeyConsumer != null) {
-                //    return@add
-                //}
-                callback(it)
-            }
-        }
+        val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding, defaultPressed) }
+        callbackPair.callback += callback
 
         if (keyBinding.action.containsKey(KeyAction.STICKY) && defaultPressed) {
             keyBindingsDown += resourceLocation

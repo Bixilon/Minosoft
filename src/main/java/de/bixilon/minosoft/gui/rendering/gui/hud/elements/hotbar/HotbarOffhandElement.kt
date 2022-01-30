@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,27 +15,27 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.Arms.Companion.opposite
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.marginOf
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
-class HotbarOffhandElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val frames = arrayOf(
-        hudRenderer.atlasManager["minecraft:offhand_right_arm_frame"],
-        hudRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
+        guiRenderer.atlasManager["minecraft:offhand_right_arm_frame"],
+        guiRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
     )
 
-    val offArm = hudRenderer.connection.player.mainArm.opposite // ToDo: Support arm change
+    val offArm = guiRenderer.renderWindow.connection.player.mainArm.opposite // ToDo: Support arm change
     private val frame = frames[offArm.ordinal]!!
 
-    private var frameImage = ImageElement(hudRenderer, frame)
-    private val containerElement = ContainerItemsElement(hudRenderer, hudRenderer.connection.player.inventory, frame.slots)
+    private var frameImage = AtlasImageElement(guiRenderer, frame)
+    private val containerElement = ContainerItemsElement(guiRenderer, guiRenderer.renderWindow.connection.player.inventory, frame.slots)
 
     init {
         _size = frame.size

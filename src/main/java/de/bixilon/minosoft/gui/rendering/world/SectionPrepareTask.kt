@@ -18,5 +18,6 @@ import glm_.vec2.Vec2i
 
 class SectionPrepareTask(
     val chunkPosition: Vec2i,
+    val sectionHeight: Int,
     val runnable: ThreadPoolRunnable,
 )

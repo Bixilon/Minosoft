@@ -416,14 +416,14 @@ class WorldRenderer(
         }
         queueLock.unlock()
         for (item in items) {
-            val task = SectionPrepareTask(item.chunkPosition, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             task.runnable.runnable = Runnable {
                 var locked = false
                 try {
                     val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable
                     val section = chunk[item.sectionHeight] ?: return@Runnable
                     if (section.blocks.isEmpty) {
-                        return@Runnable
+                        return@Runnable queueItemUnload(item)
                     }
                     val neighbourChunks: Array<Chunk>
                     world.getChunkNeighbours(item.chunkPosition).let {
@@ -439,7 +439,7 @@ class WorldRenderer(
                         fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
                     }
                     if (mesh.clearEmpty() == 0) {
-                        return@Runnable
+                        return@Runnable queueItemUnload(item)
                     }
                     item.mesh = mesh
                     meshesToLoadLock.lock()
@@ -474,10 +474,55 @@ class WorldRenderer(
         }
     }
 
+    private fun queueItemUnload(item: WorldQueueItem) {
+        queueLock.lock()
+        culledQueueLock.lock()
+        meshesToLoadLock.lock()
+        meshesToUnloadLock.lock()
+        loadedMeshesLock.lock()
+        loadedMeshes[item.chunkPosition]?.let {
+            meshesToUnload += it.remove(item.sectionHeight) ?: return@let
+            if (it.isEmpty()) {
+                loadedMeshes -= item.chunkPosition
+            }
+        }
+
+        culledQueue[item.chunkPosition]?.let {
+            it.remove(item.sectionHeight)
+            if (it.isEmpty()) {
+                loadedMeshes -= item.chunkPosition
+            }
+        }
+
+        queue.removeAll { it.chunkPosition == item.chunkPosition && it.sectionHeight == item.sectionHeight }
+
+        meshesToLoad.removeAll { it.chunkPosition == item.chunkPosition && it.sectionHeight == item.sectionHeight }
+
+        preparingTasksLock.acquire()
+        for (task in preparingTasks.toMutableSet()) {
+            if (task.chunkPosition == item.chunkPosition && task.sectionHeight == item.sectionHeight) {
+                task.runnable.interrupt()
+            }
+        }
+        preparingTasksLock.release()
+
+        loadedMeshesLock.unlock()
+        queueLock.unlock()
+        culledQueueLock.unlock()
+        meshesToLoadLock.unlock()
+        meshesToUnloadLock.unlock()
+    }
+
     private fun internalQueueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, ignoreFrustum: Boolean): Boolean {
-        if (!chunk.isFullyLoaded || section.blocks.isEmpty) { // ToDo: Unload if empty
+        if (!chunk.isFullyLoaded) { // ToDo: Unload if empty
             return false
         }
+        val item = WorldQueueItem(chunkPosition, sectionHeight, chunk, section, Vec3i.of(chunkPosition, sectionHeight).toVec3() + CHUNK_CENTER, null)
+        if (section.blocks.isEmpty) {
+            queueItemUnload(item)
+            return false
+        }
+
         val neighbours = world.getChunkNeighbours(chunkPosition)
         if (!neighbours.received) {
             return false
@@ -485,7 +530,7 @@ class WorldRenderer(
 
         val visible = ignoreFrustum || isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
-            val item = WorldQueueItem(chunkPosition, sectionHeight, chunk, section, Vec3i.of(chunkPosition, sectionHeight).toVec3() + CHUNK_CENTER, ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight))
+            item.neighbours = ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight)
             queueLock.lock()
             queue.removeAll { it == item } // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
             if (chunkPosition == cameraChunkPosition) {

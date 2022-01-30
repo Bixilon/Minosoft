@@ -128,6 +128,13 @@ class AudioPlayer(
         playSound(soundManager[sound] ?: return, position, volume, pitch)
     }
 
+    override fun play2DSound(sound: ResourceLocation, volume: Float, pitch: Float) {
+        if (!connection.profiles.audio.gui.enabled) {
+            return
+        }
+        super.play2DSound(sound, volume, pitch)
+    }
+
     override fun stopSound(sound: ResourceLocation) {
         if (!profile.enabled) {
             return

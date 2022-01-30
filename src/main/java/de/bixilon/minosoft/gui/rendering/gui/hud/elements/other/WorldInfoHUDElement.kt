@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,16 +15,16 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.kutil.math.MMath.round10
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class WorldInfoHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextElement>(hudRenderer), Pollable {
-    override val layout: TextElement = TextElement(hudRenderer, "")
+class WorldInfoHUDElement(guiRenderer: GUIRenderer) : TextElement(guiRenderer, ""), LayoutedElement, Pollable {
     override val layoutOffset: Vec2i = Vec2i(2, 2)
     private var fps = -1.0
     private var hide: Boolean = false
@@ -40,9 +40,9 @@ class WorldInfoHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextEle
     }
 
     override fun poll(): Boolean {
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val debugHUDElement = guiRenderer.hud[DebugHUDElement]
         val hide = debugHUDElement?.enabled == true
-        val fps = hudRenderer.renderWindow.renderStats.smoothAvgFPS.round10
+        val fps = guiRenderer.renderWindow.renderStats.smoothAvgFPS.round10
         if (this.hide == hide && this.fps == fps) {
             return false
         }
@@ -52,18 +52,18 @@ class WorldInfoHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextEle
     }
 
     override fun apply() {
-        layout.text = if (hide) {
+        text = if (hide) {
             ""
         } else {
             "§aFPS $fps"
         }
     }
 
-    companion object : HUDBuilder<WorldInfoHUDElement> {
+    companion object : HUDBuilder<LayoutedGUIElement<WorldInfoHUDElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:world_info".toResourceLocation()
 
-        override fun build(hudRenderer: HUDRenderer): WorldInfoHUDElement {
-            return WorldInfoHUDElement(hudRenderer)
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<WorldInfoHUDElement> {
+            return LayoutedGUIElement(WorldInfoHUDElement(guiRenderer))
         }
     }
 }
