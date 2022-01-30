@@ -153,9 +153,9 @@ object PacketTypeRegistry {
             c2sClassMap[c2sClass] = type
             c2sStateMap.synchronizedGetOrPut(annotation.state) { mutableMapOf() }.put(name, type)?.let { throw IllegalStateException("Packet already mapped: $it (name=$name)") }
             if (parentClass != null && parentClass != c2sClass) {
-                val parentType = C2SPacketType(annotation.state, parentClass.unsafeCast(), annotation)
+                val parentType = c2sClassMap.synchronizedGetOrPut(parentClass.unsafeCast()) { C2SPacketType(annotation.state, parentClass.unsafeCast(), annotation) }
                 c2sClassMap[parentClass.unsafeCast()] = parentType
-                c2sStateMap[annotation.state]!!.putIfAbsent(parentClass.getPacketName(null), type)
+                c2sStateMap[annotation.state]!!.putIfAbsent(parentClass.getPacketName(null), parentType)
             }
         }
     }

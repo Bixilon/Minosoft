@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact
 
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -21,24 +22,37 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3
 
 @LoadPacket(parent = true)
-class EntityAttackC2SP(
+class EntityInteractPositionC2SP(
     entityId: Int,
+    val position: Vec3,
+    val hand: Hands,
     override val sneaking: Boolean,
-) : EntityInteractC2SP(entityId, EntityInteractionActions.ATTACK) {
+) : EntityInteractC2SP(entityId, EntityInteractionActions.POSITION) {
 
-    constructor(connection: PlayConnection, entity: Entity, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, sneaking)
+    constructor(connection: PlayConnection, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, position, hand, sneaking)
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)
 
-        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE5) {
-            buffer.writeBoolean(this.sneaking)
+        if (buffer.versionId >= ProtocolVersions.V_14W32A) {
+            // position
+            buffer.writeVec3f(position)
+
+            if (buffer.versionId >= ProtocolVersions.V_15W31A) {
+                buffer.writeVarInt(hand.ordinal)
+            }
+
+            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
+                buffer.writeBoolean(sneaking)
+            }
         }
+
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity attack (entityId=$entityId, sneaking=$sneaking)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity interaction (entityId=$entityId, position=$position, hand=$hand, sneaking=$sneaking)" }
     }
 }
