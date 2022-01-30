@@ -66,11 +66,13 @@ class GUIManager(
     }
 
     fun onMatrixChange() {
-        val element = elementOrder.firstOrNull() ?: return
-        if (element is LayoutedGUIElement<*>) {
-            element.elementLayout.forceSilentApply()
+        for (element in elementCache.values) {
+            // ToDo: Just the current active one
+            if (element is LayoutedGUIElement<*>) {
+                element.elementLayout.forceSilentApply()
+            }
+            element.apply()
         }
-        element.apply()
     }
 
     fun draw(z: Int): Int {
