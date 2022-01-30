@@ -178,12 +178,15 @@ class RenderWindowInputHandler(
             var thisKeyBindingDown = keyDown
             var checksRun = 0
             var thisIsChange = true
+            var saveDown = true
 
             pair.keyBinding.action[KeyAction.PRESS]?.let {
                 if (!keyDown) {
                     thisIsChange = false
                 }
-                if (!it.contains(keyCode)) {
+                if (it.contains(keyCode)) {
+                    saveDown = false
+                } else {
                     thisIsChange = false
                 }
                 checksRun++
@@ -193,7 +196,9 @@ class RenderWindowInputHandler(
                 if (keyDown) {
                     thisIsChange = false
                 }
-                if (!it.contains(keyCode)) {
+                if (it.contains(keyCode)) {
+                    saveDown = false
+                } else {
                     thisIsChange = false
                 }
                 checksRun++
@@ -261,10 +266,12 @@ class RenderWindowInputHandler(
                 callback(thisKeyBindingDown)
             }
 
-            if (thisKeyBindingDown) {
-                keyBindingsDown += resourceLocation
-            } else {
-                keyBindingsDown -= resourceLocation
+            if (saveDown) {
+                if (thisKeyBindingDown) {
+                    keyBindingsDown += resourceLocation
+                } else {
+                    keyBindingsDown -= resourceLocation
+                }
             }
         }
         if (keyDown) {
