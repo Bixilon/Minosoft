@@ -26,7 +26,7 @@ class WorldQueueItem(
     val chunk: Chunk?,
     val section: ChunkSection?,
     val center: Vec3,
-    val neighbours: Array<ChunkSection?>?,
+    var neighbours: Array<ChunkSection?>?,
 ) {
     var mesh: WorldMesh? = null
 
