@@ -38,7 +38,15 @@ open class TextFlowElement(
     private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
     // Used for scrolling in GUI (not hud)
-    private val active: Boolean = false // if always all lines should be displayed when possible
+    var active: Boolean = false // if always all lines should be displayed when possible
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            forceSilentApply()
+        }
+
     private val scrollOffset: Int = 0 // lines to skip from the bottom
 
     override var prefSize: Vec2i
@@ -70,6 +78,7 @@ open class TextFlowElement(
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
         val currentTime = TimeUtil.time
         var textSize = Vec2i.EMPTY
+        val active = this.active
 
 
         var currentLineOffset = 0
@@ -82,7 +91,7 @@ open class TextFlowElement(
             }
 
             // ToDo: Cache lines
-            val textElement = TextElement(guiRenderer, message.text, background = false, parent = this)
+            val textElement = TextElement(guiRenderer, message.text, background = false)
             val lines = textElement.renderInfo.lines
 
             val lineIterator = lines.reversed().iterator()
@@ -102,7 +111,7 @@ open class TextFlowElement(
                 if (visibleLines.size >= maxLines) {
                     break
                 }
-                val lineElement = TextElement(guiRenderer, line.text, background = false, parent = this)
+                val lineElement = TextElement(guiRenderer, line.text, background = false)
                 textSize = textSize.max(lineElement.size)
                 visibleLines += TextFlowLineElement(lineElement, message)
             }
@@ -126,6 +135,9 @@ open class TextFlowElement(
     operator fun plusAssign(message: ChatComponent) = addMessage(message)
 
     private fun checkExpiredLines() {
+        if (active) {
+            return
+        }
         val currentTime = TimeUtil.time
 
         for (line in visibleLines) {

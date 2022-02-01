@@ -56,7 +56,7 @@ interface GUIElementDrawer {
 
         guiRenderer.setup()
         for (element in elements) {
-            if (element !is LayoutedGUIElement<*> || !element.enabled || element.mesh.data.isEmpty) {
+            if (element !is LayoutedGUIElement<*> || !element.enabled || element.skipDraw || element.mesh.data.isEmpty) {
                 continue
             }
             element.mesh.draw()

@@ -135,6 +135,15 @@ class LayoutedGUIElement<T : LayoutedElement>(
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
+        fun checkSpecial(): Boolean {
+            val specialKey = InputSpecialKey[key] ?: return false
+            elementLayout.onSpecialKey(specialKey, type)
+            return true
+        }
+        if (checkSpecial()) {
+            return
+        }
+
         val offset = layout.layoutOffset
         val size = elementLayout.size
         val position = lastPosition
@@ -149,17 +158,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
             elementLayout.onMouseAction(delta, mouseButton, mouseAction)
             return true
         }
-
-        fun checkSpecial(): Boolean {
-            val specialKey = InputSpecialKey[key] ?: return false
-            elementLayout.onSpecialKey(specialKey, type)
-            return true
-        }
-
-        if (checkMouse()) {
-            return
-        }
-        checkSpecial()
+        checkMouse()
     }
 
     override fun onScroll(scrollOffset: Vec2d) {

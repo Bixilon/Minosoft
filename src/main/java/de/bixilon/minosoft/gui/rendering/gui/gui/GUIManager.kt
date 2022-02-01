@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
@@ -116,6 +117,9 @@ class GUIManager(
 
         paused = pause
         if (pause) {
+            if (elementOrder.isNotEmpty()) {
+                return
+            }
             open(PauseMenu)
         } else {
             clear()
@@ -177,6 +181,14 @@ class GUIManager(
     }
 
     operator fun <T : GUIElement> get(builder: GUIBuilder<T>): T {
-        return elementCache.getOrPut(builder) { builder.build(guiRenderer).apply { init();postInit() } }.unsafeCast() // init mesh
+        return elementCache.getOrPut(builder) {
+            if (builder is HUDBuilder<*>) {
+                guiRenderer.hud[builder]?.let { return it.unsafeCast() }
+            }
+            val element = builder.build(guiRenderer)
+            element.init()
+            element.postInit()
+            return element
+        }.unsafeCast() // init mesh
     }
 }

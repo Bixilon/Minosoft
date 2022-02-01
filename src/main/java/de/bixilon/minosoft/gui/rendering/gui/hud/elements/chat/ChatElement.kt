@@ -13,40 +13,59 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
+import de.bixilon.minosoft.gui.rendering.gui.gui.elements.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class ChatElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRenderer, 20000), LayoutedElement, Initializable, Drawable {
+class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
     private val connection = renderWindow.connection
     private val profile = connection.profiles.hud
     private val chatProfile = profile.chat
+    private val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@ChatElement }
+    private val input = TextInputElement(guiRenderer, maxLength = 256)
+    private var active = false
+        set(value) {
+            field = value
+            messages.active = value
+            forceApply()
+        }
     override var skipDraw: Boolean
-        get() = chatProfile.hidden
+        get() = chatProfile.hidden || active
         set(value) {
             chatProfile.hidden = !value
         }
 
-
     override val layoutOffset: Vec2i
-        get() = Vec2i(2, guiRenderer.scaledSize.y - super.size.y - BOTTOM_OFFSET)
+        get() = Vec2i(0, guiRenderer.scaledSize.y - messages.size.y - CHAT_INPUT_HEIGHT - CHAT_INPUT_MARGIN * 2)
 
     init {
-        super.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.profileWatchRendering(this, profile = profile) { super.prefMaxSize = Vec2i(it, super.prefMaxSize.y) }
-        chatProfile::height.profileWatchRendering(this, profile = profile) { super.prefMaxSize = Vec2i(super.prefMaxSize.x, it) }
+        messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
+        chatProfile::width.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
+        chatProfile::height.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
+        forceSilentApply()
     }
 
 
@@ -55,20 +74,84 @@ class ChatElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRenderer, 20000
             if (it.position == ChatTextPositions.ABOVE_HOTBAR) {
                 return@of
             }
-            this += it.message
+            messages += it.message
         })
         connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
             if (!profile.chat.internal.hidden) {
                 return@of
             }
-            this += it.message
+            messages += it.message
         })
+
+        renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyAction.PRESS to setOf(KeyCodes.KEY_T),
+                ),
+            )) { guiRenderer.gui.open(ChatElement) }
+    }
+
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        var maxZ = messages.render(offset + Vec2i(CHAT_INPUT_MARGIN, 0), z, consumer, options)
+        if (active) {
+            maxZ = maxOf(maxZ, input.render(offset + Vec2i(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + CHAT_INPUT_HEIGHT)), z, consumer, options))
+        }
+
+        return maxZ
+    }
+
+    override fun forceSilentApply() {
+        _size = Vec2i(guiRenderer.scaledSize.x, messages.size.y + CHAT_INPUT_HEIGHT + CHAT_INPUT_MARGIN * 2)
+        prefMaxSize = Vec2i(-1, _size.y)
+        input.prefMaxSize = Vec2i(size.x - CHAT_INPUT_MARGIN, CHAT_INPUT_HEIGHT)
+        input.forceSilentApply()
+        messages.silentApply()
+        input.silentApply()
+    }
+
+    override fun onOpen() {
+        active = true
+    }
+
+    override fun onClose() {
+        active = false
+        input.value = ""
+    }
+
+    override fun onHide() {
+        active = false
+        input.value = ""
+    }
+
+    override fun onCharPress(char: Int) {
+        input.onCharPress(char)
+    }
+
+    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+        if (key == InputSpecialKey.KEY_ENTER && type == KeyChangeTypes.PRESS) {
+            if (input.value.isNotBlank()) {
+                connection.sendPacket(ChatMessageC2SP(input.value))
+                input.value = ""
+            }
+            guiRenderer.gui.pop()
+        }
+        input.onSpecialKey(key, type)
+    }
+
+    override fun onChildChange(child: Element) {
+        forceSilentApply()
+    }
+
+    override fun tick() {
+        messages.tick()
+        input.tick()
     }
 
 
-    companion object : HUDBuilder<LayoutedGUIElement<ChatElement>> {
+    companion object : HUDBuilder<LayoutedGUIElement<ChatElement>>, GUIBuilder<LayoutedGUIElement<ChatElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
-        private const val BOTTOM_OFFSET = 30
+        private const val CHAT_INPUT_HEIGHT = 30
+        private const val CHAT_INPUT_MARGIN = 2
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ChatElement> {
             return LayoutedGUIElement(ChatElement(guiRenderer))

@@ -76,7 +76,7 @@ class HUDManager(
     fun onMatrixChange() {
         for (element in hudElements.toSynchronizedMap().values) {
             if (element is LayoutedGUIElement<*>) {
-                element.elementLayout.silentApply()
+                element.elementLayout.forceApply()
             }
             element.apply()
         }
