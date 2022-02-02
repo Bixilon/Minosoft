@@ -18,8 +18,10 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
@@ -29,14 +31,18 @@ class TextInputElement(
 ) : Element(guiRenderer) {
     private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
-    var value: String = ""
+    private var _value: String = ""
+    var value: String
+        get() = _value
         set(value) {
-            if (field == value) {
+            if (_value == value) {
                 return
             }
-            field = value
-            forceSilentApply()
+            _value = value
+            forceApply()
+            pointer = 0
         }
+    private var pointer = 0
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         background.render(offset, z, consumer, options)
@@ -44,17 +50,56 @@ class TextInputElement(
     }
 
     override fun forceSilentApply() {
-        textElement.text = value
+        textElement.text = _value
         textElement.silentApply()
         background.size = Vec2i(prefMaxSize.x, prefMaxSize.y)
         cacheUpToDate = false
     }
 
     override fun onCharPress(char: Int) {
-        if (value.length >= maxLength) {
+        if (_value.length >= maxLength) {
             return
         }
-        value += char.toChar()
-        forceSilentApply()
+        if (char == '§'.code) {
+            return
+        }
+        _value = _value.substring(0, pointer) + char.toChar() + _value.substring(pointer, _value.length)
+        pointer++
+        forceApply()
+    }
+
+    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+        if (type == KeyChangeTypes.RELEASE) {
+            return
+        }
+        when (key) {
+            InputSpecialKey.KEY_BACKSPACE -> {
+                if (pointer == 0 || _value.isEmpty()) {
+                    return
+                }
+                _value = _value.removeRange(pointer - 1, pointer)
+                pointer--
+            }
+            InputSpecialKey.KEY_DELETE -> {
+                if (pointer == _value.length || _value.isEmpty()) {
+                    return
+                }
+                _value = _value.removeRange(pointer, pointer + 1)
+            }
+            InputSpecialKey.KEY_LEFT -> {
+                if (pointer == 0) {
+                    return
+                }
+                pointer--
+            }
+            InputSpecialKey.KEY_RIGHT -> {
+                if (pointer == _value.length) {
+                    return
+                }
+                pointer++
+            }
+            else -> return
+        }
+        forceApply()
     }
 }
