@@ -113,8 +113,8 @@ open class TextElement(
 
     init {
         this.parent = parent
-        this.chatComponent = ChatComponent.of(text)
         this.noBorder = noBorder
+        this.chatComponent = ChatComponent.of(text)
     }
 
     override fun forceSilentApply() {

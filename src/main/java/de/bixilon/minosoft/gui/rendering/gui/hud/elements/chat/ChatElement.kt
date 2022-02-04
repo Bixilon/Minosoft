@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -83,12 +84,11 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
             messages += it.message
         })
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(),
-            KeyBinding(
-                mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_T),
-                ),
-            )) { guiRenderer.gui.open(ChatElement) }
+        renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(), KeyBinding(
+            mapOf(
+                KeyAction.PRESS to setOf(KeyCodes.KEY_T),
+            ),
+        )) { guiRenderer.gui.open(ChatElement) }
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
@@ -150,7 +150,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
 
     companion object : HUDBuilder<LayoutedGUIElement<ChatElement>>, GUIBuilder<LayoutedGUIElement<ChatElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
-        private const val CHAT_INPUT_HEIGHT = 30
+        private const val CHAT_INPUT_HEIGHT = Font.TOTAL_CHAR_HEIGHT * 3 + Font.CHAR_MARGIN * 2
         private const val CHAT_INPUT_MARGIN = 2
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ChatElement> {
