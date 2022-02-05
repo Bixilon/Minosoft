@@ -53,7 +53,6 @@ open class TextFlowElement(
         get() = maxSize
         set(value) = Unit
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache
     private var textSize = Vec2i.EMPTY
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
@@ -122,6 +121,7 @@ open class TextFlowElement(
         _size = Vec2i(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
         background.size = size
         this.visibleLines = visibleLines
+        cacheUpToDate = false
     }
 
     fun addMessage(message: ChatComponent) {
