@@ -91,7 +91,7 @@ open class TextFlowElement(
             }
 
             // ToDo: Cache lines
-            val textElement = TextElement(guiRenderer, message.text, background = false)
+            val textElement = TextElement(guiRenderer, message.text, background = false, parent = this)
             val lines = textElement.renderInfo.lines
 
             val lineIterator = lines.reversed().iterator()
