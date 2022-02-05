@@ -46,7 +46,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     private val profile = connection.profiles.hud
     private val chatProfile = profile.chat
     private val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@ChatElement }
-    private val input = TextInputElement(guiRenderer, maxLength = 256)
+    private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize)
     private var active = false
         set(value) {
             field = value
@@ -133,13 +133,17 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         input.onCharPress(char)
     }
 
+    private fun submit() {
+        if (input.value.isNotBlank()) {
+            connection.sendPacket(ChatMessageC2SP(input.value))
+        }
+        input.value = ""
+        guiRenderer.gui.pop()
+    }
+
     override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
         if (key == InputSpecialKey.KEY_ENTER && type == KeyChangeTypes.PRESS) {
-            if (input.value.isNotBlank()) {
-                connection.sendPacket(ChatMessageC2SP(input.value))
-                input.value = ""
-            }
-            guiRenderer.gui.pop()
+            return submit()
         }
         input.onSpecialKey(key, type)
     }
@@ -152,7 +156,6 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         messages.tick()
         input.tick()
     }
-
 
     companion object : HUDBuilder<LayoutedGUIElement<ChatElement>>, GUIBuilder<LayoutedGUIElement<ChatElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
