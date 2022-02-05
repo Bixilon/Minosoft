@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
-import de.bixilon.minosoft.gui.rendering.gui.gui.elements.TextInputElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
@@ -101,12 +101,15 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     override fun forceSilentApply() {
-        _size = Vec2i(guiRenderer.scaledSize.x, messages.size.y + CHAT_INPUT_HEIGHT + CHAT_INPUT_MARGIN * 2)
-        prefMaxSize = Vec2i(-1, _size.y)
-        input.prefMaxSize = Vec2i(size.x - CHAT_INPUT_MARGIN, CHAT_INPUT_HEIGHT)
-        input.forceSilentApply()
+        _size = Vec2i(0, messages.size.y + CHAT_INPUT_HEIGHT + CHAT_INPUT_MARGIN * 2)
+        if (active) {
+            _size.x = guiRenderer.scaledSize.x
+            input.prefMaxSize = Vec2i(size.x - CHAT_INPUT_MARGIN * 2, CHAT_INPUT_HEIGHT)
+            input.forceSilentApply()
+        } else {
+            _size.x = messages.prefMaxSize.x
+        }
         messages.silentApply()
-        input.silentApply()
     }
 
     override fun onOpen() {
@@ -124,6 +127,9 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     override fun onCharPress(char: Int) {
+        if (char == '§'.code) {
+            return input.onCharPress('&'.code)
+        }
         input.onCharPress(char)
     }
 

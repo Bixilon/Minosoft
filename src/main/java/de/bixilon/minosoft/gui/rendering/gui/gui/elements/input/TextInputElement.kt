@@ -11,9 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui.elements
+package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -29,6 +30,7 @@ class TextInputElement(
     guiRenderer: GUIRenderer,
     val maxLength: Int = Int.MAX_VALUE,
 ) : Element(guiRenderer) {
+    private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
     private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var _value: String = ""
@@ -43,10 +45,17 @@ class TextInputElement(
             pointer = 0
         }
     private var pointer = 0
+    private var cursorTick = 0
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         background.render(offset, z, consumer, options)
-        return textElement.render(offset, z, consumer, options)
+        textElement.render(offset, z + 1, consumer, options)
+
+        if (cursorTick < 20) {
+            val cursorOffset = Vec2i(textElement.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(textElement.renderInfo.lines.size - 1, 0) * textElement.charHeight)
+            cursor.render(offset + cursorOffset, z + 1 + TextElement.LAYERS, consumer, options)
+        }
+        return TextElement.LAYERS + 2
     }
 
     override fun forceSilentApply() {
@@ -56,11 +65,15 @@ class TextInputElement(
         cacheUpToDate = false
     }
 
+    override fun tick() {
+        if (cursorTick-- <= 0) {
+            cursorTick = 40
+        }
+        cacheUpToDate = false
+    }
+
     override fun onCharPress(char: Int) {
         if (_value.length >= maxLength) {
-            return
-        }
-        if (char == '§'.code) {
             return
         }
         _value = _value.substring(0, pointer) + char.toChar() + _value.substring(pointer, _value.length)
