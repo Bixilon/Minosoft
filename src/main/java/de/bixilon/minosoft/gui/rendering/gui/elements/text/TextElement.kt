@@ -63,14 +63,13 @@ open class TextElement(
             field = value
             cacheUpToDate = false
         }
-    var noBorder: Boolean = !noBorder
+    var noBorder: Boolean = noBorder
         @Synchronized set(value) {
             if (field == value) {
                 return
             }
             field = value
-            charHeight = (value.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT) * scale).toInt()
-            charMargin = (value.decide(0, Font.CHAR_MARGIN) * scale).toInt()
+            applyNoBorder()
             forceApply()
         }
     var charHeight: Int = 0
@@ -113,8 +112,13 @@ open class TextElement(
 
     init {
         this.parent = parent
-        this.noBorder = noBorder
+        applyNoBorder()
         this.chatComponent = ChatComponent.of(text)
+    }
+
+    private fun applyNoBorder() {
+        charHeight = (noBorder.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT) * scale).toInt()
+        charMargin = (noBorder.decide(0, Font.CHAR_MARGIN) * scale).toInt()
     }
 
     override fun forceSilentApply() {

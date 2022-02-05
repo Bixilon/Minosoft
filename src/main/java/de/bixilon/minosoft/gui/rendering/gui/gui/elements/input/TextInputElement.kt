@@ -33,16 +33,17 @@ class TextInputElement(
     private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
     private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
+    private var cursorOffset: Vec2i = Vec2i.EMPTY
     private var _value: String = ""
     var value: String
         get() = _value
         set(value) {
+            pointer = 0
             if (_value == value) {
                 return
             }
             _value = value
             forceApply()
-            pointer = 0
         }
     private var pointer = 0
     private var cursorTick = 0
@@ -52,7 +53,6 @@ class TextInputElement(
         textElement.render(offset, z + 1, consumer, options)
 
         if (cursorTick < 20) {
-            val cursorOffset = Vec2i(textElement.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(textElement.renderInfo.lines.size - 1, 0) * textElement.charHeight)
             cursor.render(offset + cursorOffset, z + 1 + TextElement.LAYERS, consumer, options)
         }
         return TextElement.LAYERS + 2
@@ -62,6 +62,17 @@ class TextInputElement(
         textElement.text = _value
         textElement.silentApply()
         background.size = Vec2i(prefMaxSize.x, prefMaxSize.y)
+
+        cursorOffset = if (pointer == 0) {
+            Vec2i.EMPTY
+        } else {
+            val preCursorText = if (pointer == value.length) {
+                textElement
+            } else {
+                TextElement(guiRenderer, value.substring(0, pointer), parent = this)
+            }
+            Vec2i(preCursorText.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.renderInfo.lines.size - 1, 0) * preCursorText.charHeight)
+        }
         cacheUpToDate = false
     }
 
@@ -76,6 +87,7 @@ class TextInputElement(
         if (_value.length >= maxLength) {
             return
         }
+        cursorTick = CURSOR_TICK_ON_ACTION
         _value = _value.substring(0, pointer) + char.toChar() + _value.substring(pointer, _value.length)
         pointer++
         forceApply()
@@ -85,6 +97,7 @@ class TextInputElement(
         if (type == KeyChangeTypes.RELEASE) {
             return
         }
+        cursorTick = CURSOR_TICK_ON_ACTION
         when (key) {
             InputSpecialKey.KEY_BACKSPACE -> {
                 if (pointer == 0 || _value.isEmpty()) {
@@ -114,5 +127,9 @@ class TextInputElement(
             else -> return
         }
         forceApply()
+    }
+
+    companion object {
+        private const val CURSOR_TICK_ON_ACTION = 10
     }
 }

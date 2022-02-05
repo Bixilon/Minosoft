@@ -152,6 +152,8 @@ open class TextFlowElement(
         checkExpiredLines()
     }
 
+    override fun onChildChange(child: Element) = Unit
+
     private data class TextFlowTextElement(
         val text: ChatComponent,
         val addTime: Long = TimeUtil.time,

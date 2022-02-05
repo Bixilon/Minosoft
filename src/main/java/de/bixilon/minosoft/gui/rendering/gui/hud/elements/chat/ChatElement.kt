@@ -101,6 +101,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     override fun forceSilentApply() {
+        messages.silentApply()
         _size = Vec2i(0, messages.size.y + CHAT_INPUT_HEIGHT + CHAT_INPUT_MARGIN * 2)
         if (active) {
             _size.x = guiRenderer.scaledSize.x
@@ -109,7 +110,6 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         } else {
             _size.x = messages.prefMaxSize.x
         }
-        messages.silentApply()
     }
 
     override fun onOpen() {
