@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -127,14 +127,14 @@ open class ButtonElement(
         submit()
     }
 
-    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
         if (!hovered) {
             return
         }
         if (disabled) {
             return
         }
-        if (key != InputSpecialKey.KEY_ENTER) {
+        if (key != KeyCodes.KEY_ENTER) {
             return
         }
         if (type != KeyChangeTypes.PRESS) {

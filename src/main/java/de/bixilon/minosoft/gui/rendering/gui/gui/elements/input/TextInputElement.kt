@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -83,42 +84,53 @@ class TextInputElement(
         cacheUpToDate = false
     }
 
+    private fun silentAppend(string: String) {
+        val appendLength = minOf(string.length, maxLength - _value.length)
+        _value = _value.substring(0, pointer) + string.substring(0, appendLength) + _value.substring(pointer, _value.length)
+        pointer += appendLength
+    }
+
     override fun onCharPress(char: Int) {
         if (_value.length >= maxLength) {
             return
         }
         cursorTick = CURSOR_TICK_ON_ACTION
-        _value = _value.substring(0, pointer) + char.toChar() + _value.substring(pointer, _value.length)
-        pointer++
+        silentAppend(char.toChar().toString())
         forceApply()
     }
 
-    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
         if (type == KeyChangeTypes.RELEASE) {
             return
         }
+        val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
         cursorTick = CURSOR_TICK_ON_ACTION
         when (key) {
-            InputSpecialKey.KEY_BACKSPACE -> {
+            KeyCodes.KEY_V -> {
+                if (controlDown) {
+                    silentAppend(guiRenderer.renderWindow.window.clipboardText)
+                }
+            }
+            KeyCodes.KEY_BACKSPACE -> {
                 if (pointer == 0 || _value.isEmpty()) {
                     return
                 }
                 _value = _value.removeRange(pointer - 1, pointer)
                 pointer--
             }
-            InputSpecialKey.KEY_DELETE -> {
+            KeyCodes.KEY_DELETE -> {
                 if (pointer == _value.length || _value.isEmpty()) {
                     return
                 }
                 _value = _value.removeRange(pointer, pointer + 1)
             }
-            InputSpecialKey.KEY_LEFT -> {
+            KeyCodes.KEY_LEFT -> {
                 if (pointer == 0) {
                     return
                 }
                 pointer--
             }
-            InputSpecialKey.KEY_RIGHT -> {
+            KeyCodes.KEY_RIGHT -> {
                 if (pointer == _value.length) {
                     return
                 }

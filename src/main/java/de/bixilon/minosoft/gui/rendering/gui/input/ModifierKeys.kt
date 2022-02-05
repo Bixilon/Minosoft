@@ -13,23 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.input
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
-
-interface InputElement {
-
-    fun onMouseMove(position: Vec2i) {}
-    fun onMouseEnter(position: Vec2i) {}
-    fun onMouseLeave() {}
-    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {}
-    fun onScroll(position: Vec2i, scrollOffset: Vec2d) {}
-
-    fun onKey(key: KeyCodes, type: KeyChangeTypes) {}
-    fun onCharPress(char: Int) {}
-
-    // ToDo: drag
+enum class ModifierKeys {
+    CONTROL,
+    ALT,
+    SHIFT,
+    SUPER,
+    ;
 }

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -156,9 +156,9 @@ abstract class Menu(
         super.tick()
     }
 
-    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
-        super.onSpecialKey(key, type)
-        if (type != KeyChangeTypes.RELEASE && key == InputSpecialKey.KEY_TAB) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
+        super.onKey(key, type)
+        if (type != KeyChangeTypes.RELEASE && key == KeyCodes.KEY_TAB) {
             var element: Element?
             var initialIndex = elements.indexOf(activeElement)
             if (initialIndex == -1) {
@@ -187,7 +187,7 @@ abstract class Menu(
             activeElement = element
             return // no passthrough the key to current active element
         }
-        activeElement?.onSpecialKey(key, type)
+        activeElement?.onKey(key, type)
     }
 
     override fun onCharPress(char: Int) {

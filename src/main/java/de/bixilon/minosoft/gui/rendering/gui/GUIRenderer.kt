@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
@@ -134,6 +135,14 @@ class GUIRenderer(
             }
         }
         return output / scale
+    }
+
+    fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {
+        return renderWindow.inputHandler.isKeyDown(*keyCodes)
+    }
+
+    fun isKeyDown(modifier: ModifierKeys): Boolean {
+        return renderWindow.inputHandler.isKeyDown(modifier)
     }
 
     companion object : RendererBuilder<GUIRenderer> {

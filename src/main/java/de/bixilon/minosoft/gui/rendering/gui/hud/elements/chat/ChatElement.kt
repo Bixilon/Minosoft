@@ -29,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
@@ -141,11 +140,11 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         guiRenderer.gui.pop()
     }
 
-    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
-        if (key == InputSpecialKey.KEY_ENTER && type == KeyChangeTypes.PRESS) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
+        if (key == KeyCodes.KEY_ENTER && type == KeyChangeTypes.PRESS) {
             return submit()
         }
-        input.onSpecialKey(key, type)
+        input.onKey(key, type)
     }
 
     override fun onChildChange(child: Element) {

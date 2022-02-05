@@ -22,6 +22,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDeleg
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.CameraInput
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
@@ -330,6 +331,15 @@ class RenderWindowInputHandler(
             }
         }
         return false
+    }
+
+    fun isKeyDown(modifier: ModifierKeys): Boolean {
+        return renderWindow.inputHandler.isKeyDown(*when (modifier) {
+            ModifierKeys.CONTROL -> arrayOf(KeyCodes.KEY_LEFT_CONTROL, KeyCodes.KEY_RIGHT_CONTROL)
+            ModifierKeys.ALT -> arrayOf(KeyCodes.KEY_LEFT_ALT, KeyCodes.KEY_RIGHT_ALT)
+            ModifierKeys.SHIFT -> arrayOf(KeyCodes.KEY_LEFT_SHIFT, KeyCodes.KEY_RIGHT_SHIFT)
+            ModifierKeys.SUPER -> arrayOf(KeyCodes.KEY_LEFT_SUPER, KeyCodes.KEY_RIGHT_SUPER)
+        })
     }
 
     fun draw(delta: Double) {
