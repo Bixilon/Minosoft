@@ -91,6 +91,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        println("Force rendered!")
         var maxZ = messages.render(offset + Vec2i(CHAT_INPUT_MARGIN, 0), z, consumer, options)
         if (active) {
             maxZ = maxOf(maxZ, input.render(offset + Vec2i(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + CHAT_INPUT_HEIGHT)), z, consumer, options))

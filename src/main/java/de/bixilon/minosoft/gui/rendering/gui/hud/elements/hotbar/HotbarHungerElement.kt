@@ -56,14 +56,12 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         )
     )
 
-    override var cacheEnabled: Boolean
-        get() = super.cacheEnabled && !animate
-        set(value) {
-            super.cacheEnabled = value
-        }
-
     private var hungerEffect = false
     private var animate = true
+        set(value) {
+            super.cacheEnabled = !value
+            field = value
+        }
 
     private var hunger = 0
     private var saturation = 0.0f

@@ -65,8 +65,6 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         hoverText,
     )
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache correctly
-
     init {
         core.parent = this
         itemText.parent = this

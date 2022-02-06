@@ -32,7 +32,19 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
     private var columnStart = IntArray(grid.x)
     private var rowStart = IntArray(grid.y)
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache
+    override var cacheEnabled: Boolean
+        get() = super.cacheEnabled
+        set(value) {
+            for (array in children) {
+                for (child in array) {
+                    if ((child ?: continue).cacheEnabled) {
+                        super.cacheEnabled = false
+                        return
+                    }
+                }
+            }
+            super.cacheEnabled = true
+        }
 
     operator fun set(position: Vec2i, element: Element) = add(position, element)
 
@@ -126,6 +138,7 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
             columnStart[x] = offset + previousWidth
         }
         this.columnStart = columnStart
+        cacheUpToDate = false
     }
 
 

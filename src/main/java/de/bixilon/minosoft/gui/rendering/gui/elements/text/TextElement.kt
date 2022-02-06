@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -89,8 +90,8 @@ open class TextElement(
 
     private var emptyMessage: Boolean = true
 
-    override var chatComponent: ChatComponent = ChatComponent.of("")
-        protected set(value) {
+    private var _chatComponent: ChatComponent = unsafeNull()
+        set(value) {
             if (value == field) {
                 return
             }
@@ -107,13 +108,20 @@ open class TextElement(
                 ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
             }
             _prefSize = prefSize
+        }
+
+    override var chatComponent: ChatComponent
+        get() = _chatComponent
+        protected set(value) {
+            _chatComponent = value
             forceApply()
         }
 
     init {
-        this.parent = parent
+        this._parent = parent
         applyNoBorder()
-        this.chatComponent = ChatComponent.of(text)
+        this._chatComponent = ChatComponent.of(text)
+        forceSilentApply()
     }
 
     private fun applyNoBorder() {

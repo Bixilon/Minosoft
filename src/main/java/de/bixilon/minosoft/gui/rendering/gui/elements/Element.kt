@@ -47,8 +47,24 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
     @Deprecated("Warning: Should not be directly accessed!")
     val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, 1000)
     open var cacheEnabled: Boolean = true
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            parent?.cacheEnabled = value
+        }
     open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            if (!value) {
+                parent?.cacheUpToDate = false
+            }
+        }
 
     private var previousMaxSize = Vec2i.EMPTY
 

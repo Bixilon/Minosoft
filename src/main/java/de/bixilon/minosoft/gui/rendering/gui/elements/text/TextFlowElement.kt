@@ -125,7 +125,7 @@ open class TextFlowElement(
     }
 
     fun addMessage(message: ChatComponent) {
-        while (messages.size > MAX_TOTAL_MESSAGES) {
+        while (messages.size >= MAX_TOTAL_MESSAGES) {
             messages.removeLast()
         }
         messages.add(0, TextFlowTextElement(message))

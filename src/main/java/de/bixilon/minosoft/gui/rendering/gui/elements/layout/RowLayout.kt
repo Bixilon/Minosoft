@@ -41,8 +41,6 @@ open class RowLayout(
 ) : Element(guiRenderer), ChildAlignable {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache
-
     override var prefSize: Vec2i
         get() = _prefSize
         set(value) = Unit
@@ -182,6 +180,7 @@ open class RowLayout(
         }
 
         _size = size
+        cacheUpToDate = false
     }
 
     override fun onChildChange(child: Element) {

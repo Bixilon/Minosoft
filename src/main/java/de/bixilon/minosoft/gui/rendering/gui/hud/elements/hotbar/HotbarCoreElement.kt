@@ -49,8 +49,6 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         topRight,
     )
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache correctly
-
     init {
         topLeft.apply {
             parent = this@HotbarCoreElement
