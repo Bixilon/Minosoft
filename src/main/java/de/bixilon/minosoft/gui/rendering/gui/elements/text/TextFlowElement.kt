@@ -165,6 +165,6 @@ open class TextFlowElement(
     )
 
     companion object {
-        const val MAX_TOTAL_MESSAGES = 500
+        const val MAX_TOTAL_MESSAGES = 1000
     }
 }

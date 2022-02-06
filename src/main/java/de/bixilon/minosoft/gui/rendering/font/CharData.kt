@@ -50,10 +50,9 @@ class CharData(
     private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
         val italicOffset = if (italic) (end.y.toFloat() - start.y.toFloat()) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET else 0.0f
 
-        val topX = start.x.toFloat() + italicOffset
         val positions = arrayOf(
-            Vec2(topX, start.y),
-            Vec2(topX, start.y),
+            Vec2(start.x.toFloat() + italicOffset, start.y),
+            Vec2(end.x.toFloat() + italicOffset, start.y),
             end,
             Vec2(start.x, end.y),
         )
