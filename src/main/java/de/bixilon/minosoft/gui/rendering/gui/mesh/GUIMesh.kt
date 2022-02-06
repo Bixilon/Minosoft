@@ -22,7 +22,6 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2t
-import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 class GUIMesh(
@@ -31,8 +30,8 @@ class GUIMesh(
     data: DirectArrayFloatList,
 ) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
-    override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        data.addAll(createVertex(matrix, position, z, texture, uv, tint, options))
+    override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        data.addAll(createVertex(matrix, position, texture, uv, tint, options))
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -40,7 +39,7 @@ class GUIMesh(
     }
 
     data class GUIMeshStruct(
-        val position: Vec3,
+        val position: Vec2,
         val uv: Vec2,
         val indexLayerAnimation: Int,
         val tintColor: RGBColor,
@@ -49,10 +48,8 @@ class GUIMesh(
     }
 
     companion object {
-        const val BASE_Z = -0.0f
-        const val Z_MULTIPLIER = -0.00001f
 
-        fun createVertex(matrix: Mat4, position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?): FloatArray {
+        fun createVertex(matrix: Mat4, position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?): FloatArray {
             val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
             var color = tint
 
@@ -66,7 +63,6 @@ class GUIMesh(
             return floatArrayOf(
                 outPosition.x,
                 outPosition.y,
-                BASE_Z + Z_MULTIPLIER * z,
                 uv.x,
                 uv.y,
                 Float.fromBits(texture.renderData.shaderTextureId),

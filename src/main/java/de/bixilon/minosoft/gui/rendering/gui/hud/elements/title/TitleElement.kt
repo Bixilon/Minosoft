@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
@@ -85,13 +84,10 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
         fadeOutTime = DEFAULT_FADE_OUT_TIME
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        title.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), z, consumer, options)
-        subtitle.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), z, consumer, options)
-
-
-        return TextElement.LAYERS
+        title.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
+        subtitle.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
     }
 
     override fun forceSilentApply() {

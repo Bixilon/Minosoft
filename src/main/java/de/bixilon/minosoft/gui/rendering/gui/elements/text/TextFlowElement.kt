@@ -55,19 +55,18 @@ open class TextFlowElement(
 
     private var textSize = Vec2i.EMPTY
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
-            return 0
+            return
         }
+        background.render(offset, consumer, options)
+
         var yOffset = 0
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2i(0, yOffset), z, consumer, options)
+            message.textElement.render(offset + Vec2i(0, yOffset), consumer, options)
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
-
-        background.render(offset, z, consumer, options)
-        return LAYERS
     }
 
     @Synchronized
@@ -165,8 +164,6 @@ open class TextFlowElement(
     )
 
     companion object {
-        const val LAYERS = TextElement.LAYERS
-
         const val MAX_TOTAL_MESSAGES = 500
     }
 }

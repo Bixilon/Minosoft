@@ -143,7 +143,7 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
      *
      * @return The number of z layers used
      */
-    fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val offset = Vec2i(offset)
         var directRendering = false
         if (consumer is GUIMesh && consumer.data == cache.data) {
@@ -153,19 +153,17 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
             if (directRendering) {
                 cache.clear()
             }
-            val maxZ = forceRender(offset, z, consumer, options)
+            forceRender(offset, consumer, options)
             if (directRendering) {
                 cache.revision++
             }
-            return maxZ
+            return
         }
-        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.matrix !== guiRenderer.matrix || z != cache.z) {
+        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.matrix !== guiRenderer.matrix) {
             this.cache.clear()
             cache.matrix = guiRenderer.matrix
             cache.offset = Vec2i(offset)
-            cache.z = z
-            val maxZ = forceRender(offset, z, cache, options)
-            cache.maxZ = maxZ
+            val maxZ = forceRender(offset, cache, options)
             if (cache.data !is DirectArrayFloatList) {
                 // not raw mesh data
                 cache.data.finish()
@@ -175,7 +173,6 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
         if (!directRendering) {
             consumer.addCache(cache)
         }
-        return cache.maxZ
     }
 
     /**
@@ -183,7 +180,7 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
      *
      * @return The number of z layers used
      */
-    abstract fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int
+    abstract fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?)
 
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change

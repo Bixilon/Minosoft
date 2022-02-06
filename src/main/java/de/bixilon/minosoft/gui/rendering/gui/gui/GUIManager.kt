@@ -76,10 +76,10 @@ class GUIManager(
         }
     }
 
-    fun draw(z: Int): Int {
-        val element = elementOrder.firstOrNull() ?: return 0
+    fun draw() {
+        val element = elementOrder.firstOrNull() ?: return
         if (!element.enabled) {
-            return 0
+            return
         }
         val time = TimeUtil.time
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
@@ -92,22 +92,19 @@ class GUIManager(
 
             lastTickTime = time
         }
-        var usedZ = 0
 
         if (element is Drawable && !element.skipDraw) {
             element.draw()
         }
         if (element is LayoutedGUIElement<*>) {
-            usedZ += element.prepare(z)
+            element.prepare()
         }
 
         guiRenderer.setup()
         if (element !is LayoutedGUIElement<*> || !element.enabled || element.mesh.data.isEmpty) {
-            return usedZ
+            return
         }
         element.mesh.draw()
-
-        return usedZ
     }
 
     fun pause(pause: Boolean = !paused) {

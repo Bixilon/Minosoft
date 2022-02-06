@@ -44,14 +44,14 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     override var totalHealth = 0.0f
     override var totalMaxHealth = 0.0f
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (!shown) {
-            return 0
+            return
         }
         if (text) {
-            return super.forceRender(offset, z, consumer, options)
+            return super.forceRender(offset, consumer, options)
         }
-        drawCanisters(offset, z, consumer, options, vehicleHeartContainer)
+        drawCanisters(offset, consumer, options, vehicleHeartContainer)
 
         var healthLeft = totalHealth
         var heart = 0
@@ -67,13 +67,11 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
                 else -> 0
             }]?.let { AtlasImageElement(guiRenderer, it) }
 
-            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
+            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 
             heart++
             healthLeft -= halfHeart.decide(1.0f, 2.0f)
         }
-
-        return LAYERS
     }
 
     override fun poll(): Boolean {

@@ -50,20 +50,14 @@ open class ProgressElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        emptyImage.render(offset, z, consumer, options)
-        progressImage.render(offset, z + 1, consumer, options)
-
-        return LAYERS
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        emptyImage.render(offset, consumer, options)
+        progressImage.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
         progressImage = ImageElement(guiRenderer, fullAtlasElement.texture, uvStart = fullAtlasElement.uvStart, uvEnd = Vec2(VecUtil.lerp(progress, fullAtlasElement.uvStart.x, fullAtlasElement.uvEnd.x), fullAtlasElement.uvEnd.y), size = Vec2i((fullAtlasElement.size.x * progress).toInt(), emptyAtlasElement.size.y))
 
         cacheUpToDate = false
-    }
-
-    companion object {
-        const val LAYERS = 2 // background, foreground
     }
 }

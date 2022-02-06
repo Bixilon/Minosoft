@@ -90,6 +90,7 @@ class GUIRenderer(
     fun setup() {
         renderSystem.reset(
             blending = true,
+            depthTest = false,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
             destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
             sourceAlpha = BlendingFunctions.ONE,
@@ -111,9 +112,8 @@ class GUIRenderer(
     }
 
     override fun drawOther() {
-        var z = 0
-        z += hud.draw(z) + 1
-        z += gui.draw(z) + 1
+        hud.draw()
+        gui.draw()
         if (this.matrixChange) {
             this.matrixChange = false
         }

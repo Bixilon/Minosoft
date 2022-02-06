@@ -118,13 +118,13 @@ class FadingTextElement(
         return false
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (hidden) {
-            return 0
+            return
         }
         val time = TimeUtil.time
         if (time > fadeOutEndTime) {
-            return 0
+            return
         }
 
         alpha = 1.0f
@@ -133,15 +133,15 @@ class FadingTextElement(
             alpha = 1.0f - (fadeInEndTime - time) / fadeInTime.toFloat()
         } else if (time < fadeOutStartTime) {
             alpha = 1.0f
-            return super.forceRender(offset, z, consumer, options) // ToDo: Cache
+            return super.forceRender(offset, consumer, options) // ToDo: Cache
         } else if (time < fadeOutEndTime) {
             alpha = (fadeOutEndTime - time) / fadeOutTime.toFloat()
         } else {
-            return 0
+            return
         }
 
         val nextOptions = options?.copy(alpha = options.alpha * alpha) ?: (alpha == 1.0f).decide(null) { GUIVertexOptions(alpha = alpha) }
 
-        return super.forceRender(offset, z, consumer, nextOptions)
+        super.forceRender(offset, consumer, nextOptions)
     }
 }

@@ -23,7 +23,7 @@ interface GUIElementDrawer {
     val guiRenderer: GUIRenderer
     var lastTickTime: Long
 
-    fun drawElements(elements: Collection<GUIElement>, zOffset: Int): Int {
+    fun drawElements(elements: Collection<GUIElement>) {
         val time = TimeUtil.time
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in elements) {
@@ -41,7 +41,6 @@ interface GUIElementDrawer {
             lastTickTime = time
         }
 
-        var z = zOffset
         for (element in elements) {
             if (!element.enabled) {
                 continue
@@ -50,7 +49,7 @@ interface GUIElementDrawer {
                 element.draw()
             }
             if (element is LayoutedGUIElement<*>) {
-                z += element.prepare(z)
+                element.prepare()
             }
         }
 
@@ -61,7 +60,5 @@ interface GUIElementDrawer {
             }
             element.mesh.draw()
         }
-
-        return z - zOffset
     }
 }

@@ -45,7 +45,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     private val profile = connection.profiles.hud
     private val chatProfile = profile.chat
     private val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@ChatElement }
-    private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize)
+    private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
     private var active = false
         set(value) {
             field = value
@@ -90,14 +90,11 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         )) { guiRenderer.gui.open(ChatElement) }
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        println("Force rendered!")
-        var maxZ = messages.render(offset + Vec2i(CHAT_INPUT_MARGIN, 0), z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        messages.render(offset + Vec2i(CHAT_INPUT_MARGIN, 0), consumer, options)
         if (active) {
-            maxZ = maxOf(maxZ, input.render(offset + Vec2i(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + CHAT_INPUT_HEIGHT)), z, consumer, options))
+            input.render(offset + Vec2i(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + CHAT_INPUT_HEIGHT)), consumer, options)
         }
-
-        return maxZ
     }
 
     override fun forceSilentApply() {
@@ -110,6 +107,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         } else {
             _size.x = messages.prefMaxSize.x
         }
+        cacheUpToDate = false
     }
 
     override fun onOpen() {

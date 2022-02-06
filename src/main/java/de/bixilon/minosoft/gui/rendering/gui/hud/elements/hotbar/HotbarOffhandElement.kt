@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.marginOf
 import glm_.vec2.Vec2i
-import java.lang.Integer.max
 
 class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val frames = arrayOf(
@@ -48,11 +47,9 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     }
 
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var maxZ = frameImage.render(offset, z, consumer, options)
-        maxZ = max(maxZ, containerElement.render(offset, z + maxZ, consumer, options))
-
-        return maxZ
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        frameImage.render(offset, consumer, options)
+        containerElement.render(offset, consumer, options)
     }
 
     override fun silentApply(): Boolean {

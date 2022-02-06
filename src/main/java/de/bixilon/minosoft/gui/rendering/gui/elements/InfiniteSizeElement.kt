@@ -32,7 +32,7 @@ class InfiniteSizeElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         get() = Vec2i.MAX
         set(value) = Unit
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         error("Can not render InfiniteSizeElement")
     }
 

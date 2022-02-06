@@ -142,19 +142,13 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
     }
 
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var maxZ = 0
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                val childZ = child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), z, consumer, options)
-                if (childZ > maxZ) {
-                    maxZ = childZ
-                }
+                child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), consumer, options)
             }
         }
-
-        return maxZ
     }
 
     override fun tick() {

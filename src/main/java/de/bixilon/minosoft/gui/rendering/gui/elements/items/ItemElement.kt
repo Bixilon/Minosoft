@@ -59,8 +59,8 @@ class ItemElement(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        val item = item ?: return 0
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val item = item ?: return
         val size = size
 
         val model = item.item.model
@@ -76,15 +76,13 @@ class ItemElement(
                 }
             }
 
-            (element ?: ColorElement(guiRenderer, size, color)).render(offset, z, consumer, options)
+            (element ?: ColorElement(guiRenderer, size, color)).render(offset, consumer, options)
         } else {
-            model.render2d(offset, z, consumer, options, size, item)
+            model.render2d(offset, consumer, options, size, item)
         }
 
         val countSize = countText.size
-        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer, options)
-
-        return TextElement.LAYERS + 1 // 1 for background
+        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
     }
 
     override fun poll(): Boolean {

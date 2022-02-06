@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -49,24 +50,26 @@ class TextInputElement(
             _value.replace(0, _value.length, value)
             forceApply()
         }
+    private var textUpToDate = false
     private var pointer = 0
     private var cursorTick = 0
 
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var zOffset = background.render(offset, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        background.render(offset, consumer, options)
 
-        zOffset += textElement.render(offset, z + zOffset, consumer, options)
+        textElement.render(offset, consumer, options)
 
         if (cursorTick < 20) {
-            cursor.render(offset + cursorOffset, z + zOffset, consumer, options)
+            cursor.render(offset + cursorOffset, consumer, options)
         }
-        return zOffset + 1
     }
 
     override fun forceSilentApply() {
-        textElement.text = _value
-        textElement.silentApply()
+        if (!textUpToDate) {
+            textElement._chatComponent = TextComponent(_value)
+            textElement.forceSilentApply()
+        }
         background.size = Vec2i(prefMaxSize.x, prefMaxSize.y)
 
         cursorOffset = if (pointer == 0) {
@@ -85,8 +88,10 @@ class TextInputElement(
     override fun tick() {
         if (cursorTick-- <= 0) {
             cursorTick = 40
+            cacheUpToDate = false
+        } else if (cursorTick == 20 - 1) {
+            cacheUpToDate = false
         }
-        cacheUpToDate = false
     }
 
     private fun insert(string: String) {
@@ -97,6 +102,7 @@ class TextInputElement(
         val appendLength = minOf(insert.length, maxLength - _value.length)
         _value.insert(pointer, insert.substring(0, appendLength))
         pointer += appendLength
+        textUpToDate = false
     }
 
     override fun onCharPress(char: Int) {
@@ -158,6 +164,7 @@ class TextInputElement(
                     return
                 }
                 _value.deleteCharAt(pointer - 1)
+                textUpToDate = false
                 pointer--
             }
             KeyCodes.KEY_DELETE -> {
@@ -165,6 +172,7 @@ class TextInputElement(
                     return
                 }
                 _value.deleteCharAt(pointer)
+                textUpToDate = false
             }
             KeyCodes.KEY_LEFT -> {
                 if (pointer == 0) {
@@ -183,6 +191,10 @@ class TextInputElement(
             else -> return textElement.onKey(key, type)
         }
         forceApply()
+    }
+
+    override fun onChildChange(child: Element) {
+        forceSilentApply()
     }
 
     companion object {

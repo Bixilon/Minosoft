@@ -34,16 +34,10 @@ open class BossbarProgressElement(
 
     constructor(guiRenderer: GUIRenderer, progressElements: Array<AtlasElement>, notchesElements: Array<AtlasElement>?, progress: Float = 0.0f) : this(guiRenderer, progressElements[0], progressElements[1], notchesElements?.get(0), notchesElements?.get(1), progress)
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        emptyImage.render(offset, z, consumer, options)
-        emptyNotchesImage?.render(offset, z + 1, consumer, options)
-        progressImage.render(offset, z + 2, consumer, options)
-        fullNotchesImage?.render(offset, z + 3, consumer, options)
-
-        return LAYERS
-    }
-
-    companion object {
-        const val LAYERS = 4 // background, foreground * 2 (notches)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        emptyImage.render(offset, consumer, options)
+        emptyNotchesImage?.render(offset, consumer, options)
+        progressImage.render(offset, consumer, options)
+        fullNotchesImage?.render(offset, consumer, options)
     }
 }

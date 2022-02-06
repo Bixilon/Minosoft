@@ -73,15 +73,14 @@ class MarkTextElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (markStartPosition >= 0) {
             for (line in renderInfo.lines) {
                 // ToDo
             }
         }
 
-        return super.forceRender(offset, z, consumer, options) + 1
+        super.forceRender(offset, consumer, options)
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes) {

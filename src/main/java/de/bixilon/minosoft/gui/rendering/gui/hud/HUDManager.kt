@@ -105,8 +105,8 @@ class HUDManager(
         }
     }
 
-    fun draw(z: Int): Int {
-        return drawElements(hudElements.toSynchronizedMap().values, z)
+    fun draw() {
+        drawElements(hudElements.toSynchronizedMap().values)
     }
 
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {

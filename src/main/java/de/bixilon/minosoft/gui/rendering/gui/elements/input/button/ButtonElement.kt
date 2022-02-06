@@ -92,7 +92,7 @@ open class ButtonElement(
         size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = when {
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
@@ -102,10 +102,10 @@ open class ButtonElement(
         val size = size
         val background = AtlasImageElement(guiRenderer, texture)
         background.size = size
-        var zUsed = background.render(offset, z, consumer, options)
         val textSize = textElement.size
-        zUsed += textElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), z + zUsed, consumer, options)
-        return zUsed
+
+        background.render(offset, consumer, options)
+        textElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, options)
     }
 
     override fun forceSilentApply() {

@@ -42,16 +42,14 @@ class HotbarBaseElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollab
         containerElement.parent = this
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        base.render(offset + HORIZONTAL_MARGIN, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        base.render(offset + HORIZONTAL_MARGIN, consumer, options)
 
         baseAtlasElement.slots[selectedSlot + PlayerInventory.HOTBAR_OFFSET]?.let {
-            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer, options)
+            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, consumer, options)
         }
 
-        val inventoryZ = containerElement.render(offset + HORIZONTAL_MARGIN, z + 2, consumer, options)
-
-        return 2 + inventoryZ // bar + frame
+        containerElement.render(offset + HORIZONTAL_MARGIN, consumer, options)
     }
 
     override fun poll(): Boolean {

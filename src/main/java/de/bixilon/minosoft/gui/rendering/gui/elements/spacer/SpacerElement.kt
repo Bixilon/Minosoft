@@ -21,7 +21,7 @@ import glm_.vec2.Vec2i
 
 open class SpacerElement(guiRenderer: GUIRenderer, override var size: Vec2i) : Element(guiRenderer) {
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int = 0
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) = Unit
 
     override fun silentApply(): Boolean = false
     override fun forceSilentApply() = Unit

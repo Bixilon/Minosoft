@@ -90,7 +90,7 @@ open class TextElement(
 
     private var emptyMessage: Boolean = true
 
-    private var _chatComponent: ChatComponent = unsafeNull()
+    var _chatComponent: ChatComponent = unsafeNull()
         set(value) {
             if (value == field) {
                 return
@@ -105,7 +105,7 @@ open class TextElement(
                     charMargin = charMargin,
                     scale = scale,
                 )
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
             }
             _prefSize = prefSize
         }
@@ -138,7 +138,7 @@ open class TextElement(
             scale = scale,
         )
         if (!emptyMessage) {
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, null, renderInfo, chatComponent)
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, renderWindow, null, null, renderInfo, chatComponent)
             renderInfo.currentLineNumber = 0
         }
         this.renderInfo = renderInfo
@@ -149,30 +149,25 @@ open class TextElement(
 
     override fun onChildChange(child: Element) = error("A TextElement can not have a child!")
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (emptyMessage) {
-            return 0
+            return
         }
         val initialOffset = offset + margin.offset
 
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, renderWindow, consumer, options, renderInfo, chatComponent)
-        renderInfo.currentLineNumber = 0
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
-                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), z, renderWindow.WHITE_TEXTURE, backgroundColor, options)
+                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), renderWindow.WHITE_TEXTURE, backgroundColor, options)
             }
         }
 
-        return LAYERS
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, renderWindow, consumer, options, renderInfo, chatComponent)
+        renderInfo.currentLineNumber = 0
     }
 
     override fun toString(): String {
         return chatComponent.toString()
-    }
-
-    companion object {
-        const val LAYERS = 5 // 1 layer for the text, 1 for strikethrough, * 2 for shadow, 1 for background
     }
 }

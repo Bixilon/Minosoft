@@ -64,16 +64,15 @@ abstract class Menu(
 
     operator fun plusAssign(element: Element) = add(element)
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        var zUsed = super.forceRender(offset, z, consumer, options)
+        super.forceRender(offset, consumer, options)
         val maxElementWidth = maxElementWidth
         val startOffset = (size - Vec2i(maxElementWidth, totalHeight)) / 2
         for (element in elements) {
-            zUsed = maxOf(zUsed, element.render(offset + startOffset + Vec2i((maxElementWidth - element.size.x) / 2, 0), z + zUsed, consumer, options) + zUsed)
+            element.render(offset + startOffset + Vec2i((maxElementWidth - element.size.x) / 2, 0), consumer, options)
             startOffset.y += BUTTON_Y_MARGIN + element.size.y
         }
-        return zUsed
     }
 
     override fun onMouseLeave() {

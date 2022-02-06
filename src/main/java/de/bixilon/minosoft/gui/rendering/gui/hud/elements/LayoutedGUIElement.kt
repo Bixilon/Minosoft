@@ -82,9 +82,9 @@ class LayoutedGUIElement<T : LayoutedElement>(
         this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
     }
 
-    fun prepare(z: Int): Int {
+    fun prepare() {
         val layoutOffset = layout.layoutOffset
-        val usedZ = elementLayout.render(layoutOffset, z, mesh, null)
+        elementLayout.render(layoutOffset, mesh, null)
 
         val revision = elementLayout.cache.revision
         if (revision != lastRevision) {
@@ -92,8 +92,6 @@ class LayoutedGUIElement<T : LayoutedElement>(
             this.mesh.load()
             this.lastRevision = revision
         }
-
-        return usedZ
     }
 
     override fun draw() {

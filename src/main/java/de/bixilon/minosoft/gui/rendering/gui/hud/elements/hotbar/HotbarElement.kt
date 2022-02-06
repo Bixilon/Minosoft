@@ -73,17 +73,15 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        var maxZ = 0
-
 
         if (hoverTextShown) {
-            hoverText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, hoverText.size.x), 0), z, consumer, options)
+            hoverText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, hoverText.size.x), 0), consumer, options)
             offset.y += hoverText.size.y + HOVER_TEXT_OFFSET
         }
         if (itemTextShown) {
-            itemText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, itemText.size.x), 0), z, consumer, options)
+            itemText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, itemText.size.x), 0), consumer, options)
             offset.y += itemText.size.y + ITEM_NAME_OFFSET
         }
 
@@ -97,12 +95,10 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
                 offhandOffset.x = core.size.x + offhand.margin.left
             }
             offhandOffset.y = core.size.y - offhand.size.y
-            maxZ = max(maxZ, offhand.render(coreOffset + offhandOffset, z, consumer, options))
+            offhand.render(coreOffset + offhandOffset, consumer, options)
         }
 
-        maxZ = max(maxZ, core.render(coreOffset, z, consumer, options))
-
-        return maxZ
+        core.render(coreOffset, consumer, options)
     }
 
     override fun forceSilentApply() {

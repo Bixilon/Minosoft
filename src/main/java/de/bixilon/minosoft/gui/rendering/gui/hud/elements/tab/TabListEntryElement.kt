@@ -76,12 +76,10 @@ class TabListEntryElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        background.render(offset, z, consumer, options)
-        nameElement.render(offset, z, consumer, options)
-        pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer, options)
-
-        return TextElement.LAYERS
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        background.render(offset, consumer, options)
+        nameElement.render(offset, consumer, options)
+        pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }
 
     override fun forceSilentApply() {
