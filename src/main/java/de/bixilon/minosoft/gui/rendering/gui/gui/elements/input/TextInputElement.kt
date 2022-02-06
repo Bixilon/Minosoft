@@ -20,6 +20,8 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.MarkTextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -30,33 +32,36 @@ import glm_.vec2.Vec2i
 class TextInputElement(
     guiRenderer: GUIRenderer,
     val maxLength: Int = Int.MAX_VALUE,
+    val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
 ) : Element(guiRenderer) {
     private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
-    private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
+    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this)
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var cursorOffset: Vec2i = Vec2i.EMPTY
-    private var _value: String = ""
+    private val _value = StringBuffer(256)
     var value: String
-        get() = _value
+        get() = _value.toString()
         set(value) {
             pointer = 0
-            if (_value == value) {
+            if (_value.equals(value)) {
                 return
             }
-            _value = value
+            _value.replace(0, _value.length, value)
             forceApply()
         }
     private var pointer = 0
     private var cursorTick = 0
 
+
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        background.render(offset, z, consumer, options)
-        textElement.render(offset, z + 1, consumer, options)
+        var zOffset = background.render(offset, z, consumer, options)
+
+        zOffset += textElement.render(offset, z + zOffset, consumer, options)
 
         if (cursorTick < 20) {
-            cursor.render(offset + cursorOffset, z + 1 + TextElement.LAYERS, consumer, options)
+            cursor.render(offset + cursorOffset, z + zOffset, consumer, options)
         }
-        return TextElement.LAYERS + 2
+        return zOffset + 1
     }
 
     override fun forceSilentApply() {
@@ -84,9 +89,13 @@ class TextInputElement(
         cacheUpToDate = false
     }
 
-    private fun silentAppend(string: String) {
-        val appendLength = minOf(string.length, maxLength - _value.length)
-        _value = _value.substring(0, pointer) + string.substring(0, appendLength) + _value.substring(pointer, _value.length)
+    private fun insert(string: String) {
+        val insert = string.replace("\n", "").replace("\r", "").replace('§', '&')
+        if (textElement.markStartPosition > 0) {
+            _value.delete(textElement.markStartPosition, textElement.markEndPosition)
+        }
+        val appendLength = minOf(insert.length, maxLength - _value.length)
+        _value.insert(pointer, insert.substring(0, appendLength))
         pointer += appendLength
     }
 
@@ -95,8 +104,31 @@ class TextInputElement(
             return
         }
         cursorTick = CURSOR_TICK_ON_ACTION
-        silentAppend(char.toChar().toString())
+        insert(char.toChar().toString())
         forceApply()
+    }
+
+    private fun mark(mark: Boolean, right: Boolean) {
+        if (mark) {
+            var start: Int = textElement.markStartPosition
+            var end: Int = textElement.markEndPosition
+            if (right) {
+                if (start < 0) {
+                    start = pointer
+                    end = start
+                }
+                end++
+            } else {
+                if (start < 0) {
+                    end = pointer
+                    start = end
+                }
+                start--
+            }
+            textElement.mark(start, end)
+        } else {
+            textElement.unmark()
+        }
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
@@ -104,39 +136,51 @@ class TextInputElement(
             return
         }
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
+        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
         cursorTick = CURSOR_TICK_ON_ACTION
         when (key) {
             KeyCodes.KEY_V -> {
                 if (controlDown) {
-                    silentAppend(guiRenderer.renderWindow.window.clipboardText)
+                    insert(guiRenderer.renderWindow.window.clipboardText)
+                }
+            }
+            KeyCodes.KEY_C -> {
+                if (controlDown) {
+                    val markedText = textElement.markedText
+                    if (markedText.isEmpty()) {
+                        return
+                    }
+                    renderWindow.window.clipboardText = markedText
                 }
             }
             KeyCodes.KEY_BACKSPACE -> {
                 if (pointer == 0 || _value.isEmpty()) {
                     return
                 }
-                _value = _value.removeRange(pointer - 1, pointer)
+                _value.deleteCharAt(pointer - 1)
                 pointer--
             }
             KeyCodes.KEY_DELETE -> {
                 if (pointer == _value.length || _value.isEmpty()) {
                     return
                 }
-                _value = _value.removeRange(pointer, pointer + 1)
+                _value.deleteCharAt(pointer)
             }
             KeyCodes.KEY_LEFT -> {
                 if (pointer == 0) {
                     return
                 }
+                mark(shiftDown, false)
                 pointer--
             }
             KeyCodes.KEY_RIGHT -> {
                 if (pointer == _value.length) {
                     return
                 }
+                mark(shiftDown, true)
                 pointer++
             }
-            else -> return
+            else -> return textElement.onKey(key, type)
         }
         forceApply()
     }
