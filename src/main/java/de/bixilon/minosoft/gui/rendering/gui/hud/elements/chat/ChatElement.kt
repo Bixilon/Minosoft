@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -60,7 +61,6 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
 
     override val layoutOffset: Vec2i
         get() = Vec2i(0, guiRenderer.scaledSize.y - messages.size.y - CHAT_INPUT_HEIGHT - CHAT_INPUT_MARGIN * 2)
-
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
         chatProfile::width.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
@@ -74,13 +74,13 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
             if (it.position == ChatTextPositions.ABOVE_HOTBAR) {
                 return@of
             }
-            messages += it.message
+            DefaultThreadPool += { messages += it.message }
         })
         connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
             if (!profile.chat.internal.hidden) {
                 return@of
             }
-            messages += it.message
+            DefaultThreadPool += { messages += it.message }
         })
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(), KeyBinding(

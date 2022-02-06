@@ -41,7 +41,7 @@ class GUIMeshCache(
     }
 
     override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        data.addAll(GUIMesh.createVertex(matrix, position, texture, uv, tint, options))
+        GUIMesh.addVertex(data, matrix, position, texture, uv, tint, options)
         revision++
     }
 

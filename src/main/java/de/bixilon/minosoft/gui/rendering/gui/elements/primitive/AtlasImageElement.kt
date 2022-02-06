@@ -30,8 +30,7 @@ open class AtlasImageElement(
     textureLike: TextureLike,
     size: Vec2i = textureLike.size,
     tint: RGBColor = ChatColors.WHITE,
-) : Element(guiRenderer) {
-    override var initialCacheSize: Int = GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: AbstractTexture = textureLike.texture
         set(value) {
             field = value

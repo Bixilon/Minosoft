@@ -33,13 +33,12 @@ class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mes
             texture.renderData.transformUV(uvMin)
         }
         val maxTransformedUV = texture.renderData.transformUV(uvMax)
+        val data = data
         data.add(position.x.toFloat())
         data.add(position.y.toFloat())
         data.add(position.z.toFloat())
-        data.add(minTransformedUV[0])
-        data.add(minTransformedUV[1])
-        data.add(maxTransformedUV[0])
-        data.add(maxTransformedUV[1])
+        data.addAll(minTransformedUV)
+        data.addAll(maxTransformedUV)
         data.add(Float.fromBits(texture.renderData.shaderTextureId))
         data.add(scale)
         data.add(Float.fromBits(tintColor.rgba))

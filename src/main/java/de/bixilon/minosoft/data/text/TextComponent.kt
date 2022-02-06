@@ -205,7 +205,7 @@ open class TextComponent(
         return nodes
     }
 
-    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting.toSynchronizedSet(), clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
+    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
         return TextComponent(
             message = message,
             color = color,

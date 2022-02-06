@@ -32,8 +32,7 @@ open class ImageElement(
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
     size: Vec2i = texture.size,
     tint: RGBColor = ChatColors.WHITE,
-) : Element(guiRenderer) {
-    override var initialCacheSize: Int = GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: AbstractTexture = texture
         set(value) {
             field = value

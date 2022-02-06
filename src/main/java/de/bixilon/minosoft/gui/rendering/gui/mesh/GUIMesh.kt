@@ -18,11 +18,12 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.orthoTimes
+import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2t
-import glm_.vec4.Vec4
 
 class GUIMesh(
     renderWindow: RenderWindow,
@@ -31,7 +32,7 @@ class GUIMesh(
 ) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        data.addAll(createVertex(matrix, position, texture, uv, tint, options))
+        addVertex(data, matrix, position, texture, uv, tint, options)
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -49,25 +50,27 @@ class GUIMesh(
 
     companion object {
 
-        fun createVertex(matrix: Mat4, position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?): FloatArray {
-            val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
-            var color = tint
+        fun addVertex(data: AbstractFloatList, matrix: Mat4, position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+            val outPosition = matrix orthoTimes position
+            var color = tint.rgba
 
-            options?.let { _ ->
-                options.tintColor?.let { color = color.mix(it) }
+            if (options != null) {
+                options.tintColor?.let { color = tint.mix(it).rgba }
 
                 if (options.alpha != 1.0f) {
-                    color = color.with(alpha = color.floatAlpha * options.alpha)
+                    val alpha = color and 0xFF
+                    color = color and 0xFF.inv()
+
+                    color = color or ((alpha * options.alpha).toInt() and 0xFF)
                 }
             }
-            return floatArrayOf(
-                outPosition.x,
-                outPosition.y,
-                uv.x,
-                uv.y,
-                Float.fromBits(texture.renderData.shaderTextureId),
-                Float.fromBits(color.rgba),
-            )
+
+            data.add(outPosition.x)
+            data.add(outPosition.y)
+            data.add(uv.x)
+            data.add(uv.y)
+            data.add(Float.fromBits(texture.renderData.shaderTextureId))
+            data.add(Float.fromBits(color))
         }
     }
 }

@@ -53,7 +53,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
         fontLatch.await()
 
         return Font(
-            providers = providers,
+            providers = providers.toTypedArray(),
         )
     }
 }

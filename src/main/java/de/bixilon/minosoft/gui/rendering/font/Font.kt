@@ -18,7 +18,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.font.provider.FontProvider
 
 class Font(
-    val providers: MutableList<FontProvider>,
+    val providers: Array<FontProvider>,
 ) : FontProvider {
 
     override fun postInit(latch: CountUpAndDownLatch) {

@@ -45,9 +45,14 @@ interface GUIElementDrawer {
             if (!element.enabled) {
                 continue
             }
-            if (element is Drawable && !element.skipDraw) {
-                element.draw()
+            if (element !is Drawable) {
+                continue
             }
+            if (element.skipDraw) {
+                continue
+            }
+            element.draw()
+
             if (element is LayoutedGUIElement<*>) {
                 element.prepare()
             }

@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -42,7 +43,7 @@ open class TextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
-) : LabeledElement(guiRenderer) {
+) : Element(guiRenderer, text.toString().length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     lateinit var renderInfo: TextRenderInfo
         private set
 

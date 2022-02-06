@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 
 class BitmapFontProvider(
-    private val renderWindow: RenderWindow,
+    renderWindow: RenderWindow,
     data: Map<String, Any>,
 ) : FontProvider {
     val ascent = data["ascent"].toDouble()

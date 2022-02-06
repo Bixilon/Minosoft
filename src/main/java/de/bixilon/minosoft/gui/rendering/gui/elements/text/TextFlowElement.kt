@@ -123,6 +123,7 @@ open class TextFlowElement(
         cacheUpToDate = false
     }
 
+    @Synchronized
     fun addMessage(message: ChatComponent) {
         while (messages.size >= MAX_TOTAL_MESSAGES) {
             messages.removeLast()

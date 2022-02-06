@@ -31,7 +31,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
-abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
+abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int = 1000) : InputElement {
     var ignoreDisplaySize = false
     val renderWindow = guiRenderer.renderWindow
 
@@ -44,8 +44,6 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
             silentApply()
         }
 
-    @Deprecated("Warning: Should not be directly accessed!")
-    val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, 1000)
     open var cacheEnabled: Boolean = true
         set(value) {
             if (field == value) {
@@ -54,7 +52,6 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
             field = value
             parent?.cacheEnabled = value
         }
-    open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
         set(value) {
             if (field == value) {
@@ -65,6 +62,9 @@ abstract class Element(val guiRenderer: GUIRenderer) : InputElement {
                 parent?.cacheUpToDate = false
             }
         }
+
+    @Deprecated("Warning: Should not be directly accessed!")
+    val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, initialCacheSize)
 
     private var previousMaxSize = Vec2i.EMPTY
 

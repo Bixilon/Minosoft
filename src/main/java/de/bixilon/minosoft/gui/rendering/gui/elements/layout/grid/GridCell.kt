@@ -26,10 +26,9 @@ class GridCell(
     private val rowConstraint: GridRowConstraint,
     private val child: Element,
     parent: Element?,
-) : Element(guiRenderer) {
+) : Element(guiRenderer, child.initialCacheSize) {
     override var cacheUpToDate: Boolean by child::cacheUpToDate
     override var cacheEnabled: Boolean by child::cacheEnabled
-    override var initialCacheSize: Int by child::initialCacheSize
     override var prefMaxSize: Vec2i by child::prefMaxSize
     override var size: Vec2i by child::size
     override var margin: Vec4i by child::margin

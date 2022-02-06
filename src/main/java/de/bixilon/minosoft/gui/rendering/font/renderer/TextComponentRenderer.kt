@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -30,8 +31,14 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             return false
         }
         val elementMaxSize = element.maxSize
-        val shadow = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
-        val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
+        val elementSize = element.size
+        val color = text.color ?: ChatColors.WHITE
+        val shadow: Boolean = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
+        val italic: Boolean = text.formatting.contains(PreChatFormattingCodes.ITALIC)
+        val bold: Boolean = text.formatting.contains(PreChatFormattingCodes.BOLD)
+        val strikethrough: Boolean = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
+        val underlined: Boolean = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+
         // ToDo: Only 1 quad for the underline and the strikethrough
 
         var alignmentXOffset = 0
@@ -54,7 +61,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // preparing phase
                 renderInfo.lines += TextLineInfo()
             } else {
-                alignmentXOffset = renderInfo.fontAlignment.getOffset(element.size.x, renderInfo.currentLine.width)
+                alignmentXOffset = renderInfo.fontAlignment.getOffset(elementSize.x, renderInfo.currentLine.width)
             }
         }
 
@@ -163,7 +170,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // ToDo: Remove Font.HORIZONTAL_SPACING
             }
 
-            consumer?.let { charData.render(letterOffset, text, it, options, renderInfo.scale) }
+            consumer?.let { charData.render(letterOffset, color, shadow, italic, bold, strikethrough, underlined, it, options, renderInfo.scale) }
 
             if (consumer == null) {
                 currentLineText += char
