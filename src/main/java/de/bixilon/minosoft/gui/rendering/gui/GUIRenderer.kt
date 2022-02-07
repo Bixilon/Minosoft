@@ -35,6 +35,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class GUIRenderer(
@@ -109,6 +110,10 @@ class GUIRenderer(
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
         gui.onKeyPress(type, key)
+    }
+
+    override fun onScroll(scrollOffset: Vec2d) {
+        gui.onScroll(scrollOffset)
     }
 
     override fun drawOther() {

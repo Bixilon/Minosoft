@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class GUIManager(
@@ -135,6 +136,10 @@ class GUIManager(
         elementOrder.firstOrNull()?.onKeyPress(type, key)
     }
 
+    override fun onScroll(scrollOffset: Vec2d) {
+        elementOrder.firstOrNull()?.onScroll(scrollOffset)
+    }
+
     fun open(builder: GUIBuilder<*>) {
         clear()
         val element = this[builder]
@@ -185,7 +190,7 @@ class GUIManager(
             val element = builder.build(guiRenderer)
             element.init()
             element.postInit()
-            return element
+            return@getOrPut element
         }.unsafeCast() // init mesh
     }
 }

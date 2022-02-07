@@ -111,6 +111,9 @@ class LayoutedGUIElement<T : LayoutedElement>(
         val lastPosition = lastPosition
 
         if (position.isOutside(offset, size)) {
+            if (lastPosition.x == -1 || lastPosition.y == -1) {
+                return
+            }
             // move out
             this.lastPosition = Vec2i(-1, -1)
             elementLayout.onMouseLeave()

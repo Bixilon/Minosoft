@@ -39,6 +39,7 @@ import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
@@ -50,7 +51,8 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     private var active = false
         set(value) {
             field = value
-            messages.active = value
+            messages._active = value
+            messages.forceSilentApply()
             forceApply()
         }
     override var skipDraw: Boolean
@@ -61,6 +63,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
 
     override val layoutOffset: Vec2i
         get() = Vec2i(0, guiRenderer.scaledSize.y - messages.size.y - CHAT_INPUT_HEIGHT - CHAT_INPUT_MARGIN * 2)
+
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
         chatProfile::width.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
@@ -139,9 +142,30 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         guiRenderer.gui.pop()
     }
 
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
+        val size = messages.size
+        if (position.y > size.y || position.x > messages.size.x) {
+            return
+        }
+        messages.onScroll(position, scrollOffset)
+    }
+
     override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
-        if (key == KeyCodes.KEY_ENTER && type == KeyChangeTypes.PRESS) {
-            return submit()
+        if (type != KeyChangeTypes.RELEASE) {
+            when (key) {
+                KeyCodes.KEY_ENTER -> {
+                    return submit()
+                }
+                KeyCodes.KEY_PAGE_UP -> {
+                    messages.scrollOffset++
+                    return
+                }
+                KeyCodes.KEY_PAGE_DOWN -> {
+                    messages.scrollOffset--
+                    return
+                }
+                else -> {}
+            }
         }
         input.onKey(key, type)
     }

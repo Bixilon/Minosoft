@@ -16,12 +16,13 @@ package de.bixilon.minosoft.gui.rendering.modding.events.input
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
+import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import glm_.vec2.Vec2d
 
 class MouseScrollEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,
     offset: Vec2d,
-) : RenderEvent(renderWindow) {
+) : RenderEvent(renderWindow), CancelableEvent {
     val offset: Vec2d = offset
         get() = Vec2d(field)
 }

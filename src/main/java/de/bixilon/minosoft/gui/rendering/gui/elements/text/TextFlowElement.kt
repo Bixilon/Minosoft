@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 open class TextFlowElement(
@@ -38,16 +39,36 @@ open class TextFlowElement(
     private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
     // Used for scrolling in GUI (not hud)
-    var active: Boolean = false // if always all lines should be displayed when possible
+    var _active = false
         set(value) {
             if (field == value) {
                 return
             }
             field = value
-            forceSilentApply()
+            _scrollOffset = 0
+        }
+    var active: Boolean // if always all lines should be displayed when possible
+        get() = _active
+        set(value) {
+            if (_active == value) {
+                return
+            }
+            _active = value
+            forceApply()
         }
 
-    private val scrollOffset: Int = 0 // lines to skip from the bottom
+    var _scrollOffset = 0
+    var scrollOffset: Int
+        get() = _scrollOffset
+        set(value) {
+            val realValue = maxOf(0, value)
+            if (_scrollOffset == realValue) {
+                return
+            }
+            _scrollOffset = realValue
+            forceApply()
+        }
+
 
     override var prefSize: Vec2i
         get() = maxSize
@@ -67,6 +88,10 @@ open class TextFlowElement(
             message.textElement.render(offset + Vec2i(0, yOffset), consumer, options)
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
+    }
+
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
+        this.scrollOffset += scrollOffset.y.toInt()
     }
 
     @Synchronized
@@ -98,12 +123,17 @@ open class TextFlowElement(
                 currentLineOffset++
                 lineIterator.next()
             }
+            if (!lineIterator.hasNext()) {
+                continue
+            }
 
             if (lines.size == 1) {
                 visibleLines += TextFlowLineElement(textElement, message)
                 textSize = textSize.max(textElement.size)
                 continue
             }
+
+            // ToDo: Limit scrolling (that it is not possible to scroll out)
 
             for (line in lineIterator) {
                 if (visibleLines.size >= maxLines) {

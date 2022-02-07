@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.loading.Priorities
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -97,7 +98,7 @@ class RenderWindowInputHandler(
 
         connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
         connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
-        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent> { scroll(it.offset) })
+        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent>(priority = Priorities.LOW) { scroll(it.offset, it) })
 
         connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
             val inputHandler = inputHandler
@@ -296,8 +297,12 @@ class RenderWindowInputHandler(
         return
     }
 
-    private fun scroll(scrollOffset: Vec2d) {
-        inputHandler?.onScroll(scrollOffset)
+    private fun scroll(scrollOffset: Vec2d, event: MouseScrollEvent? = null) {
+        val inputHandler = inputHandler
+        if (inputHandler != null) {
+            inputHandler.onScroll(scrollOffset)
+            event?.cancelled = true
+        }
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, defaultPressed: Boolean = false, callback: ((keyDown: Boolean) -> Unit)) {
