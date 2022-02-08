@@ -14,12 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text.mark
 
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -59,8 +62,8 @@ class MarkTextElement(
         }
 
     fun mark(start: Int, end: Int) {
-        markStartPosition = start
-        markEndPosition = end
+        markStartPosition = minOf(start, end)
+        markEndPosition = maxOf(start, end)
         forceSilentApply()
     }
 
@@ -75,8 +78,18 @@ class MarkTextElement(
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (markStartPosition >= 0) {
-            for (line in renderInfo.lines) {
-                // ToDo
+            val message = chatComponent.message // ToDo: This does not include formatting
+            val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), parent = _parent)
+            val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), parent = _parent)
+            val markOffset = Vec2i(preMark.renderInfo.lines.lastOrNull()?.width ?: 0, preMark.size.y)
+            if (markOffset.y > 0 && (preMark.renderInfo.lines.lastOrNull()?.width ?: 0) <= (renderInfo.lines.lastOrNull()?.width ?: 0)) {
+                markOffset.y -= Font.TOTAL_CHAR_HEIGHT
+            }
+
+            for (line in mark.renderInfo.lines) {
+                ColorElement(guiRenderer, size = Vec2i(line.width, Font.TOTAL_CHAR_HEIGHT), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
+                markOffset.x = 0
+                markOffset.y += Font.TOTAL_CHAR_HEIGHT
             }
         }
 
@@ -95,8 +108,21 @@ class MarkTextElement(
                 }
                 mark(0, chatComponent.message.length)
             }
+            KeyCodes.KEY_C -> {
+                if (controlDown) {
+                    copy()
+                }
+            }
             KeyCodes.KEY_ESCAPE -> unmark()
             else -> return
         }
+    }
+
+    fun copy() {
+        val markedText = markedText
+        if (markedText.isEmpty()) {
+            return
+        }
+        renderWindow.window.clipboardText = markedText
     }
 }

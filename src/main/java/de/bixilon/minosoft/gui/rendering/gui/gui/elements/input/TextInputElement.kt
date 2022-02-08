@@ -68,7 +68,9 @@ class TextInputElement(
     override fun forceSilentApply() {
         if (!textUpToDate) {
             textElement._chatComponent = TextComponent(_value)
+            textElement.unmark()
             textElement.forceSilentApply()
+            textUpToDate = true
         }
         background.size = Vec2i(prefMaxSize.x, prefMaxSize.y)
 
@@ -96,8 +98,11 @@ class TextInputElement(
 
     private fun insert(string: String) {
         val insert = string.replace("\n", "").replace("\r", "").replace('§', '&')
-        if (textElement.markStartPosition > 0) {
+        if (textElement.marked) {
             _value.delete(textElement.markStartPosition, textElement.markEndPosition)
+            if (pointer > textElement.markStartPosition) {
+                pointer = textElement.markStartPosition
+            }
         }
         val appendLength = minOf(insert.length, maxLength - _value.length)
         _value.insert(pointer, insert.substring(0, appendLength))
@@ -115,26 +120,42 @@ class TextInputElement(
     }
 
     private fun mark(mark: Boolean, right: Boolean) {
+        val marked = textElement.marked
         if (mark) {
             var start: Int = textElement.markStartPosition
             var end: Int = textElement.markEndPosition
             if (right) {
-                if (start < 0) {
-                    start = pointer
-                    end = start
+                if (start == pointer) {
+                    start++
+                } else {
+                    if (start < 0) {
+                        start = pointer
+                        end = start
+                    }
+                    end++
                 }
-                end++
             } else {
-                if (start < 0) {
-                    end = pointer
-                    start = end
+                if (end == pointer) {
+                    end--
+                } else {
+                    if (start < 0) {
+                        end = pointer
+                        start = end
+                    }
+                    start--
                 }
-                start--
             }
             textElement.mark(start, end)
-        } else {
-            textElement.unmark()
+            if (right) {
+                pointer++
+            } else {
+                pointer--
+            }
+            return
         }
+
+        pointer = if (marked) if (right) textElement.markEndPosition else textElement.markStartPosition else if (right) minOf(_value.length, pointer + 1) else maxOf(0, pointer - 1)
+        textElement.unmark()
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
@@ -150,43 +171,64 @@ class TextInputElement(
                     insert(guiRenderer.renderWindow.window.clipboardText)
                 }
             }
-            KeyCodes.KEY_C -> {
+            KeyCodes.KEY_X -> {
                 if (controlDown) {
-                    val markedText = textElement.markedText
-                    if (markedText.isEmpty()) {
-                        return
-                    }
-                    renderWindow.window.clipboardText = markedText
+                    textElement.copy()
+                    insert("")
                 }
             }
             KeyCodes.KEY_BACKSPACE -> {
-                if (pointer == 0 || _value.isEmpty()) {
+                if (_value.isEmpty()) {
                     return
                 }
-                _value.deleteCharAt(pointer - 1)
-                textUpToDate = false
-                pointer--
+                if (textElement.marked) {
+                    insert("")
+                } else if (pointer == 0) {
+                    return
+                } else {
+                    _value.deleteCharAt(pointer - 1)
+                    pointer--
+                    textUpToDate = false
+                }
             }
             KeyCodes.KEY_DELETE -> {
-                if (pointer == _value.length || _value.isEmpty()) {
+                if (_value.isEmpty()) {
                     return
                 }
-                _value.deleteCharAt(pointer)
-                textUpToDate = false
+                if (textElement.marked) {
+                    insert("")
+                } else if (pointer == _value.length) {
+                    return
+                } else {
+                    _value.deleteCharAt(pointer)
+                    textUpToDate = false
+                }
             }
             KeyCodes.KEY_LEFT -> {
                 if (pointer == 0) {
+                    if (!shiftDown) {
+                        textElement.unmark()
+                    }
                     return
                 }
                 mark(shiftDown, false)
-                pointer--
             }
             KeyCodes.KEY_RIGHT -> {
                 if (pointer == _value.length) {
+                    if (!shiftDown && pointer == _value.length) {
+                        textElement.unmark()
+                    }
                     return
                 }
                 mark(shiftDown, true)
-                pointer++
+            }
+            KeyCodes.KEY_HOME -> {
+                textElement.unmark()
+                pointer = 0
+            }
+            KeyCodes.KEY_END -> {
+                textElement.unmark()
+                pointer = value.length
             }
             else -> return textElement.onKey(key, type)
         }
