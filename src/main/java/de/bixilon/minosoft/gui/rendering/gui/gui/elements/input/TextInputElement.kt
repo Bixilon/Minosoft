@@ -34,6 +34,7 @@ class TextInputElement(
     guiRenderer: GUIRenderer,
     val maxLength: Int = Int.MAX_VALUE,
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
+    var editable: Boolean = true,
 ) : Element(guiRenderer) {
     private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
     private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this)
@@ -53,7 +54,6 @@ class TextInputElement(
     private var textUpToDate = false
     private var pointer = 0
     private var cursorTick = 0
-
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
@@ -97,6 +97,9 @@ class TextInputElement(
     }
 
     private fun insert(string: String) {
+        if (!editable) {
+            return
+        }
         val insert = string.replace("\n", "").replace("\r", "").replace('§', '&')
         if (textElement.marked) {
             _value.delete(textElement.markStartPosition, textElement.markEndPosition)
@@ -111,7 +114,7 @@ class TextInputElement(
     }
 
     override fun onCharPress(char: Int) {
-        if (_value.length >= maxLength) {
+        if (_value.length >= maxLength || !editable) {
             return
         }
         cursorTick = CURSOR_TICK_ON_ACTION
@@ -178,7 +181,7 @@ class TextInputElement(
                 }
             }
             KeyCodes.KEY_BACKSPACE -> {
-                if (_value.isEmpty()) {
+                if (_value.isEmpty() || !editable) {
                     return
                 }
                 if (textElement.marked) {
@@ -192,7 +195,7 @@ class TextInputElement(
                 }
             }
             KeyCodes.KEY_DELETE -> {
-                if (_value.isEmpty()) {
+                if (_value.isEmpty() || !editable) {
                     return
                 }
                 if (textElement.marked) {
