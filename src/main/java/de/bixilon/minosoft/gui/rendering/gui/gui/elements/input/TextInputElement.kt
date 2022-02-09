@@ -122,9 +122,12 @@ class TextInputElement(
         forceApply()
     }
 
-    private fun mark(mark: Boolean, right: Boolean) {
+    private fun mark(mark: Boolean, right: Boolean, modify: Int) {
         val marked = textElement.marked
         if (mark) {
+            if (modify == 0) {
+                return
+            }
             var start: Int = textElement.markStartPosition
             var end: Int = textElement.markEndPosition
             if (right) {
@@ -135,7 +138,7 @@ class TextInputElement(
                         start = pointer
                         end = start
                     }
-                    end++
+                    end += modify
                 }
             } else {
                 if (end == pointer) {
@@ -145,19 +148,15 @@ class TextInputElement(
                         end = pointer
                         start = end
                     }
-                    start--
+                    start += modify
                 }
             }
             textElement.mark(start, end)
-            if (right) {
-                pointer++
-            } else {
-                pointer--
-            }
+            pointer += modify
             return
         }
 
-        pointer = if (marked) if (right) textElement.markEndPosition else textElement.markStartPosition else if (right) minOf(_value.length, pointer + 1) else maxOf(0, pointer - 1)
+        pointer = if (marked) if (right) textElement.markEndPosition else textElement.markStartPosition else if (right) minOf(_value.length, pointer + modify) else maxOf(0, pointer + modify)
         textElement.unmark()
     }
 
@@ -189,8 +188,9 @@ class TextInputElement(
                 } else if (pointer == 0) {
                     return
                 } else {
-                    _value.deleteCharAt(pointer - 1)
-                    pointer--
+                    val delete = if (controlDown) calculateWordPointer(false) else -1
+                    _value.delete(pointer + delete, pointer)
+                    pointer += delete
                     textUpToDate = false
                 }
             }
@@ -203,7 +203,8 @@ class TextInputElement(
                 } else if (pointer == _value.length) {
                     return
                 } else {
-                    _value.deleteCharAt(pointer)
+                    val delete = if (controlDown) calculateWordPointer(true) else 1
+                    _value.delete(pointer, pointer + delete)
                     textUpToDate = false
                 }
             }
@@ -214,7 +215,12 @@ class TextInputElement(
                     }
                     return
                 }
-                mark(shiftDown, false)
+                val modify = if (controlDown) {
+                    calculateWordPointer(false)
+                } else {
+                    -1
+                }
+                mark(shiftDown, false, modify)
             }
             KeyCodes.KEY_RIGHT -> {
                 if (pointer == _value.length) {
@@ -223,7 +229,13 @@ class TextInputElement(
                     }
                     return
                 }
-                mark(shiftDown, true)
+                val modify = if (controlDown) {
+                    calculateWordPointer(true)
+                } else {
+                    1
+                }
+
+                mark(shiftDown, true, modify)
             }
             KeyCodes.KEY_HOME -> {
                 textElement.unmark()
@@ -242,7 +254,25 @@ class TextInputElement(
         forceSilentApply()
     }
 
+    private fun calculateWordPointer(right: Boolean): Int {
+        var modify = if (right) 1 else -1
+        while (pointer + modify in 1 until _value.length) {
+            val char = _value[pointer + modify]
+            if (char in WORD_SEPARATORS) {
+                break
+            }
+            if (right) {
+                modify++
+            } else {
+                modify--
+            }
+        }
+
+        return modify
+    }
+
     companion object {
         private const val CURSOR_TICK_ON_ACTION = 10
+        private val WORD_SEPARATORS = arrayOf(' ', ',', ';', '-', '\'', '`', '"', '“', '„', '.', '&', '@', '^', '/', '\\', '…', '*', '⁂', '=', '?', '!', '‽', '¡', '¿', '⸮', '#', '№', '%', '‰', '‱', '°', '⌀', '+', '−', '×', '÷', '~', '±', '∓', '–', '⁀', '|', '¦', '‖', '•', '·', '©', '©', '℗', '®', '‘', '’', '“', '”', '"', '"', '‹', '›', '«', '»', '(', ')', '[', ']', '{', '}', '⟨', '⟩', '”', '〃', '†', '‡', '❧', '☞', '◊', '¶', '⸿', '፠', '๛', '※', '§').toHashSet()
     }
 }
