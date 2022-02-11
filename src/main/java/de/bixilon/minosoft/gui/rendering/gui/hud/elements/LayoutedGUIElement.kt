@@ -110,17 +110,17 @@ class LayoutedGUIElement<T : LayoutedElement>(
         val size = elementLayout.size
         val lastPosition = lastPosition
 
-        if (position.isOutside(offset, size)) {
-            if (lastPosition.x == -1 || lastPosition.y == -1) {
+        if (position.isOutside(offset, offset + size)) {
+            if (lastPosition == INVALID_MOUSE_POSITION) {
                 return
             }
             // move out
-            this.lastPosition = Vec2i(-1, -1)
+            this.lastPosition = INVALID_MOUSE_POSITION
             elementLayout.onMouseLeave()
             return
         }
         val delta = position - offset
-        this.lastPosition = position
+        this.lastPosition = delta
 
         if (lastPosition.isOutside(offset, size)) {
             elementLayout.onMouseEnter(delta)
@@ -137,27 +137,21 @@ class LayoutedGUIElement<T : LayoutedElement>(
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
         val mouseButton = MouseButtons[key] ?: return elementLayout.onKey(key, type)
 
-        val offset = layout.layoutOffset
-        val size = elementLayout.size
         val position = lastPosition
-        if (position.isOutside(offset, size)) {
+        if (position == INVALID_MOUSE_POSITION) {
             return
         }
-        val delta = position - offset
 
         val mouseAction = MouseActions[type] ?: return
-        elementLayout.onMouseAction(delta, mouseButton, mouseAction)
+        elementLayout.onMouseAction(position, mouseButton, mouseAction)
     }
 
     override fun onScroll(scrollOffset: Vec2d) {
-        val offset = layout.layoutOffset
-        val size = elementLayout.size
         val position = lastPosition
-        if (position.isOutside(offset, size)) {
+        if (lastPosition == INVALID_MOUSE_POSITION) {
             return
         }
-        val delta = position - offset
-        elementLayout.onScroll(delta, scrollOffset)
+        elementLayout.onScroll(position, scrollOffset)
     }
 
     override fun onClose() {
@@ -171,5 +165,9 @@ class LayoutedGUIElement<T : LayoutedElement>(
 
     override fun onHide() {
         elementLayout.onHide()
+    }
+
+    companion object {
+        private val INVALID_MOUSE_POSITION = Vec2i(-1, -1)
     }
 }
