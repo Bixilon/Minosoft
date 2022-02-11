@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3d
 
@@ -33,7 +32,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     init {
         add(TextElement(guiRenderer, "Debug options", HorizontalAlignments.CENTER, false))
         add(SpacerElement(guiRenderer, Vec2i(0, 10)))
-        add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.sendPacket(ChatMessageC2SP("/gamemode ${connection.player.gamemode.next().name.lowercase()}")) })
+        add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.sendChatMessage("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
         add(ButtonElement(guiRenderer, "Hack to next gamemode") {
             val previous = connection.player.tabListItem.gamemode
             val next = previous.next()

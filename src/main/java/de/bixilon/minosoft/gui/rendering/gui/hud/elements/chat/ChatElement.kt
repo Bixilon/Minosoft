@@ -37,7 +37,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
@@ -142,8 +141,9 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     private fun submit() {
-        if (input.value.isNotBlank()) {
-            connection.sendPacket(ChatMessageC2SP(input.value))
+        val value = input.value
+        if (value.isNotBlank()) {
+            connection.util.sendChatMessage(value)
         }
         input.value = ""
         guiRenderer.gui.pop()
