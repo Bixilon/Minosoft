@@ -11,10 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.hud.chat
+package de.bixilon.minosoft.config.profile.profiles.gui.chat
 
-import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
-import de.bixilon.minosoft.config.profile.profiles.hud.chat.internal.InternalC
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.gui.chat.internal.InternalC
 import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 
 class ChatC {

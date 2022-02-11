@@ -44,7 +44,7 @@ import glm_.vec2.Vec2i
 
 class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
     private val connection = renderWindow.connection
-    private val profile = connection.profiles.hud
+    private val profile = connection.profiles.gui
     private val chatProfile = profile.chat
     private val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@ChatElement }
     private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }

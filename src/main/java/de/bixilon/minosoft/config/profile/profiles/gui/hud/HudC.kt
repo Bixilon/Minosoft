@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.hud.chat.internal
+package de.bixilon.minosoft.config.profile.profiles.gui.hud
 
-import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair.CrosshairC
 
-class InternalC {
-
-    /**
-     * Hides the internal chat
-     */
-    var hidden by delegate(false)
-
-    /**
-     * The width of the internal chat in scaled pixels
-     */
-    var width by delegate(320)
-
-    /**
-     * The height of the internal chat in scaled pixels
-     */
-    var height by delegate(180)
+class HudC {
+    val crosshair = CrosshairC()
 }

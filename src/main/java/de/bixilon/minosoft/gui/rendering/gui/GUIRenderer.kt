@@ -42,7 +42,7 @@ class GUIRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, InputHandler, OtherDrawable {
-    private val profile = connection.profiles.hud
+    private val profile = connection.profiles.gui
     override val renderSystem = renderWindow.renderSystem
     var scaledSize: Vec2i = renderWindow.window.size
     val gui = GUIManager(this)

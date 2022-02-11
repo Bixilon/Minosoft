@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.hud
+package de.bixilon.minosoft.config.profile.profiles.gui
 
 import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
@@ -26,28 +26,28 @@ import de.bixilon.minosoft.util.json.Jackson
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
-object HUDProfileManager : ProfileManager<HUDProfile> {
-    override val namespace = "minosoft:hud".toResourceLocation()
+object GUIProfileManager : ProfileManager<GUIProfile> {
+    override val namespace = "minosoft:gui".toResourceLocation()
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
-    override val profileClass = HUDProfile::class.java
+    override val profileClass = GUIProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.TACHOMETER_ALT
 
 
     override var currentLoadingPath: String? = null
-    override val profiles: AbstractMutableBiMap<String, HUDProfile> by watchedBiMap(synchronizedBiMapOf())
+    override val profiles: AbstractMutableBiMap<String, GUIProfile> by watchedBiMap(synchronizedBiMapOf())
 
-    override var selected: HUDProfile = null.unsafeCast()
+    override var selected: GUIProfile = null.unsafeCast()
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(HUDProfileSelectEvent(value))
+            GlobalEventMaster.fireEvent(GUIProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): HUDProfile {
+    override fun createProfile(name: String, description: String?): GUIProfile {
         currentLoadingPath = name
-        val profile = HUDProfile(description ?: "Default hud profile")
+        val profile = GUIProfile(description ?: "Default hud profile")
         currentLoadingPath = null
         profiles[name] = profile
 

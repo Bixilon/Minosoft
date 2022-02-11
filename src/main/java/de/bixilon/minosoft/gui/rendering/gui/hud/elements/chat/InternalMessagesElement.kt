@@ -29,7 +29,7 @@ import glm_.vec2.Vec2i
 
 class InternalMessagesElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRenderer, 15000), LayoutedElement, Initializable, Drawable {
     private val connection = renderWindow.connection
-    private val profile = connection.profiles.hud
+    private val profile = connection.profiles.gui
     private val internalChatProfile = profile.chat.internal
     override var skipDraw: Boolean
         get() = internalChatProfile.hidden
