@@ -15,10 +15,11 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
     override var parent: AbstractRegistry<BlockState?>? = null
-    private val idMap: MutableMap<Int, BlockState> = mutableMapOf()
+    private val idMap: Int2ObjectOpenHashMap<BlockState> = Int2ObjectOpenHashMap()
 
     override val size: Int
         get() {

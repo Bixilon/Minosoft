@@ -17,12 +17,14 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 class RecipeRegistry(
     override var parent: AbstractRegistry<Recipe>? = null,
 ) : AbstractRegistry<Recipe> {
-    private val idValueMap: MutableMap<Int, Recipe> = mutableMapOf()
-    private val valueIdMap: MutableMap<Recipe, Int> = mutableMapOf()
+    private val idValueMap: Int2ObjectOpenHashMap<Recipe> = Int2ObjectOpenHashMap()
+    private val valueIdMap: Object2IntOpenHashMap<Recipe> = Object2IntOpenHashMap()
     private val resourceLocationRecipeMap: MutableMap<ResourceLocation, Recipe> = mutableMapOf()
     private val recipeResourceLocationMap: MutableMap<Recipe, ResourceLocation> = mutableMapOf()
 

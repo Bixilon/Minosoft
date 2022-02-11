@@ -19,11 +19,13 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import glm_.vec3.Vec3d
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import java.util.*
 
 class WorldEntities : Iterable<Entity> {
-    private val idEntityMap: MutableMap<Int, Entity> = synchronizedMapOf()
-    private val entityIdMap: MutableMap<Entity, Int> = synchronizedMapOf()
+    private val idEntityMap: Int2ObjectOpenHashMap<Entity> = Int2ObjectOpenHashMap()
+    private val entityIdMap: Object2IntOpenHashMap<Entity> = Object2IntOpenHashMap()
     private val entityUUIDMap: MutableMap<Entity, UUID> = synchronizedMapOf()
     private val uuidEntityMap: MutableMap<UUID, Entity> = synchronizedMapOf()
 

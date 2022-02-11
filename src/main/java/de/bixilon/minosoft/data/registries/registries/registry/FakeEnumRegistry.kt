@@ -17,13 +17,15 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.collections.Clearable
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     override var parent: FakeEnumRegistry<T>? = null,
 ) : Clearable, Parentable<FakeEnumRegistry<T>> {
     private var initialized = false
-    private val idValueMap: MutableMap<Int, T> = mutableMapOf()
-    private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
+    private val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
+    private val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
     private val nameValueMap: MutableMap<String, T> = mutableMapOf()
 
     operator fun get(name: String): T? {

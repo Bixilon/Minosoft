@@ -76,6 +76,8 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -91,7 +93,7 @@ class WorldRenderer(
     private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
 
-    private val loadedMeshes: MutableMap<Vec2i, MutableMap<Int, WorldMesh>> = mutableMapOf() // all prepared (and up to date) meshes
+    private val loadedMeshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<WorldMesh>> = mutableMapOf() // all prepared (and up to date) meshes
     private val loadedMeshesLock = ReadWriteLock()
 
     val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
@@ -100,7 +102,7 @@ class WorldRenderer(
 
     private val queue: MutableList<WorldQueueItem> = synchronizedListOf() // queue, that is visible, and should be rendered
     private val queueLock = ReadWriteLock()
-    private val culledQueue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
+    private val culledQueue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val culledQueueLock = ReadWriteLock()
 
     // ToDo: Sometimes if you clear the chunk cache a ton of times, the workers are maxed out and nothing happens anymore
@@ -189,7 +191,7 @@ class WorldRenderer(
             if (!chunk.isFullyLoaded) {
                 return@of
             }
-            val sectionHeights: MutableMap<Int, BooleanArray> = mutableMapOf()
+            val sectionHeights: Int2ObjectOpenHashMap<BooleanArray> = Int2ObjectOpenHashMap()
             for (blockPosition in it.blocks.keys) {
                 val neighbours = sectionHeights.getOrPut(blockPosition.sectionHeight) { BooleanArray(Directions.SIZE) }
                 val inSectionHeight = blockPosition.y.inSectionHeight
@@ -542,7 +544,7 @@ class WorldRenderer(
             return true
         } else {
             culledQueueLock.lock()
-            culledQueue.getOrPut(chunkPosition) { mutableSetOf() } += sectionHeight
+            culledQueue.getOrPut(chunkPosition) { IntOpenHashSet() } += sectionHeight
             culledQueueLock.unlock()
         }
         return false
@@ -606,7 +608,7 @@ class WorldRenderer(
             }
 
             loadedMeshesLock.lock()
-            val meshes = loadedMeshes.getOrPut(item.chunkPosition) { mutableMapOf() }
+            val meshes = loadedMeshes.getOrPut(item.chunkPosition) { Int2ObjectOpenHashMap() }
 
             meshes.put(item.sectionHeight, mesh)?.let {
                 this.visible.removeMesh(it)
@@ -719,18 +721,18 @@ class WorldRenderer(
         loadedMeshesLock.release()
 
         culledQueueLock.acquire()
-        val queue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // The queue method needs the full lock of the culledQueue
+        val queue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // The queue method needs the full lock of the culledQueue
         for ((chunkPosition, sectionHeights) in this.culledQueue) {
             if (!isChunkVisible(chunkPosition)) {
                 continue
             }
-            var chunkQueue: MutableSet<Int>? = null
+            var chunkQueue: IntOpenHashSet? = null
             for (sectionHeight in sectionHeights) {
                 if (!isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16), false)) {
                     continue
                 }
                 if (chunkQueue == null) {
-                    chunkQueue = queue.getOrPut(chunkPosition) { mutableSetOf() }
+                    chunkQueue = queue.getOrPut(chunkPosition) { IntOpenHashSet() }
                 }
                 chunkQueue += sectionHeight
             }

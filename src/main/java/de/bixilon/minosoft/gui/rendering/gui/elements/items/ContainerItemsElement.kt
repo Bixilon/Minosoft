@@ -22,11 +22,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
-    val slots: Map<Int, Vec2iBinding>, // ToDo: Use an array?
+    val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
 ) : Element(guiRenderer) {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
     private var revision = -1L

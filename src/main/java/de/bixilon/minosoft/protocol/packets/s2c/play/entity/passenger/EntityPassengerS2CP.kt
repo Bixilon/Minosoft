@@ -21,11 +21,12 @@ import de.bixilon.minosoft.util.KUtil.entities
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 @LoadPacket
 class EntityPassengerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val vehicleEntityId: Int = buffer.readVarInt()
-    val passengerEntityIds: Set<Int> = buffer.readVarIntArray().toSet()
+    val passengerEntityIds: IntOpenHashSet = IntOpenHashSet(buffer.readVarIntArray())
 
     override fun handle(connection: PlayConnection) {
         val vehicle = connection.world.entities[vehicleEntityId] ?: return
