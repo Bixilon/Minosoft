@@ -11,12 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.hud
+package de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.hunger
 
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair.CrosshairC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.HotbarC
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
 
-class HudC {
-    val crosshair = CrosshairC()
-    val hotbar = HotbarC()
+class HungerC {
+    /**
+     * Minecraft does not show the saturation by default.
+     * Enabling this option will show how much saturation you have
+     * Enabled by default, might break texture packs
+     */
+    val saturationBar by delegate(true)
 }

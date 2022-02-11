@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.hud
+package de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar
 
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair.CrosshairC
-import de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.HotbarC
+import de.bixilon.minosoft.config.profile.profiles.gui.hud.hotbar.hunger.HungerC
 
-class HudC {
-    val crosshair = CrosshairC()
-    val hotbar = HotbarC()
+class HotbarC {
+    val hunger = HungerC()
 }
