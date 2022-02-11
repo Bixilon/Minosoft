@@ -36,24 +36,27 @@ class TextInputElement(
     val maxLength: Int = Int.MAX_VALUE,
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
+    var onChange: () -> Unit = {},
 ) : Element(guiRenderer) {
     private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
     private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this)
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var cursorOffset: Vec2i = Vec2i.EMPTY
-    private val _value = StringBuffer(256)
+    val _value = StringBuffer(256)
     var value: String
         get() = _value.toString()
         set(value) {
-            pointer = 0
+            _pointer = 0
             if (_value.equals(value)) {
                 return
             }
             _value.replace(0, _value.length, value)
+            onChange()
+            textUpToDate = false
             forceApply()
         }
     private var textUpToDate = false
-    private var pointer = 0
+    var _pointer = 0
     private var cursorTick = 0
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -75,13 +78,13 @@ class TextInputElement(
         }
         background.size = Vec2i(prefMaxSize.x, prefMaxSize.y)
 
-        cursorOffset = if (pointer == 0) {
+        cursorOffset = if (_pointer == 0) {
             Vec2i.EMPTY
         } else {
-            val preCursorText = if (pointer == value.length) {
+            val preCursorText = if (_pointer == value.length) {
                 textElement
             } else {
-                TextElement(guiRenderer, value.substring(0, pointer), parent = this)
+                TextElement(guiRenderer, value.substring(0, _pointer), parent = this)
             }
             Vec2i(preCursorText.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.renderInfo.lines.size - 1, 0) * preCursorText.charHeight)
         }
@@ -104,14 +107,15 @@ class TextInputElement(
         val insert = string.replace("\n", "").replace("\r", "").replace('§', '&')
         if (textElement.marked) {
             _value.delete(textElement.markStartPosition, textElement.markEndPosition)
-            if (pointer > textElement.markStartPosition) {
-                pointer = textElement.markStartPosition
+            if (_pointer > textElement.markStartPosition) {
+                _pointer = textElement.markStartPosition
             }
         }
         val appendLength = minOf(insert.length, maxLength - _value.length)
-        _value.insert(pointer, insert.substring(0, appendLength))
-        pointer += appendLength
+        _value.insert(_pointer, insert.substring(0, appendLength))
+        _pointer += appendLength
         textUpToDate = false
+        onChange()
     }
 
     override fun onCharPress(char: Int) {
@@ -132,32 +136,32 @@ class TextInputElement(
             var start: Int = textElement.markStartPosition
             var end: Int = textElement.markEndPosition
             if (right) {
-                if (start == pointer) {
+                if (start == _pointer) {
                     start += modify
                 } else {
                     if (start < 0) {
-                        start = pointer
+                        start = _pointer
                         end = start
                     }
                     end += modify
                 }
             } else {
-                if (end == pointer) {
+                if (end == _pointer) {
                     end += modify
                 } else {
                     if (start < 0) {
-                        end = pointer
+                        end = _pointer
                         start = end
                     }
                     start += modify
                 }
             }
             textElement.mark(start, end)
-            pointer += modify
+            _pointer += modify
             return
         }
 
-        pointer = if (marked) if (right) textElement.markEndPosition else textElement.markStartPosition else if (right) minOf(_value.length, pointer + modify) else maxOf(0, pointer + modify)
+        _pointer = if (marked) if (right) textElement.markEndPosition else textElement.markStartPosition else if (right) minOf(_value.length, _pointer + modify) else maxOf(0, _pointer + modify)
         textElement.unmark()
     }
 
@@ -186,12 +190,12 @@ class TextInputElement(
                 }
                 if (textElement.marked) {
                     insert("")
-                } else if (pointer == 0) {
+                } else if (_pointer == 0) {
                     return
                 } else {
                     val delete = if (controlDown) calculateWordPointer(false) else -1
-                    _value.delete(pointer + delete, pointer)
-                    pointer += delete
+                    _value.delete(_pointer + delete, _pointer)
+                    _pointer += delete
                     textUpToDate = false
                 }
             }
@@ -201,16 +205,16 @@ class TextInputElement(
                 }
                 if (textElement.marked) {
                     insert("")
-                } else if (pointer == _value.length) {
+                } else if (_pointer == _value.length) {
                     return
                 } else {
                     val delete = if (controlDown) calculateWordPointer(true) else 1
-                    _value.delete(pointer, pointer + delete)
+                    _value.delete(_pointer, _pointer + delete)
                     textUpToDate = false
                 }
             }
             KeyCodes.KEY_LEFT -> {
-                if (pointer == 0) {
+                if (_pointer == 0) {
                     if (!shiftDown) {
                         textElement.unmark()
                     }
@@ -224,8 +228,8 @@ class TextInputElement(
                 mark(shiftDown, false, modify)
             }
             KeyCodes.KEY_RIGHT -> {
-                if (pointer == _value.length) {
-                    if (!shiftDown && pointer == _value.length) {
+                if (_pointer == _value.length) {
+                    if (!shiftDown && _pointer == _value.length) {
                         textElement.unmark()
                     }
                     return
@@ -240,11 +244,11 @@ class TextInputElement(
             }
             KeyCodes.KEY_HOME -> {
                 textElement.unmark()
-                pointer = 0
+                _pointer = 0
             }
             KeyCodes.KEY_END -> {
                 textElement.unmark()
-                pointer = value.length
+                _pointer = value.length
             }
             else -> return textElement.onKey(key, type)
         }
@@ -257,8 +261,8 @@ class TextInputElement(
 
     private fun calculateWordPointer(right: Boolean): Int {
         var modify = if (right) 1 else -1
-        while (pointer + modify in 1 until _value.length) {
-            val char = _value[pointer + modify]
+        while (_pointer + modify in 1 until _value.length) {
+            val char = _value[_pointer + modify]
             if (char in WORD_SEPARATORS) {
                 break
             }
@@ -270,6 +274,10 @@ class TextInputElement(
         }
 
         return modify
+    }
+
+    override fun onOpen() {
+        cursorTick = 19 // make cursor visible
     }
 
     companion object {

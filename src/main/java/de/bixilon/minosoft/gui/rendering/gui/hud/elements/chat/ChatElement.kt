@@ -69,6 +69,12 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         chatProfile::width.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
         chatProfile::height.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
         forceSilentApply()
+        input.onChange = {
+            while (input._value.startsWith(' ')) {
+                input._value.deleteCharAt(0)
+                input._pointer--
+            }
+        }
     }
 
 
@@ -115,6 +121,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
 
     override fun onOpen() {
         active = true
+        input.onOpen()
     }
 
     override fun onClose() {
