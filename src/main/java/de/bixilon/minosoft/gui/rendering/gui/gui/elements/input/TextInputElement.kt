@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
+import it.unimi.dsi.fastutil.chars.CharOpenHashSet
 
 class TextInputElement(
     guiRenderer: GUIRenderer,
@@ -132,7 +133,7 @@ class TextInputElement(
             var end: Int = textElement.markEndPosition
             if (right) {
                 if (start == pointer) {
-                    start++
+                    start += modify
                 } else {
                     if (start < 0) {
                         start = pointer
@@ -142,7 +143,7 @@ class TextInputElement(
                 }
             } else {
                 if (end == pointer) {
-                    end--
+                    end += modify
                 } else {
                     if (start < 0) {
                         end = pointer
@@ -273,6 +274,6 @@ class TextInputElement(
 
     companion object {
         private const val CURSOR_TICK_ON_ACTION = 10
-        private val WORD_SEPARATORS = arrayOf(' ', ',', ';', '-', '\'', '`', '"', '“', '„', '.', '&', '@', '^', '/', '\\', '…', '*', '⁂', '=', '?', '!', '‽', '¡', '¿', '⸮', '#', '№', '%', '‰', '‱', '°', '⌀', '+', '−', '×', '÷', '~', '±', '∓', '–', '⁀', '|', '¦', '‖', '•', '·', '©', '©', '℗', '®', '‘', '’', '“', '”', '"', '"', '‹', '›', '«', '»', '(', ')', '[', ']', '{', '}', '⟨', '⟩', '”', '〃', '†', '‡', '❧', '☞', '◊', '¶', '⸿', '፠', '๛', '※', '§').toHashSet()
+        private val WORD_SEPARATORS = CharOpenHashSet(charArrayOf(' ', ',', ';', '-', '\'', '`', '"', '“', '„', '.', '&', '@', '^', '/', '\\', '…', '*', '⁂', '=', '?', '!', '‽', '¡', '¿', '⸮', '#', '№', '%', '‰', '‱', '°', '⌀', '+', '−', '×', '÷', '~', '±', '∓', '–', '⁀', '|', '¦', '‖', '•', '·', '©', '©', '℗', '®', '‘', '’', '“', '”', '"', '"', '‹', '›', '«', '»', '(', ')', '[', ']', '{', '}', '⟨', '⟩', '”', '〃', '†', '‡', '❧', '☞', '◊', '¶', '⸿', '፠', '๛', '※', '§'))
     }
 }
