@@ -47,6 +47,8 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     private val chatProfile = profile.chat
     private val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@ChatElement }
     private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
+    private val history: MutableList<String> = mutableListOf()
+    private var historyIndex = -1
     private var active = false
         set(value) {
             field = value
@@ -146,6 +148,11 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
             connection.util.sendChatMessage(value)
         }
         input.value = ""
+        if (history.lastOrNull() != value) {
+            // ToDo: Improve history
+            history += value
+        }
+        historyIndex = history.size
         guiRenderer.gui.pop()
     }
 
@@ -170,6 +177,29 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
                 KeyCodes.KEY_PAGE_DOWN -> {
                     messages.scrollOffset--
                     return
+                }
+                KeyCodes.KEY_UP -> {
+                    if (historyIndex <= 0) {
+                        return
+                    }
+                    val size = history.size
+                    if (historyIndex > size) {
+                        historyIndex = size
+                    }
+                    historyIndex--
+                    input.value = history[historyIndex]
+                }
+                KeyCodes.KEY_DOWN -> {
+                    val size = history.size
+                    historyIndex++
+                    if (historyIndex > size) {
+                        return
+                    }
+                    if (historyIndex == size) {
+                        input.value = ""
+                        return
+                    }
+                    input.value = history[historyIndex]
                 }
                 else -> {}
             }
