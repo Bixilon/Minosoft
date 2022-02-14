@@ -30,6 +30,8 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
@@ -205,6 +207,40 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
             }
         }
         input.onKey(key, type)
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        val pair = getAt(position) ?: return
+        pair.first.onMouseAction(pair.second, button, action)
+    }
+
+    private fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+        if (position.x < CHAT_INPUT_MARGIN) {
+            return null
+        }
+        val offset = Vec2i(position)
+        offset.x -= CHAT_INPUT_MARGIN
+
+        val messagesSize = messages.size
+        if (offset.y < messagesSize.y) {
+            if (offset.x > messagesSize.x) {
+                return null
+            }
+            return Pair(messages, offset)
+        }
+        offset.y -= messagesSize.y
+
+        if (offset.y < CHAT_INPUT_MARGIN) {
+            return null
+        }
+        val inputSize = input.size
+        if (offset.y < inputSize.y) {
+            if (offset.x > inputSize.x) {
+                return null
+            }
+            return Pair(input, offset)
+        }
+        return null
     }
 
     override fun onChildChange(child: Element) {

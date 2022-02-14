@@ -24,6 +24,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.MarkTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -70,13 +72,14 @@ class TextInputElement(
     }
 
     override fun forceSilentApply() {
+        _size = Vec2i(prefMaxSize)
         if (!textUpToDate) {
             textElement._chatComponent = TextComponent(_value)
             textElement.unmark()
             textElement.forceSilentApply()
             textUpToDate = true
         }
-        background.size = Vec2i(prefMaxSize.x, prefMaxSize.y)
+        background.size = _size
 
         cursorOffset = if (_pointer == 0) {
             Vec2i.EMPTY
@@ -253,6 +256,32 @@ class TextInputElement(
             else -> return textElement.onKey(key, type)
         }
         forceApply()
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (action != MouseActions.PRESS) {
+            return
+        }
+        val leftText = TextElement(guiRenderer, value, background = false)
+        leftText.prefMaxSize = Vec2i(position.x, size.y)
+        var pointer = 0
+        var heightLeft = position.y
+        for (line in leftText.renderInfo.lines) {
+            val message = line.text.message
+            pointer += message.length // ToDo: No formatting
+            heightLeft -= Font.TOTAL_CHAR_HEIGHT
+            if (heightLeft > 0) {
+                continue
+            }
+            val charDelta = position.x - line.width
+            val width = guiRenderer.renderWindow.font[value.getOrNull(pointer) ?: break]?.width ?: break
+            if (charDelta != 0 && charDelta >= width / 2) {
+                pointer++
+            }
+            break
+        }
+        this._pointer = pointer
+        forceSilentApply()
     }
 
     override fun onChildChange(child: Element) {
