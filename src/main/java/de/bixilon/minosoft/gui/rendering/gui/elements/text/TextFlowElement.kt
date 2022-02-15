@@ -22,6 +22,8 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -176,6 +178,21 @@ open class TextFlowElement(
                 return
             }
         }
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        val pair = getAt(position) ?: return
+        pair.first.textElement.onMouseAction(pair.second, button, action)
+    }
+
+    private fun getAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {
+        val reversedY = size.y - position.y
+        val line = visibleLines.getOrNull(reversedY / Font.TOTAL_CHAR_HEIGHT) ?: return null
+        if (position.x > line.textElement.size.x) {
+            return null
+        }
+        val offset = Vec2i(position.x, reversedY % Font.TOTAL_CHAR_HEIGHT)
+        return Pair(line, offset)
     }
 
     override fun tick() {

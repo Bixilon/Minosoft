@@ -67,6 +67,16 @@ interface ChatComponent {
      */
     fun applyDefaultColor(color: RGBColor)
 
+    /**
+     * @return The current text component at a specific pointer (char offset)
+     */
+    fun getTextAt(pointer: Int): TextComponent
+
+    /**
+     * The length in chars
+     */
+    val length: Int
+
 
     companion object {
         val EMPTY = ChatComponent.of("")

@@ -268,4 +268,25 @@ class BaseComponent : ChatComponent {
         }
         return parts == other.parts
     }
+
+    override val length: Int
+        get() {
+            var length = 0
+            for (part in parts) {
+                length += part.length
+            }
+            return length
+        }
+
+    override fun getTextAt(pointer: Int): TextComponent {
+        var pointer = pointer
+        for (part in parts) {
+            val length = part.length
+            if (pointer < length) {
+                return part.getTextAt(pointer)
+            }
+            pointer -= length
+        }
+        throw IllegalArgumentException("Pointer ot of bounds!")
+    }
 }

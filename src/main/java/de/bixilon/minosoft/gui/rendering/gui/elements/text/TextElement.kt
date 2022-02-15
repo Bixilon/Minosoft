@@ -18,6 +18,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
@@ -27,6 +28,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -166,6 +169,28 @@ open class TextElement(
 
         ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, renderWindow, consumer, options, renderInfo, chatComponent)
         renderInfo.currentLineNumber = 0
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
+            return
+        }
+        val text = getTextComponentAt(position) ?: return
+        println(text)
+    }
+
+    private fun getTextComponentAt(position: Vec2i): TextComponent? {
+        val offset = Vec2i(position)
+        val line = renderInfo.lines.getOrNull(offset.y / charHeight) ?: return null
+        offset.y = offset.y % charHeight
+
+        val textElement = TextElement(guiRenderer, line.text, fontAlignment, false, backgroundColor, noBorder, parent, scale)
+        textElement._prefMaxSize = Vec2i(offset.x, charHeight)
+        textElement.forceSilentApply()
+
+        offset.x += fontAlignment.getOffset(size.x, line.width)
+
+        return line.text.getTextAt(textElement.renderInfo.lines.getOrNull(0)?.text?.message?.length ?: return null)
     }
 
     override fun toString(): String {

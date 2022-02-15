@@ -211,8 +211,18 @@ open class TextComponent(
             color = color,
             formatting = formatting,
             clickEvent = clickEvent,
-            hoverEvent = hoverEvent
+            hoverEvent = hoverEvent,
         )
+    }
+
+    override val length: Int
+        get() = message.length
+
+    override fun getTextAt(pointer: Int): TextComponent {
+        if (pointer < 0 || pointer > message.length) {
+            throw IllegalArgumentException("Pointer out of bounds: $pointer")
+        }
+        return this
     }
 
     override fun hashCode(): Int {
