@@ -11,12 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.factory.clazz
+package de.bixilon.minosoft.data.registries.factory.name
 
-import java.lang.reflect.ParameterizedType
-import kotlin.reflect.jvm.javaType
-
-open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
+open class DefaultNameFactory<T : NameFactory<*>>(vararg factories: T) {
     private val factoryMap: Map<String, T>
 
     init {
@@ -24,10 +21,9 @@ open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
 
 
         for (factory in factories) {
-            val className = ((factory::class.supertypes[0].javaType as ParameterizedType).actualTypeArguments[0] as Class<T>).simpleName
-            ret[className] = factory
-            if (factory is MultiClassFactory<*>) {
-                for (name in factory.ALIASES) {
+            ret[factory.name] = factory
+            if (factory is MultiNameFactory<*>) {
+                for (name in factory.aliases) {
                     ret[name] = factory
                 }
             }
@@ -36,7 +32,7 @@ open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
         factoryMap = ret.toMap()
     }
 
-    operator fun get(`class`: String?): T? {
-        return factoryMap[`class`]
+    operator fun get(name: String?): T? {
+        return factoryMap[name]
     }
 }

@@ -176,7 +176,7 @@ open class TextElement(
             return
         }
         val text = getTextComponentAt(position) ?: return
-        println(text)
+        println(text) // ToDo: remove
     }
 
     private fun getTextComponentAt(position: Vec2i): TextComponent? {

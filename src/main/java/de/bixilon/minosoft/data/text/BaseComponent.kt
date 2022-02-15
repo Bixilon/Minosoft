@@ -17,10 +17,13 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
-import de.bixilon.minosoft.data.text.events.ClickEvent
-import de.bixilon.minosoft.data.text.events.HoverEvent
+import de.bixilon.minosoft.data.text.events.click.ClickEvent
+import de.bixilon.minosoft.data.text.events.click.ClickEvents
+import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent
+import de.bixilon.minosoft.data.text.events.hover.HoverEvents
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -74,7 +77,7 @@ class BaseComponent : ChatComponent {
                         if (protocol.restricted && restrictedMode) {
                             break
                         }
-                        clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, split)
+                        clickEvent = OpenURLClickEvent(split.toURL())
                         break
                     }
                 }
@@ -167,8 +170,8 @@ class BaseComponent : ChatComponent {
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.SHADOWED, json["shadowed"]?.toBoolean())
 
-        val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvent(click, restrictedMode) }
-        val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvent(hover) }
+        val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restrictedMode) }
+        val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restrictedMode) }
 
         val textComponent = TextComponent(
             message = currentText,

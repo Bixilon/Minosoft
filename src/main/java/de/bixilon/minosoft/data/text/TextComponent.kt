@@ -14,11 +14,8 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.data.text.events.ClickEvent
-import de.bixilon.minosoft.data.text.events.HoverEvent
-import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
+import de.bixilon.minosoft.data.text.events.click.ClickEvent
+import de.bixilon.minosoft.data.text.events.hover.HoverEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
@@ -182,26 +179,8 @@ open class TextComponent(
         }
         nodes.add(text)
 
-        clickEvent?.let { event ->
-            when (event.action) {
-                ClickEvent.ClickEventActions.OPEN_URL -> text.hyperlink(event.value.toString())
-                ClickEvent.ClickEventActions.OPEN_FILE -> text.file(event.value.toString())
-                else -> {
-                    NotImplementedError("Unknown action ${event.action}").report()
-                    return@let
-                }
-            }
-        }
-
-        hoverEvent?.let {
-            when (it.action) {
-                HoverEvent.HoverEventActions.SHOW_TEXT -> text.accessibleText = it.value.toString() // ToDo
-                else -> {
-                    NotImplementedError("Unknown action ${it.action}").report()
-                    return@let
-                }
-            }
-        }
+        clickEvent?.applyJavaFX(text)
+        hoverEvent?.applyJavaFX(text)
         return nodes
     }
 

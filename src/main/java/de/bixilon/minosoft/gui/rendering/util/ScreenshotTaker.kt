@@ -22,8 +22,8 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.events.ClickEvent
-import de.bixilon.minosoft.data.text.events.HoverEvent
+import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
+import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -77,8 +77,8 @@ class ScreenshotTaker(
                         TextComponent(file.name).apply {
                             color = ChatColors.WHITE
                             underline()
-                            clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, "file:${file.slashPath}")
-                            hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to open")
+                            clickEvent = OpenFileClickEvent(file.slashPath)
+                            hoverEvent = TextHoverEvent("Click to open")
                         },
                         // "\n",
                         // TextComponent("[DELETE]").apply {
@@ -87,7 +87,7 @@ class ScreenshotTaker(
                         //     clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_CONFIRMATION, {
                         //         TODO()
                         //     })
-                        //     hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to delete screenshot")
+                        //     hoverEvent = ClickEvent(ClickEvent.HoverEventActions.SHOW_TEXT, "Click to delete screenshot")
                         // },
                     ))
                 } catch (exception: Exception) {
