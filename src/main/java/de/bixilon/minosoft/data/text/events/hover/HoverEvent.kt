@@ -13,20 +13,6 @@
 
 package de.bixilon.minosoft.data.text.events.hover
 
-import de.bixilon.kutil.json.JsonObject
-import javafx.scene.text.Text
+import de.bixilon.minosoft.data.text.events.ChatEvent
 
-interface HoverEvent {
-
-    fun applyJavaFX(text: Text) {}
-
-    companion object {
-        val JsonObject.data: Any
-            get() {
-                var text: Any = this
-                this["value"]?.let { text = it }
-                this["contents"]?.let { text = it }
-                return text
-            }
-    }
-}
+interface HoverEvent : ChatEvent

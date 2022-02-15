@@ -14,8 +14,12 @@
 package de.bixilon.minosoft.data.text.events.click
 
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.text.events.hover.HoverEvent.Companion.data
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.OpenFileConfirmationDialog
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import glm_.vec2.Vec2i
 import javafx.scene.text.Text
 
 class OpenFileClickEvent(
@@ -24,6 +28,14 @@ class OpenFileClickEvent(
 
     override fun applyJavaFX(text: Text) {
         text.file(path)
+    }
+
+    override fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
+            return
+        }
+        val dialog = OpenFileConfirmationDialog(guiRenderer, path)
+        dialog.open()
     }
 
     companion object : ClickEventFactory<OpenFileClickEvent> {

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.text.events.click
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.factory.name.MultiNameFactory
-import de.bixilon.minosoft.data.text.events.hover.HoverEvent.Companion.data
 
 class SuggestChatClickEvent(
     val message: String,

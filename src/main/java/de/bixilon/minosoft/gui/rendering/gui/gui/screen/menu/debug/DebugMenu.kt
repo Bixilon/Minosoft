@@ -52,7 +52,7 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     companion object : GUIBuilder<LayoutedGUIElement<DebugMenu>> {
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugMenu> {
-            return LayoutedGUIElement((DebugMenu(guiRenderer)))
+            return LayoutedGUIElement(DebugMenu(guiRenderer))
         }
     }
 }

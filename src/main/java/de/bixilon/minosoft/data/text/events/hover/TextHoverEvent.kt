@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.text.events.hover
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.events.hover.HoverEvent.Companion.data
 import javafx.scene.text.Text
 
 class TextHoverEvent(

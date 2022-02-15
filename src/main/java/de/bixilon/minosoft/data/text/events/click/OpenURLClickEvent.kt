@@ -16,8 +16,12 @@ package de.bixilon.minosoft.data.text.events.click
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.kutil.url.URLUtil.toURL
-import de.bixilon.minosoft.data.text.events.hover.HoverEvent.Companion.data
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.URLConfirmationDialog
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import glm_.vec2.Vec2i
 import javafx.scene.text.Text
 import java.net.URL
 
@@ -27,6 +31,14 @@ class OpenURLClickEvent(
 
     override fun applyJavaFX(text: Text) {
         text.hyperlink(url.toString())
+    }
+
+    override fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
+            return
+        }
+        val dialog = URLConfirmationDialog(guiRenderer, url)
+        dialog.open()
     }
 
     companion object : ClickEventFactory<OpenURLClickEvent> {

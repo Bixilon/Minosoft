@@ -39,7 +39,7 @@ class InternalMessagesElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRen
 
 
     override val layoutOffset: Vec2i
-        get() = super.size.let { return@let guiRenderer.scaledSize - Vec2i(it.x, it.y + BOTTOM_OFFSET) }
+        get() = super.size.let { return@let guiRenderer.scaledSize - Vec2i(it.x, it.y + ChatElement.CHAT_INPUT_HEIGHT + ChatElement.CHAT_INPUT_MARGIN * 2) }
 
     init {
         super.prefMaxSize = Vec2i(internalChatProfile.width, internalChatProfile.height)
@@ -55,7 +55,6 @@ class InternalMessagesElement(guiRenderer: GUIRenderer) : TextFlowElement(guiRen
 
     companion object : HUDBuilder<LayoutedGUIElement<InternalMessagesElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:internal_messages_hud".toResourceLocation()
-        private const val BOTTOM_OFFSET = 30
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<InternalMessagesElement> {
             return LayoutedGUIElement(InternalMessagesElement(guiRenderer))

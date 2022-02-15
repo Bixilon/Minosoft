@@ -15,8 +15,9 @@ package de.bixilon.minosoft.data.text.events.click
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.factory.name.NameFactory
+import de.bixilon.minosoft.data.text.events.ChatEventFactory
 
-interface ClickEventFactory<T : ClickEvent> : NameFactory<T> {
+interface ClickEventFactory<T : ClickEvent> : NameFactory<T>, ChatEventFactory {
 
     fun build(json: JsonObject, restrictedMode: Boolean): T
 }

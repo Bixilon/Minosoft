@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.text.events.hover
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.events.hover.HoverEvent.Companion.data
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class AchievementHoverEvent(

@@ -125,16 +125,14 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     override fun onOpen() {
         active = true
         input.onOpen()
+        messages.onOpen()
     }
 
     override fun onClose() {
         active = false
         input.value = ""
-    }
-
-    override fun onHide() {
-        active = false
-        input.value = ""
+        input.onClose()
+        messages.onClose()
     }
 
     override fun onCharPress(char: Int) {
@@ -254,8 +252,8 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
 
     companion object : HUDBuilder<LayoutedGUIElement<ChatElement>>, GUIBuilder<LayoutedGUIElement<ChatElement>> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
-        private const val CHAT_INPUT_HEIGHT = Font.TOTAL_CHAR_HEIGHT * 3 + Font.CHAR_MARGIN * 2
-        private const val CHAT_INPUT_MARGIN = 2
+        const val CHAT_INPUT_HEIGHT = Font.TOTAL_CHAR_HEIGHT * 3 + Font.CHAR_MARGIN * 2
+        const val CHAT_INPUT_MARGIN = 2
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<ChatElement> {
             return LayoutedGUIElement(ChatElement(guiRenderer))

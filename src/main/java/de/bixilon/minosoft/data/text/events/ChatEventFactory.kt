@@ -11,22 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text.events.hover
+package de.bixilon.minosoft.data.text.events
 
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.text.ChatComponent
 
-class ItemHoverEvent(
-    val item: ItemStack?,
-    val text: ChatComponent,
-) : HoverEvent {
+interface ChatEventFactory {
 
-    companion object : HoverEventFactory<ItemHoverEvent> {
-        override val name: String = "show_item"
-
-        override fun build(json: JsonObject, restrictedMode: Boolean): ItemHoverEvent {
-            return ItemHoverEvent(null, ChatComponent.of(json.data))
+    val JsonObject.data: Any
+        get() {
+            var text: Any = this
+            this["value"]?.let { text = it }
+            this["contents"]?.let { text = it }
+            return text
         }
-    }
 }

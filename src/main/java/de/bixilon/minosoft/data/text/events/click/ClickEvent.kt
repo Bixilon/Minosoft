@@ -13,20 +13,13 @@
 
 package de.bixilon.minosoft.data.text.events.click
 
-import de.bixilon.kutil.json.JsonObject
-import javafx.scene.text.Text
+import de.bixilon.minosoft.data.text.events.ChatEvent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import glm_.vec2.Vec2i
 
-interface ClickEvent {
+interface ClickEvent : ChatEvent {
 
-    fun applyJavaFX(text: Text) {}
-
-    companion object {
-        val JsonObject.data: Any
-            get() {
-                var text: Any = this
-                this["value"]?.let { text = it }
-                this["contents"]?.let { text = it }
-                return text
-            }
-    }
+    fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {}
 }

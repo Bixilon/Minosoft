@@ -21,6 +21,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
@@ -157,13 +158,24 @@ class GUIManager(
     }
 
     fun push(builder: GUIBuilder<*>) {
+        _push(this[builder])
+    }
+
+    private fun _push(element: GUIElement) {
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = guiRenderer
         }
-        val element = this[builder]
         elementOrder.firstOrNull()?.onHide()
         elementOrder.add(0, element)
         element.onOpen()
+    }
+
+    @Deprecated("Only use for dynamic gui (e.g. dialogs, ...)")
+    fun push(element: LayoutedElement) {
+        val layouted = LayoutedGUIElement(element)
+        layouted.init()
+        layouted.postInit()
+        _push(layouted)
     }
 
     fun pop() {
@@ -172,6 +184,8 @@ class GUIManager(
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
         }
+        val now = elementOrder.firstOrNull() ?: return
+        now.onOpen()
     }
 
     fun clear() {
