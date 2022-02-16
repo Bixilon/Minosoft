@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
@@ -56,5 +57,9 @@ abstract class AbstractConfirmationMenu(
         add(ButtonElement(guiRenderer, "Cancel") {
             close()
         })
+    }
+
+    companion object {
+        val VALUE_COLOR = ChatColors.BLUE
     }
 }

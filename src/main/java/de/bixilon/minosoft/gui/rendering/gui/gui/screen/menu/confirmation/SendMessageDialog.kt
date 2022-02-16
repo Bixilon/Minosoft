@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
@@ -23,7 +22,7 @@ class SendMessageDialog(
     val message: String,
 ) : AbstractConfirmationMenu(
     guiRenderer, "Do you want to send that message to the server?",
-    TextComponent(message).color(ChatColors.DARK_BLUE),
+    TextComponent(message, color = VALUE_COLOR),
 ) {
 
     override fun createButtons(): Array<ButtonElement> {

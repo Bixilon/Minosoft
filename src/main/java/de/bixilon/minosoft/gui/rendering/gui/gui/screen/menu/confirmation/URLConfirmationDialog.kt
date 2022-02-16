@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -29,7 +28,7 @@ class URLConfirmationDialog(
     val url: URL,
 ) : AbstractConfirmationMenu(
     guiRenderer, "Do you want to open that link?",
-    TextComponent(url).color(ChatColors.DARK_BLUE),
+    TextComponent(url, color = VALUE_COLOR),
 ) {
 
     override fun createButtons(): Array<ButtonElement> {

@@ -21,7 +21,8 @@ object ClickEvents : DefaultNameFactory<ClickEventFactory<*>>(
     OpenFileClickEvent,
     SuggestChatClickEvent,
     SendMessageClickEvent,
-    // ToDo: twitch_user_info, change_page, copy_to_clipboard
+    CopyToClipboardClickEvent,
+    // ToDo: twitch_user_info, change_page
 ) {
 
     fun build(data: JsonObject, restrictedMode: Boolean): ClickEvent? {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,24 +17,18 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 
-class OpenFileConfirmationDialog(
+class CopyToClipboardDialog(
     guiRenderer: GUIRenderer,
-    val path: String,
+    private val text: String,
 ) : AbstractConfirmationMenu(
-    guiRenderer, "Do you want to open that file?",
-    TextComponent(path, color = VALUE_COLOR),
+    guiRenderer,
+    "Do you want to copy this text to your clipboard?",
+    TextComponent(text, color = VALUE_COLOR),
 ) {
 
     override fun createButtons(): Array<ButtonElement> {
-        return arrayOf(
-            ButtonElement(guiRenderer, "Yes, open it!") {
-                println("ToDo: Can not open file: $path")
-                close()
-            },
-            createCopyToClipboardButton(path)
-        )
+        return arrayOf(createCopyToClipboardButton(text))
     }
-
 
     init {
         initButtons()
