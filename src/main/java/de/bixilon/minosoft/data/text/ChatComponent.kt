@@ -79,12 +79,12 @@ interface ChatComponent {
 
 
     companion object {
-        val EMPTY = ChatComponent.of("")
+        val EMPTY = TextComponent("")
 
         @JvmOverloads
         fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restrictedMode: Boolean = false): ChatComponent {
             if (raw == null) {
-                return BaseComponent()
+                return EMPTY
             }
             if (raw is ChatComponent) {
                 return raw
