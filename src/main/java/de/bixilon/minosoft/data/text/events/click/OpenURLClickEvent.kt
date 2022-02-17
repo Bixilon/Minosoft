@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.URLConfirmationDialog
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.util.DesktopUtil
 import glm_.vec2.Vec2i
 import javafx.scene.text.Text
 import java.net.URL
@@ -35,6 +36,10 @@ class OpenURLClickEvent(
 
     override fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
+            return
+        }
+        if (guiRenderer.connection.profiles.gui.confirmation.openURL) {
+            DesktopUtil.openURL(url)
             return
         }
         val dialog = URLConfirmationDialog(guiRenderer, url)

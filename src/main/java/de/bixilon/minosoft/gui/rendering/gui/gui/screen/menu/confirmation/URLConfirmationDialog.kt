@@ -14,13 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
-import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.DesktopUtil
 import java.net.URL
 
 class URLConfirmationDialog(
@@ -34,14 +30,7 @@ class URLConfirmationDialog(
     override fun createButtons(): Array<ButtonElement> {
         return arrayOf(
             ButtonElement(guiRenderer, "Yes, open it!") {
-                if (RunConfiguration.DISABLE_EROS) {
-                    return@ButtonElement Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Can not open url: $url" }
-                }
-                try {
-                    JavaFXUtil.HOST_SERVICES.showDocument(url.toString())
-                } catch (exception: Throwable) {
-                    exception.printStackTrace()
-                }
+                DesktopUtil.openURL(url)
                 close()
             },
             createCopyToClipboardButton(url.toString())

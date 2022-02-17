@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.gui.chat.ChatC
+import de.bixilon.minosoft.config.profile.profiles.gui.confirmation.ConfirmationC
 import de.bixilon.minosoft.config.profile.profiles.gui.hud.HudC
 
 /**
@@ -44,6 +45,7 @@ class GUIProfile(
 
     val chat = ChatC()
     val hud = HudC()
+    val confirmation = ConfirmationC()
 
     override fun toString(): String {
         return GUIProfileManager.getName(this)

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
+import de.bixilon.minosoft.util.DesktopUtil
 
 class OpenFileConfirmationDialog(
     guiRenderer: GUIRenderer,
@@ -28,7 +29,7 @@ class OpenFileConfirmationDialog(
     override fun createButtons(): Array<ButtonElement> {
         return arrayOf(
             ButtonElement(guiRenderer, "Yes, open it!") {
-                println("ToDo: Can not open file: $path")
+                DesktopUtil.openFile(path)
                 close()
             },
             createCopyToClipboardButton(path)
