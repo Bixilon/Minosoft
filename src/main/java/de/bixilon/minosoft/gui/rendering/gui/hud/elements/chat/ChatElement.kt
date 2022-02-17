@@ -23,31 +23,23 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable {
-    private val connection = renderWindow.connection
-    private val profile = connection.profiles.gui
+class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
     private val chatProfile = profile.chat
-    private val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@ChatElement }
     private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
     private val history: MutableList<String> = mutableListOf()
     private var historyIndex = -1
@@ -56,6 +48,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
             field = value
             messages._active = value
             messages.forceSilentApply()
+            historyIndex = -1
             forceApply()
         }
     override var skipDraw: Boolean
@@ -63,6 +56,8 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         set(value) {
             chatProfile.hidden = !value
         }
+    override val activeWhenHidden: Boolean
+        get() = true
 
     override val layoutOffset: Vec2i
         get() = Vec2i(0, guiRenderer.scaledSize.y - messages.size.y - CHAT_INPUT_HEIGHT - CHAT_INPUT_MARGIN * 2)
@@ -103,7 +98,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        messages.render(offset + Vec2i(CHAT_INPUT_MARGIN, 0), consumer, options)
+        super.forceRender(offset, consumer, options)
         if (active) {
             input.render(offset + Vec2i(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + CHAT_INPUT_HEIGHT)), consumer, options)
         }
@@ -126,6 +121,9 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         active = true
         input.onOpen()
         messages.onOpen()
+        if (!chatProfile.internal.hidden) {
+            guiRenderer.gui.push(InternalChatElement) // also open internal chat paralell
+        }
     }
 
     override fun onClose() {
@@ -154,14 +152,6 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
         }
         historyIndex = history.size
         guiRenderer.gui.pop()
-    }
-
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
-        val size = messages.size
-        if (position.y > size.y || position.x > messages.size.x) {
-            return
-        }
-        messages.onScroll(position, scrollOffset)
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
@@ -246,7 +236,7 @@ class ChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElem
     }
 
     override fun tick() {
-        messages.tick()
+        super.tick()
         input.tick()
     }
 

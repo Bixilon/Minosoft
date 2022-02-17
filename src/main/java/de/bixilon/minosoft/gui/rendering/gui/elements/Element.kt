@@ -34,6 +34,7 @@ import glm_.vec4.Vec4i
 abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int = 1000) : InputElement {
     var ignoreDisplaySize = false
     val renderWindow = guiRenderer.renderWindow
+    open val activeWhenHidden = false
 
     protected open var _parent: Element? = null
     open var parent: Element?

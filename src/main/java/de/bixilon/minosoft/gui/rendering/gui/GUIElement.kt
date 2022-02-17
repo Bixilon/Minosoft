@@ -20,6 +20,8 @@ interface GUIElement : InputHandler {
     val guiRenderer: GUIRenderer
     val renderWindow: RenderWindow
     var enabled: Boolean
+    val activeWhenHidden: Boolean
+        get() = false
 
     /**
      * Initializes the element (e.g. getting atlas elements, creating shaders, creating textures, etc)

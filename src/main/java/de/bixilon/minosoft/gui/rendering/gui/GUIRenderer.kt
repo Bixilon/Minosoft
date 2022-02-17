@@ -100,20 +100,20 @@ class GUIRenderer(
         shader.use()
     }
 
-    override fun onMouseMove(position: Vec2i) {
-        gui.onMouseMove(position.scale())
+    override fun onMouseMove(position: Vec2i): Boolean {
+        return gui.onMouseMove(position.scale())
     }
 
-    override fun onCharPress(char: Int) {
-        gui.onCharPress(char)
+    override fun onCharPress(char: Int): Boolean {
+        return gui.onCharPress(char)
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        gui.onKeyPress(type, key)
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        return gui.onKeyPress(type, key)
     }
 
-    override fun onScroll(scrollOffset: Vec2d) {
-        gui.onScroll(scrollOffset)
+    override fun onScroll(scrollOffset: Vec2d): Boolean {
+        return gui.onScroll(scrollOffset)
     }
 
     override fun drawOther() {

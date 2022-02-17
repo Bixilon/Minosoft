@@ -79,34 +79,39 @@ class GUIManager(
     }
 
     fun draw() {
-        val element = elementOrder.firstOrNull() ?: return
-        if (!element.enabled) {
-            return
-        }
-        val time = TimeUtil.time
-        if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
-            element.tick()
-            if (element is Pollable) {
-                if (element.poll()) {
-                    element.apply()
+        val order = elementOrder.reversed()
+        for ((index, element) in order.withIndex()) {
+            if (!element.enabled) {
+                continue
+            }
+            if (index != order.size - 1 && !element.activeWhenHidden) {
+                continue
+            }
+            val time = TimeUtil.time
+            if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
+                element.tick()
+                if (element is Pollable) {
+                    if (element.poll()) {
+                        element.apply()
+                    }
                 }
+
+                lastTickTime = time
             }
 
-            lastTickTime = time
-        }
+            if (element is Drawable && !element.skipDraw) {
+                element.draw()
+            }
+            if (element is LayoutedGUIElement<*>) {
+                element.prepare()
+            }
 
-        if (element is Drawable && !element.skipDraw) {
-            element.draw()
+            guiRenderer.setup()
+            if (element !is LayoutedGUIElement<*> || !element.enabled || element.mesh.data.isEmpty) {
+                continue
+            }
+            element.mesh.draw()
         }
-        if (element is LayoutedGUIElement<*>) {
-            element.prepare()
-        }
-
-        guiRenderer.setup()
-        if (element !is LayoutedGUIElement<*> || !element.enabled || element.mesh.data.isEmpty) {
-            return
-        }
-        element.mesh.draw()
     }
 
     fun pause(pause: Boolean = !paused) {
@@ -125,20 +130,52 @@ class GUIManager(
         }
     }
 
-    override fun onCharPress(char: Int) {
-        elementOrder.firstOrNull()?.onCharPress(char)
+    override fun onCharPress(char: Int): Boolean {
+        for ((index, element) in elementOrder.toList().withIndex()) {
+            if (index != 0 && !element.activeWhenHidden) {
+                continue
+            }
+            if (element.onCharPress(char)) {
+                return true
+            }
+        }
+        return false
     }
 
-    override fun onMouseMove(position: Vec2i) {
-        elementOrder.firstOrNull()?.onMouseMove(position)
+    override fun onMouseMove(position: Vec2i): Boolean {
+        for ((index, element) in elementOrder.toList().withIndex()) {
+            if (index != 0 && !element.activeWhenHidden) {
+                continue
+            }
+            if (element.onMouseMove(position)) {
+                return true
+            }
+        }
+        return false
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        elementOrder.firstOrNull()?.onKeyPress(type, key)
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        for ((index, element) in elementOrder.toList().withIndex()) {
+            if (index != 0 && !element.activeWhenHidden) {
+                continue
+            }
+            if (element.onKeyPress(type, key)) {
+                return true
+            }
+        }
+        return false
     }
 
-    override fun onScroll(scrollOffset: Vec2d) {
-        elementOrder.firstOrNull()?.onScroll(scrollOffset)
+    override fun onScroll(scrollOffset: Vec2d): Boolean {
+        for ((index, element) in elementOrder.toList().withIndex()) {
+            if (index != 0 && !element.activeWhenHidden) {
+                continue
+            }
+            if (element.onScroll(scrollOffset)) {
+                return true
+            }
+        }
+        return false
     }
 
     fun open(builder: GUIBuilder<*>) {

@@ -53,6 +53,8 @@ class LayoutedGUIElement<T : LayoutedElement>(
                 elementLayout.onClose()
             }
         }
+    override val activeWhenHidden: Boolean
+        get() = elementLayout.activeWhenHidden
 
     init {
         elementLayout.cache.data = mesh.data
@@ -105,53 +107,61 @@ class LayoutedGUIElement<T : LayoutedElement>(
         mesh.load()
     }
 
-    override fun onMouseMove(position: Vec2i) {
+    override fun onMouseMove(position: Vec2i): Boolean {
         val offset = layout.layoutOffset
         val size = elementLayout.size
         val lastPosition = lastPosition
 
         if (position.isOutside(offset, offset + size)) {
             if (lastPosition == INVALID_MOUSE_POSITION) {
-                return
+                return false
             }
             // move out
             this.lastPosition = INVALID_MOUSE_POSITION
             elementLayout.onMouseLeave()
-            return
+            return true
         }
         val delta = position - offset
         this.lastPosition = delta
 
         if (lastPosition.isOutside(offset, size)) {
             elementLayout.onMouseEnter(delta)
-            return
+            return true
         }
 
         elementLayout.onMouseMove(delta)
+        return true
     }
 
-    override fun onCharPress(char: Int) {
+    override fun onCharPress(char: Int): Boolean {
         elementLayout.onCharPress(char)
+        return true
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        val mouseButton = MouseButtons[key] ?: return elementLayout.onKey(key, type)
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        val mouseButton = MouseButtons[key]
+        if (mouseButton == null) {
+            elementLayout.onKey(key, type)
+            return true
+        }
 
         val position = lastPosition
         if (position == INVALID_MOUSE_POSITION) {
-            return
+            return false
         }
 
-        val mouseAction = MouseActions[type] ?: return
+        val mouseAction = MouseActions[type] ?: return false
         elementLayout.onMouseAction(position, mouseButton, mouseAction)
+        return true
     }
 
-    override fun onScroll(scrollOffset: Vec2d) {
+    override fun onScroll(scrollOffset: Vec2d): Boolean {
         val position = lastPosition
         if (lastPosition == INVALID_MOUSE_POSITION) {
-            return
+            return false
         }
         elementLayout.onScroll(position, scrollOffset)
+        return true
     }
 
     override fun onClose() {
