@@ -28,7 +28,7 @@ class CopyToClipboardClickEvent(
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
             return
         }
-        if (guiRenderer.connection.profiles.gui.confirmation.copyToClipboard) {
+        if (!guiRenderer.connection.profiles.gui.confirmation.copyToClipboard) {
             guiRenderer.renderWindow.window.clipboardText = text
             return
         }

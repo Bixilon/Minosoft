@@ -11,25 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.input
+package de.bixilon.minosoft.data.text.events.click
 
-import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface InputElement {
+class ClickCallbackClickEvent(val callback: () -> Unit) : ClickEvent {
 
-    fun onMouseMove(position: Vec2i) = false
-    fun onMouseEnter(position: Vec2i) = false
-    fun onMouseLeave() = false
-    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) = false
-    fun onScroll(position: Vec2i, scrollOffset: Vec2d) = false
-
-    fun onKey(key: KeyCodes, type: KeyChangeTypes) = false
-    fun onCharPress(char: Int) = false
-
-    // ToDo: drag
+    override fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {
+        if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
+            return
+        }
+        callback()
+    }
 }

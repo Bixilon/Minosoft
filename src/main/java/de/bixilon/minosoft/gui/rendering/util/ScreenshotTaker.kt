@@ -22,9 +22,12 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.events.click.ClickCallbackClickEvent
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.DeleteScreenshotDialog
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import glm_.vec2.Vec2i
@@ -73,22 +76,20 @@ class ScreenshotTaker(
                     ImageIO.write(bufferedImage, "png", file)
 
                     renderWindow.connection.util.sendDebugMessage(BaseComponent(
-                        "§aScreenshot saved to ",
+                        "§aScreenshot saved: ",
                         TextComponent(file.name).apply {
                             color = ChatColors.WHITE
                             underline()
                             clickEvent = OpenFileClickEvent(file.slashPath)
                             hoverEvent = TextHoverEvent("Click to open")
                         },
-                        // "\n",
-                        // TextComponent("[DELETE]").apply {
-                        //     color = ChatColors.RED
-                        //     bold()
-                        //     clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_CONFIRMATION, {
-                        //         TODO()
-                        //     })
-                        //     hoverEvent = ClickEvent(ClickEvent.HoverEventActions.SHOW_TEXT, "Click to delete screenshot")
-                        // },
+                        " ",
+                        TextComponent("[DELETE]").apply {
+                            color = ChatColors.RED
+                            bold()
+                            clickEvent = ClickCallbackClickEvent { DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file).open() }
+                            hoverEvent = TextHoverEvent("Click to delete screenshot")
+                        },
                     ))
                 } catch (exception: Exception) {
                     exception.fail()

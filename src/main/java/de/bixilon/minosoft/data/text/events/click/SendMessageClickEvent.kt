@@ -29,7 +29,7 @@ class SendMessageClickEvent(
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
             return
         }
-        if (guiRenderer.connection.profiles.gui.confirmation.sendMessage) {
+        if (!guiRenderer.connection.profiles.gui.confirmation.sendMessage) {
             guiRenderer.connection.util.sendChatMessage(message)
             return
         }

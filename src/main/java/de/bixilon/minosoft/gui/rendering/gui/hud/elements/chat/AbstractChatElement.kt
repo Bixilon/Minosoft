@@ -34,12 +34,13 @@ abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRender
     }
 
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
         val size = messages.size
         if (position.y > size.y || position.x > messages.size.x) {
-            return
+            return false
         }
         messages.onScroll(position, scrollOffset)
+        return true
     }
 
     override fun tick() {

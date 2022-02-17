@@ -96,7 +96,7 @@ class MarkTextElement(
         super.forceRender(offset, consumer, options)
     }
 
-    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         super.onKey(key, type)
 
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
@@ -104,7 +104,7 @@ class MarkTextElement(
         when (key) {
             KeyCodes.KEY_A -> {
                 if (!controlDown) {
-                    return
+                    return true
                 }
                 mark(0, chatComponent.message.length)
             }
@@ -114,8 +114,9 @@ class MarkTextElement(
                 }
             }
             KeyCodes.KEY_ESCAPE -> unmark()
-            else -> return
+            else -> return true
         }
+        return true
     }
 
     fun copy() {

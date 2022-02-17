@@ -171,12 +171,13 @@ open class TextElement(
         renderInfo.currentLineNumber = 0
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
-            return
+            return true
         }
-        val text = getTextComponentAt(position) ?: return
+        val text = getTextComponentAt(position) ?: return false
         text.clickEvent?.onClick(guiRenderer, position, button, action)
+        return true
     }
 
     private fun getTextComponentAt(position: Vec2i): TextComponent? {

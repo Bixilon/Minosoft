@@ -35,7 +35,7 @@ class OpenFileClickEvent(
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
             return
         }
-        if (guiRenderer.connection.profiles.gui.confirmation.openFile) {
+        if (!guiRenderer.connection.profiles.gui.confirmation.openFile) {
             DesktopUtil.openFile(path)
             return
         }

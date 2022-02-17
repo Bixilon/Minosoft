@@ -113,42 +113,48 @@ open class ButtonElement(
         cacheUpToDate = false
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         if (disabled) {
-            return
+            return true
         }
         if (button != MouseButtons.LEFT) {
-            return
+            return true
         }
         if (action != MouseActions.PRESS) {
-            return
+            return true
         }
 
         submit()
+        return true
     }
 
-    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (!hovered) {
-            return
+            return true
         }
         if (disabled) {
-            return
+            return true
         }
         if (key != KeyCodes.KEY_ENTER) {
-            return
+            return true
         }
         if (type != KeyChangeTypes.PRESS) {
-            return
+            return true
         }
         submit()
+        return true
     }
 
-    override fun onMouseEnter(position: Vec2i) {
+    override fun onMouseEnter(position: Vec2i): Boolean {
         hovered = true
+
+        return true
     }
 
-    override fun onMouseLeave() {
+    override fun onMouseLeave(): Boolean {
         hovered = false
+
+        return true
     }
 
     open fun submit() {

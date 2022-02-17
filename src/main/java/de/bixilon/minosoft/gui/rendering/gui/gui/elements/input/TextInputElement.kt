@@ -121,13 +121,14 @@ class TextInputElement(
         onChange()
     }
 
-    override fun onCharPress(char: Int) {
+    override fun onCharPress(char: Int): Boolean {
         if (_value.length >= maxLength || !editable) {
-            return
+            return true
         }
         cursorTick = CURSOR_TICK_ON_ACTION
         insert(char.toChar().toString())
         forceApply()
+        return true
     }
 
     private fun mark(mark: Boolean, right: Boolean, modify: Int) {
@@ -168,9 +169,9 @@ class TextInputElement(
         textElement.unmark()
     }
 
-    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (type == KeyChangeTypes.RELEASE) {
-            return
+            return true
         }
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
         val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
@@ -189,12 +190,12 @@ class TextInputElement(
             }
             KeyCodes.KEY_BACKSPACE -> {
                 if (_value.isEmpty() || !editable) {
-                    return
+                    return true
                 }
                 if (textElement.marked) {
                     insert("")
                 } else if (_pointer == 0) {
-                    return
+                    return true
                 } else {
                     val delete = if (controlDown) calculateWordPointer(false) else -1
                     _value.delete(_pointer + delete, _pointer)
@@ -204,12 +205,12 @@ class TextInputElement(
             }
             KeyCodes.KEY_DELETE -> {
                 if (_value.isEmpty() || !editable) {
-                    return
+                    return true
                 }
                 if (textElement.marked) {
                     insert("")
                 } else if (_pointer == _value.length) {
-                    return
+                    return true
                 } else {
                     val delete = if (controlDown) calculateWordPointer(true) else 1
                     _value.delete(_pointer, _pointer + delete)
@@ -221,7 +222,7 @@ class TextInputElement(
                     if (!shiftDown) {
                         textElement.unmark()
                     }
-                    return
+                    return true
                 }
                 val modify = if (controlDown) {
                     calculateWordPointer(false)
@@ -235,7 +236,7 @@ class TextInputElement(
                     if (!shiftDown && _pointer == _value.length) {
                         textElement.unmark()
                     }
-                    return
+                    return true
                 }
                 val modify = if (controlDown) {
                     calculateWordPointer(true)
@@ -256,11 +257,13 @@ class TextInputElement(
             else -> return textElement.onKey(key, type)
         }
         forceApply()
+
+        return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         if (action != MouseActions.PRESS) {
-            return
+            return true
         }
         val leftText = TextElement(guiRenderer, value, background = false)
         leftText.prefMaxSize = Vec2i(position.x, size.y)
@@ -282,6 +285,7 @@ class TextInputElement(
         }
         this._pointer = pointer
         forceSilentApply()
+        return true
     }
 
     override fun onChildChange(child: Element) {

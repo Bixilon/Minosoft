@@ -38,7 +38,7 @@ class OpenURLClickEvent(
         if (button != MouseButtons.LEFT || action != MouseActions.PRESS) {
             return
         }
-        if (guiRenderer.connection.profiles.gui.confirmation.openURL) {
+        if (!guiRenderer.connection.profiles.gui.confirmation.openURL) {
             DesktopUtil.openURL(url)
             return
         }

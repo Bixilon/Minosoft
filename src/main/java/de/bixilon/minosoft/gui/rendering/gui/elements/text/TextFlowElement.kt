@@ -92,8 +92,9 @@ open class TextFlowElement(
         }
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
         this.scrollOffset += scrollOffset.y.toInt()
+        return true
     }
 
     @Synchronized
@@ -180,9 +181,10 @@ open class TextFlowElement(
         }
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val pair = getAt(position) ?: return
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        val pair = getAt(position) ?: return false
         pair.first.textElement.onMouseAction(pair.second, button, action)
+        return true
     }
 
     private fun getAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {

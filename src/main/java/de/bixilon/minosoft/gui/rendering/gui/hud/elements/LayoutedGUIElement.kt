@@ -118,31 +118,26 @@ class LayoutedGUIElement<T : LayoutedElement>(
             }
             // move out
             this.lastPosition = INVALID_MOUSE_POSITION
-            elementLayout.onMouseLeave()
-            return true
+            return elementLayout.onMouseLeave()
         }
         val delta = position - offset
         this.lastPosition = delta
 
         if (lastPosition.isOutside(offset, size)) {
-            elementLayout.onMouseEnter(delta)
-            return true
+            return elementLayout.onMouseEnter(delta)
         }
 
-        elementLayout.onMouseMove(delta)
-        return true
+        return elementLayout.onMouseMove(delta)
     }
 
     override fun onCharPress(char: Int): Boolean {
-        elementLayout.onCharPress(char)
-        return true
+        return elementLayout.onCharPress(char)
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
         val mouseButton = MouseButtons[key]
         if (mouseButton == null) {
-            elementLayout.onKey(key, type)
-            return true
+            return elementLayout.onKey(key, type)
         }
 
         val position = lastPosition
@@ -151,8 +146,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
         }
 
         val mouseAction = MouseActions[type] ?: return false
-        elementLayout.onMouseAction(position, mouseButton, mouseAction)
-        return true
+        return elementLayout.onMouseAction(position, mouseButton, mouseAction)
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
@@ -160,8 +154,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
         if (lastPosition == INVALID_MOUSE_POSITION) {
             return false
         }
-        elementLayout.onScroll(position, scrollOffset)
-        return true
+        return elementLayout.onScroll(position, scrollOffset)
     }
 
     override fun onClose() {

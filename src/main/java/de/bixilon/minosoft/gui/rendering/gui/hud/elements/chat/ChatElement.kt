@@ -133,11 +133,13 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
         messages.onClose()
     }
 
-    override fun onCharPress(char: Int) {
+    override fun onCharPress(char: Int): Boolean {
         if (char == '§'.code) {
-            return input.onCharPress('&'.code)
+            input.onCharPress('&'.code)
+        } else {
+            input.onCharPress(char)
         }
-        input.onCharPress(char)
+        return true
     }
 
     private fun submit() {
@@ -154,23 +156,24 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
         guiRenderer.gui.pop()
     }
 
-    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (type != KeyChangeTypes.RELEASE) {
             when (key) {
                 KeyCodes.KEY_ENTER -> {
-                    return submit()
+                    submit()
+                    return true
                 }
                 KeyCodes.KEY_PAGE_UP -> {
                     messages.scrollOffset++
-                    return
+                    return true
                 }
                 KeyCodes.KEY_PAGE_DOWN -> {
                     messages.scrollOffset--
-                    return
+                    return true
                 }
                 KeyCodes.KEY_UP -> {
                     if (historyIndex <= 0) {
-                        return
+                        return true
                     }
                     val size = history.size
                     if (historyIndex > size) {
@@ -183,11 +186,11 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
                     val size = history.size
                     historyIndex++
                     if (historyIndex > size) {
-                        return
+                        return true
                     }
                     if (historyIndex == size) {
                         input.value = ""
-                        return
+                        return true
                     }
                     input.value = history[historyIndex]
                 }
@@ -195,11 +198,14 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
             }
         }
         input.onKey(key, type)
+
+        return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val pair = getAt(position) ?: return
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        val pair = getAt(position) ?: return false
         pair.first.onMouseAction(pair.second, button, action)
+        return true
     }
 
     private fun getAt(position: Vec2i): Pair<Element, Vec2i>? {

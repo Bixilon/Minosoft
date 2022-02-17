@@ -82,9 +82,10 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         guiRenderer.gui.pop() // pop normal chat
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val pair = getAt(position) ?: return
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        val pair = getAt(position) ?: return false
         pair.first.onMouseAction(pair.second, button, action)
+        return true
     }
 
     private fun getAt(position: Vec2i): Pair<Element, Vec2i>? {

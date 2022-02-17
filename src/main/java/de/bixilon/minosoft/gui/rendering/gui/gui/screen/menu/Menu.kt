@@ -75,32 +75,36 @@ abstract class Menu(
         }
     }
 
-    override fun onMouseLeave() {
+    override fun onMouseLeave(): Boolean {
         activeElement?.onMouseLeave()
         activeElement = null
+        return true
     }
 
-    override fun onMouseMove(position: Vec2i) {
+    override fun onMouseMove(position: Vec2i): Boolean {
         val pair = getAt(position)
 
         if (activeElement != pair?.first) {
             activeElement?.onMouseLeave()
             pair?.first?.onMouseEnter(pair.second)
             activeElement = pair?.first
-            return
+            return true
         }
         pair?.first?.onMouseMove(pair.second)
+        return true
     }
 
-    override fun onMouseEnter(position: Vec2i) {
+    override fun onMouseEnter(position: Vec2i): Boolean {
         val pair = getAt(position)
         pair?.first?.onMouseEnter(pair.second)
         activeElement = pair?.first
+        return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val (element, delta) = getAt(position) ?: return
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action)
+        return true
     }
 
     override fun onChildChange(child: Element) {
@@ -155,8 +159,7 @@ abstract class Menu(
         super.tick()
     }
 
-    override fun onKey(key: KeyCodes, type: KeyChangeTypes) {
-        super.onKey(key, type)
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (type != KeyChangeTypes.RELEASE && key == KeyCodes.KEY_TAB) {
             var element: Element?
             var initialIndex = elements.indexOf(activeElement)
@@ -170,33 +173,36 @@ abstract class Menu(
                     index = 0
                 }
                 if (index == initialIndex) {
-                    return
+                    return true
                 }
-                element = elements.getOrNull(index) ?: return
+                element = elements.getOrNull(index) ?: return true
                 if (element.canFocus) {
                     break
                 }
             }
             if (element == null) {
-                return
+                return true
             }
 
             activeElement?.onMouseLeave()
             element.onMouseEnter(Vec2i.EMPTY)
             activeElement = element
-            return // no passthrough the key to current active element
+            return true // no passthrough the key to current active element
         }
         activeElement?.onKey(key, type)
+
+        return true
     }
 
-    override fun onCharPress(char: Int) {
-        super.onCharPress(char)
+    override fun onCharPress(char: Int): Boolean {
         activeElement?.onCharPress(char)
+        return true
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
-        val (element, delta) = getAt(position) ?: return
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+        val (element, delta) = getAt(position) ?: return true
         element.onScroll(delta, scrollOffset)
+        return true
     }
 
     private fun reset() {
