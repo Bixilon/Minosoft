@@ -76,6 +76,21 @@ abstract class Menu(
         }
     }
 
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+        super<ActiveMouseMove>.onMouseEnter(position, absolute)
+        return true
+    }
+
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+        super<ActiveMouseMove>.onMouseMove(position, absolute)
+        return true
+    }
+
+    override fun onMouseLeave(): Boolean {
+        super<Screen>.onMouseLeave()
+        return true
+    }
+
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action)
@@ -160,7 +175,7 @@ abstract class Menu(
             }
 
             activeElement?.onMouseLeave()
-            element.onMouseEnter(Vec2i.EMPTY)
+            element.onMouseEnter(Vec2i.EMPTY, Vec2i.EMPTY)
             activeElement = element
             return true // no passthrough the key to current active element
         }

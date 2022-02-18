@@ -17,7 +17,7 @@ import glm_.vec2.Vec2i
 
 interface MouseInputElement {
 
-    fun onMouseEnter(position: Vec2i) = false
-    fun onMouseMove(position: Vec2i) = false
+    fun onMouseEnter(position: Vec2i, absolute: Vec2i) = false
+    fun onMouseMove(position: Vec2i, absolute: Vec2i) = false
     fun onMouseLeave() = false
 }

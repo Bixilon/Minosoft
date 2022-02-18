@@ -145,7 +145,7 @@ open class ButtonElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         hovered = true
 
         return true

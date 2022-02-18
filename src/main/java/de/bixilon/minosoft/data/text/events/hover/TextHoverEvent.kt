@@ -30,15 +30,15 @@ class TextHoverEvent(
         text.accessibleText = this.text.message
     }
 
-    override fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2i): Boolean {
-        val popper = TextPopper(guiRenderer, position, text)
+    override fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2i, absolute: Vec2i): Boolean {
+        val popper = TextPopper(guiRenderer, absolute, text)
         popper.show()
         this.popper = popper
         return true
     }
 
-    override fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i): Boolean {
-        popper?.position = position
+    override fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i, absolute: Vec2i): Boolean {
+        popper?.position = absolute
         return true
     }
 

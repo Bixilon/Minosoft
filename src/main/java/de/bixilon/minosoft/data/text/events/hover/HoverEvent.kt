@@ -19,7 +19,7 @@ import glm_.vec2.Vec2i
 
 interface HoverEvent : ChatEvent {
 
-    fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2i) = false
-    fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i) = false
+    fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2i, absolute: Vec2i) = false
+    fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i, absolute: Vec2i) = false
     fun onMouseLeave(guiRenderer: GUIRenderer) = false
 }

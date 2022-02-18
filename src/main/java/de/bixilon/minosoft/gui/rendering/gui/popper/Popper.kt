@@ -45,7 +45,7 @@ abstract class Popper(
     }
 
     override fun forceSilentApply() {
-        layoutOffset = position
+        layoutOffset = position // ToDo
         background.size = size
         cacheUpToDate = false
     }

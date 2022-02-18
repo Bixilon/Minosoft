@@ -24,21 +24,21 @@ interface ActiveMouseMove<T : Element> : InputElement {
 
     fun getAt(position: Vec2i): Pair<T, Vec2i>?
 
-    override fun onMouseEnter(position: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         val pair = getAt(position)
         activeElement = pair?.first
-        return pair?.first?.onMouseEnter(pair.second) ?: false
+        return pair?.first?.onMouseEnter(pair.second, absolute) ?: false
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
         val pair = getAt(position)
 
         if (activeElement != pair?.first) {
             val activeElement = activeElement
             this.activeElement = pair?.first
-            return (activeElement?.onMouseLeave() ?: false) || (pair?.first?.onMouseEnter(pair.second) ?: false)
+            return (activeElement?.onMouseLeave() ?: false) || (pair?.first?.onMouseEnter(pair.second, absolute) ?: false)
         }
-        return pair?.first?.onMouseMove(pair.second) ?: false
+        return pair?.first?.onMouseMove(pair.second, absolute) ?: false
     }
 
     override fun onMouseLeave(): Boolean {

@@ -125,10 +125,10 @@ class LayoutedGUIElement<T : LayoutedElement>(
         this.lastPosition = delta
 
         if (previousOutside) {
-            return elementLayout.onMouseEnter(delta)
+            return elementLayout.onMouseEnter(delta, position)
         }
 
-        return elementLayout.onMouseMove(delta)
+        return elementLayout.onMouseMove(delta, position)
     }
 
     override fun onCharPress(char: Int): Boolean {
@@ -157,6 +157,8 @@ class LayoutedGUIElement<T : LayoutedElement>(
 
     override fun onClose() {
         elementLayout.onClose()
+        elementLayout.onMouseLeave()
+        lastPosition = INVALID_MOUSE_POSITION
     }
 
     override fun onOpen() {

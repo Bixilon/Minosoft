@@ -181,28 +181,33 @@ open class TextElement(
         return true
     }
 
-    override fun onMouseEnter(position: Vec2i): Boolean {
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         val pair = getTextComponentAt(position) ?: return false
         activeElement = pair.first
-        pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second)
+        pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute)
         return true
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
         val pair = getTextComponentAt(position)
 
         if (activeElement != pair?.first) {
             val activeElement = activeElement
             this.activeElement = pair?.first
-            return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second) ?: false)
+            return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute) ?: false)
         }
-        return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, pair.second) ?: false
+        return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, pair.second, absolute) ?: false
     }
 
     override fun onMouseLeave(): Boolean {
         activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: return false
         activeElement = null
         return true
+    }
+
+    override fun onHide() {
+        activeElement?.hoverEvent?.onMouseLeave(guiRenderer) // ToDo: This should not be here (if if should be anywhere)
+        activeElement = null
     }
 
     private fun getTextComponentAt(position: Vec2i): Pair<TextComponent, Vec2i>? {
