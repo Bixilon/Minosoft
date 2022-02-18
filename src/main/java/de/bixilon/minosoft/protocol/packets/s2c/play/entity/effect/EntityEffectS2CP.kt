@@ -18,6 +18,10 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_18_2_PRE_1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
 import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -26,11 +30,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
-    var effect: StatusEffectInstance = if (buffer.versionId < ProtocolVersions.V_14W04A) {
-        StatusEffectInstance(buffer.connection.registries.statusEffectRegistry[buffer.readUnsignedByte()], buffer.readByte() + 1, buffer.readUnsignedShort())
-    } else {
-        StatusEffectInstance(buffer.connection.registries.statusEffectRegistry[buffer.readUnsignedByte()], buffer.readByte() + 1, buffer.readVarInt())
-    }
+    var effect: StatusEffectInstance = buffer.readStatusEffectInstance()
     val isAmbient: Boolean
     val hideParticles: Boolean
     val showIcon: Boolean
@@ -40,8 +40,8 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         var isAmbient = true
         var hideParticles = true
         var showIcon = true
-        if (buffer.versionId >= ProtocolVersions.V_14W04A) {
-            if (buffer.versionId < ProtocolVersions.V_1_9_4 && buffer.versionId >= ProtocolVersions.V_14W06B) { // ToDo
+        if (buffer.versionId >= V_14W04A) {
+            if (buffer.versionId in V_14W06B until V_1_9_4) { // ToDo
                 hideParticles = buffer.readBoolean()
             } else {
                 val flags = buffer.readByte()
@@ -55,6 +55,21 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         this.isAmbient = isAmbient
         this.hideParticles = hideParticles
         this.showIcon = showIcon
+    }
+
+    private fun PlayInByteBuffer.readStatusEffectInstance(): StatusEffectInstance {
+        val effectId = if (versionId < V_1_18_2_PRE_1) {
+            readUnsignedByte()
+        } else {
+            readVarInt()
+        }
+        val amplifier = readByte()
+        val duration = if (versionId < V_14W04A) {
+            readUnsignedShort()
+        } else {
+            readVarInt()
+        }
+        return StatusEffectInstance(connection.registries.statusEffectRegistry[effectId], amplifier + 1, duration)
     }
 
     override fun handle(connection: PlayConnection) {
