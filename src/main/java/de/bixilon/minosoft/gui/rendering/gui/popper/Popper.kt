@@ -11,40 +11,39 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
+package de.bixilon.minosoft.gui.rendering.gui.popper
 
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
-import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
-import glm_.vec2.Vec2d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
-abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, Drawable, ActiveMouseMove<Element> {
-    protected val connection = renderWindow.connection
-    protected val profile = connection.profiles.gui
-    protected val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@AbstractChatElement }
-    override var activeElement: Element? = null
+abstract class Popper(
+    guiRenderer: GUIRenderer,
+    var position: Vec2i,
+) : Element(guiRenderer), LayoutedElement {
+    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = ChatColors.YELLOW)
+    open var dead = false
+    override val layoutOffset: Vec2i = position
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        messages.render(offset + Vec2i(ChatElement.CHAT_INPUT_MARGIN, 0), consumer, options)
+        background.render(offset, consumer, options)
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
-        val size = messages.size
-        if (position.y > size.y || position.x > messages.size.x) {
-            return false
-        }
-        messages.onScroll(position, scrollOffset)
-        return true
+    override fun forceSilentApply() {
+        background.size = size
     }
 
-    override fun tick() {
-        messages.tick()
+    fun show() {
+        guiRenderer.popper += this
+    }
+
+    fun hide() {
+        dead = true
     }
 }

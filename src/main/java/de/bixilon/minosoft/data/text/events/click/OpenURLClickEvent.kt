@@ -43,7 +43,7 @@ class OpenURLClickEvent(
             return
         }
         val dialog = URLConfirmationDialog(guiRenderer, url)
-        dialog.open()
+        dialog.show()
     }
 
     companion object : ClickEventFactory<OpenURLClickEvent> {

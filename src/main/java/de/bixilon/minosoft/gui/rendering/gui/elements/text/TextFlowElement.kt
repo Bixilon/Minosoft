@@ -22,8 +22,7 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -34,9 +33,10 @@ import glm_.vec2.Vec2i
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
-) : Element(guiRenderer) {
+) : Element(guiRenderer), ActiveMouseMove<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = listOf() // all visible lines **from bottom to top**
+    override var activeElement: TextElement? = null
 
     private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
@@ -181,13 +181,12 @@ open class TextFlowElement(
         }
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
-        val pair = getAt(position) ?: return false
-        pair.first.textElement.onMouseAction(pair.second, button, action)
-        return true
+    override fun getAt(position: Vec2i): Pair<TextElement, Vec2i>? {
+        val line = getLineAt(position) ?: return null
+        return Pair(line.first.textElement, line.second)
     }
 
-    private fun getAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {
+    private fun getLineAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {
         val reversedY = size.y - position.y
         val line = visibleLines.getOrNull(reversedY / Font.TOTAL_CHAR_HEIGHT) ?: return null
         if (position.x > line.textElement.size.x) {

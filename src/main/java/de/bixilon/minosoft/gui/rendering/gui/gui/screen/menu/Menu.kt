@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -29,13 +30,13 @@ import glm_.vec2.Vec2i
 abstract class Menu(
     guiRenderer: GUIRenderer,
     val preferredElementWidth: Int = 150,
-) : Screen(guiRenderer) {
+) : Screen(guiRenderer), ActiveMouseMove<Element> {
     private val elements: MutableList<Element> = mutableListOf()
 
     private var maxElementWidth = -1
     private var totalHeight = -1
 
-    private var activeElement: Element? = null
+    override var activeElement: Element? = null
 
     override fun forceSilentApply() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)
@@ -75,32 +76,6 @@ abstract class Menu(
         }
     }
 
-    override fun onMouseLeave(): Boolean {
-        activeElement?.onMouseLeave()
-        activeElement = null
-        return true
-    }
-
-    override fun onMouseMove(position: Vec2i): Boolean {
-        val pair = getAt(position)
-
-        if (activeElement != pair?.first) {
-            activeElement?.onMouseLeave()
-            pair?.first?.onMouseEnter(pair.second)
-            activeElement = pair?.first
-            return true
-        }
-        pair?.first?.onMouseMove(pair.second)
-        return true
-    }
-
-    override fun onMouseEnter(position: Vec2i): Boolean {
-        val pair = getAt(position)
-        pair?.first?.onMouseEnter(pair.second)
-        activeElement = pair?.first
-        return true
-    }
-
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action)
@@ -111,7 +86,7 @@ abstract class Menu(
         forceSilentApply()
     }
 
-    fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
         var element: Element? = null
         val delta = Vec2i(position)
         val elementWidth = maxElementWidth

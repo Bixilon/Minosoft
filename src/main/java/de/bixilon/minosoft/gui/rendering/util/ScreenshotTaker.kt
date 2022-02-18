@@ -52,7 +52,7 @@ class ScreenshotTaker(
             while (File(path).exists()) {
                 path = "${basePath}_${i++}.png"
                 if (i > MAX_FILES_CHECK) {
-                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again!")
+                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again later!")
                 }
             }
 
@@ -87,7 +87,7 @@ class ScreenshotTaker(
                         TextComponent("[DELETE]").apply {
                             color = ChatColors.RED
                             bold()
-                            clickEvent = ClickCallbackClickEvent { DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file).open() }
+                            clickEvent = ClickCallbackClickEvent { DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file).show() }
                             hoverEvent = TextHoverEvent("Click to delete screenshot")
                         },
                     ))

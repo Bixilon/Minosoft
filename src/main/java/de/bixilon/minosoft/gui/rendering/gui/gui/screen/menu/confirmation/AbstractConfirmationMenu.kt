@@ -34,7 +34,7 @@ abstract class AbstractConfirmationMenu(
         guiRenderer.gui.pop()
     }
 
-    fun open() {
+    fun show() {
         guiRenderer.gui.push(this)
     }
 

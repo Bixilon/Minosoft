@@ -121,9 +121,10 @@ class LayoutedGUIElement<T : LayoutedElement>(
             return elementLayout.onMouseLeave()
         }
         val delta = position - offset
+        val previousOutside = lastPosition == INVALID_MOUSE_POSITION
         this.lastPosition = delta
 
-        if (lastPosition.isOutside(offset, size)) {
+        if (previousOutside) {
             return elementLayout.onMouseEnter(delta)
         }
 
@@ -135,10 +136,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        val mouseButton = MouseButtons[key]
-        if (mouseButton == null) {
-            return elementLayout.onKey(key, type)
-        }
+        val mouseButton = MouseButtons[key] ?: return elementLayout.onKey(key, type)
 
         val position = lastPosition
         if (position == INVALID_MOUSE_POSITION) {

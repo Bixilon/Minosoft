@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
+import de.bixilon.minosoft.gui.rendering.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
@@ -47,6 +48,7 @@ class GUIRenderer(
     var scaledSize: Vec2i = renderWindow.window.size
     val gui = GUIManager(this)
     val hud = HUDManager(this)
+    val popper = PopperManager(this)
     var matrix: Mat4 = Mat4()
         private set
     var matrixChange = true
@@ -64,6 +66,7 @@ class GUIRenderer(
         atlasManager.init()
         gui.init()
         hud.init()
+        popper.init()
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
@@ -77,6 +80,7 @@ class GUIRenderer(
 
         gui.postInit()
         hud.postInit()
+        popper.postInit()
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
@@ -86,6 +90,7 @@ class GUIRenderer(
 
         gui.onMatrixChange()
         hud.onMatrixChange()
+        popper.onMatrixChange()
     }
 
     fun setup() {
@@ -119,6 +124,7 @@ class GUIRenderer(
     override fun drawOther() {
         hud.draw()
         gui.draw()
+        popper.draw()
         if (this.matrixChange) {
             this.matrixChange = false
         }

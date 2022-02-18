@@ -40,7 +40,7 @@ class OpenFileClickEvent(
             return
         }
         val dialog = OpenFileConfirmationDialog(guiRenderer, path)
-        dialog.open()
+        dialog.show()
     }
 
     companion object : ClickEventFactory<OpenFileClickEvent> {

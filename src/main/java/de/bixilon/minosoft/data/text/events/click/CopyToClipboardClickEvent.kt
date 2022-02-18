@@ -33,7 +33,7 @@ class CopyToClipboardClickEvent(
             return
         }
         val dialog = CopyToClipboardDialog(guiRenderer, text)
-        dialog.open()
+        dialog.show()
     }
 
     companion object : ClickEventFactory<CopyToClipboardClickEvent> {

@@ -80,6 +80,11 @@ class GUIManager(
 
     fun draw() {
         val order = elementOrder.reversed()
+        val time = TimeUtil.time
+        val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
+        if (tick) {
+            lastTickTime = time
+        }
         for ((index, element) in order.withIndex()) {
             if (!element.enabled) {
                 continue
@@ -87,8 +92,7 @@ class GUIManager(
             if (index != order.size - 1 && !element.activeWhenHidden) {
                 continue
             }
-            val time = TimeUtil.time
-            if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
+            if (tick) {
                 element.tick()
                 if (element is Pollable) {
                     if (element.poll()) {
@@ -220,6 +224,7 @@ class GUIManager(
         previous.onClose()
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
+            guiRenderer.popper.clear()
         }
         val now = elementOrder.firstOrNull() ?: return
         now.onOpen()
@@ -230,6 +235,7 @@ class GUIManager(
             element.onClose()
         }
         elementOrder.clear()
+        guiRenderer.popper.clear()
         renderWindow.inputHandler.inputHandler = null
     }
 

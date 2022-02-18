@@ -21,8 +21,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -82,13 +80,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         guiRenderer.gui.pop() // pop normal chat
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
-        val pair = getAt(position) ?: return false
-        pair.first.onMouseAction(pair.second, button, action)
-        return true
-    }
-
-    private fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
         if (position.x < ChatElement.CHAT_INPUT_MARGIN) {
             return null
         }

@@ -34,7 +34,7 @@ class SendMessageClickEvent(
             return
         }
         val dialog = SendMessageDialog(guiRenderer, message)
-        dialog.open()
+        dialog.show()
     }
 
     companion object : ClickEventFactory<SendMessageClickEvent>, MultiNameFactory<SendMessageClickEvent> {

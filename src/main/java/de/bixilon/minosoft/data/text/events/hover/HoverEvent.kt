@@ -14,5 +14,12 @@
 package de.bixilon.minosoft.data.text.events.hover
 
 import de.bixilon.minosoft.data.text.events.ChatEvent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import glm_.vec2.Vec2i
 
-interface HoverEvent : ChatEvent
+interface HoverEvent : ChatEvent {
+
+    fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2i) = false
+    fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i) = false
+    fun onMouseLeave(guiRenderer: GUIRenderer) = false
+}

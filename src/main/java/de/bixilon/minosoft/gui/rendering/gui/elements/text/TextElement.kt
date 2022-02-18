@@ -47,6 +47,7 @@ open class TextElement(
     parent: Element? = null,
     scale: Float = 1.0f,
 ) : Element(guiRenderer, text.toString().length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
+    private var activeElement: TextComponent? = null
     lateinit var renderInfo: TextRenderInfo
         private set
 
@@ -175,12 +176,36 @@ open class TextElement(
         if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
             return true
         }
-        val text = getTextComponentAt(position) ?: return false
-        text.clickEvent?.onClick(guiRenderer, position, button, action)
+        val pair = getTextComponentAt(position) ?: return false
+        pair.first.clickEvent?.onClick(guiRenderer, pair.second, button, action)
         return true
     }
 
-    private fun getTextComponentAt(position: Vec2i): TextComponent? {
+    override fun onMouseEnter(position: Vec2i): Boolean {
+        val pair = getTextComponentAt(position) ?: return false
+        activeElement = pair.first
+        pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second)
+        return true
+    }
+
+    override fun onMouseMove(position: Vec2i): Boolean {
+        val pair = getTextComponentAt(position)
+
+        if (activeElement != pair?.first) {
+            val activeElement = activeElement
+            this.activeElement = pair?.first
+            return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second) ?: false)
+        }
+        return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, pair.second) ?: false
+    }
+
+    override fun onMouseLeave(): Boolean {
+        activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: return false
+        activeElement = null
+        return true
+    }
+
+    private fun getTextComponentAt(position: Vec2i): Pair<TextComponent, Vec2i>? {
         val offset = Vec2i(position)
         val line = renderInfo.lines.getOrNull(offset.y / charHeight) ?: return null
         offset.y = offset.y % charHeight
@@ -191,7 +216,7 @@ open class TextElement(
 
         offset.x += fontAlignment.getOffset(size.x, line.width)
 
-        return line.text.getTextAt(textElement.renderInfo.lines.getOrNull(0)?.text?.message?.length ?: return null)
+        return Pair(line.text.getTextAt(textElement.renderInfo.lines.getOrNull(0)?.text?.message?.length ?: return null), offset)
     }
 
     override fun toString(): String {

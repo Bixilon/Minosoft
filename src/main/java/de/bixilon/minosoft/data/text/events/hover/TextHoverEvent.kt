@@ -15,15 +15,37 @@ package de.bixilon.minosoft.data.text.events.hover
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.popper.text.TextPopper
+import glm_.vec2.Vec2i
 import javafx.scene.text.Text
 
 class TextHoverEvent(
     text: Any?,
 ) : HoverEvent {
     val text = ChatComponent.of(text)
+    private var popper: TextPopper? = null
 
     override fun applyJavaFX(text: Text) {
         text.accessibleText = this.text.message
+    }
+
+    override fun onMouseEnter(guiRenderer: GUIRenderer, position: Vec2i): Boolean {
+        val popper = TextPopper(guiRenderer, position, text)
+        popper.show()
+        this.popper = popper
+        return true
+    }
+
+    override fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i): Boolean {
+        popper?.position = position
+        return true
+    }
+
+    override fun onMouseLeave(guiRenderer: GUIRenderer): Boolean {
+        this.popper?.let { guiRenderer.popper -= it }
+        this.popper = null
+        return true
     }
 
     companion object : HoverEventFactory<TextHoverEvent> {
