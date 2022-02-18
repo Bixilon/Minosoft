@@ -74,6 +74,7 @@ class ScreenshotTaker(
                     file.createParent()
 
                     ImageIO.write(bufferedImage, "png", file)
+                    var deleted = false
 
                     renderWindow.connection.util.sendDebugMessage(BaseComponent(
                         "§aScreenshot saved: ",
@@ -87,7 +88,17 @@ class ScreenshotTaker(
                         TextComponent("[DELETE]").apply {
                             color = ChatColors.RED
                             bold()
-                            clickEvent = ClickCallbackClickEvent { DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file).show() }
+                            clickEvent = ClickCallbackClickEvent {
+                                if (deleted) {
+                                    return@ClickCallbackClickEvent
+                                }
+                                DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file) {
+                                    deleted = true
+                                    hoverEvent = TextHoverEvent("§cAlready deleted!")
+                                    clickEvent = null
+                                    strikethrough() // ToDo: TextComponents are non mutable when passed to the renderer
+                                }.show()
+                            }
                             hoverEvent = TextHoverEvent("Click to delete screenshot")
                         },
                     ))

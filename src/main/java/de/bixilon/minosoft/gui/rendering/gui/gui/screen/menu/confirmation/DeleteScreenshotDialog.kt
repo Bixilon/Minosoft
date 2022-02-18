@@ -22,6 +22,7 @@ import java.io.File
 class DeleteScreenshotDialog(
     guiRenderer: GUIRenderer,
     private val screenshot: File,
+    private val onDelete: () -> Unit,
 ) : AbstractConfirmationMenu(
     guiRenderer,
     "Do you want to delete this screenshot?",
@@ -33,6 +34,7 @@ class DeleteScreenshotDialog(
             ButtonElement(guiRenderer, "§cSure, delete it") {
                 DefaultThreadPool += { screenshot.delete() }
                 close()
+                onDelete()
             }
         )
     }

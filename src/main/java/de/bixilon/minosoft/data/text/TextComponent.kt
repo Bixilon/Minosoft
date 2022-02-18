@@ -34,7 +34,7 @@ open class TextComponent(
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
-    override var message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
+    override val message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
 
     fun obfuscate(): TextComponent {
         formatting.add(PreChatFormattingCodes.OBFUSCATED)
