@@ -285,7 +285,7 @@ class BaseComponent : ChatComponent {
         var pointer = pointer
         for (part in parts) {
             val length = part.length
-            if (pointer < length) {
+            if (pointer <= length) {
                 return part.getTextAt(pointer)
             }
             pointer -= length

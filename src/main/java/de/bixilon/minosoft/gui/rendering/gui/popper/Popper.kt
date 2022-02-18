@@ -25,18 +25,29 @@ import glm_.vec2.Vec2i
 
 abstract class Popper(
     guiRenderer: GUIRenderer,
-    var position: Vec2i,
+    position: Vec2i,
 ) : Element(guiRenderer), LayoutedElement {
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = ChatColors.YELLOW)
     open var dead = false
-    override val layoutOffset: Vec2i = position
+    override var layoutOffset: Vec2i = position
+        protected set
+    var position = position
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            forceApply()
+        }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
+        layoutOffset = position
         background.size = size
+        cacheUpToDate = false
     }
 
     fun show() {

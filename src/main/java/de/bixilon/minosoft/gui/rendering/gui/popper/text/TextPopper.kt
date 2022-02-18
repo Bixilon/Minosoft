@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.popper.text
 
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -25,11 +26,23 @@ class TextPopper(
     position: Vec2i,
     text: Any,
 ) : Popper(guiRenderer, position) {
-    private val textElement = TextElement(guiRenderer, text, parent = this)
+    private val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+
+    init {
+        recalculateSize()
+    }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         textElement.render(offset, consumer, options)
+    }
+
+    override fun onChildChange(child: Element) {
+        recalculateSize()
+    }
+
+    private fun recalculateSize() {
+        size = textElement.size
     }
 }
