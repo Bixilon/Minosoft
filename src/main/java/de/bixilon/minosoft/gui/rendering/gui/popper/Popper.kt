@@ -27,7 +27,7 @@ abstract class Popper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
 ) : Element(guiRenderer), LayoutedElement {
-    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = ChatColors.YELLOW)
+    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = ChatColors.DARK_BLUE)
     open var dead = false
     override var layoutOffset: Vec2i = position
         protected set

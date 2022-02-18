@@ -184,11 +184,7 @@ class GUIManager(
 
     fun open(builder: GUIBuilder<*>) {
         clear()
-        val element = this[builder]
-        elementOrder += element
-        element.onOpen()
-
-        renderWindow.inputHandler.inputHandler = guiRenderer
+        push(builder)
     }
 
     fun popOrPause() {
@@ -206,9 +202,15 @@ class GUIManager(
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = guiRenderer
         }
-        elementOrder.firstOrNull()?.onHide()
+        for ((index, elementEntry) in elementOrder.toList().withIndex()) {
+            if (index != 0 && !elementEntry.activeWhenHidden) {
+                continue
+            }
+            elementEntry.onHide()
+        }
         elementOrder.add(0, element)
         element.onOpen()
+        onMouseMove(guiRenderer.currentCursorPosition)
     }
 
     @Deprecated("Only use for dynamic gui (e.g. dialogs, ...)")

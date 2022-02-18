@@ -168,6 +168,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
 
     override fun onHide() {
         elementLayout.onHide()
+        elementLayout.onMouseLeave()
     }
 
     companion object {
