@@ -38,6 +38,7 @@ interface BaseWindow {
     var swapInterval: Int
 
     var cursorMode: CursorModes
+    var cursorShape: CursorShapes
 
 
     var clipboardText: String
@@ -78,6 +79,10 @@ interface BaseWindow {
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
         data.flip()
         setIcon(Vec2i(decoder.width, decoder.height), data)
+    }
+
+    fun resetCursor() {
+        cursorShape = CursorShapes.ARROW
     }
 
     companion object {

@@ -33,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import glm_.vec2.Vec2i
@@ -185,6 +186,9 @@ open class TextElement(
         val pair = getTextComponentAt(position) ?: return false
         activeElement = pair.first
         pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute)
+        if (pair.first.clickEvent != null) {
+            renderWindow.window.cursorShape = CursorShapes.HAND
+        }
         return true
     }
 
@@ -194,14 +198,23 @@ open class TextElement(
         if (activeElement != pair?.first) {
             val activeElement = activeElement
             this.activeElement = pair?.first
+            if (pair?.first?.clickEvent == null) {
+                renderWindow.window.resetCursor()
+            } else {
+                renderWindow.window.cursorShape = CursorShapes.HAND
+            }
             return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute) ?: false)
         }
         return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, pair.second, absolute) ?: false
     }
 
     override fun onMouseLeave(): Boolean {
-        activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: return false
-        activeElement = null
+        val activeElement = activeElement ?: return false
+        this.activeElement = null
+        if (activeElement.clickEvent != null) {
+            renderWindow.window.resetCursor()
+        }
+        activeElement.hoverEvent?.onMouseLeave(guiRenderer) ?: return false
         return true
     }
 
@@ -215,17 +228,23 @@ open class TextElement(
         val line = renderInfo.lines.getOrNull(offset.y / charHeight) ?: return null
         offset.y = offset.y % charHeight
 
-        val textElement = TextElement(guiRenderer, line.text, fontAlignment, false, backgroundColor, noBorder, parent, scale)
-        textElement._prefMaxSize = Vec2i(offset.x, charHeight)
-        textElement.forceSilentApply()
+        val cutText = TextElement(guiRenderer, line.text, fontAlignment, false, backgroundColor, noBorder, parent, scale)
+        cutText._prefMaxSize = Vec2i(offset.x, charHeight)
+        cutText.forceSilentApply()
+
+
+        val line0 = cutText.renderInfo.lines.getOrNull(0) ?: return null
+        val message = line0.text.message
+        var charToCheck = message.length
+        if (line0.width < offset.x && charToCheck < line.text.message.length) {
+            // last char got cut off
+            charToCheck++
+        }
+        val text = line.text.getTextAt(charToCheck)
+        offset.x -= line0.width // ToDo: Not 100% correct
 
 
         offset.x += fontAlignment.getOffset(size.x, line.width)
-
-        val line0 = textElement.renderInfo.lines.getOrNull(0) ?: return null
-        val text = line.text.getTextAt(line0.text.message.length)
-        offset.x -= line0.width // ToDo: Not 100% correct
-
         return Pair(text, offset)
     }
 

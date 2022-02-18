@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
@@ -258,6 +259,16 @@ class TextInputElement(
         }
         forceApply()
 
+        return true
+    }
+
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+        renderWindow.window.cursorShape = CursorShapes.IBEAM
+        return true
+    }
+
+    override fun onMouseLeave(): Boolean {
+        renderWindow.window.resetCursor()
         return true
     }
 

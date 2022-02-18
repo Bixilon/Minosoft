@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
@@ -147,12 +148,14 @@ open class ButtonElement(
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         hovered = true
+        renderWindow.window.cursorShape = CursorShapes.HAND
 
         return true
     }
 
     override fun onMouseLeave(): Boolean {
         hovered = false
+        renderWindow.window.resetCursor()
 
         return true
     }
