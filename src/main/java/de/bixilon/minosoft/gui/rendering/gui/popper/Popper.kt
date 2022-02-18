@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 
 abstract class Popper(
@@ -29,7 +30,7 @@ abstract class Popper(
 ) : Element(guiRenderer), LayoutedElement {
     private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = ChatColors.DARK_BLUE)
     open var dead = false
-    override var layoutOffset: Vec2i = position
+    override var layoutOffset: Vec2i = EMPTY
         protected set
     var position = position
         set(value) {
@@ -45,9 +46,34 @@ abstract class Popper(
     }
 
     override fun forceSilentApply() {
-        layoutOffset = position // ToDo
+        calculateLayoutOffset()
         background.size = size
         cacheUpToDate = false
+    }
+
+
+    private fun calculateLayoutOffset() {
+        val windowSize = guiRenderer.scaledSize
+        val position = position
+        val size = size
+
+        // must not be at the position
+        // always try to make it on top of the position
+        // ToDo: if not possible, try: left -> right -> below
+        // if nothing is possible use (0|0)
+
+        val layoutOffset: Vec2i
+
+        // top
+        layoutOffset = position - Vec2i(0, size.y + POSITION_OFFSET)
+        if (!(layoutOffset isSmaller EMPTY)) {
+            layoutOffset.x = minOf(maxOf(layoutOffset.x - size.x / 2 - POSITION_OFFSET, 0), windowSize.x - size.x) // try to center element, but clamp on edges (try not to make the popper go out of the window)
+            this.layoutOffset = layoutOffset
+            return
+        }
+
+        // failover
+        this.layoutOffset = EMPTY
     }
 
     fun show() {
@@ -56,5 +82,10 @@ abstract class Popper(
 
     fun hide() {
         dead = true
+    }
+
+    companion object {
+        private val EMPTY = Vec2i.EMPTY
+        private const val POSITION_OFFSET = 5
     }
 }

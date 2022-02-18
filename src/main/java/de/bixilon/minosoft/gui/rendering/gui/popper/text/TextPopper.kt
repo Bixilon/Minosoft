@@ -29,13 +29,18 @@ class TextPopper(
     private val textElement = TextElement(guiRenderer, text, background = false, parent = this)
 
     init {
-        recalculateSize()
+        forceSilentApply()
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         textElement.render(offset, consumer, options)
+    }
+
+    override fun forceSilentApply() {
+        recalculateSize()
+        super.forceSilentApply()
     }
 
     override fun onChildChange(child: Element) {
