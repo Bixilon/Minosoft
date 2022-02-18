@@ -32,8 +32,7 @@ open class ImageElement(
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
     size: Vec2i = texture.size,
     tint: RGBColor = ChatColors.WHITE,
-) : Element(guiRenderer) {
-    override var initialCacheSize: Int = GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
     var texture: AbstractTexture = texture
         set(value) {
             field = value
@@ -76,9 +75,8 @@ open class ImageElement(
 
     constructor(guiRenderer: GUIRenderer, texture: AbstractTexture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2i = texture.size, tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        consumer.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint, options)
-        return 1
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        consumer.addQuad(offset, offset + size, texture, uvStart, uvEnd, tint, options)
     }
 
     override fun forceSilentApply() = Unit

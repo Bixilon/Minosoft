@@ -37,7 +37,7 @@ abstract class Screen(
         _size = guiRenderer.scaledSize
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        return background.render(offset, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        background.render(offset, consumer, options)
     }
 }

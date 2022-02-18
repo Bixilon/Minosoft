@@ -22,12 +22,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
-import java.lang.Integer.max
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
-    val slots: Map<Int, Vec2iBinding>, // ToDo: Use an array?
+    val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
 ) : Element(guiRenderer) {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
     private var revision = -1L
@@ -36,13 +36,10 @@ class ContainerItemsElement(
         silentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var maxZ = 0
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for ((_, data) in itemElements.toSynchronizedMap()) {
-            maxZ = max(maxZ, data.element.render(offset + data.offset, z, consumer, options))
+            data.element.render(offset + data.offset, consumer, options)
         }
-
-        return maxZ
     }
 
     override fun silentApply(): Boolean {

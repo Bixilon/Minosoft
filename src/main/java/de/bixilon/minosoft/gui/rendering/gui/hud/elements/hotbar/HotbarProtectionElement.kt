@@ -33,9 +33,9 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     private var protection = 0.0f
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (protection <= 0.0f) {
-            return 0
+            return
         }
 
         var protectionLeft = protection
@@ -49,12 +49,10 @@ class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
             val image = AtlasImageElement(guiRenderer, atlasElement)
 
-            image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), z, consumer, options)
+            image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), consumer, options)
 
             protectionLeft -= 2.0f
         }
-
-        return 1
     }
 
     override fun poll(): Boolean {

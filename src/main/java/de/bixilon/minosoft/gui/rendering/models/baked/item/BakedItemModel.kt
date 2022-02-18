@@ -26,8 +26,8 @@ class BakedItemModel(
     val texture: AbstractTexture?,
 ) : BakedModel {
 
-    fun render2d(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, itemStack: ItemStack) {
+    fun render2d(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, itemStack: ItemStack) {
         val texture = texture ?: return
-        consumer.addQuad(offset, offset + size, z, texture, tint = ChatColors.WHITE, options = options)
+        consumer.addQuad(offset, offset + size, texture, tint = ChatColors.WHITE, options = options)
     }
 }

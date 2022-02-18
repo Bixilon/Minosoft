@@ -148,12 +148,12 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     private var maxHealth = 0.0f
     override var totalMaxHealth = 0.0f
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (text) {
-            return super.forceRender(offset, z, consumer, options)
+            return super.forceRender(offset, consumer, options)
         }
         // ToDo: Damage animation, regeneration, caching, stacking
-        drawCanisters(offset, z, consumer, options, blackHeartContainer)
+        drawCanisters(offset, consumer, options, blackHeartContainer)
 
         val hardcoreIndex = hardcode.decide(1, 0)
 
@@ -199,13 +199,11 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
                 else -> 0
             }]?.let { AtlasImageElement(guiRenderer, it) }
 
-            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
+            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
 
             heart++
             healthLeft -= halfHeart.decide(1.0f, 2.0f)
         }
-
-        return LAYERS
     }
 
     override fun forceSilentApply() {

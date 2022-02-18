@@ -20,6 +20,8 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
+import de.bixilon.minosoft.gui.rendering.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
@@ -34,17 +36,19 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class GUIRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, InputHandler, OtherDrawable {
-    private val profile = connection.profiles.hud
+    private val profile = connection.profiles.gui
     override val renderSystem = renderWindow.renderSystem
     var scaledSize: Vec2i = renderWindow.window.size
     val gui = GUIManager(this)
     val hud = HUDManager(this)
+    val popper = PopperManager(this)
     var matrix: Mat4 = Mat4()
         private set
     var matrixChange = true
@@ -62,6 +66,7 @@ class GUIRenderer(
         atlasManager.init()
         gui.init()
         hud.init()
+        popper.init()
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
@@ -75,6 +80,7 @@ class GUIRenderer(
 
         gui.postInit()
         hud.postInit()
+        popper.postInit()
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
@@ -84,11 +90,13 @@ class GUIRenderer(
 
         gui.onMatrixChange()
         hud.onMatrixChange()
+        popper.onMatrixChange()
     }
 
     fun setup() {
         renderSystem.reset(
             blending = true,
+            depthTest = false,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
             destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
             sourceAlpha = BlendingFunctions.ONE,
@@ -97,22 +105,26 @@ class GUIRenderer(
         shader.use()
     }
 
-    override fun onMouseMove(position: Vec2i) {
-        gui.onMouseMove(position.scale())
+    override fun onMouseMove(position: Vec2i): Boolean {
+        return gui.onMouseMove(position.scale())
     }
 
-    override fun onCharPress(char: Int) {
-        gui.onCharPress(char)
+    override fun onCharPress(char: Int): Boolean {
+        return gui.onCharPress(char)
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        gui.onKeyPress(type, key)
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        return gui.onKeyPress(type, key)
+    }
+
+    override fun onScroll(scrollOffset: Vec2d): Boolean {
+        return gui.onScroll(scrollOffset)
     }
 
     override fun drawOther() {
-        var z = 0
-        z += hud.draw(z) + 1
-        z += gui.draw(z) + 1
+        hud.draw()
+        gui.draw()
+        popper.draw()
         if (this.matrixChange) {
             this.matrixChange = false
         }
@@ -134,6 +146,14 @@ class GUIRenderer(
             }
         }
         return output / scale
+    }
+
+    fun isKeyDown(vararg keyCodes: KeyCodes): Boolean {
+        return renderWindow.inputHandler.isKeyDown(*keyCodes)
+    }
+
+    fun isKeyDown(modifier: ModifierKeys): Boolean {
+        return renderWindow.inputHandler.isKeyDown(modifier)
     }
 
     companion object : RendererBuilder<GUIRenderer> {

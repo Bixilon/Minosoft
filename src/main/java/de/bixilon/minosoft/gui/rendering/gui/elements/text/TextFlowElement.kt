@@ -22,45 +22,79 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
-) : Element(guiRenderer) {
+) : Element(guiRenderer), ActiveMouseMove<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = listOf() // all visible lines **from bottom to top**
+    override var activeElement: TextElement? = null
 
     private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 
     // Used for scrolling in GUI (not hud)
-    private val active: Boolean = false // if always all lines should be displayed when possible
-    private val scrollOffset: Int = 0 // lines to skip from the bottom
+    var _active = false
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            _scrollOffset = 0
+        }
+    var active: Boolean // if always all lines should be displayed when possible
+        get() = _active
+        set(value) {
+            if (_active == value) {
+                return
+            }
+            _active = value
+            forceApply()
+        }
+
+    var _scrollOffset = 0
+    var scrollOffset: Int
+        get() = _scrollOffset
+        set(value) {
+            val realValue = maxOf(0, value)
+            if (_scrollOffset == realValue) {
+                return
+            }
+            _scrollOffset = realValue
+            forceApply()
+        }
+
 
     override var prefSize: Vec2i
         get() = maxSize
         set(value) = Unit
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache
     private var textSize = Vec2i.EMPTY
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
-            return 0
+            return
         }
+        background.render(offset, consumer, options)
+
         var yOffset = 0
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2i(0, yOffset), z, consumer, options)
+            message.textElement.render(offset + Vec2i(0, yOffset), consumer, options)
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
+    }
 
-        background.render(offset, z, consumer, options)
-        return LAYERS
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+        this.scrollOffset += scrollOffset.y.toInt()
+        return true
     }
 
     @Synchronized
@@ -70,6 +104,7 @@ open class TextFlowElement(
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
         val currentTime = TimeUtil.time
         var textSize = Vec2i.EMPTY
+        val active = this.active
 
 
         var currentLineOffset = 0
@@ -91,6 +126,9 @@ open class TextFlowElement(
                 currentLineOffset++
                 lineIterator.next()
             }
+            if (!lineIterator.hasNext()) {
+                continue
+            }
 
             if (lines.size == 1) {
                 visibleLines += TextFlowLineElement(textElement, message)
@@ -98,11 +136,13 @@ open class TextFlowElement(
                 continue
             }
 
+            // ToDo: Limit scrolling (that it is not possible to scroll out)
+
             for (line in lineIterator) {
                 if (visibleLines.size >= maxLines) {
                     break
                 }
-                val lineElement = TextElement(guiRenderer, line.text, background = false, parent = this)
+                val lineElement = TextElement(guiRenderer, line.text, background = false)
                 textSize = textSize.max(lineElement.size)
                 visibleLines += TextFlowLineElement(lineElement, message)
             }
@@ -113,10 +153,12 @@ open class TextFlowElement(
         _size = Vec2i(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
         background.size = size
         this.visibleLines = visibleLines
+        cacheUpToDate = false
     }
 
+    @Synchronized
     fun addMessage(message: ChatComponent) {
-        while (messages.size > MAX_TOTAL_MESSAGES) {
+        while (messages.size >= MAX_TOTAL_MESSAGES) {
             messages.removeLast()
         }
         messages.add(0, TextFlowTextElement(message))
@@ -126,6 +168,9 @@ open class TextFlowElement(
     operator fun plusAssign(message: ChatComponent) = addMessage(message)
 
     private fun checkExpiredLines() {
+        if (active) {
+            return
+        }
         val currentTime = TimeUtil.time
 
         for (line in visibleLines) {
@@ -136,9 +181,26 @@ open class TextFlowElement(
         }
     }
 
+    override fun getAt(position: Vec2i): Pair<TextElement, Vec2i>? {
+        val line = getLineAt(position) ?: return null
+        return Pair(line.first.textElement, line.second)
+    }
+
+    private fun getLineAt(position: Vec2i): Pair<TextFlowLineElement, Vec2i>? {
+        val reversedY = size.y - position.y
+        val line = visibleLines.getOrNull(reversedY / Font.TOTAL_CHAR_HEIGHT) ?: return null
+        if (position.x > line.textElement.size.x) {
+            return null
+        }
+        val offset = Vec2i(position.x, reversedY % Font.TOTAL_CHAR_HEIGHT)
+        return Pair(line, offset)
+    }
+
     override fun tick() {
         checkExpiredLines()
     }
+
+    override fun onChildChange(child: Element) = Unit
 
     private data class TextFlowTextElement(
         val text: ChatComponent,
@@ -151,8 +213,6 @@ open class TextFlowElement(
     )
 
     companion object {
-        const val LAYERS = TextElement.LAYERS
-
-        const val MAX_TOTAL_MESSAGES = 500
+        const val MAX_TOTAL_MESSAGES = 1000
     }
 }

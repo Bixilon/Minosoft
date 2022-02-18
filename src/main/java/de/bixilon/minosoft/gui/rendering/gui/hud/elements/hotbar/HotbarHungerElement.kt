@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -26,6 +27,8 @@ import java.util.concurrent.ThreadLocalRandom
 
 class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val random = ThreadLocalRandom.current()
+    private val profile = guiRenderer.connection.profiles.gui
+    private val hungerProfile = profile.hud.hotbar.hunger
     private var ticks = 0
     private val hungerStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.HUNGER]
     private val atlasManager = guiRenderer.atlasManager
@@ -56,14 +59,12 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         )
     )
 
-    override var cacheEnabled: Boolean
-        get() = super.cacheEnabled && !animate
-        set(value) {
-            super.cacheEnabled = value
-        }
-
     private var hungerEffect = false
     private var animate = true
+        set(value) {
+            super.cacheEnabled = !value
+            field = value
+        }
 
     private var hunger = 0
     private var saturation = 0.0f
@@ -71,9 +72,10 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
 
     init {
         _size = Vec2i(HUNGER_CONTAINERS, 1) * HUNGER_SIZE + Vec2i(1, 0) // 1 pixel is overlapping per hunger, so one more
+        hungerProfile::saturationBar.profileWatch(this, profile = profile) { cacheUpToDate = false }
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         var hungerLeft = hunger
         var saturationLeft = saturation.toInt()
 
@@ -86,19 +88,21 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
 
             val hungerOffset = offset + Vec2i(i * HUNGER_SIZE.x, animateOffset)
 
-            val container = when {
-                hungerEffect -> hungerHungerContainer
-                saturationLeft == 1 -> {
-                    saturationLeft -= 1
-                    saturationHungerContainer[1]
+            if (hungerProfile.saturationBar) {
+                val container = when {
+                    hungerEffect -> hungerHungerContainer
+                    saturationLeft == 1 -> {
+                        saturationLeft -= 1
+                        saturationHungerContainer[1]
+                    }
+                    saturationLeft > 1 -> {
+                        saturationLeft -= 2
+                        saturationHungerContainer[0]
+                    }
+                    else -> normalHungerContainer
                 }
-                saturationLeft > 1 -> {
-                    saturationLeft -= 2
-                    saturationHungerContainer[0]
-                }
-                else -> normalHungerContainer
+                AtlasImageElement(guiRenderer, container).render(hungerOffset, consumer, options)
             }
-            AtlasImageElement(guiRenderer, container).render(hungerOffset, z, consumer, options)
 
 
             val selectArray: Array<*> = if (hungerEffect) {
@@ -121,11 +125,8 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
                 hungerElement = selectArray[0] as AtlasElement
             }
 
-            AtlasImageElement(guiRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)
+            AtlasImageElement(guiRenderer, hungerElement).render(hungerOffset, consumer, options)
         }
-
-
-        return 2
     }
 
     override fun forceSilentApply() {

@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -29,13 +30,13 @@ import glm_.vec2.Vec2i
 abstract class Menu(
     guiRenderer: GUIRenderer,
     val preferredElementWidth: Int = 150,
-) : Screen(guiRenderer) {
+) : Screen(guiRenderer), ActiveMouseMove<Element> {
     private val elements: MutableList<Element> = mutableListOf()
 
     private var maxElementWidth = -1
     private var totalHeight = -1
 
-    private var activeElement: Element? = null
+    override var activeElement: Element? = null
 
     override fun forceSilentApply() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)
@@ -64,51 +65,43 @@ abstract class Menu(
 
     operator fun plusAssign(element: Element) = add(element)
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val size = size
-        var zUsed = super.forceRender(offset, z, consumer, options)
+        super.forceRender(offset, consumer, options)
         val maxElementWidth = maxElementWidth
         val startOffset = (size - Vec2i(maxElementWidth, totalHeight)) / 2
         for (element in elements) {
-            zUsed = maxOf(zUsed, element.render(offset + startOffset + Vec2i((maxElementWidth - element.size.x) / 2, 0), z + zUsed, consumer, options) + zUsed)
+            element.render(offset + startOffset + Vec2i((maxElementWidth - element.size.x) / 2, 0), consumer, options)
             startOffset.y += BUTTON_Y_MARGIN + element.size.y
         }
-        return zUsed
     }
 
-    override fun onMouseLeave() {
-        activeElement?.onMouseLeave()
-        activeElement = null
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+        super<ActiveMouseMove>.onMouseEnter(position, absolute)
+        return true
     }
 
-    override fun onMouseMove(position: Vec2i) {
-        val pair = getAt(position)
-
-        if (activeElement != pair?.first) {
-            activeElement?.onMouseLeave()
-            pair?.first?.onMouseEnter(pair.second)
-            activeElement = pair?.first
-            return
-        }
-        pair?.first?.onMouseMove(pair.second)
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+        super<ActiveMouseMove>.onMouseMove(position, absolute)
+        return true
     }
 
-    override fun onMouseEnter(position: Vec2i) {
-        val pair = getAt(position)
-        pair?.first?.onMouseEnter(pair.second)
-        activeElement = pair?.first
+    override fun onMouseLeave(): Boolean {
+        super<Screen>.onMouseLeave()
+        return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
-        val (element, delta) = getAt(position) ?: return
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        val (element, delta) = getAt(position) ?: return true
         element.onMouseAction(delta, button, action)
+        return true
     }
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
     }
 
-    fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
         var element: Element? = null
         val delta = Vec2i(position)
         val elementWidth = maxElementWidth
@@ -156,9 +149,8 @@ abstract class Menu(
         super.tick()
     }
 
-    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
-        super.onSpecialKey(key, type)
-        if (type != KeyChangeTypes.RELEASE && key == InputSpecialKey.KEY_TAB) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (type != KeyChangeTypes.RELEASE && key == KeyCodes.KEY_TAB) {
             var element: Element?
             var initialIndex = elements.indexOf(activeElement)
             if (initialIndex == -1) {
@@ -171,33 +163,36 @@ abstract class Menu(
                     index = 0
                 }
                 if (index == initialIndex) {
-                    return
+                    return true
                 }
-                element = elements.getOrNull(index) ?: return
+                element = elements.getOrNull(index) ?: return true
                 if (element.canFocus) {
                     break
                 }
             }
             if (element == null) {
-                return
+                return true
             }
 
             activeElement?.onMouseLeave()
-            element.onMouseEnter(Vec2i.EMPTY)
+            element.onMouseEnter(Vec2i.EMPTY, Vec2i.EMPTY)
             activeElement = element
-            return // no passthrough the key to current active element
+            return true // no passthrough the key to current active element
         }
-        activeElement?.onSpecialKey(key, type)
+        activeElement?.onKey(key, type)
+
+        return true
     }
 
-    override fun onCharPress(char: Int) {
-        super.onCharPress(char)
+    override fun onCharPress(char: Int): Boolean {
         activeElement?.onCharPress(char)
+        return true
     }
 
-    override fun onScroll(position: Vec2i, scrollOffset: Vec2d) {
-        val (element, delta) = getAt(position) ?: return
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+        val (element, delta) = getAt(position) ?: return true
         element.onScroll(delta, scrollOffset)
+        return true
     }
 
     private fun reset() {

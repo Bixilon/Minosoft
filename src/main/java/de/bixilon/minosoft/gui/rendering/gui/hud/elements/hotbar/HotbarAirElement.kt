@@ -37,9 +37,9 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
     private var bubbles = 0
     private var poppingCount = 0
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (bubbles + poppingCount <= 0) {
-            return 0
+            return
         }
 
         for (i in bubbles + poppingCount - 1 downTo 0) {
@@ -50,10 +50,8 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
 
             val image = AtlasImageElement(guiRenderer, atlasElement)
 
-            image.render(offset + Vec2i(i * BUBBLE_SIZE.x, 0), z, consumer, options)
+            image.render(offset + Vec2i(i * BUBBLE_SIZE.x, 0), consumer, options)
         }
-
-        return 1
     }
 
     override fun poll(): Boolean {

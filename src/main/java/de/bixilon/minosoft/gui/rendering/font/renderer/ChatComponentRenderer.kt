@@ -27,15 +27,15 @@ interface ChatComponentRenderer<T : ChatComponent> {
     /**
      * Returns true if the text exceeded the maximum size
      */
-    fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
+    fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
 
 
     companion object : ChatComponentRenderer<ChatComponent> {
 
-        override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
+        override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
             return when (text) {
-                is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, z, element, renderWindow, consumer, options, renderInfo, text)
-                is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, z, element, renderWindow, consumer, options, renderInfo, text)
+                is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, text)
+                is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, text)
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }

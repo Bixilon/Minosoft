@@ -28,12 +28,13 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 object Versions : Iterable<Version> {
     private val VERSIONS_INDEX = "minosoft:mapping/versions.json".toResourceLocation()
     private val VERSIONS_BY_NAME: MutableMap<String, Version> = mutableMapOf()
-    private val VERSIONS_BY_ID: MutableMap<Int, Version> = mutableMapOf()
-    private val VERSIONS_BY_PROTOCOL: MutableMap<Int, Version> = mutableMapOf()
+    private val VERSIONS_BY_ID: Int2ObjectOpenHashMap<Version> = Int2ObjectOpenHashMap()
+    private val VERSIONS_BY_PROTOCOL: Int2ObjectOpenHashMap<Version> = Int2ObjectOpenHashMap()
     val AUTOMATIC = Version("Automatic", -1, -1, VersionTypes.RELEASE, mapOf(), mapOf())
 
     private fun addVersion(version: Version) {

@@ -31,8 +31,6 @@ class GUIMeshCache(
 ) : GUIVertexConsumer {
     var revision: Long = 0
     var offset: Vec2i = Vec2i.EMPTY
-    var z: Int = 0
-    var maxZ: Int = 0
 
     fun clear() {
         if (data.finished) {
@@ -42,8 +40,8 @@ class GUIMeshCache(
         }
     }
 
-    override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
-        data.addAll(GUIMesh.createVertex(matrix, position, z, texture, uv, tint, options))
+    override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        GUIMesh.addVertex(data, matrix, position, texture, uv, tint, options)
         revision++
     }
 

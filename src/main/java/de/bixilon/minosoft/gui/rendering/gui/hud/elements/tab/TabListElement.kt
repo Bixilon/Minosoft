@@ -75,15 +75,15 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         super.prefMaxSize = Vec2i(-1, -1)
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        background.render(offset, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        background.render(offset, consumer, options)
 
         offset.y += BACKGROUND_PADDING // No need for x, this is done with the CENTER offset calculation
 
         val size = size
 
         header.size.let {
-            header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer, options)
+            header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), consumer, options)
             offset.y += it.y
         }
 
@@ -91,7 +91,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         offset.x += HorizontalAlignments.CENTER.getOffset(size.x, entriesSize.x)
 
         for ((index, entry) in toRender.withIndex()) {
-            entry.render(offset, z + 1, consumer, options)
+            entry.render(offset, consumer, options)
             offset.y += TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 offset.x += entry.width + ENTRY_HORIZONTAL_SPACING
@@ -103,11 +103,9 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
 
         footer.size.let {
-            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x)), z, consumer, options)
+            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x)), consumer, options)
             offset.y += it.y
         }
-
-        return TextElement.LAYERS + 1 // ToDo
     }
 
     override fun forceSilentApply() {

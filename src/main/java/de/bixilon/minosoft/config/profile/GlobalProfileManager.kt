@@ -31,7 +31,7 @@ import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileM
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager
@@ -60,7 +60,7 @@ object GlobalProfileManager {
             RenderingProfileManager,
             BlockProfileManager,
             ConnectionProfileManager,
-            HUDProfileManager,
+            GUIProfileManager,
             ControlsProfileManager,
             OtherProfileManager,
         )

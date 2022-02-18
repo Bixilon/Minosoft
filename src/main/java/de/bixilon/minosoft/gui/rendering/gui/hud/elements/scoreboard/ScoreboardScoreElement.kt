@@ -41,12 +41,10 @@ class ScoreboardScoreElement(
         _parent = parent
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        nameElement.render(offset, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        nameElement.render(offset, consumer, options)
 
-        scoreElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0), z, consumer, options)
-
-        return TextElement.LAYERS
+        scoreElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, scoreElement.size.x), 0), consumer, options)
     }
 
     override fun silentApply(): Boolean {

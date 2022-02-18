@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalMessagesElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalChatElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.BreakProgressHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
@@ -64,7 +64,7 @@ class HUDManager(
         registerElement(BossbarLayout)
         registerElement(ChatElement)
 
-        registerElement(InternalMessagesElement)
+        registerElement(InternalChatElement)
         registerElement(BreakProgressHUDElement)
         registerElement(TabListElement)
         registerElement(HotbarElement)
@@ -76,7 +76,7 @@ class HUDManager(
     fun onMatrixChange() {
         for (element in hudElements.toSynchronizedMap().values) {
             if (element is LayoutedGUIElement<*>) {
-                element.elementLayout.silentApply()
+                element.elementLayout.forceApply()
             }
             element.apply()
         }
@@ -105,8 +105,8 @@ class HUDManager(
         }
     }
 
-    fun draw(z: Int): Int {
-        return drawElements(hudElements.toSynchronizedMap().values, z)
+    fun draw() {
+        drawElements(hudElements.toSynchronizedMap().values)
     }
 
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {

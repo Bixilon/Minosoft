@@ -32,7 +32,19 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
     private var columnStart = IntArray(grid.x)
     private var rowStart = IntArray(grid.y)
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache
+    override var cacheEnabled: Boolean
+        get() = super.cacheEnabled
+        set(value) {
+            for (array in children) {
+                for (child in array) {
+                    if ((child ?: continue).cacheEnabled) {
+                        super.cacheEnabled = false
+                        return
+                    }
+                }
+            }
+            super.cacheEnabled = true
+        }
 
     operator fun set(position: Vec2i, element: Element) = add(position, element)
 
@@ -126,22 +138,17 @@ class GridLayout(guiRenderer: GUIRenderer, val grid: Vec2i) : Element(guiRendere
             columnStart[x] = offset + previousWidth
         }
         this.columnStart = columnStart
+        cacheUpToDate = false
     }
 
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var maxZ = 0
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                val childZ = child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), z, consumer, options)
-                if (childZ > maxZ) {
-                    maxZ = childZ
-                }
+                child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), consumer, options)
             }
         }
-
-        return maxZ
     }
 
     override fun tick() {

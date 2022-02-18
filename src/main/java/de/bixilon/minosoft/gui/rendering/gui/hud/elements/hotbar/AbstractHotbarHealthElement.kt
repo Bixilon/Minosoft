@@ -54,19 +54,19 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
         cacheUpToDate = false
     }
 
-    protected fun drawCanisters(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement) {
+    protected fun drawCanisters(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, atlasElement: AtlasElement) {
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW
 
             val image = AtlasImageElement(guiRenderer, atlasElement)
 
-            image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z, consumer, options)
+            image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, consumer, options)
         }
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        return textElement.render(offset, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        textElement.render(offset, consumer, options)
     }
 
     abstract fun createText(): ChatComponent
@@ -77,7 +77,6 @@ abstract class AbstractHotbarHealthElement(guiRenderer: GUIRenderer) : Element(g
         private const val HP_PER_ROW = 20
         const val HEARTS_PER_ROW = HP_PER_ROW / 2
         val HEART_SIZE = Vec2i(8, 9)
-        const val LAYERS = 2
         const val HP_TEXT_LIMIT = 40
     }
 }

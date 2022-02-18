@@ -60,6 +60,14 @@ class GLFWWindow(
             field = value
             skipNextMouseEvent = true
         }
+    override var cursorShape: CursorShapes = CursorShapes.ARROW
+        set(value) {
+            if (field == value) {
+                return
+            }
+            glfwSetCursor(window, glfwCreateStandardCursor(value.glfw))
+            field = value
+        }
 
     private var _size = Vec2i(DEFAULT_WINDOW_SIZE)
 
@@ -485,6 +493,17 @@ class GLFWWindow(
                 return when (this) {
                     true -> GLFW_TRUE
                     false -> GLFW_FALSE
+                }
+            }
+        val CursorShapes.glfw: Int
+            get() {
+                return when (this) {
+                    CursorShapes.ARROW -> GLFW_ARROW_CURSOR
+                    CursorShapes.IBEAM -> GLFW_IBEAM_CURSOR
+                    CursorShapes.CROSSHAIR -> GLFW_CROSSHAIR_CURSOR
+                    CursorShapes.HAND -> GLFW_HAND_CURSOR
+                    CursorShapes.HORIZONTAL_RESIZE -> GLFW_HRESIZE_CURSOR
+                    CursorShapes.VERTICAL_RESIZE -> GLFW_VRESIZE_CURSOR
                 }
             }
 

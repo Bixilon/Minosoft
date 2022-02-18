@@ -19,11 +19,6 @@ import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.parser.MessageParser;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
-import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP;
-import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogMessageType;
-import org.apache.commons.lang3.StringUtils;
 
 public class CommandSendChat extends Command {
     public static final char[] ILLEGAL_CHAT_CHARS = {'§'};
@@ -47,23 +42,7 @@ public class CommandSendChat extends Command {
                                     // return;
                                 }
                             }
-
-                            if (StringUtils.isBlank(message)) {
-                                // throw new IllegalArgumentException(("Chat message is blank!"));
-                                return;
-                            }
-                            for (char illegalChar : ILLEGAL_CHAT_CHARS) {
-                                if (message.indexOf(illegalChar) != -1) {
-                                    // throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
-                                    return;
-                                }
-                            }
-                            ChatMessageSendEvent event = new ChatMessageSendEvent(connection, message);
-                            if (connection.fireEvent(event)) {
-                                return;
-                            }
-                            Log.log(LogMessageType.CHAT_OUT, message);
-                            connection.sendPacket(new ChatMessageC2SP(event.getMessage()));
+                            connection.getUtil().sendChatMessage(message);
                         })));
         return parent;
     }

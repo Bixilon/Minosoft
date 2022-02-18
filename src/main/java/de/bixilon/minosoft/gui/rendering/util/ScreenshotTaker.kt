@@ -22,9 +22,12 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.events.ClickEvent
-import de.bixilon.minosoft.data.text.events.HoverEvent
+import de.bixilon.minosoft.data.text.events.click.ClickCallbackClickEvent
+import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
+import de.bixilon.minosoft.data.text.events.hover.TextHoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation.DeleteScreenshotDialog
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import glm_.vec2.Vec2i
@@ -49,7 +52,7 @@ class ScreenshotTaker(
             while (File(path).exists()) {
                 path = "${basePath}_${i++}.png"
                 if (i > MAX_FILES_CHECK) {
-                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again!")
+                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again later!")
                 }
             }
 
@@ -71,24 +74,33 @@ class ScreenshotTaker(
                     file.createParent()
 
                     ImageIO.write(bufferedImage, "png", file)
+                    var deleted = false
 
                     renderWindow.connection.util.sendDebugMessage(BaseComponent(
-                        "§aScreenshot saved to ",
+                        "§aScreenshot saved: ",
                         TextComponent(file.name).apply {
                             color = ChatColors.WHITE
                             underline()
-                            clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, "file:${file.slashPath}")
-                            hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to open")
+                            clickEvent = OpenFileClickEvent(file.slashPath)
+                            hoverEvent = TextHoverEvent("Click to open")
                         },
-                        // "\n",
-                        // TextComponent("[DELETE]").apply {
-                        //     color = ChatColors.RED
-                        //     bold()
-                        //     clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_CONFIRMATION, {
-                        //         TODO()
-                        //     })
-                        //     hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to delete screenshot")
-                        // },
+                        " ",
+                        TextComponent("[DELETE]").apply {
+                            color = ChatColors.RED
+                            bold()
+                            clickEvent = ClickCallbackClickEvent {
+                                if (deleted) {
+                                    return@ClickCallbackClickEvent
+                                }
+                                DeleteScreenshotDialog(renderWindow.renderer[GUIRenderer] ?: return@ClickCallbackClickEvent, file) {
+                                    deleted = true
+                                    hoverEvent = TextHoverEvent("§cAlready deleted!")
+                                    clickEvent = null
+                                    strikethrough() // ToDo: TextComponents are non mutable when passed to the renderer
+                                }.show()
+                            }
+                            hoverEvent = TextHoverEvent("Click to delete screenshot")
+                        },
                     ))
                 } catch (exception: Exception) {
                     exception.fail()

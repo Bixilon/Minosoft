@@ -14,11 +14,8 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.data.text.events.ClickEvent
-import de.bixilon.minosoft.data.text.events.HoverEvent
-import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.file
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
+import de.bixilon.minosoft.data.text.events.click.ClickEvent
+import de.bixilon.minosoft.data.text.events.hover.HoverEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
@@ -37,7 +34,7 @@ open class TextComponent(
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
-    override var message: String = message?.toString()?.replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&') ?: "null"
+    override val message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
 
     fun obfuscate(): TextComponent {
         formatting.add(PreChatFormattingCodes.OBFUSCATED)
@@ -182,37 +179,29 @@ open class TextComponent(
         }
         nodes.add(text)
 
-        clickEvent?.let { event ->
-            when (event.action) {
-                ClickEvent.ClickEventActions.OPEN_URL -> text.hyperlink(event.value.toString())
-                ClickEvent.ClickEventActions.OPEN_FILE -> text.file(event.value.toString())
-                else -> {
-                    NotImplementedError("Unknown action ${event.action}").report()
-                    return@let
-                }
-            }
-        }
-
-        hoverEvent?.let {
-            when (it.action) {
-                HoverEvent.HoverEventActions.SHOW_TEXT -> text.accessibleText = it.value.toString() // ToDo
-                else -> {
-                    NotImplementedError("Unknown action ${it.action}").report()
-                    return@let
-                }
-            }
-        }
+        clickEvent?.applyJavaFX(text)
+        hoverEvent?.applyJavaFX(text)
         return nodes
     }
 
-    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting.toSynchronizedSet(), clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
+    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
         return TextComponent(
             message = message,
             color = color,
             formatting = formatting,
             clickEvent = clickEvent,
-            hoverEvent = hoverEvent
+            hoverEvent = hoverEvent,
         )
+    }
+
+    override val length: Int
+        get() = message.length
+
+    override fun getTextAt(pointer: Int): TextComponent {
+        if (pointer < 0 || pointer > message.length) {
+            throw IllegalArgumentException("Pointer out of bounds: $pointer")
+        }
+        return this
     }
 
     override fun hashCode(): Int {

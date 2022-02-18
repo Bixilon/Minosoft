@@ -17,6 +17,8 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.util.collections.Clearable
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import java.util.*
 
 class EnumRegistry<T : Enum<*>>(
@@ -26,8 +28,8 @@ class EnumRegistry<T : Enum<*>>(
 ) : Clearable, Parentable<EnumRegistry<T>> {
 
     private var initialized = false
-    private val idValueMap: MutableMap<Int, T> = mutableMapOf()
-    private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
+    private val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
+    private val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
 
     operator fun get(id: Int): T? {
         return idValueMap[id] ?: parent?.get(id)

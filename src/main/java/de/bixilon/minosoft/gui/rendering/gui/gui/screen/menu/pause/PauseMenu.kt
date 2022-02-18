@@ -51,7 +51,7 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
     companion object : GUIBuilder<LayoutedGUIElement<PauseMenu>> {
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<PauseMenu> {
-            return LayoutedGUIElement((PauseMenu(guiRenderer)))
+            return LayoutedGUIElement(PauseMenu(guiRenderer))
         }
     }
 }

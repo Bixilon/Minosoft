@@ -16,13 +16,15 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 class ResourceLocationRegistry(
     override var parent: AbstractRegistry<ResourceLocation>? = null,
 ) : AbstractRegistry<ResourceLocation> {
     private var initialized = false
-    private val idValueMap: MutableMap<Int, ResourceLocation> = mutableMapOf()
-    private val valueIdMap: MutableMap<ResourceLocation, Int> = mutableMapOf()
+    private val idValueMap: Int2ObjectOpenHashMap<ResourceLocation> = Int2ObjectOpenHashMap()
+    private val valueIdMap: Object2IntOpenHashMap<ResourceLocation> = Object2IntOpenHashMap()
 
 
     override val size: Int

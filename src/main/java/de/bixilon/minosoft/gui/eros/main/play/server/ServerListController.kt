@@ -49,7 +49,6 @@ import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeListFX
-import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -68,6 +67,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML private lateinit var addServerButtonFX: Button
     @FXML private lateinit var serverListViewFX: ListView<ServerCard>
     @FXML private lateinit var serverInfoFX: AnchorPane
+
+    private val toRemove: MutableSet<ServerCard> = mutableSetOf() // workaround for crash when calling onPingUpdate in the event listener from onPingUpdate
 
     var serverType: ServerType? = null
         set(value) {
@@ -118,8 +119,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         serverListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setServerInfo(new)
         }
-
-        serverListViewFX.items = FXCollections.observableArrayList() // workaround to not crash with a UnsupportedOperationException when sometimes trying to remove a server (e.g. onPingUpdate)
     }
 
     fun connect(serverCard: ServerCard) {
@@ -367,11 +366,19 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     fun onPingUpdate(card: ServerCard) {
         val ping = card.ping
         if (ping.hide) {
+            toRemove += card
+            if (toRemove.size != 1) { // isNotEmpty
+                return
+            }
+
             if (serverListViewFX.selectionModel.selectedItem === card) {
                 serverListViewFX.selectionModel.select(null)
             }
-            if (serverListViewFX.items.contains(card)) {
-                serverListViewFX.items.remove(card)
+            serverListViewFX.items.remove(card)
+            toRemove -= card
+            if (toRemove.isNotEmpty()) {
+                serverListViewFX.items.removeAll(toRemove)
+                toRemove.clear()
             }
         }
     }

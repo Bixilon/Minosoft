@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
@@ -45,27 +46,29 @@ object DefaultParticleBehavior {
                 }
             },
             CallbackEventInvoker.of<ParticleSpawnEvent> {
-                if (it.initiator == EventInitiators.SERVER && typesConfig.packet) {
-                    return@of
-                }
-                fun spawn(position: Vec3d, velocity: Vec3d) {
-                    val particle = it.data.type.factory?.build(connection, position, velocity, it.data) ?: let { _ ->
-                        Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
-                        return
+                DefaultThreadPool += add@{
+                    if (it.initiator == EventInitiators.SERVER && !typesConfig.packet) {
+                        return@add
                     }
-                    particleRenderer += particle
-                }
-                // ToDo: long distance = always spawn?
-                if (it.count == 0) {
-                    val velocity = it.offset * it.speed
+                    fun spawn(position: Vec3d, velocity: Vec3d) {
+                        val particle = it.data.type.factory?.build(connection, position, velocity, it.data) ?: let { _ ->
+                            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
+                            return
+                        }
+                        particleRenderer += particle
+                    }
+                    // ToDo: long distance = always spawn?
+                    if (it.count == 0) {
+                        val velocity = it.offset * it.speed
 
-                    spawn(it.position, Vec3d(velocity))
-                } else {
-                    for (i in 0 until it.count) {
-                        val offset = Vec3d(it.offset) * { random.nextGaussian() }
-                        val velocity = Vec3d(it.speed) * { random.nextGaussian() }
+                        spawn(it.position, Vec3d(velocity))
+                    } else {
+                        for (i in 0 until it.count) {
+                            val offset = Vec3d(it.offset) * { random.nextGaussian() }
+                            val velocity = Vec3d(it.speed) * { random.nextGaussian() }
 
-                        spawn(it.position + offset, velocity)
+                            spawn(it.position + offset, velocity)
+                        }
                     }
                 }
             },

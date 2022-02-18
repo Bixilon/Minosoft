@@ -27,14 +27,11 @@ import glm_.vec2.Vec2i
 
 class ZLayout(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
-    override var cacheEnabled: Boolean = false // ToDo: Cache
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var zOffset = 0
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         for (child in children.toSynchronizedList()) {
-            zOffset += child.render(margin.offset + offset, z + zOffset, consumer, options)
+            child.render(margin.offset + offset, consumer, options)
         }
-        return zOffset
     }
 
     override fun forceSilentApply() {
@@ -44,6 +41,7 @@ class ZLayout(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             size = size.max(child.size)
         }
         this.size = size + margin.spaceSize
+        cacheUpToDate = false
     }
 
     fun append(child: Element) {

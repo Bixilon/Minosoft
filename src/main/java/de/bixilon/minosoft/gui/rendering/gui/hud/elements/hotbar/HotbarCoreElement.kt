@@ -49,8 +49,6 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         topRight,
     )
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache correctly
-
     init {
         topLeft.apply {
             parent = this@HotbarCoreElement
@@ -76,23 +74,18 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        var maxZ = 0
-
-
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)
-            maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer, options))
-            maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer, options))
+            topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), consumer, options)
+            topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), consumer, options)
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
-            maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer, options))
+            experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), consumer, options)
             offset.y += experience.size.y + VERTICAL_SPACING
         }
 
-        maxZ = max(maxZ, base.render(offset, z, consumer, options))
-
-        return maxZ
+        base.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {

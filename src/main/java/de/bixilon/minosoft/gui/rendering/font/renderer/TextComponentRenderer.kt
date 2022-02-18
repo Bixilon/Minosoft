@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -25,13 +26,19 @@ import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
         if (text.message.isEmpty()) {
             return false
         }
         val elementMaxSize = element.maxSize
-        val shadow = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
-        val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
+        val elementSize = element.size
+        val color = text.color ?: ChatColors.WHITE
+        val shadow: Boolean = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
+        val italic: Boolean = text.formatting.contains(PreChatFormattingCodes.ITALIC)
+        val bold: Boolean = text.formatting.contains(PreChatFormattingCodes.BOLD)
+        val strikethrough: Boolean = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
+        val underlined: Boolean = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+
         // ToDo: Only 1 quad for the underline and the strikethrough
 
         var alignmentXOffset = 0
@@ -41,11 +48,15 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             return true
         }
 
-        fun pushLine() {
-            if (consumer != null || currentLineText.isEmpty()) {
+        fun pushLine(index: Int = -1) {
+            var pushText: String = currentLineText
+            if (index > 0) {
+                pushText = currentLineText.substring(0, index)
+            }
+            if (consumer != null || pushText.isEmpty()) {
                 return
             }
-            renderInfo.currentLine.text += text.copy(message = currentLineText)
+            renderInfo.currentLine.text += text.copy(message = pushText)
             currentLineText = ""
         }
 
@@ -54,14 +65,14 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // preparing phase
                 renderInfo.lines += TextLineInfo()
             } else {
-                alignmentXOffset = renderInfo.fontAlignment.getOffset(element.size.x, renderInfo.currentLine.width)
+                alignmentXOffset = renderInfo.fontAlignment.getOffset(elementSize.x, renderInfo.currentLine.width)
             }
         }
 
         fun addY(height: Int): Boolean {
             val nextY = offset.y + height
             val nextSizeY = nextY - initialOffset.y + renderInfo.charHeight // add initial height for chars + end margin
-            if (nextSizeY >= elementMaxSize.y) {
+            if (nextSizeY > elementMaxSize.y) {
                 return true
             }
             offset.y = nextY
@@ -117,11 +128,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
         applyOffset()
 
-
-        for (charCode in text.message.codePoints().toArray()) {
+        for ((index, charCode) in text.message.codePoints().toArray().withIndex()) {
             val char = charCode.toChar()
             if (char == '\n') {
                 if (wrap()) {
+                    pushLine(index)
                     return true
                 }
                 continue
@@ -150,6 +161,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val previousY = offset.y
 
             if (addX(width)) {
+                pushLine(index)
                 return true
             }
 
@@ -163,7 +175,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // ToDo: Remove Font.HORIZONTAL_SPACING
             }
 
-            consumer?.let { charData.render(letterOffset, z, text, it, options, renderInfo.scale) }
+            consumer?.let { charData.render(letterOffset, color, shadow, italic, bold, strikethrough, underlined, it, options, renderInfo.scale) }
 
             if (consumer == null) {
                 currentLineText += char

@@ -67,14 +67,24 @@ interface ChatComponent {
      */
     fun applyDefaultColor(color: RGBColor)
 
+    /**
+     * @return The current text component at a specific pointer (char offset)
+     */
+    fun getTextAt(pointer: Int): TextComponent
+
+    /**
+     * The length in chars
+     */
+    val length: Int
+
 
     companion object {
-        val EMPTY = ChatComponent.of("")
+        val EMPTY = TextComponent("")
 
         @JvmOverloads
         fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restrictedMode: Boolean = false): ChatComponent {
             if (raw == null) {
-                return BaseComponent()
+                return EMPTY
             }
             if (raw is ChatComponent) {
                 return raw

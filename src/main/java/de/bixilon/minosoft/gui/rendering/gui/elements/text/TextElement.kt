@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
@@ -26,8 +28,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import glm_.vec2.Vec2i
@@ -41,7 +47,8 @@ open class TextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
-) : LabeledElement(guiRenderer) {
+) : Element(guiRenderer, text.toString().length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
+    private var activeElement: TextComponent? = null
     lateinit var renderInfo: TextRenderInfo
         private set
 
@@ -63,14 +70,13 @@ open class TextElement(
             field = value
             cacheUpToDate = false
         }
-    var noBorder: Boolean = !noBorder
+    var noBorder: Boolean = noBorder
         @Synchronized set(value) {
             if (field == value) {
                 return
             }
             field = value
-            charHeight = (value.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT) * scale).toInt()
-            charMargin = (value.decide(0, Font.CHAR_MARGIN) * scale).toInt()
+            applyNoBorder()
             forceApply()
         }
     var charHeight: Int = 0
@@ -90,8 +96,8 @@ open class TextElement(
 
     private var emptyMessage: Boolean = true
 
-    override var chatComponent: ChatComponent = ChatComponent.of("")
-        protected set(value) {
+    var _chatComponent: ChatComponent = unsafeNull()
+        set(value) {
             if (value == field) {
                 return
             }
@@ -105,16 +111,28 @@ open class TextElement(
                     charMargin = charMargin,
                     scale = scale,
                 )
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
             }
             _prefSize = prefSize
+        }
+
+    override var chatComponent: ChatComponent
+        get() = _chatComponent
+        protected set(value) {
+            _chatComponent = value
             forceApply()
         }
 
     init {
-        this.parent = parent
-        this.chatComponent = ChatComponent.of(text)
-        this.noBorder = noBorder
+        this._parent = parent
+        applyNoBorder()
+        this._chatComponent = ChatComponent.of(text)
+        forceSilentApply()
+    }
+
+    private fun applyNoBorder() {
+        charHeight = (noBorder.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT) * scale).toInt()
+        charMargin = (noBorder.decide(0, Font.CHAR_MARGIN) * scale).toInt()
     }
 
     override fun forceSilentApply() {
@@ -126,7 +144,7 @@ open class TextElement(
             scale = scale,
         )
         if (!emptyMessage) {
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, null, renderInfo, chatComponent)
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, renderWindow, null, null, renderInfo, chatComponent)
             renderInfo.currentLineNumber = 0
         }
         this.renderInfo = renderInfo
@@ -137,30 +155,100 @@ open class TextElement(
 
     override fun onChildChange(child: Element) = error("A TextElement can not have a child!")
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (emptyMessage) {
-            return 0
+            return
         }
         val initialOffset = offset + margin.offset
 
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, renderWindow, consumer, options, renderInfo, chatComponent)
-        renderInfo.currentLineNumber = 0
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
-                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), z, renderWindow.WHITE_TEXTURE, backgroundColor, options)
+                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), renderWindow.WHITE_TEXTURE, backgroundColor, options)
             }
         }
 
-        return LAYERS
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, renderWindow, consumer, options, renderInfo, chatComponent)
+        renderInfo.currentLineNumber = 0
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
+            return true
+        }
+        val pair = getTextComponentAt(position) ?: return false
+        pair.first.clickEvent?.onClick(guiRenderer, pair.second, button, action)
+        return true
+    }
+
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+        val pair = getTextComponentAt(position) ?: return false
+        activeElement = pair.first
+        pair.first.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute)
+        if (pair.first.clickEvent != null) {
+            renderWindow.window.cursorShape = CursorShapes.HAND
+        }
+        return true
+    }
+
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+        val pair = getTextComponentAt(position)
+
+        if (activeElement != pair?.first) {
+            val activeElement = activeElement
+            this.activeElement = pair?.first
+            if (pair?.first?.clickEvent == null) {
+                renderWindow.window.resetCursor()
+            } else {
+                renderWindow.window.cursorShape = CursorShapes.HAND
+            }
+            return (activeElement?.hoverEvent?.onMouseLeave(guiRenderer) ?: false) || (pair?.first?.hoverEvent?.onMouseEnter(guiRenderer, pair.second, absolute) ?: false)
+        }
+        return pair?.first?.hoverEvent?.onMouseMove(guiRenderer, pair.second, absolute) ?: false
+    }
+
+    override fun onMouseLeave(): Boolean {
+        val activeElement = activeElement ?: return false
+        this.activeElement = null
+        if (activeElement.clickEvent != null) {
+            renderWindow.window.resetCursor()
+        }
+        activeElement.hoverEvent?.onMouseLeave(guiRenderer) ?: return false
+        return true
+    }
+
+    override fun onHide() {
+        activeElement?.hoverEvent?.onMouseLeave(guiRenderer) // ToDo: This should not be here (if if should be anywhere)
+        activeElement = null
+    }
+
+    private fun getTextComponentAt(position: Vec2i): Pair<TextComponent, Vec2i>? {
+        val offset = Vec2i(position)
+        val line = renderInfo.lines.getOrNull(offset.y / charHeight) ?: return null
+        offset.y = offset.y % charHeight
+
+        val cutText = TextElement(guiRenderer, line.text, fontAlignment, false, backgroundColor, noBorder, parent, scale)
+        cutText._prefMaxSize = Vec2i(offset.x, charHeight)
+        cutText.forceSilentApply()
+
+
+        val line0 = cutText.renderInfo.lines.getOrNull(0) ?: return null
+        val message = line0.text.message
+        var charToCheck = message.length
+        if (line0.width < offset.x && charToCheck < line.text.message.length) {
+            // last char got cut off
+            charToCheck++
+        }
+        val text = line.text.getTextAt(charToCheck)
+        offset.x -= line0.width // ToDo: Not 100% correct
+
+
+        offset.x += fontAlignment.getOffset(size.x, line.width)
+        return Pair(text, offset)
     }
 
     override fun toString(): String {
         return chatComponent.toString()
-    }
-
-    companion object {
-        const val LAYERS = 5 // 1 layer for the text, 1 for strikethrough, * 2 for shadow, 1 for background
     }
 }

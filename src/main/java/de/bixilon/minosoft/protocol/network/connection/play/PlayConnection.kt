@@ -162,7 +162,7 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
-                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
+                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5, maxDelayTime = ProtocolDefinition.TICK_TIME) {
                         for (entity in world.entities) {
                             entity.tick()
                         }

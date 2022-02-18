@@ -22,9 +22,9 @@ import glm_.vec2.Vec2t
 interface GUIVertexConsumer {
     val order: Array<Pair<Int, Int>>
 
-    fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
+    fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
 
-    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), tint: RGBColor, options: GUIVertexOptions?) {
+    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: AbstractTexture, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), tint: RGBColor, options: GUIVertexOptions?) {
         val positions = arrayOf(
             start,
             Vec2(end.x, start.y),
@@ -39,12 +39,12 @@ interface GUIVertexConsumer {
         )
 
         for ((vertexIndex, textureIndex) in order) {
-            addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
+            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
         }
     }
 
-    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
-        addQuad(start, end, z, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
+    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: TextureLike, tint: RGBColor, options: GUIVertexOptions?) {
+        addQuad(start, end, texture.texture, texture.uvStart, texture.uvEnd, tint, options)
     }
 
     fun addCache(cache: GUIMeshCache)

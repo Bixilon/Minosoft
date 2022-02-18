@@ -25,8 +25,8 @@ import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfile
-import de.bixilon.minosoft.config.profile.profiles.hud.HUDProfileManager
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfile
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfile
@@ -47,7 +47,7 @@ class ConnectionProfiles(
     val rendering: RenderingProfile = overrides[RenderingProfileManager.namespace]?.let { return@let RenderingProfileManager.profiles[it] } ?: RenderingProfileManager.selected,
     val block: BlockProfile = overrides[BlockProfileManager.namespace]?.let { return@let BlockProfileManager.profiles[it] } ?: BlockProfileManager.selected,
     val connection: ConnectionProfile = overrides[ConnectionProfileManager.namespace]?.let { return@let ConnectionProfileManager.profiles[it] } ?: ConnectionProfileManager.selected,
-    val hud: HUDProfile = overrides[HUDProfileManager.namespace]?.let { return@let HUDProfileManager.profiles[it] } ?: HUDProfileManager.selected,
+    val gui: GUIProfile = overrides[GUIProfileManager.namespace]?.let { return@let GUIProfileManager.profiles[it] } ?: GUIProfileManager.selected,
     val controls: ControlsProfile = overrides[ControlsProfileManager.namespace]?.let { return@let ControlsProfileManager.profiles[it] } ?: ControlsProfileManager.selected,
     val other: OtherProfile = overrides[OtherProfileManager.namespace]?.let { return@let OtherProfileManager.profiles[it] } ?: OtherProfileManager.selected,
 )

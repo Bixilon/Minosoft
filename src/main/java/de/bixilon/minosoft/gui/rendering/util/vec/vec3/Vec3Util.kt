@@ -18,15 +18,12 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
 import glm_.func.cos
 import glm_.func.sin
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3t
 import glm_.vec3.swizzle.xy
 import glm_.vec3.swizzle.xz
 import glm_.vec3.swizzle.yz
-import glm_.vec4.Vec4
-import glm_.vec4.swizzle.xyz
 
 object Vec3Util {
 
@@ -112,10 +109,6 @@ object Vec3Util {
             is Number -> Vec3(this.toFloat())
             else -> null
         }
-    }
-
-    operator fun Vec3.times(matrix: Mat4): Vec3 {
-        return (matrix * Vec4(this, 1.0f)).xyz
     }
 
     fun Vec3.clear() {

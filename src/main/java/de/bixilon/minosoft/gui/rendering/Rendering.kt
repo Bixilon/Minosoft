@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -67,6 +68,7 @@ class Rendering(private val connection: PlayConnection) {
                     audioPlayer.exit()
                 } catch (ignored: Throwable) {
                 }
+                exception.report()
                 latch.minus(audioLatch.count)
             }
         }, "Audio#${connection.connectionId}").start()
@@ -91,6 +93,7 @@ class Rendering(private val connection: PlayConnection) {
             }
             connection.network.disconnect()
             connection.error = exception
+            exception.report()
         }
     }
 

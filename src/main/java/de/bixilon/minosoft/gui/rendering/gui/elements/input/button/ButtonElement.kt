@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.input.button
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -21,11 +22,11 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
@@ -92,7 +93,7 @@ open class ButtonElement(
         size = textElement.size + Vec2i(TEXT_PADDING * 2, TEXT_PADDING * 2)
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val texture = when {
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
@@ -102,10 +103,10 @@ open class ButtonElement(
         val size = size
         val background = AtlasImageElement(guiRenderer, texture)
         background.size = size
-        var zUsed = background.render(offset, z, consumer, options)
         val textSize = textElement.size
-        zUsed += textElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), z + zUsed, consumer, options)
-        return zUsed
+
+        background.render(offset, consumer, options)
+        textElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, textSize.x), VerticalAlignments.CENTER.getOffset(size.y, textSize.y)), consumer, options)
     }
 
     override fun forceSilentApply() {
@@ -113,42 +114,50 @@ open class ButtonElement(
         cacheUpToDate = false
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         if (disabled) {
-            return
+            return true
         }
         if (button != MouseButtons.LEFT) {
-            return
+            return true
         }
         if (action != MouseActions.PRESS) {
-            return
+            return true
         }
 
         submit()
+        return true
     }
 
-    override fun onSpecialKey(key: InputSpecialKey, type: KeyChangeTypes) {
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (!hovered) {
-            return
+            return true
         }
         if (disabled) {
-            return
+            return true
         }
-        if (key != InputSpecialKey.KEY_ENTER) {
-            return
+        if (key != KeyCodes.KEY_ENTER) {
+            return true
         }
         if (type != KeyChangeTypes.PRESS) {
-            return
+            return true
         }
         submit()
+        return true
     }
 
-    override fun onMouseEnter(position: Vec2i) {
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         hovered = true
+        renderWindow.window.cursorShape = CursorShapes.HAND
+
+        return true
     }
 
-    override fun onMouseLeave() {
+    override fun onMouseLeave(): Boolean {
         hovered = false
+        renderWindow.window.resetCursor()
+
+        return true
     }
 
     open fun submit() {

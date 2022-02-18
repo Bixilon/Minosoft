@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.factory.clazz
 
-import de.bixilon.minosoft.data.registries.blocks.types.Block
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.jvm.javaType
 
@@ -25,7 +24,7 @@ open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
 
 
         for (factory in factories) {
-            val className = ((factory::class.supertypes[0].javaType as ParameterizedType).actualTypeArguments[0] as Class<Block>).simpleName
+            val className = ((factory::class.supertypes[0].javaType as ParameterizedType).actualTypeArguments[0] as Class<T>).simpleName
             ret[className] = factory
             if (factory is MultiClassFactory<*>) {
                 for (name in factory.ALIASES) {

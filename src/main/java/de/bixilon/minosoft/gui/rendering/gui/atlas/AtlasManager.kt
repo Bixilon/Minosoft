@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2i
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class AtlasManager(private val renderWindow: RenderWindow) {
     private lateinit var elements: Map<ResourceLocation, AtlasElement>
@@ -59,7 +60,7 @@ class AtlasManager(private val renderWindow: RenderWindow) {
             val texture = renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
-            val slots: MutableMap<Int, Vec2iBinding> = mutableMapOf()
+            val slots: Int2ObjectOpenHashMap<Vec2iBinding> = Int2ObjectOpenHashMap()
 
             versionData["slots"].toJsonObject()?.let {
                 for ((slotId, slotData) in it) {

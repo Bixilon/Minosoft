@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kutil.math.MMath.ceil
-import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.TextStyle
@@ -42,15 +40,16 @@ class CharData(
         uvEnd = uvEnd * texture.textureArrayUV
     }
 
-    fun render(position: Vec2i, z: Int, style: TextStyle, consumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
-        render(position, z + 2, false, style, consumer, options, scale)
-        if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
-            render(position, z, true, style, consumer, options, scale)
+    fun render(position: Vec2i, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, consumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
+        if (shadow) {
+            _render(position, color, true, italic, bold, strikethrough, underlined, consumer, options, scale)
         }
+        _render(position, color, false, italic, bold, strikethrough, underlined, consumer, options, scale)
     }
 
-    private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
-        val italicOffset = italic.decide({ (end.y.toFloat() - start.y.toFloat()) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET }, 0.0f)
+    private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
+        val italicOffset = if (italic) (end.y.toFloat() - start.y.toFloat()) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET else 0.0f
+
         val positions = arrayOf(
             Vec2(start.x.toFloat() + italicOffset, start.y),
             Vec2(end.x.toFloat() + italicOffset, start.y),
@@ -65,13 +64,12 @@ class CharData(
         )
 
         for ((vertexIndex, textureIndex) in this.order) {
-            addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
+            addVertex(positions[vertexIndex], texture, texturePositions[textureIndex], tint, options)
         }
     }
 
-    private fun render(position: Vec2i, z: Int, shadow: Boolean, style: TextStyle, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
-        var color = style.color ?: ChatColors.WHITE
-
+    private fun _render(position: Vec2i, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
+        var color = color
 
         var shadowOffset = 0.0f
         if (shadow) {
@@ -81,7 +79,7 @@ class CharData(
 
         var boldOffset = 0.0f
 
-        if (style.formatting.contains(PreChatFormattingCodes.BOLD)) {
+        if (bold) {
             boldOffset = BOLD_OFFSET * scale
         }
         val charHeight = Font.CHAR_HEIGHT * scale
@@ -93,21 +91,19 @@ class CharData(
         val endPosition = startPosition + (Vec2(scaledWidth * scale, charHeight))
 
 
-        val italic = style.formatting.contains(PreChatFormattingCodes.ITALIC)
 
+        vertexConsumer.addQuad(startPosition, endPosition, texture, uvStart, uvEnd, italic, color, options)
 
-        vertexConsumer.addQuad(startPosition, endPosition, z, texture, uvStart, uvEnd, italic, color, options)
-
-        if (style.formatting.contains(PreChatFormattingCodes.BOLD)) {
-            vertexConsumer.addQuad(startPosition + Vec2(boldOffset, 0.0f), endPosition + Vec2(boldOffset, 0.0f), z, texture, uvStart, uvEnd, italic, color, options)
+        if (bold) {
+            vertexConsumer.addQuad(startPosition + Vec2(boldOffset, 0.0f), endPosition + Vec2(boldOffset, 0.0f), texture, uvStart, uvEnd, italic, color, options)
         }
 
-        if (style.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
-            vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight / 2.0f - scale / 2), Vec2(endPosition.x + horizontalSpacing, startPosition.y + charHeight / 2.0f + scale / 2), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
+        if (strikethrough) {
+            vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight / 2.0f - scale / 2), Vec2(endPosition.x + horizontalSpacing, startPosition.y + charHeight / 2.0f + scale / 2), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
         }
 
-        if (style.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
-            vertexConsumer.addQuad(startPosition + Vec2i(-horizontalSpacing, charHeight), Vec2i(endPosition.x + boldOffset + horizontalSpacing, startPosition.y + charHeight + verticalSpacing / 2.0f), z, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
+        if (underlined) {
+            vertexConsumer.addQuad(startPosition + Vec2i(-horizontalSpacing, charHeight), Vec2i(endPosition.x + boldOffset + horizontalSpacing, startPosition.y + charHeight + verticalSpacing / 2.0f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
         }
 
         // ToDo: Obfuscated

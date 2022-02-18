@@ -35,7 +35,7 @@ class ClientSettingsManager(
         blocks::simulationDistance.profileWatch(this, profile = blocks) { connection.world.view.simulationDistance = it }
 
 
-        val hud = connection.profiles.hud
+        val hud = connection.profiles.gui
         val chat = hud.chat
         chat::chatMode.profileWatch(this, profile = hud) { sendClientSettings() }
         chat::textFiltering.profileWatch(this, profile = hud) { sendClientSettings() }
@@ -74,12 +74,12 @@ class ClientSettingsManager(
         }
         connection.sendPacket(SettingsC2SP(
             locale = language,
-            chatColors = connection.profiles.hud.chat.chatColors,
+            chatColors = connection.profiles.gui.chat.chatColors,
             viewDistance = connection.profiles.block.viewDistance,
-            chatMode = connection.profiles.hud.chat.chatMode,
+            chatMode = connection.profiles.gui.chat.chatMode,
             skinParts = profile.skin.skinParts,
             mainArm = profile.mainArm,
-            disableTextFiltering = !connection.profiles.hud.chat.textFiltering,
+            disableTextFiltering = !connection.profiles.gui.chat.textFiltering,
             allowListing = profile.playerListing,
         ))
     }

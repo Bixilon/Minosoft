@@ -29,8 +29,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
-    private val profile = guiRenderer.connection.profiles.hud
-    private val crosshairProfile = profile.crosshair
+    private val profile = guiRenderer.connection.profiles.gui
+    private val crosshairProfile = profile.hud.crosshair
     private lateinit var crosshairAtlasElement: AtlasElement
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
@@ -85,7 +85,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
 
-        mesh.addQuad(start, start + CROSSHAIR_SIZE, 0, crosshairAtlasElement, crosshairProfile.color, null)
+        mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color, null)
 
 
         // ToDo: Attack indicator

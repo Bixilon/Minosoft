@@ -13,7 +13,7 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 vinPosition;
+layout (location = 0) in vec2 vinPosition;
 layout (location = 1) in vec2 vinUV;
 layout (location = 2) in uint vinIndexLayerAnimation;
 layout (location = 3) in uint vinTintColor;
@@ -25,7 +25,7 @@ layout (location = 3) in uint vinTintColor;
 
 
 void main() {
-    gl_Position = vec4(vinPosition.xyz, 1.0f);
+    gl_Position = vec4(vinPosition.xy, 0.0f, 1.0f);
     finTintColor = getRGBAColor(vinTintColor);
 
     #include "minosoft:animation/main_vertex"

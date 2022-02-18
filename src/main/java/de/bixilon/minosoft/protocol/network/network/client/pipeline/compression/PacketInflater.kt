@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network.network.client.pipeline.compression
 
 import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
-import de.bixilon.minosoft.util.KUtil.withLengthPrefix
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageEncoder
 
@@ -27,17 +26,17 @@ class PacketInflater(
     override fun encode(context: ChannelHandlerContext, data: ByteArray, out: MutableList<Any>) {
         val compress = data.size >= threshold
 
-        if (!compress) {
-            val prefixed = OutByteBuffer()
+        val prefixed = OutByteBuffer()
+        if (compress) {
+            val compressed = data.compress()
+            prefixed.writeVarInt(data.size)
+            prefixed.writeUnprefixedByteArray(compressed)
+        } else {
             prefixed.writeVarInt(0)
             prefixed.writeUnprefixedByteArray(data)
-            out += prefixed.toArray()
-            return
         }
 
-        val compressed = data.compress()
-
-        out += compressed.withLengthPrefix()
+        out += prefixed.toArray()
     }
 
     companion object {

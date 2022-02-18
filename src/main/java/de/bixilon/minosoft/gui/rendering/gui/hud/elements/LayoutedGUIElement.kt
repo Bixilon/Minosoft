@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
-import de.bixilon.minosoft.gui.rendering.gui.input.InputSpecialKey
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -54,6 +53,8 @@ class LayoutedGUIElement<T : LayoutedElement>(
                 elementLayout.onClose()
             }
         }
+    override val activeWhenHidden: Boolean
+        get() = elementLayout.activeWhenHidden
 
     init {
         elementLayout.cache.data = mesh.data
@@ -83,9 +84,9 @@ class LayoutedGUIElement<T : LayoutedElement>(
         this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
     }
 
-    fun prepare(z: Int): Int {
+    fun prepare() {
         val layoutOffset = layout.layoutOffset
-        val usedZ = elementLayout.render(layoutOffset, z, mesh, null)
+        elementLayout.render(layoutOffset, mesh, null)
 
         val revision = elementLayout.cache.revision
         if (revision != lastRevision) {
@@ -93,8 +94,6 @@ class LayoutedGUIElement<T : LayoutedElement>(
             this.mesh.load()
             this.lastRevision = revision
         }
-
-        return usedZ
     }
 
     override fun draw() {
@@ -108,73 +107,58 @@ class LayoutedGUIElement<T : LayoutedElement>(
         mesh.load()
     }
 
-    override fun onMouseMove(position: Vec2i) {
+    override fun onMouseMove(position: Vec2i): Boolean {
         val offset = layout.layoutOffset
         val size = elementLayout.size
         val lastPosition = lastPosition
 
-        if (position.isOutside(offset, size)) {
+        if (position.isOutside(offset, offset + size)) {
+            if (lastPosition == INVALID_MOUSE_POSITION) {
+                return false
+            }
             // move out
-            this.lastPosition = Vec2i(-1, -1)
-            elementLayout.onMouseLeave()
-            return
+            this.lastPosition = INVALID_MOUSE_POSITION
+            return elementLayout.onMouseLeave()
         }
         val delta = position - offset
-        this.lastPosition = position
+        val previousOutside = lastPosition == INVALID_MOUSE_POSITION
+        this.lastPosition = delta
 
-        if (lastPosition.isOutside(offset, size)) {
-            elementLayout.onMouseEnter(delta)
-            return
+        if (previousOutside) {
+            return elementLayout.onMouseEnter(delta, position)
         }
 
-        elementLayout.onMouseMove(delta)
+        return elementLayout.onMouseMove(delta, position)
     }
 
-    override fun onCharPress(char: Int) {
-        elementLayout.onCharPress(char)
+    override fun onCharPress(char: Int): Boolean {
+        return elementLayout.onCharPress(char)
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) {
-        val offset = layout.layoutOffset
-        val size = elementLayout.size
+    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        val mouseButton = MouseButtons[key] ?: return elementLayout.onKey(key, type)
+
         val position = lastPosition
-        if (position.isOutside(offset, size)) {
-            return
-        }
-        val delta = position - offset
-
-        fun checkMouse(): Boolean {
-            val mouseButton = MouseButtons[key] ?: return false
-            val mouseAction = MouseActions[type] ?: return true
-            elementLayout.onMouseAction(delta, mouseButton, mouseAction)
-            return true
+        if (position == INVALID_MOUSE_POSITION) {
+            return false
         }
 
-        fun checkSpecial(): Boolean {
-            val specialKey = InputSpecialKey[key] ?: return false
-            elementLayout.onSpecialKey(specialKey, type)
-            return true
-        }
-
-        if (checkMouse()) {
-            return
-        }
-        checkSpecial()
+        val mouseAction = MouseActions[type] ?: return false
+        return elementLayout.onMouseAction(position, mouseButton, mouseAction)
     }
 
-    override fun onScroll(scrollOffset: Vec2d) {
-        val offset = layout.layoutOffset
-        val size = elementLayout.size
+    override fun onScroll(scrollOffset: Vec2d): Boolean {
         val position = lastPosition
-        if (position.isOutside(offset, size)) {
-            return
+        if (lastPosition == INVALID_MOUSE_POSITION) {
+            return false
         }
-        val delta = position - offset
-        elementLayout.onScroll(delta, scrollOffset)
+        return elementLayout.onScroll(position, scrollOffset)
     }
 
     override fun onClose() {
         elementLayout.onClose()
+        elementLayout.onMouseLeave()
+        lastPosition = INVALID_MOUSE_POSITION
     }
 
     override fun onOpen() {
@@ -184,5 +168,10 @@ class LayoutedGUIElement<T : LayoutedElement>(
 
     override fun onHide() {
         elementLayout.onHide()
+        elementLayout.onMouseLeave()
+    }
+
+    companion object {
+        private val INVALID_MOUSE_POSITION = Vec2i(-1, -1)
     }
 }

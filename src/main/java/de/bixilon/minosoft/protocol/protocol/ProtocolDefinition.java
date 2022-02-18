@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 
@@ -61,7 +60,6 @@ public final class ProtocolDefinition {
     public static final int SECTION_MAX_Z = SECTION_WIDTH_Z - 1;
     public static final int SECTION_HEIGHT_Y = 16;
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
-    public static final int SECTIONS_PER_CHUNK = 16;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
 
     public static final int SIGN_LINES = 4;
@@ -94,14 +92,7 @@ public final class ProtocolDefinition {
 
     public static final float HEIGHT_SEA_LEVEL_MODIFIER = 0.00166667f;
 
-    public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
-
     public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
-
-    public static final char[] LINE_BREAK_CHARS = {'\n', '\r'};
-
-
-    public static final String[] RELEVANT_MINECRAFT_ASSETS = {"minecraft/lang/", "minecraft/sounds.json", "minecraft/sounds/", "minecraft/textures/", "minecraft/font/"}; // whitelist for all assets we care (we have our own block models, etc)
 
     public static final int TICKS_PER_DAY = 24000;
     public static final float TICKS_PER_DAYf = (float) TICKS_PER_DAY;

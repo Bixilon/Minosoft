@@ -16,8 +16,10 @@ package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import glm_.func.rad
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
+import glm_.vec2.Vec2t
 
 object Vec2iUtil {
 
@@ -89,5 +91,13 @@ object Vec2iUtil {
 
     fun Vec2i.isOutside(min: Vec2i, max: Vec2i): Boolean {
         return this isSmaller min || this isGreater max
+    }
+
+    infix fun Mat4.orthoTimes(vec: Vec2t<*>): Vec2 {
+        val array = this.array
+        return Vec2(
+            array[0] * vec[0].toFloat() + array[4] * vec[1].toFloat() - 1.0f,
+            array[1] * vec[0].toFloat() + array[5] * vec[1].toFloat() + 1.0f,
+        )
     }
 }

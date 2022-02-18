@@ -41,8 +41,6 @@ open class RowLayout(
 ) : Element(guiRenderer), ChildAlignable {
     private val children: MutableList<Element> = synchronizedListOf()
 
-    override var cacheEnabled: Boolean = false // ToDo: Cache
-
     override var prefSize: Vec2i
         get() = _prefSize
         set(value) = Unit
@@ -64,7 +62,7 @@ open class RowLayout(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         var childYOffset = 0
         var maxZ = 0
 
@@ -81,7 +79,7 @@ open class RowLayout(
         }
 
         if (addY(margin.top)) {
-            return maxZ
+            return
         }
 
         for (child in children.toSynchronizedList()) {
@@ -89,18 +87,13 @@ open class RowLayout(
             if (exceedsY(childSize.y)) {
                 break
             }
-            val childZ = child.render(offset + Vec2i(margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), childYOffset), z, consumer, options)
-            if (maxZ < childZ) {
-                maxZ = childZ
-            }
+            child.render(offset + Vec2i(margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), childYOffset), consumer, options)
             childYOffset += childSize.y
 
             if (addY(child.margin.vertical + spacing)) {
                 break
             }
         }
-
-        return maxZ
     }
 
     operator fun plusAssign(element: Element) = add(element)
@@ -182,6 +175,7 @@ open class RowLayout(
         }
 
         _size = size
+        cacheUpToDate = false
     }
 
     override fun onChildChange(child: Element) {

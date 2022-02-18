@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
-import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
@@ -220,7 +220,7 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
 
             "minosoft:profiles.profile.disk_path".toResourceLocation() to {
                 val path = it.manager.getPath(it.name)
-                TextComponent(it.manager.getPath(it.name), clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_FILE, path))
+                TextComponent(it.manager.getPath(it.name), clickEvent = OpenFileClickEvent(path))
             },
         )
     }

@@ -59,8 +59,8 @@ class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
         this.percent = percent
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        return textElement.forceRender(offset, z, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        textElement.forceRender(offset, consumer, options)
     }
 
     override fun onChildChange(child: Element) {

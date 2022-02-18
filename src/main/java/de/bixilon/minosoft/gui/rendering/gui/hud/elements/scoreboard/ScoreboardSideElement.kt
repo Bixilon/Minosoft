@@ -67,25 +67,23 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        backgroundElement.render(offset, z, consumer, options)
-        nameBackgroundElement.render(offset, z + 1, consumer, options)
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        backgroundElement.render(offset, consumer, options)
+        nameBackgroundElement.render(offset, consumer, options)
 
-        nameElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), z + 2, consumer, options)
+        nameElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), consumer, options)
         offset.y += Font.TOTAL_CHAR_HEIGHT
 
         val scores = scores.toSynchronizedMap().entries.sortedWith { a, b -> a.key.compareTo(b.key) }
         var index = 0
         for ((_, score) in scores) {
-            score.render(offset, z + 2, consumer, options)
+            score.render(offset, consumer, options)
             offset.y += score.size.y
 
             if (++index >= MAX_SCORES) {
                 break
             }
         }
-
-        return TextElement.LAYERS + 2 // 2 backgrounds
     }
 
     override fun forceSilentApply() {
