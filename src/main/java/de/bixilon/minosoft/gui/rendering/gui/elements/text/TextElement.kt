@@ -219,9 +219,14 @@ open class TextElement(
         textElement._prefMaxSize = Vec2i(offset.x, charHeight)
         textElement.forceSilentApply()
 
+
         offset.x += fontAlignment.getOffset(size.x, line.width)
 
-        return Pair(line.text.getTextAt(textElement.renderInfo.lines.getOrNull(0)?.text?.message?.length ?: return null), offset)
+        val line0 = textElement.renderInfo.lines.getOrNull(0) ?: return null
+        val text = line.text.getTextAt(line0.text.message.length)
+        offset.x -= line0.width // ToDo: Not 100% correct
+
+        return Pair(text, offset)
     }
 
     override fun toString(): String {

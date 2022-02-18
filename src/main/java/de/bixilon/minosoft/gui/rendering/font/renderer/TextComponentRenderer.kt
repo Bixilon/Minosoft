@@ -48,11 +48,15 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             return true
         }
 
-        fun pushLine() {
-            if (consumer != null || currentLineText.isEmpty()) {
+        fun pushLine(index: Int = -1) {
+            var pushText: String = currentLineText
+            if (index > 0) {
+                pushText = currentLineText.substring(0, index)
+            }
+            if (consumer != null || pushText.isEmpty()) {
                 return
             }
-            renderInfo.currentLine.text += text.copy(message = currentLineText)
+            renderInfo.currentLine.text += text.copy(message = pushText)
             currentLineText = ""
         }
 
@@ -124,11 +128,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
         applyOffset()
 
-
-        for (charCode in text.message.codePoints().toArray()) {
+        for ((index, charCode) in text.message.codePoints().toArray().withIndex()) {
             val char = charCode.toChar()
             if (char == '\n') {
                 if (wrap()) {
+                    pushLine(index)
                     return true
                 }
                 continue
@@ -157,6 +161,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val previousY = offset.y
 
             if (addX(width)) {
+                pushLine(index)
                 return true
             }
 
