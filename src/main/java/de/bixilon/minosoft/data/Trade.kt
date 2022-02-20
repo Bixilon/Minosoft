@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 
 class Trade(
     val input1: ItemStack?,

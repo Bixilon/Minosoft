@@ -19,7 +19,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -49,7 +49,7 @@ open class FoodItem(
 
     override val maxUseTime: Int = timeToEat
 
-    override fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactItem(connection: PlayConnection, hand: Hands, stack: ItemStack): InteractionResults {
         val hunger = connection.player.healthCondition.hunger
         if (hunger < HotbarHungerElement.MAX_HUNGER || alwaysEdiable) {
             connection.player.useItem(hand)
@@ -59,7 +59,7 @@ open class FoodItem(
 
     override fun finishUsing(connection: PlayConnection, itemStack: ItemStack) {
         if (connection.player.gamemode != Gamemodes.CREATIVE) {
-            itemStack.count--
+            itemStack.item.decreaseCount()
         }
         // ToDo: Apply eating effect(s)
     }

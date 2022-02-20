@@ -15,7 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.ItemStackUtil
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
@@ -26,5 +28,8 @@ abstract class ThrowableItemProjectile(connection: PlayConnection, entityType: E
     open val item: ItemStack?
         get() = data.sets.getItemStack(EntityDataFields.THROWABLE_ITEM_PROJECTILE_ITEM) ?: defaultItem
 
-    protected abstract val defaultItem: ItemStack?
+    abstract val defaultItemType: ResourceLocation
+
+    open val defaultItem: ItemStack?
+        get() = ItemStackUtil.of(connection.registries.itemRegistry[defaultItemType]!!, connection = connection)
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.redstone
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory

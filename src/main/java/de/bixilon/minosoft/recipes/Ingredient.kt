@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.recipes
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 
 data class Ingredient(val itemStacks: Array<ItemStack?>) {
     override fun equals(other: Any?): Boolean {

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.container.ContainerSlotChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -32,11 +32,11 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         -1
     }
-    val items: Array<ItemStack?> = buffer.readItemStackArray(if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val items: Array<ItemStack?> = buffer.readArray(if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readVarInt()
     } else {
         buffer.readUnsignedShort()
-    })
+    }) { buffer.readItemStack() }
     val cursor = if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readItemStack()
     } else {

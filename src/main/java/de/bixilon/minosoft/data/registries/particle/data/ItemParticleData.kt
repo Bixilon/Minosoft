@@ -12,7 +12,8 @@
  */
 package de.bixilon.minosoft.data.registries.particle.data
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.ItemStackUtil
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -30,7 +31,7 @@ class ItemParticleData(val itemStack: ItemStack?, type: ParticleType) : Particle
             } else {
                 buffer.readVarInt()
             }
-            return ItemParticleData(ItemStack(item = buffer.connection.registries.itemRegistry[itemId], buffer.connection), type)
+            return ItemParticleData(ItemStackUtil.of(buffer.connection.registries.itemRegistry[itemId], connection = buffer.connection), type)
         }
     }
 }

@@ -33,7 +33,7 @@ class PumpkinOverlay(renderWindow: RenderWindow, z: Float) : FirstPersonOverlay(
                 return false
             }
             val head = player.equipment[InventorySlots.EquipmentSlots.HEAD] ?: return false
-            if (head.item.resourceLocation != MinecraftBlocks.CARVED_PUMPKIN) {
+            if (head.item.item.resourceLocation != MinecraftBlocks.CARVED_PUMPKIN) {
                 return false
             }
             return true

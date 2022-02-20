@@ -16,7 +16,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Rarities
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -70,23 +70,23 @@ open class Item(
         return resourceLocation.toString()
     }
 
-    open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
+    open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float {
         return 1.0f
     }
 
-    open fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 
-    open fun interactEntity(connection: PlayConnection, target: EntityTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactEntity(connection: PlayConnection, target: EntityTarget, hand: Hands, stack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 
-    open fun interactEntityAt(connection: PlayConnection, target: EntityTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactEntityAt(connection: PlayConnection, target: EntityTarget, hand: Hands, stack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 
-    open fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack): InteractionResults {
+    open fun interactItem(connection: PlayConnection, hand: Hands, stack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 

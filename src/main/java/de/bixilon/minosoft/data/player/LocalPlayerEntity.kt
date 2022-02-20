@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.player
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.kutil.math.MMath.floor
 import de.bixilon.kutil.primitive.BooleanUtil.decide
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
@@ -212,7 +213,7 @@ class LocalPlayerEntity(
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
 
-    override val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
+    override val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack>
         get() = inventory.equipment
 
     private fun sendMovementPackets() {
@@ -334,7 +335,7 @@ class LocalPlayerEntity(
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
             return Vec3d(velocity.x, 0.2, velocity.z)
         }
         return velocity

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.items.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -38,7 +38,7 @@ open class BlockItem(
         this::block.inject(data["block"])
     }
 
-    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!connection.player.gamemode.canBuild) {
             return InteractionResults.PASS
         }
@@ -84,7 +84,7 @@ open class BlockItem(
         connection.world[placePosition] = placeBlockState
 
         if (connection.player.gamemode != Gamemodes.CREATIVE) {
-            itemStack.count--
+            stack.item.decreaseCount()
         }
 
         placeBlockState.placeSoundEvent?.let {

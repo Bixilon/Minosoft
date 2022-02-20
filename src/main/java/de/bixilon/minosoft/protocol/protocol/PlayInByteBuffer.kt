@@ -14,7 +14,8 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.ItemStackUtil
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -123,7 +124,7 @@ class PlayInByteBuffer : InByteBuffer {
                 metaData = readUnsignedShort()
             }
             val nbt = readNBTTag(versionId < V_14W28B)?.toMutableJsonObject()
-            return ItemStack(
+            return ItemStackUtil.of(
                 item = connection.registries.itemRegistry[id shl 16 or metaData],
                 connection = connection,
                 count = count,
@@ -133,7 +134,7 @@ class PlayInByteBuffer : InByteBuffer {
         }
 
         return readOptional {
-            ItemStack(
+            ItemStackUtil.of(
                 item = connection.registries.itemRegistry[readVarInt()],
                 connection = connection,
                 count = readUnsignedByte(),
@@ -142,7 +143,7 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    @Deprecated("Use readArray")
+    @Deprecated("Use readArray", ReplaceWith("readArray(length) { readItemStack() }"))
     fun readItemStackArray(length: Int = readVarInt()): Array<ItemStack?> {
         return readArray(length) { readItemStack() }
     }
@@ -199,7 +200,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readIngredient(): Ingredient {
-        return Ingredient(readItemStackArray())
+        return Ingredient(readArray { readItemStack() })
     }
 
     @Deprecated("Use readArray")

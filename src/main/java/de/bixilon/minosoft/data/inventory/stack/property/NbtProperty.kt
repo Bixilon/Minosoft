@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.inventory
+package de.bixilon.minosoft.data.inventory.stack.property
 
-object ItemNBTValues {
-    const val REPAIR_COST_TAG = "RepairCost"
-    const val DISPLAY_TAG = "display"
-    const val DISPLAY_MAME_TAG = "Name"
-    const val DISPLAY_LORE_TAG = "Lore"
-    const val DISPLAY_COLOR_TAG = "color"
-    const val UNBREAKABLE_TAG = "unbreakable"
-    const val HIDE_FLAGS_TAG = "HideFlags"
+import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 
-    const val ENCHANTMENT_FLATTENING_TAG = "Enchantments"
-    const val ENCHANTMENT_PRE_FLATTENING_TAG = "ench"
-    val ENCHANTMENTS_TAG = arrayOf(ENCHANTMENT_FLATTENING_TAG, ENCHANTMENT_PRE_FLATTENING_TAG)
-    const val ENCHANTMENT_ID_TAG = "id"
-    const val ENCHANTMENT_LEVEL_TAG = "lvl"
+class NbtProperty(
+    private val stack: ItemStack,
+    val nbt: MutableJsonObject = mutableMapOf(),
+) : Property {
+
+    fun copy(
+        stack: ItemStack,
+        nbt: MutableJsonObject = this.nbt.toMutableMap(),
+    ): NbtProperty {
+        return NbtProperty(stack, nbt)
+    }
 }

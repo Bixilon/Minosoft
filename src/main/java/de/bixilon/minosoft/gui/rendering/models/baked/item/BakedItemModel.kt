@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked.item
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -26,7 +26,7 @@ class BakedItemModel(
     val texture: AbstractTexture?,
 ) : BakedModel {
 
-    fun render2d(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, itemStack: ItemStack) {
+    fun render2d(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, stack: ItemStack) {
         val texture = texture ?: return
         consumer.addQuad(offset, offset + size, texture, tint = ChatColors.WHITE, options = options)
     }

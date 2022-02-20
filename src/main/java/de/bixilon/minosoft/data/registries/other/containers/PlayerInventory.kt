@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.other.containers
 
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -26,18 +28,8 @@ class PlayerInventory(connection: PlayConnection) : Container(
         resourceLocation = "TBO".toResourceLocation()
     ),
 ) {
+    val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack> = lockMapOf() // ToDo: Update map
 
-    val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
-        get() {
-            // ToDo: Optimize
-            val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack> = mutableMapOf()
-
-            for (slot in InventorySlots.EquipmentSlots.ARMOR_SLOTS) {
-                equipment[slot] = this[slot] ?: continue
-            }
-
-            return equipment
-        }
 
     fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
         check(hotbarSlot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }

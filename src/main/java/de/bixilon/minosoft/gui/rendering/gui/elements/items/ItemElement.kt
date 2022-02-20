@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -44,7 +44,7 @@ class ItemElement(
     private var count = -1
     private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
 
-    var item: ItemStack? = item
+    var stack: ItemStack? = item
         set(value) {
             if (field == value) {
                 return
@@ -60,17 +60,18 @@ class ItemElement(
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val item = item ?: return
+        val stack = stack ?: return
         val size = size
         val textureSize = size - 1
 
-        val model = item.item.model
+        val item = stack.item.item
+        val model = item.model
         if (model == null) {
             var element: Element? = null
 
             var color = ChatColors.WHITE
-            if (item.item is BlockItem) {
-                val defaultState = item.item.block.defaultState
+            if (item is BlockItem) {
+                val defaultState = item.block.defaultState
                 defaultState.material.color?.let { color = it }
                 defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
                     element = ImageElement(guiRenderer, it, size = textureSize)
@@ -79,7 +80,7 @@ class ItemElement(
 
             (element ?: ColorElement(guiRenderer, textureSize, color)).render(offset, consumer, options)
         } else {
-            model.render2d(offset, consumer, options, textureSize, item)
+            model.render2d(offset, consumer, options, textureSize, stack)
         }
 
         val countSize = countText.size
@@ -87,8 +88,8 @@ class ItemElement(
     }
 
     override fun poll(): Boolean {
-        val item = item ?: return false
-        val count = item.count
+        val stack = stack ?: return false
+        val count = stack.item.count
         if (this.count != count) {
             this.count = count
             return true
@@ -112,7 +113,7 @@ class ItemElement(
     }
 
     override fun toString(): String {
-        return item.toString()
+        return stack.toString()
     }
 
     private companion object {

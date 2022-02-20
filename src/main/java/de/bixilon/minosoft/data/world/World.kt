@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -57,7 +57,7 @@ import kotlin.random.Random
 class World(
     val connection: PlayConnection,
 ) : BiomeAccessor, AbstractAudioPlayer {
-    val lock = ReadWriteLock()
+    val lock = SimpleLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
     val entities = WorldEntities()

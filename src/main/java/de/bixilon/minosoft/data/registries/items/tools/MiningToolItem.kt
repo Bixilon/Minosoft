@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -66,11 +66,11 @@ abstract class MiningToolItem(
     }
 
 
-    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
+    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float {
         if (isEffectiveOn(connection, blockState)) {
             return speed
         }
-        return super.getMiningSpeedMultiplier(connection, blockState, itemStack)
+        return super.getMiningSpeedMultiplier(connection, blockState, stack)
     }
 
     companion object {

@@ -86,12 +86,12 @@ class ContainerItemsElement(
                 // element.parent = this
                 changes = true
             } else {
-                if (data.element.item == item) {
+                if (data.element.stack == item) {
                     if (data.element.silentApply()) {
                         changes = true
                     }
                 } else {
-                    data.element.item = item
+                    data.element.stack = item
                     changes = true
                 }
             }

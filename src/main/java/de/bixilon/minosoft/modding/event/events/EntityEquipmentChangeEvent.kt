@@ -14,7 +14,7 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

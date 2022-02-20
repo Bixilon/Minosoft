@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -43,7 +43,7 @@ open class ShovelItem(
     }
 
 
-    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!connection.profiles.controls.interaction.flattening) {
             return InteractionResults.CONSUME
         }

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.items.UsableItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -71,7 +71,7 @@ class InteractInteractionHandler(
         interactingTicksLeft = 0
     }
 
-    fun interactBlock(target: BlockTarget, item: ItemStack?, hand: Hands): InteractionResults {
+    fun interactBlock(target: BlockTarget, stack: ItemStack?, hand: Hands): InteractionResults {
         if (target.distance >= connection.player.reachDistance) {
             return InteractionResults.PASS
         }
@@ -81,7 +81,7 @@ class InteractInteractionHandler(
             position = target.blockPosition,
             direction = target.direction,
             cursorPosition = Vec3(target.hitPosition),
-            item = item,
+            item = stack,
             hand = hand,
             insideBlock = false, // ToDo: insideBlock
         ))
@@ -90,19 +90,19 @@ class InteractInteractionHandler(
             return InteractionResults.SUCCESS
         }
 
-        val result = target.blockState.block.onUse(connection, target, hand, item)
+        val result = target.blockState.block.onUse(connection, target, hand, stack)
         if (result == InteractionResults.SUCCESS) {
             return InteractionResults.SUCCESS
         }
 
-        if (item == null) {
+        if (stack == null) {
             return InteractionResults.PASS
         }
-        if (interactionManager.isCoolingDown(item.item)) {
+        if (interactionManager.isCoolingDown(stack.item.item)) {
             return InteractionResults.PASS // ToDo: Check
         }
 
-        return item.item.interactBlock(connection, target, hand, item)
+        return stack.item.item.interactBlock(connection, target, hand, stack)
     }
 
     fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
@@ -139,12 +139,12 @@ class InteractInteractionHandler(
         // ToDo: Before 1.9
         connection.sendPacket(UseItemC2SP(hand))
 
-        if (interactionManager.isCoolingDown(item.item)) {
+        if (interactionManager.isCoolingDown(item.item.item)) {
             return InteractionResults.PASS
         }
 
 
-        return item.item.interactItem(connection, hand, item)
+        return item.item.item.interactItem(connection, hand, item)
     }
 
     fun useItem() {
@@ -191,7 +191,7 @@ class InteractInteractionHandler(
             if (item != interactingItem || interactingSlot != selectedSlot) {
                 interactingItem = item
                 interactingSlot = selectedSlot
-                val itemType = item?.item
+                val itemType = item?.item?.item
                 interactingTicksLeft = if (itemType is UsableItem) {
                     itemType.maxUseTime
                 } else {
@@ -227,7 +227,7 @@ class InteractInteractionHandler(
             autoInteractionDelay++
 
             val interactingItem = interactingItem
-            val item = interactingItem?.item
+            val item = interactingItem?.item?.item
             if (item is UsableItem && connection.player.isUsingItem) {
                 interactingTicksLeft--
                 if (interactingTicksLeft < 0) {

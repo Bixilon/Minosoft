@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.other.containers
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.property.HolderProperty
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class Container(
@@ -27,39 +27,51 @@ open class Container(
     val title: ChatComponent? = null,
     val hasTitle: Boolean = false,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
-    protected val slots: MutableMap<Int, ItemStack> = synchronizedMapOf()
-    var revision = 0L // ToDo: This has nothing todo with minecraft (1.17+)
-        @Synchronized set(value) {
-            // ToDo: Proper synchronize
-            if (++field != value) {
-                error("Can not set a custom revision!: $value, required: $field")
-            }
-            connection.fireEvent(ContainerRevisionChangeEvent(connection, EventInitiators.UNKNOWN, this, value))
-        }
+    protected val slots: MutableMap<Int, ItemStack> = mutableMapOf()
+    val lock = SimpleLock()
+    var revision by watched(0L) // ToDo: This has nothing todo with minecraft (1.17+)
 
-    fun validate() {
-        var changes = false
+    fun _validate() {
+        var itemsRemoved = 0
         for ((slot, itemStack) in slots.toSynchronizedMap()) {
-            if (itemStack.count <= 0 || itemStack.durability < 0) {
-                slots.remove(slot)
-                itemStack.container = null
-                changes = true
+            if (itemStack._valid) {
+                continue
             }
+            slots.remove(slot)
+            itemStack.holder?.container = null
+            itemsRemoved++
         }
-        if (changes) {
+        if (itemsRemoved > 0) {
             revision++
         }
     }
 
+    fun validate() {
+        lock.lock()
+        _validate()
+        lock.unlock()
+    }
+
     operator fun get(slotId: Int): ItemStack? {
-        return slots[slotId]
+        try {
+            lock.acquire()
+            return slots[slotId]
+        } finally {
+            lock.release()
+        }
     }
 
     fun remove(slotId: Int): ItemStack? {
-        val itemStack = slots.remove(slotId) ?: return null
-        itemStack.container = null
-        revision++
-        return itemStack
+        try {
+            lock.lock()
+            val stack = slots.remove(slotId) ?: return null
+            stack.holder?.container = null
+            revision++
+            lock.unlock()
+            return stack
+        } finally {
+            lock.release()
+        }
     }
 
     operator fun set(slotId: Int, itemStack: ItemStack?) {
@@ -71,21 +83,32 @@ open class Container(
     }
 
     private fun internalSet(slotId: Int, itemStack: ItemStack?): Boolean {
-        val previous = slots[slotId]
-        if (itemStack == null) {
-            if (previous == null) {
+        lock.lock()
+        try {
+            val previous = slots[slotId]
+            if (itemStack == null) {
+                if (previous == null) {
+                    return false
+                }
+                remove(slotId)
+                return true
+            }
+            if (previous == itemStack) {
                 return false
             }
-            remove(slotId)
-            return true
-        }
-        if (previous == itemStack) {
-            return false
-        }
-        slots[slotId] = itemStack // ToDo: Check for changes
-        itemStack.container = this
+            slots[slotId] = itemStack // ToDo: Check for changes
+            var holder = itemStack.holder
+            if (holder == null) {
+                holder = HolderProperty(connection, this)
+                itemStack.holder = holder
+            } else {
+                holder.container = this
+            }
 
-        return true
+            return true
+        } finally {
+            lock.unlock()
+        }
     }
 
     fun set(vararg slots: Pair<Int, ItemStack?>) {

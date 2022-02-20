@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,16 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes.heat
+package de.bixilon.minosoft.data.inventory.stack.property
 
+import de.bixilon.minosoft.data.inventory.InventoryDelegate
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.recipes.Ingredient
-import de.bixilon.minosoft.recipes.Recipe
+import de.bixilon.minosoft.data.registries.items.Item
 
-interface HeatRecipe : Recipe {
-    val group: String
-    val ingredient: Ingredient
-    val result: ItemStack?
-    val experience: Float
-    val cookingTime: Int
+class ItemProperty(
+    private val stack: ItemStack,
+    val item: Item,
+    count: Int = 1,
+) : Property {
+    var _count = count
+    var count by InventoryDelegate(stack, this::_count)
+
+
+    fun decreaseCount() {
+        stack.lock()
+        _count -= 1
+        stack.commit()
+    }
+
+    fun increaseCount() {
+        stack.lock()
+        _count += 1
+        stack.commit()
+    }
 }

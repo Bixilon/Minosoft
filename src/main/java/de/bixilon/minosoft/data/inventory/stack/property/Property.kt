@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,16 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes.heat
+package de.bixilon.minosoft.data.inventory.stack.property
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.recipes.Ingredient
-import de.bixilon.minosoft.recipes.Recipe
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.MutableJsonObject
 
-interface HeatRecipe : Recipe {
-    val group: String
-    val ingredient: Ingredient
-    val result: ItemStack?
-    val experience: Float
-    val cookingTime: Int
+interface Property {
+
+    fun updateNbt(nbt: MutableJsonObject) {}
+
+    fun getNBT(): JsonObject = mapOf()
 }

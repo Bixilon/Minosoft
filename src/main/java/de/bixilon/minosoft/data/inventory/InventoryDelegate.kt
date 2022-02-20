@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,16 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes.heat
+package de.bixilon.minosoft.data.inventory
 
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.recipes.Ingredient
-import de.bixilon.minosoft.recipes.Recipe
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.KProperty
 
-interface HeatRecipe : Recipe {
-    val group: String
-    val ingredient: Ingredient
-    val result: ItemStack?
-    val experience: Float
-    val cookingTime: Int
+class InventoryDelegate<T>(
+    val stack: ItemStack,
+    val field: KMutableProperty0<T>,
+) : ReadWriteProperty<Any, T> {
+
+    override operator fun getValue(thisRef: Any, property: KProperty<*>): T {
+        try {
+            stack.lock.acquire()
+            return field.getValue(thisRef, property)
+        } finally {
+            stack.lock.release()
+        }
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+        stack.lock()
+        field.setValue(thisRef, property, value)
+        stack.commit()
+    }
 }

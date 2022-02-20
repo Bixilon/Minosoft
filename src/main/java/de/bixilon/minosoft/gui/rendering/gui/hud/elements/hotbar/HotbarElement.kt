@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
@@ -137,7 +137,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
-            currentItem?.displayName?.let { itemText.text = it } // ToDo: This calls silentApply again...
+            currentItem?.display?.displayName?.let { itemText._chatComponent = it;itemText.forceSilentApply() }
             if (currentItem == null) {
                 itemText.hide()
             } else {

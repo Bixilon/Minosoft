@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
@@ -29,10 +29,10 @@ open class SwordItem(
 ) : ToolItem(resourceLocation, registries, data) {
     override val attackDamage = data["attack_damage"]?.toFloat() ?: -1.0f
 
-    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
+    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, stack: ItemStack): Float {
         if (blockState.block.resourceLocation == MinecraftBlocks.COBWEB) {
             return 15.0f
         }
-        return super.getMiningSpeedMultiplier(connection, blockState, itemStack)
+        return super.getMiningSpeedMultiplier(connection, blockState, stack)
     }
 }

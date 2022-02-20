@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
@@ -56,9 +56,9 @@ class ParticleRenderer(
     private var transparentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
     private var translucentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
-    private val particlesLock = ReadWriteLock()
+    private val particlesLock = SimpleLock()
     private var particles: MutableList<Particle> = mutableListOf()
-    private var particleQueueLock = ReadWriteLock()
+    private var particleQueueLock = SimpleLock()
     private var particleQueue: MutableList<Particle> = mutableListOf()
 
 

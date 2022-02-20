@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import glm_.vec3.Vec3i
@@ -44,19 +44,19 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
                 writeShort(-1)
                 return
             }
-            writeShort(connection.registries.itemRegistry.getId(itemStack.item))
-            writeByte(itemStack.count)
-            writeShort(itemStack.durability)
-            writeNBT(itemStack.nbtOut)
+            writeShort(connection.registries.itemRegistry.getId(itemStack.item.item))
+            writeByte(itemStack.item.count)
+            writeShort(itemStack._durability?.durability ?: 0) // ToDo: This is meta data in general and not just durability
+            writeNBT(itemStack.getNBT())
             return
         }
         writeBoolean(itemStack != null)
         if (itemStack == null) {
             return
         }
-        writeVarInt(connection.registries.itemRegistry.getId(itemStack.item))
-        writeByte(itemStack.count)
-        writeNBT(itemStack.nbtOut)
+        writeVarInt(connection.registries.itemRegistry.getId(itemStack.item.item))
+        writeByte(itemStack.item.count)
+        writeNBT(itemStack.getNBT())
     }
 
     fun writeEntityId(entityId: Int) {

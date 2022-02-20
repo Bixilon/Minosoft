@@ -21,15 +21,10 @@ object NBTUtil {
         return mutableMapOf()
     }
 
-    fun MutableMap<String, Any>.getAndRemove(key: String): Any? {
-        val value = this[key]
-        this.remove(key)
-        return value
-    }
 
-    fun MutableMap<String, Any>.getAndRemove(vararg keys: String): Any? {
+    fun MutableMap<String, Any>.remove(vararg keys: String): Any? {
         for (key in keys) {
-            getAndRemove(key)?.let { return it }
+            remove(key)?.let { return it }
         }
         return null
     }

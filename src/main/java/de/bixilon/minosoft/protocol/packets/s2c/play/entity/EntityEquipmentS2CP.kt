@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.modding.event.events.EntityEquipmentChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
