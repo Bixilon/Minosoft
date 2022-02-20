@@ -19,8 +19,10 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -28,12 +30,13 @@ class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
     val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
-) : Element(guiRenderer) {
+) : Element(guiRenderer), Pollable {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
     private var revision = -1L
 
     init {
         silentApply()
+        this._size = calculateSize()
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -42,13 +45,28 @@ class ContainerItemsElement(
         }
     }
 
-    override fun silentApply(): Boolean {
+    private fun calculateSize(): Vec2i {
+        val size = Vec2i.EMPTY
+
+        for (slot in slots.values) {
+            size.x = maxOf(slot.end.x, size.x)
+            size.y = maxOf(slot.end.y, size.y)
+        }
+
+        return size
+    }
+
+
+    override fun poll(): Boolean {
         val revision = container.revision
         if (this.revision == revision) {
             return false
         }
         this.revision = revision
+        return true
+    }
 
+    override fun forceSilentApply() {
         var changes = false
         for ((slot, binding) in slots) {
             val item = container[slot]
@@ -80,15 +98,10 @@ class ContainerItemsElement(
         }
 
         if (!changes) {
-            return false
+            return
         }
 
         cacheUpToDate = false
-        return true
-    }
-
-    override fun forceSilentApply() {
-        silentApply()
     }
 
 

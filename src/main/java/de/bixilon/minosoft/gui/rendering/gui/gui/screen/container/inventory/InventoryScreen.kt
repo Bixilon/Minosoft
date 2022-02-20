@@ -11,14 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui
+package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
 
-import de.bixilon.minosoft.gui.rendering.gui.GUIElement
+import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScreen
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-interface GUIBuilder<T : GUIElement> {
-
-    fun build(guiRenderer: GUIRenderer): T
-
-    fun register(guiRenderer: GUIRenderer) {}
-}
+open class InventoryScreen(
+    guiRenderer: GUIRenderer,
+    val inventory: PlayerInventory,
+) : ContainerScreen(
+    guiRenderer,
+    inventory,
+    guiRenderer.atlasManager["minecraft:inventory_base".toResourceLocation()]!!,
+)

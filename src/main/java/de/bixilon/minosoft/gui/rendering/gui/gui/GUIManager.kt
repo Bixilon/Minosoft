@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.LocalInventoryScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -48,6 +49,11 @@ class GUIManager(
         for (element in elementCache.values) {
             element.init()
         }
+        registerDefaultElements()
+    }
+
+    private fun registerDefaultElements() {
+        LocalInventoryScreen.register(guiRenderer)
     }
 
     override fun postInit() {

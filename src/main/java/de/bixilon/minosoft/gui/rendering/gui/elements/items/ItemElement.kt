@@ -62,6 +62,7 @@ class ItemElement(
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val item = item ?: return
         val size = size
+        val textureSize = size - 1
 
         val model = item.item.model
         if (model == null) {
@@ -72,13 +73,13 @@ class ItemElement(
                 val defaultState = item.item.block.defaultState
                 defaultState.material.color?.let { color = it }
                 defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
-                    element = ImageElement(guiRenderer, it, size = size)
+                    element = ImageElement(guiRenderer, it, size = textureSize)
                 }
             }
 
-            (element ?: ColorElement(guiRenderer, size, color)).render(offset, consumer, options)
+            (element ?: ColorElement(guiRenderer, textureSize, color)).render(offset, consumer, options)
         } else {
-            model.render2d(offset, consumer, options, size, item)
+            model.render2d(offset, consumer, options, textureSize, item)
         }
 
         val countSize = countText.size
