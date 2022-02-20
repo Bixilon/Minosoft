@@ -37,7 +37,7 @@ open class Container(
             if (itemStack._valid) {
                 continue
             }
-            slots.remove(slot)
+            _remove(slot)
             itemStack.holder?.container = null
             itemsRemoved++
         }
@@ -61,40 +61,46 @@ open class Container(
         }
     }
 
+    fun _remove(slotId: Int): ItemStack? {
+        val stack = slots.remove(slotId) ?: return null
+        stack.holder?.container = null
+        return stack
+    }
+
     fun remove(slotId: Int): ItemStack? {
-        try {
-            lock.lock()
-            val stack = slots.remove(slotId) ?: return null
-            stack.holder?.container = null
+        lock.lock()
+        val remove = _remove(slotId)
+        lock.unlock()
+        if (remove != null) {
             revision++
-            lock.unlock()
-            return stack
-        } finally {
-            lock.release()
         }
+        return remove
     }
 
     operator fun set(slotId: Int, itemStack: ItemStack?) {
-        if (!internalSet(slotId, itemStack)) {
-            return
+        try {
+            lock.lock()
+            if (!_set(slotId, itemStack)) {
+                return
+            }
+        } finally {
+            lock.unlock()
         }
 
         revision++
     }
 
-    private fun internalSet(slotId: Int, itemStack: ItemStack?): Boolean {
-        lock.lock()
-        try {
-            val previous = slots[slotId]
-            if (itemStack == null) {
-                if (previous == null) {
-                    return false
-                }
-                remove(slotId)
-                return true
-            }
-            if (previous == itemStack) {
+    private fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
+        val previous = slots[slotId]
+        if (itemStack == null) {
+            if (previous == null) {
                 return false
+            }
+            _remove(slotId)
+            return true
+        }
+        if (previous == itemStack) {
+            return false
             }
             slots[slotId] = itemStack // ToDo: Check for changes
             var holder = itemStack.holder
@@ -106,29 +112,37 @@ open class Container(
             }
 
             return true
-        } finally {
-            lock.unlock()
-        }
     }
 
     fun set(vararg slots: Pair<Int, ItemStack?>) {
+        if (slots.isEmpty()) {
+            return
+        }
+        lock.lock()
         var changes = 0
         for ((slotId, itemStack) in slots) {
-            if (internalSet(slotId, itemStack)) {
+            if (_set(slotId, itemStack)) {
                 changes++
             }
         }
+        lock.unlock()
         if (changes > 0) {
             revision++
         }
     }
 
     fun clear() {
+        lock.lock()
         val size = slots.size
         if (size == 0) {
+            lock.unlock()
             return
         }
+        for (stack in slots.values) {
+            stack.holder?.container = null
+        }
         slots.clear()
+        lock.unlock()
         revision++
     }
 

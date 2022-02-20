@@ -32,7 +32,7 @@ abstract class ContainerScreen(
     items: Int2ObjectOpenHashMap<Vec2iBinding> = background.slots,
 ) : Screen(guiRenderer) {
     private val containerBackground = AtlasImageElement(guiRenderer, background)
-    protected val containerElement = ContainerItemsElement(guiRenderer, container, items)
+    protected val containerElement = ContainerItemsElement(guiRenderer, container, items).apply { parent = this@ContainerScreen }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
@@ -44,4 +44,8 @@ abstract class ContainerScreen(
         containerElement.render(centerOffset, consumer, options)
     }
 
+    override fun forceSilentApply() {
+        super.forceSilentApply()
+        containerElement.apply()
+    }
 }

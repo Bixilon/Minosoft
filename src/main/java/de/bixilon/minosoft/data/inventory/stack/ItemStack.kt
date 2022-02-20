@@ -161,7 +161,7 @@ class ItemStack {
         if (!_valid) {
             holder?.container?._validate()
         }
-        holder?.container?.apply { revision++ }
         lock.unlock()
+        holder?.container?.apply { revision++ } // increase revision after unlock to prevent deadlock
     }
 }

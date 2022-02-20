@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -30,16 +30,20 @@ class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
     val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
-) : Element(guiRenderer), Pollable {
+) : Element(guiRenderer) {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
-    private var revision = -1L
+    private var update = true
 
     init {
         silentApply()
         this._size = calculateSize()
+        container::revision.observe(this) { cacheUpToDate = false;update = true }
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        if (update) {
+            forceSilentApply()
+        }
         for ((_, data) in itemElements.toSynchronizedMap()) {
             data.element.render(offset + data.offset, consumer, options)
         }
@@ -56,18 +60,8 @@ class ContainerItemsElement(
         return size
     }
 
-
-    override fun poll(): Boolean {
-        val revision = container.revision
-        if (this.revision == revision) {
-            return false
-        }
-        this.revision = revision
-        return true
-    }
-
     override fun forceSilentApply() {
-        var changes = false
+        var changes = 0
         for ((slot, binding) in slots) {
             val item = container[slot]
             val data = itemElements[slot]
@@ -84,20 +78,22 @@ class ContainerItemsElement(
                     offset = binding.start,
                 )
                 // element.parent = this
-                changes = true
+                changes++
             } else {
                 if (data.element.stack == item) {
                     if (data.element.silentApply()) {
-                        changes = true
+                        changes++
                     }
                 } else {
                     data.element.stack = item
-                    changes = true
+                    changes++
                 }
             }
         }
 
-        if (!changes) {
+        update = false
+
+        if (changes == 0) {
             return
         }
 
