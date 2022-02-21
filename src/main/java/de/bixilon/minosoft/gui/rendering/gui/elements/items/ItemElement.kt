@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.gui.popper.text.TextPopper
@@ -145,11 +146,21 @@ class ItemElement(
             return true
         }
         val container = container ?: return false
+        val containerId = renderWindow.connection.player.containers.getKey(container) ?: return false
+        val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
+        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
         // ToDo
         when (key) {
             KeyCodes.KEY_Q -> {
-                stack?.item?.decreaseCount()
-                renderWindow.connection.sendPacket(ContainerClickC2SP(0, container.serverRevision, slotId, InventoryActions.DROP_ITEM, 0, mapOf(), stack))
+                val action: InventoryActions
+                if (controlDown) {
+                    stack?.item?.count = 0
+                    action = InventoryActions.DROP_STACK
+                } else {
+                    stack?.item?.decreaseCount()
+                    action = InventoryActions.DROP_ITEM
+                }
+                renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slotId, action, container.createAction(), mapOf(slotId to stack), stack))
             }
         }
         return true

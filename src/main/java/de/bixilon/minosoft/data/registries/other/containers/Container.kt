@@ -147,6 +147,11 @@ open class Container(
         revision++
     }
 
+
+    fun createAction(): Int {
+        return 0 // ToDo
+    }
+
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
         return slots.toSynchronizedMap().iterator()
     }

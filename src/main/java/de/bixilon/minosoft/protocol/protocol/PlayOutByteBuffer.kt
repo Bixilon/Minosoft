@@ -50,10 +50,12 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             writeNBT(itemStack.getNBT())
             return
         }
-        writeBoolean(itemStack != null)
-        if (itemStack == null || !itemStack._valid) {
+        val valid = itemStack?._valid == true
+        writeBoolean(valid)
+        if (!valid) {
             return
         }
+        itemStack!!
         writeVarInt(connection.registries.itemRegistry.getId(itemStack.item.item))
         writeByte(itemStack.item.count)
         writeNBT(itemStack.getNBT())
