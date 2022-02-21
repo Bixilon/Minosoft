@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.inventory.InventoryActions
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.block.BlockItem
+import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -30,7 +33,11 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.popper.text.TextPopper
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
@@ -40,9 +47,12 @@ class ItemElement(
     guiRenderer: GUIRenderer,
     size: Vec2i,
     item: ItemStack?,
+    val slotId: Int = 0,
+    val container: Container? = null,
 ) : Element(guiRenderer), Pollable {
     private var count = -1
     private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
+    private var popper: TextPopper? = null
 
     var stack: ItemStack? = item
         set(value) {
@@ -110,6 +120,39 @@ class ItemElement(
         }
 
         cacheUpToDate = false
+    }
+
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+        renderWindow.window.cursorShape = CursorShapes.HAND
+        popper = TextPopper(guiRenderer, absolute, stack?.displayName ?: "null").apply { show() }
+        return true
+    }
+
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+        popper?.position = absolute
+        return true
+    }
+
+    override fun onMouseLeave(): Boolean {
+        renderWindow.window.resetCursor()
+        popper?.hide()
+        popper = null
+        return true
+    }
+
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (type != KeyChangeTypes.PRESS) {
+            return true
+        }
+        val container = container ?: return false
+        // ToDo
+        when (key) {
+            KeyCodes.KEY_Q -> {
+                stack?.item?.decreaseCount()
+                renderWindow.connection.sendPacket(ContainerClickC2SP(0, container.serverRevision, slotId, InventoryActions.DROP_ITEM, 0, mapOf(), stack))
+            }
+        }
+        return true
     }
 
     override fun toString(): String {

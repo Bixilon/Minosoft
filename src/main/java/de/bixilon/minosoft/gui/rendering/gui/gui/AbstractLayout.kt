@@ -13,13 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface ActiveMouseMove<T : Element> : InputElement {
+interface AbstractLayout<T : Element> : InputElement {
     var activeElement: T?
 
     fun getAt(position: Vec2i): Pair<T, Vec2i>?
@@ -36,7 +39,11 @@ interface ActiveMouseMove<T : Element> : InputElement {
         if (activeElement != pair?.first) {
             val activeElement = activeElement
             this.activeElement = pair?.first
-            return (activeElement?.onMouseLeave() ?: false) || (pair?.first?.onMouseEnter(pair.second, absolute) ?: false)
+
+            // Don't put this in the return line, compiler optimizations break it.
+            val leaveConsumed = activeElement?.onMouseLeave() ?: false
+            val enterConsumed = pair?.first?.onMouseEnter(pair.second, absolute) ?: false
+            return leaveConsumed || enterConsumed
         }
         return pair?.first?.onMouseMove(pair.second, absolute) ?: false
     }
@@ -50,5 +57,18 @@ interface ActiveMouseMove<T : Element> : InputElement {
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         val pair = getAt(position) ?: return false
         return pair.first.onMouseAction(pair.second, button, action)
+    }
+
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        return activeElement?.onKey(key, type) ?: false
+    }
+
+    override fun onCharPress(char: Int): Boolean {
+        return activeElement?.onCharPress(char) ?: false
+    }
+
+    override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
+        val pair = getAt(position) ?: return false
+        return pair.first.onScroll(pair.second, scrollOffset)
     }
 }

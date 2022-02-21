@@ -17,6 +17,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.data.inventory.stack.property.*
 import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
@@ -99,6 +100,18 @@ class ItemStack {
         // this should not get synchronized, otherwise your debugger won't work that good:)
         return "Item{type=${item.item}, count=${item._count}}"
     }
+
+    val displayName: ChatComponent
+        get() {
+            _display?.customDisplayName?.let { return it }
+            item.item.translationKey?.let {
+                val language = holder?.connection?.language ?: return@let
+                val translated = language.translate(it)
+                _enchanting?.rarity?.color?.let { translated.applyDefaultColor(it) }
+                return translated
+            }
+            return ChatComponent.of(toString())
+        }
 
     fun copy(
         item: Item = this.item.item,

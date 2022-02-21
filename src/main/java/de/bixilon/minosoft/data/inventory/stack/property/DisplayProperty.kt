@@ -43,18 +43,6 @@ class DisplayProperty(
         this::lore.observeList(this) { stack.holder?.container?.let { it.revision++ } }
     }
 
-    val displayName: ChatComponent
-        get() {
-            customDisplayName?.let { return it }
-            stack.item.item.translationKey?.let {
-                val language = stack.holder?.connection?.language ?: return@let
-                val translated = language.translate(it)
-                stack._enchanting?.rarity?.color?.let { translated.applyDefaultColor(it) }
-                return translated
-            }
-            return ChatComponent.of(stack.toString())
-        }
-
     override fun updateNbt(nbt: MutableJsonObject) {
         val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return
         display[DISPLAY_MAME_TAG]?.let { _customDisplayName = ChatComponent.of(it, translator = stack.holder?.connection?.language) }

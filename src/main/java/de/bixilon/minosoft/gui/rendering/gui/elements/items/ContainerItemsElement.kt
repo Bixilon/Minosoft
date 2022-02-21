@@ -20,9 +20,12 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -30,8 +33,9 @@ class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
     val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
-) : Element(guiRenderer) {
+) : Element(guiRenderer), AbstractLayout<ItemElement> {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
+    override var activeElement: ItemElement? = null
     private var update = true
 
     init {
@@ -72,6 +76,8 @@ class ContainerItemsElement(
                     guiRenderer = guiRenderer,
                     size = binding.size,
                     item = item,
+                    slotId = slot,
+                    container = container,
                 )
                 itemElements[slot] = ItemElementData(
                     element = element,
@@ -98,6 +104,20 @@ class ContainerItemsElement(
         }
 
         cacheUpToDate = false
+    }
+
+    override fun getAt(position: Vec2i): Pair<ItemElement, Vec2i>? {
+        for (item in itemElements.values) {
+            if (position isSmaller item.offset) {
+                continue
+            }
+            val innerOffset = position - item.offset
+            if (innerOffset isGreater item.element.size) {
+                continue
+            }
+            return Pair(item.element, innerOffset)
+        }
+        return null
     }
 
 

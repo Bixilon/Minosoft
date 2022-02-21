@@ -30,6 +30,7 @@ open class Container(
     protected val slots: MutableMap<Int, ItemStack> = mutableMapOf()
     val lock = SimpleLock()
     var revision by watched(0L) // ToDo: This has nothing todo with minecraft (1.17+)
+    var serverRevision = 0
 
     fun _validate() {
         var itemsRemoved = 0

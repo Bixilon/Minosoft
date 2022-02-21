@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -30,7 +30,7 @@ import glm_.vec2.Vec2i
 abstract class Menu(
     guiRenderer: GUIRenderer,
     val preferredElementWidth: Int = 150,
-) : Screen(guiRenderer), ActiveMouseMove<Element> {
+) : Screen(guiRenderer), AbstractLayout<Element> {
     private val elements: MutableList<Element> = mutableListOf()
 
     private var maxElementWidth = -1
@@ -77,12 +77,12 @@ abstract class Menu(
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
-        super<ActiveMouseMove>.onMouseEnter(position, absolute)
+        super<AbstractLayout>.onMouseEnter(position, absolute)
         return true
     }
 
     override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
-        super<ActiveMouseMove>.onMouseMove(position, absolute)
+        super<AbstractLayout>.onMouseMove(position, absolute)
         return true
     }
 

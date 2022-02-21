@@ -17,11 +17,15 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -30,9 +34,10 @@ abstract class ContainerScreen(
     container: Container,
     background: AtlasElement,
     items: Int2ObjectOpenHashMap<Vec2iBinding> = background.slots,
-) : Screen(guiRenderer) {
+) : Screen(guiRenderer), AbstractLayout<Element> {
     private val containerBackground = AtlasImageElement(guiRenderer, background)
     protected val containerElement = ContainerItemsElement(guiRenderer, container, items).apply { parent = this@ContainerScreen }
+    override var activeElement: Element? = null
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
@@ -47,5 +52,17 @@ abstract class ContainerScreen(
     override fun forceSilentApply() {
         super.forceSilentApply()
         containerElement.apply()
+    }
+
+    override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+        val centerOffset = (size - containerBackground.size) / 2
+        if (position isSmaller centerOffset) {
+            return null
+        }
+        val offset = position - centerOffset
+        if (offset isGreater containerElement.size) {
+            return null
+        }
+        return Pair(containerElement, offset)
     }
 }

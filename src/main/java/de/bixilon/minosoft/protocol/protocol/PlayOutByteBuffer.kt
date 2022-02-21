@@ -40,7 +40,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
 
     fun writeItemStack(itemStack: ItemStack?) {
         if (versionId < ProtocolVersions.V_1_13_2_PRE1) {
-            if (itemStack == null) {
+            if (itemStack == null || !itemStack._valid) {
                 writeShort(-1)
                 return
             }
@@ -51,7 +51,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             return
         }
         writeBoolean(itemStack != null)
-        if (itemStack == null) {
+        if (itemStack == null || !itemStack._valid) {
             return
         }
         writeVarInt(connection.registries.itemRegistry.getId(itemStack.item.item))
