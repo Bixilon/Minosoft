@@ -58,7 +58,7 @@ open class Item(
 ) : RegistryItem(), Translatable {
     val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
-    val maxDamage: Int = data["max_damage"]?.toInt() ?: 1
+    val maxDurability: Int = data["max_damage"]?.toInt() ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
     override val translationKey: ResourceLocation? = data["translation_key"]?.toResourceLocation()
     val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }

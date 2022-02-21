@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.inventory.stack.ItemStack
 class DurabilityProperty(
     private val stack: ItemStack,
     unbreakable: Boolean = false,
-    durability: Int = stack.item.item.maxDamage,
+    durability: Int = stack.item.item.maxDurability,
 ) : Property {
     var _unbreakable = unbreakable
     var unbreakable by InventoryDelegate(stack, this::_unbreakable)
@@ -32,7 +32,7 @@ class DurabilityProperty(
         get() {
             try {
                 stack.lock.acquire()
-                return stack.item.item.maxDamage > 0 || !_unbreakable
+                return stack.item.item.maxDurability > 0 || !_unbreakable
             } finally {
                 stack.lock.release()
             }
@@ -43,7 +43,7 @@ class DurabilityProperty(
             if (_unbreakable) {
                 return true
             }
-            if (stack.item.item.maxDamage <= 1) {
+            if (stack.item.item.maxDurability <= 1) {
                 return true
             }
             if (_durability <= 0) { // ToDo

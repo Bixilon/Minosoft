@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.popper.item
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -45,23 +46,39 @@ class ItemInfoPopper(
     override fun forceSilentApply() {
         val text = BaseComponent(
             stack.displayName,
-            "\n",
-            "\n",
-            TextComponent(stack.item.item.resourceLocation, color = ChatColors.DARK_GRAY),
         )
         stack._durability?.durability?.let {
-            if (it >= 0) {
-                text += "\n"
-                text += TextComponent("Durability: ${stack._durability?.durability}")
+            val max = stack.item.item.maxDurability
+            if (it in 0 until max) {
+                text += TextComponent(" (${it}/${max})", color = ChatColors.DARK_GRAY)
             }
         }
         stack._display?.lore?.let {
-            text += "\n"
+            if (it.isEmpty()) {
+                return@let
+            }
             for (line in it) {
-                text += line
                 text += "\n"
+                text += line
             }
         }
+        stack._enchanting?.enchantments?.let {
+            if (it.isEmpty()) {
+                return@let
+            }
+            text += "\n"
+            val language = renderWindow.connection.language
+            for ((enchantment, level) in it) {
+                text += ChatComponent.of(enchantment, translator = language).apply { applyDefaultColor(ChatColors.BLUE) }
+                text += TextComponent(" $level", color = ChatColors.BLUE)
+                text += ", "
+            }
+            if (text.parts.lastOrNull()?.message == ", ") {
+                text.parts.removeLast()
+            }
+        }
+        text += "\n\n"
+        text += TextComponent(stack.item.item.resourceLocation, color = ChatColors.DARK_GRAY)
         textElement._chatComponent = text
         textElement.forceSilentApply()
         recalculateSize()

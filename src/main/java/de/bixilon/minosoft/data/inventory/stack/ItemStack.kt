@@ -16,6 +16,7 @@ import de.bixilon.kutil.concurrent.lock.ParentLock
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.inventory.stack.property.*
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -85,24 +86,23 @@ class ItemStack {
             return true
         }
 
-    override fun hashCode(): Int {
-        return Objects.hash(item, _display, _durability, _enchanting, _hide, _nbt)
-    }
+    val rarity: Rarities
+        get() {
+            lock.acquire()
+            val itemRarity = item.item.rarity
+            try {
+                if (_enchanting?.enchantments?.isEmpty() != false) {
+                    return itemRarity
+                }
+            } finally {
+                lock.release()
+            }
 
-    override fun equals(other: Any?): Boolean {
-        if (other !is ItemStack) {
-            return false
+            return when (itemRarity) {
+                Rarities.COMMON, Rarities.UNCOMMON -> Rarities.RARE
+                Rarities.RARE, Rarities.EPIC -> Rarities.EPIC
+            }
         }
-        if (other.hashCode() != this.hashCode()) {
-            return false
-        }
-        return item == other.item && _display == other._display && _durability == other._durability && _enchanting == other._enchanting && _hide == other._hide && _nbt == other._nbt
-    }
-
-    override fun toString(): String {
-        // this should not get synchronized, otherwise your debugger won't work that good:)
-        return "Item{type=${item.item}, count=${item._count}}"
-    }
 
     val displayName: ChatComponent
         get() {
@@ -110,7 +110,7 @@ class ItemStack {
             item.item.translationKey?.let {
                 val language = holder?.connection?.language ?: return@let
                 val translated = language.translate(it)
-                _enchanting?.rarity?.color?.let { translated.applyDefaultColor(it) }
+                rarity.color.let { color -> translated.applyDefaultColor(color) }
                 return translated
             }
             return ChatComponent.of(toString())
@@ -180,5 +180,24 @@ class ItemStack {
         lock.unlock()
         revision++
         holder?.container?.apply { revision++ } // increase revision after unlock to prevent deadlock
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(item, _display, _durability, _enchanting, _hide, _nbt)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is ItemStack) {
+            return false
+        }
+        if (other.hashCode() != this.hashCode()) {
+            return false
+        }
+        return item == other.item && _display == other._display && _durability == other._durability && _enchanting == other._enchanting && _hide == other._hide && _nbt == other._nbt
+    }
+
+    override fun toString(): String {
+        // this should not get synchronized, otherwise your debugger won't work that good:)
+        return "Item{type=${item.item}, count=${item._count}}"
     }
 }

@@ -38,18 +38,19 @@ class EnchantingProperty(
         this::enchantments.observeMap(this) { stack.holder?.container?.let { it.revision++ } }
     }
 
-    val rarity: Rarities
+    val enchantingRarity: Rarities
         get() {
+            val itemRarity = stack.item.item.rarity
             try {
                 stack.lock.acquire()
                 if (enchantments.isEmpty()) {
-                    return stack.item.item.rarity
+                    return itemRarity
                 }
             } finally {
                 stack.lock.release()
             }
 
-            return when (stack.item.item.rarity) {
+            return when (itemRarity) {
                 Rarities.COMMON, Rarities.UNCOMMON -> Rarities.RARE
                 Rarities.RARE, Rarities.EPIC -> Rarities.EPIC
             }
