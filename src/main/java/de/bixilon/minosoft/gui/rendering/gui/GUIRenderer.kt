@@ -134,16 +134,10 @@ class GUIRenderer(
         val output = Vec2i(this)
         // ToDo: This is just a dirty workaround and does not fix the problem at all
         while (output.x % scale.toInt() != 0) {
-            output.x--
-            if (output.x < 0) {
-                output.x = 0
-            }
+            output.x++
         }
         while (output.y % scale.toInt() != 0) {
-            output.y--
-            if (output.y < 0) {
-                output.y = 0
-            }
+            output.y++
         }
         return output / scale
     }
