@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.popper
 
-import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -28,7 +28,7 @@ abstract class Popper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
 ) : Element(guiRenderer), LayoutedElement {
-    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = ChatColors.DARK_BLUE)
+    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(10, 10, 20, 230))
     open var dead = false
     override var layoutOffset: Vec2i = EMPTY
         protected set
@@ -86,6 +86,6 @@ abstract class Popper(
 
     companion object {
         private val EMPTY = Vec2i.EMPTY
-        private const val POSITION_OFFSET = 5
+        private const val POSITION_OFFSET = 10
     }
 }

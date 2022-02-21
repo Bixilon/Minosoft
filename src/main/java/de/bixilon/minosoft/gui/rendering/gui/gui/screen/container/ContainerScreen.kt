@@ -26,12 +26,13 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 abstract class ContainerScreen(
     guiRenderer: GUIRenderer,
-    container: Container,
+    val container: Container,
     background: AtlasElement,
     items: Int2ObjectOpenHashMap<Vec2iBinding> = background.slots,
 ) : Screen(guiRenderer), AbstractLayout<Element> {
@@ -64,5 +65,11 @@ abstract class ContainerScreen(
             return null
         }
         return Pair(containerElement, offset)
+    }
+
+    override fun onClose() {
+        super.onClose()
+        // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
+        renderWindow.connection.sendPacket(CloseContainerC2SP(renderWindow.connection.player.containers.getKey(container) ?: return))
     }
 }

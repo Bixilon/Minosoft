@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.inventory.stack.ItemStack
 class DurabilityProperty(
     private val stack: ItemStack,
     unbreakable: Boolean = false,
-    durability: Int = 0,
+    durability: Int = stack.item.item.maxDamage,
 ) : Property {
     var _unbreakable = unbreakable
     var unbreakable by InventoryDelegate(stack, this::_unbreakable)

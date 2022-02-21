@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.popper.text.TextPopper
+import de.bixilon.minosoft.gui.rendering.gui.popper.item.ItemInfoPopper
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -50,10 +50,12 @@ class ItemElement(
     item: ItemStack?,
     val slotId: Int = 0,
     val container: Container? = null,
+    parent: Element?,
 ) : Element(guiRenderer), Pollable {
     private var count = -1
     private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
-    private var popper: TextPopper? = null
+    private var popper: ItemInfoPopper? = null
+    private var hovered = false
 
     var stack: ItemStack? = item
         set(value) {
@@ -66,11 +68,16 @@ class ItemElement(
         }
 
     init {
+        this._parent = parent
         _size = size
         forceApply()
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        var options = options
+        if (hovered) {
+            options = (options?.copy(alpha = options.alpha * 0.7f)) ?: GUIVertexOptions(null, 0.7f)
+        }
         val stack = stack ?: return
         val size = size
         val textureSize = size - 1
@@ -125,7 +132,10 @@ class ItemElement(
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
         renderWindow.window.cursorShape = CursorShapes.HAND
-        popper = TextPopper(guiRenderer, absolute, stack?.displayName ?: "null").apply { show() }
+        val stack = stack ?: return true
+        popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
+        hovered = true
+        cacheUpToDate = false
         return true
     }
 
@@ -138,6 +148,8 @@ class ItemElement(
         renderWindow.window.resetCursor()
         popper?.hide()
         popper = null
+        hovered = false
+        cacheUpToDate = false
         return true
     }
 

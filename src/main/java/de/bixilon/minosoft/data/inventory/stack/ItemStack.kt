@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.inventory.stack
 import de.bixilon.kutil.concurrent.lock.ParentLock
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.inventory.stack.property.*
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -40,6 +41,8 @@ class ItemStack {
     var _nbt: NbtProperty? = null
         private set
     val nbt: NbtProperty by lazy { _nbt?.let { return@lazy it }; return@lazy NbtProperty(this).apply { _nbt = this } }
+
+    var revision by watched(0L)
 
     init {
         val container = holder?.container
@@ -175,6 +178,7 @@ class ItemStack {
             holder?.container?._validate()
         }
         lock.unlock()
+        revision++
         holder?.container?.apply { revision++ } // increase revision after unlock to prevent deadlock
     }
 }

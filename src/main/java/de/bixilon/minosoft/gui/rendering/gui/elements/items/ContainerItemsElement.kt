@@ -78,6 +78,7 @@ class ContainerItemsElement(
                     item = item,
                     slotId = slot,
                     container = container,
+                    parent = this,
                 )
                 itemElements[slot] = ItemElementData(
                     element = element,
