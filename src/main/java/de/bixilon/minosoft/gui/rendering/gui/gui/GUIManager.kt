@@ -233,6 +233,10 @@ class GUIManager(
     }
 
     fun pop() {
+        if (guiRenderer.dragged.element != null) {
+            guiRenderer.dragged.element = null
+            return
+        }
         val previous = elementOrder.removeFirstOrNull() ?: return
         previous.onClose()
         if (elementOrder.isEmpty()) {

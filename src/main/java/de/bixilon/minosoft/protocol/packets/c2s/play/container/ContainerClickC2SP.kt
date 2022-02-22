@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.container
 
-import de.bixilon.minosoft.data.inventory.InventoryActions
+import de.bixilon.minosoft.data.inventory.ContainerClickActions
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -27,7 +27,7 @@ class ContainerClickC2SP(
     val containerId: Int,
     val revision: Int,
     val slot: Int,
-    val action: InventoryActions,
+    val action: ContainerClickActions,
     val actionId: Int,
     val next: Map<Int, ItemStack?>,
     val clickedItem: ItemStack?,

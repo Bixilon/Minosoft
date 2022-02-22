@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.inventory
 
-enum class InventoryActions(
+enum class ContainerClickActions(
     val mode: Int,
     val button: Int,
     val slot: Boolean,

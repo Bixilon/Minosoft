@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.minosoft.data.inventory.ContainerClickActions
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
@@ -30,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -129,17 +132,29 @@ class ContainerItemsElement(
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
         val consumed = super<AbstractLayout>.onMouseAction(position, button, action)
-        if (action != MouseActions.PRESS) {
+        if (action != MouseActions.PRESS || (button != MouseButtons.LEFT && button != MouseButtons.RIGHT)) {
             return consumed
         }
 
         val activeElement = activeElement
         val stack = activeElement?.stack
+        val containerId = renderWindow.connection.player.containers.getKey(container) ?: return consumed
         var floatingItem = this.floatingItem
-        if ((floatingItem != null && !floatingItem.visible) || stack?._valid != true) {
+        if ((floatingItem != null && floatingItem.visible) || stack?._valid != true) {
             return consumed
         }
-        floatingItem = FloatingItem(guiRenderer, activeElement.slotId, stack)
+        val clickAction: ContainerClickActions
+        val stackToFloat: ItemStack
+        if (button == MouseButtons.LEFT) {
+            stackToFloat = stack
+            clickAction = ContainerClickActions.LEFT_MOUSE_CLICK
+        } else {
+            stackToFloat = stack.copy(count = maxOf(stack.item.count / 2, 1))
+            clickAction = ContainerClickActions.RIGHT_MOUSE_CLICK
+            stack.item.count = stack.item.count - stackToFloat.item.count
+        }
+        renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, activeElement.slotId, clickAction, container.createAction(), mapOf(activeElement.slotId to stack), stack))
+        floatingItem = FloatingItem(guiRenderer, activeElement.slotId, stackToFloat)
         this.floatingItem = floatingItem
         floatingItem.show()
 

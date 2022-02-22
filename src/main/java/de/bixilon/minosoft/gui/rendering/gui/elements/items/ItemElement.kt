@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.inventory.InventoryActions
+import de.bixilon.minosoft.data.inventory.ContainerClickActions
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.registries.other.containers.Container
@@ -164,13 +164,13 @@ class ItemElement(
         // ToDo
         when (key) {
             KeyCodes.KEY_Q -> {
-                val action: InventoryActions
+                val action: ContainerClickActions
                 if (controlDown) {
                     stack?.item?.count = 0
-                    action = InventoryActions.DROP_STACK
+                    action = ContainerClickActions.DROP_STACK
                 } else {
                     stack?.item?.decreaseCount()
-                    action = InventoryActions.DROP_ITEM
+                    action = ContainerClickActions.DROP_ITEM
                 }
                 renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slotId, action, container.createAction(), mapOf(slotId to stack), stack))
             }

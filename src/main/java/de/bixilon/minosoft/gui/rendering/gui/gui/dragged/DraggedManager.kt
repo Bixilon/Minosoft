@@ -33,9 +33,12 @@ class DraggedManager(
                 return
             }
             val position = guiRenderer.currentCursorPosition
-            field?.element?.onDragEnd(position, null) // ToDo
+            val previous = field
+            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragLeave(previous.element))
+
             field = value
-            element?.element?.onDragStart(position, null) // ToDo
+            guiRenderer.gui.onMouseMove(Vec2i(-1, -1)) // move mouse ot
+            value?.element?.onDragStart(position, guiRenderer.gui.onDragMove(position, value.element))
             applyCursor()
         }
     override var lastTickTime: Long = -1L
