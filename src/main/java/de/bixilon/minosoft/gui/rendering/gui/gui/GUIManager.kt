@@ -21,13 +21,15 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.LocalInventoryScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.input.DraggableHandler
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -38,7 +40,7 @@ import glm_.vec2.Vec2i
 
 class GUIManager(
     override val guiRenderer: GUIRenderer,
-) : Initializable, InputHandler, GUIElementDrawer {
+) : Initializable, InputHandler, GUIElementDrawer, DraggableHandler {
     private val elementCache: MutableMap<GUIBuilder<*>, GUIElement> = mutableMapOf()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val renderWindow = guiRenderer.renderWindow
@@ -78,7 +80,7 @@ class GUIManager(
         for (element in elementCache.values) {
             // ToDo: Just the current active one
             if (element is LayoutedGUIElement<*>) {
-                element.elementLayout.forceSilentApply()
+                element.element.forceSilentApply()
             }
             element.apply()
         }
@@ -140,52 +142,55 @@ class GUIManager(
         }
     }
 
-    override fun onCharPress(char: Int): Boolean {
+    private fun runForEach(run: (element: GUIElement) -> Boolean): Boolean {
         for ((index, element) in elementOrder.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
-            if (element.onCharPress(char)) {
+            if (run(element)) {
                 return true
             }
         }
         return false
+    }
+
+    override fun onCharPress(char: Int): Boolean {
+        return runForEach { it.onCharPress(char) }
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {
-        for ((index, element) in elementOrder.toList().withIndex()) {
-            if (index != 0 && !element.activeWhenHidden) {
-                continue
-            }
-            if (element.onMouseMove(position)) {
-                return true
-            }
-        }
-        return false
+        return runForEach { it.onMouseMove(position) }
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        for ((index, element) in elementOrder.toList().withIndex()) {
-            if (index != 0 && !element.activeWhenHidden) {
-                continue
-            }
-            if (element.onKeyPress(type, key)) {
-                return true
-            }
-        }
-        return false
+        return runForEach { it.onKeyPress(type, key) }
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
+        return runForEach { it.onScroll(scrollOffset) }
+    }
+
+    private fun runForEachDrag(run: (element: GUIElement) -> Element?): Element? {
         for ((index, element) in elementOrder.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
-            if (element.onScroll(scrollOffset)) {
-                return true
-            }
+
+            run(element)?.let { return it }
         }
-        return false
+        return null
+    }
+
+    override fun onDragMove(position: Vec2i, draggable: Dragged): Element? {
+        return runForEachDrag { it.onDragMove(position, draggable) }
+    }
+
+    override fun onDragLeave(draggable: Dragged): Element? {
+        return runForEachDrag { it.onDragLeave(draggable) }
+    }
+
+    override fun onDragSuccess(draggable: Dragged): Element? {
+        return runForEachDrag { it.onDragSuccess(draggable) }
     }
 
     fun open(builder: GUIBuilder<*>) {
@@ -233,6 +238,7 @@ class GUIManager(
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
             guiRenderer.popper.clear()
+            guiRenderer.dragged.element = null
         }
         val now = elementOrder.firstOrNull() ?: return
         now.onOpen()
@@ -244,6 +250,7 @@ class GUIManager(
         }
         elementOrder.clear()
         guiRenderer.popper.clear()
+        guiRenderer.dragged.element = null
         renderWindow.inputHandler.inputHandler = null
     }
 

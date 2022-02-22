@@ -30,6 +30,7 @@ abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRender
     protected val profile = connection.profiles.gui
     protected val messages = TextFlowElement(guiRenderer, 20000).apply { parent = this@AbstractChatElement }
     override var activeElement: Element? = null
+    override var activeDragElement: Element? = null
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         messages.render(offset + Vec2i(ChatElement.CHAT_INPUT_MARGIN, 0), consumer, options)

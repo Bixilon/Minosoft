@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.input.DraggableElement
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -22,8 +24,9 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface AbstractLayout<T : Element> : InputElement {
+interface AbstractLayout<T : Element> : InputElement, DraggableElement {
     var activeElement: T?
+    var activeDragElement: T?
 
     fun getAt(position: Vec2i): Pair<T, Vec2i>?
 
@@ -55,8 +58,8 @@ interface AbstractLayout<T : Element> : InputElement {
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
-        val pair = getAt(position) ?: return false
-        return pair.first.onMouseAction(pair.second, button, action)
+        val (element, offset) = getAt(position) ?: return false
+        return element.onMouseAction(offset, button, action)
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
@@ -68,7 +71,40 @@ interface AbstractLayout<T : Element> : InputElement {
     }
 
     override fun onScroll(position: Vec2i, scrollOffset: Vec2d): Boolean {
-        val pair = getAt(position) ?: return false
-        return pair.first.onScroll(pair.second, scrollOffset)
+        val (element, offset) = getAt(position) ?: return false
+        return element.onScroll(offset, scrollOffset)
+    }
+
+    override fun onDragEnter(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element? {
+        val pair = getAt(position)
+        this.activeDragElement = pair?.first
+        return pair?.first?.onDragEnter(pair.second, absolute, draggable)
+    }
+
+    override fun onDragMove(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element? {
+        val pair = getAt(position)
+
+        if (activeDragElement != pair?.first) {
+            val activeDragElement = activeDragElement
+            this.activeDragElement = pair?.first
+
+            // Don't put this in the return line, compiler optimizations break it.
+            val leaveElement = activeDragElement?.onDragLeave(draggable)
+            val enterElement = pair?.first?.onDragEnter(pair.second, absolute, draggable)
+            return enterElement ?: leaveElement
+        }
+        return pair?.first?.onDragMove(pair.second, absolute, draggable)
+    }
+
+    override fun onDragLeave(draggable: Dragged): Element? {
+        val activeDragElement = this.activeDragElement
+        this.activeDragElement = null
+        return activeDragElement?.onDragLeave(draggable)
+    }
+
+    override fun onDragSuccess(draggable: Dragged): Element? {
+        val activeDragElement = this.activeDragElement
+        this.activeDragElement = null
+        return activeDragElement?.onDragSuccess(draggable)
     }
 }

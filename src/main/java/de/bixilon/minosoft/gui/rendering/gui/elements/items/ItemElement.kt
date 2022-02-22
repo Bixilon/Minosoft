@@ -31,10 +31,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.item.ItemInfoPopper
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.popper.item.ItemInfoPopper
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -182,9 +182,11 @@ class ItemElement(
         return stack.toString()
     }
 
-    private companion object {
+    companion object {
         private val NEGATIVE_INFINITE_TEXT = TextComponent("-∞").color(ChatColors.RED)
         private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
         private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
+
+        val DEFAULT_SIZE = Vec2i(17, 17) // 16x16 for the item and 1px for the count offset
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.gui
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
@@ -27,22 +26,22 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isOutside
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-class LayoutedGUIElement<T : LayoutedElement>(
-    val layout: T,
+open class GUIMeshElement<T : Element>(
+    val element: T,
 ) : HUDElement, Drawable {
-    val elementLayout = layout.unsafeCast<Element>()
-    override val guiRenderer: GUIRenderer = elementLayout.guiRenderer
+    override val guiRenderer: GUIRenderer = element.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
-    private var lastRevision = 0L
     override val skipDraw: Boolean
-        get() = if (layout is Drawable) layout.skipDraw else false
-    private var lastPosition: Vec2i = Vec2i(-1, -1)
+        get() = if (element is Drawable) element.skipDraw else false
+    protected var lastRevision = 0L
+    protected var lastPosition: Vec2i? = null
+    protected var dragged = false
     override var enabled = true
         set(value) {
             if (field == value) {
@@ -50,33 +49,33 @@ class LayoutedGUIElement<T : LayoutedElement>(
             }
             field = value
             if (!value) {
-                elementLayout.onClose()
+                element.onClose()
             }
         }
     override val activeWhenHidden: Boolean
-        get() = elementLayout.activeWhenHidden
+        get() = element.activeWhenHidden
 
     init {
-        elementLayout.cache.data = mesh.data
+        element.cache.data = mesh.data
     }
 
     override fun tick() {
-        elementLayout.tick()
+        element.tick()
     }
 
     override fun init() {
-        if (layout is Initializable) {
-            layout.init()
+        if (element is Initializable) {
+            element.init()
         }
     }
 
     override fun postInit() {
-        if (layout is Initializable) {
-            layout.postInit()
+        if (element is Initializable) {
+            element.postInit()
         }
     }
 
-    private fun createNewMesh() {
+    protected fun createNewMesh() {
         val mesh = this.mesh
         if (mesh.state == Mesh.MeshStates.LOADED) {
             mesh.unload()
@@ -84,11 +83,10 @@ class LayoutedGUIElement<T : LayoutedElement>(
         this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
     }
 
-    fun prepare() {
-        val layoutOffset = layout.layoutOffset
-        elementLayout.render(layoutOffset, mesh, null)
+    fun prepare(offset: Vec2i) {
+        element.render(offset, mesh, null)
 
-        val revision = elementLayout.cache.revision
+        val revision = element.cache.revision
         if (revision != lastRevision) {
             createNewMesh()
             this.mesh.load()
@@ -96,82 +94,73 @@ class LayoutedGUIElement<T : LayoutedElement>(
         }
     }
 
-    override fun draw() {
-        if (layout is Drawable) {
-            layout.draw()
-        }
+    open fun prepare() {
+        prepare(Vec2i.EMPTY)
     }
 
+    override fun draw() {
+        if (element is Drawable) {
+            element.draw()
+        }
+    }
 
     fun initMesh() {
         mesh.load()
     }
 
-    override fun onMouseMove(position: Vec2i): Boolean {
-        val offset = layout.layoutOffset
-        val size = elementLayout.size
-        val lastPosition = lastPosition
-
-        if (position.isOutside(offset, offset + size)) {
-            if (lastPosition == INVALID_MOUSE_POSITION) {
-                return false
-            }
-            // move out
-            this.lastPosition = INVALID_MOUSE_POSITION
-            return elementLayout.onMouseLeave()
-        }
-        val delta = position - offset
-        val previousOutside = lastPosition == INVALID_MOUSE_POSITION
-        this.lastPosition = delta
-
-        if (previousOutside) {
-            return elementLayout.onMouseEnter(delta, position)
-        }
-
-        return elementLayout.onMouseMove(delta, position)
+    override fun onCharPress(char: Int): Boolean {
+        return element.onCharPress(char)
     }
 
-    override fun onCharPress(char: Int): Boolean {
-        return elementLayout.onCharPress(char)
+    override fun onMouseMove(position: Vec2i): Boolean {
+        return element.onMouseMove(position, position)
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        val mouseButton = MouseButtons[key] ?: return elementLayout.onKey(key, type)
+        val mouseButton = MouseButtons[key] ?: return element.onKey(key, type)
 
-        val position = lastPosition
-        if (position == INVALID_MOUSE_POSITION) {
-            return false
-        }
+        val position = lastPosition ?: return false
 
         val mouseAction = MouseActions[type] ?: return false
-        return elementLayout.onMouseAction(position, mouseButton, mouseAction)
+        return element.onMouseAction(position, mouseButton, mouseAction)
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
-        val position = lastPosition
-        if (lastPosition == INVALID_MOUSE_POSITION) {
-            return false
+        val position = lastPosition ?: return false
+        return element.onScroll(position, scrollOffset)
+    }
+
+    override fun onDragMove(position: Vec2i, draggable: Dragged): Element? {
+        if (!dragged) {
+            dragged = true
+            element.onDragEnter(position, position, draggable)
         }
-        return elementLayout.onScroll(position, scrollOffset)
+        return element.onDragMove(position, position, draggable)
+    }
+
+    override fun onDragLeave(draggable: Dragged): Element? {
+        dragged = false
+        return element.onDragLeave(draggable)
+    }
+
+    override fun onDragSuccess(draggable: Dragged): Element? {
+        dragged = false
+        return element.onDragSuccess(draggable)
     }
 
     override fun onClose() {
-        elementLayout.onClose()
-        elementLayout.onMouseLeave()
-        lastPosition = INVALID_MOUSE_POSITION
+        element.onClose()
+        element.onMouseLeave()
+        lastPosition = null
     }
 
     override fun onOpen() {
-        elementLayout.onOpen()
+        element.onOpen()
         onMouseMove(guiRenderer.currentCursorPosition)
     }
 
     override fun onHide() {
-        elementLayout.onHide()
-        elementLayout.onMouseLeave()
-    }
-
-    companion object {
-        private val INVALID_MOUSE_POSITION = Vec2i(-1, -1)
+        element.onHide()
+        element.onMouseLeave()
     }
 }

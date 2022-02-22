@@ -37,6 +37,7 @@ abstract class Menu(
     private var totalHeight = -1
 
     override var activeElement: Element? = null
+    override var activeDragElement: Element? = null
 
     override fun forceSilentApply() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)

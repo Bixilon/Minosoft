@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class LocalInventoryScreen(guiRenderer: GUIRenderer) : InventoryScreen(guiRenderer, guiRenderer.connection.player.inventory) {

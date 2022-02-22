@@ -14,14 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.DraggedManager
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
-import de.bixilon.minosoft.gui.rendering.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
@@ -31,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -45,10 +48,11 @@ class GUIRenderer(
 ) : Renderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
     override val renderSystem = renderWindow.renderSystem
-    var scaledSize: Vec2i = renderWindow.window.size
+    var scaledSize: Vec2i by watched(renderWindow.window.size)
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
+    val dragged = DraggedManager(this)
     var matrix: Mat4 = Mat4()
         private set
     var matrixChange = true
@@ -59,14 +63,15 @@ class GUIRenderer(
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     val atlasManager = AtlasManager(renderWindow)
 
-    val currentCursorPosition: Vec2i
-        get() = Vec2i(renderWindow.inputHandler.currentMousePosition).scale()
+    var currentCursorPosition: Vec2i by watched(Vec2i.EMPTY)
+        private set
 
     override fun init(latch: CountUpAndDownLatch) {
         atlasManager.init()
         gui.init()
         hud.init()
         popper.init()
+        dragged.init()
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
@@ -81,6 +86,7 @@ class GUIRenderer(
         gui.postInit()
         hud.postInit()
         popper.postInit()
+        dragged.postInit()
     }
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
@@ -91,6 +97,7 @@ class GUIRenderer(
         gui.onMatrixChange()
         hud.onMatrixChange()
         popper.onMatrixChange()
+        dragged.onMatrixChange()
     }
 
     fun setup() {
@@ -106,18 +113,32 @@ class GUIRenderer(
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {
-        return gui.onMouseMove(position.scale())
+        val scaledPosition = position.scale()
+        currentCursorPosition = scaledPosition
+        if (dragged.onMouseMove(scaledPosition)) {
+            return true
+        }
+        return gui.onMouseMove(scaledPosition)
     }
 
     override fun onCharPress(char: Int): Boolean {
+        if (dragged.onCharPress(char)) {
+            return true
+        }
         return gui.onCharPress(char)
     }
 
     override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        if (dragged.onKeyPress(type, key)) {
+            return true
+        }
         return gui.onKeyPress(type, key)
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
+        if (dragged.onScroll(scrollOffset)) {
+            return true
+        }
         return gui.onScroll(scrollOffset)
     }
 
@@ -125,6 +146,7 @@ class GUIRenderer(
         hud.draw()
         gui.draw()
         popper.draw()
+        dragged.draw()
         if (this.matrixChange) {
             this.matrixChange = false
         }

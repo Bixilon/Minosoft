@@ -22,8 +22,8 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalChatElement
@@ -76,7 +76,7 @@ class HUDManager(
     fun onMatrixChange() {
         for (element in hudElements.toSynchronizedMap().values) {
             if (element is LayoutedGUIElement<*>) {
-                element.elementLayout.forceApply()
+                element.element.forceApply()
             }
             element.apply()
         }

@@ -39,6 +39,7 @@ abstract class ContainerScreen(
     private val containerBackground = AtlasImageElement(guiRenderer, background)
     protected val containerElement = ContainerItemsElement(guiRenderer, container, items).apply { parent = this@ContainerScreen }
     override var activeElement: Element? = null
+    override var activeDragElement: Element? = null
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.popper.item
+package de.bixilon.minosoft.gui.rendering.gui.gui.popper.item
 
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -21,9 +21,9 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.popper.Popper
 import glm_.vec2.Vec2i
 
 class ItemInfoPopper(

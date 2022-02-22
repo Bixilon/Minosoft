@@ -11,43 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.popper.text
+package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.items.ItemElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.gui.popper.Popper
 import glm_.vec2.Vec2i
 
-class TextPopper(
+class FloatingItem(
     guiRenderer: GUIRenderer,
-    position: Vec2i,
-    text: Any,
-) : Popper(guiRenderer, position) {
-    private val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+    val sourceId: Int,
+    val stack: ItemStack,
+    size: Vec2i = ItemElement.DEFAULT_SIZE,
+) : Dragged(guiRenderer) {
+    private val itemElement = ItemElement(guiRenderer, size, stack, -1, null, this)
 
     init {
         forceSilentApply()
+        _size = size
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        super.forceRender(offset, consumer, options)
-
-        textElement.render(offset, consumer, options)
+        itemElement.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
-        recalculateSize()
-        super.forceSilentApply()
-    }
 
-    override fun onChildChange(child: Element) {
-        recalculateSize()
-    }
-
-    private fun recalculateSize() {
-        size = textElement.size
     }
 }

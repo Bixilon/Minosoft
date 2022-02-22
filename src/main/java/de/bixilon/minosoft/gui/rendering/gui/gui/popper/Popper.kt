@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.popper
+package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -27,8 +27,9 @@ import glm_.vec2.Vec2i
 abstract class Popper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
+    val background: Boolean = true,
 ) : Element(guiRenderer), LayoutedElement {
-    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(10, 10, 20, 230))
+    private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, color = RGBColor(10, 10, 20, 230))
     open var dead = false
     override var layoutOffset: Vec2i = EMPTY
         protected set
@@ -42,12 +43,14 @@ abstract class Popper(
         }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        background.render(offset, consumer, options)
+        if (background) {
+            backgroundElement.render(offset, consumer, options)
+        }
     }
 
     override fun forceSilentApply() {
         calculateLayoutOffset()
-        background.size = size
+        backgroundElement.size = size
         cacheUpToDate = false
     }
 

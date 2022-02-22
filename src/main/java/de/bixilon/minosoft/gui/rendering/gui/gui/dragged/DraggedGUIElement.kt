@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.input
+package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2d
+import de.bixilon.minosoft.gui.rendering.gui.gui.GUIMeshElement
 import glm_.vec2.Vec2i
 
-interface InputElement : MouseInputElement {
+class DraggedGUIElement<T : Dragged>(element: T) : GUIMeshElement<T>(element) {
 
-    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) = false
-    fun onScroll(position: Vec2i, scrollOffset: Vec2d) = false
+    override fun prepare() {
+        prepare(guiRenderer.currentCursorPosition - (element.size / 2))
+    }
 
-    fun onKey(key: KeyCodes, type: KeyChangeTypes) = false
-    fun onCharPress(char: Int) = false
+    override fun onMouseMove(position: Vec2i): Boolean {
+        val element = guiRenderer.gui.onDragMove(position, element)
+        this.element.onDragMove(position, element)
+        return element != null
+    }
 }

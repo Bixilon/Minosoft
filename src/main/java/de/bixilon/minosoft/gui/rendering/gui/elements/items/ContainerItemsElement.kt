@@ -21,6 +21,10 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -35,7 +39,9 @@ class ContainerItemsElement(
     val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
 ) : Element(guiRenderer), AbstractLayout<ItemElement> {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
+    private var floatingItem: FloatingItem? = null
     override var activeElement: ItemElement? = null
+    override var activeDragElement: ItemElement? = null
     private var update = true
 
     init {
@@ -121,6 +127,29 @@ class ContainerItemsElement(
         return null
     }
 
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        val consumed = super<AbstractLayout>.onMouseAction(position, button, action)
+        if (action != MouseActions.PRESS) {
+            return consumed
+        }
+
+        val activeElement = activeElement
+        val stack = activeElement?.stack
+        var floatingItem = this.floatingItem
+        if ((floatingItem != null && !floatingItem.visible) || stack?._valid != true) {
+            return consumed
+        }
+        floatingItem = FloatingItem(guiRenderer, activeElement.slotId, stack)
+        this.floatingItem = floatingItem
+        floatingItem.show()
+
+        return true
+    }
+
+    override fun onDragMove(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element? {
+        println("Drag: ($draggable) at $position")
+        return this
+    }
 
     private data class ItemElementData(
         val element: ItemElement,
