@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.inventory.stack.property.HolderProperty
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 open class Container(
     protected val connection: PlayConnection,
@@ -41,6 +42,9 @@ open class Container(
     private var lastActionId = 0
     var actions: SynchronizedBiMap<Int, ContainerAction> = synchronizedBiMapOf()
     var floatingItem: ItemStack? by watched(null)
+
+    val id: Int?
+        get() = connection.player.containers.getKey(this)
 
     init {
         this::floatingItem.observe(this) { it?.holder?.container = this }
@@ -170,7 +174,7 @@ open class Container(
 
     @Synchronized
     fun invokeAction(action: ContainerAction) {
-        action.invoke(connection, connection.player.containers.getKey(this) ?: return, this)
+        action.invoke(connection, id ?: return, this)
     }
 
     fun acknowledgeAction(actionId: Int) {
@@ -178,14 +182,18 @@ open class Container(
     }
 
     fun revertAction(actionId: Int) {
-        actions.remove(actionId)?.revert(connection, connection.player.containers.getKey(this) ?: return, this)
+        actions.remove(actionId)?.revert(connection, id ?: return, this)
     }
 
     fun onClose() {
         floatingItem = null // ToDo: Does not seem correct
+        val id = id ?: return
 
         // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
-        connection.sendPacket(CloseContainerC2SP(connection.player.containers.getKey(this) ?: return))
+        if (id != ProtocolDefinition.PLAYER_CONTAINER_ID) {
+            connection.player.containers -= id
+        }
+        connection.sendPacket(CloseContainerC2SP(id))
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
