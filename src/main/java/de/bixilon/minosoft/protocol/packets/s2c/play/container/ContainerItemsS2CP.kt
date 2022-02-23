@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.container.ContainerSlotChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -44,12 +44,26 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.player.containers[containerId]?.let { container ->
-            container.clear()
-            for ((slot, itemStack) in items.withIndex()) {
-                itemStack?.let { container[slot] = itemStack }
-                connection.fireEvent(ContainerSlotChangeEvent(connection, EventInitiators.SERVER, container, slot, itemStack))
+        val container = connection.player.containers[containerId]
+        val slots = if (container == null) {
+            synchronizedMapOf()
+        } else {
+            container.lock.lock()
+            container.slots.clear()
+            container.slots
+        }
+
+        for ((slotId, stack) in this.items.withIndex()) {
+            if (stack == null) {
+                continue
             }
+            slots[slotId] = stack
+        }
+
+        if (container == null) {
+            connection.player.incompleteContainers[containerId] = slots.unsafeCast()
+        } else {
+            container.lock.unlock()
         }
     }
 

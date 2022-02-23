@@ -16,6 +16,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.kutil.math.MMath.floor
@@ -85,6 +86,7 @@ class LocalPlayerEntity(
     val baseAbilities = Abilities()
 
     val inventory = PlayerInventory(connection)
+    val incompleteContainers: SynchronizedMap<Int, SynchronizedMap<Int, ItemStack>> = synchronizedMapOf()
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )

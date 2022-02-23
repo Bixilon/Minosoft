@@ -69,12 +69,20 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (containerId == ProtocolDefinition.PLAYER_CONTAINER_ID) {
             return
         }
-        connection.player.containers[containerId] = Container(
+        // ToDo: Container factories instead of generic container
+        val container = Container(
             connection,
             containerType,
             title,
             hasTitle,
         )
+        connection.player.incompleteContainers.remove(containerId)?.let {
+            for ((slot, stack) in it) {
+                container[slot] = stack
+            }
+        }
+        connection.player.containers[containerId] = container
+        // ToDo: Open GUI
     }
 
     override fun log(reducedLog: Boolean) {

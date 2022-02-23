@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.modding.event.events.container.ContainerSlotChangeEvent
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -34,10 +34,19 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val itemStack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
-        connection.player.containers[containerId]?.set(slot, itemStack)
+        val container = connection.player.containers[containerId]
 
-        // ToDo: Check for changes
-        connection.fireEvent(ContainerSlotChangeEvent(connection, this))
+        if (container == null) {
+            val slots = connection.player.incompleteContainers.synchronizedGetOrPut(containerId) { synchronizedMapOf() }
+            if (itemStack == null) {
+                slots -= slot
+            } else {
+                slots[slot] = itemStack
+            }
+            return
+        }
+        container[slot] = itemStack
+        container.serverRevision = revision
     }
 
     override fun log(reducedLog: Boolean) {
