@@ -16,44 +16,26 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.inventory.ContainerClickActions
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.data.registries.items.block.BlockItem
-import de.bixilon.minosoft.data.registries.other.containers.Container
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.item.ItemInfoPopper
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
 import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 
 class ItemElement(
     guiRenderer: GUIRenderer,
-    size: Vec2i,
+    size: Vec2i = RawItemElement.DEFAULT_SIZE,
     item: ItemStack?,
     val slotId: Int = 0,
-    val container: Container? = null,
-    parent: Element?,
+    val itemsElement: ContainerItemsElement,
 ) : Element(guiRenderer), Pollable {
-    private var count = -1
-    private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
+    private val raw = RawItemElement(guiRenderer, size, item, this)
     private var popper: ItemInfoPopper? = null
     private var hovered = false
 
@@ -68,7 +50,7 @@ class ItemElement(
         }
 
     init {
-        this._parent = parent
+        this._parent = itemsElement
         _size = size
         forceApply()
     }
@@ -78,56 +60,15 @@ class ItemElement(
         if (hovered) {
             options = (options?.copy(alpha = options.alpha * 0.7f)) ?: GUIVertexOptions(null, 0.7f)
         }
-        val stack = stack ?: return
-        val size = size
-        val textureSize = size - 1
-
-        val item = stack.item.item
-        val model = item.model
-        if (model == null) {
-            var element: Element? = null
-
-            var color = ChatColors.WHITE
-            if (item is BlockItem) {
-                val defaultState = item.block.defaultState
-                defaultState.material.color?.let { color = it }
-                defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
-                    element = ImageElement(guiRenderer, it, size = textureSize)
-                }
-            }
-
-            (element ?: ColorElement(guiRenderer, textureSize, color)).render(offset, consumer, options)
-        } else {
-            model.render2d(offset, consumer, options, textureSize, stack)
-        }
-
-        val countSize = countText.size
-        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
+        raw.render(offset, consumer, options)
     }
 
     override fun poll(): Boolean {
-        val stack = stack ?: return false
-        val count = stack.item.count
-        if (this.count != count) {
-            this.count = count
-            return true
-        }
-
-        return false
+        return raw.poll()
     }
 
     override fun forceSilentApply() {
-        countText.text = when {
-            count < -99 -> NEGATIVE_INFINITE_TEXT
-            count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
-            count == 0 -> ZERO_TEXT
-            count == 1 -> ChatComponent.EMPTY
-            count > 99 -> INFINITE_TEXT
-            count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent(count, color = ChatColors.RED)
-            else -> TextComponent(count)
-        }
-
-        cacheUpToDate = false
+        raw.silentApply()
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
@@ -157,7 +98,7 @@ class ItemElement(
         if (type != KeyChangeTypes.PRESS) {
             return true
         }
-        val container = container ?: return false
+        val container = itemsElement.container
         val containerId = renderWindow.connection.player.containers.getKey(container) ?: return false
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
         val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
@@ -180,13 +121,5 @@ class ItemElement(
 
     override fun toString(): String {
         return stack.toString()
-    }
-
-    companion object {
-        private val NEGATIVE_INFINITE_TEXT = TextComponent("-∞").color(ChatColors.RED)
-        private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
-        private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
-
-        val DEFAULT_SIZE = Vec2i(17, 17) // 16x16 for the item and 1px for the count offset
     }
 }

@@ -81,16 +81,14 @@ class ContainerItemsElement(
 
             if (data == null) {
                 item ?: continue
-                val element = ItemElement(
-                    guiRenderer = guiRenderer,
-                    size = binding.size,
-                    item = item,
-                    slotId = slot,
-                    container = container,
-                    parent = this,
-                )
                 itemElements[slot] = ItemElementData(
-                    element = element,
+                    element = ItemElement(
+                        guiRenderer = guiRenderer,
+                        size = binding.size,
+                        item = item,
+                        slotId = slot,
+                        itemsElement = this,
+                    ),
                     offset = binding.start,
                 )
                 // element.parent = this

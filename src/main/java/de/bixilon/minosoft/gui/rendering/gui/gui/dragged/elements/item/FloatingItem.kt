@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.elements.items.ItemElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.items.RawItemElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -25,9 +25,9 @@ class FloatingItem(
     guiRenderer: GUIRenderer,
     val sourceId: Int,
     val stack: ItemStack,
-    size: Vec2i = ItemElement.DEFAULT_SIZE,
+    size: Vec2i = RawItemElement.DEFAULT_SIZE,
 ) : Dragged(guiRenderer) {
-    private val itemElement = ItemElement(guiRenderer, size, stack, -1, null, this)
+    private val itemElement = RawItemElement(guiRenderer, size, stack, this)
 
     init {
         forceSilentApply()
