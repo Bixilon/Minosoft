@@ -13,11 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.minosoft.data.inventory.ContainerClickActions
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
@@ -32,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
-import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -41,77 +36,72 @@ class ContainerItemsElement(
     val container: Container,
     val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
 ) : Element(guiRenderer), AbstractLayout<ItemElement> {
-    private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
+    private val itemElements: Int2ObjectOpenHashMap<ItemElementData> = Int2ObjectOpenHashMap()
     private var floatingItem: FloatingItem? = null
     override var activeElement: ItemElement? = null
     override var activeDragElement: ItemElement? = null
     private var update = true
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            if (value) {
+                cacheUpToDate = false
+            }
+        }
 
     init {
         silentApply()
-        this._size = calculateSize()
-        container::revision.observe(this) { cacheUpToDate = false;update = true }
+
+        val size = Vec2i.EMPTY
+        for ((slotId, binding) in slots) {
+            val item = container[slotId]
+            itemElements[slotId] = ItemElementData(
+                element = ItemElement(
+                    guiRenderer = guiRenderer,
+                    size = binding.size,
+                    item = item,
+                    slotId = slotId,
+                    itemsElement = this,
+                ),
+                offset = binding.start,
+            )
+            size.x = maxOf(binding.end.x, size.x)
+            size.y = maxOf(binding.end.y, size.y)
+        }
+        this._size = size
+
+        container::slots.observeMap(this) { update = true; }
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (update) {
             forceSilentApply()
         }
-        for ((_, data) in itemElements.toSynchronizedMap()) {
+        for (data in itemElements.values) {
             data.element.render(offset + data.offset, consumer, options)
         }
     }
 
-    private fun calculateSize(): Vec2i {
-        val size = Vec2i.EMPTY
-
-        for (slot in slots.values) {
-            size.x = maxOf(slot.end.x, size.x)
-            size.y = maxOf(slot.end.y, size.y)
-        }
-
-        return size
-    }
 
     override fun forceSilentApply() {
+        container.lock.acquire()
         var changes = 0
-        for ((slot, binding) in slots) {
-            val item = container[slot]
-            val data = itemElements[slot]
-
-            if (data == null) {
-                item ?: continue
-                itemElements[slot] = ItemElementData(
-                    element = ItemElement(
-                        guiRenderer = guiRenderer,
-                        size = binding.size,
-                        item = item,
-                        slotId = slot,
-                        itemsElement = this,
-                    ),
-                    offset = binding.start,
-                )
-                // element.parent = this
-                changes++
-            } else {
-                if (data.element.stack == item) {
-                    if (data.element.silentApply()) {
-                        changes++
-                    }
-                } else {
-                    data.element.stack = item
-                    changes++
-                }
+        for ((slotId, data) in itemElements) {
+            val stack = container.slots[slotId]
+            if (data.element.stack === stack) {
+                continue
             }
+            data.element._stack = stack
+            changes++
         }
+        container.lock.release()
 
+        if (changes > 0) {
+            cacheUpToDate = false
+        }
         update = false
-
-        if (changes == 0) {
-            return
-        }
-
-        cacheUpToDate = false
     }
 
     override fun getAt(position: Vec2i): Pair<ItemElement, Vec2i>? {
@@ -141,20 +131,20 @@ class ContainerItemsElement(
         if ((floatingItem != null && floatingItem.visible) || stack?._valid != true) {
             return consumed
         }
-        val clickAction: ContainerClickActions
-        val stackToFloat: ItemStack
-        if (button == MouseButtons.LEFT) {
-            stackToFloat = stack
-            clickAction = ContainerClickActions.LEFT_MOUSE_CLICK
-        } else {
-            stackToFloat = stack.copy(count = maxOf(stack.item.count / 2, 1))
-            clickAction = ContainerClickActions.RIGHT_MOUSE_CLICK
-            stack.item.count = stack.item.count - stackToFloat.item.count
-        }
-        renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, activeElement.slotId, clickAction, container.createAction(), mapOf(activeElement.slotId to stack), stack))
-        floatingItem = FloatingItem(guiRenderer, activeElement.slotId, stackToFloat)
-        this.floatingItem = floatingItem
-        floatingItem.show()
+        // val clickAction: ContainerClickActions
+        // val stackToFloat: ItemStack
+        // if (button == MouseButtons.LEFT) {
+        //     stackToFloat = stack
+        //     clickAction = ContainerClickActions.LEFT_MOUSE_CLICK
+        // } else {
+        //     stackToFloat = stack.copy(count = maxOf(stack.item.count / 2, 1))
+        //     clickAction = ContainerClickActions.RIGHT_MOUSE_CLICK
+        //     stack.item.count = stack.item.count - stackToFloat.item.count
+        // }
+        // renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, activeElement.slotId, clickAction, container.createAction(), mapOf(activeElement.slotId to stack), stack))
+        // floatingItem = FloatingItem(guiRenderer, activeElement.slotId, stackToFloat)
+        // this.floatingItem = floatingItem
+        // floatingItem.show()
 
         return true
     }

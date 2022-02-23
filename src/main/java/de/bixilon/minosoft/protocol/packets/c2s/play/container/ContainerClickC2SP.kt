@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.container
 
-import de.bixilon.minosoft.data.inventory.ContainerClickActions
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -26,8 +25,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ContainerClickC2SP(
     val containerId: Int,
     val revision: Int,
-    val slot: Int,
-    val action: ContainerClickActions,
+    val slot: Int?,
+    val mode: Int,
+    val button: Int,
     val actionId: Int,
     val next: Map<Int, ItemStack?>,
     val clickedItem: ItemStack?,
@@ -39,12 +39,12 @@ class ContainerClickC2SP(
             buffer.writeVarInt(revision)
         }
 
-        buffer.writeShort(if (action.slot) slot else -999)
-        buffer.writeByte(action.button)
+        buffer.writeShort(slot ?: -999)
+        buffer.writeByte(button)
         if (buffer.versionId < V_1_17_1_PRE_1) { // ToDo
             buffer.writeShort(actionId)
         }
-        buffer.writeByte(action.mode) // var int in protocol
+        buffer.writeVarInt(mode) // was byte in protocol
         if (buffer.versionId >= V_1_17_1_PRE_1) { // ToDo
             buffer.writeVarInt(next.size)
             for ((slot, value) in next) {
@@ -52,10 +52,10 @@ class ContainerClickC2SP(
                 buffer.writeItemStack(value)
             }
         }
-        buffer.writeItemStack(if (action.empty) null else clickedItem)
+        buffer.writeItemStack(clickedItem)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$action, actionId=$actionId, next=$next, clickedItem=$clickedItem)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$button, actionId=$actionId, next=$next, clickedItem=$clickedItem)" }
     }
 }

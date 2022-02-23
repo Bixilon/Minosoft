@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
@@ -33,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
@@ -41,18 +41,31 @@ class RawItemElement(
     size: Vec2i = DEFAULT_SIZE,
     item: ItemStack?,
     parent: Element?,
-) : Element(guiRenderer), Pollable {
-    private var count = -1
+) : Element(guiRenderer) {
     private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
 
-    var stack: ItemStack? = item
+    var _stack: ItemStack? = item
         set(value) {
+            if (field === value) {
+                return
+            }
+            if (value != null) {
+                value::revision.observeRendering(this) { forceSilentApply() }
+            }
             if (field == value) {
                 return
             }
             field = value
-            apply()
-            cacheUpToDate = false
+            forceSilentApply()
+        }
+    var stack: ItemStack?
+        get() = _stack
+        set(value) {
+            if (_stack === value) {
+                return
+            }
+            _stack = value
+            parent?.onChildChange(this)
         }
 
     init {
@@ -89,23 +102,13 @@ class RawItemElement(
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
     }
 
-    override fun poll(): Boolean {
-        val stack = stack ?: return false
-        val count = stack.item.count
-        if (this.count != count) {
-            this.count = count
-            return true
-        }
-
-        return false
-    }
-
     override fun forceSilentApply() {
+        val count = _stack?.item?.count
         countText.text = when {
+            count == null || count == 1 -> ChatComponent.EMPTY
             count < -99 -> NEGATIVE_INFINITE_TEXT
             count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
             count == 0 -> ZERO_TEXT
-            count == 1 -> ChatComponent.EMPTY
             count > 99 -> INFINITE_TEXT
             count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent(count, color = ChatColors.RED)
             else -> TextComponent(count)

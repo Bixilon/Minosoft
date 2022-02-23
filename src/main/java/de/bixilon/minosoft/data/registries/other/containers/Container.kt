@@ -13,9 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.other.containers
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.watcher.map.MapDataWatcher
+import de.bixilon.minosoft.data.inventory.click.ContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.inventory.stack.property.HolderProperty
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -27,10 +31,14 @@ open class Container(
     val title: ChatComponent? = null,
     val hasTitle: Boolean = false,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
-    protected val slots: MutableMap<Int, ItemStack> = mutableMapOf()
+    @Deprecated("Should not be accessed dirctly")
+    val slots: MutableMap<Int, ItemStack> by MapDataWatcher.watchedMap(mutableMapOf())
     val lock = SimpleLock()
-    var revision by watched(0L) // ToDo: This has nothing todo with minecraft (1.17+)
+    var revision by watched(0L)
     var serverRevision = 0
+    private var lastActionId = 0
+    var actions: SynchronizedBiMap<Int, ContainerAction> = synchronizedBiMapOf()
+    var floatingItem: ItemStack? by watched(null)
 
     fun _validate() {
         var itemsRemoved = 0
@@ -102,17 +110,17 @@ open class Container(
         }
         if (previous == itemStack) {
             return false
-            }
-            slots[slotId] = itemStack // ToDo: Check for changes
-            var holder = itemStack.holder
-            if (holder == null) {
-                holder = HolderProperty(connection, this)
-                itemStack.holder = holder
-            } else {
-                holder.container = this
-            }
+        }
+        slots[slotId] = itemStack // ToDo: Check for changes
+        var holder = itemStack.holder
+        if (holder == null) {
+            holder = HolderProperty(connection, this)
+            itemStack.holder = holder
+        } else {
+            holder.container = this
+        }
 
-            return true
+        return true
     }
 
     fun set(vararg slots: Pair<Int, ItemStack?>) {
@@ -147,9 +155,24 @@ open class Container(
         revision++
     }
 
+    @Synchronized
+    fun createAction(action: ContainerAction): Int {
+        val nextId = lastActionId++
+        actions[nextId] = action
+        return nextId
+    }
 
-    fun createAction(): Int {
-        return 0 // ToDo
+    @Synchronized
+    fun invokeAction(action: ContainerAction) {
+        action.invoke(connection, connection.player.containers.getKey(this) ?: return, this)
+    }
+
+    fun acknowledgeAction(actionId: Int) {
+        actions.remove(actionId)
+    }
+
+    fun revertAction(actionId: Int) {
+        actions.remove(actionId)?.revert(connection, connection.player.containers.getKey(this) ?: return, this)
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {

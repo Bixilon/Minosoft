@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,8 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.inventory
+package de.bixilon.minosoft.data.inventory.click
 
+@Deprecated("", level = DeprecationLevel.WARNING)
 enum class ContainerClickActions(
     val mode: Int,
     val button: Int,
@@ -40,9 +41,6 @@ enum class ContainerClickActions(
 
     DROP_ITEM(4, 0, true, true),
     DROP_STACK(4, 1, true, true),
-
-    LEFT_VOID_VOID(4, 0, false),
-    RIGHT_VOID_VOID(4, 1, false),
 
     START_LEFT_MOUSE_DRAG(5, 0, false),
     START_RIGHT_MOUSE_DRAG(5, 4, false),

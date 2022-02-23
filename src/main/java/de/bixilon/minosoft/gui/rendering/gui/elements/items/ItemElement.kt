@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.inventory.ContainerClickActions
+import de.bixilon.minosoft.data.inventory.click.DropContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.item.ItemInfoPopper
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import glm_.vec2.Vec2i
 
 class ItemElement(
@@ -34,20 +34,13 @@ class ItemElement(
     item: ItemStack?,
     val slotId: Int = 0,
     val itemsElement: ContainerItemsElement,
-) : Element(guiRenderer), Pollable {
+) : Element(guiRenderer) {
     private val raw = RawItemElement(guiRenderer, size, item, this)
     private var popper: ItemInfoPopper? = null
     private var hovered = false
 
-    var stack: ItemStack? = item
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            apply()
-            cacheUpToDate = false
-        }
+    var _stack: ItemStack? by raw::_stack
+    var stack: ItemStack? by raw::stack
 
     init {
         this._parent = itemsElement
@@ -61,10 +54,6 @@ class ItemElement(
             options = (options?.copy(alpha = options.alpha * 0.7f)) ?: GUIVertexOptions(null, 0.7f)
         }
         raw.render(offset, consumer, options)
-    }
-
-    override fun poll(): Boolean {
-        return raw.poll()
     }
 
     override fun forceSilentApply() {
@@ -90,7 +79,7 @@ class ItemElement(
         popper?.hide()
         popper = null
         hovered = false
-        cacheUpToDate = false
+        raw.cacheUpToDate = false
         return true
     }
 
@@ -99,24 +88,45 @@ class ItemElement(
             return true
         }
         val container = itemsElement.container
-        val containerId = renderWindow.connection.player.containers.getKey(container) ?: return false
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
         val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
         // ToDo
         when (key) {
             KeyCodes.KEY_Q -> {
-                val action: ContainerClickActions
-                if (controlDown) {
-                    stack?.item?.count = 0
-                    action = ContainerClickActions.DROP_STACK
-                } else {
-                    stack?.item?.decreaseCount()
-                    action = ContainerClickActions.DROP_ITEM
-                }
-                renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slotId, action, container.createAction(), mapOf(slotId to stack), stack))
+                container.invokeAction(DropContainerAction(slotId, controlDown))
             }
         }
         return true
+    }
+
+    override fun onDragEnter(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element {
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        hovered = true
+        raw.cacheUpToDate = false
+
+        return this
+    }
+
+    override fun onDragLeave(draggable: Dragged): Element {
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        hovered = false
+        raw.cacheUpToDate = false
+
+        return this
+    }
+
+    override fun onDragSuccess(draggable: Dragged): Element {
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        hovered = false
+        raw.cacheUpToDate = false
+
+        return this
     }
 
     override fun toString(): String {
