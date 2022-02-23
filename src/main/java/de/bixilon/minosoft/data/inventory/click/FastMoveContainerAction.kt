@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.inventory.click
 
 @Deprecated("ToDo")
-class FastMoveContainerAction : ContainerAction {
+class FastMoveContainerAction(
+    val slot: Int,
+) : ContainerAction {
     private val mode: Int get() = 1
 }

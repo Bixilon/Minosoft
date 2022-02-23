@@ -13,19 +13,77 @@
 
 package de.bixilon.minosoft.data.inventory.click
 
-@Deprecated("ToDo")
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+
 class SimpleContainerAction(
-    val slot: Int,
-    val action: SimpleContainerActions,
+    val slot: Int?,
+    val count: ContainerCounts,
 ) : ContainerAction {
     private val mode: Int get() = 0
     private val button: Int
-        get() = action.ordinal
+        get() = count.ordinal
 
+    private fun pickItem(connection: PlayConnection, containerId: Int, container: Container) {
+        val item = container[slot ?: return] ?: return
+        // ToDo: Check course of binding
+        val previous = item.copy()
+        val floatingItem: ItemStack
+        if (count == ContainerCounts.ALL) {
+            container.remove(slot)
+            floatingItem = item
+        } else {
+            // half
+            val stayCount = maxOf(item.item.count / 2, 1)
+            item.item.count = stayCount
+            floatingItem = previous.copy(count = previous.item.count - stayCount)
+        }
+        container.floatingItem = floatingItem
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to item), previous))
+    }
 
-    enum class SimpleContainerActions {
-        LEFT_MOUSE_CLICK,
-        RIGHT_MOUSE_CLICK,
+    private fun putItem(connection: PlayConnection, containerId: Int, container: Container, floatingItem: ItemStack) {
+        floatingItem.lock()
+        val target = container.slots[slot]
+        try {
+            if (count == ContainerCounts.ALL) {
+                floatingItem.item._count = 0
+            } else {
+                floatingItem.item._count-- // don't use decrease, item + container is already locked
+            }
+            if (slot == null || target == null) {
+                return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
+            }
+            if (target.typeEquals(floatingItem)) {
+                // merge
+                val subtract = minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count)
+                target.item._count += subtract
+                floatingItem.item._count -= subtract
+                if (!floatingItem._valid) {
+                    container.floatingItem = null
+                }
+                return
+            }
+            // swap
+            container.floatingItem = target
+            container.slots[slot] = floatingItem
+        } finally {
+            floatingItem.commit()
+            target?.lock() // lock to prevent exception
+            target?.commit()
+        }
+    }
+
+    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        val floatingItem = container.floatingItem ?: return pickItem(connection, containerId, container)
+        return putItem(connection, containerId, container, floatingItem)
+    }
+
+    enum class ContainerCounts {
+        ALL,
+        PART,
         ;
     }
 }

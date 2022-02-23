@@ -17,13 +17,15 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.kutil.watcher.map.MapDataWatcher
+import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap
 import de.bixilon.minosoft.data.inventory.click.ContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.inventory.stack.property.HolderProperty
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 
 open class Container(
     protected val connection: PlayConnection,
@@ -32,13 +34,17 @@ open class Container(
     val hasTitle: Boolean = false,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
     @Deprecated("Should not be accessed dirctly")
-    val slots: MutableMap<Int, ItemStack> by MapDataWatcher.watchedMap(mutableMapOf())
+    val slots: MutableMap<Int, ItemStack> by watchedMap(mutableMapOf())
     val lock = SimpleLock()
     var revision by watched(0L)
     var serverRevision = 0
     private var lastActionId = 0
     var actions: SynchronizedBiMap<Int, ContainerAction> = synchronizedBiMapOf()
     var floatingItem: ItemStack? by watched(null)
+
+    init {
+        this::floatingItem.observe(this) { it?.holder?.container = this }
+    }
 
     fun _validate() {
         var itemsRemoved = 0
@@ -173,6 +179,13 @@ open class Container(
 
     fun revertAction(actionId: Int) {
         actions.remove(actionId)?.revert(connection, connection.player.containers.getKey(this) ?: return, this)
+    }
+
+    fun onClose() {
+        floatingItem = null // ToDo: Does not seem correct
+
+        // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
+        connection.sendPacket(CloseContainerC2SP(connection.player.containers.getKey(this) ?: return))
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {

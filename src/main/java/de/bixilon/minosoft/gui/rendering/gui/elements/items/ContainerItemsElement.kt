@@ -14,6 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.inventory.click.CloneContainerAction
+import de.bixilon.minosoft.data.inventory.click.FastMoveContainerAction
+import de.bixilon.minosoft.data.inventory.click.SimpleContainerAction
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
@@ -21,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -28,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -73,6 +79,11 @@ class ContainerItemsElement(
         this._size = size
 
         container::slots.observeMap(this) { update = true; }
+        container::floatingItem.observeRendering(this) {
+            this.floatingItem?.close()
+            this.floatingItem = null
+            this.floatingItem = FloatingItem(guiRenderer, it ?: return@observeRendering).apply { show() }
+        }
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -119,32 +130,29 @@ class ContainerItemsElement(
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        // this is not in items element, because you can also click into "nothing"
         val consumed = super<AbstractLayout>.onMouseAction(position, button, action)
-        if (action != MouseActions.PRESS || (button != MouseButtons.LEFT && button != MouseButtons.RIGHT)) {
+        if (action != MouseActions.PRESS) {
             return consumed
         }
 
+        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
         val activeElement = activeElement
-        val stack = activeElement?.stack
-        val containerId = renderWindow.connection.player.containers.getKey(container) ?: return consumed
-        var floatingItem = this.floatingItem
-        if ((floatingItem != null && floatingItem.visible) || stack?._valid != true) {
-            return consumed
+        if (button == MouseButtons.MIDDLE) {
+            if (guiRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
+                return true
+            }
+            container.invokeAction(CloneContainerAction(activeElement?.slotId ?: return true))
+            return true
         }
-        // val clickAction: ContainerClickActions
-        // val stackToFloat: ItemStack
-        // if (button == MouseButtons.LEFT) {
-        //     stackToFloat = stack
-        //     clickAction = ContainerClickActions.LEFT_MOUSE_CLICK
-        // } else {
-        //     stackToFloat = stack.copy(count = maxOf(stack.item.count / 2, 1))
-        //     clickAction = ContainerClickActions.RIGHT_MOUSE_CLICK
-        //     stack.item.count = stack.item.count - stackToFloat.item.count
-        // }
-        // renderWindow.connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, activeElement.slotId, clickAction, container.createAction(), mapOf(activeElement.slotId to stack), stack))
-        // floatingItem = FloatingItem(guiRenderer, activeElement.slotId, stackToFloat)
-        // this.floatingItem = floatingItem
-        // floatingItem.show()
+        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
+            container.invokeAction(if (shiftDown) {
+                FastMoveContainerAction(activeElement?.slotId ?: return true)
+            } else {
+                SimpleContainerAction(activeElement?.slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART)
+            })
+            return true
+        }
 
         return true
     }

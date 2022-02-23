@@ -23,7 +23,6 @@ import glm_.vec2.Vec2i
 
 class FloatingItem(
     guiRenderer: GUIRenderer,
-    val sourceId: Int,
     val stack: ItemStack,
     size: Vec2i = RawItemElement.DEFAULT_SIZE,
 ) : Dragged(guiRenderer) {

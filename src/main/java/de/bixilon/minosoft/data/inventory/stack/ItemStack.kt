@@ -186,6 +186,10 @@ class ItemStack {
         return Objects.hash(item, _display, _durability, _enchanting, _hide, _nbt)
     }
 
+    private fun _equals(other: ItemStack): Boolean {
+        return _display == other._display && _durability == other._durability && _enchanting == other._enchanting && _hide == other._hide && _nbt == other._nbt
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other !is ItemStack) {
             return false
@@ -193,7 +197,14 @@ class ItemStack {
         if (other.hashCode() != this.hashCode()) {
             return false
         }
-        return item == other.item && _display == other._display && _durability == other._durability && _enchanting == other._enchanting && _hide == other._hide && _nbt == other._nbt
+        return item == other.item && _equals(other)
+    }
+
+    fun typeEquals(other: ItemStack?): Boolean {
+        if (other == null) {
+            return false
+        }
+        return item.item == other.item.item && _equals(other)
     }
 
     override fun toString(): String {
