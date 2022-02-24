@@ -45,6 +45,32 @@
                     },
                     "end": {
                       "$ref": "#/definitions/vec2i"
+                    },
+                    "section": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "enum": ["default", "main_hand", "off_hand", "feet", "legs", "chest", "head", "read_only"]
+                    }
+                  },
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "areas": {
+              "type": "object",
+              "patternProperties": {
+                "\\w+": {
+                  "properties": {
+                    "start": {
+                      "$ref": "#/definitions/vec2i"
+                    },
+                    "end": {
+                      "$ref": "#/definitions/vec2i"
                     }
                   },
                   "required": [
@@ -62,7 +88,8 @@
             "end"
           ],
           "optional": [
-            "slots"
+            "slots",
+            "areas"
           ],
           "additionalProperties": false
         }
