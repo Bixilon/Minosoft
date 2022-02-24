@@ -52,6 +52,10 @@ open class Container(
 
     fun _validate() {
         var itemsRemoved = 0
+        if (floatingItem?._valid == false) {
+            floatingItem = null
+            itemsRemoved++
+        }
         for ((slot, itemStack) in slots.toSynchronizedMap()) {
             if (itemStack._valid) {
                 continue
@@ -189,10 +193,10 @@ open class Container(
         floatingItem = null // ToDo: Does not seem correct
         val id = id ?: return
 
-        // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
         if (id != ProtocolDefinition.PLAYER_CONTAINER_ID) {
             connection.player.containers -= id
         }
+        // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
         connection.sendPacket(CloseContainerC2SP(id))
     }
 

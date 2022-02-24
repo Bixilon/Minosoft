@@ -18,10 +18,13 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 class DraggedManager(
@@ -34,7 +37,7 @@ class DraggedManager(
             }
             val position = guiRenderer.currentCursorPosition
             val previous = field
-            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragLeave(previous.element))
+            previous?.element?.onDragEnd(position, guiRenderer.gui.onDragMove(Vec2i(-1, -1), previous.element))
 
             field = value
             guiRenderer.gui.onMouseMove(Vec2i(-1, -1)) // move mouse ot
@@ -90,7 +93,9 @@ class DraggedManager(
     }
 
     override fun onCharPress(char: Int): Boolean {
-        element?.onCharPress(char) ?: return false
+        val element = element ?: return false
+        val target = guiRenderer.gui.onDragChar(char, element.element)
+        element.element.onDragChar(char.toChar(), target)
         return true
     }
 
@@ -99,8 +104,24 @@ class DraggedManager(
         return true
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        element?.onKeyPress(type, key) ?: return false
+    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        val element = element ?: return false
+        val target = guiRenderer.gui.onDragKey(type, key, element.element)
+        val mouseButton = MouseButtons[key]
+        if (mouseButton == null) {
+            element.element.onDragKey(key, type, target)
+            return true
+        }
+
+        val mouseAction = MouseActions[type] ?: return false
+        element.element.onDragMouseAction(guiRenderer.currentCursorPosition, mouseButton, mouseAction, target)
+        return true
+    }
+
+    override fun onScroll(scrollOffset: Vec2d): Boolean {
+        val element = element ?: return false
+        val target = guiRenderer.gui.onDragScroll(scrollOffset, element.element)
+        element.element.onDragScroll(guiRenderer.currentCursorPosition, scrollOffset, target)
         return true
     }
 }

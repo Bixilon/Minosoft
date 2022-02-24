@@ -21,7 +21,7 @@ import glm_.vec2.Vec2i
 interface InputHandler {
 
     fun onMouseMove(position: Vec2i) = false
-    fun onKeyPress(type: KeyChangeTypes, key: KeyCodes) = false
+    fun onKey(type: KeyChangeTypes, key: KeyCodes) = false
     fun onScroll(scrollOffset: Vec2d) = false
     fun onCharPress(char: Int) = false
 }

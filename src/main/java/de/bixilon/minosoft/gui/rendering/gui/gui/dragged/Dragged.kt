@@ -13,8 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged
 
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
 abstract class Dragged(guiRenderer: GUIRenderer) : Element(guiRenderer) {
@@ -25,7 +30,12 @@ abstract class Dragged(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     open fun onDragStart(position: Vec2i, target: Element?) = Unit
     open fun onDragMove(position: Vec2i, target: Element?) = Unit
     open fun onDragEnd(position: Vec2i, target: Element?) = Unit
-    open fun onDragSuccess(position: Vec2i, target: Element?) = Unit
+
+    open fun onDragScroll(position: Vec2i, scrollOffset: Vec2d, target: Element?) = Unit
+
+    open fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, target: Element?) = Unit
+    open fun onDragKey(key: KeyCodes, type: KeyChangeTypes, target: Element?) = Unit
+    open fun onDragChar(char: Char, target: Element?) = Unit
 
     fun show() {
         if (visible) {

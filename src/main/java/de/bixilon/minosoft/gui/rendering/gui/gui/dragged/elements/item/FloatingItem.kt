@@ -13,10 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
+import de.bixilon.minosoft.data.inventory.click.SimpleContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.RawItemElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
@@ -24,6 +29,7 @@ import glm_.vec2.Vec2i
 class FloatingItem(
     guiRenderer: GUIRenderer,
     val stack: ItemStack,
+    val container: Container? = null,
     size: Vec2i = RawItemElement.DEFAULT_SIZE,
 ) : Dragged(guiRenderer) {
     private val itemElement = RawItemElement(guiRenderer, size, stack, this)
@@ -38,6 +44,18 @@ class FloatingItem(
     }
 
     override fun forceSilentApply() {
+    }
 
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, target: Element?) {
+        if (action != MouseActions.PRESS) {
+            return
+        }
+        if (button != MouseButtons.LEFT && button != MouseButtons.RIGHT) {
+            return
+        }
+        if (target == null) {
+            container?.invokeAction(SimpleContainerAction(null, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            return
+        }
     }
 }

@@ -41,6 +41,7 @@ open class GUIMeshElement<T : Element>(
         get() = if (element is Drawable) element.skipDraw else false
     protected var lastRevision = 0L
     protected var lastPosition: Vec2i? = null
+    protected var lastDragPosition: Vec2i? = null
     protected var dragged = false
     override var enabled = true
         set(value) {
@@ -109,17 +110,20 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onCharPress(char: Int): Boolean {
+        if (lastPosition == null) {
+            return false
+        }
         return element.onCharPress(char)
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {
+        lastPosition = position
         return element.onMouseMove(position, position)
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        val mouseButton = MouseButtons[key] ?: return element.onKey(key, type)
-
+    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
         val position = lastPosition ?: return false
+        val mouseButton = MouseButtons[key] ?: return element.onKey(key, type)
 
         val mouseAction = MouseActions[type] ?: return false
         return element.onMouseAction(position, mouseButton, mouseAction)
@@ -130,23 +134,34 @@ open class GUIMeshElement<T : Element>(
         return element.onScroll(position, scrollOffset)
     }
 
-    override fun onDragMove(position: Vec2i, draggable: Dragged): Element? {
-        if (!dragged) {
-            dragged = true
-            element.onDragEnter(position, position, draggable)
+    override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
+        lastDragPosition = position
+        if (!this.dragged) {
+            this.dragged = true
+            return element.onDragEnter(position, position, dragged)
         }
-        return element.onDragMove(position, position, draggable)
+        return element.onDragMove(position, position, dragged)
     }
 
-    override fun onDragLeave(draggable: Dragged): Element? {
-        dragged = false
-        return element.onDragLeave(draggable)
+    override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
+        val position = lastDragPosition ?: return null
+        val mouseButton = MouseButtons[key] ?: return element.onDragKey(key, type, dragged)
+
+        val mouseAction = MouseActions[type] ?: return null
+        return element.onDragMouseAction(position, mouseButton, mouseAction, dragged)
     }
 
-    override fun onDragSuccess(draggable: Dragged): Element? {
-        dragged = false
-        return element.onDragSuccess(draggable)
+    override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
+        return element.onDragScroll(lastDragPosition ?: return null, scrollOffset, dragged)
     }
+
+    override fun onDragChar(char: Int, dragged: Dragged): Element? {
+        if (lastDragPosition == null) {
+            return null
+        }
+        return element.onDragChar(char.toChar(), dragged)
+    }
+
 
     override fun onClose() {
         element.onClose()

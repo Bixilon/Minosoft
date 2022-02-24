@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
-import de.bixilon.minosoft.gui.rendering.gui.input.DraggableElement
+import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface AbstractLayout<T : Element> : InputElement, DraggableElement {
+interface AbstractLayout<T : Element> : InputElement, DragTarget {
     var activeElement: T?
     var activeDragElement: T?
 
@@ -102,9 +102,21 @@ interface AbstractLayout<T : Element> : InputElement, DraggableElement {
         return activeDragElement?.onDragLeave(draggable)
     }
 
-    override fun onDragSuccess(draggable: Dragged): Element? {
-        val activeDragElement = this.activeDragElement
-        this.activeDragElement = null
-        return activeDragElement?.onDragSuccess(draggable)
+    override fun onDragScroll(position: Vec2i, scrollOffset: Vec2d, draggable: Dragged): Element? {
+        val (element, offset) = getAt(position) ?: return null
+        return element.onDragScroll(offset, scrollOffset, draggable)
+    }
+
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, draggable: Dragged): Element? {
+        val (element, offset) = getAt(position) ?: return null
+        return element.onDragMouseAction(offset, button, action, draggable)
+    }
+
+    override fun onDragKey(key: KeyCodes, type: KeyChangeTypes, draggable: Dragged): Element? {
+        return activeDragElement?.onDragKey(key, type, draggable)
+    }
+
+    override fun onDragChar(char: Char, draggable: Dragged): Element? {
+        return activeDragElement?.onDragChar(char, draggable)
     }
 }

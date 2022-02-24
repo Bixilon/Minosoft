@@ -39,12 +39,12 @@ import glm_.vec3.Vec3i
 class RawItemElement(
     guiRenderer: GUIRenderer,
     size: Vec2i = DEFAULT_SIZE,
-    item: ItemStack?,
+    stack: ItemStack?,
     parent: Element?,
 ) : Element(guiRenderer) {
     private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
 
-    var _stack: ItemStack? = item
+    var _stack: ItemStack? = null
         set(value) {
             if (field === value) {
                 return
@@ -71,6 +71,7 @@ class RawItemElement(
     init {
         this._parent = parent
         _size = size
+        this._stack = stack
         forceApply()
     }
 

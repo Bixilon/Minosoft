@@ -94,12 +94,12 @@ class PopperManager(
         return false
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
+    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
         for ((index, element) in poppers.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
-            if (element.onKeyPress(type, key)) {
+            if (element.onKey(type, key)) {
                 return true
             }
         }

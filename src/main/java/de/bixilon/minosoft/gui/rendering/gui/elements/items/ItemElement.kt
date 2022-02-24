@@ -14,7 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.inventory.click.CloneContainerAction
 import de.bixilon.minosoft.data.inventory.click.DropContainerAction
+import de.bixilon.minosoft.data.inventory.click.FastMoveContainerAction
+import de.bixilon.minosoft.data.inventory.click.SimpleContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -22,6 +26,8 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.item.ItemInfoPopper
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
@@ -83,6 +89,44 @@ class ItemElement(
         return true
     }
 
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+        if (action != MouseActions.PRESS) {
+            return true
+        }
+
+        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
+        if (button == MouseButtons.MIDDLE) {
+            if (guiRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
+                return true
+            }
+            itemsElement.container.invokeAction(CloneContainerAction(slotId))
+            return true
+        }
+        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
+            itemsElement.container.invokeAction(if (shiftDown) {
+                FastMoveContainerAction(slotId)
+            } else {
+                SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART)
+            })
+            return true
+        }
+        return true
+    }
+
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, draggable: Dragged): Element? {
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        if (action != MouseActions.PRESS) {
+            return this
+        }
+        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
+            itemsElement.container.invokeAction(SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            return this
+        }
+        return this
+    }
+
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (type != KeyChangeTypes.PRESS) {
             return true
@@ -110,16 +154,6 @@ class ItemElement(
     }
 
     override fun onDragLeave(draggable: Dragged): Element {
-        if (draggable !is FloatingItem) {
-            return this
-        }
-        hovered = false
-        raw.cacheUpToDate = false
-
-        return this
-    }
-
-    override fun onDragSuccess(draggable: Dragged): Element {
         if (draggable !is FloatingItem) {
             return this
         }

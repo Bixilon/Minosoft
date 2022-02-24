@@ -157,7 +157,7 @@ class RenderWindowInputHandler(
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
         val inputHandler = inputHandler
-        inputHandler?.onKeyPress(keyChangeType, keyCode)
+        inputHandler?.onKey(keyChangeType, keyCode)
 
         val keyDown = when (keyChangeType) {
             KeyChangeTypes.PRESS -> true

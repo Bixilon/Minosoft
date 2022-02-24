@@ -162,8 +162,8 @@ class GUIManager(
         return runForEach { it.onMouseMove(position) }
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        return runForEach { it.onKeyPress(type, key) }
+    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        return runForEach { it.onKey(type, key) }
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
@@ -181,16 +181,20 @@ class GUIManager(
         return null
     }
 
-    override fun onDragMove(position: Vec2i, draggable: Dragged): Element? {
-        return runForEachDrag { it.onDragMove(position, draggable) }
+    override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragMove(position, dragged) }
     }
 
-    override fun onDragLeave(draggable: Dragged): Element? {
-        return runForEachDrag { it.onDragLeave(draggable) }
+    override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragKey(type, key, dragged) }
     }
 
-    override fun onDragSuccess(draggable: Dragged): Element? {
-        return runForEachDrag { it.onDragSuccess(draggable) }
+    override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragScroll(scrollOffset, dragged) }
+    }
+
+    override fun onDragChar(char: Int, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragChar(char, dragged) }
     }
 
     fun open(builder: GUIBuilder<*>) {

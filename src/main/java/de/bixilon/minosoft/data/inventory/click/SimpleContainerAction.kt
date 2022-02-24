@@ -22,9 +22,6 @@ class SimpleContainerAction(
     val slot: Int?,
     val count: ContainerCounts,
 ) : ContainerAction {
-    private val mode: Int get() = 0
-    private val button: Int
-        get() = count.ordinal
 
     private fun pickItem(connection: PlayConnection, containerId: Int, container: Container) {
         val item = container[slot ?: return] ?: return
@@ -53,22 +50,23 @@ class SimpleContainerAction(
             } else {
                 floatingItem.item._count-- // don't use decrease, item + container is already locked
             }
-            if (slot == null || target == null) {
+            if (slot == null) {
                 return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
             }
-            if (target.typeEquals(floatingItem)) {
+
+            if (target != null && floatingItem.typeEquals(target)) {
                 // merge
                 val subtract = minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count)
                 target.item._count += subtract
                 floatingItem.item._count -= subtract
-                if (!floatingItem._valid) {
-                    container.floatingItem = null
-                }
+
+                connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
                 return
             }
             // swap
             container.floatingItem = target
             container.slots[slot] = floatingItem
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
         } finally {
             floatingItem.commit()
             target?.lock() // lock to prevent exception

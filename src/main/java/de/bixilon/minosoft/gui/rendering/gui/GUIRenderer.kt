@@ -128,11 +128,11 @@ class GUIRenderer(
         return gui.onCharPress(char)
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        if (dragged.onKeyPress(type, key)) {
+    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        if (dragged.onKey(type, key)) {
             return true
         }
-        return gui.onKeyPress(type, key)
+        return gui.onKey(type, key)
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {

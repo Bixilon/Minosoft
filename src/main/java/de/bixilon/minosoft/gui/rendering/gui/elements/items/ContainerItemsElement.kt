@@ -14,20 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
-import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.click.CloneContainerAction
-import de.bixilon.minosoft.data.inventory.click.FastMoveContainerAction
-import de.bixilon.minosoft.data.inventory.click.SimpleContainerAction
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
-import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
-import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
-import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -82,7 +74,7 @@ class ContainerItemsElement(
         container::floatingItem.observeRendering(this) {
             this.floatingItem?.close()
             this.floatingItem = null
-            this.floatingItem = FloatingItem(guiRenderer, it ?: return@observeRendering).apply { show() }
+            this.floatingItem = FloatingItem(guiRenderer, stack = it ?: return@observeRendering, container = container).apply { show() }
         }
     }
 
@@ -127,39 +119,6 @@ class ContainerItemsElement(
             return Pair(item.element, innerOffset)
         }
         return null
-    }
-
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
-        // this is not in items element, because you can also click into "nothing"
-        val consumed = super<AbstractLayout>.onMouseAction(position, button, action)
-        if (action != MouseActions.PRESS) {
-            return consumed
-        }
-
-        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
-        val activeElement = activeElement
-        if (button == MouseButtons.MIDDLE) {
-            if (guiRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
-                return true
-            }
-            container.invokeAction(CloneContainerAction(activeElement?.slotId ?: return true))
-            return true
-        }
-        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
-            container.invokeAction(if (shiftDown) {
-                FastMoveContainerAction(activeElement?.slotId ?: return true)
-            } else {
-                SimpleContainerAction(activeElement?.slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART)
-            })
-            return true
-        }
-
-        return true
-    }
-
-    override fun onDragMove(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element? {
-        println("Drag: ($draggable) at $position")
-        return this
     }
 
     private data class ItemElementData(

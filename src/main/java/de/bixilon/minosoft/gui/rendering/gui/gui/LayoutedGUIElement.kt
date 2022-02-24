@@ -24,7 +24,6 @@ import glm_.vec2.Vec2i
 class LayoutedGUIElement<T : LayoutedElement>(
     val layout: T,
 ) : GUIMeshElement<Element>(layout.unsafeCast()) {
-    protected var lastDragPosition: Vec2i? = null
 
     override fun prepare() {
         prepare(layout.layoutOffset)
@@ -65,7 +64,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
         return element.onMouseMove(offset, position)
     }
 
-    override fun onDragMove(position: Vec2i, draggable: Dragged): Element? {
+    override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
         val lastDragPosition = lastDragPosition
         val offset = getOffset(position)
         if (offset == null) {
@@ -74,34 +73,16 @@ class LayoutedGUIElement<T : LayoutedElement>(
             }
             // move out
             this.lastDragPosition = null
-            return element.onDragLeave(draggable)
+            return element.onDragLeave(dragged)
         }
 
         val previousOutside = lastDragPosition == null
         this.lastDragPosition = offset
 
         if (previousOutside) {
-            return element.onDragEnter(offset, position, draggable)
+            return element.onDragEnter(offset, position, dragged)
         }
 
-        return element.onDragMove(offset, position, draggable)
-    }
-
-    override fun onDragLeave(draggable: Dragged): Element? {
-        var element: Element? = null
-        if (lastDragPosition != null) {
-            element = this.element.onDragLeave(draggable)
-        }
-        lastDragPosition = null
-        return element
-    }
-
-    override fun onDragSuccess(draggable: Dragged): Element? {
-        var element: Element? = null
-        if (lastDragPosition != null) {
-            element = this.element.onDragSuccess(draggable)
-        }
-        lastDragPosition = null
-        return element
+        return element.onDragMove(offset, position, dragged)
     }
 }
