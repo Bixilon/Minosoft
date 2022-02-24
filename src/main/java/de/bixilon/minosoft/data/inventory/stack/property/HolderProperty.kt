@@ -19,4 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class HolderProperty(
     val connection: PlayConnection? = null,
     var container: Container? = null,
-) : Property
+) : Property {
+
+    override fun isDefault(): Boolean = false
+}

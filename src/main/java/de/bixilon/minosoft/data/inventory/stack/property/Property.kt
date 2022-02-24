@@ -18,7 +18,9 @@ import de.bixilon.kutil.json.MutableJsonObject
 
 interface Property {
 
-    fun updateNbt(nbt: MutableJsonObject) {}
+    fun isDefault(): Boolean
+
+    fun updateNbt(nbt: MutableJsonObject): Boolean = false
 
     fun getNBT(): JsonObject = mapOf()
 }

@@ -68,8 +68,24 @@ class HideProperty(
         }
     }
 
-    override fun updateNbt(nbt: MutableJsonObject) {
+    override fun isDefault(): Boolean {
+        return _hideFlags == 0
+    }
+
+    override fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(HIDE_FLAGS_TAG)?.toInt()?.let { this._hideFlags = it }
+        return !isDefault()
+    }
+
+    override fun hashCode(): Int {
+        return _hideFlags
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is HideProperty) {
+            return false
+        }
+        return _hideFlags == other._hideFlags
     }
 
     fun copy(

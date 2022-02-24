@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data.inventory.stack.property
 
+import com.google.common.base.Objects
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.inventory.InventoryDelegate
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 
@@ -52,8 +54,29 @@ class DurabilityProperty(
             return true
         }
 
-    override fun updateNbt(nbt: MutableJsonObject) {
+    override fun isDefault(): Boolean {
+        return !_unbreakable && _durability == stack.item.item.maxDurability
+    }
+
+    override fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(UNBREAKABLE_TAG)?.toBoolean()?.let { this._unbreakable = it }
+        nbt.remove(DAMAGE_TAG)?.toInt()?.let { this._durability = stack.item.item.maxDurability - it }
+
+        return !isDefault()
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(_unbreakable, _durability)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is DurabilityProperty) {
+            return false
+        }
+        if (other.hashCode() != hashCode()) {
+            return false
+        }
+        return _durability == other._durability && _unbreakable == other._unbreakable
     }
 
     fun copy(
@@ -66,5 +89,6 @@ class DurabilityProperty(
 
     companion object {
         private const val UNBREAKABLE_TAG = "unbreakable"
+        private const val DAMAGE_TAG = "Damage"
     }
 }

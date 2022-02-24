@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.inventory.stack.property
 
+import com.google.common.base.Objects
 import de.bixilon.minosoft.data.inventory.InventoryDelegate
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.Item
@@ -36,5 +37,21 @@ class ItemProperty(
         stack.lock()
         _count += 1
         stack.commit()
+    }
+
+    override fun isDefault(): Boolean = false
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(item, _count)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is ItemProperty) {
+            return false
+        }
+        if (other.hashCode() != hashCode()) {
+            return false
+        }
+        return item == other.item && _count == other._count
     }
 }

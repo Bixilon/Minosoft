@@ -21,6 +21,29 @@ class NbtProperty(
     val nbt: MutableJsonObject = mutableMapOf(),
 ) : Property {
 
+    override fun hashCode(): Int {
+        return nbt.hashCode()
+    }
+
+    override fun isDefault(): Boolean {
+        return nbt.isEmpty()
+    }
+
+    override fun updateNbt(nbt: MutableJsonObject): Boolean {
+        this.nbt.putAll(nbt)
+        return isDefault()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is NbtProperty) {
+            return false
+        }
+        if (other.hashCode() != hashCode()) {
+            return false
+        }
+        return nbt == other.nbt
+    }
+
     fun copy(
         stack: ItemStack,
         nbt: MutableJsonObject = this.nbt.toMutableMap(),

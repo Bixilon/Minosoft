@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.inventory.stack.property
 
+import com.google.common.base.Objects
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
@@ -43,8 +44,12 @@ class DisplayProperty(
         this::lore.observeList(this) { stack.holder?.container?.let { it.revision++ } }
     }
 
-    override fun updateNbt(nbt: MutableJsonObject) {
-        val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return
+    override fun isDefault(): Boolean {
+        return _customDisplayName == null && lore.isEmpty() && _dyeColor == null
+    }
+
+    override fun updateNbt(nbt: MutableJsonObject): Boolean {
+        val display = nbt.remove(DISPLAY_TAG)?.nullCast<JsonObject>() ?: return false
         display[DISPLAY_MAME_TAG]?.let { _customDisplayName = ChatComponent.of(it, translator = stack.holder?.connection?.language) }
 
         display[DISPLAY_LORE_TAG]?.listCast<String>()?.let {
@@ -54,6 +59,22 @@ class DisplayProperty(
         }
 
         display[DISPLAY_COLOR_TAG]?.toInt()?.asRGBColor()?.let { this._dyeColor = it }
+
+        return !isDefault()
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(lore, _customDisplayName, _dyeColor)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is DisplayProperty) {
+            return false
+        }
+        if (other.hashCode() != hashCode()) {
+            return false
+        }
+        return lore == other.lore && _customDisplayName == other._customDisplayName && _dyeColor == other._dyeColor
     }
 
     fun copy(

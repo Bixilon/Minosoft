@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.inventory.stack.property
 
+import com.google.common.base.Objects
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -56,7 +57,11 @@ class EnchantingProperty(
             }
         }
 
-    override fun updateNbt(nbt: MutableJsonObject) {
+    override fun isDefault(): Boolean {
+        return _repairCost == 0 && enchantments.isEmpty()
+    }
+
+    override fun updateNbt(nbt: MutableJsonObject): Boolean {
         nbt.remove(REPAIR_COST_TAG)?.toInt()?.let { _repairCost = it }
 
         nbt.remove(*ENCHANTMENTS_TAG)?.listCast<JsonObject>()?.let {
@@ -69,6 +74,22 @@ class EnchantingProperty(
                 enchantments[enchantment] = level
             }
         }
+
+        return !isDefault()
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hashCode(enchantments, _repairCost)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is EnchantingProperty) {
+            return false
+        }
+        if (other.hashCode() != hashCode()) {
+            return false
+        }
+        return enchantments == other.enchantments && _repairCost == other._repairCost
     }
 
     fun copy(

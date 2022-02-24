@@ -30,18 +30,33 @@ class ItemStack {
 
     var _display: DisplayProperty? = null
         private set
-    val display: DisplayProperty by lazy { _display?.let { return@lazy it }; return@lazy DisplayProperty(this).apply { _display = this } }
+    val display: DisplayProperty
+        get() {
+            _display?.let { return it }; return DisplayProperty(this).apply { _display = this }
+        }
     var _durability: DurabilityProperty? = null
         private set
-    val durability: DurabilityProperty by lazy { _durability?.let { return@lazy it }; return@lazy DurabilityProperty(this).apply { this@ItemStack._durability = this } }
+    val durability: DurabilityProperty
+        get() {
+            _durability?.let { return it }; return DurabilityProperty(this).apply { this@ItemStack._durability = this }
+        }
     var _enchanting: EnchantingProperty? = null
-    val enchanting: EnchantingProperty by lazy { _enchanting?.let { return@lazy it }; return@lazy EnchantingProperty(this).apply { _enchanting = this } }
+    val enchanting: EnchantingProperty
+        get() {
+            _enchanting?.let { return it }; return EnchantingProperty(this).apply { _enchanting = this }
+        }
     var _hide: HideProperty? = null
         private set
-    val hide: HideProperty by lazy { _hide?.let { return@lazy it }; return@lazy HideProperty(this).apply { _hide = this } }
+    val hide: HideProperty
+        get() {
+            _hide?.let { return it }; return HideProperty(this).apply { _hide = this }
+        }
     var _nbt: NbtProperty? = null
         private set
-    val nbt: NbtProperty by lazy { _nbt?.let { return@lazy it }; return@lazy NbtProperty(this).apply { _nbt = this } }
+    val nbt: NbtProperty
+        get() {
+            _nbt?.let { return it }; return NbtProperty(this).apply { _nbt = this }
+        }
 
     var revision by watched(0L)
 
@@ -80,7 +95,7 @@ class ItemStack {
             if (item._count <= 0) {
                 return false
             }
-            if (!durability._valid) {
+            if (_durability?._valid == false) {
                 return false
             }
             return true
@@ -150,11 +165,21 @@ class ItemStack {
             return
         }
         // ToDo: This force creates an instance of every property
-        display.updateNbt(nbt)
-        durability.updateNbt(nbt)
-        enchanting.updateNbt(nbt)
-        hide.updateNbt(nbt)
-        this.nbt.updateNbt(nbt)
+        if (!this.display.updateNbt(nbt)) {
+            _display = null
+        }
+        if (!this.durability.updateNbt(nbt)) {
+            _durability = null
+        }
+        if (!this.enchanting.updateNbt(nbt)) {
+            _enchanting = null
+        }
+        if (!this.hide.updateNbt(nbt)) {
+            _hide = null
+        }
+        if (!this.nbt.updateNbt(nbt)) {
+            _nbt = null
+        }
     }
 
     fun getNBT(): JsonObject {
