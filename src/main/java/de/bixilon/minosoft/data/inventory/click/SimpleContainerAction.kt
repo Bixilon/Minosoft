@@ -54,7 +54,7 @@ class SimpleContainerAction(
                 return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
             }
 
-            if (target != null && floatingItem.typeEquals(target)) {
+            if (target != null && floatingItem.matches(target)) {
                 // merge
                 val subtract = minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count)
                 target.item._count += subtract

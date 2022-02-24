@@ -200,7 +200,7 @@ class ItemStack {
         return item == other.item && _equals(other)
     }
 
-    fun typeEquals(other: ItemStack?): Boolean {
+    fun matches(other: ItemStack?): Boolean {
         if (other == null) {
             return false
         }

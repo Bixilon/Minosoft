@@ -13,12 +13,42 @@
 
 package de.bixilon.minosoft.data.inventory.click
 
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+
 /**
  * If you double-click on an item in an inventory, all items of the same type will be stacked together and selected
  */
 class PickAllContainerAction(
     val slot: Int,
 ) : ContainerAction {
-    private val mode: Int get() = 6
-    private val button: Int = 0
+
+    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        container.lock.lock()
+        try {
+            val clicked = container.slots.remove(slot) ?: return
+            var countLeft = clicked.item.item.maxStackSize - clicked.item._count
+            val changes: MutableMap<Int, ItemStack?> = mutableMapOf()
+            for ((slotId, slot) in container.slots) {
+                if (!slot.matches(slot)) {
+                    continue
+                }
+                val countToRemove = minOf(slot.item._count, countLeft)
+                slot.item._count = countToRemove
+                countLeft -= countToRemove
+                slot.item._count += countToRemove
+                changes[slotId] = slot
+                if (countLeft <= 0) {
+                    break
+                }
+            }
+            container._validate()
+            container.floatingItem = clicked
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, clicked))
+        } finally {
+            container.lock.unlock()
+        }
+    }
 }
