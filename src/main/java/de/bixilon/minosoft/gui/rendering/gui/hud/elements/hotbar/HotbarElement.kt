@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
-import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
@@ -172,14 +171,6 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { forceApply() })
 
         connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
-
-        connection.registerEvent(CallbackEventInvoker.of<ContainerRevisionChangeEvent> {
-            if (it.container != connection.player.inventory) {
-                return@of
-            }
-            core.base.apply()
-            offhand.apply()
-        })
 
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
             if (it.position != ChatTextPositions.ABOVE_HOTBAR) {
