@@ -45,12 +45,12 @@ class SimpleContainerAction(
         floatingItem.lock()
         val target = container.slots[slot]
         try {
-            if (count == ContainerCounts.ALL) {
-                floatingItem.item._count = 0
-            } else {
-                floatingItem.item._count-- // don't use decrease, item + container is already locked
-            }
             if (slot == null) {
+                if (count == ContainerCounts.ALL) {
+                    floatingItem.item._count = 0
+                } else {
+                    floatingItem.item._count-- // don't use decrease, item + container is already locked
+                }
                 return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
             }
 
@@ -65,7 +65,7 @@ class SimpleContainerAction(
             }
             // swap
             container.floatingItem = target
-            container.slots[slot] = floatingItem
+            container._set(slot, floatingItem)
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
         } finally {
             floatingItem.commit()

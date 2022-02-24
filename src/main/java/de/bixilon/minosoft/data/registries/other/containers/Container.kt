@@ -113,7 +113,7 @@ open class Container(
         revision++
     }
 
-    private fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
+    fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
         val previous = slots[slotId]
         if (itemStack == null) {
             if (previous == null) {

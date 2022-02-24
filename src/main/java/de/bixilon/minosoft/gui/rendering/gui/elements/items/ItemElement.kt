@@ -67,8 +67,8 @@ class ItemElement(
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
-        renderWindow.window.cursorShape = CursorShapes.HAND
         val stack = stack ?: return true
+        renderWindow.window.cursorShape = CursorShapes.HAND
         popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
         hovered = true
         cacheUpToDate = false
@@ -132,14 +132,10 @@ class ItemElement(
             return true
         }
         val container = itemsElement.container
-        val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
-        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
-        // ToDo
-        when (key) {
-            KeyCodes.KEY_Q -> {
-                container.invokeAction(DropContainerAction(slotId, controlDown))
-            }
+        if (key != KeyCodes.KEY_Q) { // ToDo: Make it configurable
+            return true
         }
+        container.invokeAction(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
         return true
     }
 
