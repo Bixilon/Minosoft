@@ -36,6 +36,7 @@ class PlayerInventory(connection: PlayConnection) : Container(
         resourceLocation = "TBO".toResourceLocation()
     ),
 ) {
+    override val sections: Array<IntRange> get() = SECTIONS
     val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack> = lockMapOf() // ToDo: Update map
 
 
@@ -126,5 +127,11 @@ class PlayerInventory(connection: PlayConnection) : Container(
         const val HOTBAR_OFFSET = 36
         const val ARMOR_OFFSET = 5
         const val HOTBAR_SLOTS = 9
+
+        private val SECTIONS = arrayOf(
+            ARMOR_OFFSET..ARMOR_OFFSET + 4,
+            ARMOR_OFFSET + 5 until HOTBAR_OFFSET,
+            HOTBAR_OFFSET..HOTBAR_OFFSET + HOTBAR_SLOTS,
+        )
     }
 }

@@ -48,7 +48,7 @@ class PickAllContainerAction(
             container.floatingItem = clicked
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, clicked))
         } finally {
-            container.lock.unlock()
+            container.commit()
         }
     }
 }

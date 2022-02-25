@@ -37,7 +37,7 @@ open class Container(
     val title: ChatComponent? = null,
     val hasTitle: Boolean = false,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
-    @Deprecated("Should not be accessed dirctly")
+    @Deprecated("Should not be accessed directly")
     val slots: MutableMap<Int, ItemStack> by watchedMap(mutableMapOf())
     val lock = SimpleLock()
     var revision by watched(0L)
@@ -48,6 +48,8 @@ open class Container(
 
     val id: Int?
         get() = connection.player.containers.getKey(this)
+
+    open val sections: Array<IntRange> = arrayOf()
 
     init {
         this::floatingItem.observe(this) { it?.holder?.container = this }
@@ -209,5 +211,10 @@ open class Container(
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
         return slots.toSynchronizedMap().iterator()
+    }
+
+    fun commit() {
+        lock.unlock()
+        revision++
     }
 }

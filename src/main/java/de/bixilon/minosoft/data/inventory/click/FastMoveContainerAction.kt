@@ -13,9 +13,66 @@
 
 package de.bixilon.minosoft.data.inventory.click
 
-@Deprecated("ToDo")
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+
 class FastMoveContainerAction(
     val slot: Int,
 ) : ContainerAction {
-    private val mode: Int get() = 1
+
+    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        val source = container.slots[slot] ?: return
+        val previous = source.copy()
+        container.lock.lock()
+        try {
+            val sourceSection = container.getSection(slot) ?: Int.MAX_VALUE
+
+            // loop over all sections and get the lowest slot in the lowest section that fits best
+            val targets = Int2ObjectOpenHashMap<ItemStack?>()
+            for ((index, section) in container.sections.withIndex()) {
+                if (index == sourceSection) {
+                    // we don't want to swap into the same section, that is just useless
+                    // ToDo: Is this vanilla behavior?
+                    continue
+                }
+                for (slot in section) {
+                    val content = container.slots[slot]
+                    if (content != null && !source.matches(content)) { // only check slots that are not empty
+                        continue
+                    }
+                    val type = container.getSlotType(slot) ?: continue
+                    if (!type.canPut(container, slot, source)) {
+                        // this item is not allowed in this slot (e.g. blocks in armor slot)
+                        continue
+                    }
+
+                    targets[slot] = content
+                }
+            }
+            val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
+            for ((slot, content) in targets) {
+                if (content == null) {
+                    changes[slot] = source
+                    changes[this.slot] = null
+                    container._set(slot, source)
+                    break
+                }
+                val countToPut = source.item._count - (source.item.item.maxStackSize - content.item._count)
+                source.item._count -= countToPut
+                content.item._count += countToPut
+                changes[slot] = content
+                changes[this.slot] = source // duplicated
+                if (source.item._count <= 0) {
+                    break
+                }
+            }
+
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, previous))
+        } finally {
+            container.commit()
+        }
+    }
 }
