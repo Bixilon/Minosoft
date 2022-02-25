@@ -28,11 +28,19 @@ class PickAllContainerAction(
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         container.lock.lock()
         try {
-            val clicked = container.slots.remove(slot) ?: return
+
+            val clicked = container.slots[slot] ?: return
+            if (container.getSlotType(slot)?.canRemove(container, slot, clicked) != true) {
+                return
+            }
+            container.slots.remove(slot)
             var countLeft = clicked.item.item.maxStackSize - clicked.item._count
             val changes: MutableMap<Int, ItemStack?> = mutableMapOf()
             for ((slotId, slot) in container.slots) {
                 if (!slot.matches(slot)) {
+                    continue
+                }
+                if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
                     continue
                 }
                 val countToRemove = minOf(slot.item._count, countLeft)

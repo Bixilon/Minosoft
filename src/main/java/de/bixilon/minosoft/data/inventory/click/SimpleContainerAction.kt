@@ -25,6 +25,9 @@ class SimpleContainerAction(
 
     private fun pickItem(connection: PlayConnection, containerId: Int, container: Container) {
         val item = container[slot ?: return] ?: return
+        if (container.getSlotType(slot)?.canRemove(container, slot, item) != true) {
+            return
+        }
         // ToDo: Check course of binding
         val previous = item.copy()
         val floatingItem: ItemStack
@@ -53,14 +56,25 @@ class SimpleContainerAction(
                 }
                 return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
             }
+            val slotType = container.getSlotType(slot)
 
             if (target != null && floatingItem.matches(target)) {
+                if (slotType?.canPut(container, slot, floatingItem) != true) {
+                    // is this check needed?
+                    return
+                }
                 // merge
                 val subtract = minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count)
                 target.item._count += subtract
                 floatingItem.item._count -= subtract
 
                 connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
+                return
+            }
+            if (target != null && slotType?.canRemove(container, slot, target) != true) {
+                return
+            }
+            if (slotType?.canPut(container, slot, floatingItem) != true) {
                 return
             }
             // swap

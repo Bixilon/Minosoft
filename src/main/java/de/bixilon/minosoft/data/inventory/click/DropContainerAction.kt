@@ -26,6 +26,9 @@ class DropContainerAction(
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         val item = container[slot] ?: return
+        if (container.getSlotType(this.slot)?.canRemove(container, slot, item) != true) {
+            return
+        }
         previousStack = item.copy()
         if (stack) {
             item.item.count = 0
