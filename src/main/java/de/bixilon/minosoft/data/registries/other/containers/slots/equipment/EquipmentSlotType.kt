@@ -11,20 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.atlas
+package de.bixilon.minosoft.data.registries.other.containers.slots.equipment
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-
-class AtlasElement(
-    override val texture: AbstractTexture,
-    val start: Vec2i,
-    val end: Vec2i,
-    val slots: Int2ObjectOpenHashMap<AtlasSlot>,
-) : TextureLike {
-    override val size: Vec2i = end - start
-    override lateinit var uvStart: Vec2
-    override lateinit var uvEnd: Vec2
-}
+interface EquipmentSlotType : SingleItemSlotType

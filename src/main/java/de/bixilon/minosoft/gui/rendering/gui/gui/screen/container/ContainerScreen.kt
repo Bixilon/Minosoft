@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
-import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
@@ -33,7 +33,7 @@ abstract class ContainerScreen(
     guiRenderer: GUIRenderer,
     val container: Container,
     background: AtlasElement,
-    items: Int2ObjectOpenHashMap<Vec2iBinding> = background.slots,
+    items: Int2ObjectOpenHashMap<AtlasSlot> = background.slots,
 ) : Screen(guiRenderer), AbstractLayout<Element> {
     private val containerBackground = AtlasImageElement(guiRenderer, background)
     protected val containerElement = ContainerItemsElement(guiRenderer, container, items).apply { parent = this@ContainerScreen }

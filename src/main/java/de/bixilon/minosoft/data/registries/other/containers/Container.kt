@@ -21,8 +21,11 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap
 import de.bixilon.minosoft.data.inventory.click.ContainerAction
+import de.bixilon.minosoft.data.inventory.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.inventory.stack.property.HolderProperty
+import de.bixilon.minosoft.data.registries.other.containers.slots.DefaultSlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.SlotType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
@@ -74,6 +77,10 @@ open class Container(
         _validate()
         lock.unlock()
     }
+
+    open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
+    open fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? = null
+    open fun getSection(slotId: Int): Int? = null
 
     operator fun get(slotId: Int): ItemStack? {
         try {

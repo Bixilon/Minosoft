@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
@@ -32,7 +32,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
-    val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
+    val slots: Int2ObjectOpenHashMap<AtlasSlot>, // ToDo: Use an array?
 ) : Element(guiRenderer), AbstractLayout<ItemElement> {
     private val itemElements: Int2ObjectOpenHashMap<ItemElementData> = Int2ObjectOpenHashMap()
     private var floatingItem: FloatingItem? = null

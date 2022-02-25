@@ -45,12 +45,6 @@
                     },
                     "end": {
                       "$ref": "#/definitions/vec2i"
-                    },
-                    "section": {
-                      "type": "integer"
-                    },
-                    "type": {
-                      "enum": ["default", "main_hand", "off_hand", "feet", "legs", "chest", "head", "read_only"]
                     }
                   },
                   "required": [

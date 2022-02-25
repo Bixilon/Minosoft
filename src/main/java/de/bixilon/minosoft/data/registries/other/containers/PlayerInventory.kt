@@ -16,8 +16,16 @@ package de.bixilon.minosoft.data.registries.other.containers
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.data.inventory.InventorySlots
+import de.bixilon.minosoft.data.inventory.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.registries.other.containers.slots.DefaultSlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.RemoveOnlySlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.SlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.equipment.ChestSlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.equipment.FeetSlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.equipment.HeadSlotType
+import de.bixilon.minosoft.data.registries.other.containers.slots.equipment.LegsSlotType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -60,6 +68,45 @@ class PlayerInventory(connection: PlayConnection) : Container(
         }
 
         super.set(*realSlots.toTypedArray())
+    }
+
+    override fun getSlotType(slotId: Int): SlotType? {
+        return when (slotId) {
+            0 -> RemoveOnlySlotType // crafting result
+            in 1..4 -> DefaultSlotType // crafting
+            ARMOR_OFFSET + 0 -> HeadSlotType
+            ARMOR_OFFSET + 1 -> ChestSlotType
+            ARMOR_OFFSET + 2 -> LegsSlotType
+            ARMOR_OFFSET + 3 -> FeetSlotType
+            in ARMOR_OFFSET + 3..HOTBAR_OFFSET + HOTBAR_SLOTS + 1 -> DefaultSlotType // all slots, including offhand
+            else -> null
+        }
+    }
+
+    override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int {
+        return when (slot) {
+            SlotSwapContainerAction.SwapTargets.HOTBAR_1 -> HOTBAR_OFFSET + 0
+            SlotSwapContainerAction.SwapTargets.HOTBAR_2 -> HOTBAR_OFFSET + 1
+            SlotSwapContainerAction.SwapTargets.HOTBAR_3 -> HOTBAR_OFFSET + 2
+            SlotSwapContainerAction.SwapTargets.HOTBAR_4 -> HOTBAR_OFFSET + 3
+            SlotSwapContainerAction.SwapTargets.HOTBAR_5 -> HOTBAR_OFFSET + 4
+            SlotSwapContainerAction.SwapTargets.HOTBAR_6 -> HOTBAR_OFFSET + 5
+            SlotSwapContainerAction.SwapTargets.HOTBAR_7 -> HOTBAR_OFFSET + 6
+            SlotSwapContainerAction.SwapTargets.HOTBAR_8 -> HOTBAR_OFFSET + 7
+            SlotSwapContainerAction.SwapTargets.HOTBAR_9 -> HOTBAR_OFFSET + 8
+
+            SlotSwapContainerAction.SwapTargets.OFFHAND -> 45
+        }
+    }
+
+    override fun getSection(slotId: Int): Int? {
+        return when (slotId) {
+            in 0..4 -> null // crafting
+            in ARMOR_OFFSET..ARMOR_OFFSET + 4 -> 0 // armor
+            in ARMOR_OFFSET + 5 until HOTBAR_OFFSET -> 1 // inventory
+            in HOTBAR_OFFSET..HOTBAR_OFFSET + HOTBAR_SLOTS -> 2 // hotbar
+            else -> null // offhand, else
+        }
     }
 
     val InventorySlots.EquipmentSlots.slot: Int

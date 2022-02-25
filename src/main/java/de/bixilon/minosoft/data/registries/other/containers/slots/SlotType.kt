@@ -11,20 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.atlas
+package de.bixilon.minosoft.data.registries.other.containers.slots
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
 
-class AtlasElement(
-    override val texture: AbstractTexture,
-    val start: Vec2i,
-    val end: Vec2i,
-    val slots: Int2ObjectOpenHashMap<AtlasSlot>,
-) : TextureLike {
-    override val size: Vec2i = end - start
-    override lateinit var uvStart: Vec2
-    override lateinit var uvEnd: Vec2
+interface SlotType {
+
+    fun canRemove(container: Container, slot: Int, stack: ItemStack) = true
+    fun canModify(container: Container, slot: Int, stack: ItemStack) = true
+    fun canPut(container: Container, slot: Int, stack: ItemStack) = true
 }

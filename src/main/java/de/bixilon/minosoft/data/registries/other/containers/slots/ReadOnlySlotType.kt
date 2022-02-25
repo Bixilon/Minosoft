@@ -11,13 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.atlas
+package de.bixilon.minosoft.data.registries.other.containers.slots
 
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
 
-data class Vec2iBinding(
-    val start: Vec2i,
-    val end: Vec2i,
-) {
-    val size = end - start
+object ReadOnlySlotType : SlotType {
+
+    override fun canRemove(container: Container, slot: Int, stack: ItemStack): Boolean = false
+    override fun canModify(container: Container, slot: Int, stack: ItemStack): Boolean = false
+    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean = false
 }

@@ -60,17 +60,18 @@ class AtlasManager(private val renderWindow: RenderWindow) {
             val texture = renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation(), mipmaps = false)
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
-            val slots: Int2ObjectOpenHashMap<Vec2iBinding> = Int2ObjectOpenHashMap()
+            val slots: Int2ObjectOpenHashMap<AtlasSlot> = Int2ObjectOpenHashMap()
 
             versionData["slots"].toJsonObject()?.let {
                 for ((slotId, slotData) in it) {
                     val slot = slotData.asJsonObject()
-                    slots[slotId.toInt()] = Vec2iBinding(
+                    slots[slotId.toInt()] = AtlasSlot(
                         start = slot["start"].toVec2i(),
                         end = slot["end"].toVec2i(),
                     )
                 }
             }
+            // ToDo: special
 
             val atlasElement = AtlasElement(
                 texture = texture,
