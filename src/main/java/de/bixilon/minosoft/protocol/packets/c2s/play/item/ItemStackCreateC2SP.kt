@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.item
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer

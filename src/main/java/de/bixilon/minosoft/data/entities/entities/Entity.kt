@@ -17,6 +17,8 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -24,8 +26,6 @@ import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import glm_.vec3.Vec3i

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
-import de.bixilon.minosoft.data.inventory.click.SimpleContainerAction
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.click.SimpleContainerAction
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.RawItemElement

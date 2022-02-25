@@ -17,10 +17,10 @@ import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStackUtil
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
-import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
+import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget

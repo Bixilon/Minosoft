@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.other.containers
 
+import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -19,6 +20,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 
 data class ContainerType(
     override val resourceLocation: ResourceLocation,
+    val factory: ContainerFactory<out Container>,
 ) : RegistryItem() {
 
     override fun toString(): String {
@@ -29,6 +31,7 @@ data class ContainerType(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ContainerType {
             return ContainerType(
                 resourceLocation = resourceLocation,
+                factory = DefaultContainerFactories[resourceLocation] ?: Container,
             )
         }
     }

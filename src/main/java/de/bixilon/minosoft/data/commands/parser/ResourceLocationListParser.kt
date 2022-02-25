@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
-import de.bixilon.minosoft.data.DefaultEntityFactories
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.DimensionNotFoundCommandParseException
@@ -20,6 +19,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.Ench
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.EntityNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
+import de.bixilon.minosoft.data.registries.entities.DefaultEntityFactories
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ResourceLocationListParser : CommandParser() {

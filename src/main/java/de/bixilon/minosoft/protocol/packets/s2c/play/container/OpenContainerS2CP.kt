@@ -12,8 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.data.inventory.DefaultInventoryTypes
-import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.minosoft.data.container.DefaultInventoryTypes
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -69,13 +68,9 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (containerId == ProtocolDefinition.PLAYER_CONTAINER_ID) {
             return
         }
-        // ToDo: Container factories instead of generic container
-        val container = Container(
-            connection,
-            containerType,
-            title,
-            hasTitle,
-        )
+        val title = if (hasTitle) title else null
+        val container = containerType.factory.build(connection, containerType, title)
+
         connection.player.incompleteContainers.remove(containerId)?.let {
             for ((slot, stack) in it) {
                 container[slot] = stack

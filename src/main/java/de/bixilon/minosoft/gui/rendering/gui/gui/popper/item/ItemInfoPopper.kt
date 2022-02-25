@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.popper.item
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent

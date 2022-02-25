@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.decoration.LeashFenceKnotEntity
 import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -27,11 +26,15 @@ import glm_.vec3.Vec3d
 @Deprecated("Replaced with ZombifiedPiglin")
 class ZombiePigman(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, position, rotation) {
 
-    companion object : EntityFactory<LeashFenceKnotEntity> {
+    companion object : EntityFactory<ZombifiedPiglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_pigman")
 
         override fun tweak(connection: PlayConnection, entityData: EntityData?, versionId: Int): ResourceLocation {
             return ZombifiedPiglin.RESOURCE_LOCATION
+        }
+
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin? {
+            return ZombifiedPiglin.build(connection, entityType, position, rotation)
         }
     }
 }

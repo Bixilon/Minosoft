@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block

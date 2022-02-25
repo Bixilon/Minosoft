@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
-import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element

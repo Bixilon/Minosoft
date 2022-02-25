@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
 
-import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScreen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

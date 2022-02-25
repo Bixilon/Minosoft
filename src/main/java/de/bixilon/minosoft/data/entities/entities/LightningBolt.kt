@@ -23,5 +23,9 @@ class LightningBolt(connection: PlayConnection, entityType: EntityType, position
 
     companion object : EntityFactory<LightningBolt> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("lightning_bolt")
+
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): LightningBolt? {
+            throw IllegalAccessError("Can not build lightning bolt!")
+        }
     }
 }

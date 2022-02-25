@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.inventory.ItemStackUtil
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome

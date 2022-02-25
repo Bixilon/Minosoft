@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface UsableItem {

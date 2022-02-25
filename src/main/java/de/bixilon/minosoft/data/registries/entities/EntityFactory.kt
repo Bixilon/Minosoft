@@ -30,7 +30,5 @@ interface EntityFactory<T : Entity> : CompanionResourceLocation {
         return RESOURCE_LOCATION
     }
 
-    fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): T? {
-        return null
-    }
+    fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): T?
 }

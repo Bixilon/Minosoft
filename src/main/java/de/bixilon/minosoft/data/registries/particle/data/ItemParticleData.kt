@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.registries.particle.data
 
-import de.bixilon.minosoft.data.inventory.ItemStackUtil
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions

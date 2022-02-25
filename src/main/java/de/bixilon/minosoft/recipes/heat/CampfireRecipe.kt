@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.recipes.heat
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.recipes.RecipeFactory

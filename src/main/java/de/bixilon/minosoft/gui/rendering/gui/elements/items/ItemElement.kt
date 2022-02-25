@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.click.CloneContainerAction
-import de.bixilon.minosoft.data.inventory.click.DropContainerAction
-import de.bixilon.minosoft.data.inventory.click.FastMoveContainerAction
-import de.bixilon.minosoft.data.inventory.click.SimpleContainerAction
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.click.CloneContainerAction
+import de.bixilon.minosoft.data.container.click.DropContainerAction
+import de.bixilon.minosoft.data.container.click.FastMoveContainerAction
+import de.bixilon.minosoft.data.container.click.SimpleContainerAction
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged

@@ -16,10 +16,10 @@ package de.bixilon.minosoft.data.registries
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
+import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry

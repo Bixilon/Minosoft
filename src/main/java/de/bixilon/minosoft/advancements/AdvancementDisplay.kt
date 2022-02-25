@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.advancements
 
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
 import glm_.vec2.Vec2
 

@@ -16,9 +16,9 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.random.RandomUtil.chance
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.inventory.ItemStackUtil
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties

@@ -26,12 +26,14 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.stack.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
@@ -43,8 +45,6 @@ import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
-import de.bixilon.minosoft.data.registries.other.containers.Container
-import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
