@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.other.containers.slots.equipment
 
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.stack.ItemStack
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.other.containers.Container
 
@@ -22,10 +23,12 @@ object HeadSlotType : EquipmentSlotType {
 
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
         val item = stack.item.item
-        // ToDo: Carved pumpkin
+        if (item.resourceLocation == MinecraftBlocks.CARVED_PUMPKIN) {
+            return super.canPut(container, slot, stack)
+        }
         if (item !is ArmorItem) {
             return false
         }
-        return item.equipmentSlot == InventorySlots.EquipmentSlots.HEAD
+        return item.equipmentSlot == InventorySlots.EquipmentSlots.HEAD && super.canPut(container, slot, stack)
     }
 }

@@ -25,6 +25,6 @@ object FeetSlotType : EquipmentSlotType {
         if (item !is ArmorItem) {
             return false
         }
-        return item.equipmentSlot == InventorySlots.EquipmentSlots.FEET
+        return item.equipmentSlot == InventorySlots.EquipmentSlots.FEET && super.canPut(container, slot, stack)
     }
 }

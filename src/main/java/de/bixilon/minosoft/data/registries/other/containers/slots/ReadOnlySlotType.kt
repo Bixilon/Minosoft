@@ -19,6 +19,5 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 object ReadOnlySlotType : SlotType {
 
     override fun canRemove(container: Container, slot: Int, stack: ItemStack): Boolean = false
-    override fun canModify(container: Container, slot: Int, stack: ItemStack): Boolean = false
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean = false
 }

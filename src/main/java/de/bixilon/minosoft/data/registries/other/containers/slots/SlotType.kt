@@ -18,7 +18,10 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 
 interface SlotType {
 
-    fun canRemove(container: Container, slot: Int, stack: ItemStack) = true
-    fun canModify(container: Container, slot: Int, stack: ItemStack) = true
+    fun canRemove(container: Container, slot: Int, stack: ItemStack): Boolean {
+        // ToDo: Check course of binding
+        return true
+    }
+
     fun canPut(container: Container, slot: Int, stack: ItemStack) = true
 }

@@ -19,6 +19,5 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 object RemoveOnlySlotType : SlotType {
 
     override fun canRemove(container: Container, slot: Int, stack: ItemStack): Boolean = true
-    override fun canModify(container: Container, slot: Int, stack: ItemStack): Boolean = true
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean = true
+    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean = false
 }
