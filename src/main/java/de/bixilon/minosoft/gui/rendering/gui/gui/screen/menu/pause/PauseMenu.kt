@@ -21,9 +21,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.NeutralizedBu
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
+import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug.DebugMenu
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.ShutdownManager
 import glm_.vec2.Vec2i

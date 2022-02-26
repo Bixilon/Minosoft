@@ -16,7 +16,7 @@ package de.bixilon.minosoft.modding.event.master
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
-import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.minosoft.modding.event.EventInstantFire
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
@@ -28,7 +28,7 @@ import kotlin.reflect.full.companionObjectInstance
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
     val parents: MutableSet<AbstractEventMaster> = synchronizedSetOf(*parents)
-    private val eventInvokerLock = ReadWriteLock()
+    private val eventInvokerLock = SimpleLock()
     private val eventInvokers: PriorityQueue<EventInvoker> = PriorityQueue()
 
     override val size: Int

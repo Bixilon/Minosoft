@@ -44,6 +44,7 @@ class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             marginOf(left = 5)
         }
         this.margin = margin
+        containerElement.parent = this
     }
 
 

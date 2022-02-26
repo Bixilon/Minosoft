@@ -26,8 +26,8 @@ import glm_.vec2.Vec2i
 
 class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
     private val water = guiRenderer.renderWindow.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
-    private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]!!
-    private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]!!
+    private val airBubble = guiRenderer.atlasManager["minecraft:air_bubble"]
+    private val poppingAirBubble = guiRenderer.atlasManager["minecraft:popping_air_bubble"]
 
     init {
         forceSilentApply()

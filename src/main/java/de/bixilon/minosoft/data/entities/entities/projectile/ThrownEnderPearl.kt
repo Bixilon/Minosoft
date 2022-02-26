@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -21,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 class ThrownEnderPearl(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
-    override val defaultItem: ItemStack
-        get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
+    override val defaultItemType: ResourceLocation
+        get() = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownEnderPearl> {
         private val DEFAULT_ITEM = ResourceLocation("ender_pearl")

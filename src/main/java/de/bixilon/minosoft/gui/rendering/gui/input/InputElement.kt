@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,11 +22,9 @@ import glm_.vec2.Vec2i
 
 interface InputElement : MouseInputElement {
 
-    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions) = false
+    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int) = false
     fun onScroll(position: Vec2i, scrollOffset: Vec2d) = false
 
     fun onKey(key: KeyCodes, type: KeyChangeTypes) = false
     fun onCharPress(char: Int) = false
-
-    // ToDo: drag
 }

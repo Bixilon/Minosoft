@@ -22,7 +22,8 @@ class AtlasElement(
     override val texture: AbstractTexture,
     val start: Vec2i,
     val end: Vec2i,
-    val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
+    val slots: Int2ObjectOpenHashMap<AtlasSlot>,
+    val areas: Map<String, AtlasArea>,
 ) : TextureLike {
     override val size: Vec2i = end - start
     override lateinit var uvStart: Vec2

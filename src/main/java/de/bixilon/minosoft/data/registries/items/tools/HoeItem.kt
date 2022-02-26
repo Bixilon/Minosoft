@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -42,7 +42,7 @@ open class HoeItem(
         entries.toMap()
     }
 
-    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack): InteractionResults {
+    override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!connection.profiles.controls.interaction.tilling) {
             return InteractionResults.CONSUME
         }

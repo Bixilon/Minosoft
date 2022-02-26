@@ -298,4 +298,18 @@ open class OutByteBuffer() {
         writeFloat(vec3.y)
         writeFloat(vec3.z)
     }
+
+    fun <T> writeArray(array: Array<T>, writer: (T) -> Unit) {
+        writeVarInt(array.size)
+        for (entry in array) {
+            writer(entry)
+        }
+    }
+
+    fun <T> writeArray(collection: Collection<T>, writer: (T) -> Unit) {
+        writeVarInt(collection.size)
+        for (entry in collection) {
+            writer(entry)
+        }
+    }
 }

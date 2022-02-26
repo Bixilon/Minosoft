@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-layout(std140) uniform uAnimationBuffer
+layout(std140) uniform uSpriteBuffer
 {
     uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
 };

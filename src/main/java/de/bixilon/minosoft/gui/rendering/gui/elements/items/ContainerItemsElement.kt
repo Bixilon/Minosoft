@@ -13,84 +13,113 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
-import de.bixilon.minosoft.data.registries.other.containers.Container
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
+import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.atlas.Vec2iBinding
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ContainerItemsElement(
     guiRenderer: GUIRenderer,
     val container: Container,
-    val slots: Int2ObjectOpenHashMap<Vec2iBinding>, // ToDo: Use an array?
-) : Element(guiRenderer) {
-    private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
-    private var revision = -1L
+    val slots: Int2ObjectOpenHashMap<AtlasSlot>, // ToDo: Use an array?
+) : Element(guiRenderer), AbstractLayout<ItemElement> {
+    private val itemElements: Int2ObjectOpenHashMap<ItemElementData> = Int2ObjectOpenHashMap()
+    private var floatingItem: FloatingItem? = null
+    override var activeElement: ItemElement? = null
+    override var activeDragElement: ItemElement? = null
+    private var update = true
+        set(value) {
+            if (value) {
+                cacheUpToDate = false
+            }
+            if (field == value) {
+                return
+            }
+            field = value
+        }
 
     init {
         silentApply()
+
+        val size = Vec2i.EMPTY
+        for ((slotId, binding) in slots) {
+            val item = container[slotId]
+            itemElements[slotId] = ItemElementData(
+                element = ItemElement(
+                    guiRenderer = guiRenderer,
+                    size = binding.size,
+                    item = item,
+                    slotId = slotId,
+                    itemsElement = this,
+                ),
+                offset = binding.start,
+            )
+            size.x = maxOf(binding.end.x, size.x)
+            size.y = maxOf(binding.end.y, size.y)
+        }
+        this._size = size
+
+        container::slots.observeMap(this) { update = true; }
+        container::floatingItem.observe(this) {
+            this.floatingItem?.close()
+            this.floatingItem = null
+            this.floatingItem = FloatingItem(guiRenderer, stack = it ?: return@observe, container = container).apply { show() }
+        }
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        for ((_, data) in itemElements.toSynchronizedMap()) {
+        if (update) {
+            forceSilentApply()
+        }
+        for (data in itemElements.values) {
             data.element.render(offset + data.offset, consumer, options)
         }
     }
 
-    override fun silentApply(): Boolean {
-        val revision = container.revision
-        if (this.revision == revision) {
-            return false
-        }
-        this.revision = revision
-
-        var changes = false
-        for ((slot, binding) in slots) {
-            val item = container[slot]
-            val data = itemElements[slot]
-
-            if (data == null) {
-                item ?: continue
-                val element = ItemElement(
-                    guiRenderer = guiRenderer,
-                    size = binding.size,
-                    item = item,
-                )
-                itemElements[slot] = ItemElementData(
-                    element = element,
-                    offset = binding.start,
-                )
-                // element.parent = this
-                changes = true
-            } else {
-                if (data.element.item == item) {
-                    if (data.element.silentApply()) {
-                        changes = true
-                    }
-                } else {
-                    data.element.item = item
-                    changes = true
-                }
-            }
-        }
-
-        if (!changes) {
-            return false
-        }
-
-        cacheUpToDate = false
-        return true
-    }
 
     override fun forceSilentApply() {
-        silentApply()
+        container.lock.acquire()
+        var changes = 0
+        for ((slotId, data) in itemElements) {
+            val stack = container.slots[slotId]
+            if (data.element.stack === stack) {
+                continue
+            }
+            data.element._stack = stack
+            changes++
+        }
+        container.lock.release()
+
+        if (changes > 0) {
+            cacheUpToDate = false
+        }
+        update = false
     }
 
+    override fun getAt(position: Vec2i): Pair<ItemElement, Vec2i>? {
+        for (item in itemElements.values) {
+            if (position isSmaller item.offset) {
+                continue
+            }
+            val innerOffset = position - item.offset
+            if (innerOffset isGreater item.element.size) {
+                continue
+            }
+            return Pair(item.element, innerOffset)
+        }
+        return null
+    }
 
     private data class ItemElementData(
         val element: ItemElement,

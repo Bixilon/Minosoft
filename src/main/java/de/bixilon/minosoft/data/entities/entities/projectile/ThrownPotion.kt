@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -33,11 +33,12 @@ class ThrownPotion(connection: PlayConnection, entityType: EntityType, position:
         } else {
             data.sets.getItemStack(EntityDataFields.THROWN_POTION_ITEM) ?: defaultItem
         }
+    override val defaultItemType: ResourceLocation
+        get() = throw NullPointerException()
 
-    override val defaultItem: ItemStack? = DEFAULT_ITEM
+    override val defaultItem: ItemStack? = null
 
     companion object : EntityFactory<ThrownPotion> {
-        private val DEFAULT_ITEM: ItemStack? = null
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("potion")
 
         override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ThrownPotion {

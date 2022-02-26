@@ -17,9 +17,10 @@ import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
+import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
@@ -54,34 +55,34 @@ class ItemPickInteractionHandler(
             return
         }
 
-        val itemStack: ItemStack?
+        val stack: ItemStack?
 
         when (target) {
             is BlockTarget -> {
-                itemStack = ItemStack(target.blockState.block.item, connection, 1)
+                stack = ItemStackUtil.of(target.blockState.block.item, count = 1, connection = connection)
 
                 if (copyNBT) {
                     val blockEntity = connection.world.getBlockEntity(target.blockPosition)
-                    blockEntity?.nbt?.let { itemStack.nbt.putAll(it) }
+                    blockEntity?.nbt?.toMutableMap()?.let { stack.updateNbt(it) }
                 }
             }
             is EntityTarget -> {
                 val entity = target.entity
-                itemStack = entity.type.spawnEgg?.let { ItemStack(it, connection) } ?: let {
+                stack = entity.type.spawnEgg?.let { ItemStackUtil.of(it, connection = connection) } ?: let {
                     entity.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?.copy()
                 }
             }
             else -> {
-                itemStack = null
+                stack = null
             }
         }
 
-        if (itemStack == null) {
+        if (stack == null) {
             return
         }
         for (i in 0 until PlayerInventory.HOTBAR_SLOTS) {
             val slot = connection.player.inventory.getHotbarSlot(i) ?: continue
-            if (slot != itemStack) {
+            if (slot != stack) {
                 continue
             }
             interactionManager.hotbar.selectSlot(i)
@@ -100,8 +101,8 @@ class ItemPickInteractionHandler(
         interactionManager.hotbar.selectSlot(slot)
         val selectedSlot = connection.player.selectedHotbarSlot + PlayerInventory.HOTBAR_OFFSET
 
-        rateLimiter += { connection.sendPacket(ItemStackCreateC2SP(selectedSlot, itemStack)) }
-        connection.player.inventory[selectedSlot] = itemStack
+        rateLimiter += { connection.sendPacket(ItemStackCreateC2SP(selectedSlot, stack)) }
+        connection.player.inventory[selectedSlot] = stack
 
         // ToDo: Use ItemPickC2SP
     }

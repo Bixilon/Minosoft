@@ -1,34 +1,36 @@
 # Minosoft
 
-Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.
+Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
+(To be clear: This is not clone of minecraft, you can see it more like a fork or even better as a reimplementation)
 
 [![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
 
 <h2><span style="color:red">Notice: I am **not** responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
+(Also this software is not affiliated with Mojang AB)
 
 ## Feature overview
 
 - Rendering
-- Multi protocol support (1.7 - latest)
-- Modding
+- Connect with any version to any server  (1.7 - latest)
+- ~~Modding~~
 - Bleeding edge performance (incredible start time of 3 - 5 seconds on modern hardware)
 - Free (as far as we consider original minecraft as free) and open source
-- Multi accounting (Offline, Mojang, Microsoft)
-- Multi connections
-- Multi threading and asynchronous loading
+- Easy use of multiple accounting
+- Multiple connections to servers in 1 process
+- Multithreading and asynchronous loading
 - Debugging on protocol layer
 - LAN servers
 - Independent, I'd accept almost all types of patches (except explicit server support)
 - Way more stuff
-- Multiple profiles (just choose it per server or in eros)
+- Multiple profiles (i.e. settings for servers or minosoft in general)
 
 ## System requirements
 
 - CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
-- RAM: Minimum 300 MiB, 1 GiB recommended
-- Disk space: Minosoft itself is pretty small (2-3 MiB), the libraries are a bit bigger (~80 MiB). You also need to have the "normal" minecraft assets (~ 300 MiB per minecraft version).
+- RAM: Minimum 500 MiB, 1 GiB recommended
+- Disk space: Minosoft itself is pretty small (a couple of MiB), the libraries take to most binary space (around 80 MiB). Minecraft itself (with its assets) takes about 300 MiB per version.
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
-- Java 11+, 16+ recommended (This is really important, Minosoft uses features that are only available in this version. Java 8 is currently **not** supported).
+- Java 11+, 16+ recommended (Java 8 is **not** supported).
 
 ## Rendering
 
@@ -40,8 +42,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Block place, break, mining
 - Item and block interaction
 - (almost) Original physics
-
-Works. Still missing many features, but heavily developed.
+- HUD
 
 ![Rendering](doc/img/rendering5.png)  
 A world, with a ton of hud features exposed
@@ -67,7 +68,7 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.17 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.17 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned, also support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.
 
 ### Unsupported versions
 
@@ -75,34 +76,34 @@ Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data sou
 
 ## Modding
 
-Minosoft is modding friendly. A decent and stable API was introduced with !17. It is pretty final, but some things might still change. See [Modding.md](doc/Modding.md) for more details. The code is pretty dynamic (all blocks, items, entities, etc are stored in json files). It is pretty easy to load custom entities, etc, so adding custom blocks, etc is easily possible. Spoiler: Forge mods are NOT compatible.
+Completely broken -/-
 
 ## Botting
 
-On the ToDo List
+Not easily possible, but will be improved in the future.
 
 ## Contribution or helping out
 
-I'd love it. Currently, it is pretty much work for me, so please help out if you can and want :). Feel free to take a look at [Contributing.md](/Contributing.md).
+Please do it. I am completely busy with the development. Grab pretty much whatever you want and start developing.
+(But before please take a look at [Contributing.md](/Contributing.md))
 
 ## Tools and generators
 
 I wrote some tools to help out, see [Utility](util/ReadMe.md).
 
-## Credits
+## Credits and thanking words
 
 See [Credits](Credits.md).
 
 ## Releases and beta
 
-I invested (until now!) a couple of thousand hours in this project: https://www.reddit.com/r/git/comments/np9yo7/finally_i_can_say_that_i_have_no_life/
+No clue. Don't wait for it :)
 
-I'll push a beta, once I think Minosoft is ready. It will still take some time, but I don't want to make a release and get a thousand issues. I know there are a ton of bugs, and I want to solve at least a couple of them. Also, a big topic is code quality. Before Minosoft, I just had a barely networking experience, no clue about the internals of minecraft, nor of kotlin or opengl. I learned so much, and you can see much code as "first draft". I'll need to do a ton of refactoring, otherwise I
-can't think of PRs (they are still welcome). If you want to get current developer news, take a look in our telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews).
+Background: I invested thousands of hours in this project to make it work. It is currently not really playable yet, but I am hardly working on it. A release normally means, that it is stable, has few (known) bugs and won't change that much in the near future. All those "requirements" are currently not fulfilled at all. There are a ton of bugs, issues, part of the core code changes frequently and Minosoft is still missing soooo many features. The current goal is to be able to play bedwars with this client, you can find the tracking issue [here](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/42).
+
+If you want to get notified when cool new features arrive or other interesting stuff happens were, feel free to subscribe to [@MinosoftDevNews](https://t.me/MinosoftDevNews).
 
 ## Downloads / Installation
-
-Because there are no releases or tags yet, I don't build any versions. This will change soon™.
 
 ### Linux
 
@@ -114,11 +115,11 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 
 ### Windows
 
-TBA
+Build it from source and run it :)
 
-### MacOS
+### macOS
 
-Works, but need a couple of workarounds. See issue [#29](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29) for details
+Support for macOS is a delicate topic. Let's say it works for now, but it is not convenient to use. Take a look at issue [#29](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29) for details.
 
 ## Building
 
@@ -130,6 +131,7 @@ Works, but need a couple of workarounds. See issue [#29](https://gitlab.bixilon.
 6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
 
 ## Code mirrors
+
 - [gitlab.bixilon.de](https://gitlab.bixilon.de/bixilon/minosoft/) (Main repository)
 - [GitLab](https://gitlab.com/Bixilon/minosoft)
 - [GitHub](https://github.com/Bixilon/Minosoft/)

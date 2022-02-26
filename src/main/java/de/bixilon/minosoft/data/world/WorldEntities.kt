@@ -82,7 +82,7 @@ class WorldEntities : Iterable<Entity> {
 
     @Deprecated("ToDo: Lock")
     override fun iterator(): Iterator<Entity> {
-        return idEntityMap.toSynchronizedMap().values.iterator()
+        return uuidEntityMap.toSynchronizedMap().values.iterator()
     }
 
     fun getInRadius(position: Vec3d, distance: Double, check: (Entity) -> Boolean): List<Entity> {

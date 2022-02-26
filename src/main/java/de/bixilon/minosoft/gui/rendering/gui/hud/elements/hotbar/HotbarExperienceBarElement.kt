@@ -34,12 +34,12 @@ class HotbarExperienceBarElement(guiRenderer: GUIRenderer) : Element(guiRenderer
      */
     private val atlasElements = arrayOf(
         arrayOf(
-            guiRenderer.atlasManager["minecraft:empty_experience_bar"]!!,
-            guiRenderer.atlasManager["minecraft:full_experience_bar"]!!,
+            guiRenderer.atlasManager["minecraft:empty_experience_bar"],
+            guiRenderer.atlasManager["minecraft:full_experience_bar"],
         ),
         arrayOf(
-            guiRenderer.atlasManager["minecraft:empty_horse_jump_bar"]!!,
-            guiRenderer.atlasManager["minecraft:full_horse_jump_bar"]!!,
+            guiRenderer.atlasManager["minecraft:empty_horse_jump_bar"],
+            guiRenderer.atlasManager["minecraft:full_horse_jump_bar"],
         ),
     )
 

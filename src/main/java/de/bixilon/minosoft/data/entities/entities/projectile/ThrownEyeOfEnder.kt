@@ -12,11 +12,12 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -29,8 +30,9 @@ class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, posit
     val item: ItemStack
         get() = data.sets.getItemStack(EntityDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: defaultItem
 
+
     val defaultItem: ItemStack
-        get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
+        get() = ItemStackUtil.of(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection = connection)
 
     companion object : EntityFactory<ThrownEyeOfEnder> {
         private val DEFAULT_ITEM = ResourceLocation("ender_eye")

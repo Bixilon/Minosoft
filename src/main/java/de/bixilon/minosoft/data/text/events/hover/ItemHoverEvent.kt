@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text.events.hover
 
 import de.bixilon.kutil.json.JsonObject
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
 
 class ItemHoverEvent(

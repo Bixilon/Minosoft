@@ -22,9 +22,9 @@ Minosoft is an open source project, it helps if you recommend it and share it mo
 
 ### Donating
 
-I started this project in mind, that I'll never earn money from it. Just doing it for fun, so I am not dependent on it. So: Currently not available and not planned.
+Just doing it to learn stuff and have fun. I started this in mind, that I'll never earn money from it.
 
-## Contact us
+## Help
 
 If you want to ask me, the team or whoever in this project a question, you can do the following things:
  - Issues: Just open an issue if you want to ask it, or suggest something. If it is a really short thing, this is not recommended, but even if, it is no problem.

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
@@ -30,13 +30,14 @@ import glm_.vec2.Vec2i
 abstract class Menu(
     guiRenderer: GUIRenderer,
     val preferredElementWidth: Int = 150,
-) : Screen(guiRenderer), ActiveMouseMove<Element> {
+) : Screen(guiRenderer), AbstractLayout<Element> {
     private val elements: MutableList<Element> = mutableListOf()
 
     private var maxElementWidth = -1
     private var totalHeight = -1
 
     override var activeElement: Element? = null
+    override var activeDragElement: Element? = null
 
     override fun forceSilentApply() {
         val elementWidth = maxOf(minOf(preferredElementWidth, size.x / 3), 0)
@@ -77,12 +78,12 @@ abstract class Menu(
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
-        super<ActiveMouseMove>.onMouseEnter(position, absolute)
+        super<AbstractLayout>.onMouseEnter(position, absolute)
         return true
     }
 
     override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
-        super<ActiveMouseMove>.onMouseMove(position, absolute)
+        super<AbstractLayout>.onMouseMove(position, absolute)
         return true
     }
 
@@ -91,9 +92,9 @@ abstract class Menu(
         return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         val (element, delta) = getAt(position) ?: return true
-        element.onMouseAction(delta, button, action)
+        element.onMouseAction(delta, button, action, count)
         return true
     }
 

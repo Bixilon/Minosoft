@@ -59,6 +59,7 @@ class Rendering(private val connection: PlayConnection) {
         val audioLatch = CountUpAndDownLatch(1, latch)
         Thread({
             try {
+               Thread.currentThread().priority = Thread.MAX_PRIORITY
                 audioPlayer.init(audioLatch)
                 audioPlayer.startLoop()
                 audioPlayer.exit()
@@ -80,6 +81,7 @@ class Rendering(private val connection: PlayConnection) {
 
     private fun startRenderWindow(latch: CountUpAndDownLatch) {
         try {
+            Thread.currentThread().priority = Thread.MAX_PRIORITY
             CONTEXT_MAP[Thread.currentThread()] = renderWindow
             renderWindow.init(latch)
             renderWindow.startLoop()

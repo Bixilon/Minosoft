@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.DefaultEntityFactories;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.data.registries.entities.DefaultEntityFactories;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 
 public class ResourceLocationSelectorArgumentParser extends EntitySelectorArgumentParser {

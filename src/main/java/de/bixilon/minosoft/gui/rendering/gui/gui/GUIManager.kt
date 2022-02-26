@@ -21,12 +21,15 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.input.DraggableHandler
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -37,7 +40,7 @@ import glm_.vec2.Vec2i
 
 class GUIManager(
     override val guiRenderer: GUIRenderer,
-) : Initializable, InputHandler, GUIElementDrawer {
+) : Initializable, InputHandler, GUIElementDrawer, DraggableHandler {
     private val elementCache: MutableMap<GUIBuilder<*>, GUIElement> = mutableMapOf()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val renderWindow = guiRenderer.renderWindow
@@ -48,6 +51,11 @@ class GUIManager(
         for (element in elementCache.values) {
             element.init()
         }
+        registerDefaultElements()
+    }
+
+    private fun registerDefaultElements() {
+        ContainerGUIManager.register(guiRenderer)
     }
 
     override fun postInit() {
@@ -72,7 +80,13 @@ class GUIManager(
         for (element in elementCache.values) {
             // ToDo: Just the current active one
             if (element is LayoutedGUIElement<*>) {
-                element.elementLayout.forceSilentApply()
+                element.element.forceSilentApply()
+            }
+            element.apply()
+        }
+        for (element in elementOrder) {
+            if (element is LayoutedGUIElement<*>) {
+                element.element.forceSilentApply()
             }
             element.apply()
         }
@@ -134,52 +148,59 @@ class GUIManager(
         }
     }
 
-    override fun onCharPress(char: Int): Boolean {
+    private fun runForEach(run: (element: GUIElement) -> Boolean): Boolean {
         for ((index, element) in elementOrder.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
-            if (element.onCharPress(char)) {
+            if (run(element)) {
                 return true
             }
         }
         return false
+    }
+
+    override fun onCharPress(char: Int): Boolean {
+        return runForEach { it.onCharPress(char) }
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {
-        for ((index, element) in elementOrder.toList().withIndex()) {
-            if (index != 0 && !element.activeWhenHidden) {
-                continue
-            }
-            if (element.onMouseMove(position)) {
-                return true
-            }
-        }
-        return false
+        return runForEach { it.onMouseMove(position) }
     }
 
-    override fun onKeyPress(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        for ((index, element) in elementOrder.toList().withIndex()) {
-            if (index != 0 && !element.activeWhenHidden) {
-                continue
-            }
-            if (element.onKeyPress(type, key)) {
-                return true
-            }
-        }
-        return false
+    override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
+        return runForEach { it.onKey(type, key) }
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
+        return runForEach { it.onScroll(scrollOffset) }
+    }
+
+    private fun runForEachDrag(run: (element: GUIElement) -> Element?): Element? {
         for ((index, element) in elementOrder.toList().withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
-            if (element.onScroll(scrollOffset)) {
-                return true
-            }
+
+            run(element)?.let { return it }
         }
-        return false
+        return null
+    }
+
+    override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragMove(position, dragged) }
+    }
+
+    override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragKey(type, key, dragged) }
+    }
+
+    override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragScroll(scrollOffset, dragged) }
+    }
+
+    override fun onDragChar(char: Int, dragged: Dragged): Element? {
+        return runForEachDrag { it.onDragChar(char, dragged) }
     }
 
     fun open(builder: GUIBuilder<*>) {
@@ -210,7 +231,7 @@ class GUIManager(
         }
         elementOrder.add(0, element)
         element.onOpen()
-        onMouseMove(guiRenderer.currentCursorPosition)
+        onMouseMove(guiRenderer.currentMousePosition)
     }
 
     @Deprecated("Only use for dynamic gui (e.g. dialogs, ...)")
@@ -221,12 +242,39 @@ class GUIManager(
         _push(layouted)
     }
 
+    fun pop(element: GUIElement) {
+        if (elementOrder.isEmpty()) {
+            return
+        }
+
+        val index = elementOrder.indexOf(element)
+        if (index < 0) {
+            return
+        }
+        element.onClose()
+        elementOrder.removeAt(index)
+        if (index == 0) {
+            elementOrder.firstOrNull()?.onOpen()
+        }
+
+        if (elementOrder.isEmpty()) {
+            renderWindow.inputHandler.inputHandler = null
+            guiRenderer.popper.clear()
+            guiRenderer.dragged.element = null
+        }
+    }
+
     fun pop() {
+        if (guiRenderer.dragged.element != null) {
+            guiRenderer.dragged.element = null
+            return
+        }
         val previous = elementOrder.removeFirstOrNull() ?: return
         previous.onClose()
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
             guiRenderer.popper.clear()
+            guiRenderer.dragged.element = null
         }
         val now = elementOrder.firstOrNull() ?: return
         now.onOpen()
@@ -238,6 +286,7 @@ class GUIManager(
         }
         elementOrder.clear()
         guiRenderer.popper.clear()
+        guiRenderer.dragged.element = null
         renderWindow.inputHandler.inputHandler = null
     }
 

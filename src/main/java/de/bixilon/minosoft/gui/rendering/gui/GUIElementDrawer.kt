@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 

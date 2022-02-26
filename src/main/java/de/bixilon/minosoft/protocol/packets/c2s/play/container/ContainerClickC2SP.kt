@@ -12,8 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.container
 
-import de.bixilon.minosoft.data.inventory.InventoryActions
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -24,12 +23,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class ContainerClickC2SP(
-    val containerId: Byte,
+    val containerId: Int,
     val revision: Int,
-    val slot: Int,
-    val action: InventoryActions,
-    val actionNumber: Int,
-    val clickedItem: ItemStack,
+    val slot: Int?,
+    val mode: Int,
+    val button: Int,
+    val actionId: Int,
+    val next: Map<Int, ItemStack?>,
+    val clickedItem: ItemStack?,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -37,14 +38,24 @@ class ContainerClickC2SP(
         if (buffer.versionId >= V_1_17_1_PRE_1) {
             buffer.writeVarInt(revision)
         }
-        buffer.writeShort(slot)
-        buffer.writeByte(action.button)
-        buffer.writeShort(actionNumber)
-        buffer.writeByte(action.mode)
+
+        buffer.writeShort(slot ?: -999)
+        buffer.writeByte(button)
+        if (buffer.versionId < V_1_17_1_PRE_1) { // ToDo
+            buffer.writeShort(actionId)
+        }
+        buffer.writeVarInt(mode) // was byte in protocol
+        if (buffer.versionId >= V_1_17_1_PRE_1) { // ToDo
+            buffer.writeVarInt(next.size)
+            for ((slot, value) in next) {
+                buffer.writeShort(slot)
+                buffer.writeItemStack(value)
+            }
+        }
         buffer.writeItemStack(clickedItem)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, todo1=$revision, slot=$slot, action=$action, actionNumber=$actionNumber, clickedItem=$clickedItem)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$button, actionId=$actionId, next=$next, clickedItem=$clickedItem)" }
     }
 }

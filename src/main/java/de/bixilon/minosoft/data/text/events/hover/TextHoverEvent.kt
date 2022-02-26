@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.text.events.hover
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.popper.text.TextPopper
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.text.TextPopper
 import glm_.vec2.Vec2i
 import javafx.scene.text.Text
 

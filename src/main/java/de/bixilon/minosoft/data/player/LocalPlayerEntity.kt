@@ -13,7 +13,11 @@
 package de.bixilon.minosoft.data.player
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.kutil.math.MMath.floor
 import de.bixilon.kutil.primitive.BooleanUtil.decide
@@ -22,12 +26,14 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
@@ -39,8 +45,6 @@ import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
-import de.bixilon.minosoft.data.registries.other.containers.Container
-import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
@@ -82,7 +86,8 @@ class LocalPlayerEntity(
     val baseAbilities = Abilities()
 
     val inventory = PlayerInventory(connection)
-    val containers: MutableMap<Int, Container> = synchronizedMapOf(
+    val incompleteContainers: SynchronizedMap<Int, SynchronizedMap<Int, ItemStack>> = synchronizedMapOf()
+    val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
     var selectedHotbarSlot: Int = 0
@@ -212,7 +217,7 @@ class LocalPlayerEntity(
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
 
-    override val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
+    override val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack>
         get() = inventory.equipment
 
     private fun sendMovementPackets() {
@@ -334,7 +339,7 @@ class LocalPlayerEntity(
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
             return Vec3d(velocity.x, 0.2, velocity.z)
         }
         return velocity

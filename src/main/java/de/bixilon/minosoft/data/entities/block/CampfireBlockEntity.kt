@@ -16,8 +16,9 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.random.RandomUtil.chance
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -48,7 +49,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
                 items[index] = null
                 continue
             }
-            val itemStack = ItemStack(
+            val itemStack = ItemStackUtil.of(
                 item = connection.registries.itemRegistry[slot["id"].unsafeCast<String>()]!!,
                 connection = connection,
                 count = slot["Count"]?.toInt() ?: 1,

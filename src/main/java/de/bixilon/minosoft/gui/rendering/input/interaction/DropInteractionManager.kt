@@ -48,12 +48,10 @@ class DropInteractionManager(
     fun dropItem(stack: Boolean) {
         val time = TimeUtil.time
         val type = if (stack) {
-            connection.player.inventory.getHotbarSlot()?.count = 0
+            connection.player.inventory.getHotbarSlot()?.item?.count = 0
             PlayerActionC2SP.Actions.DROP_ITEM_STACK
         } else {
-            connection.player.inventory.getHotbarSlot()?.let {
-                it.count--
-            }
+            connection.player.inventory.getHotbarSlot()?.item?.decreaseCount()
             PlayerActionC2SP.Actions.DROP_ITEM
         }
         rateLimiter += { connection.sendPacket(PlayerActionC2SP(type)) }

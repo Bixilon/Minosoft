@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -24,6 +25,15 @@ class ContainerActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
     val actionId = buffer.readUnsignedShort()
     val accepted = buffer.readBoolean()
+
+    override fun handle(connection: PlayConnection) {
+        val container = connection.player.containers[containerId] ?: return
+        if (accepted) {
+            container.acknowledgeAction(actionId)
+        } else {
+            container.revertAction(actionId)
+        }
+    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container action status (containerId=$containerId, actionId=$actionId, accepted=$accepted)" }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -104,8 +104,13 @@ class OpenGLShader(
         renderWindow.renderSystem.shaders += this
     }
 
+
     private fun getUniformLocation(uniformName: String): Int {
-        return glGetUniformLocation(shader, uniformName)
+        val location = glGetUniformLocation(shader, uniformName)
+        if (location < 0) {
+            throw IllegalArgumentException("No uniform named $uniformName!")
+        }
+        return location
     }
 
     override fun setFloat(uniformName: String, value: Float) {
@@ -151,7 +156,11 @@ class OpenGLShader(
     }
 
     override fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer) {
-        glUniformBlockBinding(shader, glGetUniformBlockIndex(shader, uniformName), uniformBuffer.bindingIndex)
+        val index = glGetUniformBlockIndex(shader, uniformName)
+        if (index < 0) {
+            throw IllegalArgumentException("No uniform buffer called $uniformName")
+        }
+        glUniformBlockBinding(shader, index, uniformBuffer.bindingIndex)
     }
 
     fun unsafeUse() {

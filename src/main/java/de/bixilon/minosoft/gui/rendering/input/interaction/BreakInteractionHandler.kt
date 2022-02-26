@@ -152,6 +152,7 @@ class BreakInteractionHandler(
             if (currentTime - creativeLastHoldBreakTime <= ProtocolDefinition.TICK_TIME * 5) {
                 return true
             }
+
             swingArm()
             startDigging()
             finishDigging()
@@ -174,7 +175,7 @@ class BreakInteractionHandler(
 
         val breakItemInHand = connection.player.inventory.getHotbarSlot()
 
-        val isToolEffective = breakItemInHand?.item?.let {
+        val isToolEffective = breakItemInHand?.item?.item?.let {
             return@let if (it is MiningToolItem) {
                 it.isEffectiveOn(connection, target.blockState)
             } else {
@@ -183,10 +184,10 @@ class BreakInteractionHandler(
         } ?: false
         val isBestTool = !target.blockState.requiresTool || isToolEffective
 
-        var speedMultiplier = breakItemInHand?.let { it.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
+        var speedMultiplier = breakItemInHand?.let { it.item.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
 
         if (isToolEffective) {
-            breakItemInHand?.enchantments?.get(efficiencyEnchantment)?.let {
+            breakItemInHand?._enchanting?.enchantments?.get(efficiencyEnchantment)?.let {
                 speedMultiplier += it.pow(2) + 1.0f
             }
         }

@@ -19,8 +19,8 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
+import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
 import de.bixilon.minosoft.modding.event.EventInitiators

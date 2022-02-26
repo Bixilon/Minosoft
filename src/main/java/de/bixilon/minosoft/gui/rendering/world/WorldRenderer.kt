@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
@@ -94,23 +94,23 @@ class WorldRenderer(
     private val lightMap = LightMap(connection)
 
     private val loadedMeshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<WorldMesh>> = mutableMapOf() // all prepared (and up to date) meshes
-    private val loadedMeshesLock = ReadWriteLock()
+    private val loadedMeshesLock = SimpleLock()
 
     val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
     private val preparingTasks: MutableSet<SectionPrepareTask> = synchronizedSetOf() // current running section preparing tasks
-    private val preparingTasksLock = ReadWriteLock()
+    private val preparingTasksLock = SimpleLock()
 
     private val queue: MutableList<WorldQueueItem> = synchronizedListOf() // queue, that is visible, and should be rendered
-    private val queueLock = ReadWriteLock()
+    private val queueLock = SimpleLock()
     private val culledQueue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
-    private val culledQueueLock = ReadWriteLock()
+    private val culledQueueLock = SimpleLock()
 
     // ToDo: Sometimes if you clear the chunk cache a ton of times, the workers are maxed out and nothing happens anymore
     val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
     private val meshesToLoad: MutableList<WorldQueueItem> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
-    private val meshesToLoadLock = ReadWriteLock()
+    private val meshesToLoadLock = SimpleLock()
     private val meshesToUnload: MutableList<WorldMesh> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
-    private val meshesToUnloadLock = ReadWriteLock()
+    private val meshesToUnloadLock = SimpleLock()
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
     private var clearVisibleNextFrame = false

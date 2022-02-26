@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.items.UsableItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -71,38 +71,40 @@ class InteractInteractionHandler(
         interactingTicksLeft = 0
     }
 
-    fun interactBlock(target: BlockTarget, item: ItemStack?, hand: Hands): InteractionResults {
+    fun interactBlock(target: BlockTarget, stack: ItemStack?, hand: Hands): InteractionResults {
         if (target.distance >= connection.player.reachDistance) {
             return InteractionResults.PASS
         }
         // if out of world (border): return CONSUME
 
-        connection.sendPacket(BlockInteractC2SP(
-            position = target.blockPosition,
-            direction = target.direction,
-            cursorPosition = Vec3(target.hitPosition),
-            item = item,
-            hand = hand,
-            insideBlock = false, // ToDo: insideBlock
-        ))
+        try {
+            if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+                return InteractionResults.SUCCESS
+            }
 
-        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
-            return InteractionResults.SUCCESS
-        }
+            val result = target.blockState.block.onUse(connection, target, hand, stack)
+            if (result == InteractionResults.SUCCESS) {
+                return InteractionResults.SUCCESS
+            }
 
-        val result = target.blockState.block.onUse(connection, target, hand, item)
-        if (result == InteractionResults.SUCCESS) {
-            return InteractionResults.SUCCESS
-        }
+            if (stack == null) {
+                return InteractionResults.PASS
+            }
+            if (interactionManager.isCoolingDown(stack.item.item)) {
+                return InteractionResults.PASS // ToDo: Check
+            }
 
-        if (item == null) {
-            return InteractionResults.PASS
+            return stack.item.item.interactBlock(connection, target, hand, stack)
+        } finally {
+            connection.sendPacket(BlockInteractC2SP(
+                position = target.blockPosition,
+                direction = target.direction,
+                cursorPosition = Vec3(target.hitPosition),
+                item = stack,
+                hand = hand,
+                insideBlock = false, // ToDo: insideBlock
+            ))
         }
-        if (interactionManager.isCoolingDown(item.item)) {
-            return InteractionResults.PASS // ToDo: Check
-        }
-
-        return item.item.interactBlock(connection, target, hand, item)
     }
 
     fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
@@ -119,14 +121,17 @@ class InteractInteractionHandler(
 
     fun interactEntity(target: EntityTarget, hand: Hands): InteractionResults {
         val player = connection.player
-        connection.sendPacket(EntityEmptyInteractC2SP(connection, target.entity, hand, player.isSneaking))
+        try {
 
-        if (player.gamemode == Gamemodes.SPECTATOR) {
+            if (player.gamemode == Gamemodes.SPECTATOR) {
+                return InteractionResults.PASS
+            }
+
+            // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
             return InteractionResults.PASS
+        } finally {
+            connection.sendPacket(EntityEmptyInteractC2SP(connection, target.entity, hand, player.isSneaking))
         }
-
-        // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
-        return InteractionResults.PASS
     }
 
     fun interactItem(item: ItemStack, hand: Hands): InteractionResults {
@@ -136,15 +141,18 @@ class InteractInteractionHandler(
         val player = connection.player
         connection.sendPacket(PositionRotationC2SP(player.position, player.rotation, player.onGround))
 
-        // ToDo: Before 1.9
-        connection.sendPacket(UseItemC2SP(hand))
+        try {
 
-        if (interactionManager.isCoolingDown(item.item)) {
-            return InteractionResults.PASS
+            if (interactionManager.isCoolingDown(item.item.item)) {
+                return InteractionResults.PASS
+            }
+
+
+            return item.item.item.interactItem(connection, hand, item)
+        } finally {
+            // ToDo: Before 1.9
+            connection.sendPacket(UseItemC2SP(hand))
         }
-
-
-        return item.item.interactItem(connection, hand, item)
     }
 
     fun useItem() {
@@ -191,7 +199,7 @@ class InteractInteractionHandler(
             if (item != interactingItem || interactingSlot != selectedSlot) {
                 interactingItem = item
                 interactingSlot = selectedSlot
-                val itemType = item?.item
+                val itemType = item?.item?.item
                 interactingTicksLeft = if (itemType is UsableItem) {
                     itemType.maxUseTime
                 } else {
@@ -227,7 +235,7 @@ class InteractInteractionHandler(
             autoInteractionDelay++
 
             val interactingItem = interactingItem
-            val item = interactingItem?.item
+            val item = interactingItem?.item?.item
             if (item is UsableItem && connection.player.isUsingItem) {
                 interactingTicksLeft--
                 if (interactingTicksLeft < 0) {

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.lock.ReadWriteLock
+import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
@@ -25,7 +25,7 @@ open class SectionDataProvider<T>(
 ) : Iterable<T> {
     protected var data: Array<Any?>? = data?.unsafeCast()
         private set
-    protected val lock = ReadWriteLock() // lock while reading (blocks writing)
+    protected val lock = SimpleLock() // lock while reading (blocks writing)
     var count: Int = 0
         private set
     val isEmpty: Boolean

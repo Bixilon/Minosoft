@@ -12,9 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.container.ContainerSlotChangeEvent
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -32,24 +34,51 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         -1
     }
-    val items: Array<ItemStack?> = buffer.readItemStackArray(if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val items: Array<ItemStack?> = buffer.readArray(if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readVarInt()
     } else {
         buffer.readUnsignedShort()
-    })
+    }) { buffer.readItemStack() }
     val cursor = if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readItemStack()
     } else {
         null
     }
 
-    override fun handle(connection: PlayConnection) {
-        connection.player.containers[containerId]?.let { container ->
-            container.clear()
-            for ((slot, itemStack) in items.withIndex()) {
-                itemStack?.let { container[slot] = itemStack }
-                connection.fireEvent(ContainerSlotChangeEvent(connection, EventInitiators.SERVER, container, slot, itemStack))
+    private fun pushIncompleteContainer(connection: PlayConnection) {
+        val slots: SynchronizedMap<Int, ItemStack> = synchronizedMapOf()
+
+
+        for ((slotId, stack) in this.items.withIndex()) {
+            if (stack == null) {
+                continue
             }
+            slots[slotId] = stack
+        }
+
+        connection.player.incompleteContainers[containerId] = slots.unsafeCast()
+    }
+
+    private fun updateContainer(container: Container) {
+        container.lock.lock()
+        container._clear()
+
+        for ((slotId, stack) in this.items.withIndex()) {
+            if (stack == null) {
+                continue
+            }
+            container._set(slotId, stack)
+        }
+        container.lock.unlock()
+        container.revision++
+    }
+
+    override fun handle(connection: PlayConnection) {
+        val container = connection.player.containers[containerId]
+        if (container == null) {
+            pushIncompleteContainer(connection)
+        } else {
+            updateContainer(container)
         }
     }
 

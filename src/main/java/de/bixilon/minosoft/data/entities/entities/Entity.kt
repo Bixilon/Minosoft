@@ -12,10 +12,13 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -23,8 +26,6 @@ import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
@@ -75,7 +76,7 @@ abstract class Entity(
     var rotation: EntityRotation,
 ) : PhysicsEntity {
     protected val random = Random
-    open val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
+    open val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
     val attributes: MutableMap<ResourceLocation, EntityAttribute> = synchronizedMapOf()
 
@@ -330,8 +331,8 @@ abstract class Entity(
                 isInvisible -> ChatColors.GREEN
                 this is PlayerEntity -> {
                     val chestPlate = equipment[EquipmentSlots.CHEST]
-                    if (chestPlate != null && chestPlate.item is DyeableArmorItem) {
-                        chestPlate.dyedColor?.let { return it }
+                    if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
+                        chestPlate._display?.dyeColor?.let { return it }
                     }
                     val formattingCode = tabListItem.team?.formattingCode
                     if (formattingCode is RGBColor) {
@@ -403,13 +404,15 @@ abstract class Entity(
     fun getEquipmentEnchant(enchantment: Enchantment?): Int {
         enchantment ?: return 0
         var maxLevel = 0
-        for ((slot, equipment) in this.equipment.toSynchronizedMap()) {
-            equipment.enchantments[enchantment]?.let {
+        this.equipment.lock.acquire()
+        for ((slot, equipment) in this.equipment.original) {
+            equipment.enchanting.enchantments[enchantment]?.let {
                 if (it > maxLevel) {
                     maxLevel = it
                 }
             }
         }
+        this.equipment.lock.release()
         return maxLevel
     }
 
@@ -612,14 +615,16 @@ abstract class Entity(
         get() {
             var protectionLevel = 0.0f
 
-            for (equipment in equipment.toSynchronizedMap().values) {
-                val item = equipment.item
+            this.equipment.lock.acquire()
+            for (equipment in equipment.original.values) {
+                val item = equipment.item.item
 
                 if (item is ArmorItem) {
                     // could also be a pumpkin or just trash
                     protectionLevel += item.protection
                 }
             }
+            this.equipment.lock.release()
 
             return protectionLevel
         }

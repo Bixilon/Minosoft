@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ShaderManager(
@@ -23,18 +24,15 @@ class ShaderManager(
     val genericTextureShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture"))
     val genericTexture2dShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture_2d"))
 
+    private fun Shader.loadAnimated() {
+        load()
+        renderWindow.textureManager.staticTextures.use(this)
+        renderWindow.textureManager.staticTextures.animator.use(this)
+    }
 
     fun postInit() {
         genericColorShader.load()
-        genericTextureShader.apply {
-            load()
-            renderWindow.textureManager.staticTextures.use(this)
-            renderWindow.textureManager.staticTextures.animator.use(this)
-        }
-        genericTexture2dShader.apply {
-            load()
-            renderWindow.textureManager.staticTextures.use(this)
-            renderWindow.textureManager.staticTextures.animator.use(this)
-        }
+        genericTextureShader.loadAnimated()
+        genericTexture2dShader.loadAnimated()
     }
 }

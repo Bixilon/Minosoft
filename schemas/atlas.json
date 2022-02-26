@@ -54,6 +54,26 @@
                   "additionalProperties": false
                 }
               }
+            },
+            "areas": {
+              "type": "object",
+              "patternProperties": {
+                "\\w+": {
+                  "properties": {
+                    "start": {
+                      "$ref": "#/definitions/vec2i"
+                    },
+                    "end": {
+                      "$ref": "#/definitions/vec2i"
+                    }
+                  },
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              }
             }
           },
           "required": [
@@ -62,7 +82,8 @@
             "end"
           ],
           "optional": [
-            "slots"
+            "slots",
+            "areas"
           ],
           "additionalProperties": false
         }

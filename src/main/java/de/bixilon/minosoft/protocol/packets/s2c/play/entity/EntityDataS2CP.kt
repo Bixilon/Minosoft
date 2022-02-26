@@ -30,7 +30,9 @@ class EntityDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
 
+        entity.data.lock.lock()
         entity.data.sets.putAll(data.sets)
+        entity.data.lock.unlock()
         connection.fireEvent(EntityDataChangeEvent(connection, this))
     }
 

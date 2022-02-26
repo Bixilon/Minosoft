@@ -22,16 +22,17 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 open class AtlasImageElement(
     guiRenderer: GUIRenderer,
-    textureLike: TextureLike,
-    size: Vec2i = textureLike.size,
+    textureLike: TextureLike?,
+    size: Vec2i = textureLike?.size ?: Vec2i.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: AbstractTexture = textureLike.texture
+    var texture: AbstractTexture? = textureLike?.texture
         set(value) {
             field = value
             cacheUpToDate = false
@@ -66,12 +67,12 @@ open class AtlasImageElement(
             cacheUpToDate = false
         }
 
-    var textureLike: TextureLike = textureLike
+    var textureLike: TextureLike? = textureLike
         set(value) {
             if (field === value) {
                 return
             }
-            texture = value.texture
+            texture = value?.texture
             field = value
             uvStart = null
             uvEnd = null
@@ -85,6 +86,8 @@ open class AtlasImageElement(
 
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val texture = texture ?: return
+        val textureLike = textureLike ?: return
         consumer.addQuad(offset, offset + size, texture, uvStart ?: textureLike.uvStart, uvEnd ?: textureLike.uvEnd, tint, options)
     }
 

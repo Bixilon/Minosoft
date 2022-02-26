@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.ActiveMouseMove
+import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -33,10 +33,11 @@ import glm_.vec2.Vec2i
 open class TextFlowElement(
     guiRenderer: GUIRenderer,
     var messageExpireTime: Long,
-) : Element(guiRenderer), ActiveMouseMove<TextElement> {
+) : Element(guiRenderer), AbstractLayout<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
     private var visibleLines: List<TextFlowLineElement> = listOf() // all visible lines **from bottom to top**
     override var activeElement: TextElement? = null
+    override var activeDragElement: TextElement? = null
 
     private val background = ColorElement(guiRenderer, size, RenderConstants.TEXT_BACKGROUND_COLOR)
 

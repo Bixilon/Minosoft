@@ -13,110 +13,171 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.registries.items.block.BlockItem
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.container.click.*
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.item.ItemInfoPopper
+import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
+import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 
 class ItemElement(
     guiRenderer: GUIRenderer,
-    size: Vec2i,
+    size: Vec2i = RawItemElement.DEFAULT_SIZE,
     item: ItemStack?,
-) : Element(guiRenderer), Pollable {
-    private var count = -1
-    private val countText = TextElement(guiRenderer, "", background = false, noBorder = true)
+    val slotId: Int = 0,
+    val itemsElement: ContainerItemsElement,
+) : Element(guiRenderer) {
+    private val raw = RawItemElement(guiRenderer, size, item, this)
+    private var popper: ItemInfoPopper? = null
+    private var hovered = false
 
-    var item: ItemStack? = item
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            apply()
-            cacheUpToDate = false
-        }
+    var _stack: ItemStack? by raw::_stack
+    var stack: ItemStack? by raw::stack
 
     init {
+        this._parent = itemsElement
         _size = size
         forceApply()
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        val item = item ?: return
-        val size = size
-
-        val model = item.item.model
-        if (model == null) {
-            var element: Element? = null
-
-            var color = ChatColors.WHITE
-            if (item.item is BlockItem) {
-                val defaultState = item.item.block.defaultState
-                defaultState.material.color?.let { color = it }
-                defaultState.blockModel?.getParticleTexture(KUtil.RANDOM, Vec3i.EMPTY)?.let {
-                    element = ImageElement(guiRenderer, it, size = size)
-                }
-            }
-
-            (element ?: ColorElement(guiRenderer, size, color)).render(offset, consumer, options)
-        } else {
-            model.render2d(offset, consumer, options, size, item)
+        var options = options
+        if (hovered) {
+            options = options.copy(alpha = 0.7f)
         }
-
-        val countSize = countText.size
-        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), consumer, options)
-    }
-
-    override fun poll(): Boolean {
-        val item = item ?: return false
-        val count = item.count
-        if (this.count != count) {
-            this.count = count
-            return true
-        }
-
-        return false
+        raw.render(offset, consumer, options)
     }
 
     override fun forceSilentApply() {
-        countText.text = when {
-            count < -99 -> NEGATIVE_INFINITE_TEXT
-            count < 0 -> TextComponent(count, color = ChatColors.RED) // No clue why I do this...
-            count == 0 -> ZERO_TEXT
-            count == 1 -> ChatComponent.EMPTY
-            count > 99 -> INFINITE_TEXT
-            count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent(count, color = ChatColors.RED)
-            else -> TextComponent(count)
+        raw.silentApply()
+    }
+
+    override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
+        val stack = stack ?: return true
+        renderWindow.window.cursorShape = CursorShapes.HAND
+        popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
+        hovered = true
+        cacheUpToDate = false
+        return true
+    }
+
+    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
+        popper?.position = absolute
+        return true
+    }
+
+    override fun onMouseLeave(): Boolean {
+        renderWindow.window.resetCursor()
+        popper?.hide()
+        popper = null
+        hovered = false
+        raw.cacheUpToDate = false
+        return true
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+        if (action != MouseActions.PRESS) {
+            return true
+        }
+        if (button == MouseButtons.LEFT && count == 2) {
+            itemsElement.container.invokeAction(PickAllContainerAction(slotId))
+            return true
         }
 
-        cacheUpToDate = false
+        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
+        if (button == MouseButtons.MIDDLE) {
+            if (guiRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
+                return true
+            }
+            itemsElement.container.invokeAction(CloneContainerAction(slotId))
+            return true
+        }
+        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
+            itemsElement.container.invokeAction(if (shiftDown) {
+                FastMoveContainerAction(slotId)
+            } else {
+                SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART)
+            })
+            return true
+        }
+        return true
+    }
+
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? {
+        if (action != MouseActions.PRESS) {
+            return this
+        }
+        if (button == MouseButtons.LEFT && count == 2) {
+            itemsElement.container.invokeAction(PickAllContainerAction(slotId))
+            return this
+        }
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
+            itemsElement.container.invokeAction(SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
+            return this
+        }
+        return this
+    }
+
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (type != KeyChangeTypes.PRESS) {
+            return true
+        }
+        val container = itemsElement.container
+        when (key) {
+            // ToDo: Make this configurable
+            KeyCodes.KEY_Q -> container.invokeAction(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
+
+            KeyCodes.KEY_1 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_1))
+            KeyCodes.KEY_2 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_2))
+            KeyCodes.KEY_3 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_3))
+            KeyCodes.KEY_4 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_4))
+            KeyCodes.KEY_5 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_5))
+            KeyCodes.KEY_6 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_6))
+            KeyCodes.KEY_7 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_7))
+            KeyCodes.KEY_8 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_8))
+            KeyCodes.KEY_9 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_9))
+            KeyCodes.KEY_F -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.OFFHAND))
+        }
+
+        return true
+    }
+
+    override fun onDragEnter(position: Vec2i, absolute: Vec2i, draggable: Dragged): Element {
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        hovered = true
+        raw.cacheUpToDate = false
+
+        return this
+    }
+
+    override fun onDragLeave(draggable: Dragged): Element {
+        if (draggable !is FloatingItem) {
+            return this
+        }
+        hovered = false
+        raw.cacheUpToDate = false
+
+        return this
     }
 
     override fun toString(): String {
-        return item.toString()
-    }
-
-    private companion object {
-        private val NEGATIVE_INFINITE_TEXT = TextComponent("-∞").color(ChatColors.RED)
-        private val INFINITE_TEXT = TextComponent("∞").color(ChatColors.RED)
-        private val ZERO_TEXT = TextComponent("0").color(ChatColors.YELLOW)
+        return stack.toString()
     }
 }

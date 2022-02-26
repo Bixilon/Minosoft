@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
@@ -94,7 +94,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
     override fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
         // ToDo: Ignite (flint and steel, etc)
-        if (itemStack?.item !is ShovelItem || target.blockState.properties[BlockProperties.LIT] != true) {
+        if (itemStack?.item?.item !is ShovelItem || target.blockState.properties[BlockProperties.LIT] != true) {
             return super.onUse(connection, target, hand, itemStack)
         }
         connection.world.setBlockState(target.blockPosition, target.blockState.withProperties(BlockProperties.LIT to false))

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.ChatTextPositions
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
@@ -25,9 +25,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
-import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
@@ -137,7 +136,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
-            currentItem?.displayName?.let { itemText.text = it } // ToDo: This calls silentApply again...
+            currentItem?.displayName?.let { itemText._chatComponent = it;itemText.forceSilentApply() }
             if (currentItem == null) {
                 itemText.hide()
             } else {
@@ -172,14 +171,6 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { forceApply() })
 
         connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
-
-        connection.registerEvent(CallbackEventInvoker.of<ContainerRevisionChangeEvent> {
-            if (it.container != connection.player.inventory) {
-                return@of
-            }
-            core.base.apply()
-            offhand.apply()
-        })
 
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
             if (it.position != ChatTextPositions.ABOVE_HOTBAR) {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.items.armor
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.minosoft.data.inventory.InventorySlots
+import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries

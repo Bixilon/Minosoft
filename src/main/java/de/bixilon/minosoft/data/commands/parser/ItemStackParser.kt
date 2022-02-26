@@ -17,7 +17,8 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.container.ItemStackUtil
+import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ItemStackParser : CommandParser() {
@@ -39,11 +40,7 @@ class ItemStackParser : CommandParser() {
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }
-        return ItemStack(
-            item = item,
-            connection = connection,
-            nbt = nbt,
-        )
+        return ItemStackUtil.of(item, connection, nbt)
     }
 
     companion object {
