@@ -104,8 +104,13 @@ class OpenGLShader(
         renderWindow.renderSystem.shaders += this
     }
 
+
     private fun getUniformLocation(uniformName: String): Int {
-        return glGetUniformLocation(shader, uniformName)
+        val location = glGetUniformLocation(shader, uniformName)
+        if (location < 0) {
+            throw IllegalArgumentException("No uniform named$uniformName!")
+        }
+        return location
     }
 
     override fun setFloat(uniformName: String, value: Float) {
@@ -151,7 +156,11 @@ class OpenGLShader(
     }
 
     override fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer) {
-        glUniformBlockBinding(shader, glGetUniformBlockIndex(shader, uniformName), uniformBuffer.bindingIndex)
+        val index = glGetUniformBlockIndex(shader, uniformName)
+        if (index < 0) {
+            throw IllegalArgumentException("No uniform buffer called $uniformName")
+        }
+        glUniformBlockBinding(shader, index, uniformBuffer.bindingIndex)
     }
 
     fun unsafeUse() {
