@@ -42,7 +42,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
 
     fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
         check(hotbarSlot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
-        return slots[hotbarSlot + HOTBAR_OFFSET]
+        return this[hotbarSlot + HOTBAR_OFFSET]
     }
 
     operator fun get(slot: InventorySlots.EquipmentSlots): ItemStack? {
@@ -54,10 +54,10 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
     }
 
     operator fun get(hand: Hands): ItemStack? {
-        return get(when (hand) {
+        return this[(when (hand) {
             Hands.MAIN -> InventorySlots.EquipmentSlots.MAIN_HAND
             Hands.OFF -> InventorySlots.EquipmentSlots.OFF_HAND
-        })
+        })]
     }
 
     @JvmName("setEquipment")
@@ -68,7 +68,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             realSlots += Pair(slot.slot, itemStack)
         }
 
-        super.set(*realSlots.toTypedArray())
+        set(*realSlots.toTypedArray())
     }
 
     override fun getSlotType(slotId: Int): SlotType? {

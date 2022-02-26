@@ -46,7 +46,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
             field = value
             messages._active = value
             messages.forceSilentApply()
-            historyIndex = -1
+            historyIndex = history.size + 1
             forceApply()
         }
     override var skipDraw: Boolean

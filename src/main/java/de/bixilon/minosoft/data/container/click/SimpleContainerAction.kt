@@ -57,12 +57,14 @@ class SimpleContainerAction(
                 return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
             }
             val slotType = container.getSlotType(slot)
+            val matches = floatingItem.matches(target)
 
-            if (target != null && floatingItem.matches(target)) {
+            if (target != null && matches) {
                 if (slotType?.canPut(container, slot, floatingItem) == true) {
                     // merge
                     val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
-                    if (subtract == 0) {
+                    // ToDo: Check stack size
+                    if (subtract == 0 || target.item._count + subtract > target.item.item.maxStackSize) {
                         return
                     }
                     target.item._count += subtract
@@ -88,7 +90,7 @@ class SimpleContainerAction(
                 return
             }
             // swap
-            if (count == ContainerCounts.ALL) {
+            if (count == ContainerCounts.ALL || !matches) {
                 container.floatingItem = target
                 container._set(slot, floatingItem)
             } else {

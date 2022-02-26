@@ -35,13 +35,17 @@ class DraggedManager(
             if (field == value || field?.element == value?.element) {
                 return
             }
-            val position = guiRenderer.currentCursorPosition
+            val position = guiRenderer.currentMousePosition
             val previous = field
             previous?.element?.onDragEnd(position, guiRenderer.gui.onDragMove(Vec2i(-1, -1), previous.element))
 
             field = value
-            guiRenderer.gui.onMouseMove(Vec2i(-1, -1)) // move mouse ot
-            value?.element?.onDragStart(position, guiRenderer.gui.onDragMove(position, value.element))
+            if (value == null) {
+                guiRenderer.gui.onMouseMove(position)
+            } else {
+                guiRenderer.gui.onMouseMove(Vec2i(-1, -1)) // move mouse out
+                value.element.onDragStart(position, guiRenderer.gui.onDragMove(position, value.element))
+            }
             applyCursor()
         }
     override var lastTickTime: Long = -1L
@@ -114,14 +118,14 @@ class DraggedManager(
         }
 
         val mouseAction = MouseActions[type] ?: return false
-        element.element.onDragMouseAction(guiRenderer.currentCursorPosition, mouseButton, mouseAction, target)
+        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, target)
         return true
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
         val element = element ?: return false
         val target = guiRenderer.gui.onDragScroll(scrollOffset, element.element)
-        element.element.onDragScroll(guiRenderer.currentCursorPosition, scrollOffset, target)
+        element.element.onDragScroll(guiRenderer.currentMousePosition, scrollOffset, target)
         return true
     }
 }

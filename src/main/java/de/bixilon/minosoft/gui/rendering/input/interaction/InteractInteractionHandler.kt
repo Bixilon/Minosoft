@@ -77,32 +77,34 @@ class InteractInteractionHandler(
         }
         // if out of world (border): return CONSUME
 
-        connection.sendPacket(BlockInteractC2SP(
-            position = target.blockPosition,
-            direction = target.direction,
-            cursorPosition = Vec3(target.hitPosition),
-            item = stack,
-            hand = hand,
-            insideBlock = false, // ToDo: insideBlock
-        ))
+        try {
+            if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+                return InteractionResults.SUCCESS
+            }
 
-        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
-            return InteractionResults.SUCCESS
-        }
+            val result = target.blockState.block.onUse(connection, target, hand, stack)
+            if (result == InteractionResults.SUCCESS) {
+                return InteractionResults.SUCCESS
+            }
 
-        val result = target.blockState.block.onUse(connection, target, hand, stack)
-        if (result == InteractionResults.SUCCESS) {
-            return InteractionResults.SUCCESS
-        }
+            if (stack == null) {
+                return InteractionResults.PASS
+            }
+            if (interactionManager.isCoolingDown(stack.item.item)) {
+                return InteractionResults.PASS // ToDo: Check
+            }
 
-        if (stack == null) {
-            return InteractionResults.PASS
+            return stack.item.item.interactBlock(connection, target, hand, stack)
+        } finally {
+            connection.sendPacket(BlockInteractC2SP(
+                position = target.blockPosition,
+                direction = target.direction,
+                cursorPosition = Vec3(target.hitPosition),
+                item = stack,
+                hand = hand,
+                insideBlock = false, // ToDo: insideBlock
+            ))
         }
-        if (interactionManager.isCoolingDown(stack.item.item)) {
-            return InteractionResults.PASS // ToDo: Check
-        }
-
-        return stack.item.item.interactBlock(connection, target, hand, stack)
     }
 
     fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
@@ -119,14 +121,17 @@ class InteractInteractionHandler(
 
     fun interactEntity(target: EntityTarget, hand: Hands): InteractionResults {
         val player = connection.player
-        connection.sendPacket(EntityEmptyInteractC2SP(connection, target.entity, hand, player.isSneaking))
+        try {
 
-        if (player.gamemode == Gamemodes.SPECTATOR) {
+            if (player.gamemode == Gamemodes.SPECTATOR) {
+                return InteractionResults.PASS
+            }
+
+            // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
             return InteractionResults.PASS
+        } finally {
+            connection.sendPacket(EntityEmptyInteractC2SP(connection, target.entity, hand, player.isSneaking))
         }
-
-        // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
-        return InteractionResults.PASS
     }
 
     fun interactItem(item: ItemStack, hand: Hands): InteractionResults {
@@ -136,15 +141,18 @@ class InteractInteractionHandler(
         val player = connection.player
         connection.sendPacket(PositionRotationC2SP(player.position, player.rotation, player.onGround))
 
-        // ToDo: Before 1.9
-        connection.sendPacket(UseItemC2SP(hand))
+        try {
 
-        if (interactionManager.isCoolingDown(item.item.item)) {
-            return InteractionResults.PASS
+            if (interactionManager.isCoolingDown(item.item.item)) {
+                return InteractionResults.PASS
+            }
+
+
+            return item.item.item.interactItem(connection, hand, item)
+        } finally {
+            // ToDo: Before 1.9
+            connection.sendPacket(UseItemC2SP(hand))
         }
-
-
-        return item.item.item.interactItem(connection, hand, item)
     }
 
     fun useItem() {

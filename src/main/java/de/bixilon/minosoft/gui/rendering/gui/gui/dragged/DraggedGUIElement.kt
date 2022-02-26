@@ -19,7 +19,7 @@ import glm_.vec2.Vec2i
 class DraggedGUIElement<T : Dragged>(element: T) : GUIMeshElement<T>(element) {
 
     override fun prepare() {
-        prepare(guiRenderer.currentCursorPosition - (element.size / 2))
+        prepare(guiRenderer.currentMousePosition - (element.size / 2))
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {

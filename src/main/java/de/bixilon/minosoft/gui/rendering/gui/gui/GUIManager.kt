@@ -231,7 +231,7 @@ class GUIManager(
         }
         elementOrder.add(0, element)
         element.onOpen()
-        onMouseMove(guiRenderer.currentCursorPosition)
+        onMouseMove(guiRenderer.currentMousePosition)
     }
 
     @Deprecated("Only use for dynamic gui (e.g. dialogs, ...)")

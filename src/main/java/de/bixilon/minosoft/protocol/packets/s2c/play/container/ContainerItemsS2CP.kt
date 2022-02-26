@@ -14,6 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -43,15 +45,9 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         null
     }
 
-    override fun handle(connection: PlayConnection) {
-        val container = connection.player.containers[containerId]
-        val slots = if (container == null) {
-            synchronizedMapOf()
-        } else {
-            container.lock.lock()
-            container.slots.clear()
-            container.slots
-        }
+    private fun pushIncompleteContainer(connection: PlayConnection) {
+        val slots: SynchronizedMap<Int, ItemStack> = synchronizedMapOf()
+
 
         for ((slotId, stack) in this.items.withIndex()) {
             if (stack == null) {
@@ -60,10 +56,29 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             slots[slotId] = stack
         }
 
+        connection.player.incompleteContainers[containerId] = slots.unsafeCast()
+    }
+
+    private fun updateContainer(container: Container) {
+        container.lock.lock()
+        container._clear()
+
+        for ((slotId, stack) in this.items.withIndex()) {
+            if (stack == null) {
+                continue
+            }
+            container._set(slotId, stack)
+        }
+        container.lock.unlock()
+        container.revision++
+    }
+
+    override fun handle(connection: PlayConnection) {
+        val container = connection.player.containers[containerId]
         if (container == null) {
-            connection.player.incompleteContainers[containerId] = slots.unsafeCast()
+            pushIncompleteContainer(connection)
         } else {
-            container.lock.unlock()
+            updateContainer(container)
         }
     }
 

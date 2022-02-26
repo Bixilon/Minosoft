@@ -40,13 +40,13 @@ class ContainerItemsElement(
     override var activeDragElement: ItemElement? = null
     private var update = true
         set(value) {
+            if (value) {
+                cacheUpToDate = false
+            }
             if (field == value) {
                 return
             }
             field = value
-            if (value) {
-                cacheUpToDate = false
-            }
         }
 
     init {

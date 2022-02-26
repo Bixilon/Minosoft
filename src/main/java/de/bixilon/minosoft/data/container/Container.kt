@@ -166,17 +166,16 @@ open class Container(
         }
     }
 
-    fun clear() {
-        lock.lock()
-        val size = slots.size
-        if (size == 0) {
-            lock.unlock()
-            return
-        }
+    fun _clear() {
         for (stack in slots.values) {
             stack.holder?.container = null
         }
         slots.clear()
+    }
+
+    fun clear() {
+        lock.lock()
+        _clear()
         lock.unlock()
         revision++
     }

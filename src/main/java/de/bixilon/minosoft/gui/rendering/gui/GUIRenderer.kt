@@ -63,7 +63,7 @@ class GUIRenderer(
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     val atlasManager = AtlasManager(renderWindow)
 
-    var currentCursorPosition: Vec2i by watched(Vec2i.EMPTY)
+    var currentMousePosition: Vec2i by watched(Vec2i.EMPTY)
         private set
 
     override fun init(latch: CountUpAndDownLatch) {
@@ -114,7 +114,7 @@ class GUIRenderer(
 
     override fun onMouseMove(position: Vec2i): Boolean {
         val scaledPosition = position.scale()
-        currentCursorPosition = scaledPosition
+        currentMousePosition = scaledPosition
         if (dragged.onMouseMove(scaledPosition)) {
             return true
         }

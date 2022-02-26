@@ -110,9 +110,6 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onCharPress(char: Int): Boolean {
-        if (lastPosition == null) {
-            return false
-        }
         return element.onCharPress(char)
     }
 
@@ -122,8 +119,8 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        val position = lastPosition ?: return false
         val mouseButton = MouseButtons[key] ?: return element.onKey(key, type)
+        val position = lastPosition ?: return false
 
         val mouseAction = MouseActions[type] ?: return false
         return element.onMouseAction(position, mouseButton, mouseAction)
@@ -144,8 +141,8 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
-        val position = lastDragPosition ?: return null
         val mouseButton = MouseButtons[key] ?: return element.onDragKey(key, type, dragged)
+        val position = lastDragPosition ?: return null
 
         val mouseAction = MouseActions[type] ?: return null
         return element.onDragMouseAction(position, mouseButton, mouseAction, dragged)
@@ -156,9 +153,6 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onDragChar(char: Int, dragged: Dragged): Element? {
-        if (lastDragPosition == null) {
-            return null
-        }
         return element.onDragChar(char.toChar(), dragged)
     }
 
@@ -171,7 +165,7 @@ open class GUIMeshElement<T : Element>(
 
     override fun onOpen() {
         element.onOpen()
-        onMouseMove(guiRenderer.currentCursorPosition)
+        onMouseMove(guiRenderer.currentMousePosition)
     }
 
     override fun onHide() {

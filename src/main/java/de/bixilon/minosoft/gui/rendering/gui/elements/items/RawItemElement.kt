@@ -50,10 +50,7 @@ class RawItemElement(
                 return
             }
             if (value != null) {
-                value::revision.observe(this) { forceSilentApply() }
-            }
-            if (field == value) {
-                return
+                value::revision.observe(this) { if (value === field) forceSilentApply() } // ToDo: check if watcher is still up-to-date
             }
             field = value
             forceSilentApply()
