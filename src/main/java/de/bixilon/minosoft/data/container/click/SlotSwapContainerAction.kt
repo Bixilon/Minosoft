@@ -13,13 +13,44 @@
 
 package de.bixilon.minosoft.data.container.click
 
-@Deprecated("ToDo")
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+
 class SlotSwapContainerAction(
-    val sourceSlot: Int,
+    val sourceId: Int,
     val target: SwapTargets,
 ) : ContainerAction {
-    private val mode: Int get() = 2
-    private val button: Int get() = target.button
+
+    override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        val targetId = container.getSlotSwap(target) ?: return
+        container.lock.lock()
+        try {
+            val source = container.slots[sourceId]
+            val target = container.slots[targetId]
+
+            if (source == null && target == null) {
+                return
+            }
+            container._set(this.sourceId, target)
+            container._set(targetId, source)
+
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.createAction(this), mapOf(sourceId to target, targetId to source), source))
+
+        } finally {
+            container.lock.unlock()
+        }
+    }
+
+    override fun revert(connection: PlayConnection, containerId: Int, container: Container) {
+        val targetId = container.getSlotSwap(target) ?: return
+        container.lock.lock()
+        val target = container.slots[targetId]
+        val source = container.slots[sourceId]
+        container._set(sourceId, target)
+        container._set(targetId, source)
+        container.lock.unlock()
+    }
 
     enum class SwapTargets(val button: Int) {
         HOTBAR_1(0),

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.types.generic
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
@@ -43,6 +44,13 @@ abstract class GenericContainer(
             return 1
         }
         return null
+    }
+
+    override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? {
+        if (slot == SlotSwapContainerAction.SwapTargets.OFFHAND) {
+            return null // ToDo: It is possible to press F in vanilla, but there is no slot for it
+        }
+        return rows * SLOTS_PER_ROW + 3 * SLOTS_PER_ROW + slot.ordinal // rows, inventory
     }
 
 

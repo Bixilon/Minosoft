@@ -138,10 +138,22 @@ class ItemElement(
             return true
         }
         val container = itemsElement.container
-        if (key != KeyCodes.KEY_Q) { // ToDo: Make it configurable
-            return true
+        when (key) {
+            // ToDo: Make this configurable
+            KeyCodes.KEY_Q -> container.invokeAction(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
+
+            KeyCodes.KEY_1 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_1))
+            KeyCodes.KEY_2 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_2))
+            KeyCodes.KEY_3 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_3))
+            KeyCodes.KEY_4 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_4))
+            KeyCodes.KEY_5 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_5))
+            KeyCodes.KEY_6 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_6))
+            KeyCodes.KEY_7 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_7))
+            KeyCodes.KEY_8 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_8))
+            KeyCodes.KEY_9 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_9))
+            KeyCodes.KEY_F -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.OFFHAND))
         }
-        container.invokeAction(DropContainerAction(slotId, guiRenderer.isKeyDown(ModifierKeys.CONTROL)))
+
         return true
     }
 

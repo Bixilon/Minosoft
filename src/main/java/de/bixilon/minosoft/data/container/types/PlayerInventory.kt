@@ -100,19 +100,10 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
     }
 
     override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int {
-        return when (slot) {
-            SlotSwapContainerAction.SwapTargets.HOTBAR_1 -> HOTBAR_OFFSET + 0
-            SlotSwapContainerAction.SwapTargets.HOTBAR_2 -> HOTBAR_OFFSET + 1
-            SlotSwapContainerAction.SwapTargets.HOTBAR_3 -> HOTBAR_OFFSET + 2
-            SlotSwapContainerAction.SwapTargets.HOTBAR_4 -> HOTBAR_OFFSET + 3
-            SlotSwapContainerAction.SwapTargets.HOTBAR_5 -> HOTBAR_OFFSET + 4
-            SlotSwapContainerAction.SwapTargets.HOTBAR_6 -> HOTBAR_OFFSET + 5
-            SlotSwapContainerAction.SwapTargets.HOTBAR_7 -> HOTBAR_OFFSET + 6
-            SlotSwapContainerAction.SwapTargets.HOTBAR_8 -> HOTBAR_OFFSET + 7
-            SlotSwapContainerAction.SwapTargets.HOTBAR_9 -> HOTBAR_OFFSET + 8
-
-            SlotSwapContainerAction.SwapTargets.OFFHAND -> 45
+        if (slot == SlotSwapContainerAction.SwapTargets.OFFHAND) {
+            return 45
         }
+        return HOTBAR_OFFSET + slot.ordinal
     }
 
     override fun getSection(slotId: Int): Int? {
