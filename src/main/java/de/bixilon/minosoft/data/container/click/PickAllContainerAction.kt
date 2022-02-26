@@ -28,8 +28,8 @@ class PickAllContainerAction(
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         container.lock.lock()
         try {
-
-            val clicked = container.slots[slot] ?: return
+            val previous = container.slots[slot] ?: container.floatingItem?.copy() ?: return
+            val clicked = previous.copy()
             if (container.getSlotType(slot)?.canRemove(container, slot, clicked) != true) {
                 return
             }
@@ -37,16 +37,16 @@ class PickAllContainerAction(
             var countLeft = clicked.item.item.maxStackSize - clicked.item._count
             val changes: MutableMap<Int, ItemStack?> = mutableMapOf()
             for ((slotId, slot) in container.slots) {
-                if (!slot.matches(slot)) {
+                if (!clicked.matches(slot)) {
                     continue
                 }
                 if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
                     continue
                 }
                 val countToRemove = minOf(slot.item._count, countLeft)
-                slot.item._count = countToRemove
+                slot.item._count -= countToRemove
                 countLeft -= countToRemove
-                slot.item._count += countToRemove
+                clicked.item._count += countToRemove
                 changes[slotId] = slot
                 if (countLeft <= 0) {
                     break
@@ -54,7 +54,7 @@ class PickAllContainerAction(
             }
             container._validate()
             container.floatingItem = clicked
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, clicked))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, previous))
         } finally {
             container.commit()
         }

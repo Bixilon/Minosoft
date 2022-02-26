@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.input
+package de.bixilon.minosoft.gui.rendering.input.count
 
-import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
 
-interface InputElement : MouseInputElement {
+interface ClickCounter {
 
-    fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int) = false
-    fun onScroll(position: Vec2i, scrollOffset: Vec2d) = false
+    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2i, time: Long = TimeUtil.time): Int
 
-    fun onKey(key: KeyCodes, type: KeyChangeTypes) = false
-    fun onCharPress(char: Int) = false
+
+    companion object {
+        const val MAX_DELAY = 200
+        const val MIN_DELAY_BETWEEN = 500
+    }
 }

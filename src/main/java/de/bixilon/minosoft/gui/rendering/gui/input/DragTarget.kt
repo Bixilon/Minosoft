@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -31,7 +31,7 @@ interface DragTarget {
 
     fun onDragScroll(position: Vec2i, scrollOffset: Vec2d, draggable: Dragged): Element? = this.nullCast()
 
-    fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, draggable: Dragged): Element? = this.nullCast()
+    fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? = this.nullCast()
     fun onDragKey(key: KeyCodes, type: KeyChangeTypes, draggable: Dragged): Element? = this.nullCast()
     fun onDragChar(char: Char, draggable: Dragged): Element? = this.nullCast()
 }

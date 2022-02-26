@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -57,9 +57,9 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return activeElement?.onMouseLeave() ?: false
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         val (element, offset) = getAt(position) ?: return false
-        return element.onMouseAction(offset, button, action)
+        return element.onMouseAction(offset, button, action, count)
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
@@ -107,9 +107,9 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
         return element.onDragScroll(offset, scrollOffset, draggable)
     }
 
-    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, draggable: Dragged): Element? {
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? {
         val (element, offset) = getAt(position) ?: return null
-        return element.onDragMouseAction(offset, button, action, draggable)
+        return element.onDragMouseAction(offset, button, action, count, draggable)
     }
 
     override fun onDragKey(key: KeyCodes, type: KeyChangeTypes, draggable: Dragged): Element? {

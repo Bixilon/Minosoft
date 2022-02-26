@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
+import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -36,6 +38,7 @@ open class GUIMeshElement<T : Element>(
 ) : HUDElement, Drawable {
     override val guiRenderer: GUIRenderer = element.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
+    private val clickCounter = MouseClickCounter()
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
     override val skipDraw: Boolean
         get() = if (element is Drawable) element.skipDraw else false
@@ -123,7 +126,8 @@ open class GUIMeshElement<T : Element>(
         val position = lastPosition ?: return false
 
         val mouseAction = MouseActions[type] ?: return false
-        return element.onMouseAction(position, mouseButton, mouseAction)
+
+        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.time))
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
@@ -145,7 +149,8 @@ open class GUIMeshElement<T : Element>(
         val position = lastDragPosition ?: return null
 
         val mouseAction = MouseActions[type] ?: return null
-        return element.onDragMouseAction(position, mouseButton, mouseAction, dragged)
+
+        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.time), dragged)
     }
 
     override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {

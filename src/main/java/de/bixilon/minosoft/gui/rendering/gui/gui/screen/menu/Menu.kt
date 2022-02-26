@@ -92,9 +92,9 @@ abstract class Menu(
         return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         val (element, delta) = getAt(position) ?: return true
-        element.onMouseAction(delta, button, action)
+        element.onMouseAction(delta, button, action, count)
         return true
     }
 

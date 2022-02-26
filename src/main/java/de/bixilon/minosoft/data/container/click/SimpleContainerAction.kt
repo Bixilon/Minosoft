@@ -89,7 +89,7 @@ class SimpleContainerAction(
                 return
             }
             // swap
-            if (count == ContainerCounts.ALL || !matches) {
+            if (count == ContainerCounts.ALL || (!matches && target != null)) {
                 container.floatingItem = target
                 container._set(slot, floatingItem)
             } else {

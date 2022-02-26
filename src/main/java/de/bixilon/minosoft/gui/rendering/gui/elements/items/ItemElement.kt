@@ -15,10 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.container.click.CloneContainerAction
-import de.bixilon.minosoft.data.container.click.DropContainerAction
-import de.bixilon.minosoft.data.container.click.FastMoveContainerAction
-import de.bixilon.minosoft.data.container.click.SimpleContainerAction
+import de.bixilon.minosoft.data.container.click.*
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -90,8 +87,12 @@ class ItemElement(
         return true
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (action != MouseActions.PRESS) {
+            return true
+        }
+        if (button == MouseButtons.LEFT && count == 2) {
+            itemsElement.container.invokeAction(PickAllContainerAction(slotId))
             return true
         }
 
@@ -114,11 +115,15 @@ class ItemElement(
         return true
     }
 
-    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, draggable: Dragged): Element? {
-        if (draggable !is FloatingItem) {
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? {
+        if (action != MouseActions.PRESS) {
             return this
         }
-        if (action != MouseActions.PRESS) {
+        if (button == MouseButtons.LEFT && count == 2) {
+            itemsElement.container.invokeAction(PickAllContainerAction(slotId))
+            return this
+        }
+        if (draggable !is FloatingItem) {
             return this
         }
         if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {

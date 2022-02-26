@@ -173,7 +173,7 @@ open class TextElement(
         renderInfo.currentLineNumber = 0
     }
 
-    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions): Boolean {
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
         if (action != MouseActions.PRESS || button != MouseButtons.LEFT) {
             return true
         }

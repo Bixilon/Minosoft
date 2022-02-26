@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
+import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -30,6 +31,7 @@ import glm_.vec2.Vec2i
 class DraggedManager(
     override val guiRenderer: GUIRenderer,
 ) : Initializable, InputHandler, GUIElementDrawer {
+    private val clickCounter = MouseClickCounter()
     var element: DraggedGUIElement<*>? = null
         set(value) {
             if (field == value || field?.element == value?.element) {
@@ -118,7 +120,8 @@ class DraggedManager(
         }
 
         val mouseAction = MouseActions[type] ?: return false
-        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, target)
+
+        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, TimeUtil.time), target)
         return true
     }
 
