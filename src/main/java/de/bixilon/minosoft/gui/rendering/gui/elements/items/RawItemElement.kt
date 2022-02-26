@@ -93,7 +93,7 @@ class RawItemElement(
 
             (element ?: ColorElement(guiRenderer, textureSize, color)).render(offset, consumer, options)
         } else {
-            model.render2d(offset, consumer, options, textureSize, stack)
+            model.render2d(guiRenderer, offset, consumer, options, textureSize, stack)
         }
 
         val countSize = countText.size

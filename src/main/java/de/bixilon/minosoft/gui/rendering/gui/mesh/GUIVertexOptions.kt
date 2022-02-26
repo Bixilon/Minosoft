@@ -15,7 +15,17 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
 
-data class GUIVertexOptions(
+class GUIVertexOptions(
     val tintColor: RGBColor? = null,
     val alpha: Float = 1.0f,
-)
+) {
+    companion object {
+        fun GUIVertexOptions?.copy(tintColor: RGBColor? = null, alpha: Float = 1.0f): GUIVertexOptions {
+            var outColor = this?.tintColor
+            if (tintColor != null) {
+                outColor = outColor?.mix(tintColor) ?: tintColor
+            }
+            return GUIVertexOptions(outColor, alpha = (this?.alpha ?: 1.0f) * alpha)
+        }
+    }
+}

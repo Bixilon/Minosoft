@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions.Companion.copy
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import glm_.vec2.Vec2i
@@ -57,7 +58,7 @@ class ItemElement(
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         var options = options
         if (hovered) {
-            options = (options?.copy(alpha = options.alpha * 0.7f)) ?: GUIVertexOptions(null, 0.7f)
+            options = options.copy(alpha = 0.7f)
         }
         raw.render(offset, consumer, options)
     }
