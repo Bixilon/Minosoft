@@ -36,7 +36,7 @@ class SimpleContainerAction(
             floatingItem = item
         } else {
             // half
-            val stayCount = maxOf(item.item.count / 2, 1)
+            val stayCount = item.item.count / 2
             item.item.count = stayCount
             floatingItem = previous.copy(count = previous.item.count - stayCount)
         }
@@ -59,14 +59,24 @@ class SimpleContainerAction(
             val slotType = container.getSlotType(slot)
 
             if (target != null && floatingItem.matches(target)) {
-                if (slotType?.canPut(container, slot, floatingItem) != true) {
-                    // is this check needed?
-                    return
+                if (slotType?.canPut(container, slot, floatingItem) == true) {
+                    // merge
+                    val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
+                    if (subtract == 0) {
+                        return
+                    }
+                    target.item._count += subtract
+                    floatingItem.item._count -= subtract
+                } else if (slotType?.canRemove(container, slot, floatingItem) == true) {
+                    // remove only (e.g. crafting result)
+                    // ToDo: respect count
+                    val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item._count, target.item._count)
+                    if (subtract == 0) {
+                        return
+                    }
+                    target.item._count -= subtract
+                    floatingItem.item._count += subtract
                 }
-                // merge
-                val subtract = minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count)
-                target.item._count += subtract
-                floatingItem.item._count -= subtract
 
                 connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
                 return
@@ -78,8 +88,13 @@ class SimpleContainerAction(
                 return
             }
             // swap
-            container.floatingItem = target
-            container._set(slot, floatingItem)
+            if (count == ContainerCounts.ALL) {
+                container.floatingItem = target
+                container._set(slot, floatingItem)
+            } else {
+                floatingItem.item._count--
+                container._set(slot, floatingItem.copy(count = 1))
+            }
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
         } finally {
             floatingItem.commit()

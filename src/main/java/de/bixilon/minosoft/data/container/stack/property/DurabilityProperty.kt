@@ -81,8 +81,8 @@ class DurabilityProperty(
 
     fun copy(
         stack: ItemStack,
-        unbreakable: Boolean = this.unbreakable,
-        durability: Int = this.durability,
+        unbreakable: Boolean = this._unbreakable,
+        durability: Int = this._durability,
     ): DurabilityProperty {
         return DurabilityProperty(stack, unbreakable, durability)
     }

@@ -332,7 +332,7 @@ abstract class Entity(
                 this is PlayerEntity -> {
                     val chestPlate = equipment[EquipmentSlots.CHEST]
                     if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
-                        chestPlate._display?.dyedColor?.let { return it }
+                        chestPlate._display?.dyeColor?.let { return it }
                     }
                     val formattingCode = tabListItem.team?.formattingCode
                     if (formattingCode is RGBColor) {

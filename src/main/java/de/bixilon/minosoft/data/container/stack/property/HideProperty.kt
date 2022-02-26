@@ -90,7 +90,7 @@ class HideProperty(
 
     fun copy(
         stack: ItemStack,
-        hideFlags: Int = this.hideFlags,
+        hideFlags: Int = this._hideFlags,
     ): HideProperty {
         return HideProperty(stack, hideFlags)
     }

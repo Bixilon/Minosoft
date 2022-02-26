@@ -53,11 +53,12 @@ class FastMoveContainerAction(
                 }
             }
             val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
-            for ((slot, content) in targets) {
+            for ((slot, content) in targets.toSortedMap()) {
                 if (content == null) {
                     changes[slot] = source
                     changes[this.slot] = null
                     container._set(slot, source)
+                    container._set(this.slot, null)
                     break
                 }
                 val countToPut = source.item._count - (source.item.item.maxStackSize - content.item._count)
@@ -73,6 +74,7 @@ class FastMoveContainerAction(
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, previous))
         } finally {
             container.commit()
+            container._validate()
         }
     }
 }

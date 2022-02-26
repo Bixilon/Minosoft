@@ -37,7 +37,7 @@ class DisplayProperty(
     var _customDisplayName = customDisplayName
     var customDisplayName by InventoryDelegate(stack, this::_customDisplayName)
     var _dyeColor = dyedColor
-    var dyedColor by InventoryDelegate(stack, this::_dyeColor)
+    var dyeColor by InventoryDelegate(stack, this::_dyeColor)
 
 
     init {
@@ -80,8 +80,8 @@ class DisplayProperty(
     fun copy(
         stack: ItemStack,
         lore: MutableList<ChatComponent> = this.lore.toMutableList(),
-        customDisplayName: ChatComponent? = this.customDisplayName,
-        dyedColor: RGBColor? = this.dyedColor,
+        customDisplayName: ChatComponent? = this._customDisplayName,
+        dyedColor: RGBColor? = this._dyeColor,
     ): DisplayProperty {
         return DisplayProperty(stack, lore, customDisplayName, dyedColor)
     }

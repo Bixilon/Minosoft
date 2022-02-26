@@ -95,7 +95,7 @@ class EnchantingProperty(
     fun copy(
         stack: ItemStack,
         enchantments: MutableMap<Enchantment, Int> = this.enchantments.toMutableMap(),
-        repairCost: Int = this.repairCost,
+        repairCost: Int = this._repairCost,
     ): EnchantingProperty {
         return EnchantingProperty(stack, enchantments, repairCost)
     }
