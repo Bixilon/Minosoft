@@ -49,7 +49,7 @@ class TextInputElement(
     var value: String
         get() = _value.toString()
         set(value) {
-            _pointer = 0
+            _pointer = value.length
             if (_value.equals(value)) {
                 return
             }
