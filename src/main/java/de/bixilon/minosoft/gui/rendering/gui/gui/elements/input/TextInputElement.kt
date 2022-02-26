@@ -32,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet
 
 class TextInputElement(
     guiRenderer: GUIRenderer,
@@ -326,6 +325,6 @@ class TextInputElement(
 
     companion object {
         private const val CURSOR_TICK_ON_ACTION = 10
-        private val WORD_SEPARATORS = CharOpenHashSet(charArrayOf(' ', ',', ';', '-', '\'', '`', '"', '“', '„', '.', '&', '@', '^', '/', '\\', '…', '*', '⁂', '=', '?', '!', '‽', '¡', '¿', '⸮', '#', '№', '%', '‰', '‱', '°', '⌀', '+', '−', '×', '÷', '~', '±', '∓', '–', '⁀', '|', '¦', '‖', '•', '·', '©', '©', '℗', '®', '‘', '’', '“', '”', '"', '"', '‹', '›', '«', '»', '(', ')', '[', ']', '{', '}', '⟨', '⟩', '”', '〃', '†', '‡', '❧', '☞', '◊', '¶', '⸿', '፠', '๛', '※', '§'))
+        private val WORD_SEPARATORS = charArrayOf(' ', ',', ';', '-', '\'', '`', '"', '“', '„', '.', '&', '@', '^', '/', '\\', '…', '*', '⁂', '=', '?', '!', '‽', '¡', '¿', '⸮', '#', '№', '%', '‰', '‱', '°', '⌀', '+', '−', '×', '÷', '~', '±', '∓', '–', '⁀', '|', '¦', '‖', '•', '·', '©', '©', '℗', '®', '‘', '’', '“', '”', '"', '"', '‹', '›', '«', '»', '(', ')', '[', ']', '{', '}', '⟨', '⟩', '”', '〃', '†', '‡', '❧', '☞', '◊', '¶', '⸿', '፠', '๛', '※', '§')
     }
 }

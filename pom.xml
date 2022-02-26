@@ -244,7 +244,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-        <javafx.version>19-ea+2</javafx.version>
+        <javafx.version>19-ea+3</javafx.version>
         <kotlin.version>1.6.10</kotlin.version>
         <lwjgl.version>3.3.0</lwjgl.version>
     </properties>
@@ -392,7 +392,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.1.2</version>
+            <version>6.1.3</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -447,7 +447,7 @@
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.2-1</version>
+            <version>1.5.2-2</version>
         </dependency>
         <dependency>
             <groupId>com.github.afester.javafx</groupId>
@@ -467,7 +467,7 @@
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
-            <artifactId>fastutil</artifactId>
+            <artifactId>fastutil-core</artifactId>
             <version>8.5.8</version>
         </dependency>
     </dependencies>
