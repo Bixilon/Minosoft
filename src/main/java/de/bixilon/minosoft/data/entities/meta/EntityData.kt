@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.meta
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.concurrent.lock.SimpleLock
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -39,6 +40,7 @@ import java.util.*
 class EntityData(
     val connection: PlayConnection,
 ) {
+    val lock = SimpleLock()
     val sets: EntityDataHashMap = EntityDataHashMap()
 
     override fun toString(): String {
@@ -56,7 +58,6 @@ class EntityData(
             EntityDataDataTypes.CHAT -> buffer.readChatComponent()
             EntityDataDataTypes.BOOLEAN -> buffer.readBoolean()
             EntityDataDataTypes.VEC3I -> Vec3i(buffer.readInt(), buffer.readInt(), buffer.readInt())
-            EntityDataDataTypes.ITEM_STACK -> buffer.readItemStack()
             EntityDataDataTypes.ITEM_STACK -> buffer.readItemStack()
             EntityDataDataTypes.ROTATION -> ArmorStandArmRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
             EntityDataDataTypes.BLOCK_POSITION -> buffer.readBlockPosition()
@@ -109,15 +110,20 @@ class EntityData(
     inner class EntityDataHashMap : Int2ObjectOpenHashMap<Any>() {
 
         operator fun <K> get(field: EntityDataFields): K {
-            val index: Int = this@EntityData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue.unsafeCast() // Can not find field.
-            get(index)?.let {
-                try {
-                    return it as K
-                } catch (exception: ClassCastException) {
-                    Log.log(LogMessageType.OTHER, level = LogLevels.WARN, message = exception)
+            lock.acquire()
+            try {
+                val index: Int = this@EntityData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue.unsafeCast() // Can not find field.
+                get(index)?.let {
+                    try {
+                        return it as K
+                    } catch (exception: ClassCastException) {
+                        Log.log(LogMessageType.OTHER, level = LogLevels.WARN, message = exception)
+                    }
                 }
+                return field.defaultValue as K
+            } finally {
+                lock.release()
             }
-            return field.defaultValue as K
         }
 
         fun getPose(field: EntityDataFields): Poses? {

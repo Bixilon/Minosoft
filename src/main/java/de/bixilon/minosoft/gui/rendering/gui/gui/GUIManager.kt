@@ -243,7 +243,25 @@ class GUIManager(
     }
 
     fun pop(element: GUIElement) {
-        TODO("Not yet implemented")
+        if (elementOrder.isEmpty()) {
+            return
+        }
+
+        val index = elementOrder.indexOf(element)
+        if (index < 0) {
+            return
+        }
+        element.onClose()
+        elementOrder.removeAt(index)
+        if (index == 0) {
+            elementOrder.firstOrNull()?.onOpen()
+        }
+
+        if (elementOrder.isEmpty()) {
+            renderWindow.inputHandler.inputHandler = null
+            guiRenderer.popper.clear()
+            guiRenderer.dragged.element = null
+        }
     }
 
     fun pop() {
