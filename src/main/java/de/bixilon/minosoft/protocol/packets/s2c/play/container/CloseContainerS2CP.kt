@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
+import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -25,8 +26,9 @@ class CloseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId: Int = buffer.readUnsignedByte()
 
     override fun handle(connection: PlayConnection) {
-        connection.player.containers[containerId]?.onClose()
-        // ToDo: Send event to gui
+        val container = connection.player.containers[containerId] ?: return
+        container.onClose()
+        connection.fireEvent(ContainerCloseEvent(connection, containerId, container))
     }
 
     override fun log(reducedLog: Boolean) {

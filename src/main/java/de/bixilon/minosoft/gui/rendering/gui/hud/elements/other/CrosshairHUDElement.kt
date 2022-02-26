@@ -31,13 +31,13 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRenderer) {
     private val profile = guiRenderer.connection.profiles.gui
     private val crosshairProfile = profile.hud.crosshair
-    private lateinit var crosshairAtlasElement: AtlasElement
+    private var crosshairAtlasElement: AtlasElement? = null
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
     private var reapply = true
 
     override fun init() {
-        crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]!!
+        crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]
         crosshairProfile::color.profileWatch(this, profile = profile) { reapply = true }
     }
 
@@ -64,6 +64,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     override fun apply() {
         mesh?.unload()
         this.mesh = null
+        val crosshairAtlasElement = crosshairAtlasElement ?: return
 
 
         val mesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(42))

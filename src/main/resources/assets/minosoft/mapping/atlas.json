@@ -905,5 +905,64 @@
         }
       }
     }
+  },
+  "minecraft:generic_container_header": {
+    "0": {
+      "start": [0, 0],
+      "end": [176, 17],
+      "texture": "minecraft:textures/gui/container/generic_54.png"
+    }
+  },
+  "minecraft:generic_container_slot_row": {
+    "0": {
+      "start": [0, 17],
+      "end": [176, 35],
+      "texture": "minecraft:textures/gui/container/generic_54.png",
+      "slots": {
+        "0": {
+          "start": [8, 1],
+          "end": [25, 18]
+        },
+        "1": {
+          "start": [26, 1],
+          "end": [43, 18]
+        },
+        "2": {
+          "start": [44, 1],
+          "end": [61, 18]
+        },
+        "3": {
+          "start": [62, 1],
+          "end": [79, 18]
+        },
+        "4": {
+          "start": [80, 1],
+          "end": [97, 18]
+        },
+        "5": {
+          "start": [98, 1],
+          "end": [115, 18]
+        },
+        "6": {
+          "start": [116, 1],
+          "end": [133, 18]
+        },
+        "7": {
+          "start": [134, 1],
+          "end": [151, 18]
+        },
+        "8": {
+          "start": [152, 1],
+          "end": [169, 18]
+        }
+      }
+    }
+  },
+  "minecraft:generic_container_footer": {
+    "0": {
+      "start": [0, 125],
+      "end": [176, 222],
+      "texture": "minecraft:textures/gui/container/generic_54.png"
+    }
   }
 }

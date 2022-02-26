@@ -11,19 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.containers
+package de.bixilon.minosoft.modding.event.events.container
 
-import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.container.types.generic.*
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-object DefaultContainerFactories : DefaultFactory<ContainerFactory<*>>(
-    PlayerInventory,
-
-    Generic9x1Container,
-    Generic9x2Container,
-    Generic9x3Container,
-    Generic9x4Container,
-    Generic9x5Container,
-    Generic9x6Container,
-)
+class ContainerOpenEvent(
+    connection: PlayConnection,
+    val containerId: Int,
+    val container: Container,
+) : PlayConnectionEvent(connection)

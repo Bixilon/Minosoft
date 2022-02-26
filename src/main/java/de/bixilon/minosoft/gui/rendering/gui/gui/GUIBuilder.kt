@@ -19,6 +19,4 @@ import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 interface GUIBuilder<T : GUIElement> {
 
     fun build(guiRenderer: GUIRenderer): T
-
-    fun register(guiRenderer: GUIRenderer) {}
 }

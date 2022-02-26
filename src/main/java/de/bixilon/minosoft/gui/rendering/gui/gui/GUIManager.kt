@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.LocalInventoryScreen
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
@@ -55,7 +55,7 @@ class GUIManager(
     }
 
     private fun registerDefaultElements() {
-        LocalInventoryScreen.register(guiRenderer)
+        ContainerGUIManager.register(guiRenderer)
     }
 
     override fun postInit() {
@@ -234,6 +234,10 @@ class GUIManager(
         layouted.init()
         layouted.postInit()
         _push(layouted)
+    }
+
+    fun pop(element: GUIElement) {
+        TODO("Not yet implemented")
     }
 
     fun pop() {

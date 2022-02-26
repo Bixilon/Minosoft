@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.text.ChatColors
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
@@ -50,7 +50,7 @@ class RawItemElement(
                 return
             }
             if (value != null) {
-                value::revision.observeRendering(this) { forceSilentApply() }
+                value::revision.observe(this) { forceSilentApply() }
             }
             if (field == value) {
                 return

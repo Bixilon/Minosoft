@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
-import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
@@ -71,10 +71,10 @@ class ContainerItemsElement(
         this._size = size
 
         container::slots.observeMap(this) { update = true; }
-        container::floatingItem.observeRendering(this) {
+        container::floatingItem.observe(this) {
             this.floatingItem?.close()
             this.floatingItem = null
-            this.floatingItem = FloatingItem(guiRenderer, stack = it ?: return@observeRendering, container = container).apply { show() }
+            this.floatingItem = FloatingItem(guiRenderer, stack = it ?: return@observe, container = container).apply { show() }
         }
     }
 

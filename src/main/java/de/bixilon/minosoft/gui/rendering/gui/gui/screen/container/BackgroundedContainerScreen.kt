@@ -15,53 +15,37 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.Screen
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-abstract class ContainerScreen<C : Container>(
+abstract class BackgroundedContainerScreen<C : Container>(
     guiRenderer: GUIRenderer,
-    val container: C,
-    items: Int2ObjectOpenHashMap<AtlasSlot>,
-) : Screen(guiRenderer), AbstractLayout<Element> {
-    protected open val containerElement = ContainerItemsElement(guiRenderer, container, items).apply { parent = this@ContainerScreen }
-    override var activeElement: Element? = null
-    override var activeDragElement: Element? = null
-    protected open val customRenderer: Boolean = false
+    container: C,
+    background: AtlasElement?,
+    items: Int2ObjectOpenHashMap<AtlasSlot> = background?.slots ?: Int2ObjectOpenHashMap(),
+) : ContainerScreen<C>(guiRenderer, container, items) {
+    private val containerBackground = AtlasImageElement(guiRenderer, background)
+    override val customRenderer: Boolean get() = true
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        super.forceRender(offset, consumer, options)
-        if (customRenderer) {
-            return
-        }
-        forceRenderContainerScreen(offset, consumer, options)
-    }
-
-    protected fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        containerElement.render(offset, consumer, options)
-    }
-
-    override fun forceSilentApply() {
-        super.forceSilentApply()
-        containerElement.apply()
+        val centerOffset = offset + (size - containerBackground.size) / 2
+        super.forceRender(centerOffset, consumer, options)
+        containerBackground.render(centerOffset, consumer, options)
+        forceRenderContainerScreen(centerOffset, consumer, options)
     }
 
     override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
-        if (position isGreater containerElement.size) {
+        val centerOffset = (size - containerBackground.size) / 2
+        if (position isSmaller centerOffset) {
             return null
         }
-        return Pair(containerElement, position)
-    }
-
-    override fun onClose() {
-        super.onClose()
-        container.onClose()
+        return super.getAt(position - centerOffset)
     }
 }

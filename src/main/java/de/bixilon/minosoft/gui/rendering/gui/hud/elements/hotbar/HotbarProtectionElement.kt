@@ -23,9 +23,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import glm_.vec2.Vec2i
 
 class HotbarProtectionElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollable {
-    private val emptyProtection = guiRenderer.atlasManager["minecraft:empty_protection"]!!
-    private val halfProtection = guiRenderer.atlasManager["minecraft:half_protection"]!!
-    private val fullProtection = guiRenderer.atlasManager["minecraft:full_protection"]!!
+    private val emptyProtection = guiRenderer.atlasManager["minecraft:empty_protection"]
+    private val halfProtection = guiRenderer.atlasManager["minecraft:half_protection"]
+    private val fullProtection = guiRenderer.atlasManager["minecraft:full_protection"]
 
     init {
         forceSilentApply()

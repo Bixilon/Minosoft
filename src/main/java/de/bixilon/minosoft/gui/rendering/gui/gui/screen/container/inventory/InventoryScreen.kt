@@ -15,14 +15,14 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory
 
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScreen
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.BackgroundedContainerScreen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class InventoryScreen(
     guiRenderer: GUIRenderer,
-    val inventory: PlayerInventory,
-) : ContainerScreen(
+    container: PlayerInventory,
+) : BackgroundedContainerScreen<PlayerInventory>(
     guiRenderer,
-    inventory,
-    guiRenderer.atlasManager["minecraft:inventory_base".toResourceLocation()]!!,
+    container,
+    guiRenderer.atlasManager["minecraft:inventory_base".toResourceLocation()],
 )
