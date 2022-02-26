@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 class FastMoveContainerAction(
     val slot: Int,
 ) : ContainerAction {
+    // ToDo: Action reverting
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         val source = container.slots[slot] ?: return

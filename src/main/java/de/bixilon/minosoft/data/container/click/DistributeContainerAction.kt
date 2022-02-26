@@ -13,7 +13,20 @@
 
 package de.bixilon.minosoft.data.container.click
 
-@Deprecated("ToDo")
+@Deprecated("Not yet implemented")
 class DistributeContainerAction : ContainerAction {
-    private val mode: Int get() = 5
+    /**
+     *
+    START_LEFT_MOUSE_DRAG(5, 0, false),
+    START_RIGHT_MOUSE_DRAG(5, 4, false),
+    START_MIDDLE_MOUSE_DRAG(5, 8, false),
+
+    ADD_SLOT_LEFT_CLICK(5, 1, true),
+    ADD_SLOT_RIGHT_CLICK(5, 5, true),
+    END_LEFT_MIDDLE_CLICK(5, 9, true),
+
+    END_LEFT_MOUSE_DRAG(5, 2, false),
+    END_RIGHT_MOUSE_DRAG(5, 6, false),
+    END_MIDDLE_MOUSE_DRAG(5, 10, false),
+     */
 }

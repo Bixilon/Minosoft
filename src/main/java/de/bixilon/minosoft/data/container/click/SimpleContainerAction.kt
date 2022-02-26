@@ -22,6 +22,7 @@ class SimpleContainerAction(
     val slot: Int?,
     val count: ContainerCounts,
 ) : ContainerAction {
+    // ToDo: Action reverting
 
     private fun pickItem(connection: PlayConnection, containerId: Int, container: Container) {
         val item = container[slot ?: return] ?: return

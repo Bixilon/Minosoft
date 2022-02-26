@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2S
 class PickAllContainerAction(
     val slot: Int,
 ) : ContainerAction {
+    // ToDo: Action reverting
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         container.lock.lock()

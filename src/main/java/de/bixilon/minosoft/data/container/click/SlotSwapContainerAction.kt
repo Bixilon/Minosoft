@@ -19,7 +19,7 @@ class SlotSwapContainerAction(
     val target: SwapTargets,
 ) : ContainerAction {
     private val mode: Int get() = 2
-    private val button: Int get() = target.ordinal
+    private val button: Int get() = target.button
 
     enum class SwapTargets(val button: Int) {
         HOTBAR_1(0),
