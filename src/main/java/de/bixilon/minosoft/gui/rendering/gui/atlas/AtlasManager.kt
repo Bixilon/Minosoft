@@ -71,13 +71,23 @@ class AtlasManager(private val renderWindow: RenderWindow) {
                     )
                 }
             }
-            // ToDo: special
+            val areas: MutableMap<String, AtlasArea> = mutableMapOf()
+            versionData["areas"].toJsonObject()?.let {
+                for ((areaName, areaPosition) in it) {
+                    val position = areaPosition.asJsonObject()
+                    areas[areaName] = AtlasArea(
+                        start = position["start"].toVec2i(),
+                        end = position["end"].toVec2i(),
+                    )
+                }
+            }
 
             val atlasElement = AtlasElement(
                 texture = texture,
                 start = start,
                 end = end,
                 slots = slots,
+                areas = areas,
             )
 
             elements[resourceLocation] = atlasElement

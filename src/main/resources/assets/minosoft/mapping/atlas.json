@@ -910,7 +910,13 @@
     "0": {
       "start": [0, 0],
       "end": [176, 17],
-      "texture": "minecraft:textures/gui/container/generic_54.png"
+      "texture": "minecraft:textures/gui/container/generic_54.png",
+      "areas": {
+        "text": {
+          "start": [4, 4],
+          "end": [172, 15]
+        }
+      }
     }
   },
   "minecraft:generic_container_slot_row": {
@@ -1107,6 +1113,12 @@
         "35": {
           "start": [152, 73],
           "end": [169, 90]
+        }
+      },
+      "areas": {
+        "text": {
+          "start": [3, 0],
+          "end": [172, 13]
         }
       }
     }

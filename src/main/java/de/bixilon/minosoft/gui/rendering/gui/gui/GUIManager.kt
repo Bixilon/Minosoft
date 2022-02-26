@@ -84,6 +84,12 @@ class GUIManager(
             }
             element.apply()
         }
+        for (element in elementOrder) {
+            if (element is LayoutedGUIElement<*>) {
+                element.element.forceSilentApply()
+            }
+            element.apply()
+        }
     }
 
     fun draw() {
