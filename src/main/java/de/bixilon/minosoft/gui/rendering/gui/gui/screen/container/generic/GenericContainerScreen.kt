@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFa
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScreen
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -67,7 +66,7 @@ open class GenericContainerScreen(
     }
 
     override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
-        val centerOffset = (size - Vec2i.EMPTY) / 2
+        val centerOffset = (size - containerSize) / 2
         if (position isSmaller centerOffset) {
             return null
         }
