@@ -63,7 +63,6 @@ class SimpleContainerAction(
                 if (slotType?.canPut(container, slot, floatingItem) == true) {
                     // merge
                     val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
-                    // ToDo: Check stack size
                     if (subtract == 0 || target.item._count + subtract > target.item.item.maxStackSize) {
                         return
                     }
@@ -71,7 +70,7 @@ class SimpleContainerAction(
                     floatingItem.item._count -= subtract
                 } else if (slotType?.canRemove(container, slot, floatingItem) == true) {
                     // remove only (e.g. crafting result)
-                    // ToDo: respect count
+                    // ToDo: respect count (part or all)
                     val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item._count, target.item._count)
                     if (subtract == 0) {
                         return

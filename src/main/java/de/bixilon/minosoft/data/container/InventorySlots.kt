@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.container
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.AliasableEnum
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
@@ -27,7 +28,7 @@ class InventorySlots {
         HEAD,
         ;
 
-        override val names: Array<String> = names.toList().toTypedArray()
+        override val names: Array<String> = names.unsafeCast()
 
         companion object : ValuesEnum<EquipmentSlots> {
             override val VALUES = values()

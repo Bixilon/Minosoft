@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.container.types
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
@@ -37,7 +38,21 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(connection: PlayConnection) : Container(connection = connection, type = TYPE) {
     override val sections: Array<IntRange> get() = SECTIONS
-    val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack> = lockMapOf() // ToDo: Update map
+    val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack> = lockMapOf()
+
+    init {
+        this::slots.observeMap(this) {
+            // ToDo: Main hand
+            for ((slotId, stack) in it.removes) {
+                this.equipment -= slotId.equipmentSlot ?: continue
+            }
+            for ((slotId, stack) in it.adds) {
+                val equipment = slotId.equipmentSlot ?: continue
+
+                this.equipment[equipment] = stack
+            }
+        }
+    }
 
 
     fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
@@ -111,16 +126,26 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
     }
 
     val InventorySlots.EquipmentSlots.slot: Int
-        get() {
-            return when (this) {
-                InventorySlots.EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
-                InventorySlots.EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
-                InventorySlots.EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
-                InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
+        get() = when (this) {
+            InventorySlots.EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
+            InventorySlots.EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
+            InventorySlots.EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
+            InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
 
-                InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
-                InventorySlots.EquipmentSlots.OFF_HAND -> 45
-            }
+            InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
+            InventorySlots.EquipmentSlots.OFF_HAND -> 45
+        }
+
+
+    val Int.equipmentSlot: InventorySlots.EquipmentSlots?
+        get() = when (this) {
+            ARMOR_OFFSET + 0 -> InventorySlots.EquipmentSlots.HEAD
+            ARMOR_OFFSET + 1 -> InventorySlots.EquipmentSlots.CHEST
+            ARMOR_OFFSET + 2 -> InventorySlots.EquipmentSlots.LEGS
+            ARMOR_OFFSET + 3 -> InventorySlots.EquipmentSlots.FEET
+            45 -> InventorySlots.EquipmentSlots.OFF_HAND
+            // ToDo: Main hand
+            else -> null
         }
 
     companion object : ContainerFactory<PlayerInventory> {
