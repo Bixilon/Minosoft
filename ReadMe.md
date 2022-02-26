@@ -1,6 +1,7 @@
 # Minosoft
 
-Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.
+Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
+(To be clear: This is not clone of minecraft, you can see it more like a fork or even better as a reimplementation)
 
 [![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
 
