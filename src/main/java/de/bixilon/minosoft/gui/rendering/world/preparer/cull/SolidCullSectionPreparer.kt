@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_NORTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -29,6 +30,7 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityModel
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -61,8 +63,10 @@ class SolidCullSectionPreparer(
         val isHighestSection = sectionHeight == chunk.highestSection
         val blocks = section.blocks
         val sectionLight = section.light
+        val blockEntities: MutableSet<BlockEntityModel<*>> = mutableSetOf()
         section.acquire()
         neighbours.acquire()
+        var blockEntity: BlockEntity? = null
         var model: BakedBlockModel
         var blockState: BlockState
         var position: Vec3i
@@ -82,6 +86,13 @@ class SolidCullSectionPreparer(
                     blockState = blocks.unsafeGet(x, y, z) ?: continue
                     if (blockState.block is FluidBlock) {
                         continue
+                    }
+                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
+                    blockEntity = section.blockEntities.unsafeGet(x, y, z)
+                    val blockEntityModel = blockEntity?.createModel()
+                    if (blockEntityModel != null) {
+                        blockEntityModel.init(renderWindow, blockState, position)
+                        blockEntities += blockEntityModel
                     }
                     model = blockState.blockModel ?: continue
 
@@ -144,7 +155,6 @@ class SolidCullSectionPreparer(
                         light[O_EAST] = sectionLight[y shl 8 or (z shl 4) or (x + 1)]
                     }
 
-                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     if (randomBlockModels) {
                         random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
                     } else {
@@ -161,5 +171,6 @@ class SolidCullSectionPreparer(
         }
         section.release()
         neighbours.release()
+        mesh.blockEntities = blockEntities
     }
 }

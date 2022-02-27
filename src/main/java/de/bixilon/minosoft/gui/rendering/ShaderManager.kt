@@ -23,6 +23,7 @@ class ShaderManager(
     val genericColorShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"))
     val genericTextureShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture"))
     val genericTexture2dShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture_2d"))
+    val entitiesShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "entities"))
 
     private fun Shader.loadAnimated() {
         load()
@@ -34,5 +35,7 @@ class ShaderManager(
         genericColorShader.load()
         genericTextureShader.loadAnimated()
         genericTexture2dShader.loadAnimated()
+        entitiesShader.loadAnimated()
+        renderWindow.lightMap.use(entitiesShader)
     }
 }

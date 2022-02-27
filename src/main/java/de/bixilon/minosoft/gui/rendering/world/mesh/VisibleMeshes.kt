@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.mesh
 
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityModel
 import de.bixilon.minosoft.util.KUtil.format
 import glm_.vec3.Vec3
 
@@ -21,6 +22,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
     val opaque: MutableList<SingleWorldMesh> = mutableListOf()
     val translucent: MutableList<SingleWorldMesh> = mutableListOf()
     val transparent: MutableList<SingleWorldMesh> = mutableListOf()
+    val blockEntities: MutableList<BlockEntityModel<*>> = mutableListOf()
 
     val sizeString: String
         get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}"
@@ -40,6 +42,9 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
             it.distance = distance
             transparent += it
         }
+        mesh.blockEntities?.let {
+            blockEntities += it
+        }
     }
 
 
@@ -54,11 +59,13 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
         mesh.opaqueMesh?.let { opaque -= it }
         mesh.translucentMesh?.let { translucent -= it }
         mesh.transparentMesh?.let { transparent -= it }
+        mesh.blockEntities?.let { blockEntities -= it }
     }
 
     fun clear() {
         opaque.clear()
         translucent.clear()
         transparent.clear()
+        blockEntities.clear()
     }
 }

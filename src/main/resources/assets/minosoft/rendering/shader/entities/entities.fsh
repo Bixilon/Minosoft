@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+#version 330 core
 
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityModel
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
+out vec4 foutColor;
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
-    open val nbt: Map<String, Any> = mapOf()
+#include "minosoft:animation/header_fragment"
 
-    open fun updateNBT(nbt: Map<String, Any>) = Unit
+#include "minosoft:texture"
+#include "minosoft:alpha"
+#include "minosoft:fog"
 
-    open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
+#define FOG// for animation/main_fragment
 
-    open fun createModel(): BlockEntityModel<out BlockEntity>? = null
+void main() {
+    #include "minosoft:animation/main_fragment"
 }

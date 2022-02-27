@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
+import de.bixilon.minosoft.gui.rendering.world.LightMap
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -75,6 +76,9 @@ class RenderWindow(
     val shaderManager = ShaderManager(this)
     val framebufferManager = FramebufferManager(this)
     val renderer = RendererManager(this)
+
+
+    val lightMap = LightMap(connection)
 
     var initialized = false
         private set
@@ -155,6 +159,8 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
+        lightMap.init()
+        lightMap.update()
         renderer.init(initLatch)
 
         // Wait for init stage to complete
@@ -230,6 +236,8 @@ class RenderWindow(
             renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
+
+            lightMap.update()
 
             val currentTickTime = TimeUtil.time
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {

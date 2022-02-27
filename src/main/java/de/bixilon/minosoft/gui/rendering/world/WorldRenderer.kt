@@ -91,7 +91,6 @@ class WorldRenderer(
     private val world: World = connection.world
     private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderWindow)
     private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
-    private val lightMap = LightMap(connection)
 
     private val loadedMeshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<WorldMesh>> = mutableMapOf() // all prepared (and up to date) meshes
     private val loadedMeshesLock = SimpleLock()
@@ -142,21 +141,18 @@ class WorldRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        lightMap.init()
 
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
         renderWindow.textureManager.staticTextures.animator.use(shader)
-        lightMap.use(shader)
+        renderWindow.lightMap.use(shader)
 
         transparentShader.defines["TRANSPARENT"] = ""
         transparentShader.load()
         renderWindow.textureManager.staticTextures.use(transparentShader)
         renderWindow.textureManager.staticTextures.animator.use(transparentShader)
-        lightMap.use(transparentShader)
+        renderWindow.lightMap.use(transparentShader)
 
-
-        lightMap.update()
 
         connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange() })
 
@@ -642,7 +638,6 @@ class WorldRenderer(
     }
 
     override fun prepareDraw() {
-        lightMap.update()
         if (clearVisibleNextFrame) {
             visible.clear()
             clearVisibleNextFrame = false
@@ -659,6 +654,9 @@ class WorldRenderer(
     override fun drawOpaque() {
         for (mesh in visible.opaque) {
             mesh.draw()
+        }
+        for (blockEntity in visible.blockEntities) {
+            blockEntity.draw(renderWindow)
         }
     }
 
