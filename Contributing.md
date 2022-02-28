@@ -30,4 +30,5 @@ If you want to ask me, the team or whoever in this project a question, you can d
  - Issues: Just open an issue if you want to ask it, or suggest something. If it is a really short thing, this is not recommended, but even if, it is no problem.
  - E-mail: You can contact me here: [bixilon@bixilon.de](mailto:bixilon@bixilon.de)
  - TeamSpeak: You can join my teamspeak (bixilon.de) and poke me there.
+ - Matrix: [#matrix:matrix.org](https://matrix.to/#/#matrix:matrix.org)
 

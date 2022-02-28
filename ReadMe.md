@@ -1,9 +1,10 @@
 # Minosoft
+[<img src="https://img.shields.io/matrix/minosoft-chat:matrix.org?style=for-the-badge">](https://matrix.to/#/#matrix:matrix.org)
+<img src="https://img.shields.io/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
+<img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
 (To be clear: This is not clone of minecraft, you can see it more like a fork or even better as a reimplementation)
-
-[![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
 
 <h2><span style="color:red">Notice: I am **not** responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
 (Also this software is not affiliated with Mojang AB)
