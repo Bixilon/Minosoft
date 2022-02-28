@@ -55,13 +55,9 @@ class BakedSkeletalModel(
                     }
                 }
 
-                var tintColor = 0xFFFFFF
-                if (element.color > 0) {
-                    tintColor = element.color
-                }
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
-                    mesh.addVertex(indexPosition, texturePositions[textureIndex], 0, textures[face.texture]!!, tintColor, 0xFF)
+                    mesh.addVertex(indexPosition, texturePositions[textureIndex], 0, textures[face.texture]!!, 0xFFFFFF, 0xFF)
                 }
             }
         }
@@ -70,6 +66,6 @@ class BakedSkeletalModel(
     }
 
     fun Vec3.fromBlockCoordinates(): Vec3 {
-        return (this / UnbakedElement.BLOCK_RESOLUTION) + 0.5f
+        return (this / UnbakedElement.BLOCK_RESOLUTION) + Vec3(0.5f, 0.0f, 0.5f)
     }
 }

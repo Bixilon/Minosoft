@@ -25,7 +25,7 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
-import org.lwjgl.BufferUtils
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
@@ -43,6 +43,7 @@ class OpenGLShader(
     private var shader = -1
     override var uniforms: MutableList<String> = mutableListOf()
         private set
+    private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
     private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
         val code = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[resourceLocation].readAsString())
@@ -106,9 +107,12 @@ class OpenGLShader(
 
 
     private fun getUniformLocation(uniformName: String): Int {
-        val location = glGetUniformLocation(shader, uniformName)
-        if (location < 0) {
-            throw IllegalArgumentException("No uniform named $uniformName!")
+        val location = uniformLocations.getOrPut(uniformName) {
+            val location = glGetUniformLocation(shader, uniformName)
+            if (location < 0) {
+                throw IllegalArgumentException("No uniform named $uniformName!")
+            }
+            return@getOrPut location
         }
         return location
     }
@@ -126,7 +130,7 @@ class OpenGLShader(
     }
 
     override fun setMat4(uniformName: String, mat4: Mat4) {
-        glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4 to BufferUtils.createFloatBuffer(16))
+        glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4.array)
     }
 
     override fun setVec2(uniformName: String, vec2: Vec2) {

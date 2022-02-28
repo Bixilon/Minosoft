@@ -17,42 +17,30 @@ import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEnt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     protected val modelName: ResourceLocation,
 ) : BlockEntityRenderer<E> {
-    private lateinit var model: BakedSkeletalModel
-    private lateinit var blockPosition: Vec3i
-    private var delta = 0.0f
-    private var rotating: Boolean = false
+    private var instance: SkeletalInstance? = null
 
     override fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i) {
-        this.blockPosition = blockPosition
-        this.model = renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!
+        this.instance = SkeletalInstance(renderWindow, blockPosition, renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!)
     }
 
 
     override fun draw(renderWindow: RenderWindow) {
-        val shader = renderWindow.shaderManager.skeletalShader
-        shader.use()
-        shader.setMat4("uSkeletalTransforms[0]", Mat4(1).translate(Vec3(blockPosition)).rotate(delta, Vec3(0, 1, 0)))
-        if (rotating) {
-            delta += 0.03f
-        }
-        model.mesh.draw()
+        instance?.draw()
     }
 
     fun open() {
-        rotating = true
+        this.instance?.playAnimation("animation.chest.opening")
     }
 
     fun close() {
-        rotating = false
+        this.instance?.playAnimation("animation.chest.closing")
     }
 }
