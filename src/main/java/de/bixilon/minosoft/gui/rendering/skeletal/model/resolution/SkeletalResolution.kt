@@ -11,21 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.gui.rendering.skeletal.model.resolution
 
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
-
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
-    open val nbt: Map<String, Any> = mapOf()
-
-    open fun updateNBT(nbt: Map<String, Any>) = Unit
-
-    open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
-
-    open fun createModel(): BlockEntityRenderer<out BlockEntity>? = null
-}
+data class SkeletalResolution(
+    val width: Int = 16,
+    val height: Int = 16,
+)

@@ -1,0 +1,236 @@
+{
+	"meta": {
+		"format_version": "4.0",
+		"model_format": "free",
+		"box_uv": true
+	},
+	"name": "chest",
+	"geometry_name": "chest",
+	"visible_box": [1, 1, 0],
+	"resolution": {
+		"width": 64,
+		"height": 64
+	},
+	"elements": [
+		{
+			"name": "bottom",
+			"rescale": false,
+			"locked": false,
+			"from": [-7, -10, -7],
+			"to": [7, 0, 7],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [-180, 0, 0],
+			"origin": [0, 0, 0],
+			"uv_offset": [0, 19],
+			"faces": {
+				"north": {
+					"uv": [14, 33, 28, 43],
+					"texture": 0
+				},
+				"east": {
+					"uv": [0, 33, 14, 43],
+					"texture": 0
+				},
+				"south": {
+					"uv": [42, 33, 56, 43],
+					"texture": 0
+				},
+				"west": {
+					"uv": [28, 33, 42, 43],
+					"texture": 0
+				},
+				"up": {
+					"uv": [28, 33, 14, 19],
+					"texture": 0
+				},
+				"down": {
+					"uv": [42, 19, 28, 33],
+					"texture": 0
+				}
+			},
+			"uuid": "76801e5b-8a1b-0a5d-c258-beef5dbc79ee"
+		},
+		{
+			"name": "lid",
+			"rescale": false,
+			"locked": false,
+			"from": [-7, 5, 7],
+			"to": [7, 10, 21],
+			"autouv": 1,
+			"color": 1,
+			"origin": [0, 0, 0],
+			"faces": {
+				"north": {
+					"uv": [14, 14, 28, 19],
+					"texture": 0
+				},
+				"east": {
+					"uv": [0, 14, 14, 19],
+					"texture": 0
+				},
+				"south": {
+					"uv": [42, 14, 56, 19],
+					"texture": 0
+				},
+				"west": {
+					"uv": [28, 14, 42, 19],
+					"texture": 0
+				},
+				"up": {
+					"uv": [28, 14, 14, 0],
+					"texture": 0
+				},
+				"down": {
+					"uv": [42, 0, 28, 14],
+					"texture": 0
+				}
+			},
+			"uuid": "01d53de6-eeef-3c77-dd07-6f6d52b0527b"
+		}
+	],
+	"outliner": [
+		{
+			"name": "root",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"uuid": "17d8814a-c29f-abdc-4f4a-c9b07cd032df",
+			"export": true,
+			"isOpen": true,
+			"locked": false,
+			"visibility": true,
+			"autouv": 0,
+			"children": [
+				"76801e5b-8a1b-0a5d-c258-beef5dbc79ee",
+				{
+					"name": "lid",
+					"origin": [0, 10, 7],
+					"rotation": [-180, 0, 0],
+					"color": 0,
+					"uuid": "c9b45550-2e8b-af52-a981-4aedc81fb456",
+					"export": true,
+					"isOpen": true,
+					"locked": false,
+					"visibility": true,
+					"autouv": 0,
+					"children": ["01d53de6-eeef-3c77-dd07-6f6d52b0527b"]
+				}
+			]
+		}
+	],
+	"textures": [
+		{
+			"path": "entity/chest/normal",
+			"name": "normal",
+			"folder": "",
+			"namespace": "minecraft",
+			"id": "0",
+			"particle": false,
+			"render_mode": "normal",
+			"visible": true,
+			"mode": "bitmap",
+			"saved": true,
+			"uuid": "9038a773-2512-f607-b2da-58c3649228ad"
+		}
+	],
+	"animations": [
+		{
+			"uuid": "d951b58f-d87c-519b-c3a7-22db3d46871c",
+			"name": "animation.chest.opening",
+			"loop": "hold",
+			"override": false,
+			"length": 0.5,
+			"snapping": 24,
+			"selected": false,
+			"anim_time_update": "",
+			"blend_weight": "",
+			"start_delay": "",
+			"loop_delay": "",
+			"animators": {
+				"c9b45550-2e8b-af52-a981-4aedc81fb456": {
+					"name": "lid",
+					"type": "bone",
+					"keyframes": [
+						{
+							"channel": "rotation",
+							"data_points": [
+								{
+									"x": "0",
+									"y": "0",
+									"z": "0"
+								}
+							],
+							"uuid": "d595c66b-58da-743a-223e-baff1a2910f1",
+							"time": 0,
+							"color": -1,
+							"interpolation": "catmullrom"
+						},
+						{
+							"channel": "rotation",
+							"data_points": [
+								{
+									"x": -90,
+									"y": 0,
+									"z": 0
+								}
+							],
+							"uuid": "ac945fe7-65b4-1f09-dc05-782860c4aa7c",
+							"time": 0.5,
+							"color": -1,
+							"interpolation": "catmullrom"
+						}
+					]
+				}
+			}
+		},
+		{
+			"uuid": "581b97d7-b54c-456f-e91e-7b619572a530",
+			"name": "animation.chest.closing",
+			"loop": "hold",
+			"override": false,
+			"length": 0.5,
+			"snapping": 24,
+			"selected": false,
+			"anim_time_update": "",
+			"blend_weight": "",
+			"start_delay": "",
+			"loop_delay": "",
+			"animators": {
+				"c9b45550-2e8b-af52-a981-4aedc81fb456": {
+					"name": "lid",
+					"type": "bone",
+					"keyframes": [
+						{
+							"channel": "rotation",
+							"data_points": [
+								{
+									"x": -90,
+									"y": 0,
+									"z": 0
+								}
+							],
+							"uuid": "ac945fe7-65b4-1f09-dc05-782860c4aa7c",
+							"time": 0,
+							"color": -1,
+							"interpolation": "catmullrom"
+						},
+						{
+							"channel": "rotation",
+							"data_points": [
+								{
+									"x": "0",
+									"y": 0,
+									"z": 0
+								}
+							],
+							"uuid": "8ef02eb5-7b0c-462d-42ab-cce77b9a4497",
+							"time": 0.5,
+							"color": -1,
+							"interpolation": "catmullrom"
+						}
+					]
+				}
+			}
+		}
+	]
+}

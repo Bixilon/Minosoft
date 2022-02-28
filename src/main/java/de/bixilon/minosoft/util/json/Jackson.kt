@@ -21,6 +21,9 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.type.MapType
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import de.bixilon.minosoft.util.json.vec.Vec2Serializer
+import de.bixilon.minosoft.util.json.vec.Vec3Serializer
+import de.bixilon.minosoft.util.json.vec.Vec4Serializer
 
 object Jackson {
     val MAPPER = JsonMapper.builder()
@@ -39,6 +42,9 @@ object Jackson {
         .registerModule(ResourceLocationSerializer)
         .registerModule(RGBColorSerializer)
         .registerModule(ChatComponentColorSerializer)
+        .registerModule(Vec2Serializer)
+        .registerModule(Vec3Serializer)
+        .registerModule(Vec4Serializer)
         .setDefaultMergeable(true)
 
 

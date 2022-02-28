@@ -15,14 +15,14 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityModel
-import de.bixilon.minosoft.gui.rendering.world.entities.models.ChestModel
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.ChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    override fun createModel(): BlockEntityModel<ChestBlockEntity> {
-        return ChestModel(this)
+    override fun createModel(): BlockEntityRenderer<ChestBlockEntity> {
+        return ChestRenderer(this)
     }
 
     companion object : BlockEntityFactory<ChestBlockEntity> {

@@ -30,7 +30,7 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityModel
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -63,7 +63,7 @@ class SolidCullSectionPreparer(
         val isHighestSection = sectionHeight == chunk.highestSection
         val blocks = section.blocks
         val sectionLight = section.light
-        val blockEntities: MutableSet<BlockEntityModel<*>> = mutableSetOf()
+        val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()
         section.acquire()
         neighbours.acquire()
         var blockEntity: BlockEntity? = null

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import glm_.vec3.Vec3i
 
-interface BlockEntityModel<E : BlockEntity> {
+interface BlockEntityRenderer<E : BlockEntity> {
 
     fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i)
 

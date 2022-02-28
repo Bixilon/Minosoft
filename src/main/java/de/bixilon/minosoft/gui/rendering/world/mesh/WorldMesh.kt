@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.mesh
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityModel
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -30,7 +30,7 @@ class WorldMesh(
     var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 100000)
     var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 10000)
     var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
-    var blockEntities: Set<BlockEntityModel<*>>? = null
+    var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
     val minPosition = Vec3i(16)

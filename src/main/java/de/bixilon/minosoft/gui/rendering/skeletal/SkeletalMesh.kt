@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.skeletal
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -20,15 +20,16 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class EntitiesMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, EntitiesMeshStruct, initialCacheSize = initialCacheSize) {
+class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, EntitiesMeshStruct, initialCacheSize = initialCacheSize) {
 
-    fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
+    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: AbstractTexture, tintColor: Int, light: Int) {
         val transformedUV = texture.renderData.transformUV(uv)
         data.add(position[0])
         data.add(position[1])
         data.add(position[2])
         data.add(transformedUV.x)
         data.add(transformedUV.y)
+        data.add(Float.fromBits(transform))
         data.add(Float.fromBits(texture.renderData.shaderTextureId))
         data.add(Float.fromBits(tintColor or (light shl 24)))
     }
@@ -37,6 +38,7 @@ class EntitiesMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
     data class EntitiesMeshStruct(
         val position: Vec3,
         val uv: Vec2,
+        val transform: Int,
         val indexLayerAnimation: Int,
         val tintLight: Int,
     ) {
