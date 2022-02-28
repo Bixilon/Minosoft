@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,13 +15,29 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {
+    protected var model: StorageBlockEntityRenderer<*>? = null
+
     var playersLookingIntoStorage: Int = 0
         private set
 
+    val closed: Boolean get() = playersLookingIntoStorage <= 0
+
     override fun setBlockActionData(data1: Byte, data2: Byte) {
+        val closed = closed
         playersLookingIntoStorage = data2.toInt()
+
+        if (this.closed == closed) {
+            // state has not changed
+            return
+        }
+        if (playersLookingIntoStorage <= 0) {
+            model?.close()
+        } else {
+            model?.open()
+        }
     }
 }

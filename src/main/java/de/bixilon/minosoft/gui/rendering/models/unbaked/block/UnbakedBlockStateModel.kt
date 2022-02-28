@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.models.unbaked.AbstractUnbakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.ModelBakeUtil
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.get
@@ -34,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.func.rad
-import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.swizzle.xz
@@ -86,12 +86,7 @@ data class UnbakedBlockStateModel(
                     }
                 }
 
-                var texturePositions = arrayOf(
-                    Vec2(face.uvEnd.x, face.uvStart.y),
-                    face.uvStart,
-                    Vec2(face.uvStart.x, face.uvEnd.y),
-                    face.uvEnd,
-                )
+                var texturePositions = ModelBakeUtil.getTextureCoordinates(face.uvStart, face.uvEnd)
                 if (face.rotation != 0) {
                     texturePositions = texturePositions.rotateLeft((face.rotation % 360) / 90).toTypedArray()
                 }

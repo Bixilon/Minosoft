@@ -11,29 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities.renderer
+package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
-import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class ChestRenderer(val entity: ChestBlockEntity) : BlockEntityRenderer<ChestBlockEntity> {
-    var mesh: SkeletalMesh? = null
+abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
+    protected val modelName: ResourceLocation,
+) : BlockEntityRenderer<E> {
+    private lateinit var model: BakedSkeletalModel
     private lateinit var blockPosition: Vec3i
     private var delta = 0.0f
+    private var rotating: Boolean = false
 
     override fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i) {
         this.blockPosition = blockPosition
-        val mesh = SkeletalMesh(renderWindow, 1000)
-        mesh.addYQuad(Vec2(1.0f), 1.0f, Vec2(0, 0), vertexConsumer = { position, uv -> mesh.addVertex(position.array, uv, 0, renderWindow.WHITE_TEXTURE.texture, 0xFF00FF, 0xFF) })
-        this.mesh = mesh
+        this.model = renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!
     }
 
 
@@ -41,17 +42,17 @@ class ChestRenderer(val entity: ChestBlockEntity) : BlockEntityRenderer<ChestBlo
         val shader = renderWindow.shaderManager.skeletalShader
         shader.use()
         shader.setMat4("uSkeletalTransforms[0]", Mat4(1).translate(Vec3(blockPosition)).rotate(delta, Vec3(0, 1, 0)))
-        delta += 0.03f
-        renderWindow.renderSystem[RenderingCapabilities.FACE_CULLING] = false
-        mesh!!.draw()
+        if (rotating) {
+            delta += 0.03f
+        }
+        model.mesh.draw()
     }
 
-    override fun unload() {
-        mesh!!.unload()
-        this.mesh = null
+    fun open() {
+        rotating = true
     }
 
-    override fun load() {
-        mesh!!.load()
+    fun close() {
+        rotating = false
     }
 }

@@ -14,8 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements.faces
 
 import glm_.vec4.Vec4
+import glm_.vec4.swizzle.xy
+import glm_.vec4.swizzle.zw
 
 data class SkeletalFace(
     val uv: Vec4,
     val texture: Int,
-)
+) {
+    val uvStart = uv.xy
+    val uvEnd = uv.zw
+}

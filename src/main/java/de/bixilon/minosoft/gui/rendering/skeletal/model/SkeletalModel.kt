@@ -13,11 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.meta.SkeletalMeta
 import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
+import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import glm_.vec3.Vec3
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 data class SkeletalModel(
     val meta: SkeletalMeta = SkeletalMeta(),
@@ -27,6 +32,15 @@ data class SkeletalModel(
     val resolution: SkeletalResolution = SkeletalResolution(),
     val elements: List<SkeletalElement> = listOf(),
     val outliner: List<Any> = listOf(),
-    val textures: List<Any> = listOf(),
+    val textures: List<SkeletalTexture> = listOf(),
     val animations: List<Any> = listOf(),
-)
+) {
+    fun bake(renderWindow: RenderWindow): BakedSkeletalModel {
+        val textures: Int2ObjectOpenHashMap<AbstractTexture> = Int2ObjectOpenHashMap()
+        for (entry in this.textures) {
+            val texture = renderWindow.textureManager.staticTextures.createTexture(entry.resourceLocation)
+            textures[entry.id] = texture
+        }
+        return BakedSkeletalModel(this, textures)
+    }
+}

@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -42,7 +43,7 @@ class ModelLoader(
 ) {
     private val assetsManager = renderWindow.connection.assetsManager
     private val unbakedBlockModels: SynchronizedMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toSynchronizedMap()
-    private val blockModels: SynchronizedMap<ResourceLocation, SkeletalModel> = synchronizedMapOf()
+    val blockModels: SynchronizedMap<ResourceLocation, BakedSkeletalModel> = synchronizedMapOf()
 
     private val registry: Registries = renderWindow.connection.registries
 
@@ -106,7 +107,7 @@ class ModelLoader(
 
     private fun loadBlockEntityModel(resourceLocation: ResourceLocation): SkeletalModel {
         val model: SkeletalModel = renderWindow.connection.assetsManager[resourceLocation].readJson()
-        this.blockModels[resourceLocation] = model
+        this.blockModels[resourceLocation] = model.bake(renderWindow)
         println("Loaded $resourceLocation!")
         return model
     }

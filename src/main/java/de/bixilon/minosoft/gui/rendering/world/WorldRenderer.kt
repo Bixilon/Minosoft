@@ -39,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -129,8 +128,7 @@ class WorldRenderer(
     val preparingTasksSize: Int by preparingTasks::size
 
     override fun init(latch: CountUpAndDownLatch) {
-        val modelLoader = ModelLoader(renderWindow)
-        modelLoader.load(latch)
+        renderWindow.modelLoader.load(latch)
 
         for (fluid in connection.registries.fluidRegistry) {
             if (fluid is FlowableFluid) {

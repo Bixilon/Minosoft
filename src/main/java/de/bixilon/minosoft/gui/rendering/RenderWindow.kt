@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
+import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.renderer.RendererManager.Companion.registerDefault
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
@@ -76,7 +77,7 @@ class RenderWindow(
     val shaderManager = ShaderManager(this)
     val framebufferManager = FramebufferManager(this)
     val renderer = RendererManager(this)
-
+    val modelLoader = ModelLoader(this)
 
     val lightMap = LightMap(connection)
 
@@ -203,6 +204,9 @@ class RenderWindow(
 
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
 
+        for (model in modelLoader.blockModels.values) {
+            model.loadMesh(this)
+        }
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
         initialized = true

@@ -11,19 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
-import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.data.entities.block.container.storage.ChestBlockEntity
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-interface BlockEntityRenderer<E : BlockEntity> {
-
-    fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i)
-
-    fun draw(renderWindow: RenderWindow)
-
-    fun unload() {}
-    fun load() {}
-}
+class ChestBlockEntityRenderer(val entity: ChestBlockEntity) : StorageBlockEntityRenderer<ChestBlockEntity>("minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation())
