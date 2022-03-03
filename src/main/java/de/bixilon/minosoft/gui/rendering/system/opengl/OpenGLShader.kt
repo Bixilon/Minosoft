@@ -82,7 +82,7 @@ class OpenGLShader(
         programs += load(vertex, GL_VERTEX_SHADER)
         try {
             geometry?.let { programs += load(it, GL_GEOMETRY_SHADER) }
-        } catch (exception: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
         }
         programs += load(fragment, GL_FRAGMENT_SHADER)
 
@@ -160,9 +160,12 @@ class OpenGLShader(
     }
 
     override fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer) {
-        val index = glGetUniformBlockIndex(shader, uniformName)
-        if (index < 0) {
-            throw IllegalArgumentException("No uniform buffer called $uniformName")
+        val index = uniformLocations.getOrPut(uniformName) {
+            val index = glGetUniformBlockIndex(shader, uniformName)
+            if (index < 0) {
+                throw IllegalArgumentException("No uniform buffer called $uniformName")
+            }
+            return@getOrPut index
         }
         glUniformBlockBinding(shader, index, uniformBuffer.bindingIndex)
     }

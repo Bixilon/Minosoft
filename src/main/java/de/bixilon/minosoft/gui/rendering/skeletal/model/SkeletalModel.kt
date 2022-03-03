@@ -15,8 +15,10 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.skeletal.model.meta.SkeletalMeta
+import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -31,9 +33,9 @@ data class SkeletalModel(
     val visibleBox: Vec3 = Vec3.EMPTY,
     val resolution: SkeletalResolution = SkeletalResolution(),
     val elements: List<SkeletalElement> = listOf(),
-    val outliner: List<Any> = listOf(),
+    val outliner: List<SkeletalOutliner> = listOf(),
     val textures: List<SkeletalTexture> = listOf(),
-    val animations: List<Any> = listOf(),
+    val animations: List<SkeletalAnimation> = listOf(),
 ) {
     fun bake(renderWindow: RenderWindow): BakedSkeletalModel {
         val textures: Int2ObjectOpenHashMap<AbstractTexture> = Int2ObjectOpenHashMap()

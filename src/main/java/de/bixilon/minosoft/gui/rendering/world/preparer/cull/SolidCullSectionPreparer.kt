@@ -93,6 +93,7 @@ class SolidCullSectionPreparer(
                     if (blockEntityModel != null) {
                         blockEntityModel.init(renderWindow, blockState, position)
                         blockEntities += blockEntityModel
+                        mesh.addBlock(x, y, z)
                     }
                     model = blockState.blockModel ?: continue
 

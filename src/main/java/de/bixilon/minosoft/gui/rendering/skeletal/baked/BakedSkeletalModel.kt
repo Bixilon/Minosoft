@@ -65,7 +65,7 @@ class BakedSkeletalModel(
         this.mesh = mesh
     }
 
-    fun Vec3.fromBlockCoordinates(): Vec3 {
-        return (this / UnbakedElement.BLOCK_RESOLUTION) + Vec3(0.5f, 0.0f, 0.5f)
-    }
+   private fun Vec3.fromBlockCoordinates(): Vec3 {
+       return (this / UnbakedElement.BLOCK_RESOLUTION) + Vec3(0.5f, 0.0f, 0.5f)
+   }
 }
