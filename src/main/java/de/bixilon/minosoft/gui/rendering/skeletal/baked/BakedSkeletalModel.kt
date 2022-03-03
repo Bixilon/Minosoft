@@ -105,6 +105,5 @@ class BakedSkeletalModel(
         fun Vec3.fromBlockCoordinates(): Vec3 {
             return Vec3(this.x / UnbakedElement.BLOCK_RESOLUTION + 0.5f, this.y / UnbakedElement.BLOCK_RESOLUTION, this.z / UnbakedElement.BLOCK_RESOLUTION + 0.5f)
         }
-
     }
 }
