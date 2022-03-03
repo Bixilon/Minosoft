@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.registries.biomes
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.func.common.clamp
 import java.util.*
 
 data class Biome(
@@ -46,7 +46,7 @@ data class Biome(
 
 
     fun getClampedTemperature(height: Int): Int {
-        return getColorMapCoordinate(clamp(temperature + (clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0.0f, 1.0f))
+        return getColorMapCoordinate((temperature + ((height - ProtocolDefinition.SEA_LEVEL_HEIGHT).clamp(1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER)).clamp(0.0f, 1.0f))
     }
 
     override fun toString(): String {
@@ -56,7 +56,7 @@ data class Biome(
     companion object : ResourceLocationDeserializer<Biome> {
 
         private fun getColorMapCoordinate(value: Float): Int {
-            return ((1.0 - clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
+            return ((1.0 - value.clamp(0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
         }
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Biome {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
+import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
@@ -34,5 +36,26 @@ object Vec3dUtil {
     fun Vec3d.toVec3(): Vec3 {
         val array = array
         return Vec3(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+    }
+
+
+    fun interpolateLinear(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
+        if (delta <= 0.0) {
+            return start
+        }
+        if (delta >= 1.0) {
+            return end
+        }
+        return Vec3d(interpolateLinear(delta, start.x, end.x), interpolateLinear(delta, start.y, end.y), interpolateLinear(delta, start.z, end.z))
+    }
+
+    fun interpolateSine(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
+        if (delta <= 0.0) {
+            return start
+        }
+        if (delta >= 1.0) {
+            return end
+        }
+        return Vec3d(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y), interpolateSine(delta, start.z, end.z))
     }
 }

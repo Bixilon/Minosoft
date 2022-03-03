@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.time
 
-import de.bixilon.kutil.math.MMath.fractionalPart
+import de.bixilon.kutil.math.simple.DoubleMath.fractional
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.clamp
@@ -30,7 +30,7 @@ class WorldTime(
 
     val skyAngle: Float
         get() {
-            val fractionalPath = fractionalPart(abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
+            val fractionalPath = (abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25).fractional
             val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
             return ((fractionalPath * 2.0 + angle) / 3.0).toFloat()
         }

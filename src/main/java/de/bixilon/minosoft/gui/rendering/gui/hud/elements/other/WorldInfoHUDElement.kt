@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
-import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -42,7 +42,7 @@ class WorldInfoHUDElement(guiRenderer: GUIRenderer) : TextElement(guiRenderer, "
     override fun poll(): Boolean {
         val debugHUDElement = guiRenderer.hud[DebugHUDElement]
         val hide = debugHUDElement?.enabled == true
-        val fps = guiRenderer.renderWindow.renderStats.smoothAvgFPS.round10
+        val fps = guiRenderer.renderWindow.renderStats.smoothAvgFPS.rounded10
         if (this.hide == hide && this.fps == fps) {
             return false
         }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import de.bixilon.kutil.math.MMath.positiveNegative
+import de.bixilon.kutil.primitive.BooleanUtil.toInt
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -43,8 +43,8 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
 
     private fun drawLineQuad(start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean, lineWidth: Float, color: RGBColor) {
         val halfLineWidth = lineWidth / 2
-        val normal1Multiplier = invertNormal1.positiveNegative
-        val normal2Multiplier = invertNormal2.positiveNegative
+        val normal1Multiplier = invertNormal1.toInt()
+        val normal2Multiplier = invertNormal2.toInt()
         val positions = arrayOf(
             start + normal2 * normal2Multiplier * halfLineWidth - direction * halfLineWidth,
             start + normal1 * normal1Multiplier * halfLineWidth - direction * halfLineWidth,

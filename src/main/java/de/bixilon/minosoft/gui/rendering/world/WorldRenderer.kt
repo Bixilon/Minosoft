@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW

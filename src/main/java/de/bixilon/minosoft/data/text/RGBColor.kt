@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.kutil.math.MMath.clamp
+import glm_.func.common.clamp
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import org.checkerframework.common.value.qual.IntRange
@@ -94,7 +94,7 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
     }
 
     fun with(red: Float = this.floatRed, green: Float = this.floatGreen, blue: Float = this.floatBlue, alpha: Float = this.floatAlpha): RGBColor {
-        return RGBColor(clamp(red, 0.0f, 1.0f), clamp(green, 0.0f, 1.0f), clamp(blue, 0.0f, 1.0f), clamp(alpha, 0.0f, 1.0f))
+        return RGBColor(red.clamp(0.0f, 1.0f), green.clamp(0.0f, 1.0f), blue.clamp(0.0f, 1.0f), alpha.clamp(0.0f, 1.0f))
     }
 
     fun mix(vararg colors: RGBColor): RGBColor {

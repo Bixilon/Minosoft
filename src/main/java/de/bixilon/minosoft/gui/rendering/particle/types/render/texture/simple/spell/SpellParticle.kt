@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell
 
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 import kotlin.random.Random
@@ -41,6 +41,6 @@ abstract class SpellParticle(connection: PlayConnection, position: Vec3d, veloci
     override fun tick() {
         super.tick()
 
-        color = color.with(alpha = VecUtil.lerp(0.05f, color.floatAlpha, 1.0f))
+        color = color.with(alpha = interpolateLinear(0.05f, color.floatAlpha, 1.0f))
     }
 }

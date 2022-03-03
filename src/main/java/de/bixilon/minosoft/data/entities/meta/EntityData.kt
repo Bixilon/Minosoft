@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.meta
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.container.stack.ItemStack

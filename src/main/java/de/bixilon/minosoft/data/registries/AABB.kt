@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries
 
 import com.google.gson.JsonObject
-import de.bixilon.kutil.math.MMath.ceil
-import de.bixilon.kutil.math.MMath.floor
+import de.bixilon.kutil.math.simple.DoubleMath.ceil
+import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY

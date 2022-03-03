@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
@@ -286,7 +286,7 @@ class RenderWindow(
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.round10}"
+                window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.rounded10}"
             }
         }
 

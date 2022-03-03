@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
@@ -115,5 +117,25 @@ object Vec3Util {
         x = 0.0f
         y = 0.0f
         z = 0.0f
+    }
+
+    fun interpolateLinear(delta: Float, start: Vec3, end: Vec3): Vec3 {
+        if (delta <= 0.0f) {
+            return start
+        }
+        if (delta >= 1.0f) {
+            return end
+        }
+        return Vec3(interpolateLinear(delta, start.x, end.x), interpolateLinear(delta, start.y, end.y), interpolateLinear(delta, start.z, end.z))
+    }
+
+    fun interpolateSine(delta: Float, start: Vec3, end: Vec3): Vec3 {
+        if (delta <= 0.0f) {
+            return start
+        }
+        if (delta >= 1.0f) {
+            return end
+        }
+        return Vec3(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y), interpolateSine(delta, start.z, end.z))
     }
 }

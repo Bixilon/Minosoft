@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.data.registries.dimension
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
@@ -62,7 +62,7 @@ data class DimensionProperties(
         for (i in lightLevels.indices) {
             val asFloat = i / 15.0f
 
-            lightLevels[i] = VecUtil.lerp(ambientLight, asFloat / (4.0f - 3.0f * asFloat), 1.0f)
+            lightLevels[i] = interpolateLinear(ambientLight, asFloat / (4.0f - 3.0f * asFloat), 1.0f)
         }
     }
 

@@ -15,10 +15,9 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator
 
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.SkeletalKeyframe
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import glm_.vec3.Vec3
-import kotlin.math.PI
-import kotlin.math.sin
 
 data class SkeletalAnimator(
     val name: String,
@@ -55,7 +54,7 @@ data class SkeletalAnimator(
         val secondRotation = secondKeyframe.dataPoints[0].toVec3()
 
         val delta = (time - firstKeyframe.time) / (secondKeyframe.time - firstKeyframe.time)
-        rotation = firstRotation + (secondRotation - firstRotation) * (sin(delta * PI / 2))
+        rotation = interpolateSine(delta, firstRotation, secondRotation)
 
 
         return rotation

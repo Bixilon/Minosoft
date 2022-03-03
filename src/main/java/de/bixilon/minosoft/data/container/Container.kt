@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.container
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
-import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap

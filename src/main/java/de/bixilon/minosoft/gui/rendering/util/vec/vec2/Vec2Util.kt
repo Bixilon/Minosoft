@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import glm_.vec2.Vec2
 
@@ -39,5 +41,26 @@ object Vec2Util {
             is Number -> Vec2(this.toFloat())
             else -> null
         }
+    }
+
+
+    fun interpolateLinear(delta: Float, start: Vec2, end: Vec2): Vec2 {
+        if (delta <= 0.0f) {
+            return start
+        }
+        if (delta >= 1.0f) {
+            return end
+        }
+        return Vec2(interpolateLinear(delta, start.x, end.x), interpolateLinear(delta, start.y, end.y))
+    }
+
+    fun interpolateSine(delta: Float, start: Vec2, end: Vec2): Vec2 {
+        if (delta <= 0.0f) {
+            return start
+        }
+        if (delta >= 1.0f) {
+            return end
+        }
+        return Vec2(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y))
     }
 }

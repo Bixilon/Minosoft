@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.kutil.math.MMath.square
+import de.bixilon.kutil.math.simple.DoubleMath.square
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.Chunk
@@ -165,7 +165,7 @@ class NoiseBiomeAccessor(
 
         val zFractionSalt = distribute(ret)
 
-        return square(xFraction + xFractionSalt) + square(yFraction + yFractionSalt) + square(zFraction + zFractionSalt)
+        return (xFraction + xFractionSalt).square() + (yFraction + yFractionSalt).square() + (zFraction + zFractionSalt).square()
     }
 
     private fun distribute(seed: Long): Double {
