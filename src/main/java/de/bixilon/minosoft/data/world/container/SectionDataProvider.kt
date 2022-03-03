@@ -23,7 +23,7 @@ open class SectionDataProvider<T>(
     data: Array<T>? = null,
     val checkSize: Boolean = false,
 ) : Iterable<T> {
-    protected var data: Array<T?>? = data?.unsafeCast()
+    protected var data: Array<Any?>? = data?.unsafeCast()
         private set
     protected val lock = SimpleLock() // lock while reading (blocks writing)
     var count: Int = 0
@@ -142,7 +142,7 @@ open class SectionDataProvider<T>(
             if (count == 0) {
                 this.data = null
                 unlock()
-                return previous
+                return previous.unsafeCast()
             }
         } else if (previous == null) {
             count++
@@ -163,7 +163,7 @@ open class SectionDataProvider<T>(
             }
         }
         unlock()
-        return previous
+        return previous.unsafeCast()
     }
 
     fun acquire() {
@@ -188,7 +188,7 @@ open class SectionDataProvider<T>(
     fun setData(data: Array<T>) {
         lock()
         check(data.size == ProtocolDefinition.BLOCKS_PER_SECTION) { "Size does not match!" }
-        this.data = data as Array<T?>
+        this.data = data as Array<Any?>
         recalculate()
         unlock()
     }

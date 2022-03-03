@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.container
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -27,10 +26,11 @@ class BlockSectionDataProvider(
 
     override fun recalculate() {
         super.recalculate()
-        val data: Array<BlockState?> = data?.nullCast() ?: return // ToDo: ClassCastException
+        val data: Array<Any?> = data ?: return // ToDo: ClassCastException
 
         fluidCount = 0
         for (blockState in data) {
+            blockState as BlockState?
             if (blockState.isFluid()) {
                 fluidCount++
             }
