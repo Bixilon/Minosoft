@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -107,12 +107,15 @@ class EntityHitboxRenderer(
 
     private fun updateEnabled() {
         if (setAvailable) {
+            connection.world.entities.lock.acquire()
             for (entity in connection.world.entities) {
                 if (entity is LocalPlayerEntity && !profile.showLocal) {
                     continue
                 }
                 meshes[entity] = EntityHitbox(this, entity, frustum)
             }
+
+            connection.world.entities.lock.release()
         } else {
             for (mesh in meshes.values) {
                 mesh.unload()

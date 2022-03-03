@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.registries.VoxelShape
 import glm_.vec3.Vec3d
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -26,79 +26,122 @@ import java.util.*
 class WorldEntities : Iterable<Entity> {
     private val idEntityMap: Int2ObjectOpenHashMap<Entity> = Int2ObjectOpenHashMap()
     private val entityIdMap: Object2IntOpenHashMap<Entity> = Object2IntOpenHashMap()
-    private val entityUUIDMap: MutableMap<Entity, UUID> = synchronizedMapOf()
-    private val uuidEntityMap: MutableMap<UUID, Entity> = synchronizedMapOf()
+    private val entityUUIDMap: MutableMap<Entity, UUID> = mutableMapOf()
+    private val uuidEntityMap: MutableMap<UUID, Entity> = mutableMapOf()
+    private val entities: MutableSet<Entity> = mutableSetOf()
+
+    val lock = SimpleLock()
 
     val size: Int
-        get() = idEntityMap.size
+        get() = entities.size
 
 
     fun add(entityId: Int?, entityUUID: UUID?, entity: Entity) {
         check(entityId != null || entityUUID != null) { "Entity id and UUID is null!" }
-        entityId?.let {
-            idEntityMap[it] = entity
-            entityIdMap[entity] = it
-        }
-        entityUUID?.let {
-            uuidEntityMap[it] = entity
-            entityUUIDMap[entity] = it
+        try {
+            lock.lock()
+            entities += entity
+            if (entityId != null) {
+                idEntityMap[entityId] = entity
+                entityIdMap[entity] = entityId
+            }
+            if (entityUUID != null) {
+                uuidEntityMap[entityUUID] = entity
+                entityUUIDMap[entity] = entityUUID
+            }
+        } finally {
+            lock.unlock()
         }
     }
 
     operator fun get(id: Int): Entity? {
-        return idEntityMap[id]
+        try {
+            lock.acquire()
+            return idEntityMap[id]
+        } finally {
+            lock.release()
+        }
     }
 
     fun getId(entity: Entity): Int? {
-        return entityIdMap[entity]
+        try {
+            lock.acquire()
+            return entityIdMap[entity]
+        } finally {
+            lock.release()
+        }
     }
 
     operator fun get(uuid: UUID): Entity? {
-        return uuidEntityMap[uuid]
+        try {
+            lock.acquire()
+            return uuidEntityMap[uuid]
+        } finally {
+            lock.release()
+        }
     }
 
     fun getUUID(entity: Entity): UUID? {
-        return entityUUIDMap[entity]
+        try {
+            lock.acquire()
+            return entityUUIDMap[entity]
+        } finally {
+            lock.release()
+        }
     }
 
     fun remove(entity: Entity) {
-        entityIdMap[entity]?.let {
-            idEntityMap.remove(it)
+        lock.lock()
+        if (!entities.remove(entity)) {
+            lock.unlock()
+            return
         }
-        entityIdMap.remove(entity)
-        entityUUIDMap[entity]?.let {
-            uuidEntityMap.remove(it)
+        val id = entityIdMap.remove(entity)
+        if (id != null) {
+            idEntityMap.remove(id)
         }
-        entityUUIDMap.remove(entity)
+        val uuid = entityUUIDMap.remove(entity)
+        if (uuid != null) {
+            uuidEntityMap.remove(uuid)
+        }
+        lock.unlock()
     }
 
     fun remove(entityId: Int) {
-        idEntityMap[entityId]?.let { remove(it) }
+        lock.lock()
+        val entity = idEntityMap.remove(entityId)
+        if (entity == null) {
+            lock.unlock()
+            return
+        }
+        entities.remove(entity)
+        entityIdMap.remove(entity)
+        val uuid = entityUUIDMap.remove(entity)
+        if (uuid != null) {
+            uuidEntityMap.remove(uuid)
+        }
+        lock.unlock()
     }
 
-    fun remove(entityUUID: UUID) {
-        uuidEntityMap[entityUUID]?.let { remove(it) }
-    }
-
-    @Deprecated("ToDo: Lock")
     override fun iterator(): Iterator<Entity> {
-        return uuidEntityMap.toSynchronizedMap().values.iterator()
+        return entities.iterator()
     }
 
     fun getInRadius(position: Vec3d, distance: Double, check: (Entity) -> Boolean): List<Entity> {
         // ToDo: Improve performance
-        val ret: MutableList<Entity> = mutableListOf()
-        val entities = idEntityMap.toSynchronizedMap().values
+        val entities: MutableList<Entity> = mutableListOf()
+        lock.acquire()
 
-        for (entity in entities) {
+        for (entity in this) {
             if ((entity.position - position).length() > distance) {
                 continue
             }
             if (check(entity)) {
-                ret += entity
+                entities += entity
             }
         }
-        return ret.toList()
+        lock.release()
+        return entities
     }
 
     fun getClosestInRadius(position: Vec3d, distance: Double, check: (Entity) -> Boolean): Entity? {
@@ -115,6 +158,25 @@ class WorldEntities : Iterable<Entity> {
         }
 
         return closestEntity
+    }
+
+    fun isEntityIn(shape: VoxelShape): Boolean {
+        try {
+            lock.acquire()
+            for (entity in this) {
+                if (entity.isInvisible) {
+                    continue
+                }
+                val aabb = entity.aabb
+
+                if (shape.intersect(aabb)) {
+                    return true
+                }
+            }
+        } finally {
+            lock.release()
+        }
+        return false
     }
 
     companion object {
