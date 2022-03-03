@@ -31,7 +31,6 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
         this.instance = SkeletalInstance(renderWindow, blockPosition, renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!)
     }
 
-
     override fun draw(renderWindow: RenderWindow) {
         instance?.draw()
     }

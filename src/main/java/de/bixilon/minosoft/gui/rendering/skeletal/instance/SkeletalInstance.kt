@@ -17,7 +17,9 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import glm_.func.rad
 import glm_.mat4x4.Mat4
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class SkeletalInstance(
@@ -26,9 +28,17 @@ class SkeletalInstance(
     val model: BakedSkeletalModel,
 ) {
     private val blockPosition = blockPosition.toVec3
+    private var openDelta = -90.0f
+    private var closing: Boolean? = null
 
     fun playAnimation(name: String) {
-
+        if (name.contains("closing")) {
+            openDelta = -90.0f
+            closing = true
+        } else {
+            openDelta = 0.0f
+            closing = false
+        }
     }
 
     fun draw() {
@@ -43,7 +53,28 @@ class SkeletalInstance(
     private fun setTransforms(shader: Shader) {
         val base = Mat4().translateAssign(blockPosition.toVec3)
 
-        val transforms = arrayOf(base)
+        val origin = Vec3(0 + 8, 10, 7 + 8) / Vec3(16, 16, 16)
+        val rotationX = (openDelta).rad
+        if (closing != null) {
+            if (closing!!) {
+                openDelta += 2f
+            } else {
+                openDelta -= 2f
+            }
+            if (openDelta <= -90.0f || openDelta >= 0.0f) {
+                closing = null
+            }
+        }
+
+        val lid = Mat4()
+        lid.translateAssign(origin)
+        lid.rotateAssign(-rotationX, Vec3(1, 0, 0))
+        lid.translateAssign(-origin)
+        lid[3, 0] += blockPosition.x
+        lid[3, 1] += blockPosition.y
+        lid[3, 2] += blockPosition.z
+
+        val transforms = arrayOf(base, lid)
 
         shader["uSkeletalTransforms"] = transforms
     }
