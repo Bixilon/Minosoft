@@ -14,9 +14,50 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator
 
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.SkeletalKeyframe
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
+import glm_.vec3.Vec3
+import kotlin.math.PI
+import kotlin.math.sin
 
 data class SkeletalAnimator(
     val name: String,
     val type: String, // ToDo: enum
     val keyframes: List<SkeletalKeyframe>,
-)
+) {
+
+    fun getRotation(time: Float): Vec3 {
+        var rotation = Vec3.EMPTY
+
+        var firstKeyframe: SkeletalKeyframe? = null
+        var secondKeyframe: SkeletalKeyframe? = null
+
+        for (keyframe in keyframes) {
+            if (firstKeyframe == null) {
+                firstKeyframe = keyframe
+                continue
+            }
+            if (time <= keyframe.time) {
+                if (secondKeyframe != null) {
+                    firstKeyframe = secondKeyframe
+                }
+                secondKeyframe = keyframe
+                continue
+            }
+            break
+        }
+
+        if (firstKeyframe == null || secondKeyframe == null) {
+            return rotation
+        }
+
+        val firstRotation = firstKeyframe.dataPoints[0].toVec3()
+        val secondRotation = secondKeyframe.dataPoints[0].toVec3()
+
+        val delta = (time - firstKeyframe.time) / (secondKeyframe.time - firstKeyframe.time)
+        rotation = firstRotation + (secondRotation - firstRotation) * (sin(delta * PI / 2))
+
+
+        return rotation
+    }
+}

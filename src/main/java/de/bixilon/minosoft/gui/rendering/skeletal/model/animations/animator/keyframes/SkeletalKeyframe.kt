@@ -19,7 +19,7 @@ data class SkeletalKeyframe(
     val channel: String, // ToDo: enum
     val dataPoints: List<Map<String, Any>>,
     val uuid: UUID,
-    val time: Int,
+    val time: Float,
     val interpolation: KeyframeInterpolations = KeyframeInterpolations.LINEAR,
 )
 

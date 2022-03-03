@@ -26,7 +26,7 @@ class BlockSectionDataProvider(
 
     override fun recalculate() {
         super.recalculate()
-        val data: Array<Any?> = data ?: return // ToDo: ClassCastException
+        val data: Array<Any?> = data ?: return
 
         fluidCount = 0
         for (blockState in data) {

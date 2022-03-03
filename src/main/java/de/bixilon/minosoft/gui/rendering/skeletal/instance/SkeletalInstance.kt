@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.func.rad
@@ -28,17 +31,25 @@ class SkeletalInstance(
     val model: BakedSkeletalModel,
 ) {
     private val blockPosition = blockPosition.toVec3
-    private var openDelta = -90.0f
-    private var closing: Boolean? = null
+    private var currentAnimation: SkeletalAnimation? = null
+    private var animationTime = 0.0f
+    private var animationLastFrame = -1L
 
     fun playAnimation(name: String) {
-        if (name.contains("closing")) {
-            openDelta = -90.0f
-            closing = true
-        } else {
-            openDelta = 0.0f
-            closing = false
+        var animation: SkeletalAnimation? = null
+        for (animationEntry in model.model.animations) {
+            if (animationEntry.name != name) {
+                continue
+            }
+            animation = animationEntry
+            break
         }
+        if (animation == null) {
+            throw IllegalArgumentException("Can not find animation $name")
+        }
+        animationTime = 0.0f
+        animationLastFrame = -1L
+        this.currentAnimation = animation
     }
 
     fun draw() {
@@ -53,22 +64,22 @@ class SkeletalInstance(
     private fun setTransforms(shader: Shader) {
         val base = Mat4().translateAssign(blockPosition.toVec3)
 
-        val origin = Vec3(0 + 8, 10, 7 + 8) / Vec3(16, 16, 16)
-        val rotationX = (openDelta).rad
-        if (closing != null) {
-            if (closing!!) {
-                openDelta += 2f
-            } else {
-                openDelta -= 2f
-            }
-            if (openDelta <= -90.0f || openDelta >= 0.0f) {
-                closing = null
-            }
-        }
-
+        val origin = Vec3(0, 10, 7).fromBlockCoordinates()
         val lid = Mat4()
         lid.translateAssign(origin)
-        lid.rotateAssign(-rotationX, Vec3(1, 0, 0))
+
+        val animation = currentAnimation
+        if (animation != null) {
+            val time = TimeUtil.time
+            if (this.animationLastFrame > 0L) {
+                val delta = time - this.animationLastFrame
+                animationTime += delta / 1000.0f
+            }
+            animationLastFrame = time
+
+            lid.rotateAssign(-animation.getRotation(animationTime).x.rad, Vec3(1, 0, 0))
+        }
+
         lid.translateAssign(-origin)
         lid[3, 0] += blockPosition.x
         lid[3, 1] += blockPosition.y

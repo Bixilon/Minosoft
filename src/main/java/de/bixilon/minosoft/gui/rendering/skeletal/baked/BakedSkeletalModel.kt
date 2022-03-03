@@ -100,7 +100,11 @@ class BakedSkeletalModel(
         this.mesh = mesh
     }
 
-    private fun Vec3.fromBlockCoordinates(): Vec3 {
-        return (this / UnbakedElement.BLOCK_RESOLUTION) + Vec3(0.5f, 0.0f, 0.5f)
+    companion object {
+
+        fun Vec3.fromBlockCoordinates(): Vec3 {
+            return Vec3(this.x / UnbakedElement.BLOCK_RESOLUTION + 0.5f, this.y / UnbakedElement.BLOCK_RESOLUTION, this.z / UnbakedElement.BLOCK_RESOLUTION + 0.5f)
+        }
+
     }
 }
