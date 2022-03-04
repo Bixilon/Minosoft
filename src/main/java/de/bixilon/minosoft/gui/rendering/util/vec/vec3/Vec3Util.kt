@@ -28,12 +28,14 @@ import glm_.vec3.swizzle.xz
 import glm_.vec3.swizzle.yz
 
 object Vec3Util {
+    private val EMPTY_INSTANCE = Vec3.EMPTY
 
     val Vec3.Companion.MIN: Vec3
         get() = Vec3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
 
     val Vec3.Companion.EMPTY: Vec3
         get() = Vec3(0.0f, 0.0f, 0.0f)
+    val Vec3.Companion.EMPTY_INSTANCE get() = Vec3Util.EMPTY_INSTANCE
 
     val Vec3.Companion.ONE: Vec3
         get() = Vec3(1.0f, 1.0f, 1.0f)

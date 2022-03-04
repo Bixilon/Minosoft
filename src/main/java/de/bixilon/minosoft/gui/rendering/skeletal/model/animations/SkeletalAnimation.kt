@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.SkeletalAnimator
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import glm_.vec3.Vec3
 import java.util.*
 
@@ -25,24 +26,26 @@ data class SkeletalAnimation(
     val length: Float,
     val animators: Map<UUID, SkeletalAnimator>,
 ) {
-    fun getRotation(time: Float): Vec3 {
+    fun get(channel: KeyframeChannels, time: Float): Vec3 {
         val animator = animators.values.iterator().next()
 
-        var time = time
+        return animator.get(channel, tweakTime(time))
+    }
+
+    fun tweakTime(time: Float): Float {
         when (loop) {
-            AnimationLoops.LOOP -> time % length
+            AnimationLoops.LOOP -> return time % length
             AnimationLoops.ONCE -> {
                 if (time > length) {
-                    time = 0.0f
+                    return 0.0f
                 }
             }
             AnimationLoops.HOLD -> {
                 if (time > length) {
-                    time = length
+                    return length
                 }
             }
         }
-
-        return animator.getRotation(time)
+        return time
     }
 }

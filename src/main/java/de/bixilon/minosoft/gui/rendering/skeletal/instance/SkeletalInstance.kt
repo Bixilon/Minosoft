@@ -18,8 +18,10 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 import glm_.func.rad
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
@@ -77,7 +79,20 @@ class SkeletalInstance(
             }
             animationLastFrame = time
 
-            lid.rotateAssign(-animation.getRotation(animationTime).x.rad, Vec3(1, 0, 0))
+            val rotation = animation.get(KeyframeChannels.ROTATION, animationTime)
+            if (rotation != Vec3.EMPTY_INSTANCE) {
+                lid.rotateAssign(-rotation.x.rad, Vec3(1, 0, 0))
+                lid.rotateAssign(-rotation.y.rad, Vec3(0, 1, 0))
+                lid.rotateAssign(-rotation.z.rad, Vec3(0, 0, 1))
+            }
+            val scale = animation.get(KeyframeChannels.SCALE, animationTime)
+            if (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f) {
+                lid.scaleAssign(scale)
+            }
+            val position = animation.get(KeyframeChannels.POSITION, animationTime)
+            if (position != Vec3.EMPTY_INSTANCE) {
+                // ToDo
+            }
         }
 
         lid.translateAssign(-origin)
