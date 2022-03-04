@@ -92,7 +92,7 @@ class BakedSkeletalModel(
 
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
-                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, textures[face.texture]!!, 0xFFFFFF, 0xFF)
+                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, textures[face.texture]!!)
                 }
             }
         }

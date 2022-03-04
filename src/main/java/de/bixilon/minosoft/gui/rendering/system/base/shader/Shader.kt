@@ -47,6 +47,8 @@ interface Shader {
     fun setVec3(uniformName: String, vec3: Vec3)
     fun setVec4(uniformName: String, vec4: Vec4)
     fun setArray(uniformName: String, array: Array<*>)
+    fun setIntArray(uniformName: String, array: IntArray)
+    fun setUIntArray(uniformName: String, array: IntArray)
     fun setCollection(uniformName: String, collection: Collection<*>)
     fun setRGBColor(uniformName: String, color: RGBColor)
     fun setBoolean(uniformName: String, boolean: Boolean)
@@ -62,6 +64,7 @@ interface Shader {
         when (data) {
             is Previous<*> -> this[uniformName] = data.value
             is Array<*> -> setArray(uniformName, data)
+            is IntArray -> setIntArray(uniformName, data)
             is Collection<*> -> setCollection(uniformName, data)
             is Int -> setInt(uniformName, data)
             is Float -> setFloat(uniformName, data)

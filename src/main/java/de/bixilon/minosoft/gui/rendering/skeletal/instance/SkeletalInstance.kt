@@ -81,6 +81,7 @@ class SkeletalInstance(
         }
 
         shader["uSkeletalTransforms"] = transforms
+        shader.setUIntArray("uSkeletalTintAndLight", IntArray(transforms.size) { 0xFFFFFFFF.toInt() })
     }
 
     private fun calculateTransform(animationTime: Float, transform: Mat4, animation: SkeletalAnimation?, outliner: Any /* UUID or SkeletalOutliner */, transforms: MutableList<Mat4>) {

@@ -125,6 +125,10 @@ class OpenGLShader(
         glUniform1i(getUniformLocation(uniformName), value)
     }
 
+    fun setUint(uniformName: String, value: Int) {
+        glUniform1ui(getUniformLocation(uniformName), value)
+    }
+
     override fun setBoolean(uniformName: String, boolean: Boolean) {
         setInt(uniformName, if (boolean) 1 else 0)
     }
@@ -148,6 +152,18 @@ class OpenGLShader(
     override fun setArray(uniformName: String, array: Array<*>) {
         for ((i, value) in array.withIndex()) {
             this["$uniformName[$i]"] = value
+        }
+    }
+
+    override fun setIntArray(uniformName: String, array: IntArray) {
+        for ((i, value) in array.withIndex()) {
+            this.setInt("$uniformName[$i]", value)
+        }
+    }
+
+    override fun setUIntArray(uniformName: String, array: IntArray) {
+        for ((i, value) in array.withIndex()) {
+            this.setUint("$uniformName[$i]", value)
         }
     }
 

@@ -22,7 +22,7 @@ import glm_.vec3.Vec3
 
 class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, EntitiesMeshStruct, initialCacheSize = initialCacheSize) {
 
-    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: AbstractTexture, tintColor: Int, light: Int) {
+    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: AbstractTexture) {
         val transformedUV = texture.renderData.transformUV(uv)
         data.add(position[0])
         data.add(position[1])
@@ -31,7 +31,6 @@ class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
         data.add(transformedUV.y)
         data.add(Float.fromBits(transform))
         data.add(Float.fromBits(texture.renderData.shaderTextureId))
-        data.add(Float.fromBits(tintColor or (light shl 24)))
     }
 
 
@@ -40,7 +39,6 @@ class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
         val uv: Vec2,
         val transform: Int,
         val indexLayerAnimation: Int,
-        val tintLight: Int,
     ) {
         companion object : MeshStruct(EntitiesMeshStruct::class)
     }
