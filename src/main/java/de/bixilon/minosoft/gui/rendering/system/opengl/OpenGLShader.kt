@@ -151,6 +151,12 @@ class OpenGLShader(
         }
     }
 
+    override fun setCollection(uniformName: String, collection: Collection<*>) {
+        for ((i, value) in collection.withIndex()) {
+            this["$uniformName[$i]"] = value
+        }
+    }
+
     override fun setRGBColor(uniformName: String, color: RGBColor) {
         setVec4(uniformName, Vec4(color.floatRed, color.floatGreen, color.floatBlue, color.floatAlpha))
     }

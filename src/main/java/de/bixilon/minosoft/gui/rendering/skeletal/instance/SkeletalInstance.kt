@@ -16,16 +16,13 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
+import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
-import glm_.func.rad
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+import java.util.*
 
 class SkeletalInstance(
     val renderWindow: RenderWindow,
@@ -66,9 +63,8 @@ class SkeletalInstance(
     private fun setTransforms(shader: Shader) {
         val base = Mat4().translateAssign(blockPosition.toVec3)
 
-        val origin = Vec3(0, 10, 7).fromBlockCoordinates()
-        val lid = Mat4()
-        lid.translateAssign(origin)
+        val transforms: MutableList<Mat4> = mutableListOf()
+
 
         val animation = currentAnimation
         if (animation != null) {
@@ -78,30 +74,27 @@ class SkeletalInstance(
                 animationTime += delta / 1000.0f
             }
             animationLastFrame = time
-
-            val rotation = animation.get(KeyframeChannels.ROTATION, animationTime)
-            if (rotation != Vec3.EMPTY_INSTANCE) {
-                lid.rotateAssign(-rotation.x.rad, Vec3(1, 0, 0))
-                lid.rotateAssign(-rotation.y.rad, Vec3(0, 1, 0))
-                lid.rotateAssign(-rotation.z.rad, Vec3(0, 0, 1))
-            }
-            val scale = animation.get(KeyframeChannels.SCALE, animationTime)
-            if (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f) {
-                lid.scaleAssign(scale)
-            }
-            val position = animation.get(KeyframeChannels.POSITION, animationTime)
-            if (position != Vec3.EMPTY_INSTANCE) {
-                // ToDo
-            }
         }
 
-        lid.translateAssign(-origin)
-        lid[3, 0] += blockPosition.x
-        lid[3, 1] += blockPosition.y
-        lid[3, 2] += blockPosition.z
-
-        val transforms = arrayOf(base, lid)
+        for (outliner in model.model.outliner) {
+            calculateTransform(animationTime, base, animation, outliner, transforms)
+        }
 
         shader["uSkeletalTransforms"] = transforms
+    }
+
+    private fun calculateTransform(animationTime: Float, transform: Mat4, animation: SkeletalAnimation?, outliner: Any /* UUID or SkeletalOutliner */, transforms: MutableList<Mat4>) {
+        if (outliner is UUID) {
+            return
+        }
+        check(outliner is SkeletalOutliner)
+        val skeletalTransform = animation?.calculateTransform(outliner, animationTime) ?: Mat4()
+
+        skeletalTransform *= transform // ToDo: this translates wrong
+        transforms += skeletalTransform
+
+        for (child in outliner.children) {
+            calculateTransform(animationTime, skeletalTransform, animation, child, transforms)
+        }
     }
 }

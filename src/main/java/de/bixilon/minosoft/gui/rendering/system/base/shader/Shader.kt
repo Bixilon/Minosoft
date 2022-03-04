@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -47,6 +47,7 @@ interface Shader {
     fun setVec3(uniformName: String, vec3: Vec3)
     fun setVec4(uniformName: String, vec4: Vec4)
     fun setArray(uniformName: String, array: Array<*>)
+    fun setCollection(uniformName: String, collection: Collection<*>)
     fun setRGBColor(uniformName: String, color: RGBColor)
     fun setBoolean(uniformName: String, boolean: Boolean)
     fun setTexture(uniformName: String, textureId: Int)
@@ -61,6 +62,7 @@ interface Shader {
         when (data) {
             is Previous<*> -> this[uniformName] = data.value
             is Array<*> -> setArray(uniformName, data)
+            is Collection<*> -> setCollection(uniformName, data)
             is Int -> setInt(uniformName, data)
             is Float -> setFloat(uniformName, data)
             is Mat4 -> setMat4(uniformName, data)

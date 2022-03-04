@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator
 
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.SkeletalKeyframe
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 import glm_.vec3.Vec3
 
 data class SkeletalAnimator(
@@ -24,7 +23,7 @@ data class SkeletalAnimator(
     val keyframes: List<SkeletalKeyframe>,
 ) {
 
-    fun get(channel: KeyframeChannels, time: Float): Vec3 {
+    fun get(channel: KeyframeChannels, time: Float): Vec3? {
         var firstKeyframe: SkeletalKeyframe? = null
         var secondKeyframe: SkeletalKeyframe? = null
 
@@ -47,7 +46,7 @@ data class SkeletalAnimator(
         }
 
         if (firstKeyframe == null || secondKeyframe == null) {
-            return Vec3.EMPTY_INSTANCE
+            return null
         }
         val delta = (time - firstKeyframe.time) / (secondKeyframe.time - firstKeyframe.time)
         return firstKeyframe.interpolateDataWith(secondKeyframe.dataPoints, delta)

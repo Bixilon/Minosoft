@@ -15,6 +15,10 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.SkeletalAnimator
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
+import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
+import glm_.func.rad
+import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 import java.util.*
 
@@ -26,13 +30,13 @@ data class SkeletalAnimation(
     val length: Float,
     val animators: Map<UUID, SkeletalAnimator>,
 ) {
-    fun get(channel: KeyframeChannels, time: Float): Vec3 {
-        val animator = animators.values.iterator().next()
+    fun get(channel: KeyframeChannels, animatorUUID: UUID, time: Float): Vec3? {
+        val animator = animators[animatorUUID] ?: return null
 
         return animator.get(channel, tweakTime(time))
     }
 
-    fun tweakTime(time: Float): Float {
+    private fun tweakTime(time: Float): Float {
         when (loop) {
             AnimationLoops.LOOP -> return time % length
             AnimationLoops.ONCE -> {
@@ -47,5 +51,30 @@ data class SkeletalAnimation(
             }
         }
         return time
+    }
+
+    fun calculateTransform(outliner: SkeletalOutliner, animationTime: Float): Mat4 {
+        val transform = Mat4()
+
+        val rotation = get(KeyframeChannels.ROTATION, outliner.uuid, animationTime)
+        if (rotation != null && rotation != Vec3.EMPTY_INSTANCE) {
+            transform.translateAssign(outliner.origin)
+            transform.rotateAssign(-rotation.x.rad, Vec3(1, 0, 0))
+            transform.rotateAssign(-rotation.y.rad, Vec3(0, 1, 0))
+            transform.rotateAssign(-rotation.z.rad, Vec3(0, 0, 1))
+            transform.translateAssign(-outliner.origin)
+        }
+        val scale = get(KeyframeChannels.SCALE, outliner.uuid, animationTime)
+        if (scale != null && (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)) {
+            transform.scaleAssign(scale)
+        }
+        val position = get(KeyframeChannels.POSITION, outliner.uuid, animationTime)
+        if (position != null && position != Vec3.EMPTY_INSTANCE) {
+            transform[3, 0] += position.x
+            transform[3, 1] += position.y
+            transform[3, 2] += position.z
+        }
+
+        return transform
     }
 }
