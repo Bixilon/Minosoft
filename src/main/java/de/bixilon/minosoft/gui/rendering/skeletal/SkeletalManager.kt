@@ -46,7 +46,7 @@ class SkeletalManager(
         for ((index, transform) in transforms.withIndex()) {
             uniformBuffer.buffer.put(index * 16, transform.array)
         }
-        uniformBuffer.upload()
+        uniformBuffer.upload(0 until (transforms.size * 4 * 4))
 
         instance.model.mesh.draw()
     }

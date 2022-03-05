@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStat
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
+import org.lwjgl.opengl.GL15C.nglBufferSubData
+import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.FloatBuffer
 
@@ -35,9 +37,17 @@ class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var buffer: Float
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        buffer.position(0)
         glBufferSubData(type.gl, 0, buffer)
         unbind()
     }
 
+    override fun upload(range: IntRange) {
+        check(initialSize == size) { "Can not change buffer size!" }
+        if (range.first < 0 || range.last >= size) {
+            throw IndexOutOfBoundsException(range.first)
+        }
+        bind()
+        nglBufferSubData(type.gl, range.first * 4L, Integer.toUnsignedLong(((range.last + 1) - range.first) * 4), MemoryUtil.memAddress(buffer, range.first))
+        unbind()
+    }
 }
