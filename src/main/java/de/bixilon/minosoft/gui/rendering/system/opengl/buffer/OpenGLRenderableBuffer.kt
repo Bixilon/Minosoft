@@ -36,6 +36,8 @@ abstract class OpenGLRenderableBuffer(override val type: RenderableBufferTypes) 
     }
 
     override fun unbind() {
+        return
+        // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
         glBindBuffer(type.gl, 0)
     }
 
