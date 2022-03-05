@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.shader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.OpenGLUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.util.Previous
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -42,6 +42,7 @@ interface Shader {
 
     fun setFloat(uniformName: String, value: Float)
     fun setInt(uniformName: String, value: Int)
+    fun setUInt(uniformName: String, value: Int)
     fun setMat4(uniformName: String, mat4: Mat4)
     fun setVec2(uniformName: String, vec2: Vec2)
     fun setVec3(uniformName: String, vec3: Vec3)
@@ -53,7 +54,7 @@ interface Shader {
     fun setRGBColor(uniformName: String, color: RGBColor)
     fun setBoolean(uniformName: String, boolean: Boolean)
     fun setTexture(uniformName: String, textureId: Int)
-    fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer)
+    fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer)
 
     fun setVec3(uniformName: String, vec3: Vec3d) {
         setVec3(uniformName, Vec3(vec3))
@@ -73,7 +74,7 @@ interface Shader {
             is Vec3 -> setVec3(uniformName, data)
             is Vec2 -> setVec2(uniformName, data)
             is RGBColor -> setRGBColor(uniformName, data)
-            is OpenGLUniformBuffer -> setUniformBuffer(uniformName, data)
+            is UniformBuffer -> setUniformBuffer(uniformName, data)
             // ToDo: PNGTexture
             is Boolean -> setBoolean(uniformName, data)
             else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
@@ -90,6 +91,12 @@ interface Shader {
 
         fun ResourceLocation.shader(): ResourceLocation {
             return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
+        }
+
+        fun Shader.loadAnimated() {
+            load()
+            renderWindow.textureManager.staticTextures.use(this)
+            renderWindow.textureManager.staticTextures.animator.use(this)
         }
     }
 }

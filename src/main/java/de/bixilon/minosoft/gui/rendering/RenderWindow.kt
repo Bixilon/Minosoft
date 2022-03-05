@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.renderer.RendererManager.Companion.registerDefault
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
@@ -78,6 +79,8 @@ class RenderWindow(
     val framebufferManager = FramebufferManager(this)
     val renderer = RendererManager(this)
     val modelLoader = ModelLoader(this)
+
+    val skeletalManager = SkeletalManager(this)
 
     val lightMap = LightMap(connection)
 
@@ -162,6 +165,7 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
         lightMap.init()
         lightMap.update()
+        skeletalManager.init()
         renderer.init(initLatch)
 
         // Wait for init stage to complete
@@ -178,6 +182,7 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (${stopwatch.labTime()})..." }
         shaderManager.postInit()
+        skeletalManager.postInit()
         renderer.postInit(latch)
         framebufferManager.postInit()
 

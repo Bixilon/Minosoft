@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ShaderManager(
@@ -23,20 +23,11 @@ class ShaderManager(
     val genericColorShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"))
     val genericTextureShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture"))
     val genericTexture2dShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture_2d"))
-    val skeletalShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "skeletal"))
 
-    private fun Shader.loadAnimated() {
-        load()
-        renderWindow.textureManager.staticTextures.use(this)
-        renderWindow.textureManager.staticTextures.animator.use(this)
-    }
 
     fun postInit() {
         genericColorShader.load()
         genericTextureShader.loadAnimated()
         genericTexture2dShader.loadAnimated()
-        skeletalShader.defines["TRANSFORMS"] = 10 // ToDo: make dynamic
-        skeletalShader.loadAnimated()
-        renderWindow.lightMap.use(skeletalShader)
     }
 }

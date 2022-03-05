@@ -21,17 +21,20 @@ layout (location = 3) in uint vinIndexLayerAnimation;// texture index (0xF000000
 #include "minosoft:animation/header_vertex"
 
 uniform mat4 uViewProjectionMatrix;
-uniform mat4 uSkeletalTransforms[TRANSFORMS];
-uniform uint uSkeletalTintAndLight[TRANSFORMS];
+
+layout(std140) uniform uSkeletalBuffer
+{
+    mat4 uSkeletalTransforms[TRANSFORMS];
+};
+uniform uint uLight;
+
 
 #include "minosoft:animation/buffer"
-#include "minosoft:color"
 #include "minosoft:light"
 
 void main() {
     gl_Position = uViewProjectionMatrix * uSkeletalTransforms[vinTransform] * vec4(vinPosition, 1.0f);
-    uint tintAndLight = uSkeletalTintAndLight[vinTransform];
-    finTintColor = getRGBColor(tintAndLight & 0xFFFFFFu) * getLight(tintAndLight >> 24u);
+    finTintColor = getLight(uLight);
     finFragmentPosition = vinPosition;
 
     #include "minosoft:animation/main_vertex"

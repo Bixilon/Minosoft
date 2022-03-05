@@ -212,7 +212,7 @@ open class Container(
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {
-        return slots.toSynchronizedMap().iterator()
+        return slots.iterator()
     }
 
     fun commit() {

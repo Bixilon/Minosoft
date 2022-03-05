@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.OpenGLUniformBuffer
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -125,7 +125,7 @@ class OpenGLShader(
         glUniform1i(getUniformLocation(uniformName), value)
     }
 
-    fun setUint(uniformName: String, value: Int) {
+    override fun setUInt(uniformName: String, value: Int) {
         glUniform1ui(getUniformLocation(uniformName), value)
     }
 
@@ -163,7 +163,7 @@ class OpenGLShader(
 
     override fun setUIntArray(uniformName: String, array: IntArray) {
         for ((i, value) in array.withIndex()) {
-            this.setUint("$uniformName[$i]", value)
+            this.setUInt("$uniformName[$i]", value)
         }
     }
 
@@ -181,7 +181,7 @@ class OpenGLShader(
         glUniform1i(getUniformLocation(uniformName), textureId)
     }
 
-    override fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer) {
+    override fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer) {
         val index = uniformLocations.getOrPut(uniformName) {
             val index = glGetUniformBlockIndex(shader, uniformName)
             if (index < 0) {

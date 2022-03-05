@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3i
@@ -53,15 +52,10 @@ class SkeletalInstance(
     }
 
     fun draw() {
-        renderWindow.renderSystem.reset()
-        val shader = renderWindow.shaderManager.skeletalShader
-        shader.use()
-        setTransforms(shader)
-
-        model.mesh.draw()
+        renderWindow.skeletalManager.draw(this)
     }
 
-    private fun setTransforms(shader: Shader) {
+    fun calculateTransforms(): List<Mat4> {
         val transforms: MutableList<Mat4> = mutableListOf()
 
 
@@ -78,9 +72,7 @@ class SkeletalInstance(
         for (outliner in model.model.outliner) {
             calculateTransform(animationTime, baseTransform, animation, outliner, transforms)
         }
-
-        shader["uSkeletalTransforms"] = transforms
-        shader.setUIntArray("uSkeletalTintAndLight", IntArray(transforms.size) { 0xFFFFFFFF.toInt() })
+        return transforms
     }
 
     private fun calculateTransform(animationTime: Float, transform: Mat4, animation: SkeletalAnimation?, outliner: Any /* UUID or SkeletalOutliner */, transforms: MutableList<Mat4>) {
