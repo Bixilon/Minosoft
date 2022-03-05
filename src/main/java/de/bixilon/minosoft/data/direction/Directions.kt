@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.func.rad
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
@@ -46,6 +48,17 @@ enum class Directions(
 
     val axis: Axes get() = Axes[this] // ToDo
     val debugColor = ChatColors[ordinal]
+
+    val rotatedMatrix: Mat4 by lazy {
+        when (this) {
+            DOWN -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign(180.0f.rad, Vec3(1, 0, 0)).translateAssign(Vec3(-0.5f))
+            UP -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-180.0f).rad, Vec3(1, 0, 0)).translateAssign(Vec3(-0.5f)) // ToDo
+            NORTH -> Mat4()
+            SOUTH -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign(180.0f.rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
+            WEST -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-270.0f).rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
+            EAST -> Mat4().translateAssign(Vec3(0.5f)).rotateAssign((-90.0f).rad, Vec3(0, 1, 0)).translateAssign(Vec3(-0.5f))
+        }
+    }
 
     lateinit var inverted: Directions
         private set

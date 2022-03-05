@@ -25,7 +25,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
     val blockEntities: MutableList<BlockEntityRenderer<*>> = mutableListOf()
 
     val sizeString: String
-        get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}"
+        get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${blockEntities.size.format()}"
 
 
     fun addMesh(mesh: WorldMesh) {

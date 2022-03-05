@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.SkeletalAnimator
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
@@ -58,11 +59,11 @@ data class SkeletalAnimation(
 
         val rotation = get(KeyframeChannels.ROTATION, outliner.uuid, animationTime)
         if (rotation != null && rotation != Vec3.EMPTY_INSTANCE) {
-            transform.translateAssign(outliner.origin)
+            transform.translateAssign(outliner.origin.fromBlockCoordinates())
             transform.rotateAssign(-rotation.x.rad, Vec3(1, 0, 0))
             transform.rotateAssign(-rotation.y.rad, Vec3(0, 1, 0))
             transform.rotateAssign(-rotation.z.rad, Vec3(0, 0, 1))
-            transform.translateAssign(-outliner.origin)
+            transform.translateAssign(-outliner.origin.fromBlockCoordinates())
         }
         val scale = get(KeyframeChannels.SCALE, outliner.uuid, animationTime)
         if (scale != null && (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)) {

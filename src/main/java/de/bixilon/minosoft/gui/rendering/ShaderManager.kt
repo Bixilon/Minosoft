@@ -35,6 +35,7 @@ class ShaderManager(
         genericColorShader.load()
         genericTextureShader.loadAnimated()
         genericTexture2dShader.loadAnimated()
+        skeletalShader.defines["TRANSFORMS"] = 10 // ToDo: make dynamic
         skeletalShader.loadAnimated()
         renderWindow.lightMap.use(skeletalShader)
     }

@@ -145,7 +145,7 @@
 			"name": "animation.chest.opening",
 			"loop": "hold",
 			"override": false,
-			"length": 0.5,
+			"length": 0.3,
 			"animators": {
 				"c9b45550-2e8b-af52-a981-4aedc81fb456": {
 					"name": "lid",
@@ -174,7 +174,7 @@
 								}
 							],
 							"uuid": "ac945fe7-65b4-1f09-dc05-782860c4aa7c",
-							"time": 0.5,
+							"time": 0.3,
 							"interpolation": "catmullrom"
 						}
 					]

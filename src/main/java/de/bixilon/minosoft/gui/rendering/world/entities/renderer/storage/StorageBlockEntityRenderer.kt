@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
@@ -28,7 +31,7 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     private var instance: SkeletalInstance? = null
 
     override fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i) {
-        this.instance = SkeletalInstance(renderWindow, blockPosition, renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!)
+        this.instance = SkeletalInstance(renderWindow, blockPosition, renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!, (state.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix)
     }
 
     override fun draw(renderWindow: RenderWindow) {

@@ -21,8 +21,8 @@ layout (location = 3) in uint vinIndexLayerAnimation;// texture index (0xF000000
 #include "minosoft:animation/header_vertex"
 
 uniform mat4 uViewProjectionMatrix;
-uniform mat4 uSkeletalTransforms[10];
-uniform uint uSkeletalTintAndLight[10];
+uniform mat4 uSkeletalTransforms[TRANSFORMS];
+uniform uint uSkeletalTintAndLight[TRANSFORMS];
 
 #include "minosoft:animation/buffer"
 #include "minosoft:color"

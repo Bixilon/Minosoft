@@ -28,8 +28,9 @@ class SkeletalInstance(
     val renderWindow: RenderWindow,
     blockPosition: Vec3i,
     val model: BakedSkeletalModel,
+    transform: Mat4 = Mat4(),
 ) {
-    private val blockPosition = blockPosition.toVec3
+    private var baseTransform = Mat4().translateAssign(blockPosition.toVec3) * transform
     private var currentAnimation: SkeletalAnimation? = null
     private var animationTime = 0.0f
     private var animationLastFrame = -1L
@@ -61,8 +62,6 @@ class SkeletalInstance(
     }
 
     private fun setTransforms(shader: Shader) {
-        val base = Mat4().translateAssign(blockPosition.toVec3)
-
         val transforms: MutableList<Mat4> = mutableListOf()
 
 
@@ -77,7 +76,7 @@ class SkeletalInstance(
         }
 
         for (outliner in model.model.outliner) {
-            calculateTransform(animationTime, base, animation, outliner, transforms)
+            calculateTransform(animationTime, baseTransform, animation, outliner, transforms)
         }
 
         shader["uSkeletalTransforms"] = transforms
@@ -89,9 +88,8 @@ class SkeletalInstance(
             return
         }
         check(outliner is SkeletalOutliner)
-        val skeletalTransform = animation?.calculateTransform(outliner, animationTime) ?: Mat4()
+        val skeletalTransform = transform * (animation?.calculateTransform(outliner, animationTime) ?: Mat4())
 
-        skeletalTransform *= transform // ToDo: this translates wrong
         transforms += skeletalTransform
 
         for (child in outliner.children) {
