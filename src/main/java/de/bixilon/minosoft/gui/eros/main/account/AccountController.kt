@@ -24,7 +24,6 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
-import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -33,7 +32,6 @@ import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
-import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
@@ -271,16 +269,6 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 translationKey = "minosoft:main.account.type.offline".toResourceLocation(),
                 icon = FontAwesomeSolid.MAP,
                 addHandler = { OfflineAddController(it).show() },
-            ),
-            ErosAccountType<MojangAccount>(
-                resourceLocation = MojangAccount.RESOURCE_LOCATION,
-                translationKey = "minosoft:main.account.type.mojang".toResourceLocation(),
-                additionalDetails = listOf(
-                    "minosoft:main.account.account_info.email".toResourceLocation() to { it.email },
-                    "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
-                ),
-                icon = FontAwesomeSolid.BUILDING,
-                addHandler = { MojangAddController(it).show() },
             ),
         )
 

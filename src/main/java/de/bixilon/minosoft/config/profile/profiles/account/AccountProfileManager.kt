@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.kutil.watcher.map.bi.BiMapDataWatcher.Companion.watchedBiMap
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
@@ -28,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object AccountProfileManager : ProfileManager<AccountProfile> {
     override val namespace = "minosoft:account".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion = 2
     override val saveLock = ReentrantLock()
     override val profileClass = AccountProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
@@ -52,5 +54,23 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
         profiles[name] = profile
 
         return profile
+    }
+
+    private fun removeMojangAccounts(data: MutableMap<String, Any?>) {
+        val entries = data["entries"]?.toMutableJsonObject() ?: return
+        val toRemove: MutableSet<String> = mutableSetOf()
+        for ((id, entry) in entries) {
+            if (entry.toJsonObject()?.get("type") != "minosoft:mojang_account") {
+                continue
+            }
+            toRemove += id
+        }
+        entries -= toRemove
+    }
+
+    override fun migrate(from: Int, data: MutableMap<String, Any?>) {
+        when (from) {
+            1 -> removeMojangAccounts(data)
+        }
     }
 }

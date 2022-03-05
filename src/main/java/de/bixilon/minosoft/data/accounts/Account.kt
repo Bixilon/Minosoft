@@ -22,7 +22,6 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
-import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -31,7 +30,6 @@ import java.util.*
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
-    JsonSubTypes.Type(value = MojangAccount::class, name = "minosoft:mojang_account"),
     JsonSubTypes.Type(value = OfflineAccount::class, name = "minosoft:offline_account"),
     JsonSubTypes.Type(value = MicrosoftAccount::class, name = "minosoft:microsoft_account"),
 )

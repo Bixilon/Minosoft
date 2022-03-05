@@ -89,7 +89,6 @@ minosoft:main.account.list.info.button.check=Check
 minosoft:main.account.list.info.button.use=Use
 minosoft:main.account.list.info.button.add=Add account
 minosoft:main.account.no_account_selected=No account selected
-minosoft:main.account.type.mojang=Mojang
 minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
 
@@ -119,16 +118,6 @@ minosoft:main.account.add.offline.username.label=Username
 minosoft:main.account.add.offline.username.placeholder=Test user
 minosoft:main.account.add.offline.add_button=Add
 minosoft:main.account.add.offline.cancel_button=Cancel
-
-minosoft:main.account.add.mojang.title=Add mojang account
-minosoft:main.account.add.mojang.header=Add mojang account
-minosoft:main.account.add.mojang.description=Please enter your mojang email (or for legacy accounts their username) and your password to continue
-minosoft:main.account.add.mojang.email.label=E-mail
-minosoft:main.account.add.mojang.email.placeholder=user@example.org
-minosoft:main.account.add.mojang.password.label=Password
-minosoft:main.account.add.mojang.password.placeholder=********
-minosoft:main.account.add.mojang.add_button=Add
-minosoft:main.account.add.mojang.cancel_button=Cancel
 
 minosoft:main.account.add.microsoft.please_wait.device_code=Obtaining device code...Please wait!
 
