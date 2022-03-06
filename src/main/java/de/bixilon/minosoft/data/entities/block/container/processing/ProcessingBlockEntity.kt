@@ -11,26 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block.container.storage
+package de.bixilon.minosoft.data.entities.block.container.processing
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.ChestBlockEntityRenderer
+import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
-
-    override fun createModel(): ChestBlockEntityRenderer {
-        val model = ChestBlockEntityRenderer(this)
-        this.model = model
-        return model
-    }
-
-    companion object : BlockEntityFactory<ChestBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:chest")
-
-        override fun build(connection: PlayConnection): ChestBlockEntity {
-            return ChestBlockEntity(connection)
-        }
-    }
-}
+abstract class ProcessingBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection)

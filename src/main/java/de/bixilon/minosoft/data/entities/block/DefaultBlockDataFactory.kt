@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.entities.block.container.*
+import de.bixilon.minosoft.data.entities.block.container.processing.*
 import de.bixilon.minosoft.data.entities.block.container.storage.*
 import de.bixilon.minosoft.data.entities.block.end.EndGatewayBlockEntity
 import de.bixilon.minosoft.data.entities.block.end.EndPortalBlockEntity
-import de.bixilon.minosoft.data.entities.block.piston.PistonBlockEntity
-import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
+import de.bixilon.minosoft.data.entities.block.redstone.CommandBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.ComparatorBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.DaylightDetectorBlockEntity
+import de.bixilon.minosoft.data.entities.block.redstone.SculkSensorBlockEntity
+import de.bixilon.minosoft.data.entities.block.redstone.piston.PistonBlockEntity
+import de.bixilon.minosoft.data.entities.block.redstone.piston.StickyPistonBlockEntity
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
 object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEntity>>(
@@ -38,7 +40,7 @@ object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEnti
     BarrelBlockEntity,
     ShulkerBoxBlockEntity,
     StructureBlockBlockEntity,
-    CommandBlockBlockEntity,
+    CommandBlockEntity,
     ComparatorBlockEntity,
     BannerBlockEntity,
     DaylightDetectorBlockEntity,
@@ -60,4 +62,5 @@ object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEnti
     StickyPistonBlockEntity,
     FlowerPotBlockEntity,
     EndPortalBlockEntity,
+    SculkSensorBlockEntity,
 )

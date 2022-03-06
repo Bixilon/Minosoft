@@ -16,8 +16,24 @@ package de.bixilon.minosoft.data.registries.blocks
 import de.bixilon.minosoft.data.registries.blocks.types.*
 import de.bixilon.minosoft.data.registries.blocks.types.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.button.WoodenButtonBlock
-import de.bixilon.minosoft.data.registries.blocks.types.entity.NoteBlock
-import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ChestBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.*
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.DispenserBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.DropperBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.HopperBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.SmokerBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.processing.BlastFurnaceBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.processing.BrewingStandBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.processing.FurnaceBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.storage.BarrelBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.storage.ChestBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.storage.EnderChestBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.container.storage.TrappedChestBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.end.EndGatewayBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.end.EndPortalBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.CommandBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.DaylightDetectorBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.PistonBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.SculkSensorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.leaves.LeavesBlock
 import de.bixilon.minosoft.data.registries.blocks.types.plant.CropBlock
 import de.bixilon.minosoft.data.registries.blocks.types.plant.PlantBlock
@@ -40,7 +56,6 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     CampfireBlock,
     TorchBlock,
     SlimeBlock,
-    BedBlock,
     BrewingStandBlock,
     EnderChestBlock,
     NetherPortalBlock,
@@ -54,5 +69,38 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     LeavesBlock,
     PlantBlock,
     CropBlock,
+
+    FurnaceBlock,
     ChestBlock,
+    TrappedChestBlock,
+    EnderChestBlock,
+    JukeboxBlock,
+    DispenserBlock,
+    DropperBlock,
+    SignBlock,
+    MobSpawnerBlock,
+    PistonBlock,
+    BrewingStandBlock,
+    EnchantingTableBlock,
+    EndPortalBlock,
+    BeaconBlock,
+    SkullBlock,
+    DaylightDetectorBlock,
+    HopperBlock,
+    BannerBlock,
+    StructureBlock,
+    EndGatewayBlock,
+    CommandBlock,
+    ShulkerBoxBlock,
+    BedBlock,
+    ConduitBlock,
+    BarrelBlock,
+    SmokerBlock,
+    BlastFurnaceBlock,
+    LecternBlock,
+    BellBlock,
+    JigsawBlock,
+    CampfireBlock,
+    BeehiveBlock,
+    SculkSensorBlock,
 )

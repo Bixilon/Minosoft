@@ -11,19 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.entity
+package de.bixilon.minosoft.data.registries.blocks.types.entity.container.processing
 
-import de.bixilon.minosoft.data.entities.block.NoteBlockBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.processing.BlastFurnaceBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-// The block might have an entity, but it is not required
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<NoteBlockBlockEntity>(resourceLocation, registries, data) {
+open class BlastFurnaceBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : ProcessingBlock<BlastFurnaceBlockEntity>(resourceLocation, registries, data) {
 
-    companion object : BlockFactory<NoteBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NoteBlock {
-            return NoteBlock(resourceLocation, registries, data)
+    companion object : BlockFactory<BlastFurnaceBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BlastFurnaceBlock {
+            return BlastFurnaceBlock(resourceLocation, registries, data)
         }
     }
 }

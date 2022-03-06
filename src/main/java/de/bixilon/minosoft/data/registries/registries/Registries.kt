@@ -15,15 +15,11 @@ package de.bixilon.minosoft.data.registries.registries
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.kutil.unsafe.UnsafeUtil
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.DefaultRegistries
-import de.bixilon.minosoft.data.registries.Motive
-import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.*
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
@@ -52,7 +48,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.recipes.RecipeRegistry
 import de.bixilon.minosoft.util.collections.Clearable
 import java.lang.reflect.Field
-import java.lang.reflect.ParameterizedType
 
 
 class Registries {
@@ -247,10 +242,7 @@ class Registries {
             val types: MutableMap<Class<*>, Field> = mutableMapOf()
 
 
-            val parameterizedClass = Class.forName("sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl")
-            val rawTypeField = parameterizedClass.getDeclaredField("rawType")
 
-            val offset = UnsafeUtil.UNSAFE.objectFieldOffset(rawTypeField)
 
             for (field in Registries::class.java.declaredFields) {
                 if (!Registry::class.java.isAssignableFrom(field.type)) {
@@ -272,15 +264,7 @@ class Registries {
                 }
 
 
-                val actualType = generic.unsafeCast<ParameterizedType>().actualTypeArguments.first()
-                val clazz = if (actualType is Class<*>) {
-                    actualType
-                } else if (actualType::class.java == parameterizedClass) {
-                    UnsafeUtil.UNSAFE.getObject(actualType, offset).unsafeCast<Class<*>>()
-                } else {
-                    TODO()
-                }
-                types[clazz] = field
+                types[RegistryUtil.getClassOfFactory(generic)] = field
             }
 
             types[Item::class.java] = Registries::class.java.getDeclaredField("itemRegistry")

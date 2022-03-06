@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.entity
 
-import de.bixilon.minosoft.data.entities.block.NoteBlockBlockEntity
+import de.bixilon.minosoft.data.entities.block.MobSpawnerBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-// The block might have an entity, but it is not required
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<NoteBlockBlockEntity>(resourceLocation, registries, data) {
+open class MobSpawnerBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<MobSpawnerBlockEntity>(resourceLocation, registries, data) {
 
-    companion object : BlockFactory<NoteBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NoteBlock {
-            return NoteBlock(resourceLocation, registries, data)
+    companion object : BlockFactory<MobSpawnerBlock>, MultiClassFactory<MobSpawnerBlock> {
+        override val ALIASES: Set<String> = setOf("SpawnerBlock")
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): MobSpawnerBlock {
+            return MobSpawnerBlock(resourceLocation, registries, data)
         }
     }
 }

@@ -11,20 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.entity
+package de.bixilon.minosoft.data.registries.blocks.types.entity.container
 
-import de.bixilon.minosoft.data.entities.block.NoteBlockBlockEntity
+import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-// The block might have an entity, but it is not required
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<NoteBlockBlockEntity>(resourceLocation, registries, data) {
-
-    companion object : BlockFactory<NoteBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NoteBlock {
-            return NoteBlock(resourceLocation, registries, data)
-        }
-    }
-}
-
+abstract class ContainerBlock<T : ContainerBlockEntity>(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<T>(resourceLocation, registries, data)

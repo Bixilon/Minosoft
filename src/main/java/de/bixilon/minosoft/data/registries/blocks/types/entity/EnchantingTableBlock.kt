@@ -13,17 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.entity
 
-import de.bixilon.minosoft.data.entities.block.NoteBlockBlockEntity
+import de.bixilon.minosoft.data.entities.block.EnchantingTableBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-// The block might have an entity, but it is not required
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<NoteBlockBlockEntity>(resourceLocation, registries, data) {
+open class EnchantingTableBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<EnchantingTableBlockEntity>(resourceLocation, registries, data) {
 
-    companion object : BlockFactory<NoteBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NoteBlock {
-            return NoteBlock(resourceLocation, registries, data)
+    companion object : BlockFactory<EnchantingTableBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EnchantingTableBlock {
+            return EnchantingTableBlock(resourceLocation, registries, data)
         }
     }
 }

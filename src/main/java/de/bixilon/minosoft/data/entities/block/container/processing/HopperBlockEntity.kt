@@ -11,20 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.entity
+package de.bixilon.minosoft.data.entities.block.container.processing
 
-import de.bixilon.minosoft.data.entities.block.NoteBlockBlockEntity
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-// The block might have an entity, but it is not required
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<NoteBlockBlockEntity>(resourceLocation, registries, data) {
+class HopperBlockEntity(connection: PlayConnection) : ProcessingBlockEntity(connection) {
 
-    companion object : BlockFactory<NoteBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NoteBlock {
-            return NoteBlock(resourceLocation, registries, data)
+
+    companion object : BlockEntityFactory<HopperBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:hopper")
+
+        override fun build(connection: PlayConnection): HopperBlockEntity {
+            return HopperBlockEntity(connection)
         }
     }
 }
-

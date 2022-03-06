@@ -13,17 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.entity
 
-import de.bixilon.minosoft.data.entities.block.NoteBlockBlockEntity
+import de.bixilon.minosoft.data.entities.block.BellBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-// The block might have an entity, but it is not required
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<NoteBlockBlockEntity>(resourceLocation, registries, data) {
+open class BellBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<BellBlockEntity>(resourceLocation, registries, data) {
 
-    companion object : BlockFactory<NoteBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NoteBlock {
-            return NoteBlock(resourceLocation, registries, data)
+    companion object : BlockFactory<BellBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BellBlock {
+            return BellBlock(resourceLocation, registries, data)
         }
     }
 }
