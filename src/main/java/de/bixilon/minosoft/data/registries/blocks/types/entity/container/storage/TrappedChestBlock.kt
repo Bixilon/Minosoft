@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class TrappedChestBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : ChestBlock<TrappedChestBlockEntity>(resourceLocation, registries, data) {
 
-
     companion object : BlockFactory<TrappedChestBlock> {
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): TrappedChestBlock {
             return TrappedChestBlock(resourceLocation, registries, data)

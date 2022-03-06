@@ -188,6 +188,13 @@ class RenderWindow(
         renderer.postInit(latch)
         framebufferManager.postInit()
 
+
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes ${stopwatch.totalTime()}" }
+
+        for (model in modelLoader.entities.models.values) {
+            model.loadMesh(this)
+        }
+
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
@@ -210,10 +217,6 @@ class RenderWindow(
 
 
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
-
-        for (model in modelLoader.blockModels.values) {
-            model.loadMesh(this)
-        }
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
         initialized = true

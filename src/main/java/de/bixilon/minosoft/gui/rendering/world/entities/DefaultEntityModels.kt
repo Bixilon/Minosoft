@@ -11,29 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block.container.storage
+package de.bixilon.minosoft.gui.rendering.world.entities
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class TrappedChestBlockEntity(connection: PlayConnection) : ChestBlockEntity(connection) {
+object DefaultEntityModels {
+    val MODELS = listOf(
+        SingleChestRenderer.NormalChest,
+        SingleChestRenderer.TrappedChest,
+        SingleChestRenderer.EnderChest,
 
-    override fun getSingleModel(): ResourceLocation {
-        return SingleChestRenderer.TrappedChest.MODEL
-    }
-
-    override fun getDoubleModel(): ResourceLocation {
-        return DoubleChestRenderer.TrappedChest.MODEL
-    }
-
-    companion object : BlockEntityFactory<TrappedChestBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:trapped_chest")
-
-        override fun build(connection: PlayConnection): TrappedChestBlockEntity {
-            return TrappedChestBlockEntity(connection)
-        }
-    }
+        DoubleChestRenderer.NormalChest,
+        DoubleChestRenderer.TrappedChest,
+    )
 }

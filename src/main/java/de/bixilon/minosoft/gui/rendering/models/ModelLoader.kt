@@ -14,12 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -31,38 +29,25 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
-import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
+import de.bixilon.minosoft.gui.rendering.world.entities.DefaultEntityModels
+import de.bixilon.minosoft.gui.rendering.world.entities.EntityModels
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ModelLoader(
     val renderWindow: RenderWindow,
 ) {
     private val assetsManager = renderWindow.connection.assetsManager
     private val unbakedBlockModels: SynchronizedMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toSynchronizedMap()
-    val blockModels: SynchronizedMap<ResourceLocation, BakedSkeletalModel> = synchronizedMapOf()
+    val entities = EntityModels(renderWindow)
 
     private val registry: Registries = renderWindow.connection.registries
 
 
     private fun cleanup() {
         unbakedBlockModels.clear()
-    }
-
-    private fun ResourceLocation.model(): ResourceLocation {
-        return ResourceLocation(this.namespace, "models/" + this.path + ".json")
-    }
-
-    private fun ResourceLocation.bbModel(): ResourceLocation {
-        return ResourceLocation(this.namespace, "models/" + this.path + ".bbmodel")
-    }
-
-    private fun ResourceLocation.blockState(): ResourceLocation {
-        return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
     }
 
     private fun loadBlockStates(block: Block) {
@@ -106,13 +91,6 @@ class ModelLoader(
         return model
     }
 
-    private fun loadBlockEntityModel(resourceLocation: ResourceLocation): SkeletalModel {
-        val model: SkeletalModel = renderWindow.connection.assetsManager[resourceLocation].readJson()
-        this.blockModels[resourceLocation] = model.bake(renderWindow, Int2ObjectOpenHashMap())
-        println("Loaded $resourceLocation!")
-        return model
-    }
-
     private fun loadBlockModels(latch: CountUpAndDownLatch) {
         val blockLatch = CountUpAndDownLatch(1, latch)
         // ToDo: Optimize performance
@@ -139,12 +117,15 @@ class ModelLoader(
         itemLatch.await()
     }
 
-    private fun loadBlockEntityModels(latch: CountUpAndDownLatch) {
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block entity models..." }
+    private fun loadEntityModels(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
         val itemLatch = CountUpAndDownLatch(1, latch)
 
-        loadBlockEntityModel("minecraft:block/entities/single_chest".toResourceLocation().bbModel())
 
+        for (register in DefaultEntityModels.MODELS) {
+            itemLatch.inc()
+            DefaultThreadPool += { register.register(renderWindow, this); itemLatch.dec() }
+        }
         itemLatch.dec()
         itemLatch.await()
     }
@@ -152,10 +133,25 @@ class ModelLoader(
     fun load(latch: CountUpAndDownLatch) {
         loadBlockModels(latch)
         loadItemModels(latch)
-        loadBlockEntityModels(latch)
+        loadEntityModels(latch)
 
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading models!" }
 
         cleanup()
+    }
+
+    companion object {
+
+        fun ResourceLocation.model(): ResourceLocation {
+            return ResourceLocation(this.namespace, "models/" + this.path + ".json")
+        }
+
+        fun ResourceLocation.blockState(): ResourceLocation {
+            return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
+        }
+
+        fun ResourceLocation.bbModel(): ResourceLocation {
+            return ResourceLocation(this.namespace, "models/" + this.path + ".bbmodel")
+        }
     }
 }
