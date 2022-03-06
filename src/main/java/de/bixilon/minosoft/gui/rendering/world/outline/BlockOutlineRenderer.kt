@@ -99,7 +99,7 @@ class BlockOutlineRenderer(
         }
 
         if (connection.player.gamemode == Gamemodes.ADVENTURE || connection.player.gamemode == Gamemodes.SPECTATOR) {
-            if (target.blockState.block is BlockWithEntity<*>) {
+            if (target.blockState.block !is BlockWithEntity<*>) {
                 unload()
                 return
             }
