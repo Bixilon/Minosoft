@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,10 +17,10 @@ import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.glm
 import glm_.vec3.Vec3
@@ -43,6 +43,7 @@ class LightMap(private val connection: PlayConnection) {
             uniformBuffer.buffer.put(i * 4 + 3, 1.0f)
         }
         uniformBuffer.init()
+        update()
     }
 
     fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {
@@ -72,7 +73,7 @@ class LightMap(private val connection: PlayConnection) {
 
 
         var skyGradientColor = Vec3(skyGradient, skyGradient, 1.0f)
-        skyGradientColor = lerp(0.35f, skyGradientColor, Vec3.ONE)
+        skyGradientColor = interpolateLinear(0.35f, skyGradientColor, Vec3.ONE)
 
         for (skyLight in 0 until 16) {
             for (blockLight in 0 until 16) {
@@ -90,7 +91,7 @@ class LightMap(private val connection: PlayConnection) {
                 let {
                     color = color + (skyGradientColor * skyLightBrightness)
 
-                    color = lerp(0.04f, color, Vec3(0.75f))
+                    color = interpolateLinear(0.04f, color, Vec3(0.75f))
 
                     // ToDo: Sky darkness
                 }
@@ -101,12 +102,12 @@ class LightMap(private val connection: PlayConnection) {
                     val gamma = max(color.x, max(color.y, color.z))
                     if (gamma < 1.0f) {
                         val copy = color.toVec3 * (1.0f / gamma)
-                        color = lerp(nightVisionVisibility, color, copy)
+                        color = interpolateLinear(nightVisionVisibility, color, copy)
                     }
                 }
 
-                color = lerp(profile.gamma, color, color.toVec3 modify { 1.0f - (1.0f - it).pow(4) })
-                color = lerp(0.04f, color, Vec3(0.75f))
+                color = interpolateLinear(profile.gamma, color, color.toVec3 modify { 1.0f - (1.0f - it).pow(4) })
+                color = interpolateLinear(0.04f, color, Vec3(0.75f))
                 color = color.clamp(0.0f, 1.0f)
 
 

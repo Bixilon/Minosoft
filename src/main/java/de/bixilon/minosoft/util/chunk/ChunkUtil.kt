@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.SingularPalette
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.absAssign
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -299,7 +299,7 @@ object ChunkUtil {
     }
 
     fun Vec2i.isInViewDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
-        val delta = (this - cameraPosition).abs
+        val delta = (this - cameraPosition).absAssign()
 
         return delta.x <= viewDistance && delta.y <= viewDistance
     }

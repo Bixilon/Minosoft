@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -66,7 +66,17 @@ object Vec2iUtil {
         get() = Vec2(x.rad, y.rad)
 
     val Vec2i.abs: Vec2i
-        get() = Vec2i(kotlin.math.abs(x), kotlin.math.abs(y))
+        get() = Vec2i(x, y).absAssign()
+
+    fun Vec2i.absAssign(): Vec2i {
+        if (x < 0) {
+            x = -x
+        }
+        if (y < 0) {
+            y = -y
+        }
+        return this
+    }
 
     operator fun Vec2i.get(axis: Axes): Int {
         return when (axis) {

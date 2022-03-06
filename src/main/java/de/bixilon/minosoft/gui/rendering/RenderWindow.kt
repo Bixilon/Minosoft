@@ -164,7 +164,6 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
         lightMap.init()
-        lightMap.update()
         skeletalManager.init()
         renderer.init(initLatch)
 

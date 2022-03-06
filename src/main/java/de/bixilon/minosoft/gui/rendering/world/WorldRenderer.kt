@@ -724,7 +724,7 @@ class WorldRenderer(
             }
             var chunkQueue: IntOpenHashSet? = null
             for (sectionHeight in sectionHeights) {
-                if (!isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16), false)) {
+                if (!isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, CHUNK_SIZE, false)) {
                     continue
                 }
                 if (chunkQueue == null) {
@@ -770,7 +770,8 @@ class WorldRenderer(
 
     companion object : RendererBuilder<WorldRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:world")
-        private val CHUNK_CENTER = Vec3(8.0f)
+        private val CHUNK_SIZE = Vec3i(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
+        private val CHUNK_CENTER = Vec3(CHUNK_SIZE) / 2.0f
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
             return WorldRenderer(connection, renderWindow)
