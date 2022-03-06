@@ -89,7 +89,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
         if (debugHUDElement?.enabled == true) {
             // ToDo: Debug crosshair
-            return
+            // return
         }
 
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
