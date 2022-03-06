@@ -34,7 +34,7 @@ open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
         }
 
         if (type == ChestTypes.LEFT) {
-            // only left chest will be rendered (the model is the double chest)
+            // only left chest will be rendered (the model is the double chest), reduces drawing overhead
             return DoubleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getDoubleModel()] ?: return null)
         }
 

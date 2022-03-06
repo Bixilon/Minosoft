@@ -50,8 +50,11 @@ class SkeletalManager(
     fun draw(instance: SkeletalInstance) {
         prepareDraw()
         val transforms = instance.calculateTransforms()
-        for ((index, transform) in transforms.withIndex()) {
-            uniformBuffer.buffer.put(index * MAT4_SIZE, transform.array)
+        var stride = 0
+        for (transform in transforms) {
+            for (byte in transform.array) {
+                uniformBuffer.buffer.put(stride++, byte)
+            }
         }
         uniformBuffer.upload(0 until (transforms.size * MAT4_SIZE))
 
