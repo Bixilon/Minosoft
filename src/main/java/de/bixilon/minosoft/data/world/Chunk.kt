@@ -81,8 +81,9 @@ class Chunk(
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 
     fun setBlocks(blocks: Map<Vec3i, BlockState?>) {
-        for ((location, blockState) in blocks) {
-            set(location, blockState)
+        for ((position, blockState) in blocks) {
+            set(position, blockState)
+            getOrPutBlockEntity(position)
         }
     }
 

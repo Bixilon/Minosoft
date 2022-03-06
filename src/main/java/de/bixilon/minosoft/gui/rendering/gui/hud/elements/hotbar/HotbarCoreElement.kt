@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -84,10 +85,11 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
 
             experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), consumer, options)
             offset.y += experience.size.y + VERTICAL_SPACING
-
+        }
+        if (gamemode != Gamemodes.SPECTATOR) {
+            // ToDo: Spectator hotbar
             base.render(offset, consumer, options)
         }
-        // ToDo: Spectator hotbar
     }
 
     override fun forceSilentApply() {
@@ -98,8 +100,10 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
         val size = Vec2i.EMPTY
 
         gamemode = guiRenderer.renderWindow.connection.player.tabListItem.gamemode
-        if (gamemode.survival) {
+        if (gamemode != Gamemodes.SPECTATOR) {
             size += base.size
+        }
+        if (gamemode.survival) {
             size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
 
             size.y += experience.size.y + VERTICAL_SPACING

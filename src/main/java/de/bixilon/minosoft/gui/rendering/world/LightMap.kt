@@ -14,14 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.world
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.glm
 import glm_.vec3.Vec3
 import org.lwjgl.system.MemoryUtil.memAllocFloat
@@ -30,11 +29,12 @@ import kotlin.math.pow
 import kotlin.math.sin
 
 @Deprecated("Needs refactoring")
-class LightMap(private val connection: PlayConnection) {
+class LightMap(renderWindow: RenderWindow) {
+    private val connection = renderWindow.connection
     private val profile = connection.profiles.rendering.light
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
-    private val uniformBuffer = FloatOpenGLUniformBuffer(1, memAllocFloat(UNIFORM_BUFFER_SIZE))
+    private val uniformBuffer = renderWindow.renderSystem.createFloatUniformBuffer(memAllocFloat(UNIFORM_BUFFER_SIZE))
 
 
     fun init() {

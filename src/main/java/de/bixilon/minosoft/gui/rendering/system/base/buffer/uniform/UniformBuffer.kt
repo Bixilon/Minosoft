@@ -14,9 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 
 interface UniformBuffer : RenderableBuffer {
     val bindingIndex: Int
 
     fun upload(range: IntRange)
+
+    fun use(shader: Shader, bufferName: String)
 }

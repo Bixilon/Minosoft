@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,6 +69,9 @@ class OpenGLRenderSystem(
         PrimitiveTypes.TRIANGLE
     }
     override var primitiveMeshOrder: Array<Pair<Int, Int>> = if (preferredPrimitiveType == PrimitiveTypes.QUAD) Mesh.QUAD_TO_QUAD_ORDER else Mesh.TRIANGLE_TO_QUAD_ORDER
+    var boundVao = -1
+    var boundBuffer = -1
+    var uniformBufferBindingIndex = 0
 
     override var shader: Shader? = null
         set(value) {
@@ -174,8 +177,19 @@ class OpenGLRenderSystem(
         glBlendFunc(source.gl, destination.gl)
     }
 
+    private var sourceRGB: BlendingFunctions = BlendingFunctions.ONE
+    private var destinationRGB: BlendingFunctions = BlendingFunctions.ONE
+    private var sourceAlpha: BlendingFunctions = BlendingFunctions.ONE
+    private var destinationAlpha: BlendingFunctions = BlendingFunctions.ONE
     override fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions) {
+        if (this.sourceRGB == sourceRGB && this.destinationRGB == destinationRGB && this.sourceAlpha == sourceAlpha && this.destinationAlpha == destinationAlpha) {
+            return
+        }
         glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlpha.gl, destinationAlpha.gl)
+        this.sourceRGB = sourceRGB
+        this.destinationRGB = destinationRGB
+        this.sourceAlpha = sourceAlpha
+        this.destinationAlpha = destinationAlpha
     }
 
     override var depth: DepthFunctions = DepthFunctions.LESS
@@ -232,15 +246,15 @@ class OpenGLRenderSystem(
     }
 
     override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {
-        return FloatOpenGLVertexBuffer(structure, data, primitiveType)
+        return FloatOpenGLVertexBuffer(this, structure, data, primitiveType)
     }
 
-    override fun createFloatUniformBuffer(bindingIndex: Int, data: FloatBuffer): FloatUniformBuffer {
-        return FloatOpenGLUniformBuffer(bindingIndex, data)
+    override fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer {
+        return FloatOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createIntUniformBuffer(bindingIndex: Int, data: IntArray): IntUniformBuffer {
-        return IntOpenGLUniformBuffer(bindingIndex, data)
+    override fun createIntUniformBuffer(data: IntArray): IntUniformBuffer {
+        return IntOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
     override fun createFramebuffer(): Framebuffer {

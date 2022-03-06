@@ -82,7 +82,7 @@ class RenderWindow(
 
     val skeletalManager = SkeletalManager(this)
 
-    val lightMap = LightMap(connection)
+    val lightMap = LightMap(this)
 
     var initialized = false
         private set

@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -163,13 +162,15 @@ class World(
     fun tick() {
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.positionInfo.chunkPosition
-        for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
+        chunks.lock.acquire()
+        for ((chunkPosition, chunk) in chunks) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 continue
             }
             chunk.tick(connection, chunkPosition)
         }
+        chunks.lock.release()
     }
 
     fun randomTick() {

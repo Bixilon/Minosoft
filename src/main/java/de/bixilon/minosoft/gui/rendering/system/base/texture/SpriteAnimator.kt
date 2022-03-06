@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,78 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
+import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 
-interface SpriteAnimator {
-    var enabled: Boolean
+class SpriteAnimator(val renderSystem: RenderSystem) {
+    val animations: MutableList<TextureAnimation> = mutableListOf()
     val size: Int
+        get() = animations.size
+    private lateinit var uniformBuffer: IntUniformBuffer
+    var lastRun = 0L
 
-    fun init()
+    var initialized = false
+        private set
+    var enabled = true
 
-    fun draw()
+    fun init() {
+        check(animations.size < MAX_ANIMATED_TEXTURES) { "Can not have more than $MAX_ANIMATED_TEXTURES animated textures!" }
+        uniformBuffer = renderSystem.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
+        uniformBuffer.init()
+        initialized = true
+    }
+
+    private fun recalculate() {
+        val currentTime = TimeUtil.time
+        val deltaLastDraw = currentTime - lastRun
+        lastRun = currentTime
+
+        for (textureAnimation in animations) {
+            var currentFrame = textureAnimation.getCurrentFrame()
+            textureAnimation.currentTime += deltaLastDraw
+
+            if (textureAnimation.currentTime >= currentFrame.animationTime) {
+                currentFrame = textureAnimation.getAndSetNextFrame()
+                textureAnimation.currentTime = 0L
+            }
+
+            val nextFrame = textureAnimation.getNextFrame()
+
+            val interpolation = if (textureAnimation.animationProperties.interpolate) {
+                (textureAnimation.currentTime * 100) / currentFrame.animationTime
+            } else {
+                0L
+            }
 
 
-    fun use(shader: Shader, bufferName: String = "uSpriteBuffer")
+            val arrayOffset = textureAnimation.texture.renderData.animationData * INTS_PER_ANIMATED_TEXTURE
+
+            uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData.shaderTextureId
+            uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData.shaderTextureId
+            uniformBuffer.data[arrayOffset + 2] = interpolation.toInt()
+        }
+
+
+        uniformBuffer.upload()
+    }
+
+    fun draw() {
+        if (!initialized || !enabled) {
+            return
+        }
+        recalculate()
+    }
+
+
+    fun use(shader: Shader, bufferName: String = "uSpriteBuffer") {
+        uniformBuffer.use(shader, bufferName)
+    }
+
+    companion object {
+        const val MAX_ANIMATED_TEXTURES = 1024 // 16kb / 4 (ints per animation) / 4 bytes per int
+        private const val INTS_PER_ANIMATED_TEXTURE = 4
+    }
 }

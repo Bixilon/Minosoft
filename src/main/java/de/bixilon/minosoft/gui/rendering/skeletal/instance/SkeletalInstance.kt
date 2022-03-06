@@ -33,6 +33,7 @@ class SkeletalInstance(
     private var currentAnimation: SkeletalAnimation? = null
     private var animationTime = 0.0f
     private var animationLastFrame = -1L
+    private var transforms: List<Mat4> = listOf()
 
     fun playAnimation(name: String) {
         var animation: SkeletalAnimation? = null
@@ -67,11 +68,14 @@ class SkeletalInstance(
                 animationTime += delta / 1000.0f
             }
             animationLastFrame = time
+        } else if (this.transforms.isNotEmpty()) {
+            return this.transforms
         }
 
         for (outliner in model.model.outliner) {
             calculateTransform(animationTime, baseTransform, animation, outliner, transforms)
         }
+        this.transforms = transforms
         return transforms
     }
 

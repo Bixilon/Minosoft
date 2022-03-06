@@ -17,10 +17,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
-abstract class OpenGLRenderableBuffer(override val type: RenderableBufferTypes) : RenderableBuffer {
+abstract class OpenGLRenderableBuffer(
+    protected var renderSystem: OpenGLRenderSystem,
+    override val type: RenderableBufferTypes,
+) : RenderableBuffer {
     override var state: RenderableBufferStates = RenderableBufferStates.PREPARING
     abstract val drawTypes: RenderableBufferDrawTypes
 
@@ -32,7 +36,11 @@ abstract class OpenGLRenderableBuffer(override val type: RenderableBufferTypes) 
     }
 
     override fun bind() {
+        if (renderSystem.boundBuffer == id) {
+            return
+        }
         glBindBuffer(type.gl, id)
+        renderSystem.boundBuffer = id
     }
 
     override fun unbind() {
@@ -44,6 +52,9 @@ abstract class OpenGLRenderableBuffer(override val type: RenderableBufferTypes) 
     override fun unload() {
         check(state == RenderableBufferStates.UPLOADED) { "Can not unload $state buffer!" }
         glDeleteBuffers(id)
+        if (renderSystem.boundBuffer == id) {
+            renderSystem.boundBuffer = -1
+        }
         id = -1
         state = RenderableBufferStates.UNLOADED
     }

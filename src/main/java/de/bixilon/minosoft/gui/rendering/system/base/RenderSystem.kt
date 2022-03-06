@@ -56,6 +56,7 @@ interface RenderSystem {
         this.depth = depth
         this.depthMask = depthMask
         this.clearColor = clearColor
+        shader = null
     }
 
     fun enable(capability: RenderingCapabilities)
@@ -100,8 +101,8 @@ interface RenderSystem {
     fun createShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): Shader
 
     fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
-    fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
-    fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatBuffer): FloatUniformBuffer
+    fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
+    fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer
     fun createFramebuffer(): Framebuffer
 
     fun createTextureManager(): TextureManager

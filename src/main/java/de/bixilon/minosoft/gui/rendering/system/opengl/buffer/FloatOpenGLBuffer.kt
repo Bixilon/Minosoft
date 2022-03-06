@@ -17,11 +17,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 import java.nio.FloatBuffer
 
-open class FloatOpenGLBuffer(protected var _data: FloatBuffer?) : OpenGLRenderableBuffer(RenderableBufferTypes.ARRAY_BUFFER), RenderFloatBuffer {
+open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _data: FloatBuffer?) : OpenGLRenderableBuffer(renderSystem, RenderableBufferTypes.ARRAY_BUFFER), RenderFloatBuffer {
     override var buffer: FloatBuffer
         get() = _data!!
         set(value) {

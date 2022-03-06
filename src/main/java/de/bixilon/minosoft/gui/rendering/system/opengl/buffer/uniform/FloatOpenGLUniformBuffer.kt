@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 import org.lwjgl.opengl.GL15C.nglBufferSubData
@@ -22,7 +23,7 @@ import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.FloatBuffer
 
-class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var buffer: FloatBuffer = memAllocFloat(0)) : OpenGLUniformBuffer(bindingIndex), FloatUniformBuffer {
+class FloatOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: Int = 0, override var buffer: FloatBuffer = memAllocFloat(0)) : OpenGLUniformBuffer(renderSystem, bindingIndex), FloatUniformBuffer {
     override val size: Int
         get() = buffer.limit()
 
