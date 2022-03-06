@@ -92,17 +92,18 @@ class Chunk(
     }
 
     fun getOrPutBlockEntity(x: Int, y: Int, z: Int): BlockEntity? {
-        var blockEntity = this[y.sectionHeight]?.blockEntities?.get(x, y.inSectionHeight, z)
+        val sectionHeight = y.sectionHeight
+        val inSectionHeight = y.inSectionHeight
+        var blockEntity = this[sectionHeight]?.blockEntities?.get(x, inSectionHeight, z)
         if (blockEntity != null) {
             return blockEntity
         }
-        val block = this[y.sectionHeight]?.blocks?.get(x, y, z) ?: return null
+        val block = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
         if (block.block !is BlockWithEntity<*>) {
             return null
         }
         blockEntity = block.block.factory?.build(connection) ?: return null
-        val section = this.getOrPut(y.sectionHeight)
-        section.blockEntities[x, y, z] = blockEntity
+        this.getOrPut(sectionHeight).blockEntities[x, inSectionHeight, z] = blockEntity
 
         return blockEntity
     }

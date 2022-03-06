@@ -98,7 +98,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         if (itemStack?.item?.item !is ShovelItem || target.blockState.properties[BlockProperties.LIT] != true) {
             return super.onUse(connection, target, hand, itemStack)
         }
-        connection.world.setBlockState(target.blockPosition, target.blockState.withProperties(BlockProperties.LIT to false))
+        connection.world[target.blockPosition] = target.blockState.withProperties(BlockProperties.LIT to false)
         extinguish(connection, target.blockState, target.blockPosition)
         return InteractionResults.SUCCESS
     }

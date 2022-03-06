@@ -36,6 +36,7 @@ class SkeletalInstance(
     private var transforms: List<Mat4> = listOf()
 
     fun playAnimation(name: String) {
+        clearAnimation()
         var animation: SkeletalAnimation? = null
         for (animationEntry in model.model.animations) {
             if (animationEntry.name != name) {
@@ -47,9 +48,13 @@ class SkeletalInstance(
         if (animation == null) {
             throw IllegalArgumentException("Can not find animation $name")
         }
+        this.currentAnimation = animation
+    }
+
+    fun clearAnimation() {
         animationTime = 0.0f
         animationLastFrame = -1L
-        this.currentAnimation = animation
+        this.currentAnimation = null
     }
 
     fun draw() {
@@ -57,9 +62,6 @@ class SkeletalInstance(
     }
 
     fun calculateTransforms(): List<Mat4> {
-        val transforms: MutableList<Mat4> = mutableListOf()
-
-
         val animation = currentAnimation
         if (animation != null) {
             val time = TimeUtil.time
@@ -68,10 +70,15 @@ class SkeletalInstance(
                 animationTime += delta / 1000.0f
             }
             animationLastFrame = time
+            if (animation.canClear(animationTime)) {
+                clearAnimation()
+                return calculateTransforms()
+            }
         } else if (this.transforms.isNotEmpty()) {
             return this.transforms
         }
 
+        val transforms: MutableList<Mat4> = mutableListOf()
         for (outliner in model.model.outliner) {
             calculateTransform(animationTime, baseTransform, animation, outliner, transforms)
         }

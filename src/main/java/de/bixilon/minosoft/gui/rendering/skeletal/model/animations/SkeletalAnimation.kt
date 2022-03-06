@@ -78,4 +78,18 @@ data class SkeletalAnimation(
 
         return transform
     }
+
+    fun canClear(animationTime: Float): Boolean {
+        if (loop == AnimationLoops.LOOP) {
+            return false
+        }
+        if (animationTime < length) {
+            return false
+        }
+        if (loop == AnimationLoops.ONCE) {
+            return true
+        }
+        // ToDo: Check HOLD
+        return false
+    }
 }

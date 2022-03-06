@@ -42,7 +42,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         for (record in explodedBlocks) {
             val blockPosition = Vec3i(position) + record
-            connection.world.setBlockState(blockPosition, null)
+            connection.world[blockPosition] = null
             // ToDo: Mass set blocks
         }
         connection.player.velocity = connection.player.velocity + velocity

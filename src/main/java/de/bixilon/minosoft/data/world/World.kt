@@ -85,12 +85,7 @@ class World(
         return chunks.synchronizedGetOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
     }
 
-    fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
-        this[blockPosition] = blockState
-    }
-
-    operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
-        val chunk = chunks[blockPosition.chunkPosition] ?: return
+    private fun _set(chunk: Chunk, blockPosition: Vec3i, blockState: BlockState?) {
         val inChunkPosition = blockPosition.inChunkPosition
         val previousBlock = chunk[inChunkPosition]
         if (previousBlock == blockState) {
@@ -105,6 +100,20 @@ class World(
             blockPosition = blockPosition,
             blockState = blockState,
         ))
+    }
+
+    fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
+        this[blockPosition] = blockState
+    }
+
+    operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
+        val chunk = chunks[blockPosition.chunkPosition] ?: return
+        _set(chunk, blockPosition, blockState)
+    }
+
+    fun forceSet(blockPosition: Vec3i, blockState: BlockState?) {
+        val chunk = getOrCreateChunk(blockPosition.chunkPosition)
+        _set(chunk, blockPosition, blockState)
     }
 
     fun isPositionChangeable(blockPosition: Vec3i): Boolean {

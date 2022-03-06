@@ -22,13 +22,9 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.shader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
@@ -241,27 +237,27 @@ class OpenGLRenderSystem(
         return buffer
     }
 
-    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): Shader {
+    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLShader {
         return OpenGLShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
-    override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {
+    override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {
         return FloatOpenGLVertexBuffer(this, structure, data, primitiveType)
     }
 
-    override fun createFloatUniformBuffer(data: FloatBuffer): FloatUniformBuffer {
+    override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGLUniformBuffer {
         return FloatOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createIntUniformBuffer(data: IntArray): IntUniformBuffer {
+    override fun createIntUniformBuffer(data: IntArray): IntOpenGLUniformBuffer {
         return IntOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createFramebuffer(): Framebuffer {
+    override fun createFramebuffer(): OpenGLFramebuffer {
         return OpenGLFramebuffer(renderWindow.window.size)
     }
 
-    override fun createTextureManager(): TextureManager {
+    override fun createTextureManager(): OpenGLTextureManager {
         return OpenGLTextureManager(renderWindow)
     }
 

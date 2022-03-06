@@ -132,7 +132,7 @@ class BreakInteractionHandler(
         fun finishDigging() {
             connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, target.blockPosition, target.direction))
             clearDigging()
-            connection.world.setBlockState(target.blockPosition, null)
+            connection.world[target.blockPosition] = null
 
             target.blockState.breakSoundEvent?.let {
                 connection.world.playSoundEvent(it, target.blockPosition, volume = target.blockState.soundEventVolume, pitch = target.blockState.soundEventPitch)
