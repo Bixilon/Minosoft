@@ -312,6 +312,7 @@ class WorldRenderer(
     private fun clearChunkCache() {
         unloadWorld()
         prepareWorld()
+        connection.util.sendDebugMessage("Chunk cache cleared!")
     }
 
     private fun prepareWorld() {
@@ -561,6 +562,7 @@ class WorldRenderer(
             return
         }
         if (this.loadedMeshes.containsKey(chunkPosition)) {
+            // ToDo: this also ignores light updates
             return
         }
 
@@ -595,11 +597,6 @@ class WorldRenderer(
             val mesh = item.mesh ?: continue
 
             mesh.load()
-            val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
-            if (visible) {
-                addedMeshes++
-                this.visible.addMesh(mesh)
-            }
 
             loadedMeshesLock.lock()
             val meshes = loadedMeshes.getOrPut(item.chunkPosition) { Int2ObjectOpenHashMap() }
@@ -609,6 +606,12 @@ class WorldRenderer(
                 it.unload()
             }
             loadedMeshesLock.unlock()
+
+            val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
+            if (visible) {
+                addedMeshes++
+                this.visible.addMesh(mesh)
+            }
         }
         meshesToLoadLock.release()
 

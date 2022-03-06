@@ -13,13 +13,21 @@
 
 package de.bixilon.minosoft.data.entities.block.container.storage
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.StorageBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {
-    protected var model: StorageBlockEntityRenderer<*>? = null
+    protected var blockEntityRenderer: StorageBlockEntityRenderer<*>? = null
+    override var renderer: BlockEntityRenderer<out BlockEntity>?
+        get() = blockEntityRenderer
+        set(value) {
+            blockEntityRenderer = value?.unsafeCast()
+        }
 
     var playersLookingIntoStorage: Int = 0
         private set
@@ -35,9 +43,9 @@ abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEn
             return
         }
         if (playersLookingIntoStorage <= 0) {
-            model?.close()
+            blockEntityRenderer?.close()
         } else {
-            model?.open()
+            blockEntityRenderer?.open()
         }
     }
 }

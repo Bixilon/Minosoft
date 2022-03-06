@@ -16,11 +16,9 @@ package de.bixilon.minosoft.gui.rendering.world.entities
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import glm_.vec3.Vec3i
 
 interface BlockEntityRenderer<E : BlockEntity> {
-
-    fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i)
+    val blockState: BlockState
 
     fun draw(renderWindow: RenderWindow)
 

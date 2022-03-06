@@ -132,6 +132,7 @@ class MatrixHandler(
         ))
 
         updateShaders()
+        upToDate = true
     }
 
     private fun updateViewMatrix(eyePosition: Vec3) {

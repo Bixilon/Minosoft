@@ -13,36 +13,26 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec3.Vec3i
 
 abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
-    protected val modelName: ResourceLocation,
+    override val blockState: BlockState,
+    protected val skeletal: SkeletalInstance?,
 ) : BlockEntityRenderer<E> {
-    private var instance: SkeletalInstance? = null
-
-    override fun init(renderWindow: RenderWindow, state: BlockState, blockPosition: Vec3i) {
-        this.instance = SkeletalInstance(renderWindow, blockPosition, renderWindow.modelLoader.blockModels["minecraft:models/block/entities/single_chest.bbmodel".toResourceLocation()]!!, (state.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix)
-    }
 
     override fun draw(renderWindow: RenderWindow) {
-        instance?.draw()
+        skeletal?.draw()
     }
 
     fun open() {
-        this.instance?.playAnimation("animation.chest.opening")
+        this.skeletal?.playAnimation("animation.chest.opening")
     }
 
     fun close() {
-        this.instance?.playAnimation("animation.chest.closing")
+        this.skeletal?.playAnimation("animation.chest.closing")
     }
 }

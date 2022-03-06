@@ -37,6 +37,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class ModelLoader(
     val renderWindow: RenderWindow,
@@ -107,7 +108,7 @@ class ModelLoader(
 
     private fun loadBlockEntityModel(resourceLocation: ResourceLocation): SkeletalModel {
         val model: SkeletalModel = renderWindow.connection.assetsManager[resourceLocation].readJson()
-        this.blockModels[resourceLocation] = model.bake(renderWindow)
+        this.blockModels[resourceLocation] = model.bake(renderWindow, Int2ObjectOpenHashMap())
         println("Loaded $resourceLocation!")
         return model
     }
