@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.ComparatorBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.DaylightDetectorBlockEntity
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEntity>>(
     BedBlockEntity,
@@ -61,9 +60,4 @@ object DefaultBlockDataFactory : DefaultFactory<BlockEntityFactory<out BlockEnti
     StickyPistonBlockEntity,
     FlowerPotBlockEntity,
     EndPortalBlockEntity,
-) {
-
-    fun buildBlockEntity(factory: BlockEntityFactory<out BlockEntity>, connection: PlayConnection): BlockEntity {
-        return factory.build(connection)
-    }
-}
+)

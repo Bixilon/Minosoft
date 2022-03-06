@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks
 import de.bixilon.minosoft.data.registries.blocks.types.*
 import de.bixilon.minosoft.data.registries.blocks.types.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.button.WoodenButtonBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.NoteBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.storage.ChestBlock
 import de.bixilon.minosoft.data.registries.blocks.types.leaves.LeavesBlock
 import de.bixilon.minosoft.data.registries.blocks.types.plant.CropBlock
 import de.bixilon.minosoft.data.registries.blocks.types.plant.PlantBlock
@@ -52,4 +54,5 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     LeavesBlock,
     PlantBlock,
     CropBlock,
+    ChestBlock,
 )

@@ -24,7 +24,7 @@ class SkeletalManager(
     val renderWindow: RenderWindow,
 ) {
     val shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "skeletal"))
-    private val uniformBuffer = renderWindow.renderSystem.createFloatUniformBuffer(2, memAllocFloat(TRANSFORMS * 4 * 4))
+    private val uniformBuffer = renderWindow.renderSystem.createFloatUniformBuffer(2, memAllocFloat(TRANSFORMS * MAT4_SIZE))
 
     fun init() {
         uniformBuffer.init()
@@ -44,14 +44,15 @@ class SkeletalManager(
 
         val transforms = instance.calculateTransforms()
         for ((index, transform) in transforms.withIndex()) {
-            uniformBuffer.buffer.put(index * 16, transform.array)
+            uniformBuffer.buffer.put(index * MAT4_SIZE, transform.array)
         }
-        uniformBuffer.upload(0 until (transforms.size * 4 * 4))
+        uniformBuffer.upload(0 until (transforms.size * MAT4_SIZE))
 
         instance.model.mesh.draw()
     }
 
     private companion object {
         private const val TRANSFORMS = 32
+        private const val MAT4_SIZE = 4 * 4
     }
 }

@@ -100,6 +100,7 @@ class World(
         previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, chunk.getBlockEntity(inChunkPosition))
         blockState?.block?.onPlace(connection, blockPosition, blockState)
         chunk[inChunkPosition] = blockState
+        chunk.getOrPutBlockEntity(inChunkPosition)
         connection.fireEvent(BlockSetEvent(
             connection = connection,
             blockPosition = blockPosition,
@@ -134,6 +135,10 @@ class World(
 
     fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
         return get(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
+    }
+
+    fun getOrPutBlockEntity(blockPosition: Vec3i): BlockEntity? {
+        return get(blockPosition.chunkPosition)?.getOrPutBlockEntity(blockPosition.inChunkPosition)
     }
 
     fun setBlockEntity(blockPosition: Vec3i, blockEntity: BlockEntity?) {

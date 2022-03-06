@@ -24,18 +24,18 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.CastUtil.asAnyCollection
 
-data class BlockEntityType(
+data class BlockEntityType<T : BlockEntity>(
     override val resourceLocation: ResourceLocation,
     val blocks: Set<Block>,
-    val factory: BlockEntityFactory<out BlockEntity>,
+    val factory: BlockEntityFactory<T>,
 ) : RegistryItem() {
 
-    fun build(connection: PlayConnection): BlockEntity {
-        return DefaultBlockDataFactory.buildBlockEntity(factory, connection)
+    fun build(connection: PlayConnection): T {
+        return factory.build(connection)
     }
 
-    companion object : ResourceLocationDeserializer<BlockEntityType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityType? {
+    companion object : ResourceLocationDeserializer<BlockEntityType<*>> {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityType<*>? {
             // ToDo: Fix resource location
             check(registries != null)
             val factory = DefaultBlockDataFactory[resourceLocation] ?: return null // ToDo

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,7 +29,6 @@ import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.DefaultBlockFactories
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
-import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -51,8 +50,6 @@ open class Block(
     open val explosionResistance: Float = data["explosion_resistance"]?.toFloat() ?: 0.0f
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
     open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation(it) }
-    open var blockEntityType: BlockEntityType? = null
-        protected set
 
     open lateinit var states: Set<BlockState>
         protected set
@@ -69,10 +66,6 @@ open class Block(
         this::item.inject(data["item"])
     }
 
-    override fun postInit(registries: Registries) {
-        blockEntityType = registries.blockEntityTypeRegistry[this]
-    }
-
     override fun toString(): String {
         return resourceLocation.full
     }
@@ -86,10 +79,7 @@ open class Block(
     open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean = true
 
     open fun onUse(connection: PlayConnection, target: BlockTarget, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        if (blockEntityType == null) {
-            return InteractionResults.PASS
-        }
-        return InteractionResults.SUCCESS
+        return InteractionResults.PASS
     }
 
     fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
