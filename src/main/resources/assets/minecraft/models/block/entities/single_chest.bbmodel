@@ -4,7 +4,6 @@
 		"model_format": "free",
 		"box_uv": true
 	},
-	"name": "chest",
 	"geometry_name": "chest",
 	"visible_box": [1, 1, 0],
 	"resolution": {
@@ -48,8 +47,8 @@
 		},
 		{
 			"name": "lid",
-			"from": [-7, -15, -7],
-			"to": [7, -10, 7],
+			"from": [-7, -14, -7],
+			"to": [7, -9, 7],
 			"rotation": [-180, 0, 0],
 			"faces": {
 				"north": {
@@ -81,8 +80,8 @@
 		},
 		{
 			"name": "lock",
-			"from": [-1, -12, -8],
-			"to": [1, -8, -7],
+			"from": [-1, -11, -8],
+			"to": [1, -7, -7],
 			"rotation": [0, 0, -180],
 			"faces": {
 				"north": {
@@ -162,7 +161,7 @@
 							],
 							"uuid": "d595c66b-58da-743a-223e-baff1a2910f1",
 							"time": 0,
-							"interpolation": "catmullrom"
+							"interpolation": "sine"
 						},
 						{
 							"channel": "rotation",
@@ -175,7 +174,7 @@
 							],
 							"uuid": "ac945fe7-65b4-1f09-dc05-782860c4aa7c",
 							"time": 0.3,
-							"interpolation": "catmullrom"
+							"interpolation": "sine"
 						}
 					]
 				}
@@ -203,7 +202,7 @@
 							],
 							"uuid": "ac945fe7-65b4-1f09-dc05-782860c4aa7c",
 							"time": 0,
-							"interpolation": "catmullrom"
+							"interpolation": "sine"
 						},
 						{
 							"channel": "rotation",
@@ -216,7 +215,7 @@
 							],
 							"uuid": "8ef02eb5-7b0c-462d-42ab-cce77b9a4497",
 							"time": 0.5,
-							"interpolation": "catmullrom"
+							"interpolation": "sine"
 						}
 					]
 				}

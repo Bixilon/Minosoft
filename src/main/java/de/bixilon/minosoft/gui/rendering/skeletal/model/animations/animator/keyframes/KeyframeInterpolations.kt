@@ -17,5 +17,6 @@ enum class KeyframeInterpolations {
     LINEAR,
     CATMULLROM,
     STEP,
+    SINE,
     ;
 }

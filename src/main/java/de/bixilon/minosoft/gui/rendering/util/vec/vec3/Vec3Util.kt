@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
@@ -26,6 +25,8 @@ import glm_.vec3.Vec3t
 import glm_.vec3.swizzle.xy
 import glm_.vec3.swizzle.xz
 import glm_.vec3.swizzle.yz
+import kotlin.math.PI
+import kotlin.math.sin
 
 object Vec3Util {
     private val EMPTY_INSTANCE = Vec3.EMPTY
@@ -138,6 +139,13 @@ object Vec3Util {
         if (delta >= 1.0f) {
             return end
         }
-        return Vec3(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y), interpolateSine(delta, start.z, end.z))
+
+        val sineDelta = sin(delta * PI.toFloat() / 2.0f)
+
+        fun interpolate(start: Float, end: Float): Float {
+            return start + sineDelta * (end - start)
+        }
+
+        return Vec3(interpolate(start.x, end.x), interpolate(start.y, end.y), interpolate(start.z, end.z))
     }
 }

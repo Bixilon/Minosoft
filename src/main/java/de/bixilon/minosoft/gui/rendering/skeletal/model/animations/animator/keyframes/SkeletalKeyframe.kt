@@ -32,6 +32,7 @@ data class SkeletalKeyframe(
 
         return when (interpolation) {
             KeyframeInterpolations.LINEAR -> interpolateLinear(delta, value1, value2)
+            KeyframeInterpolations.SINE -> interpolateSine(delta, value1, value2)
             // ToDo
             else -> interpolateSine(delta, value1, value2)
         }
