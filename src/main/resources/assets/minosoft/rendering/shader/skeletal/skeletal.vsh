@@ -34,7 +34,7 @@ uniform uint uLight;
 
 void main() {
     gl_Position = uViewProjectionMatrix * uSkeletalTransforms[vinTransform] * vec4(vinPosition, 1.0f);
-    finTintColor = getLight(uLight);
+    finTintColor = getLight(uLight & 0xFFu);
     finFragmentPosition = vinPosition;
 
     #include "minosoft:animation/main_vertex"

@@ -27,15 +27,15 @@ import glm_.vec3.Vec3i
 
 open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): BlockEntityRenderer<*>? {
+    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
         val type = blockState.properties[BlockProperties.CHEST_TYPE] ?: return null
         if (type == ChestTypes.SINGLE) {
-            return SingleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getSingleModel()] ?: return null)
+            return SingleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getSingleModel()] ?: return null, light)
         }
 
         if (type == ChestTypes.LEFT) {
             // only left chest will be rendered (the model is the double chest), reduces drawing overhead
-            return DoubleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getDoubleModel()] ?: return null)
+            return DoubleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getDoubleModel()] ?: return null, light)
         }
 
         return null

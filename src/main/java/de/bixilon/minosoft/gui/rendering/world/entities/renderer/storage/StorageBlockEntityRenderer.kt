@@ -22,9 +22,11 @@ import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     override val blockState: BlockState,
     protected val skeletal: SkeletalInstance?,
+    override var light: Int,
 ) : BlockEntityRenderer<E> {
 
     override fun draw(renderWindow: RenderWindow) {
+        skeletal?.light = light
         skeletal?.draw()
     }
 

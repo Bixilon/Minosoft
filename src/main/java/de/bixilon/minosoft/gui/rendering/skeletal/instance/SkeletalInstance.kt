@@ -35,6 +35,8 @@ class SkeletalInstance(
     private var animationLastFrame = -1L
     private var transforms: List<Mat4> = listOf()
 
+    var light: Int = 0xFF
+
     fun playAnimation(name: String) {
         clearAnimation()
         var animation: SkeletalAnimation? = null
@@ -58,7 +60,7 @@ class SkeletalInstance(
     }
 
     fun draw() {
-        renderWindow.skeletalManager.draw(this)
+        renderWindow.skeletalManager.draw(this, light)
     }
 
     fun calculateTransforms(): List<Mat4> {

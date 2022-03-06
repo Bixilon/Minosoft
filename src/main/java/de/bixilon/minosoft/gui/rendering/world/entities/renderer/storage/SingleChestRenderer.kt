@@ -36,9 +36,12 @@ class SingleChestRenderer(
     blockState: BlockState,
     blockPosition: Vec3i,
     model: BakedSkeletalModel,
+    light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(renderWindow, blockPosition, model, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix)) {
+    SkeletalInstance(renderWindow, blockPosition, model, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix),
+    light,
+) {
 
 
     companion object {

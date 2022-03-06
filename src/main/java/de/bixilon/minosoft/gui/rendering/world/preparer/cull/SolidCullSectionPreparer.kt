@@ -87,16 +87,16 @@ class SolidCullSectionPreparer(
                     if (blockState.block is FluidBlock) {
                         continue
                     }
+                    light[6] = sectionLight[y shl 8 or (z shl 4) or x]
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     blockEntity = section.blockEntities.unsafeGet(x, y, z)
-                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position)
+                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[6].toInt())
                     if (blockEntityModel != null) {
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
                     }
                     model = blockState.blockModel ?: continue
 
-                    light[6] = sectionLight[y shl 8 or (z shl 4) or x]
 
                     if (y == 0) {
                         if (fastBedrock && blockState === bedrock) {

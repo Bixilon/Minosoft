@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 
 interface BlockEntityRenderer<E : BlockEntity> {
     val blockState: BlockState
+    var light: Int
 
     fun draw(renderWindow: RenderWindow)
 

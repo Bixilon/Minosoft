@@ -47,8 +47,9 @@ class SkeletalManager(
         shader.use()
     }
 
-    fun draw(instance: SkeletalInstance) {
+    fun draw(instance: SkeletalInstance, light: Int) {
         prepareDraw()
+        shader.setUInt("uLight", light)
         val transforms = instance.calculateTransforms()
         var stride = 0
         for (transform in transforms) {

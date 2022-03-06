@@ -25,9 +25,9 @@ import glm_.vec3.Vec3i
 
 class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): BlockEntityRenderer<out BlockEntity>? {
+    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
         val model = renderWindow.modelLoader.entities.models[SingleChestRenderer.EnderChest.MODEL] ?: return null
-        return SingleChestRenderer(this, renderWindow, blockState, blockPosition, model)
+        return SingleChestRenderer(this, renderWindow, blockState, blockPosition, model, light)
     }
 
     companion object : BlockEntityFactory<EnderChestBlockEntity> {
