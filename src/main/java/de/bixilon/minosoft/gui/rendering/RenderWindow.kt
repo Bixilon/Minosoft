@@ -101,6 +101,8 @@ class RenderWindow(
     var tickCount = 0L
     var lastTickTimer = TimeUtil.time
 
+    private var slowRendering = profile.performance.slowRendering
+
 
     var renderingState = RenderingStates.RUNNING
         private set(value) {
@@ -128,6 +130,7 @@ class RenderWindow(
                 RenderStats()
             }
         }
+        profile.performance::slowRendering.profileWatch(this, profile = profile) { this.slowRendering = it }
         renderer.registerDefault(connection.profiles)
     }
 
@@ -277,21 +280,22 @@ class RenderWindow(
             // handle opengl context tasks, but limit it per frame
             queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
-            when (renderingState) {
-                RenderingStates.RUNNING, RenderingStates.PAUSED -> {
-                }
-                RenderingStates.SLOW -> Thread.sleep(100L)
-                RenderingStates.STOPPED -> window.close()
+            if (renderingState == RenderingStates.STOPPED) {
+                window.close()
+                break
+            }
+            if (renderingState == RenderingStates.SLOW && slowRendering) {
+                Thread.sleep(100L)
             }
 
             for (error in renderSystem.getErrors()) {
                 connection.util.sendDebugMessage(error.printMessage)
             }
-            renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
                 window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.rounded10}"
             }
+            renderStats.endFrame()
         }
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
