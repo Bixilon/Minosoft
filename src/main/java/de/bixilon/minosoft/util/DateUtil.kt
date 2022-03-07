@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.kutil.time.TimeUtil
 import java.util.*
 
-@Deprecated("Part of kutl 1.10")
+@Deprecated("Part of kutil 1.10")
 object DateUtil {
     val currentCalendar: Calendar
         get() {
