@@ -204,6 +204,7 @@ class ParticleRenderer(
             particle.dead = true
             return
         }
+        particle.tryTick(TimeUtil.time)
 
         particleQueueLock.lock()
         particleQueue += particle
@@ -226,6 +227,7 @@ class ParticleRenderer(
 
         val time = TimeUtil.time
         for (particle in particles) {
+            particle.tryTick(time)
             if (particle.dead) {
                 continue
             }

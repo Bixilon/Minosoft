@@ -30,9 +30,10 @@ class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, posit
     val item: ItemStack
         get() = data.sets.getItemStack(EntityDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: defaultItem
 
-
     val defaultItem: ItemStack
         get() = ItemStackUtil.of(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection = connection)
+
+    override fun onAttack(attacker: Entity): Boolean = false
 
     companion object : EntityFactory<ThrownEyeOfEnder> {
         private val DEFAULT_ITEM = ResourceLocation("ender_eye")

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2i
@@ -39,9 +39,11 @@ abstract class Particle(
     velocity: Vec3d = Vec3d.EMPTY,
     data: ParticleData? = null,
 ) : PhysicsEntity {
-    protected val data: ParticleData = data ?: let {
-        val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
-        connection.registries.particleTypeRegistry[resourceLocation]!!.default()
+    protected val data: ParticleData by lazy {
+        data ?: let {
+            val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
+            connection.registries.particleTypeRegistry[resourceLocation]!!.default()
+        }
     }
     var chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
         private set
@@ -91,14 +93,14 @@ abstract class Particle(
         val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15
         val divider = this.velocity.length()
 
-        this.velocity assign this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf
+        this.velocity assign (this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf)
         this.velocity.y += 0.1
 
         spacing = Vec3(0.2)
     }
 
     fun getCameraPosition(time: Long): Vec3d {
-        return VecUtil.lerp((time - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+        return interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
     }
 
     fun forceMove(delta: Vec3d) {

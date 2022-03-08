@@ -25,7 +25,7 @@ class InteractionManager(
     private val connection = renderWindow.connection
     val hotbar = HotbarInteractionHandler(renderWindow)
     val pick = ItemPickInteractionHandler(renderWindow, this)
-    val attack = AttackInteractionHandler(renderWindow)
+    val attack = AttackInteractionHandler(renderWindow, this)
     val `break` = BreakInteractionHandler(renderWindow)
     val use = InteractInteractionHandler(renderWindow, this)
     val drop = DropInteractionManager(renderWindow)
@@ -38,6 +38,7 @@ class InteractionManager(
     fun init() {
         hotbar.init()
         pick.init()
+        attack.init()
         `break`.init()
         use.init()
         drop.init()
@@ -47,7 +48,7 @@ class InteractionManager(
     fun draw(delta: Double) {
         hotbar.draw(delta)
         pick.draw(delta)
-        // attack.draw(delta)
+        attack.draw(delta)
         `break`.draw(delta)
         use.draw(delta)
         drop.draw(delta)

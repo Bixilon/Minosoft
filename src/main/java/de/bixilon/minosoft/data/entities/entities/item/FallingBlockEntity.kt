@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-class FallingBlock(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Block state")
     var blockState: BlockState? = null
@@ -33,6 +33,8 @@ class FallingBlock(connection: PlayConnection, entityType: EntityType, position:
     val spawnPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.FALLING_BLOCK_SPAWN_POSITION)
 
+
+    override fun onAttack(attacker: Entity): Boolean = false
 
     override fun setObjectData(data: Int) {
         blockState = connection.registries.blockStateRegistry[data]
@@ -48,11 +50,11 @@ class FallingBlock(connection: PlayConnection, entityType: EntityType, position:
         velocity = velocity * 0.98
     }
 
-    companion object : EntityFactory<FallingBlock> {
+    companion object : EntityFactory<FallingBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("falling_block")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): FallingBlock {
-            return FallingBlock(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): FallingBlockEntity {
+            return FallingBlockEntity(connection, entityType, position, rotation)
         }
     }
 }

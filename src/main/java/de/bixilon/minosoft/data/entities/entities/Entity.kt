@@ -47,7 +47,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -55,6 +54,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -93,6 +93,7 @@ abstract class Entity(
     val data: EntityData = EntityData(connection)
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
+    val activelyRiding = false // ToDo: When player has a vehicle and movement is pressed
 
     override var velocity: Vec3d = Vec3d.EMPTY
     var movementMultiplier = Vec3d.EMPTY // ToDo: Used in cobwebs, etc
@@ -102,7 +103,7 @@ abstract class Entity(
         protected set
     var verticalCollision = false
         protected set
-    protected var fallDistance = 0.0
+    var fallDistance = 0.0
 
     protected open val hasCollisions = true
 
@@ -363,7 +364,7 @@ abstract class Entity(
             postTick()
             lastTickTime = currentTime
         }
-        cameraPosition = VecUtil.lerp((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+        cameraPosition = interpolateLinear((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
     }
 
     open val pushableByFluids: Boolean = false
@@ -628,6 +629,8 @@ abstract class Entity(
 
             return protectionLevel
         }
+
+    open fun onAttack(attacker: Entity) = true
 
 
     companion object {

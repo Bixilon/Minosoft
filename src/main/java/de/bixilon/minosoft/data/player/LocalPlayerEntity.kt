@@ -91,6 +91,14 @@ class LocalPlayerEntity(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
     var selectedHotbarSlot: Int = 0
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            equipment.remove(InventorySlots.EquipmentSlots.MAIN_HAND)
+            equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(value) ?: return
+        }
 
     val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()
 

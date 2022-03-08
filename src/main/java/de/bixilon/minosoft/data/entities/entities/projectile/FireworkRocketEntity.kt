@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -38,6 +39,8 @@ class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, p
     @get:EntityMetaDataFunction(name = "Shot at angle")
     val isShotAtAngle: Boolean
         get() = data.sets.getBoolean(EntityDataFields.FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE)
+
+    override fun onAttack(attacker: Entity): Boolean = false
 
     companion object : EntityFactory<FireworkRocketEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("firework_rocket")

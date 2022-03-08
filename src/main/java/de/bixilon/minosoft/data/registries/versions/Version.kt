@@ -60,4 +60,5 @@ class Version(
     val hasOffhand: Boolean = versionId >= V_15W31A
     val maxPacketLength = (versionId < ProtocolVersions.V_1_17_1_RC2).decide(1 shl 21, 1 shl 23)
     val maxChatMessageSize = (versionId < ProtocolVersions.V_16W38A).decide(100, 256)
+    val hasAttackCooldown = versionId >= ProtocolVersions.V_15W34A
 }

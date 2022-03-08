@@ -42,14 +42,19 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
 
     init {
         this::slots.observeMap(this) {
-            // ToDo: Main hand
             for ((slotId, stack) in it.removes) {
+                if (slotId - HOTBAR_OFFSET == connection.player.selectedHotbarSlot) {
+                    this.equipment -= InventorySlots.EquipmentSlots.MAIN_HAND
+                    continue
+                }
                 this.equipment -= slotId.equipmentSlot ?: continue
             }
             for ((slotId, stack) in it.adds) {
-                val equipment = slotId.equipmentSlot ?: continue
-
-                this.equipment[equipment] = stack
+                if (slotId - HOTBAR_OFFSET == connection.player.selectedHotbarSlot) {
+                    this.equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = stack
+                    continue
+                }
+                this.equipment[slotId.equipmentSlot ?: continue] = stack
             }
         }
     }
@@ -101,7 +106,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
 
     override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int {
         if (slot == SlotSwapContainerAction.SwapTargets.OFFHAND) {
-            return 45
+            return OFFHAND_SLOT
         }
         return HOTBAR_OFFSET + slot.ordinal
     }
@@ -124,7 +129,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
 
             InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
-            InventorySlots.EquipmentSlots.OFF_HAND -> 45
+            InventorySlots.EquipmentSlots.OFF_HAND -> OFFHAND_SLOT
         }
 
 
@@ -134,7 +139,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             ARMOR_OFFSET + 1 -> InventorySlots.EquipmentSlots.CHEST
             ARMOR_OFFSET + 2 -> InventorySlots.EquipmentSlots.LEGS
             ARMOR_OFFSET + 3 -> InventorySlots.EquipmentSlots.FEET
-            45 -> InventorySlots.EquipmentSlots.OFF_HAND
+            OFFHAND_SLOT -> InventorySlots.EquipmentSlots.OFF_HAND
             // ToDo: Main hand
             else -> null
         }
@@ -148,6 +153,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         const val HOTBAR_OFFSET = 36
         const val ARMOR_OFFSET = 5
         const val HOTBAR_SLOTS = 9
+        const val OFFHAND_SLOT = 45
 
         private val SECTIONS = arrayOf(
             ARMOR_OFFSET..ARMOR_OFFSET + 4,

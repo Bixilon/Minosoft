@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EndCrystal
 import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EnderDragon
 import de.bixilon.minosoft.data.entities.entities.boss.wither.WitherBoss
 import de.bixilon.minosoft.data.entities.entities.decoration.*
-import de.bixilon.minosoft.data.entities.entities.item.FallingBlock
+import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
 import de.bixilon.minosoft.data.entities.entities.monster.*
@@ -71,7 +71,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     EvokerFangs,
     ExperienceOrb,
     ThrownEyeOfEnder,
-    FallingBlock,
+    FallingBlockEntity,
     FireworkRocketEntity,
     Fox,
     Goat,

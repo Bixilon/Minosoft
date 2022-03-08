@@ -33,7 +33,7 @@ abstract class DamageParticle(connection: PlayConnection, position: Vec3d, veloc
         friction = 0.7f
         gravityStrength = 0.5f
         this.velocity *= 0.1
-        this.velocity += velocity * 0.4f
+        this.velocity += velocity * 1.2f // ToDo: This is 0.4 in minecraft
         color = (random.nextFloat() * 0.3 + 0.6).asGray()
         super.scale *= 0.75f
         maxAge = (6.0f / (random.nextFloat() * 0.8f + 0.6f)).toInt().coerceAtLeast(1)
