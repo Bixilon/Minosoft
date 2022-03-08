@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
-import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
@@ -99,7 +99,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     }
 
     override fun createText(): ChatComponent {
-        return TextComponent("${totalHealth.round10} / ${totalMaxHealth.round10}").color(NORMAL_TEXT_COLOR)
+        return TextComponent("${totalHealth.rounded10} / ${totalMaxHealth.rounded10}").color(NORMAL_TEXT_COLOR)
     }
 
     override fun tick() {

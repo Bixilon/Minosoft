@@ -58,6 +58,7 @@ class TargetHandler(
         var currentHit: EntityTarget? = null
 
         val originF = Vec3(origin)
+        connection.world.entities.lock.acquire()
         for (entity in connection.world.entities) {
             if (entity is LocalPlayerEntity) {
                 continue
@@ -73,8 +74,8 @@ class TargetHandler(
                 continue
             }
             currentHit = EntityTarget(origin + direction * target.distance, target.distance, target.direction, entity)
-
         }
+        connection.world.entities.lock.release()
         return currentHit
     }
 

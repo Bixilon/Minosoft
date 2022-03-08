@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.mesh
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -29,6 +30,7 @@ class WorldMesh(
     var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 100000)
     var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 10000)
     var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
+    var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
     val minPosition = Vec3i(16)
@@ -39,6 +41,12 @@ class WorldMesh(
         this.opaqueMesh?.load()
         this.translucentMesh?.load()
         this.transparentMesh?.load()
+        val blockEntities = this.blockEntities
+        if (blockEntities != null) {
+            for (blockEntity in blockEntities) {
+                blockEntity.load()
+            }
+        }
     }
 
     @Synchronized
@@ -68,6 +76,13 @@ class WorldMesh(
                 meshes++
             }
         }
+        blockEntities?.let {
+            if (it.isEmpty()) {
+                blockEntities = null
+            } else {
+                meshes += it.size
+            }
+        }
         return meshes
     }
 
@@ -76,6 +91,13 @@ class WorldMesh(
         opaqueMesh?.unload()
         translucentMesh?.unload()
         transparentMesh?.unload()
+
+        val blockEntities = blockEntities
+        if (blockEntities != null) {
+            for (blockEntity in blockEntities) {
+                blockEntity.unload()
+            }
+        }
     }
 
     fun addBlock(x: Int, y: Int, z: Int) {

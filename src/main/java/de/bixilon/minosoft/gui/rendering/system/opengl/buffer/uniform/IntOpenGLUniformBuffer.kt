@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,10 +15,11 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 
-class IntOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGLUniformBuffer(bindingIndex), IntUniformBuffer {
+class IntOpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGLUniformBuffer(renderSystem, bindingIndex), IntUniformBuffer {
     override val size: Int
         get() = data.size
 
@@ -36,4 +37,5 @@ class IntOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: IntArray 
         unbind()
     }
 
+    override fun upload(range: IntRange) = TODO("Unsupported")
 }

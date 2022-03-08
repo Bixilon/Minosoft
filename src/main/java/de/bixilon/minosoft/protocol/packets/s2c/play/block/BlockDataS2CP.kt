@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.minosoft.data.entities.block.DefaultBlockDataFactory
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -41,11 +40,7 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nbt = buffer.readNBT().asJsonObject()
 
     override fun handle(connection: PlayConnection) {
-        connection.world.getBlockEntity(position)?.updateNBT(nbt) ?: let {
-            val blockEntity = DefaultBlockDataFactory.buildBlockEntity(DefaultBlockDataFactory[type]!!, connection)
-            blockEntity.updateNBT(nbt)
-            connection.world.setBlockEntity(position, blockEntity)
-        }
+        connection.world.getOrPutBlockEntity(position)?.updateNBT(nbt) ?: return
         connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, this))
     }
 

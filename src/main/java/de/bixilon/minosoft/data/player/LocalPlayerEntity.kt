@@ -18,8 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
-import de.bixilon.kutil.math.MMath.clamp
-import de.bixilon.kutil.math.MMath.floor
+import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.Axes
@@ -48,7 +47,6 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -62,6 +60,8 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
+import glm_.func.common.clamp
+import glm_.func.common.floor
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -120,7 +120,7 @@ class LocalPlayerEntity(
             super.previousPosition = value
         }
 
-    val fovMultiplier = Previous(1.0) { previous, delta -> VecUtil.lerp(delta / ProtocolDefinition.TICK_TIMEd, previous.previous, previous.value) }
+    val fovMultiplier = Previous(1.0) { previous, delta -> interpolateLinear(delta / ProtocolDefinition.TICK_TIMEd, previous.previous, previous.value) }
 
     override val hasGravity: Boolean
         get() = !baseAbilities.isFlying
@@ -309,9 +309,9 @@ class LocalPlayerEntity(
         }
         this.fallDistance = 0.0
         val returnVelocity = Vec3d(
-            x = clamp(velocity.x, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE),
+            x = velocity.x.clamp(-CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE),
             y = max(velocity.y, -CLIMBING_CLAMP_VALUE),
-            z = clamp(velocity.z, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
+            z = velocity.z.clamp(-CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
         )
         if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != MinecraftBlocks.SCAFFOLDING && isSneaking) {
             returnVelocity.y = 0.0
@@ -578,7 +578,7 @@ class LocalPlayerEntity(
 
         sendMovementPackets()
 
-        fovMultiplier.value = 1.0 + clamp(walkingSpeed * 1.9, -2.0, 2.0)
+        fovMultiplier.value = 1.0 + (walkingSpeed * 1.9).clamp(-2.0, 2.0)
     }
 
     override val health: Double

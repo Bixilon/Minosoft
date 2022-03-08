@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,22 @@
 
 package de.bixilon.minosoft.data.entities.block.container.storage
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import glm_.vec3.Vec3i
 
 class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+
+    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
+        val model = renderWindow.modelLoader.entities.models[SingleChestRenderer.EnderChest.MODEL] ?: return null
+        return SingleChestRenderer(this, renderWindow, blockState, blockPosition, model, light)
+    }
 
     companion object : BlockEntityFactory<EnderChestBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:ender_chest")

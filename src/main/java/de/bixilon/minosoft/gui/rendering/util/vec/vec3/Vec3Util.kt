@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
@@ -24,14 +25,18 @@ import glm_.vec3.Vec3t
 import glm_.vec3.swizzle.xy
 import glm_.vec3.swizzle.xz
 import glm_.vec3.swizzle.yz
+import kotlin.math.PI
+import kotlin.math.sin
 
 object Vec3Util {
+    private val EMPTY_INSTANCE = Vec3.EMPTY
 
     val Vec3.Companion.MIN: Vec3
         get() = Vec3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
 
     val Vec3.Companion.EMPTY: Vec3
         get() = Vec3(0.0f, 0.0f, 0.0f)
+    val Vec3.Companion.EMPTY_INSTANCE get() = Vec3Util.EMPTY_INSTANCE
 
     val Vec3.Companion.ONE: Vec3
         get() = Vec3(1.0f, 1.0f, 1.0f)
@@ -115,5 +120,32 @@ object Vec3Util {
         x = 0.0f
         y = 0.0f
         z = 0.0f
+    }
+
+    fun interpolateLinear(delta: Float, start: Vec3, end: Vec3): Vec3 {
+        if (delta <= 0.0f) {
+            return start
+        }
+        if (delta >= 1.0f) {
+            return end
+        }
+        return Vec3(interpolateLinear(delta, start.x, end.x), interpolateLinear(delta, start.y, end.y), interpolateLinear(delta, start.z, end.z))
+    }
+
+    fun interpolateSine(delta: Float, start: Vec3, end: Vec3): Vec3 {
+        if (delta <= 0.0f) {
+            return start
+        }
+        if (delta >= 1.0f) {
+            return end
+        }
+
+        val sineDelta = sin(delta * PI.toFloat() / 2.0f)
+
+        fun interpolate(start: Float, end: Float): Float {
+            return start + sineDelta * (end - start)
+        }
+
+        return Vec3(interpolate(start.x, end.x), interpolate(start.y, end.y), interpolate(start.z, end.z))
     }
 }

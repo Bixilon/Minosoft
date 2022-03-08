@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,8 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -86,12 +85,7 @@ class World(
         return chunks.synchronizedGetOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
     }
 
-    fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
-        this[blockPosition] = blockState
-    }
-
-    operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
-        val chunk = chunks[blockPosition.chunkPosition] ?: return
+    private fun _set(chunk: Chunk, blockPosition: Vec3i, blockState: BlockState?) {
         val inChunkPosition = blockPosition.inChunkPosition
         val previousBlock = chunk[inChunkPosition]
         if (previousBlock == blockState) {
@@ -100,11 +94,26 @@ class World(
         previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, chunk.getBlockEntity(inChunkPosition))
         blockState?.block?.onPlace(connection, blockPosition, blockState)
         chunk[inChunkPosition] = blockState
+        chunk.getOrPutBlockEntity(inChunkPosition)
         connection.fireEvent(BlockSetEvent(
             connection = connection,
             blockPosition = blockPosition,
             blockState = blockState,
         ))
+    }
+
+    fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
+        this[blockPosition] = blockState
+    }
+
+    operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
+        val chunk = chunks[blockPosition.chunkPosition] ?: return
+        _set(chunk, blockPosition, blockState)
+    }
+
+    fun forceSet(blockPosition: Vec3i, blockState: BlockState?) {
+        val chunk = getOrCreateChunk(blockPosition.chunkPosition)
+        _set(chunk, blockPosition, blockState)
     }
 
     fun isPositionChangeable(blockPosition: Vec3i): Boolean {
@@ -136,6 +145,10 @@ class World(
         return get(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
     }
 
+    fun getOrPutBlockEntity(blockPosition: Vec3i): BlockEntity? {
+        return get(blockPosition.chunkPosition)?.getOrPutBlockEntity(blockPosition.inChunkPosition)
+    }
+
     fun setBlockEntity(blockPosition: Vec3i, blockEntity: BlockEntity?) {
         get(blockPosition.chunkPosition)?.setBlockEntity(blockPosition.inChunkPosition, blockEntity)
     }
@@ -158,13 +171,15 @@ class World(
     fun tick() {
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.positionInfo.chunkPosition
-        for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
+        chunks.lock.acquire()
+        for ((chunkPosition, chunk) in chunks) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 continue
             }
             chunk.tick(connection, chunkPosition)
         }
+        chunks.lock.release()
     }
 
     fun randomTick() {

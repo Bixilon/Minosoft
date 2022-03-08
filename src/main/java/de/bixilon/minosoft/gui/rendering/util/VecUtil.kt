@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.ceil
 import glm_.func.common.clamp
@@ -327,42 +329,21 @@ object VecUtil {
     val Double.noise: Double
         get() = Random.nextDouble() / this * if (Random.nextBoolean()) 1.0 else -1.0
 
+    @Deprecated("Use VecXUtil", ReplaceWith("interpolateLinear(delta, start, end)", "de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear"))
     fun lerp(delta: Float, start: Vec3, end: Vec3): Vec3 {
-        return Vec3(
-            lerp(delta, start.x, end.x),
-            lerp(delta, start.y, end.y),
-            lerp(delta, start.z, end.z),
-        )
+        return interpolateLinear(delta, start, end)
     }
 
+    @Deprecated("Use VecXUtil", ReplaceWith("interpolateLinear(delta, start, end)", "de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec2Util.interpolateLinear"))
     fun lerp(delta: Float, start: Vec2, end: Vec2): Vec2 {
-        return Vec2(
-            lerp(delta, start.x, end.x),
-            lerp(delta, start.y, end.y),
-        )
+        TODO()
     }
 
+    @Deprecated("Use VecXUtil", ReplaceWith("interpolateLinear(delta, start, end)", "de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear"))
     fun lerp(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
-        when {
-            delta <= 0.0 -> return start
-            delta >= 1.0 -> return end
-        }
-        val startArray = start.array
-        val endArray = end.array
-        return Vec3d(
-            lerp(delta, startArray[0], endArray[0]),
-            lerp(delta, startArray[1], endArray[1]),
-            lerp(delta, startArray[2], endArray[2]),
-        )
+        return interpolateLinear(delta, start, end)
     }
 
-    fun lerp(delta: Float, start: Float, end: Float): Float {
-        return start + delta * (end - start)
-    }
-
-    fun lerp(delta: Double, start: Double, end: Double): Double {
-        return start + delta * (end - start)
-    }
 
     fun Vec3d.clearZero() {
         if (abs(x) < 0.003) {

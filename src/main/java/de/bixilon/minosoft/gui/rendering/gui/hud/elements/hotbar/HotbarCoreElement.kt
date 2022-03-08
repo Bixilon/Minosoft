@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.copy
 import glm_.vec2.Vec2i
@@ -84,8 +86,10 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), consumer, options)
             offset.y += experience.size.y + VERTICAL_SPACING
         }
-
-        base.render(offset, consumer, options)
+        if (gamemode != Gamemodes.SPECTATOR) {
+            // ToDo: Spectator hotbar
+            base.render(offset, consumer, options)
+        }
     }
 
     override fun forceSilentApply() {
@@ -93,9 +97,12 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
             element.silentApply()
         }
 
-        val size = Vec2i(base.size)
+        val size = Vec2i.EMPTY
 
         gamemode = guiRenderer.renderWindow.connection.player.tabListItem.gamemode
+        if (gamemode != Gamemodes.SPECTATOR) {
+            size += base.size
+        }
         if (gamemode.survival) {
             size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
@@ -248,7 +248,7 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     override fun createText(): ChatComponent {
         val text = BaseComponent()
 
-        text += TextComponent(totalHealth.round10).apply {
+        text += TextComponent(totalHealth.rounded10).apply {
             color = when {
                 poison -> POISON_TEXT_COLOR
                 wither -> WITHER_TEXT_COLOR
@@ -257,7 +257,7 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
             }
         }
         text += TextComponent("/")
-        text += TextComponent(totalMaxHealth.round10).apply {
+        text += TextComponent(totalMaxHealth.rounded10).apply {
             color = when {
                 absorptionsAmount > 0.0f -> ABSORPTION_TEXT_COLOR
                 else -> NORMAL_TEXT_COLOR

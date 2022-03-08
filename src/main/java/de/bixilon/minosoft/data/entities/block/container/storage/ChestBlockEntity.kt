@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,9 +15,39 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.ChestTypes
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import glm_.vec3.Vec3i
 
-class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+open class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
+
+    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*>? {
+        val type = blockState.properties[BlockProperties.CHEST_TYPE] ?: return null
+        if (type == ChestTypes.SINGLE) {
+            return SingleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getSingleModel()] ?: return null, light)
+        }
+
+        if (type == ChestTypes.LEFT) {
+            // only left chest will be rendered (the model is the double chest), reduces drawing overhead
+            return DoubleChestRenderer(this, renderWindow, blockState, blockPosition, renderWindow.modelLoader.entities.models[getDoubleModel()] ?: return null, light)
+        }
+
+        return null
+    }
+
+    protected open fun getSingleModel(): ResourceLocation {
+        return SingleChestRenderer.NormalChest.MODEL
+    }
+
+    protected open fun getDoubleModel(): ResourceLocation {
+        return DoubleChestRenderer.NormalChest.MODEL
+    }
 
     companion object : BlockEntityFactory<ChestBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:chest")

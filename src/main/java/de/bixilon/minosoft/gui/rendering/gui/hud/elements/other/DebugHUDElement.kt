@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
-import de.bixilon.kutil.math.MMath.round10
+import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -87,7 +87,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4i(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
+        layout += AutoTextElement(guiRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.rounded10}" }
         renderWindow.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=$loadedMeshesSize, cQ=$culledQueuedSize, q=$queueSize, pT=$preparingTasksSize/$maxPreparingTasks, l=$meshesToLoadSize/$maxMeshesToLoad, w=${connection.world.chunks.size}" }
         }
@@ -139,7 +139,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 }
 
                 guiRenderer.renderWindow.connection.player.rotation.apply {
-                    text += " yaw=${yaw.round10}, pitch=${pitch.round10}"
+                    text += " yaw=${yaw.rounded10}, pitch=${pitch.rounded10}"
                 }
 
                 text
@@ -191,12 +191,12 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             layout += AutoTextElement(guiRenderer, 1) {
                 val total = maxMemory()
                 val used = totalMemory() - freeMemory()
-                "Memory ${(used * 100.0 / total).round10}% ${used.formatBytes()} / ${total.formatBytes()}"
+                "Memory ${(used * 100.0 / total).rounded10}% ${used.formatBytes()} / ${total.formatBytes()}"
             }
             layout += AutoTextElement(guiRenderer, 1) {
                 val total = maxMemory()
                 val allocated = totalMemory()
-                "Allocated ${(allocated * 100.0 / total).round10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
+                "Allocated ${(allocated * 100.0 / total).rounded10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
             }
         }
 

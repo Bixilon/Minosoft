@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.world.container.palette.palettes
 
-import de.bixilon.kutil.math.MMath.ceilLog2
+import de.bixilon.kutil.math.simple.IntMath.binaryBase
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 class RegistryPalette<T>(private val registry: AbstractRegistry<T>) : Palette<T> {
-    override val bits = ceilLog2(registry.size)
+    override val bits = registry.size.binaryBase
 
     override fun read(buffer: PlayInByteBuffer) {}
 

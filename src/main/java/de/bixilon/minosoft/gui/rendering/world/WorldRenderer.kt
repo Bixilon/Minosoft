@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
@@ -39,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -91,7 +90,6 @@ class WorldRenderer(
     private val world: World = connection.world
     private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderWindow)
     private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
-    private val lightMap = LightMap(connection)
 
     private val loadedMeshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<WorldMesh>> = mutableMapOf() // all prepared (and up to date) meshes
     private val loadedMeshesLock = SimpleLock()
@@ -130,8 +128,7 @@ class WorldRenderer(
     val preparingTasksSize: Int by preparingTasks::size
 
     override fun init(latch: CountUpAndDownLatch) {
-        val modelLoader = ModelLoader(renderWindow)
-        modelLoader.load(latch)
+        renderWindow.modelLoader.load(latch)
 
         for (fluid in connection.registries.fluidRegistry) {
             if (fluid is FlowableFluid) {
@@ -142,21 +139,18 @@ class WorldRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        lightMap.init()
 
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
         renderWindow.textureManager.staticTextures.animator.use(shader)
-        lightMap.use(shader)
+        renderWindow.lightMap.use(shader)
 
         transparentShader.defines["TRANSPARENT"] = ""
         transparentShader.load()
         renderWindow.textureManager.staticTextures.use(transparentShader)
         renderWindow.textureManager.staticTextures.animator.use(transparentShader)
-        lightMap.use(transparentShader)
+        renderWindow.lightMap.use(transparentShader)
 
-
-        lightMap.update()
 
         connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange() })
 
@@ -318,6 +312,7 @@ class WorldRenderer(
     private fun clearChunkCache() {
         unloadWorld()
         prepareWorld()
+        connection.util.sendDebugMessage("Chunk cache cleared!")
     }
 
     private fun prepareWorld() {
@@ -567,6 +562,7 @@ class WorldRenderer(
             return
         }
         if (this.loadedMeshes.containsKey(chunkPosition)) {
+            // ToDo: this also ignores light updates
             return
         }
 
@@ -601,11 +597,6 @@ class WorldRenderer(
             val mesh = item.mesh ?: continue
 
             mesh.load()
-            val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
-            if (visible) {
-                addedMeshes++
-                this.visible.addMesh(mesh)
-            }
 
             loadedMeshesLock.lock()
             val meshes = loadedMeshes.getOrPut(item.chunkPosition) { Int2ObjectOpenHashMap() }
@@ -615,6 +606,12 @@ class WorldRenderer(
                 it.unload()
             }
             loadedMeshesLock.unlock()
+
+            val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
+            if (visible) {
+                addedMeshes++
+                this.visible.addMesh(mesh)
+            }
         }
         meshesToLoadLock.release()
 
@@ -642,7 +639,6 @@ class WorldRenderer(
     }
 
     override fun prepareDraw() {
-        lightMap.update()
         if (clearVisibleNextFrame) {
             visible.clear()
             clearVisibleNextFrame = false
@@ -659,6 +655,9 @@ class WorldRenderer(
     override fun drawOpaque() {
         for (mesh in visible.opaque) {
             mesh.draw()
+        }
+        for (blockEntity in visible.blockEntities) {
+            blockEntity.draw(renderWindow)
         }
     }
 
@@ -728,7 +727,7 @@ class WorldRenderer(
             }
             var chunkQueue: IntOpenHashSet? = null
             for (sectionHeight in sectionHeights) {
-                if (!isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16), false)) {
+                if (!isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, CHUNK_SIZE, false)) {
                     continue
                 }
                 if (chunkQueue == null) {
@@ -774,7 +773,8 @@ class WorldRenderer(
 
     companion object : RendererBuilder<WorldRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:world")
-        private val CHUNK_CENTER = Vec3(8.0f)
+        private val CHUNK_SIZE = Vec3i(ProtocolDefinition.SECTION_MAX_X, ProtocolDefinition.SECTION_MAX_Y, ProtocolDefinition.SECTION_MAX_Z)
+        private val CHUNK_CENTER = Vec3(CHUNK_SIZE) / 2.0f
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
             return WorldRenderer(connection, renderWindow)

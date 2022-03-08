@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,15 +21,15 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 
 class BlockEntityTypeRegistry(
     parentRegistry: BlockEntityTypeRegistry? = null,
-) : Registry<BlockEntityType>(parentRegistry) {
-    private val blockTypeMap: MutableMap<Block, BlockEntityType> = mutableMapOf()
+) : Registry<BlockEntityType<*>>(parentRegistry) {
+    private val blockTypeMap: MutableMap<Block, BlockEntityType<*>> = mutableMapOf()
 
-    operator fun get(block: Block): BlockEntityType? {
+    operator fun get(block: Block): BlockEntityType<*>? {
         val parentRegistry = super.parent as BlockEntityTypeRegistry?
         return blockTypeMap[block] ?: parentRegistry?.get(block)
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType>, flattened: Boolean, metaType: MetaTypes, alternative: Registry<BlockEntityType>?): Registry<BlockEntityType> {
+    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType<*>>, flattened: Boolean, metaType: MetaTypes, alternative: Registry<BlockEntityType<*>>?): Registry<BlockEntityType<*>> {
         super.initialize(data, registries, deserializer, flattened, metaType, alternative)
 
         for ((_, type) in resourceLocationMap) {

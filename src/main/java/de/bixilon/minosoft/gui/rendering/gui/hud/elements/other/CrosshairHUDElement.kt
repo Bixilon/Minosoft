@@ -16,8 +16,10 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
+import de.bixilon.minosoft.gui.rendering.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -35,6 +37,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
     private var reapply = true
+    private var target: GenericTarget? = null
 
     override fun init() {
         crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]
@@ -47,6 +50,11 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         if (debugHUDElement?.enabled != previousDebugEnabled || reapply) {
             apply()
             previousDebugEnabled = debugHUDElement?.enabled
+        }
+        val target = renderWindow.camera.targetHandler.target
+        if (target != this.target) {
+            this.target = target
+            apply()
         }
 
         val mesh = mesh ?: return
@@ -71,8 +79,8 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
         // Custom draw to make the crosshair inverted
         if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
-            val hitResult = renderWindow.camera.targetHandler.target ?: return
-            if (hitResult !is EntityTarget && (hitResult !is BlockTarget || renderWindow.connection.world.getBlockEntity(hitResult.blockPosition) == null)) {
+            val target = target
+            if (target !is EntityTarget && (target !is BlockTarget || target.blockState.block !is BlockWithEntity<*>)) {
                 return
             }
         }
@@ -81,7 +89,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
         if (debugHUDElement?.enabled == true) {
             // ToDo: Debug crosshair
-            return
+            // return
         }
 
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2

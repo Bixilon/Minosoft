@@ -170,12 +170,12 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
                     return true
                 }
                 KeyCodes.KEY_UP -> {
-                    if (historyIndex <= 0) {
-                        return true
-                    }
                     val size = history.size
                     if (historyIndex > size) {
                         historyIndex = size
+                    }
+                    if (historyIndex <= 0) {
+                        return true
                     }
                     historyIndex--
                     input.value = history[historyIndex]

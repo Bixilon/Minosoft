@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,8 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
+import de.bixilon.minosoft.gui.rendering.world.entities.DefaultEntityModels
+import de.bixilon.minosoft.gui.rendering.world.entities.EntityModels
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -39,20 +41,13 @@ class ModelLoader(
 ) {
     private val assetsManager = renderWindow.connection.assetsManager
     private val unbakedBlockModels: SynchronizedMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toSynchronizedMap()
+    val entities = EntityModels(renderWindow)
 
     private val registry: Registries = renderWindow.connection.registries
 
 
     private fun cleanup() {
         unbakedBlockModels.clear()
-    }
-
-    private fun ResourceLocation.model(): ResourceLocation {
-        return ResourceLocation(this.namespace, "models/" + this.path + ".json")
-    }
-
-    private fun ResourceLocation.blockState(): ResourceLocation {
-        return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
     }
 
     private fun loadBlockStates(block: Block) {
@@ -96,7 +91,7 @@ class ModelLoader(
         return model
     }
 
-    fun load(latch: CountUpAndDownLatch) {
+    private fun loadBlockModels(latch: CountUpAndDownLatch) {
         val blockLatch = CountUpAndDownLatch(1, latch)
         // ToDo: Optimize performance
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading block models..." }
@@ -107,7 +102,9 @@ class ModelLoader(
         }
         blockLatch.dec()
         blockLatch.await()
+    }
 
+    private fun loadItemModels(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading item models..." }
         val itemLatch = CountUpAndDownLatch(1, latch)
 
@@ -116,10 +113,45 @@ class ModelLoader(
             itemLatch.inc()
             DefaultThreadPool += { loadItem(item); itemLatch.dec() }
         }
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading unbaked models!" }
         itemLatch.dec()
         itemLatch.await()
+    }
+
+    private fun loadEntityModels(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
+        val itemLatch = CountUpAndDownLatch(1, latch)
+
+
+        for (register in DefaultEntityModels.MODELS) {
+            itemLatch.inc()
+            DefaultThreadPool += { register.register(renderWindow, this); itemLatch.dec() }
+        }
+        itemLatch.dec()
+        itemLatch.await()
+    }
+
+    fun load(latch: CountUpAndDownLatch) {
+        loadBlockModels(latch)
+        loadItemModels(latch)
+        loadEntityModels(latch)
+
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading models!" }
 
         cleanup()
+    }
+
+    companion object {
+
+        fun ResourceLocation.model(): ResourceLocation {
+            return ResourceLocation(this.namespace, "models/" + this.path + ".json")
+        }
+
+        fun ResourceLocation.blockState(): ResourceLocation {
+            return ResourceLocation(this.namespace, "blockstates/" + this.path + ".json")
+        }
+
+        fun ResourceLocation.bbModel(): ResourceLocation {
+            return ResourceLocation(this.namespace, "models/" + this.path + ".bbmodel")
+        }
     }
 }

@@ -19,10 +19,7 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.DefaultRegistries
-import de.bixilon.minosoft.data.registries.Motive
-import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.*
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
@@ -51,7 +48,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.recipes.RecipeRegistry
 import de.bixilon.minosoft.util.collections.Clearable
 import java.lang.reflect.Field
-import java.lang.reflect.ParameterizedType
 
 
 class Registries {
@@ -246,6 +242,8 @@ class Registries {
             val types: MutableMap<Class<*>, Field> = mutableMapOf()
 
 
+
+
             for (field in Registries::class.java.declaredFields) {
                 if (!Registry::class.java.isAssignableFrom(field.type)) {
                     continue
@@ -266,7 +264,7 @@ class Registries {
                 }
 
 
-                types[generic.unsafeCast<ParameterizedType>().actualTypeArguments.first() as Class<*>] = field
+                types[RegistryUtil.getClassOfFactory(generic)] = field
             }
 
             types[Item::class.java] = Registries::class.java.getDeclaredField("itemRegistry")

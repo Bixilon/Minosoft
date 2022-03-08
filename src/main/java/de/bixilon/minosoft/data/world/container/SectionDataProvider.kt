@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.lock.SimpleLock
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
@@ -142,13 +142,13 @@ open class SectionDataProvider<T>(
             if (count == 0) {
                 this.data = null
                 unlock()
-                return previous as T?
+                return previous.unsafeCast()
             }
         } else if (previous == null) {
             count++
         }
         if (data == null) {
-            data = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+            data = arrayOfNulls<Any?>(ProtocolDefinition.BLOCKS_PER_SECTION).unsafeCast()!!
             this.data = data
         }
         data[index] = value
@@ -163,7 +163,7 @@ open class SectionDataProvider<T>(
             }
         }
         unlock()
-        return previous as T?
+        return previous.unsafeCast()
     }
 
     fun acquire() {

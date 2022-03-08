@@ -31,4 +31,9 @@ class PerformanceC {
      * ToDo: Requires rejoin to apply
      */
     var fastBiomeNoise by delegate(true)
+
+    /**
+     * Sleeps 100 ms if the rendering window is not in focus anymore
+     */
+    var slowRendering by delegate(true)
 }

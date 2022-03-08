@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion
 
-import de.bixilon.kutil.math.MMath.clamp
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import glm_.func.common.clamp
 import glm_.vec3.Vec3d
 
 abstract class EmotionParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
     override var scale: Float
-        get() = super.scale * clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)
+        get() = super.scale * (floatAge / maxAge * 32.0f).clamp(0.0f, 1.0f)
         set(value) {
             super.scale = value
         }

@@ -16,6 +16,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
@@ -80,8 +81,9 @@ class Chunk(
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 
     fun setBlocks(blocks: Map<Vec3i, BlockState?>) {
-        for ((location, blockState) in blocks) {
-            set(location, blockState)
+        for ((position, blockState) in blocks) {
+            set(position, blockState)
+            getOrPutBlockEntity(position)
         }
     }
 
@@ -89,7 +91,25 @@ class Chunk(
         return this[y.sectionHeight]?.blockEntities?.get(x, y.inSectionHeight, z)
     }
 
+    fun getOrPutBlockEntity(x: Int, y: Int, z: Int): BlockEntity? {
+        val sectionHeight = y.sectionHeight
+        val inSectionHeight = y.inSectionHeight
+        var blockEntity = this[sectionHeight]?.blockEntities?.get(x, inSectionHeight, z)
+        if (blockEntity != null) {
+            return blockEntity
+        }
+        val block = this[sectionHeight]?.blocks?.get(x, inSectionHeight, z) ?: return null
+        if (block.block !is BlockWithEntity<*>) {
+            return null
+        }
+        blockEntity = block.block.factory?.build(connection) ?: return null
+        this.getOrPut(sectionHeight).blockEntities[x, inSectionHeight, z] = blockEntity
+
+        return blockEntity
+    }
+
     fun getBlockEntity(position: Vec3i): BlockEntity? = getBlockEntity(position.x, position.y, position.z)
+    fun getOrPutBlockEntity(position: Vec3i): BlockEntity? = getOrPutBlockEntity(position.x, position.y, position.z)
 
     fun setBlockEntity(x: Int, y: Int, z: Int, blockEntity: BlockEntity?) {
         getOrPut(y.sectionHeight).blockEntities[x, y.inSectionHeight, z] = blockEntity

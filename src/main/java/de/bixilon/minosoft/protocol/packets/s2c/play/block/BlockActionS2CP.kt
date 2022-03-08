@@ -13,9 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
-import de.bixilon.minosoft.data.entities.block.DefaultBlockDataFactory
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -38,18 +36,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val block: Block = buffer.connection.registries.blockRegistry[buffer.readVarInt()]
 
     override fun handle(connection: PlayConnection) {
-        val blockEntity = connection.world.getBlockEntity(position) ?: let {
-            val fixedResourceLocation = block.resourceLocation.fix()
-            val factory = connection.registries.blockEntityTypeRegistry[fixedResourceLocation]?.factory
-                ?: DefaultBlockDataFactory[fixedResourceLocation]
-                ?: let {
-                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown block entity $fixedResourceLocation" }
-                    return
-                }
-            val blockEntity = factory.build(connection)
-            connection.world.setBlockEntity(position, blockEntity)
-            blockEntity
-        }
+        val blockEntity = connection.world.getOrPutBlockEntity(position) ?: return
 
         if (blockEntity !is BlockActionEntity) {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Block entity $blockEntity can not accept block entity actions!" }

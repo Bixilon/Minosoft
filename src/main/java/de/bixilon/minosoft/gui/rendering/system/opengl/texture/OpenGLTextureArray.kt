@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArrayStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
@@ -43,7 +44,7 @@ class OpenGLTextureArray(
     private val loadTexturesAsync: Boolean = true,
     override val textures: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf(),
 ) : StaticTextureArray {
-    override val animator = OpenGLSpriteAnimator()
+    override val animator = SpriteAnimator(renderWindow.renderSystem)
     private var textureIds = IntArray(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
     override var state: TextureArrayStates = TextureArrayStates.DECLARED
         private set

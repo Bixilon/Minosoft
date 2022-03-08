@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import org.lwjgl.opengl.GL15.glBufferData
@@ -24,7 +25,11 @@ import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 import java.nio.FloatBuffer
 
-class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuffer, override val primitiveType: PrimitiveTypes) : FloatOpenGLBuffer(data), FloatVertexBuffer {
+class FloatOpenGLVertexBuffer(
+    renderSystem: OpenGLRenderSystem,
+    override val structure: MeshStruct, data: FloatBuffer,
+    override val primitiveType: PrimitiveTypes,
+) : FloatOpenGLBuffer(renderSystem, data), FloatVertexBuffer {
     override var vertices = -1
         private set
     private var vao = -1
@@ -58,15 +63,27 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
         unbind()
     }
 
+    fun bindVao() {
+        super.bind()
+        if (renderSystem.boundVao == vao) {
+            return
+        }
+        glBindVertexArray(vao)
+        renderSystem.boundVao = vao
+    }
+
     override fun draw() {
         check(state == RenderableBufferStates.UPLOADED) { "Can not draw $state vertex buffer!" }
-        glBindVertexArray(vao)
+        bindVao()
         glDrawArrays(primitiveType.gl, 0, vertices)
     }
 
     override fun unload() {
         if (state == RenderableBufferStates.UPLOADED) {
             glDeleteVertexArrays(vao)
+            if (renderSystem.boundVao == vao) {
+                renderSystem.boundVao = -1
+            }
             vao = -1
         }
         super.unload()

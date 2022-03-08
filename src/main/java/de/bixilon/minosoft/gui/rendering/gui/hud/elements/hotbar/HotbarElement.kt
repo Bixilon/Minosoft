@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.ChatTextPositions
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.Arms
@@ -114,10 +115,15 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             size.y = max(size.y, offhand.size.y)
         }
 
-        itemTextShown = !itemText.hidden
-        if (itemTextShown) {
-            size.y += itemText.size.y + ITEM_NAME_OFFSET
-            size.x = max(size.x, itemText.size.x)
+
+        if (renderWindow.connection.player.gamemode != Gamemodes.SPECTATOR) {
+            itemTextShown = !itemText.hidden
+            if (itemTextShown) {
+                size.y += itemText.size.y + ITEM_NAME_OFFSET
+                size.x = max(size.x, itemText.size.x)
+            }
+        } else {
+            itemTextShown = false
         }
 
         hoverTextShown = !hoverText.hidden

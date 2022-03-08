@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,12 +17,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDraw
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderableBuffer
 import org.lwjgl.opengl.GL30.glBindBufferBase
 import org.lwjgl.opengl.GL30.glBindBufferRange
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
-abstract class OpenGLUniformBuffer(override val bindingIndex: Int) : OpenGLRenderableBuffer(RenderableBufferTypes.UNIFORM_BUFFER), UniformBuffer {
+abstract class OpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, override val bindingIndex: Int) : OpenGLRenderableBuffer(renderSystem, RenderableBufferTypes.UNIFORM_BUFFER), UniformBuffer {
     override val drawTypes: RenderableBufferDrawTypes = RenderableBufferDrawTypes.DYNAMIC
     protected abstract val size: Int
     protected var initialSize = -1
@@ -36,7 +37,7 @@ abstract class OpenGLUniformBuffer(override val bindingIndex: Int) : OpenGLRende
     }
 
 
-    fun use(shader: Shader, bufferName: String) {
+    override fun use(shader: Shader, bufferName: String) {
         shader.use()
 
         shader[bufferName] = this

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -22,13 +22,9 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.shader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
@@ -69,6 +65,9 @@ class OpenGLRenderSystem(
         PrimitiveTypes.TRIANGLE
     }
     override var primitiveMeshOrder: Array<Pair<Int, Int>> = if (preferredPrimitiveType == PrimitiveTypes.QUAD) Mesh.QUAD_TO_QUAD_ORDER else Mesh.TRIANGLE_TO_QUAD_ORDER
+    var boundVao = -1
+    var boundBuffer = -1
+    var uniformBufferBindingIndex = 0
 
     override var shader: Shader? = null
         set(value) {
@@ -174,8 +173,19 @@ class OpenGLRenderSystem(
         glBlendFunc(source.gl, destination.gl)
     }
 
+    private var sourceRGB: BlendingFunctions = BlendingFunctions.ONE
+    private var destinationRGB: BlendingFunctions = BlendingFunctions.ONE
+    private var sourceAlpha: BlendingFunctions = BlendingFunctions.ONE
+    private var destinationAlpha: BlendingFunctions = BlendingFunctions.ONE
     override fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions) {
+        if (this.sourceRGB == sourceRGB && this.destinationRGB == destinationRGB && this.sourceAlpha == sourceAlpha && this.destinationAlpha == destinationAlpha) {
+            return
+        }
         glBlendFuncSeparate(sourceRGB.gl, destinationRGB.gl, sourceAlpha.gl, destinationAlpha.gl)
+        this.sourceRGB = sourceRGB
+        this.destinationRGB = destinationRGB
+        this.sourceAlpha = sourceAlpha
+        this.destinationAlpha = destinationAlpha
     }
 
     override var depth: DepthFunctions = DepthFunctions.LESS
@@ -227,27 +237,27 @@ class OpenGLRenderSystem(
         return buffer
     }
 
-    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): Shader {
+    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLShader {
         return OpenGLShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
-    override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {
-        return FloatOpenGLVertexBuffer(structure, data, primitiveType)
+    override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {
+        return FloatOpenGLVertexBuffer(this, structure, data, primitiveType)
     }
 
-    override fun createFloatUniformBuffer(bindingIndex: Int, data: FloatBuffer): FloatUniformBuffer {
-        return FloatOpenGLUniformBuffer(bindingIndex, data)
+    override fun createFloatUniformBuffer(data: FloatBuffer): FloatOpenGLUniformBuffer {
+        return FloatOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createIntUniformBuffer(bindingIndex: Int, data: IntArray): IntUniformBuffer {
-        return IntOpenGLUniformBuffer(bindingIndex, data)
+    override fun createIntUniformBuffer(data: IntArray): IntOpenGLUniformBuffer {
+        return IntOpenGLUniformBuffer(this, uniformBufferBindingIndex++, data)
     }
 
-    override fun createFramebuffer(): Framebuffer {
+    override fun createFramebuffer(): OpenGLFramebuffer {
         return OpenGLFramebuffer(renderWindow.window.size)
     }
 
-    override fun createTextureManager(): TextureManager {
+    override fun createTextureManager(): OpenGLTextureManager {
         return OpenGLTextureManager(renderWindow)
     }
 
