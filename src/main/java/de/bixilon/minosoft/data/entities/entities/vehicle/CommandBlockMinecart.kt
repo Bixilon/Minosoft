@@ -13,16 +13,14 @@
 package de.bixilon.minosoft.data.entities.entities.vehicle
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, position, rotation) {
+class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType) : AbstractMinecart(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Command")
     val command: String?
@@ -36,8 +34,8 @@ class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, p
     companion object : EntityFactory<CommandBlockMinecart> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("command_block_minecart")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): CommandBlockMinecart {
-            return CommandBlockMinecart(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): CommandBlockMinecart {
+            return CommandBlockMinecart(connection, entityType)
         }
     }
 }

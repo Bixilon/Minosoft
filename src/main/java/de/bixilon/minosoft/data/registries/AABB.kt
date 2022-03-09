@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ONE
 import glm_.Java.Companion.glm
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -245,6 +246,11 @@ class AABB {
 
         private fun getRange(min: Double, max: Double): IntRange {
             return IntRange(min.floor, max.ceil - 1)
+        }
+
+        fun of(dimensions: Vec2): AABB {
+            val halfWidth = dimensions.x / 2.0
+            return AABB(Vec3d(-halfWidth, 0, -halfWidth), Vec3d(halfWidth, dimensions.y, halfWidth))
         }
     }
 }

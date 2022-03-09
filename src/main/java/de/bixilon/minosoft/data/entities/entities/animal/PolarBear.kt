@@ -13,15 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class PolarBear(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class PolarBear(connection: PlayConnection, entityType: EntityType) : Animal(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Is standing")
     val isStanding: Boolean
@@ -31,8 +29,8 @@ class PolarBear(connection: PlayConnection, entityType: EntityType, position: Ve
     companion object : EntityFactory<PolarBear> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("polar_bear")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): PolarBear {
-            return PolarBear(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): PolarBear {
+            return PolarBear(connection, entityType)
         }
     }
 }

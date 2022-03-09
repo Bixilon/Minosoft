@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,20 +12,18 @@
  */
 package de.bixilon.minosoft.data.entities.entities.npc.villager
 
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class WanderingTrader(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractVillager(connection, entityType, position, rotation) {
+class WanderingTrader(connection: PlayConnection, entityType: EntityType) : AbstractVillager(connection, entityType) {
 
     companion object : EntityFactory<WanderingTrader> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wandering_trader")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): WanderingTrader {
-            return WanderingTrader(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): WanderingTrader {
+            return WanderingTrader(connection, entityType)
         }
     }
 }

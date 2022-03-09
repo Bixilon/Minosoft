@@ -13,15 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-open class Spider(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+open class Spider(connection: PlayConnection, entityType: EntityType) : Monster(connection, entityType) {
     private fun getSpiderFlag(bitMask: Int): Boolean {
         return data.sets.getBitMask(EntityDataFields.SPIDER_FLAGS, bitMask)
     }
@@ -34,8 +32,8 @@ open class Spider(connection: PlayConnection, entityType: EntityType, position: 
     companion object : EntityFactory<Spider> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("spider")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Spider {
-            return Spider(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): Spider {
+            return Spider(connection, entityType)
         }
     }
 }

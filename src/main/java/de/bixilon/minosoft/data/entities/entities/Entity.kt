@@ -16,15 +16,17 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.entities.util.ArmorUtil.getHighestLevel
+import de.bixilon.minosoft.data.entities.entities.util.ArmorUtil.protectionLevel
 import de.bixilon.minosoft.data.entities.meta.EntityData
-import de.bixilon.minosoft.data.physics.PhysicsEntity
+import de.bixilon.minosoft.data.physics.EntityPhysicsProperties
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
@@ -33,31 +35,33 @@ import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeMod
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderInfo
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
-import java.lang.reflect.InvocationTargetException
 import java.util.*
 import kotlin.random.Random
 
 abstract class Entity(
     protected val connection: PlayConnection,
     val type: EntityType,
-    position: Vec3d,
-    var rotation: EntityRotation,
-) : PhysicsEntity {
+) {
     protected val random = Random
     open val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
     val attributes: MutableMap<ResourceLocation, EntityAttribute> = synchronizedMapOf()
+
+    val renderInfo = EntityRenderInfo()
+    open val dimensions = Vec2(type.width, type.height)
+    open val aabb = AABB.of(dimensions)
+    val physics = EntityPhysicsProperties(this)
+
+    var lastTickTime = -1L
+        private set
 
     val id: Int?
         get() = connection.world.entities.getId(this)
@@ -72,16 +76,6 @@ abstract class Entity(
     val data: EntityData = EntityData(connection)
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
-
-    override var onGround = false
-
-    protected val defaultAABB: AABB
-        get() {
-            val halfWidth = dimensions.x / 2
-            return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
-        }
-
-    open val dimensions = Vec2(type.width, type.height)
 
     fun addEffect(effect: StatusEffectInstance) {
         // effect already applied, maybe the duration or the amplifier changed?
@@ -128,14 +122,6 @@ abstract class Entity(
 
     fun attachTo(vehicleId: Int?) {
         attachedEntity = vehicleId
-    }
-
-    fun setRotation(yaw: Int, pitch: Int) {
-        rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
-    }
-
-    fun setHeadRotation(headYaw: Int) {
-        // ToDo
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
@@ -203,86 +189,22 @@ abstract class Entity(
     val ticksFrozen: Int
         get() = data.sets.getInt(EntityDataFields.ENTITY_TICKS_FROZEN)
 
-    val entityMetaDataAsString: String
-        get() = entityMetaDataFormatted.toString()
-
-    // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
-    val entityMetaDataFormatted: TreeMap<String, Any>
-        get() {
-            // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
-            val values = TreeMap<String, Any>()
-            var clazz: Class<*> = this.javaClass
-            while (clazz != Any::class.java) {
-                for (method in clazz.declaredMethods) {
-                    if (!method.isAnnotationPresent(EntityMetaDataFunction::class.java)) {
-                        continue
-                    }
-                    if (method.parameterCount > 0) {
-                        continue
-                    }
-                    method.isAccessible = true
-                    try {
-                        val resourceLocation: String = method.getAnnotation(EntityMetaDataFunction::class.java).name
-                        if (values.containsKey(resourceLocation)) {
-                            continue
-                        }
-                        val methodRetValue = method(this) ?: continue
-                        values[resourceLocation] = methodRetValue
-                    } catch (e: IllegalAccessException) {
-                        e.printStackTrace()
-                    } catch (e: InvocationTargetException) {
-                        e.printStackTrace()
-                    }
-                }
-                clazz = clazz.superclass
-            }
-            return values
-        }
-
-    val canStep: Boolean
-        get() = !isSneaking
-
-    val belowBlockPosition: Vec3i
-        get() {
-            val position = (position - BELOW_POSITION_MINUS).floor
-            if (connection.world[position] == null) {
-                // ToDo: check for fences
-            }
-            return position
-        }
-
     val hitBoxColor: RGBColor
-        get() {
-            return when {
-                isInvisible -> ChatColors.GREEN
-                this is PlayerEntity -> {
-                    val chestPlate = equipment[EquipmentSlots.CHEST]
-                    if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
-                        chestPlate._display?.dyeColor?.let { return it }
-                    }
-                    val formattingCode = tabListItem.team?.formattingCode
-                    if (formattingCode is RGBColor) {
-                        return formattingCode
-                    }
-                    return ChatColors.RED
+        get() = when {
+            isInvisible -> ChatColors.GREEN
+            this is PlayerEntity -> {
+                val chestPlate = equipment[EquipmentSlots.CHEST]
+                if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
+                    chestPlate._display?.dyeColor?.let { return it }
                 }
-                else -> ChatColors.WHITE
+                val formattingCode = tabListItem.team?.formattingCode
+                if (formattingCode is RGBColor) formattingCode else ChatColors.RED
             }
+            else -> ChatColors.WHITE
         }
 
-    fun getEquipmentEnchant(enchantment: Enchantment?): Int {
-        enchantment ?: return 0
-        var maxLevel = 0
-        this.equipment.lock.acquire()
-        for ((slot, equipment) in this.equipment.original) {
-            equipment.enchanting.enchantments[enchantment]?.let {
-                if (it > maxLevel) {
-                    maxLevel = it
-                }
-            }
-        }
-        this.equipment.lock.release()
-        return maxLevel
+    fun getHighestEquipmentLevel(enchantment: Enchantment?): Int {
+        return equipment.getHighestLevel(enchantment)
     }
 
     open fun setObjectData(data: Int) = Unit
@@ -292,27 +214,25 @@ abstract class Entity(
     }
 
     val protectionLevel: Float
-        get() {
-            var protectionLevel = 0.0f
-
-            this.equipment.lock.acquire()
-            for (equipment in equipment.original.values) {
-                val item = equipment.item.item
-
-                if (item is ArmorItem) {
-                    // could also be a pumpkin or just trash
-                    protectionLevel += item.protection
-                }
-            }
-            this.equipment.lock.release()
-
-            return protectionLevel
-        }
+        get() = equipment.protectionLevel
 
     open fun onAttack(attacker: Entity) = true
 
+    @Synchronized
+    open fun tick() {
 
-    companion object {
-        private val BELOW_POSITION_MINUS = Vec3(0, 0.2f, 0)
+    }
+
+    @Synchronized
+    fun tryTick(time: Long = TimeUtil.time) {
+        if (time - lastTickTime < ProtocolDefinition.TICK_TIME) {
+            return
+        }
+        tick()
+        lastTickTime = time
+    }
+
+    open fun draw(time: Long) {
+        renderInfo.draw(time)
     }
 }

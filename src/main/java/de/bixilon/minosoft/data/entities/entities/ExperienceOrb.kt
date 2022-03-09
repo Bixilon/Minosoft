@@ -12,23 +12,21 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
 class ExperienceOrb : Entity {
 
     @get:EntityMetaDataFunction(name = "Count")
     val count: Int
 
-    constructor(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : super(connection, entityType, position, rotation) {
+    constructor(connection: PlayConnection, entityType: EntityType) : super(connection, entityType) {
         count = 0
     }
 
-    constructor(connection: PlayConnection, entityType: EntityType, position: Vec3d, count: Int) : super(connection, entityType, position, EntityRotation(0.0f, 0.0f)) {
+    constructor(connection: PlayConnection, entityType: EntityType, count: Int) : super(connection, entityType) {
         this.count = count
     }
 
@@ -37,8 +35,8 @@ class ExperienceOrb : Entity {
     companion object : EntityFactory<ExperienceOrb> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("experience_orb")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ExperienceOrb {
-            return ExperienceOrb(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): ExperienceOrb {
+            return ExperienceOrb(connection, entityType)
         }
     }
 }

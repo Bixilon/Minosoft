@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.language.LanguageManager
-import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -92,7 +91,6 @@ class PlayConnection(
     private lateinit var entityTickTask: TimeWorkerTask
     private lateinit var worldTickTask: TimeWorkerTask
     private lateinit var randomTickTask: TimeWorkerTask
-    val collisionDetector = CollisionDetector(this)
     var retry = true
 
     var state by watched(PlayConnectionStates.WAITING)

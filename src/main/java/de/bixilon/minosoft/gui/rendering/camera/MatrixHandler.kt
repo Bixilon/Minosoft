@@ -161,7 +161,7 @@ class MatrixHandler(
                 shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
             }
             if ("uCameraPosition" in shader.uniforms) {
-                shader.use().setVec3("uCameraPosition", connection.player.cameraPosition)
+                shader.use().setVec3("uCameraPosition", connection.player.renderInfo.cameraPosition)
             }
         }
     }

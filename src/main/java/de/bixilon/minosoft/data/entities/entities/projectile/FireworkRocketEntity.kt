@@ -14,16 +14,14 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
+class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType) : Projectile(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Item")
     val fireworkItem: ItemStack?
@@ -45,8 +43,8 @@ class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, p
     companion object : EntityFactory<FireworkRocketEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("firework_rocket")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): FireworkRocketEntity {
-            return FireworkRocketEntity(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): FireworkRocketEntity {
+            return FireworkRocketEntity(connection, entityType)
         }
     }
 }

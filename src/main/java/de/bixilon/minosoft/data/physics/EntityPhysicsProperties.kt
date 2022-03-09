@@ -10,10 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.animal
 
-import de.bixilon.minosoft.data.entities.entities.AgeableMob
-import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+package de.bixilon.minosoft.data.physics
 
-abstract class Animal(connection: PlayConnection, entityType: EntityType) : AgeableMob(connection, entityType)
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import glm_.vec3.Vec3d
+
+class EntityPhysicsProperties(val entity: Entity) {
+    var position = Vec3d.EMPTY
+    var rotation = EntityRotation.EMPTY
+
+    var velocity = Vec3d.EMPTY
+
+    var aabb = entity.aabb
+
+}

@@ -44,58 +44,17 @@ class CameraInput(
 
     private fun registerKeyBindings() {
         renderWindow.inputHandler.registerCheckCallback(
-            MOVE_SPRINT_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
-                ),
-            ),
-            MOVE_FORWARDS_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_W),
-                ),
-            ),
-            MOVE_BACKWARDS_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_S),
-                ),
-            ),
-            MOVE_LEFT_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_A),
-                ),
-            ),
-            MOVE_RIGHT_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_D),
-                ),
-            ),
-            FLY_UP_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_SPACE),
-                ),
-            ),
-            FLY_DOWN_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
-                ),
-            ),
-            JUMP_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_SPACE),
-                ),
-            ),
-            SNEAK_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
-                ),
-            ),
-            TOGGLE_FLY_KEYBINDING to KeyBinding(
-                mapOf(
-                    KeyAction.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE),
-                ),
-            ),
+            MOVE_SPRINT_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL))),
+            MOVE_FORWARDS_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_W))),
+            MOVE_BACKWARDS_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_S))),
+            MOVE_LEFT_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_A))),
+            MOVE_RIGHT_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_D))),
+            FLY_UP_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_SPACE))),
+            FLY_DOWN_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT))),
+            JUMP_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_SPACE))),
+            SNEAK_KEYBINDING to KeyBinding(mapOf(KeyAction.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT))),
+            TOGGLE_FLY_KEYBINDING to KeyBinding(mapOf(KeyAction.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE))),
         )
-
 
         renderWindow.inputHandler.registerKeyCallback(ZOOM_KEYBINDING, KeyBinding(
             mapOf(
@@ -109,37 +68,36 @@ class CameraInput(
     }
 
     fun update() {
-        val input = if (ignoreInput) {
-            MovementInput()
+        connection.player.movementInput = if (ignoreInput) {
+            MovementInput.EMPTY
         } else {
             MovementInput(
-                pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-                pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-                pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-                pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
+                forward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
+                back = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
+                left = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
+                right = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
                 jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
                 sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
                 sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
-                flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
                 flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
+                flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
                 toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
             )
         }
-        connection.player.input = input
     }
 
     fun mouseCallback(delta: Vec2d) {
         delta *= 0.1f * controlsProfile.mouse.sensitivity
-        var yaw = delta.x + player.rotation.yaw
+        var yaw = delta.x + player.physics.rotation.yaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(delta.y + player.rotation.pitch, -89.9, 89.9)
+        val pitch = glm.clamp(delta.y + player.physics.rotation.pitch, -89.9, 89.9)
         val rotation = EntityRotation(yaw, pitch)
-        player.rotation = rotation
+        player.physics.rotation = rotation
     }
 
     private companion object {

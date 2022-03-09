@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,22 +14,24 @@
 package de.bixilon.minosoft.gui.rendering.input.camera
 
 data class MovementInput(
-    val pressingForward: Boolean = false,
-    val pressingBack: Boolean = false,
-    val pressingLeft: Boolean = false,
-    val pressingRight: Boolean = false,
-    val jumping: Boolean = false,
-    val sneaking: Boolean = false,
-    val sprinting: Boolean = false,
-    val flyDown: Boolean = false,
-    val flyUp: Boolean = false,
-    val toggleFlyDown: Boolean = false,
+    val forward: Boolean,
+    val back: Boolean,
+    val left: Boolean,
+    val right: Boolean,
+    val jumping: Boolean,
+    val sneaking: Boolean,
+    val sprinting: Boolean,
+    val flyUp: Boolean,
+    val flyDown: Boolean,
+    val toggleFlyDown: Boolean,
 ) {
-    val movementForward = getMovementSpeed(pressingForward, pressingBack)
-    var movementSideways = getMovementSpeed(pressingLeft, pressingRight)
+    val movementForward = getMovementSpeed(forward, back)
+    var movementSideways = getMovementSpeed(left, right)
     var flyYMovement = getMovementSpeed(flyUp, flyDown)
 
     companion object {
+        val EMPTY = MovementInput(forward = false, back = false, left = false, right = false, jumping = false, sneaking = false, sprinting = false, flyUp = false, flyDown = false, toggleFlyDown = false)
+
         private fun getMovementSpeed(key1: Boolean, key2: Boolean): Float {
             if (key1 && key2) {
                 return 0.0f

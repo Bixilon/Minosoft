@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.entities
 
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
 interface EntityFactory<T : Entity> : CompanionResourceLocation {
 
@@ -30,5 +28,5 @@ interface EntityFactory<T : Entity> : CompanionResourceLocation {
         return RESOURCE_LOCATION
     }
 
-    fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): T?
+    fun build(connection: PlayConnection, entityType: EntityType): T?
 }

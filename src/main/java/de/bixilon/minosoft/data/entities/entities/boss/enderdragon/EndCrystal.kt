@@ -13,17 +13,15 @@
 package de.bixilon.minosoft.data.entities.entities.boss.enderdragon
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-class EndCrystal(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+class EndCrystal(connection: PlayConnection, entityType: EntityType) : Entity(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Beam target")
     val beamTarget: Vec3i?
@@ -37,8 +35,8 @@ class EndCrystal(connection: PlayConnection, entityType: EntityType, position: V
     companion object : EntityFactory<EndCrystal> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("end_crystal")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): EndCrystal {
-            return EndCrystal(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): EndCrystal {
+            return EndCrystal(connection, entityType)
         }
     }
 }

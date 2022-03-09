@@ -12,19 +12,17 @@
  */
 package de.bixilon.minosoft.data.entities.entities.monster
 
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
 /**
  * This class is just for the hashmap, it is not used anywhere
  */
 @Deprecated("Replaced with ZombifiedPiglin")
-class ZombiePigman(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, position, rotation) {
+class ZombiePigman(connection: PlayConnection, entityType: EntityType) : ZombifiedPiglin(connection, entityType) {
 
     companion object : EntityFactory<ZombifiedPiglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_pigman")
@@ -33,8 +31,8 @@ class ZombiePigman(connection: PlayConnection, entityType: EntityType, position:
             return ZombifiedPiglin.RESOURCE_LOCATION
         }
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin? {
-            return ZombifiedPiglin.build(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): ZombifiedPiglin? {
+            return ZombifiedPiglin.build(connection, entityType)
         }
     }
 }

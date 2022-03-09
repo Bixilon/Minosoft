@@ -13,16 +13,14 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class ZombieVillager(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
+class ZombieVillager(connection: PlayConnection, entityType: EntityType) : Zombie(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Is converting")
     val isConverting: Boolean
@@ -36,8 +34,8 @@ class ZombieVillager(connection: PlayConnection, entityType: EntityType, positio
     companion object : EntityFactory<ZombieVillager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_villager")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ZombieVillager {
-            return ZombieVillager(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): ZombieVillager {
+            return ZombieVillager(connection, entityType)
         }
     }
 }

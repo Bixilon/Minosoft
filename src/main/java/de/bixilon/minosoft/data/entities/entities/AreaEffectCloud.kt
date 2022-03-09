@@ -13,16 +13,14 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
 
-class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+class AreaEffectCloud(connection: PlayConnection, entityType: EntityType) : Entity(connection, entityType) {
 
     override val dimensions: Vec2
         get() = Vec2(radius * 2, super.dimensions.y)
@@ -52,8 +50,8 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, positi
     companion object : EntityFactory<AreaEffectCloud> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("area_effect_cloud")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): AreaEffectCloud {
-            return AreaEffectCloud(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): AreaEffectCloud {
+            return AreaEffectCloud(connection, entityType)
         }
     }
 }

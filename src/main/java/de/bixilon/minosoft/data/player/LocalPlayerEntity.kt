@@ -25,57 +25,38 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
-import kotlin.collections.MutableMap
 import kotlin.collections.set
 
 class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
-) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username) {
-    val healthCondition = PlayerHealthCondition()
-    val experienceCondition = PlayerExperienceCondition()
-    var spawnPosition: Vec3i = Vec3i.EMPTY
-
-    @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
-    var isSpawnConfirmed = false
-
-    val baseAbilities = Abilities()
-
-    val inventory = PlayerInventory(connection)
+) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, account.username) {
     val incompleteContainers: SynchronizedMap<Int, SynchronizedMap<Int, ItemStack>> = synchronizedMapOf()
+    val inventory = PlayerInventory(connection)
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
-    var selectedHotbarSlot: Int = 0
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            equipment.remove(InventorySlots.EquipmentSlots.MAIN_HAND)
-            equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(value) ?: return
-        }
 
     val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()
 
+    val experienceCondition = PlayerExperienceCondition()
+    val healthCondition = PlayerHealthCondition()
+    val baseAbilities = Abilities()
 
-    var input = MovementInput()
+    @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
+    var isSpawnConfirmed = false
+    var spawnPosition: Vec3i = Vec3i.EMPTY
 
+    var movementInput = MovementInput.EMPTY
 
-    fun useItem(hand: Hands) {
-        TODO()
-    }
 
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
@@ -88,4 +69,20 @@ class LocalPlayerEntity(
 
     override val mainArm: Arms
         get() = connection.profiles.connection.mainArm
+
+
+    var selectedHotbarSlot: Int = 0
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            equipment.remove(InventorySlots.EquipmentSlots.MAIN_HAND)
+            equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(value) ?: return
+        }
+
+
+    fun useItem(hand: Hands) {
+        TODO()
+    }
 }

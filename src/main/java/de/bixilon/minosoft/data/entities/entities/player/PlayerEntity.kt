@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
@@ -22,20 +21,16 @@ import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
 
 abstract class PlayerEntity(
     connection: PlayConnection,
     entityType: EntityType,
-    position: Vec3d = Vec3d.EMPTY,
-    rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
     properties: PlayerProperties = PlayerProperties(),
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
-) : LivingEntity(connection, entityType, position, rotation) {
+) : LivingEntity(connection, entityType) {
     override val dimensions: Vec2
         get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
 

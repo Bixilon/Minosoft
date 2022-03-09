@@ -21,7 +21,6 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -64,9 +63,6 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         entity.velocity = velocity
         data?.let {
             entity.data.sets.putAll(it.sets)
-            if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
-                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity data (entityId=$entityId): ${entity.entityMetaDataAsString}" }
-            }
         }
     }
 

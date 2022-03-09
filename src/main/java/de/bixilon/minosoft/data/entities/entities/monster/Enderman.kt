@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -21,9 +20,8 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import glm_.vec3.Vec3d
 
-class Enderman(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
+class Enderman(connection: PlayConnection, entityType: EntityType) : AbstractSkeleton(connection, entityType) {
 
     // ToDo: No clue here
     @get:EntityMetaDataFunction(name = "Carried block")
@@ -46,8 +44,8 @@ class Enderman(connection: PlayConnection, entityType: EntityType, position: Vec
     companion object : EntityFactory<Enderman> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("enderman")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Enderman {
-            return Enderman(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): Enderman {
+            return Enderman(connection, entityType)
         }
     }
 }

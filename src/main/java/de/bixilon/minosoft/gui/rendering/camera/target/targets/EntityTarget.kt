@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera.target.targets
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.EntityUtil
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
@@ -45,7 +46,7 @@ class EntityTarget(
         text += "UUID: ${entity.uuid}"
 
 
-        val metaData = entity.entityMetaDataFormatted
+        val metaData = EntityUtil.formatMetaData(entity)
         if (metaData.isNotEmpty()) {
             text += "\n"
         }

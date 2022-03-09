@@ -13,16 +13,14 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 import java.util.*
 
-class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class Fox(connection: PlayConnection, entityType: EntityType) : Animal(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Variant")
     val variant: Int
@@ -72,8 +70,8 @@ class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
     companion object : EntityFactory<Fox> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("fox")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Fox {
-            return Fox(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): Fox {
+            return Fox(connection, entityType)
         }
     }
 }

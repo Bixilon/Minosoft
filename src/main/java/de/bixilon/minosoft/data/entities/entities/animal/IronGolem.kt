@@ -13,15 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class IronGolem(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
+class IronGolem(connection: PlayConnection, entityType: EntityType) : AbstractGolem(connection, entityType) {
 
     private fun getIronGolemFlag(bitMask: Int): Boolean {
         return data.sets.getBitMask(EntityDataFields.IRON_GOLEM_FLAGS, bitMask)
@@ -34,8 +32,8 @@ class IronGolem(connection: PlayConnection, entityType: EntityType, position: Ve
     companion object : EntityFactory<IronGolem> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("iron_golem")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): IronGolem {
-            return IronGolem(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): IronGolem {
+            return IronGolem(connection, entityType)
         }
     }
 }

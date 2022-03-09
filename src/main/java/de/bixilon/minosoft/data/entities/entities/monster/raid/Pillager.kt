@@ -13,15 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities.monster.raid
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class Pillager(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractIllager(connection, entityType, position, rotation) {
+class Pillager(connection: PlayConnection, entityType: EntityType) : AbstractIllager(connection, entityType) {
 
     @get:EntityMetaDataFunction(name = "Is charging crossbow")
     val isChargingCrossbow: Boolean
@@ -30,8 +28,8 @@ class Pillager(connection: PlayConnection, entityType: EntityType, position: Vec
     companion object : EntityFactory<Pillager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pillager")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Pillager {
-            return Pillager(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): Pillager {
+            return Pillager(connection, entityType)
         }
     }
 }

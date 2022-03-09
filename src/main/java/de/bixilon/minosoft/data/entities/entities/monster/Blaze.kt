@@ -13,15 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
-class Blaze(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+class Blaze(connection: PlayConnection, entityType: EntityType) : Monster(connection, entityType) {
 
     private fun getBlazeFlag(bitMask: Int): Boolean {
         return data.sets.getBitMask(EntityDataFields.BLAZE_FLAGS, bitMask)
@@ -35,8 +33,8 @@ class Blaze(connection: PlayConnection, entityType: EntityType, position: Vec3d,
     companion object : EntityFactory<Blaze> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("blaze")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Blaze {
-            return Blaze(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType): Blaze {
+            return Blaze(connection, entityType)
         }
     }
 }
