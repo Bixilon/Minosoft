@@ -12,19 +12,15 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -79,60 +75,4 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     @get:EntityMetaDataFunction(name = "Bed location")
     val bedPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.LIVING_ENTITY_BED_POSITION)
-
-    open val isSleeping: Boolean
-        get() = bedPosition != null
-
-    override val pose: Poses?
-        get() = when {
-            isSleeping -> Poses.SLEEPING
-            isSpinAttacking -> Poses.SPIN_ATTACK
-            else -> super.pose
-        }
-
-    override val spawnSprintingParticles: Boolean
-        get() = super.spawnSprintingParticles && health > 0.0
-
-    private fun tickStatusEffects() {
-        if (entityEffectParticle == null && ambientEntityEffectParticle == null) {
-            return
-        }
-        if (effectColor == ChatColors.BLACK) {
-            return
-        }
-        var spawnParticles = if (isInvisible) {
-            random.nextInt(15) == 0
-        } else {
-            random.nextBoolean()
-        }
-
-        if (effectAmbient) {
-            spawnParticles = spawnParticles && random.chance(20)
-        }
-
-        if (!spawnParticles) {
-            return
-        }
-
-        val particlePosition = position + Vec3d.horizontal(
-            { dimensions.x * ((2.0 * random.nextDouble() - 1.0) * 0.5) },
-            dimensions.y * random.nextDouble()
-        )
-        if (effectAmbient) {
-            ambientEntityEffectParticle ?: return
-            connection.world += AmbientEntityEffectParticle(connection, particlePosition, effectColor, ambientEntityEffectParticle.default())
-        } else {
-            entityEffectParticle ?: return
-            connection.world += EntityEffectParticle(connection, particlePosition, effectColor, entityEffectParticle.default())
-        }
-    }
-
-    override fun realTick() {
-        super.realTick()
-        tickStatusEffects()
-
-        if (isSleeping) {
-            rotation = rotation.copy(pitch = 0.0)
-        }
-    }
 }

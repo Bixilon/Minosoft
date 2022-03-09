@@ -22,8 +22,6 @@ import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2
@@ -72,22 +70,6 @@ abstract class PlayerEntity(
     @get:EntityMetaDataFunction(name = "Right shoulder entity data")
     val rightShoulderData: Map<String, Any>?
         get() = data.sets.getNBT(EntityDataFields.PLAYER_RIGHT_SHOULDER_DATA)
-
-    override val spawnSprintingParticles: Boolean
-        get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
-
-    override fun realTick() {
-        if (gamemode == Gamemodes.SPECTATOR) {
-            onGround = false
-        }
-        // ToDo: Update water submersion state
-        super.realTick()
-
-        val clampedPosition = position.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
-        if (clampedPosition != position) {
-            position = clampedPosition
-        }
-    }
 
     companion object {
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
