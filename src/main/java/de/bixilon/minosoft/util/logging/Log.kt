@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.PrintStream
 import java.io.PrintWriter
@@ -93,10 +92,6 @@ object Log {
                         stream.println(prefix + line)
                     }
 
-                    if (StaticConfiguration.SHOW_LOG_MESSAGES_IN_CHAT) {
-                        val cliConnection = CLI.getCurrentConnection()
-                        cliConnection?.fireEvent(InternalMessageReceiveEvent(cliConnection, messageToSend.message))
-                    }
                 } catch (exception: Throwable) {
                     SYSTEM_ERR_STREAM.println("Can not send log message $messageToSend!")
                 }

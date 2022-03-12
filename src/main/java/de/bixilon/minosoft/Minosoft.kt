@@ -44,7 +44,6 @@ import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.AutoConnect
-import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
@@ -87,8 +86,6 @@ object Minosoft {
 
 
         taskWorker += Task(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
-
-        taskWorker += Task(identifier = BootTasks.CLI, executor = { CLI.initialize() })
 
         if (!RunConfiguration.DISABLE_EROS) {
             taskWorker += Task(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start() })

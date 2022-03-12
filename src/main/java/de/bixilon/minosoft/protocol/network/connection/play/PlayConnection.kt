@@ -24,7 +24,6 @@ import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.chat.ChatTextPositions
-import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
@@ -51,9 +50,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicke
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -81,8 +78,6 @@ class PlayConnection(
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: LanguageManager
-
-    var commandRoot: CommandRootNode? = null
 
 
     var rendering: Rendering? = null
@@ -118,10 +113,6 @@ class PlayConnection(
                 network.state = ProtocolStates.LOGIN
             } else {
                 wasConnected = true
-                if (CLI.getCurrentConnection() == this) {
-                    CLI.setCurrentConnection(null)
-                    Command.print("Disconnected from current connection!")
-                }
                 assetsManager.unload()
                 state = PlayConnectionStates.DISCONNECTED
                 ACTIVE_CONNECTIONS -= this
@@ -136,11 +127,6 @@ class PlayConnection(
                 }
                 ProtocolStates.PLAY -> {
                     state = PlayConnectionStates.JOINING
-                    // ToDO: Minosoft.CONNECTIONS[connectionId] = this
-
-                    if (CLI.getCurrentConnection() == null) {
-                        CLI.setCurrentConnection(this)
-                    }
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.type.position) {
