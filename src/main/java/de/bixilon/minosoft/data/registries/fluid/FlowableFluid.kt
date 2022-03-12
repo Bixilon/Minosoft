@@ -13,10 +13,21 @@
 package de.bixilon.minosoft.data.registries.fluid
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
 abstract class FlowableFluid(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Fluid(resourceLocation, registries, data)
+) : Fluid(resourceLocation, registries, data) {
+
+    fun getVelocity(connection: PlayConnection, blockState: BlockState, position: Vec3i, section: ChunkSection, neighbours: Array<ChunkSection?>): Vec3d {
+        return Vec3d.EMPTY
+    }
+}

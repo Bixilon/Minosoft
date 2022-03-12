@@ -26,7 +26,6 @@ import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
-import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
@@ -51,9 +50,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -79,8 +76,6 @@ class PlayConnection(
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
     lateinit var language: LanguageManager
-
-    var commandRoot: CommandRootNode? = null
 
 
     var rendering: Rendering? = null
@@ -127,11 +122,6 @@ class PlayConnection(
                 network.state = ProtocolStates.LOGIN
             } else {
                 wasConnected = true
-                //ToDo: Minosoft.CONNECTIONS.remove(connectionId)
-                if (CLI.getCurrentConnection() == this) {
-                    CLI.setCurrentConnection(null)
-                    Command.print("Disconnected from current connection!")
-                }
                 if (this::entityTickTask.isInitialized) {
                     TimeWorker.removeTask(entityTickTask)
                 }
@@ -155,11 +145,7 @@ class PlayConnection(
                 }
                 ProtocolStates.PLAY -> {
                     state = PlayConnectionStates.JOINING
-                    // ToDO: Minosoft.CONNECTIONS[connectionId] = this
 
-                    if (CLI.getCurrentConnection() == null) {
-                        CLI.setCurrentConnection(this)
-                    }
                     entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5, maxDelayTime = ProtocolDefinition.TICK_TIME) {
                         world.entities.lock.acquire()
                         for (entity in world.entities) {
