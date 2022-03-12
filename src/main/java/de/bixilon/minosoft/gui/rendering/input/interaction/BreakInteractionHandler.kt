@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.entities.entities.util.ArmorUtil.getHighestLevel
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
@@ -205,11 +206,11 @@ class BreakInteractionHandler(
             }
         }
 
-        if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.getEquipmentEnchant(aquaAffinityEnchantment) == 0) {
+        if (connection.player.physics.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.equipment.getHighestLevel(aquaAffinityEnchantment) == 0) {
             speedMultiplier /= 5.0f
         }
 
-        if (!connection.player.onGround) {
+        if (!connection.player.physics.onGround) {
             speedMultiplier /= 5.0f
         }
 

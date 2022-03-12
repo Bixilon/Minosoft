@@ -47,13 +47,13 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.isEmpty
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
@@ -590,7 +590,7 @@ class WorldRenderer(
 
         var addedMeshes = 0
         val time = TimeUtil.time
-        val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
+        val maxTime = if (connection.player.physics.velocity.isEmpty()) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
         while ((TimeUtil.time - time < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
@@ -628,7 +628,7 @@ class WorldRenderer(
         }
 
         val time = TimeUtil.time
-        val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
+        val maxTime = if (connection.player.physics.velocity.isEmpty()) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
         while ((TimeUtil.time - time < maxTime) && meshesToUnload.isNotEmpty()) {
             val mesh = meshesToUnload.removeAt(0)
@@ -697,10 +697,10 @@ class WorldRenderer(
 
     private fun onFrustumChange() {
         var sortQueue = false
-        val cameraPosition = connection.player.cameraPosition
+        val cameraPosition = connection.player.renderInfo.cameraPosition
         if (this.cameraPosition != cameraPosition) {
             this.cameraPosition = cameraPosition
-            this.cameraChunkPosition = connection.player.positionInfo.chunkPosition
+            this.cameraChunkPosition = connection.player.physics.chunkPosition
             sortQueue = true
         }
 
@@ -748,6 +748,7 @@ class WorldRenderer(
         if (queue.isNotEmpty()) {
             sortQueue()
             workQueue()
+            sortQueue = false
         }
 
         culledQueueLock.acquire()

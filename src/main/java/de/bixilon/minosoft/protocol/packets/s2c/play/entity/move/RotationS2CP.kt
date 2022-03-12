@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -34,7 +35,7 @@ class RotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.setRotation(yaw, pitch)
+        entity.physics.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
     }
 
     override fun log(reducedLog: Boolean) {

@@ -59,7 +59,7 @@ class HotbarAirElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Pollabl
 
         val air = player.airSupply
 
-        val submergedFluid = player.submergedFluid
+        val submergedFluid = player.physics.submergedFluid
 
         var bubbles = 0
         var poppingCount = 0

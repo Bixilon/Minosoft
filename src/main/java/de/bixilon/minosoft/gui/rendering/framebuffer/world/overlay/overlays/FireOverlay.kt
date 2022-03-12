@@ -33,6 +33,7 @@ class FireOverlay(
     private val config = renderWindow.connection.profiles.rendering.overlay.fire
     private val player = renderWindow.connection.player
     private val shader: Shader = renderWindow.shaderManager.genericTexture2dShader
+    private val lava = renderWindow.connection.registries.fluidRegistry[DefaultFluids.LAVA]
     private var texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
     override val render: Boolean
         get() {
@@ -42,7 +43,7 @@ class FireOverlay(
             if (player.gamemode == Gamemodes.CREATIVE && !config.creative) {
                 return false
             }
-            if (player.fluidHeights[DefaultFluids.LAVA] != null && !config.lava) {
+            if (!config.lava && player.physics.fluids[lava] != null) {
                 return false
             }
             return player.isOnFire

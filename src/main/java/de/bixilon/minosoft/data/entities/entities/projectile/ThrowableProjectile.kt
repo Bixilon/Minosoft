@@ -13,35 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class ThrowableProjectile(connection: PlayConnection, entityType: EntityType) : Projectile(connection, entityType) {
     open val gravity: Float = 0.03f
 
-
-    override fun realTick() {
-        super.realTick()
-
-
-        val velocity = this.velocity
-
-
-        val velocityMultiplier = if (fluidHeights[DefaultFluids.WATER] != null) {
-            // ToDo: Spawn bubble particles
-            0.8
-        } else {
-            0.99
-        }
-
-
-        this.velocity = (this.velocity * velocityMultiplier)
-
-
-        if (hasGravity) {
-            this.velocity.y -= gravity
-        }
-
-        position = position + connection.collisionDetector.collide(this, velocity, aabb)
-    }
 }

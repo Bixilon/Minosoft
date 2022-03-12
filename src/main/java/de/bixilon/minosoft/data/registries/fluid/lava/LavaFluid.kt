@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,14 +14,11 @@
 package de.bixilon.minosoft.data.registries.fluid.lava
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
@@ -50,32 +47,10 @@ class LavaFluid(
         this::lavaParticleType.inject(LavaParticle)
     }
 
-    override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
-        return (connection.world.dimension?.ultraWarm == true).decide(0.007, 0.0023333333333333335)
-    }
-
     override fun matches(other: Fluid): Boolean {
         return other is LavaFluid
     }
 
-    override fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
-        entity.accelerate(sidewaysSpeed, forwardSpeed, 0.02)
-
-        val fluidHeight = entity.fluidHeights[DefaultFluids.LAVA] ?: 0.0f
-
-        if (fluidHeight <= entity.swimHeight) {
-            entity.velocity = entity.velocity * Vec3d(0.5, 0.8, 0.5)
-            entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
-        } else {
-            entity.velocity = entity.velocity * 0.5
-        }
-
-        if (entity.hasGravity) {
-            entity.velocity.y += -gravity / 4.0
-        }
-
-        // ToDo: Same as for water
-    }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)

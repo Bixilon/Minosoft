@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -28,7 +27,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3d
 
 @LoadPacket
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
@@ -98,7 +96,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.tabListItem.gamemode = gamemode
-        connection.player.velocity = Vec3d.EMPTY
+        connection.player.physics.reset()
 
         // connection.world.view.serverViewDistance = 0
 

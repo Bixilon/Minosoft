@@ -133,7 +133,7 @@ class WorldEntities : Iterable<Entity> {
         lock.acquire()
 
         for (entity in this) {
-            if ((entity.position - position).length() > distance) {
+            if ((entity.physics.position - position).length() > distance) {
                 continue
             }
             if (check(entity)) {
@@ -150,7 +150,7 @@ class WorldEntities : Iterable<Entity> {
         var closestEntity: Entity? = null
 
         for (entity in entities) {
-            val currentDistance = (entity.position - position).length()
+            val currentDistance = (entity.physics.position - position).length()
             if (currentDistance < closestDistance) {
                 closestDistance = currentDistance
                 closestEntity = entity

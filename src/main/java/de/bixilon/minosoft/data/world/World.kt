@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
@@ -170,7 +169,7 @@ class World(
 
     fun tick() {
         val simulationDistance = view.simulationDistance
-        val cameraPosition = connection.player.positionInfo.chunkPosition
+        val cameraPosition = connection.player.physics.chunkPosition
         chunks.lock.acquire()
         for ((chunkPosition, chunk) in chunks) {
             // ToDo: Cache (improve performance)
@@ -190,7 +189,7 @@ class World(
     }
 
     private fun randomTick(radius: Int) {
-        val blockPosition = connection.player.position.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
+        val blockPosition = connection.player.physics.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
 
         val blockState = this[blockPosition] ?: return
 

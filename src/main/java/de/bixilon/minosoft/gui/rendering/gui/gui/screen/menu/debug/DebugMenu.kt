@@ -41,10 +41,9 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
         })
         add(ButtonElement(guiRenderer, "Fake y=100") {
             val entity = connection.player
-            val position = Vec3d(entity.position.x, 100.0, entity.position.z)
+            val position = Vec3d(entity.physics.position.x, 100.0, entity.physics.position.z)
 
-            entity.position = position
-            entity.previousPosition = position
+            entity.physics.position = position
         })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })

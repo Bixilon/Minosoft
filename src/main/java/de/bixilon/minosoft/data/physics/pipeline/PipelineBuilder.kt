@@ -11,19 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types
+package de.bixilon.minosoft.data.physics.pipeline
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import kotlin.reflect.KClass
 
-open class HoneyBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
+interface PipelineBuilder<E : Entity, P : PipelinePart<E>> {
+    val name: String
+    val entity: KClass<E>
 
-    companion object : BlockFactory<HoneyBlock> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): HoneyBlock {
-            return HoneyBlock(resourceLocation, registries, data)
-        }
-    }
+    fun build(connection: PlayConnection): P
 }
-

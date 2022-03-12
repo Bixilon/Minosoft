@@ -81,11 +81,11 @@ class MatrixHandler(
             if (!profile.dynamicFOV) {
                 return fov
             }
-            return fov * connection.player.fovMultiplier.interpolate()
+            return fov // ToDo: interpolate with speed or slowness
         }
 
 
-    private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition) {
+    private fun calculateViewMatrix(eyePosition: Vec3 = entity.physics.eyePosition) {
         viewMatrix = glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
@@ -103,8 +103,8 @@ class MatrixHandler(
 
     fun draw() {
         val fov = fov
-        val eyePosition = entity.eyePosition
-        val rotation = entity.rotation
+        val eyePosition = entity.physics.eyePosition
+        val rotation = entity.physics.rotation
         val fogEnd = fogManager.fogEnd
         if (upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) {
             return
@@ -148,7 +148,7 @@ class MatrixHandler(
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
 
-    private fun updateRotation(rotation: EntityRotation = entity.rotation) {
+    private fun updateRotation(rotation: EntityRotation = entity.physics.rotation) {
         cameraFront = rotation.front
 
         cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()

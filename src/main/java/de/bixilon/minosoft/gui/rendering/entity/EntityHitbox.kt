@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -41,10 +41,10 @@ class EntityHitbox(
 
 
     private fun update() {
-        val aabb = entity.cameraAABB.shrink(0.01f)
+        val aabb = entity.renderInfo.aabb.shrink(0.01f)
         val hitBoxColor = entity.hitBoxColor
-        val velocity = entity.velocity
-        val rotation = entity.rotation
+        val velocity = entity.physics.velocity
+        val rotation = entity.physics.rotation
         val equals = aabb == this.aabb && hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation
         if (equals && !checkVisibility) {
             return
@@ -79,7 +79,7 @@ class EntityHitbox(
             }
 
 
-            val eyeHeight = aabb.min.y + entity.eyeHeight
+            val eyeHeight = aabb.min.y + entity.physics.eyeHeight
             val eyeAABB = AABB(Vec3(aabb.min.x, eyeHeight, aabb.min.z), Vec3(aabb.max.x, eyeHeight, aabb.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
             mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
 

@@ -14,31 +14,11 @@
 package de.bixilon.minosoft.data.registries.blocks.types.entity
 
 import de.bixilon.minosoft.data.entities.block.BedBlockEntity
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
 
 open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<BedBlockEntity>(resourceLocation, registries, data) {
-
-    override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
-        super.onEntityLand(connection, entity, blockPosition, blockState)
-
-        if (entity.isSneaking) {
-            return
-        }
-
-        bounce(entity)
-    }
-
-    private fun bounce(entity: Entity) {
-        if (entity.velocity.y < 0.0) {
-            entity.velocity.y = -entity.velocity.y * 0.66f
-        }
-    }
 
     companion object : BlockFactory<BedBlock> {
 

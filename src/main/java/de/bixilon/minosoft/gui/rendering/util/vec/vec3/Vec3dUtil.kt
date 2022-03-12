@@ -19,6 +19,7 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
 object Vec3dUtil {
+    private const val EMPTY_THRESHOLD = 0.003
 
     val Vec3d.Companion.MIN: Vec3d
         get() = Vec3d(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
@@ -57,5 +58,9 @@ object Vec3dUtil {
             return end
         }
         return Vec3d(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y), interpolateSine(delta, start.z, end.z))
+    }
+
+    fun Vec3d.isEmpty(): Boolean {
+        return x in -EMPTY_THRESHOLD..EMPTY_THRESHOLD && y in -EMPTY_THRESHOLD..EMPTY_THRESHOLD && z in -EMPTY_THRESHOLD..EMPTY_THRESHOLD
     }
 }

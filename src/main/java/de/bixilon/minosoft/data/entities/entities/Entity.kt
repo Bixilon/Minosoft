@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
@@ -68,14 +67,13 @@ abstract class Entity(
     val uuid: UUID?
         get() = connection.world.entities.getUUID(this)
 
+    open var attachedEntity: Entity? = null
+
     @JvmField
     @Deprecated(message = "Use connection.version")
     protected val versionId: Int = connection.version.versionId
-    open var attachedEntity: Int? = null
 
     val data: EntityData = EntityData(connection)
-    var vehicle: Entity? = null
-    var passengers: MutableSet<Entity> = synchronizedSetOf()
 
     fun addEffect(effect: StatusEffectInstance) {
         // effect already applied, maybe the duration or the amplifier changed?
@@ -118,10 +116,6 @@ abstract class Entity(
         }
 
         return ret
-    }
-
-    fun attachTo(vehicleId: Int?) {
-        attachedEntity = vehicleId
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
@@ -220,7 +214,7 @@ abstract class Entity(
 
     @Synchronized
     open fun tick() {
-
+        physics.tick()
     }
 
     @Synchronized

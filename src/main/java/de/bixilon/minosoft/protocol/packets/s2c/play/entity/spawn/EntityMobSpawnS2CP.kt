@@ -59,8 +59,8 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         val entityType = buffer.connection.registries.entityTypeRegistry[typeId]
         entity = entityType.build(buffer.connection, position, rotation, data, buffer.versionId)!!
-        entity.setHeadRotation(headYaw)
-        entity.velocity = velocity
+        // ToDo: entity.setHeadRotation(headYaw)
+        entity.physics.velocity = velocity
         data?.let {
             entity.data.sets.putAll(it.sets)
         }

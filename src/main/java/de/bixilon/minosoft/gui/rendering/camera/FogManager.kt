@@ -71,14 +71,14 @@ class FogManager(
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
 
-        val submergedFluid = player.submergedFluid
+        val submergedFluid = player.physics.submergedFluid
 
         if (submergedFluid is LavaFluid) {
             color = LAVA_FOG_COLOR
             fogStart = 0.2f
             fogEnd = 1.0f
         } else if (submergedFluid is WaterFluid) {
-            color = player.positionInfo.biome?.waterFogColor
+            color = player.currentBiome?.waterFogColor
             fogStart = 5.0f
             fogEnd = 10.0f
         } else if (player.activeStatusEffects[blindness] != null) {

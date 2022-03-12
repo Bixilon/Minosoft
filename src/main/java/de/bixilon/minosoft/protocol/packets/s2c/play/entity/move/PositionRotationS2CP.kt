@@ -58,30 +58,29 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         // correct position with flags (relative position possible)
         val position = Vec3d(this.position)
         if (BitByte.isBitMask(flags, 0x01)) {
-            position.x += entity.position.x
+            position.x += entity.physics.position.x
         }
         if (BitByte.isBitMask(flags, 0x02)) {
-            position.y += entity.position.y
+            position.y += entity.physics.position.y
         }
         if (BitByte.isBitMask(flags, 0x04)) {
-            position.z += entity.position.z
+            position.z += entity.physics.position.z
         }
 
         var yaw = rotation.yaw
         if (BitByte.isBitMask(flags, 0x08)) {
-            yaw += entity.rotation.yaw
+            yaw += entity.physics.rotation.yaw
         }
 
         var pitch = rotation.pitch
         if (BitByte.isBitMask(flags, 0x10)) {
-            pitch += entity.rotation.pitch
+            pitch += entity.physics.rotation.pitch
         }
 
 
-        entity.position = position
-        entity.previousPosition = position // Prevent interpolating between 2 positions
+        entity.physics.position = position
         val rotation = EntityRotation(yaw, pitch)
-        entity.rotation = rotation
+        entity.physics.rotation = rotation
 
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {
             connection.sendPacket(ConfirmTeleportC2SP(teleportId))

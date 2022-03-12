@@ -38,16 +38,6 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType) : E
         blockState = connection.registries.blockStateRegistry[data]
     }
 
-    override fun realTick() {
-        super.realTick()
-
-        applyGravity()
-        move(velocity)
-
-
-        velocity = velocity * 0.98
-    }
-
     companion object : EntityFactory<FallingBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("falling_block")
 

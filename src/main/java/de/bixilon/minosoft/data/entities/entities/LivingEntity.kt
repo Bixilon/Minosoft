@@ -36,8 +36,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType) 
         get() = getLivingEntityFlag(0x01)
 
     @get:EntityMetaDataFunction(name = "Main hand")
-    open val activeHand: Hands?
+    open var activeHand: Hands?
         get() = if (getLivingEntityFlag(0x02)) Hands.OFF else Hands.MAIN
+        set(value) {}
 
     @get:EntityMetaDataFunction(name = "Is auto spin attack") // aka using riptide
     val isSpinAttacking: Boolean
@@ -73,4 +74,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType) 
     @get:EntityMetaDataFunction(name = "Bed location")
     val bedPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.LIVING_ENTITY_BED_POSITION)
+
+    open val isSleeping: Boolean
+        get() = bedPosition != null
 }

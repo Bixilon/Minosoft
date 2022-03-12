@@ -27,7 +27,7 @@ class HeadRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.setHeadRotation(headYaw)
+        // ToDo entity.setHeadRotation(headYaw)
     }
 
     override fun log(reducedLog: Boolean) {

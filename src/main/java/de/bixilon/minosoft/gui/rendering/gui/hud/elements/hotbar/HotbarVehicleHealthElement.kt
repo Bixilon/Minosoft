@@ -75,7 +75,7 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     }
 
     override fun poll(): Boolean {
-        val riddenEntity = guiRenderer.renderWindow.connection.player.vehicle
+        val riddenEntity = guiRenderer.renderWindow.connection.player.physics.vehicle
         if (riddenEntity == null || riddenEntity !is LivingEntity) {
             if (this.shown) {
                 totalHealth = 0.0f

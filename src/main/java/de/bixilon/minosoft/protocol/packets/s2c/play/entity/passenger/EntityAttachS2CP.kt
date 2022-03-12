@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readInt()
-    val vehicleEntityId: Int = buffer.readInt()
+    val attached: Int = buffer.readInt()
     val leash: Boolean = if (buffer.versionId < ProtocolVersions.V_15W41A) {
         buffer.readBoolean()
     } else {
@@ -33,11 +33,12 @@ class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.attachTo(vehicleEntityId)
+        val attached = connection.world.entities[attached]
+        entity.attachedEntity = attached
         // ToDo leash support
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, attached=$attached, leash=$leash)" }
     }
 }

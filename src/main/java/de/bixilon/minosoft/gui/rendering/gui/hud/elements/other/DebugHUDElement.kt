@@ -58,7 +58,7 @@ import glm_.vec4.Vec4i
 import kotlin.math.abs
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
-    private val connection = renderWindow.connection
+     val connection = renderWindow.connection
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
     override val layoutOffset: Vec2i = Vec2i.EMPTY
 
@@ -126,9 +126,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         connection.player.apply {
             // ToDo: Only update when the position changes
-            layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(physics.position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(physics.blockPosition) { "Block $x $y $z" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(physics) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
@@ -138,7 +138,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                     text += vector
                 }
 
-                guiRenderer.renderWindow.connection.player.rotation.apply {
+                guiRenderer.renderWindow.connection.player.physics.rotation.apply {
                     text += " yaw=${yaw.rounded10}, pitch=${pitch.rounded10}"
                 }
 
@@ -148,7 +148,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        val chunk = connection.world[connection.player.positionInfo.chunkPosition]
+        val chunk = connection.world[connection.player.physics.chunkPosition]
 
         if (chunk == null) {
             layout += DebugWorldInfo(guiRenderer)
@@ -242,7 +242,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         return layout
     }
 
-    private class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
+    private inner class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
         private var lastChunk: Chunk? = null
         private val world = guiRenderer.renderWindow.connection.world
         private val entity = guiRenderer.renderWindow.connection.player
@@ -257,27 +257,26 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         private fun updateInformation() {
-            entity.positionInfo.apply {
-                val chunk = world[chunkPosition]
+            val physics = entity.physics
+            val chunk = world[physics.chunkPosition]
 
-                if ((chunk == null && lastChunk == null) || (chunk != null && lastChunk != null)) {
-                    // No update, elements will update themselves
-                    return
-                }
-                if (chunk == null) {
-                    lastChunk = null
-                    showWait()
-                    return
-                }
-                clear()
-
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[entity.positionInfo.chunkPosition]?.isFullyLoaded) }
-
-                lastChunk = chunk
+            if ((chunk == null && lastChunk == null) || (chunk != null && lastChunk != null)) {
+                // No update, elements will update themselves
+                return
             }
+            if (chunk == null) {
+                lastChunk = null
+                showWait()
+                return
+            }
+            clear()
+
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(physics.blockPosition)) }
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(physics.blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[physics.chunkPosition]?.isFullyLoaded) }
+
+            lastChunk = chunk
         }
 
         override fun tick() {

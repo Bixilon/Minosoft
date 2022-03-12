@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -46,12 +46,12 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
             return
         }
         connection.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let {
-            val y = it.position.y
+            val y = it.physics.position.y
             if (this.position.y <= y) {
                 return@let
             }
             this.position.y += (y - this.position.y) * 0.2
-            this.velocity.y += (it.velocity.y - this.velocity.y) * 0.2
+            this.velocity.y += (it.physics.velocity.y - this.velocity.y) * 0.2
 
         }
     }

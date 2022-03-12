@@ -28,11 +28,9 @@ class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType) :
         get() = data.sets.getItemStack(EntityDataFields.FIREWORK_ROCKET_ENTITY_ITEM)
 
     @get:EntityMetaDataFunction(name = "Attached entity id")
-    override var attachedEntity: Int?
-        get() = data.sets.getInt(EntityDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY)
-        set(attachedEntity) {
-            super.attachedEntity = attachedEntity
-        }
+    override var attachedEntity: Entity?
+        get() = connection.world.entities[data.sets.getInt(EntityDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY)]
+        set(attachedEntity) {}
 
     @get:EntityMetaDataFunction(name = "Shot at angle")
     val isShotAtAngle: Boolean

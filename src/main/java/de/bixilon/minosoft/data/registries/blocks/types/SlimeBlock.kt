@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,31 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
 
 open class SlimeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
-
-    override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
-        super.onEntityLand(connection, entity, blockPosition, blockState)
-
-        if (entity.isSneaking) {
-            return
-        }
-
-        bounce(entity)
-    }
-
-    private fun bounce(entity: Entity) {
-        if (entity.velocity.y < 0.0) {
-            entity.velocity.y = -entity.velocity.y
-        }
-    }
 
     companion object : BlockFactory<SlimeBlock> {
 

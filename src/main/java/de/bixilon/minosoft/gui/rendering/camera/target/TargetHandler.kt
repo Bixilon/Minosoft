@@ -63,10 +63,10 @@ class TargetHandler(
             if (entity is LocalPlayerEntity) {
                 continue
             }
-            if ((entity.cameraPosition - originF).length2() > MAX_ENTITY_DISTANCE) {
+            if ((entity.renderInfo.cameraPosition - originF).length2() > MAX_ENTITY_DISTANCE) {
                 continue
             }
-            val target = VoxelShape(entity.cameraAABB).raycast(origin, direction)
+            val target = VoxelShape(entity.renderInfo.aabb).raycast(origin, direction)
             if (!target.hit) {
                 continue
             }

@@ -13,24 +13,22 @@
 package de.bixilon.minosoft.data.entities.entities.decoration
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.registries.Motive
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3i
 
 class Painting(
     connection: PlayConnection,
     entityType: EntityType,
-    position: Vec3i,
+    val blockPosition: Vec3i,
     @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
     @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
-) : Entity(connection, entityType, position.entityPosition, EntityRotation(0.0f, 0.0f)) {
+) : Entity(connection, entityType) {
 
     companion object : EntityFactory<Painting> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("painting")

@@ -53,7 +53,7 @@ class WallOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWi
     private val random = Random()
 
     override fun update() {
-        position = player.eyePosition.blockPosition
+        position = player.physics.eyePosition.blockPosition
         blockState = renderWindow.connection.world[position]
     }
 

@@ -56,6 +56,7 @@ class LocalPlayerEntity(
     var spawnPosition: Vec3i = Vec3i.EMPTY
 
     var movementInput = MovementInput.EMPTY
+    var isUsingItem = false
 
 
     val reachDistance: Double

@@ -139,7 +139,7 @@ class InteractInteractionHandler(
             return InteractionResults.SUCCESS
         }
         val player = connection.player
-        connection.sendPacket(PositionRotationC2SP(player.position, player.rotation, player.onGround))
+        connection.sendPacket(PositionRotationC2SP(player.physics.position, player.physics.rotation, player.physics.onGround))
 
         try {
 

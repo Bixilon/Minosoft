@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,8 +15,6 @@ package de.bixilon.minosoft.data.registries.fluid
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -30,9 +28,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
-import kotlin.math.abs
 import kotlin.random.Random
 
 open class Fluid(
@@ -83,23 +79,8 @@ open class Fluid(
         return (8 - level) / 9.0f
     }
 
-    open fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
-        entity.accelerate(sidewaysSpeed, forwardSpeed, 0.02)
-    }
-
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
-
-    protected fun updateMovement(entity: Entity, gravity: Double, falling: Boolean, velocity: Vec3d): Vec3d {
-        if (entity.hasGravity && !entity.isSprinting) {
-            velocity.y = if (falling && abs(velocity.y - 0.005) >= 0.003 && abs(velocity.y - gravity / 16.0) < 0.003) {
-                -0.003
-            } else {
-                velocity.y - gravity / 16.0
-            }
-        }
-        return velocity
-    }
 
     companion object : ResourceLocationDeserializer<Fluid> {
 

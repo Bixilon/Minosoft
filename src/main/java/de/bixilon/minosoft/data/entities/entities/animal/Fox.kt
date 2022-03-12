@@ -50,8 +50,8 @@ class Fox(connection: PlayConnection, entityType: EntityType) : Animal(connectio
     override val isSleeping: Boolean
         get() = getFoxFlag(0x20)
 
-    @get:EntityMetaDataFunction(name = "Is faceplanted")
-    val isFaceplanted: Boolean
+    @get:EntityMetaDataFunction(name = "Is face planted")
+    val isFacePlanted: Boolean
         get() = getFoxFlag(0x40)
 
     @get:EntityMetaDataFunction(name = "Is defending")

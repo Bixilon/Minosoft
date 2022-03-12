@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
+import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import glm_.vec3.Vec3
 
 class EntityRenderInfo {
     var cameraPosition: Vec3 = Vec3.EMPTY
+    var aabb: AABB = AABB.EMPTY
 
     fun draw(time: Long) {
 

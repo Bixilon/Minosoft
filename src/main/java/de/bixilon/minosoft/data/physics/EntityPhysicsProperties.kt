@@ -13,17 +13,54 @@
 
 package de.bixilon.minosoft.data.physics
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.physics.pipeline.PhysisPipeline
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
-class EntityPhysicsProperties(val entity: Entity) {
+class EntityPhysicsProperties<E : Entity>(val entity: E) {
+    val pipeline = PhysisPipeline<E>()
     var position = Vec3d.EMPTY
     var rotation = EntityRotation.EMPTY
+    var chunkPosition = Vec2i.EMPTY
+    var blockPosition = Vec3i.EMPTY
+    var sectionHeight = 0
+    var inChunkSectionPosition = Vec3i.EMPTY
+    val eyeHeight: Float get() = entity.dimensions.y * 0.85f
 
     var velocity = Vec3d.EMPTY
 
     var aabb = entity.aabb
 
+    var vehicle: Entity? = null
+    var passengers: MutableSet<Entity> = synchronizedSetOf()
+
+    var submergedFluid: Fluid? = null
+    var fluids: MutableMap<Fluid, Float> = mutableMapOf()
+
+    var fallDistance = 0.0
+
+    var onGround = false
+    var isClimbing = false
+    var activelyRiding = false
+
+    var eyePosition: Vec3 = Vec3.EMPTY
+
+    fun tick() {
+        pipeline.run(entity)
+    }
+
+    fun reset() {
+        velocity = Vec3d.EMPTY
+        // ToDo
+    }
 }

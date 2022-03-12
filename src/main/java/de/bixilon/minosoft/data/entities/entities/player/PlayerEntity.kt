@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2
@@ -65,6 +66,8 @@ abstract class PlayerEntity(
     @get:EntityMetaDataFunction(name = "Right shoulder entity data")
     val rightShoulderData: Map<String, Any>?
         get() = data.sets.getNBT(EntityDataFields.PLAYER_RIGHT_SHOULDER_DATA)
+
+    var currentBiome: Biome? = null
 
     companion object {
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(

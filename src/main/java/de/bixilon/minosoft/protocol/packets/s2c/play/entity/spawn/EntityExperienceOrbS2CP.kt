@@ -30,13 +30,16 @@ class EntityExperienceOrbS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entity: ExperienceOrb = ExperienceOrb(
         connection = buffer.connection,
         entityType = buffer.connection.registries.entityTypeRegistry[ExperienceOrb.RESOURCE_LOCATION]!!,
-        position = if (buffer.versionId < ProtocolVersions.V_16W06A) {
+        count = buffer.readUnsignedShort(),
+    )
+
+    init {
+        entity.physics.position = if (buffer.versionId < ProtocolVersions.V_16W06A) {
             Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {
             buffer.readVec3d()
-        },
-        count = buffer.readUnsignedShort(),
-    )
+        }
+    }
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, null, entity)

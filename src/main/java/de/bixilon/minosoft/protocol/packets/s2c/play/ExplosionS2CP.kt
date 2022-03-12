@@ -45,7 +45,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             connection.world[blockPosition] = null
             // ToDo: Mass set blocks
         }
-        connection.player.velocity = connection.player.velocity + velocity
+        connection.player.physics.velocity = connection.player.physics.velocity + velocity
 
         connection.fireEvent(ExplosionEvent(connection, this))
     }

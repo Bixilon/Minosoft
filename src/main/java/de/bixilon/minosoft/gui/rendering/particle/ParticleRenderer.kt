@@ -149,7 +149,7 @@ class ParticleRenderer(
             if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
                 return@TimeWorkerTask
             }
-            val cameraPosition = connection.player.positionInfo.chunkPosition
+            val cameraPosition = connection.player.physics.chunkPosition
             val particleViewDistance = connection.world.view.particleViewDistance
 
             val toRemove: MutableSet<Particle> = mutableSetOf()
@@ -200,7 +200,7 @@ class ParticleRenderer(
             return
         }
 
-        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.positionInfo.chunkPosition)) {
+        if (!particle.chunkPosition.isInViewDistance(connection.world.view.particleViewDistance, connection.player.physics.chunkPosition)) {
             particle.dead = true
             return
         }

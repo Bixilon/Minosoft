@@ -38,7 +38,7 @@ class RelativeMoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.forceMove(delta)
+        entity.physics.position = entity.physics.position + delta
     }
 
     override fun log(reducedLog: Boolean) {
