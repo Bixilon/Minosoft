@@ -126,9 +126,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         connection.player.apply {
             // ToDo: Only update when the position changes
-            layout += AutoTextElement(guiRenderer, 1) { with(physics.position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(physics.blockPosition) { "Block $x $y $z" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(physics) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(physics.positioning.position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(physics.positioning.blockPosition) { "Block $x $y $z" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(physics.positioning) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
@@ -138,7 +138,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                     text += vector
                 }
 
-                guiRenderer.renderWindow.connection.player.physics.rotation.apply {
+                guiRenderer.renderWindow.connection.player.physics.positioning.rotation.apply {
                     text += " yaw=${yaw.rounded10}, pitch=${pitch.rounded10}"
                 }
 
@@ -148,7 +148,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        val chunk = connection.world[connection.player.physics.chunkPosition]
+        val chunk = connection.world[connection.player.physics.positioning.chunkPosition]
 
         if (chunk == null) {
             layout += DebugWorldInfo(guiRenderer)
@@ -258,7 +258,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         private fun updateInformation() {
             val physics = entity.physics
-            val chunk = world[physics.chunkPosition]
+            val chunk = world[physics.positioning.chunkPosition]
 
             if ((chunk == null && lastChunk == null) || (chunk != null && lastChunk != null)) {
                 // No update, elements will update themselves
@@ -272,9 +272,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             clear()
 
             this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
-            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(physics.blockPosition)) }
-            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(physics.blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
-            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[physics.chunkPosition]?.isFullyLoaded) }
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(physics.positioning.blockPosition)) }
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(physics.positioning.blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
+            this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[physics.positioning.chunkPosition]?.isFullyLoaded) }
 
             lastChunk = chunk
         }

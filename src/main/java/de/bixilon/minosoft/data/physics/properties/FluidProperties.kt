@@ -11,23 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity
+package de.bixilon.minosoft.data.physics.properties
 
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 
-class EntityRenderInfo {
-    var cameraPosition: Vec3 = Vec3.EMPTY
-    var aabb: AABB = AABB.EMPTY
-    var rotation = EntityRotation(0, 0)
-    var eyeHeight = 0.0f
-    var eyePosition = Vec3.EMPTY
+class FluidProperties(val properties: EntityPhysicsProperties<*>) {
+    var submergedFluid: Fluid? = null
+    var fluids: MutableMap<Fluid, Float> = mutableMapOf()
 
-    fun draw(time: Long) {
-
+    operator fun get(fluid: Fluid): Float {
+        return fluids[fluid] ?: 0.0f
     }
-
-    fun reset() {}
 }

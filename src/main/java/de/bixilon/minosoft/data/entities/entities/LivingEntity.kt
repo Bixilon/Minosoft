@@ -46,14 +46,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType) 
 
     @get:EntityMetaDataFunction(name = "Health")
     open val health: Double
-        get() {
-            val meta = data.sets.getFloat(EntityDataFields.LIVING_ENTITY_HEALTH)
-            return if (meta == Float.MIN_VALUE) {
-                type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
-            } else {
-                meta.toDouble()
-            }
-        }
+        get() = data.sets.getOptionalFloat(EntityDataFields.LIVING_ENTITY_HEALTH)?.toDouble() ?: type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
 
     @get:EntityMetaDataFunction(name = "Effect color")
     val effectColor: RGBColor

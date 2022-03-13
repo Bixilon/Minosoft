@@ -36,7 +36,7 @@ class EntityTarget(
         val text = BaseComponent()
 
         text += "Entity target "
-        text += entity.physics.position
+        text += entity.physics.positioning.position
         text += ": "
         text += entity.type.resourceLocation
 

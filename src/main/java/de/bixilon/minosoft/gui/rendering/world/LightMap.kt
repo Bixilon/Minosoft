@@ -57,7 +57,7 @@ class LightMap(renderWindow: RenderWindow) {
 
         val underwaterVisibility = 0.0f // ToDo
 
-        val nightVisionEffect = connection.player.activeStatusEffects[nightVisionStatusEffect]
+        val nightVisionEffect = connection.player.modifier.activeStatusEffects[nightVisionStatusEffect]
 
         val nightVisionVisibility = if (nightVisionEffect != null) {
             if (nightVisionEffect.duration > 200) {
@@ -65,7 +65,7 @@ class LightMap(renderWindow: RenderWindow) {
             } else {
                 0.7f + sin((nightVisionEffect.duration.toFloat()) * glm.PIf * 0.2f) * 0.3f
             }
-        } else if (underwaterVisibility > 0.0f && connection.player.activeStatusEffects[conduitPowerStatusEffect] != null) {
+        } else if (underwaterVisibility > 0.0f && connection.player.modifier.activeStatusEffects[conduitPowerStatusEffect] != null) {
             underwaterVisibility
         } else {
             0.0f

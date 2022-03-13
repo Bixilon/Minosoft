@@ -39,11 +39,11 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
             connection.player.tabListItem.gamemode = next
             connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previous, next))
         })
-        add(ButtonElement(guiRenderer, "Fake y=100") {
+        add(ButtonElement(guiRenderer, "Teleport y=100") {
             val entity = connection.player
-            val position = Vec3d(entity.physics.position.x, 100.0, entity.physics.position.z)
+            val position = Vec3d(entity.physics.positioning.position.x, 100.0, entity.physics.positioning.position.z)
 
-            entity.physics.position = position
+            entity.physics.positioning.position = position
         })
 
         add(ButtonElement(guiRenderer, "Back") { guiRenderer.gui.pop() })

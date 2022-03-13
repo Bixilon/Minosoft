@@ -34,7 +34,7 @@ class EntityExperienceOrbS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     )
 
     init {
-        entity.physics.position = if (buffer.versionId < ProtocolVersions.V_16W06A) {
+        entity.physics.positioning.position = if (buffer.versionId < ProtocolVersions.V_16W06A) {
             Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {
             buffer.readVec3d()

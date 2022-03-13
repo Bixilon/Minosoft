@@ -85,7 +85,7 @@ class MatrixHandler(
         }
 
 
-    private fun calculateViewMatrix(eyePosition: Vec3 = entity.physics.eyePosition) {
+    private fun calculateViewMatrix(eyePosition: Vec3 = entity.renderInfo.eyePosition) {
         viewMatrix = glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
@@ -103,8 +103,8 @@ class MatrixHandler(
 
     fun draw() {
         val fov = fov
-        val eyePosition = entity.physics.eyePosition
-        val rotation = entity.physics.rotation
+        val eyePosition = entity.renderInfo.eyePosition
+        val rotation = entity.renderInfo.rotation
         val fogEnd = fogManager.fogEnd
         if (upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) {
             return
@@ -148,7 +148,7 @@ class MatrixHandler(
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
 
-    private fun updateRotation(rotation: EntityRotation = entity.physics.rotation) {
+    private fun updateRotation(rotation: EntityRotation = entity.renderInfo.rotation) {
         cameraFront = rotation.front
 
         cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()

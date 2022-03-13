@@ -590,7 +590,7 @@ class WorldRenderer(
 
         var addedMeshes = 0
         val time = TimeUtil.time
-        val maxTime = if (connection.player.physics.velocity.isEmpty()) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
+        val maxTime = if (connection.player.physics.other.velocity.isEmpty()) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
         while ((TimeUtil.time - time < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
@@ -628,7 +628,7 @@ class WorldRenderer(
         }
 
         val time = TimeUtil.time
-        val maxTime = if (connection.player.physics.velocity.isEmpty()) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
+        val maxTime = if (connection.player.physics.other.velocity.isEmpty()) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
         while ((TimeUtil.time - time < maxTime) && meshesToUnload.isNotEmpty()) {
             val mesh = meshesToUnload.removeAt(0)
@@ -700,7 +700,7 @@ class WorldRenderer(
         val cameraPosition = connection.player.renderInfo.cameraPosition
         if (this.cameraPosition != cameraPosition) {
             this.cameraPosition = cameraPosition
-            this.cameraChunkPosition = connection.player.physics.chunkPosition
+            this.cameraChunkPosition = connection.player.physics.positioning.chunkPosition
             sortQueue = true
         }
 

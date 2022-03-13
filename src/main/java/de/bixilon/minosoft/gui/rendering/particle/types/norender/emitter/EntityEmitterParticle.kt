@@ -29,7 +29,7 @@ class EntityEmitterParticle(
     val particleFactory: ParticleFactory<*>,
     velocity: Vec3d = Vec3d.EMPTY,
     maxAge: Int = 3,
-) : NoRenderParticle(connection, entity.physics.velocity, velocity, null) {
+) : NoRenderParticle(connection, entity.physics.other.velocity, velocity, null) {
     private val particleData = connection.registries.particleTypeRegistry[particleFactory.RESOURCE_LOCATION]!!.default()
 
 
@@ -43,7 +43,7 @@ class EntityEmitterParticle(
 
 
     private fun emitParticles() {
-        val position = entity.physics.position
+        val position = entity.physics.positioning.position
         for (i in 0 until 16) {
             val scale = Vec3(random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f), random.nextFloat(-1.0f, 1.0f))
 

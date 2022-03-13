@@ -169,7 +169,7 @@ class World(
 
     fun tick() {
         val simulationDistance = view.simulationDistance
-        val cameraPosition = connection.player.physics.chunkPosition
+        val cameraPosition = connection.player.physics.positioning.chunkPosition
         chunks.lock.acquire()
         for ((chunkPosition, chunk) in chunks) {
             // ToDo: Cache (improve performance)
@@ -189,7 +189,7 @@ class World(
     }
 
     private fun randomTick(radius: Int) {
-        val blockPosition = connection.player.physics.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
+        val blockPosition = connection.player.physics.positioning.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
 
         val blockState = this[blockPosition] ?: return
 

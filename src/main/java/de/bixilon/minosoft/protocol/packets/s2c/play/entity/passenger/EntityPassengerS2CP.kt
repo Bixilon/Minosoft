@@ -32,14 +32,14 @@ class EntityPassengerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val vehicle = connection.world.entities[vehicleEntityId] ?: return
         val passengers = passengerEntityIds.entities(connection)
 
-        for (passenger in vehicle.physics.passengers) {
-            passenger.physics.vehicle = null
+        for (passenger in vehicle.physics.vehicle.passengers) {
+            passenger.physics.vehicle.vehicle = null
         }
 
-        vehicle.physics.passengers = passengers.toSynchronizedSet()
+        vehicle.physics.vehicle.passengers = passengers.toSynchronizedSet()
 
         for (passenger in passengers) {
-            passenger.physics.vehicle = vehicle
+            passenger.physics.vehicle.vehicle = vehicle
         }
     }
 

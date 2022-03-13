@@ -43,7 +43,7 @@ class FireOverlay(
             if (player.gamemode == Gamemodes.CREATIVE && !config.creative) {
                 return false
             }
-            if (!config.lava && player.physics.fluids[lava] != null) {
+            if (!config.lava && player.physics.fluid.fluids[lava] != null) {
                 return false
             }
             return player.isOnFire

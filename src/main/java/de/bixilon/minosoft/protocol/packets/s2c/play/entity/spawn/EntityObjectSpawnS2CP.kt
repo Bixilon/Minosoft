@@ -67,7 +67,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, entityUUID, entity)
-        velocity?.let { entity.physics.velocity = it }
+        velocity?.let { entity.physics.other.velocity = it }
 
         connection.fireEvent(EntitySpawnEvent(connection, this))
     }

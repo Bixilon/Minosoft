@@ -64,7 +64,7 @@ class ChunkBorderRenderer(
             this.mesh = null
             return
         }
-        val chunkPosition = renderWindow.connection.player.physics.chunkPosition
+        val chunkPosition = renderWindow.connection.player.physics.positioning.chunkPosition
         if (chunkPosition == this.chunkPosition && mesh != null) {
             return
         }

@@ -60,10 +60,9 @@ class EntityAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world.entities[entityId]?.let {
-            for ((key, attribute) in this.attributes) {
-                it.attributes.getOrPut(key) { EntityAttribute(baseValue = it.type.attributes[key] ?: 1.0) }.merge(attribute)
-            }
+        val entity = connection.world.entities[entityId] ?: return
+        for ((key, attribute) in this.attributes) {
+            entity.modifier.attributes.getOrPut(key) { EntityAttribute(baseValue = entity.type.attributes[key] ?: 1.0) }.merge(attribute)
         }
     }
 

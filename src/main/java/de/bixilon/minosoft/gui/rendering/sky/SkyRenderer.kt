@@ -122,7 +122,7 @@ class SkyRenderer(
         val brightness = 1.0f
         var skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
-        baseColor = connection.world.getBiome(connection.player.physics.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+        baseColor = connection.world.getBiome(connection.player.physics.positioning.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
         connection.world.dimension?.hasSkyLight?.let {
             baseColor = if (it) {

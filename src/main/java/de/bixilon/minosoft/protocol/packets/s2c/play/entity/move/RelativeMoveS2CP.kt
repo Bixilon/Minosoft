@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -38,7 +39,10 @@ class RelativeMoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.physics.position = entity.physics.position + delta
+        entity.physics.positioning.position = entity.physics.positioning.position + delta
+        if (entity is LocalPlayerEntity) {
+            entity.renderInfo.reset()
+        }
     }
 
     override fun log(reducedLog: Boolean) {

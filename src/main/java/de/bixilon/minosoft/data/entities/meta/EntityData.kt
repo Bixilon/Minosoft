@@ -75,6 +75,13 @@ class EntityData(
         }
     }
 
+    fun merge(data: EntityData?) {
+        if (data == null) {
+            return
+        }
+        this.sets.putAll(data.sets)
+    }
+
     enum class EntityDataDataTypes {
         BYTE,
         SHORT,
@@ -197,6 +204,10 @@ class EntityData(
 
         fun getFloat(field: EntityDataFields): Float {
             return get(field) ?: 0.0f
+        }
+
+        fun getOptionalFloat(field: EntityDataFields): Float? {
+            return get(field)
         }
 
         fun getInt(field: EntityDataFields): Int {

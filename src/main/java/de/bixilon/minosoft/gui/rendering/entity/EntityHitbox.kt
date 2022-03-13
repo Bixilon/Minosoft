@@ -13,10 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
+import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -41,10 +45,11 @@ class EntityHitbox(
 
 
     private fun update() {
-        val aabb = entity.renderInfo.aabb.shrink(0.01f)
+        val renderInfo = entity.renderInfo
+        val aabb = renderInfo.aabb.shrink(0.01f)
         val hitBoxColor = entity.hitBoxColor
-        val velocity = entity.physics.velocity
-        val rotation = entity.physics.rotation
+        val velocity = entity.physics.other.velocity
+        val rotation = renderInfo.rotation
         val equals = aabb == this.aabb && hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation
         if (equals && !checkVisibility) {
             return
@@ -79,7 +84,7 @@ class EntityHitbox(
             }
 
 
-            val eyeHeight = aabb.min.y + entity.physics.eyeHeight
+            val eyeHeight = aabb.min.y + entity.renderInfo.eyeHeight
             val eyeAABB = AABB(Vec3(aabb.min.x, eyeHeight, aabb.min.z), Vec3(aabb.max.x, eyeHeight, aabb.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
             mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
 
@@ -111,4 +116,19 @@ class EntityHitbox(
     fun updateVisibility() {
         this.checkVisibility = true
     }
+
+
+    private val Entity.hitBoxColor: RGBColor
+        get() = when {
+            isInvisible -> ChatColors.GREEN
+            this is PlayerEntity -> {
+                val chestPlate = equipment[InventorySlots.EquipmentSlots.CHEST]
+                if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
+                    chestPlate._display?.dyeColor?.let { return it }
+                }
+                val formattingCode = tabListItem.team?.formattingCode
+                if (formattingCode is RGBColor) formattingCode else ChatColors.RED
+            }
+            else -> ChatColors.WHITE
+        }
 }

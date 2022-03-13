@@ -70,12 +70,13 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             name = name,
             properties = properties,
         )
-        entity.physics.position = position
-        entity.physics.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
-
         if (metaData != null) {
             entity.data.sets.putAll(metaData.sets)
         }
+
+        entity.physics.positioning.position = position
+        entity.physics.positioning.rotation = EntityRotation(yaw, pitch)
+        entity.renderInfo.reset()
     }
 
     override fun handle(connection: PlayConnection) {
@@ -86,6 +87,6 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (position=${entity.physics.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (position=${entity.physics.positioning.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
     }
 }

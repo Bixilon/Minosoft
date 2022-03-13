@@ -46,12 +46,12 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
             return
         }
         connection.world.entities.getClosestInRadius(position, 2.0, WorldEntities.CHECK_CLOSEST_PLAYER)?.let {
-            val y = it.physics.position.y
+            val y = it.physics.positioning.position.y
             if (this.position.y <= y) {
                 return@let
             }
             this.position.y += (y - this.position.y) * 0.2
-            this.velocity.y += (it.physics.velocity.y - this.velocity.y) * 0.2
+            this.velocity.y += (it.physics.other.velocity.y - this.velocity.y) * 0.2
 
         }
     }

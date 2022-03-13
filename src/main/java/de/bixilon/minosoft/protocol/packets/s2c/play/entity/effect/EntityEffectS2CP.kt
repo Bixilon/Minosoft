@@ -74,7 +74,7 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return // thanks mojang
-        entity.addEffect(effect)
+        entity.modifier.addEffect(effect)
     }
 
     override fun log(reducedLog: Boolean) {

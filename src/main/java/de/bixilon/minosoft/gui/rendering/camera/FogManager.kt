@@ -71,7 +71,7 @@ class FogManager(
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
 
-        val submergedFluid = player.physics.submergedFluid
+        val submergedFluid = player.physics.fluid.submergedFluid
 
         if (submergedFluid is LavaFluid) {
             color = LAVA_FOG_COLOR
@@ -81,7 +81,7 @@ class FogManager(
             color = player.currentBiome?.waterFogColor
             fogStart = 5.0f
             fogEnd = 10.0f
-        } else if (player.activeStatusEffects[blindness] != null) {
+        } else if (player.modifier.activeStatusEffects[blindness] != null) {
             color = ChatColors.BLACK
             fogStart = 3.0f
             fogEnd = 5.0f

@@ -193,11 +193,11 @@ class BreakInteractionHandler(
             }
         }
 
-        connection.player.activeStatusEffects[hasteStatusEffect]?.let {
+        connection.player.modifier.activeStatusEffects[hasteStatusEffect]?.let {
             speedMultiplier *= (0.2f * (it.amplifier + 1)) + 1.0f
         }
 
-        connection.player.activeStatusEffects[miningFatigueStatusEffect]?.let {
+        connection.player.modifier.activeStatusEffects[miningFatigueStatusEffect]?.let {
             speedMultiplier *= when (it.amplifier) {
                 0 -> 0.3f
                 1 -> 0.09f
@@ -206,11 +206,11 @@ class BreakInteractionHandler(
             }
         }
 
-        if (connection.player.physics.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.equipment.getHighestLevel(aquaAffinityEnchantment) == 0) {
+        if (connection.player.physics.fluid.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.equipment.getHighestLevel(aquaAffinityEnchantment) == 0) {
             speedMultiplier /= 5.0f
         }
 
-        if (!connection.player.physics.onGround) {
+        if (!connection.player.physics.other.onGround) {
             speedMultiplier /= 5.0f
         }
 

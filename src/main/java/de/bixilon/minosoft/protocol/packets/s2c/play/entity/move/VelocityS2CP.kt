@@ -28,7 +28,7 @@ class VelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.physics.velocity = velocity
+        entity.physics.other.velocity = velocity
     }
 
     override fun log(reducedLog: Boolean) {

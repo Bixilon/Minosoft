@@ -65,7 +65,7 @@ class AttackInteractionHandler(
     }
 
     fun attack() {
-        if (player.physics.activelyRiding) {
+        if (player.physics.vehicle.steering) {
             return
         }
         val target = renderWindow.camera.targetHandler.target
@@ -86,7 +86,7 @@ class AttackInteractionHandler(
         }
         val sharpnessLevel = player.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(sharpness) ?: 0
 
-        val critical = cooldown.progress > 0.9f && player.physics.fallDistance > 0.0 && !player.physics.onGround && !player.physics.isClimbing && player.physics.fluids.isEmpty() && player.activeStatusEffects[blindness] == null && player.physics.vehicle == null && entity is LivingEntity
+        val critical = cooldown.progress > 0.9f && player.physics.other.falling && !player.physics.other.onGround && !player.physics.other.isClimbing && player.physics.fluid.fluids.isEmpty() && player.modifier.activeStatusEffects[blindness] == null && player.physics.vehicle.vehicle == null && entity is LivingEntity
 
         if (critical) {
             renderWindow.connection.world.addParticle(EntityEmitterParticle(renderWindow.connection, entity, CritParticle))

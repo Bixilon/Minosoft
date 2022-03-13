@@ -1,5 +1,5 @@
 # Minosoft
-[<img src="https://img.shields.io/matrix/minosoft-chat:matrix.org?style=for-the-badge">](https://matrix.to/#/#matrix:matrix.org)
+[<img src="https://img.shields.io/matrix/minosoft-chat:matrix.org?style=for-the-badge">](https://matrix.to/#/#minosoft-chat:matrix.org)
 <img src="https://img.shields.io/gitlab/pipeline-status/bixilon/minosoft?branch=master&gitlab_url=https%3A%2F%2Fgitlab.bixilon.de&style=for-the-badge">
 <img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 

@@ -147,7 +147,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         val hunger = healthCondition.hunger
         val saturation = healthCondition.saturation
 
-        val hungerEffect = guiRenderer.renderWindow.connection.player.activeStatusEffects.contains(hungerStatusEffect)
+        val hungerEffect = guiRenderer.renderWindow.connection.player.modifier.activeStatusEffects.contains(hungerStatusEffect)
 
         if (this.hunger == hunger && this.saturation == saturation && this.hungerEffect == hungerEffect) {
             return false

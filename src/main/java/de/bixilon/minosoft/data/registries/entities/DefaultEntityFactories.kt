@@ -172,8 +172,10 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
 
         val tweakedEntityType = connection.registries.entityTypeRegistry[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
         val entity = tweakedFactory.build(connection, tweakedEntityType) ?: return null
-        entity.physics.position = position
-        entity.physics.rotation = rotation
+        entity.physics.positioning.position = position
+        entity.physics.positioning.rotation = rotation
+
+        entity.renderInfo.reset()
 
         return entity
     }

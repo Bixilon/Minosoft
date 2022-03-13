@@ -88,16 +88,16 @@ class CameraInput(
 
     fun mouseCallback(delta: Vec2d) {
         delta *= 0.1f * controlsProfile.mouse.sensitivity
-        var yaw = delta.x + player.physics.rotation.yaw
+        var yaw = delta.x + player.physics.positioning.rotation.yaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(delta.y + player.physics.rotation.pitch, -89.9, 89.9)
+        val pitch = glm.clamp(delta.y + player.physics.positioning.rotation.pitch, -89.9, 89.9)
         val rotation = EntityRotation(yaw, pitch)
-        player.physics.rotation = rotation
+        player.physics.positioning.rotation = rotation
     }
 
     private companion object {

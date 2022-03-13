@@ -35,7 +35,7 @@ class RotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        entity.physics.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
+        entity.physics.positioning.rotation = EntityRotation(yaw, pitch)
     }
 
     override fun log(reducedLog: Boolean) {

@@ -11,23 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity
+package de.bixilon.minosoft.data.physics.properties
 
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import glm_.vec3.Vec3d
 
-class EntityRenderInfo {
-    var cameraPosition: Vec3 = Vec3.EMPTY
-    var aabb: AABB = AABB.EMPTY
-    var rotation = EntityRotation(0, 0)
-    var eyeHeight = 0.0f
-    var eyePosition = Vec3.EMPTY
+class OtherProperties(val properties: EntityPhysicsProperties<*>) {
+    var velocity = Vec3d.EMPTY
 
-    fun draw(time: Long) {
+    var fallDistance = 0.0
+    var falling = false
 
-    }
+    var aabb = properties.entity.aabb
 
-    fun reset() {}
+
+    var onGround = false
+    var isClimbing = false
 }

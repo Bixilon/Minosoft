@@ -75,8 +75,8 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
     }
 
     override fun poll(): Boolean {
-        val riddenEntity = guiRenderer.renderWindow.connection.player.physics.vehicle
-        if (riddenEntity == null || riddenEntity !is LivingEntity) {
+        val vehicle = guiRenderer.renderWindow.connection.player.physics.vehicle.vehicle
+        if (vehicle == null || vehicle !is LivingEntity) {
             if (this.shown) {
                 totalHealth = 0.0f
                 totalMaxHealth = 0.0f
@@ -86,8 +86,8 @@ class HotbarVehicleHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealt
             return false
         }
 
-        val health = riddenEntity.health.toFloat()
-        val maxHealth = max(0.0f, riddenEntity.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
+        val health = vehicle.health.toFloat()
+        val maxHealth = max(0.0f, vehicle.modifier.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
 
         if (health == this.totalHealth && this.totalMaxHealth == maxHealth) {
             return false
