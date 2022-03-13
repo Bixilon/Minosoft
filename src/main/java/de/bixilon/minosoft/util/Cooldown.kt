@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
+@Deprecated("Part of kutil 1.10")
 class Cooldown {
     private var start = -1L
     private var end = -1L
@@ -60,5 +61,12 @@ class Cooldown {
 
     fun setTicks(ticks: Int) {
         set(ticks * ProtocolDefinition.TICK_TIME)
+    }
+
+    fun reset() {
+        val time = TimeUtil.time
+        val cooldownTime = this.time
+        this.start = time
+        this.end = time + cooldownTime
     }
 }

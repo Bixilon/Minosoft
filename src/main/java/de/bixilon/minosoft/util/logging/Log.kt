@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,10 +19,8 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.PrintStream
 import java.io.PrintWriter
@@ -91,11 +89,6 @@ object Log {
                     val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
                     for (line in messageToSend.message.ansiColoredMessage.lines()) {
                         stream.println(prefix + line)
-                    }
-
-                    if (StaticConfiguration.SHOW_LOG_MESSAGES_IN_CHAT) {
-                        val cliConnection = CLI.getCurrentConnection()
-                        cliConnection?.fireEvent(InternalMessageReceiveEvent(cliConnection, messageToSend.message))
                     }
                 } catch (exception: Throwable) {
                     SYSTEM_ERR_STREAM.println("Can not send log message $messageToSend!")
