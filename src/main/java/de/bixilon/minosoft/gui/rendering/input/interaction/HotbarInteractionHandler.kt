@@ -113,7 +113,7 @@ class HotbarInteractionHandler(
         )) { swapItems() }
     }
 
-    fun draw(delta: Double) {
+    fun draw() {
         slotLimiter.work()
         swapLimiter.work()
     }

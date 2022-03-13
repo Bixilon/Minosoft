@@ -146,10 +146,10 @@ class PlayConnection(
                 ProtocolStates.PLAY -> {
                     state = PlayConnectionStates.JOINING
 
-                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5, maxDelayTime = ProtocolDefinition.TICK_TIME) {
+                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.entities.lock.acquire()
                         for (entity in world.entities) {
-                            entity.tick()
+                            entity.tryTick()
                         }
                         world.entities.lock.release()
                     }

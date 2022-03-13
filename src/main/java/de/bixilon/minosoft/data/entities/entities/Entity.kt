@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.properties.ModifierEntityProperty
 import de.bixilon.minosoft.data.entities.meta.EntityData
+import de.bixilon.minosoft.data.physics.pipeline.parts.UpdatePropertiesPart
 import de.bixilon.minosoft.data.physics.properties.EntityPhysicsProperties
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -32,7 +33,7 @@ import glm_.vec2.Vec2
 import java.util.*
 
 abstract class Entity(
-    protected val connection: PlayConnection,
+    val connection: PlayConnection,
     val type: EntityType,
 ) {
     protected val random = Random()
@@ -40,13 +41,15 @@ abstract class Entity(
     val modifier = ModifierEntityProperty(this)
     open val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 
-    val renderInfo = EntityRenderInfo()
+    val renderInfo = EntityRenderInfo(this)
     open val dimensions = Vec2(type.width, type.height)
     open val aabb = AABB.of(dimensions)
     val physics = EntityPhysicsProperties(this)
 
     var ticks = 0L
-    private var lastTickTime = -1L
+        private set
+    var lastTickTime = -1L
+        private set
 
     val id: Int?
         get() = connection.world.entities.getId(this)
@@ -58,6 +61,10 @@ abstract class Entity(
     @JvmField
     @Deprecated(message = "Use connection.version")
     protected val versionId: Int = connection.version.versionId
+
+    init {
+        initPipeline()
+    }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
         return data.sets.getBitMask(EntityDataFields.ENTITY_FLAGS, bitMask)
@@ -144,7 +151,12 @@ abstract class Entity(
         lastTickTime = time
     }
 
-    open fun draw(time: Long) {
-        renderInfo.draw(time)
+    open fun draw(frameId: Long, time: Long) {
+        tryTick(time)
+        renderInfo.draw(frameId, time)
+    }
+
+    open fun initPipeline() {
+        physics.pipeline.addLast(UpdatePropertiesPart)
     }
 }

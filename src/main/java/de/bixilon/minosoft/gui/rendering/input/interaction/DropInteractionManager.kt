@@ -57,7 +57,7 @@ class DropInteractionManager(
         rateLimiter += { connection.sendPacket(PlayerActionC2SP(type)) }
     }
 
-    fun draw(delta: Double) {
+    fun draw() {
         rateLimiter.work()
     }
 

@@ -49,9 +49,7 @@ class AttackInteractionHandler(
         ), false) { tryAttack() }
     }
 
-    fun draw(delta: Double) {
-
-    }
+    fun draw() = Unit
 
     fun tryAttack() {
         rateLimiter.perform { attack() }

@@ -45,14 +45,14 @@ class InteractionManager(
         spectate.init()
     }
 
-    fun draw(delta: Double) {
-        hotbar.draw(delta)
-        pick.draw(delta)
-        attack.draw(delta)
-        `break`.draw(delta)
-        use.draw(delta)
-        drop.draw(delta)
-        spectate.draw(delta)
+    fun draw() {
+        hotbar.draw()
+        pick.draw()
+        attack.draw()
+        `break`.draw()
+        use.draw()
+        drop.draw()
+        spectate.draw()
 
         swingArmRateLimiter.work()
     }

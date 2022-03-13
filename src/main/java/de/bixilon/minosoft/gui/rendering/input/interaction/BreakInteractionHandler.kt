@@ -86,9 +86,7 @@ class BreakInteractionHandler(
         connection.sendPacket(SwingArmC2SP(Hands.MAIN))
     }
 
-    private fun checkBreaking(isKeyDown: Boolean, deltaTime: Double): Boolean {
-        val currentTime = TimeUtil.time
-
+    private fun checkBreaking(isKeyDown: Boolean, time: Long, delta: Double): Boolean {
         if (!isKeyDown) {
             creativeLastHoldBreakTime = 0L
             cancelDigging()
@@ -140,7 +138,7 @@ class BreakInteractionHandler(
             }
         }
 
-        val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
+        val canStartBreaking = time - breakSent >= ProtocolDefinition.TICK_TIME
 
 
         val canInstantBreak = connection.player.baseAbilities.creative || connection.player.gamemode == Gamemodes.CREATIVE
@@ -150,15 +148,15 @@ class BreakInteractionHandler(
                 return true
             }
             // creative
-            if (currentTime - creativeLastHoldBreakTime <= ProtocolDefinition.TICK_TIME * 5) {
+            if (time - creativeLastHoldBreakTime <= ProtocolDefinition.TICK_TIME * 5) {
                 return true
             }
 
             swingArm()
             startDigging()
             finishDigging()
-            creativeLastHoldBreakTime = currentTime
-            breakSent = currentTime
+            creativeLastHoldBreakTime = time
+            breakSent = time
             return true
         }
 
@@ -166,7 +164,7 @@ class BreakInteractionHandler(
             return true
         }
 
-        breakSent = currentTime
+        breakSent = time
 
         startDigging()
 
@@ -232,7 +230,7 @@ class BreakInteractionHandler(
             else -> {
                 val ticks = 1.0f / damage
                 val seconds = (ticks / ProtocolDefinition.TICKS_PER_SECOND)
-                val progress = ((1.0f / seconds) * deltaTime)
+                val progress = ((1.0f / seconds) * delta)
                 // Log.log(LogMessageType.OTHER, LogLevels.WARN){ "Breaking progress at $breakPosition, total=$breakProgress, totalEstimated=$seconds"}
                 breakProgress += progress
             }
@@ -274,10 +272,10 @@ class BreakInteractionHandler(
         })
     }
 
-    fun draw(deltaTime: Double) {
+    fun draw() {
         val isKeyDown = renderWindow.inputHandler.isKeyBindingDown(DESTROY_BLOCK_KEYBINDING)
         // ToDo: Entity attacking
-        val consumed = checkBreaking(isKeyDown, deltaTime)
+        val consumed = checkBreaking(isKeyDown, renderWindow.frameStartTime, renderWindow.frameDelta)
 
         if (!isKeyDown) {
             return

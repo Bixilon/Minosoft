@@ -45,6 +45,7 @@ class EntityHitbox(
 
 
     private fun update() {
+        entity.draw(renderer.renderWindow.frameId, renderer.renderWindow.frameStartTime)
         val renderInfo = entity.renderInfo
         val aabb = renderInfo.aabb.shrink(0.01f)
         val hitBoxColor = entity.hitBoxColor

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import glm_.vec3.Vec3d
 
 class EntityPhysicsProperties<E : Entity>(val entity: E) {
-    val pipeline = PhysisPipeline<E>()
+    val pipeline = PhysisPipeline<E>(entity.connection)
     val vehicle = VehicleProperties(this)
     val fluid = FluidProperties(this)
     val positioning = PositioningProperties(this)

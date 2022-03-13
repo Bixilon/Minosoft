@@ -15,8 +15,9 @@ package de.bixilon.minosoft.data.physics.pipeline
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class PhysisPipeline<E : Entity> {
+class PhysisPipeline<E : Entity>(private val connection: PlayConnection) {
     val parts: MutableList<PipelinePart<out E>> = mutableListOf()
 
     private fun getIndex(name: String): Int {
@@ -42,9 +43,19 @@ class PhysisPipeline<E : Entity> {
         parts.add(part)
     }
 
+    fun buildLast(builder: PipelineBuilder<out E, out PipelinePart<E>>) {
+        checkContains(builder.name)
+        parts.add(builder.build(connection))
+    }
+
     fun addFirst(part: PipelinePart<out E>) {
         checkContains(part.name)
         parts.add(0, part)
+    }
+
+    fun buildFirst(builder: PipelineBuilder<out E, out PipelinePart<E>>) {
+        checkContains(builder.name)
+        parts.add(0, builder.build(connection))
     }
 
     operator fun <V : PipelinePart<*>> get(name: String): V? {

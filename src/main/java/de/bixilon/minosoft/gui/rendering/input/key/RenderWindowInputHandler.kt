@@ -347,8 +347,8 @@ class RenderWindowInputHandler(
         })
     }
 
-    fun draw(delta: Double) {
+    fun draw() {
         cameraInput.update()
-        interactionManager.draw(delta)
+        interactionManager.draw()
     }
 }

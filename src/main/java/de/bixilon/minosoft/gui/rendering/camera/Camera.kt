@@ -17,7 +17,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 
 class Camera(
-    renderWindow: RenderWindow,
+    val renderWindow: RenderWindow,
 ) {
     val fogManager = FogManager(renderWindow)
     val matrixHandler = MatrixHandler(renderWindow, fogManager)
@@ -30,7 +30,7 @@ class Camera(
     }
 
     fun draw() {
-        matrixHandler.entity.tick()
+        renderWindow.connection.player.draw(renderWindow.frameId, renderWindow.frameStartTime)
         matrixHandler.draw()
         targetHandler.raycast()
         fogManager.draw()

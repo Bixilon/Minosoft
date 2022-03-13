@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -224,12 +223,11 @@ class InteractInteractionHandler(
         }
     }
 
-    fun draw(delta: Double) {
-        val time = TimeUtil.time
-        if (time - lastUse < ProtocolDefinition.TICK_TIME) {
+    fun draw() {
+        if (renderWindow.frameStartTime - lastUse < ProtocolDefinition.TICK_TIME) {
             return
         }
-        lastUse = time
+        lastUse = renderWindow.frameStartTime
         val keyDown = renderWindow.inputHandler.isKeyBindingDown(USE_ITEM_KEYBINDING)
         if (keyDown) {
             autoInteractionDelay++

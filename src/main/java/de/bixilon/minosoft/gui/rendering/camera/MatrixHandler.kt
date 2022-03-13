@@ -43,7 +43,7 @@ class MatrixHandler(
         }
 
 
-    var eyePosition = Vec3.EMPTY
+    var cameraPosition = Vec3.EMPTY
         private set
     var rotation = EntityRotation(0.0, 0.0)
         private set
@@ -85,7 +85,7 @@ class MatrixHandler(
         }
 
 
-    private fun calculateViewMatrix(eyePosition: Vec3 = entity.renderInfo.eyePosition) {
+    private fun calculateViewMatrix(eyePosition: Vec3 = entity.renderInfo.cameraPosition) {
         viewMatrix = glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
@@ -103,13 +103,13 @@ class MatrixHandler(
 
     fun draw() {
         val fov = fov
-        val eyePosition = entity.renderInfo.eyePosition
+        val cameraPosition = entity.renderInfo.cameraPosition
         val rotation = entity.renderInfo.rotation
         val fogEnd = fogManager.fogEnd
-        if (upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) {
+        if (upToDate && cameraPosition == this.cameraPosition && rotation == this.rotation && fov == previousFOV) {
             return
         }
-        this.eyePosition = eyePosition
+        this.cameraPosition = cameraPosition
         this.rotation = rotation
         if (fov != previousFOV || fogEnd != this.fogEnd) {
             this.fogEnd = fogEnd
@@ -118,11 +118,11 @@ class MatrixHandler(
         previousFOV = fov
 
         updateRotation(rotation)
-        updateViewMatrix(eyePosition)
+        updateViewMatrix(cameraPosition)
         updateViewProjectionMatrix()
         updateFrustum()
 
-        connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
+        connection.fireEvent(CameraPositionChangeEvent(renderWindow, cameraPosition))
 
         connection.fireEvent(CameraMatrixChangeEvent(
             renderWindow = renderWindow,

@@ -93,11 +93,13 @@ class RenderWindow(
 
     lateinit var WHITE_TEXTURE: TextureLike
 
-    private var deltaFrameTime = 0.0
-
-    private var lastFrame = 0.0
     private val latch = CountUpAndDownLatch(1)
 
+    var frameId = 0L
+        private set
+    var frameStartTime = 0L
+    var frameStartTimeD = 0.0
+    var frameDelta = 0.0
     var tickCount = 0L
     var lastTickTimer = TimeUtil.time
 
@@ -246,6 +248,10 @@ class RenderWindow(
             }
 
             renderStats.startFrame()
+            val time = window.time
+            frameDelta = this.frameStartTimeD - time
+            this.frameStartTimeD = time
+            frameStartTime = TimeUtil.time
             framebufferManager.clear()
             renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
@@ -253,16 +259,11 @@ class RenderWindow(
 
             lightMap.update()
 
-            val currentTickTime = TimeUtil.time
-            if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
+            if (frameStartTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
                 // inputHandler.currentKeyConsumer?.tick(tickCount)
-                this.lastTickTimer = currentTickTime
+                this.lastTickTimer = frameStartTime
             }
-
-            val currentFrame = window.time
-            deltaFrameTime = currentFrame - lastFrame
-            lastFrame = currentFrame
 
 
             textureManager.staticTextures.animator.draw()
@@ -277,7 +278,7 @@ class RenderWindow(
             window.swapBuffers()
             window.pollEvents()
 
-            inputHandler.draw(deltaFrameTime)
+            inputHandler.draw()
             camera.draw()
 
             // handle opengl context tasks, but limit it per frame
@@ -298,6 +299,7 @@ class RenderWindow(
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
                 window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.rounded10}"
             }
+            frameId++
             renderStats.endFrame()
         }
 

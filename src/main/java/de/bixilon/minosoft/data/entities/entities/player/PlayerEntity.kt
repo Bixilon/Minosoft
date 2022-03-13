@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.physics.pipeline.parts.UpdatePlayerPropertiesPart
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
@@ -68,6 +69,11 @@ abstract class PlayerEntity(
         get() = data.sets.getNBT(EntityDataFields.PLAYER_RIGHT_SHOULDER_DATA)
 
     var currentBiome: Biome? = null
+
+    override fun initPipeline() {
+        super.initPipeline()
+        physics.pipeline.addLast(UpdatePlayerPropertiesPart)
+    }
 
     companion object {
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(

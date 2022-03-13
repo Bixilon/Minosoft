@@ -107,7 +107,7 @@ class ItemPickInteractionHandler(
         // ToDo: Use ItemPickC2SP
     }
 
-    fun draw(delta: Double) {
+    fun draw() {
         rateLimiter.work()
     }
 }

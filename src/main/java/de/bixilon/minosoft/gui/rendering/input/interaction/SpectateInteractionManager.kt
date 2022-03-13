@@ -51,7 +51,7 @@ class SpectateInteractionManager(
         renderWindow.camera.matrixHandler.entity = entity
     }
 
-    fun draw(delta: Double) {
+    fun draw() {
         rateLimiter.work()
     }
 

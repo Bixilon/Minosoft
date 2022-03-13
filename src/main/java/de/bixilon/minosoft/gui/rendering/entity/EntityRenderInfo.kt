@@ -14,20 +14,35 @@
 package de.bixilon.minosoft.gui.rendering.entity
 
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import glm_.vec3.Vec3
 
-class EntityRenderInfo {
+class EntityRenderInfo(val entity: Entity) {
+    private var previousFrameId = -1L
     var cameraPosition: Vec3 = Vec3.EMPTY
+        private set
     var aabb: AABB = AABB.EMPTY
+        private set
     var rotation = EntityRotation(0, 0)
+        private set
     var eyeHeight = 0.0f
-    var eyePosition = Vec3.EMPTY
+        private set
 
-    fun draw(time: Long) {
-
+    fun draw(frameId: Long, time: Long) {
+        if (frameId <= previousFrameId) {
+            return
+        }
+        this.previousFrameId = frameId
+        this.cameraPosition = entity.physics.positioning.eyePosition
+        this.aabb = entity.physics.other.aabb
+        this.rotation = entity.physics.positioning.rotation
+        this.eyeHeight = entity.physics.positioning.eyeHeight
+        // ToDo
     }
 
-    fun reset() {}
+    fun reset() {
+
+    }
 }
