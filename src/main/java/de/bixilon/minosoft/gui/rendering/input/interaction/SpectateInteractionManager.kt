@@ -36,7 +36,7 @@ class SpectateInteractionManager(
             mapOf(
                 KeyAction.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
             ),
-        )) { spectate(null) }
+        )) { spectate(null); connection.player.spectatingEntity = null }
 
         renderWindow.connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { spectate(null) })
         renderWindow.connection.registerEvent(CallbackEventInvoker.of<CameraSetEvent> { spectate(it.entity) })

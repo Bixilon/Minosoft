@@ -25,8 +25,10 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.physics.pipeline.parts.LocalPlayerPacketSender
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
@@ -59,6 +61,8 @@ class LocalPlayerEntity(
     var isUsingItem = false
 
 
+    var spectatingEntity: Entity? = null
+
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
 
@@ -85,5 +89,10 @@ class LocalPlayerEntity(
 
     fun useItem(hand: Hands) {
         TODO()
+    }
+
+    override fun initPipeline() {
+        super.initPipeline()
+        physics.pipeline.addLast(LocalPlayerPacketSender()) // last thing
     }
 }

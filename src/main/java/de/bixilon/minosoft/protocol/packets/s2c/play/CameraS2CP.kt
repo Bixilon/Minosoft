@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.modding.event.events.CameraSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -26,9 +27,14 @@ class CameraS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
+        var entity = connection.world.entities[entityId]
+        if (entity is LocalPlayerEntity) {
+            entity = null
+        }
+        connection.player.spectatingEntity = entity
         connection.fireEvent(CameraSetEvent(connection, entity))
     }
+
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Camera (entityId=$entityId)" }

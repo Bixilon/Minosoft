@@ -19,5 +19,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class CameraSetEvent(
     connection: PlayConnection,
-    val entity: Entity,
+    val entity: Entity?,
 ) : PlayConnectionEvent(connection)
