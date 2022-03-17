@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -128,9 +128,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
         applyOffset()
 
-        for ((index, charCode) in text.message.codePoints().toArray().withIndex()) {
-            val char = charCode.toChar()
-            if (char == '\n') {
+        for ((index, char) in text.message.codePoints().toArray().withIndex()) {
+            if (char == '\n'.code) {
                 if (wrap()) {
                     pushLine(index)
                     return true
@@ -139,7 +138,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             }
 
             // skip spaces that are wrapped (because of a line break)
-            if (offset.y != initialOffset.y + renderInfo.charMargin && offset.x == initialOffset.x + renderInfo.charMargin && char == ' ') {
+            if (offset.y != initialOffset.y + renderInfo.charMargin && offset.x == initialOffset.x + renderInfo.charMargin && char == ' '.code) {
                 continue
             }
 

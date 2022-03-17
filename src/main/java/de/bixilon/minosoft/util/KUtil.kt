@@ -258,4 +258,11 @@ object KUtil {
         prefixed.writeByteArray(this)
         return prefixed.toArray()
     }
+
+    fun String.codePointAtOrNull(index: Int): Int? {
+        if (index < 0 || index >= this.length) {
+            return null
+        }
+        return this.codePointAt(index)
+    }
 }

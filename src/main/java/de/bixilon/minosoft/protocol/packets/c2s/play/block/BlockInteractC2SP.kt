@@ -33,6 +33,7 @@ class BlockInteractC2SP(
     val item: ItemStack?,
     val hand: Hands,
     val insideBlock: Boolean,
+    val sequence: Int = 1,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -65,9 +66,12 @@ class BlockInteractC2SP(
         if (buffer.versionId >= ProtocolVersions.V_19W03A) {
             buffer.writeBoolean(insideBlock)
         }
+        if (buffer.versionId >= ProtocolVersions.V_22W11A) {
+            buffer.writeVarInt(sequence)
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Block interact (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Block interact (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock, sequence=$sequence)" }
     }
 }

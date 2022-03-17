@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.block
 
+import de.bixilon.minosoft.data.registries.effects.StatusEffect
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -24,6 +26,8 @@ class BeaconEffectC2SP(
     val primaryEffect: Int,
     val secondaryEffect: Int,
 ) : PlayC2SPacket {
+
+    constructor(connection: PlayConnection, primaryEffect: StatusEffect, secondaryEffect: StatusEffect) : this(connection.registries.statusEffectRegistry.getId(primaryEffect), connection.registries.statusEffectRegistry.getId(secondaryEffect))
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeVarInt(primaryEffect)

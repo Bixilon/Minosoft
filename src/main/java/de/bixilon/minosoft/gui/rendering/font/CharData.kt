@@ -27,8 +27,8 @@ import glm_.vec2.Vec2t
 
 class CharData(
     private val renderWindow: RenderWindow,
-    val char: Char,
-    val texture: AbstractTexture,
+    val char: Int,
+    val texture: AbstractTexture?,
     val width: Int,
     val scaledWidth: Int,
     var uvStart: Vec2,
@@ -36,6 +36,9 @@ class CharData(
 ) {
 
     fun postInit() {
+        if (texture == null) {
+            return
+        }
         uvStart = uvStart * texture.textureArrayUV
         uvEnd = uvEnd * texture.textureArrayUV
     }
@@ -69,6 +72,9 @@ class CharData(
     }
 
     private fun _render(position: Vec2i, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
+        if (texture == null) {
+            return
+        }
         var color = color
 
         var shadowOffset = 0.0f

@@ -12,15 +12,21 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockBreakS2CP
+import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.protocol.packets.s2c.play.block.LegacyBlockBreakS2CP
+import glm_.vec3.Vec3i
 
-class BlockBreakAckEvent(
+class LegacyBlockBreakAckEvent(
     connection: PlayConnection,
-    val sequence: Int,
+    val blockPosition: Vec3i,
+    val blockState: BlockState?,
+    val actions: PlayerActionC2SP.Actions,
+    val successful: Boolean,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: BlockBreakS2CP) : this(connection, packet.sequence)
+    constructor(connection: PlayConnection, packet: LegacyBlockBreakS2CP) : this(connection, packet.blockPosition, packet.blockState, packet.actions, packet.successful)
 
 }

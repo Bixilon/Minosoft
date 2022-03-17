@@ -10,17 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.data.entities.entities.animal.water
 
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.entities.EntityFactory
+import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockBreakS2CP
+import glm_.vec3.Vec3d
 
-class BlockBreakAckEvent(
-    connection: PlayConnection,
-    val sequence: Int,
-) : PlayConnectionEvent(connection) {
+class Tadpole(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractFish(connection, entityType, position, rotation) {
 
-    constructor(connection: PlayConnection, packet: BlockBreakS2CP) : this(connection, packet.sequence)
+    companion object : EntityFactory<Tadpole> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("tadpole")
 
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Tadpole {
+            return Tadpole(connection, entityType, position, rotation)
+        }
+    }
 }

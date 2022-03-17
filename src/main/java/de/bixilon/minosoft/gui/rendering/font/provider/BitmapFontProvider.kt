@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -25,13 +25,14 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BitmapFontProvider(
     renderWindow: RenderWindow,
     data: Map<String, Any>,
 ) : FontProvider {
     val ascent = data["ascent"].toDouble()
-    private val chars: MutableMap<Char, CharData> = mutableMapOf()
+    private val chars: Int2ObjectOpenHashMap<CharData> = Int2ObjectOpenHashMap()
     var charWidth = 8
         private set
 
@@ -97,7 +98,7 @@ class BitmapFontProvider(
 
                 val charData = CharData(
                     renderWindow = renderWindow,
-                    char = char.toChar(),
+                    char = char,
                     texture = texture,
                     width = width,
                     scaledWidth = scaledWidth,
@@ -105,7 +106,7 @@ class BitmapFontProvider(
                     uvEnd = uvEnd,
                 )
 
-                this.chars[char.toChar()] = charData
+                this.chars[char] = charData
             }
         }
         textureData.rewind()
@@ -119,7 +120,7 @@ class BitmapFontProvider(
         latch.dec()
     }
 
-    override fun get(char: Char): CharData? {
+    override fun get(char: Int): CharData? {
         return chars[char]
     }
 

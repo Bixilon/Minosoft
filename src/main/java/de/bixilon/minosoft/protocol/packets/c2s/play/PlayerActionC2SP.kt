@@ -30,6 +30,7 @@ class PlayerActionC2SP(
     val action: Actions,
     val position: Vec3i = Vec3i.EMPTY,
     val direction: Directions = Directions.DOWN,
+    val sequence: Int = 1,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -44,10 +45,13 @@ class PlayerActionC2SP(
             buffer.writePosition(position)
         }
         buffer.writeByte(direction.ordinal)
+        if (buffer.versionId >= ProtocolVersions.V_22W11A) {
+            buffer.writeVarInt(sequence)
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Player action (action=$action, position=$position, direction=$direction)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Player action (action=$action, position=$position, direction=$direction, sequence=$sequence)" }
     }
 
     enum class Actions {

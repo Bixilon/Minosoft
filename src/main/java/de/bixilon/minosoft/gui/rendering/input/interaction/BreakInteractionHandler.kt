@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
+import de.bixilon.minosoft.modding.event.events.LegacyBlockBreakAckEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
@@ -54,7 +54,7 @@ class BreakInteractionHandler(
     private var lastSwing = 0L
     private var creativeLastHoldBreakTime = 0L
 
-    private var acknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
+    private val legacyAcknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
 
     private val efficiencyEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.EFFICIENCY]
     private val aquaAffinityEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.AQUA_AFFINITY]
@@ -250,11 +250,11 @@ class BreakInteractionHandler(
             ),
         ))
 
-        connection.registerEvent(CallbackEventInvoker.of<BlockBreakAckEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<LegacyBlockBreakAckEvent> {
             when (it.actions) {
                 PlayerActionC2SP.Actions.START_DIGGING -> {
                     if (it.successful) {
-                        acknowledgedBreakStarts[it.blockPosition] = it.blockState
+                        legacyAcknowledgedBreakStarts[it.blockPosition] = it.blockState
                     } else {
                         if (it.blockPosition != breakPosition || it.blockState != breakBlockState) {
                             return@of
@@ -263,14 +263,16 @@ class BreakInteractionHandler(
                     }
                 }
                 PlayerActionC2SP.Actions.FINISHED_DIGGING -> {
-                    if (acknowledgedBreakStarts[it.blockPosition] == null) {
+                    if (legacyAcknowledgedBreakStarts[it.blockPosition] == null) {
                         // start was not acknowledged, undoing
                         connection.world[it.blockPosition] = it.blockState
                     }
-                    acknowledgedBreakStarts.remove(it.blockPosition)
+                    legacyAcknowledgedBreakStarts.remove(it.blockPosition)
                 }
             }
         })
+
+        // ToDo: Handle BlockBreakAck (not just legacy)
     }
 
     fun draw(deltaTime: Double) {

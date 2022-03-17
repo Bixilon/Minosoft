@@ -16,18 +16,25 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class UseItemC2SP(val hand: Hands) : PlayC2SPacket {
+class UseItemC2SP(
+    val hand: Hands,
+    val sequence: Int = 1,
+) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeVarInt(hand.ordinal)
+        if (buffer.versionId >= ProtocolVersions.V_22W11A) {
+            buffer.writeVarInt(sequence)
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Use item (hand=$hand)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Use item (hand=$hand, sequence=$sequence)" }
     }
 }

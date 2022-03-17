@@ -284,6 +284,10 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
     GOAT_IS_SCREAMING(false),  // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
 
 
+    FROG_TYPE(0),
+    FROG_FIREWORK(null),
+
+
     LEGACY_SKELETON_TYPE(0.toByte()),
     LEGACY_ENDERMAN_CARRIED_BLOCK(0),
     LEGACY_ENDERMAN_CARRIED_BLOCK_DATA(0),

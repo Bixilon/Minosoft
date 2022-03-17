@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 import glm_.vec2.Vec2i
 
 class TextInputElement(
@@ -287,7 +288,7 @@ class TextInputElement(
                 continue
             }
             val charDelta = position.x - line.width
-            val width = guiRenderer.renderWindow.font[value.getOrNull(pointer) ?: break]?.width ?: break
+            val width = guiRenderer.renderWindow.font[value.codePointAtOrNull(pointer) ?: break]?.width ?: break
             if (charDelta != 0 && charDelta >= width / 2) {
                 pointer++
             }

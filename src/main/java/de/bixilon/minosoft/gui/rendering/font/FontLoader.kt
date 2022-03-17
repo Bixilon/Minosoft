@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,16 +20,14 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.provider.BitmapFontProvider
-import de.bixilon.minosoft.gui.rendering.font.provider.FontProvider
-import de.bixilon.minosoft.gui.rendering.font.provider.FontProviderFactory
-import de.bixilon.minosoft.gui.rendering.font.provider.LegacyUnicodeFontProvider
+import de.bixilon.minosoft.gui.rendering.font.provider.*
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 object FontLoader : DefaultFactory<FontProviderFactory<*>>(
     BitmapFontProvider,
     LegacyUnicodeFontProvider,
+    SpaceFontProvider,
     // ToDo: True type font
 ) {
     private val FONT_INDEX = "font/default.json".toResourceLocation()
