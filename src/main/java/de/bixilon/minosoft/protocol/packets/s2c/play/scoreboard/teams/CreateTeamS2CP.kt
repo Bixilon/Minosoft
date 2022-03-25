@@ -66,7 +66,7 @@ class CreateTeamS2CP(
         }
 
         if (buffer.versionId >= ProtocolVersions.V_14W07A) {
-            this.nameTagVisibility = NameTagVisibilities[buffer.readString()]
+            this.nameTagVisibility = buffer.readString().let { if (it.isBlank()) NameTagVisibilities.ALWAYS else NameTagVisibilities[it] }
             if (buffer.versionId >= ProtocolVersions.V_16W06A) { // ToDo
                 this.collisionRule = TeamCollisionRules[buffer.readString()]
             }

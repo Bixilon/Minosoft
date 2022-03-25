@@ -128,7 +128,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
         applyOffset()
 
-        for ((index, char) in text.message.codePoints().toArray().withIndex()) {
+        var index = -1
+        for (char in text.message.codePoints()) {
+            index++
             if (char == '\n'.code) {
                 if (wrap()) {
                     pushLine(index)
@@ -177,7 +179,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             consumer?.let { charData.render(letterOffset, color, shadow, italic, bold, strikethrough, underlined, it, options, renderInfo.scale) }
 
             if (consumer == null) {
-                currentLineText += char
+                currentLineText += char.toChar()
             }
         }
 

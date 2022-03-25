@@ -33,7 +33,7 @@ class LegacyUnicodeFontProvider(
         val template = data["template"].unsafeCast<String>()
         val sizes = renderWindow.connection.assetsManager[data["sizes"].toResourceLocation()]
 
-        var char = '\u0000'
+        var char = 0
         for (page in 0 until UNICODE_PAGES) {
             if (MISSING_UNICODE_PAGES.contains(page)) {
                 // This page somehow does not exist, but we are fine with it
@@ -68,7 +68,7 @@ class LegacyUnicodeFontProvider(
 
                     val charData = CharData(
                         renderWindow = renderWindow,
-                        char = char.code,
+                        char = char,
                         texture = texture,
                         width = width,
                         scaledWidth = scaledWidth,
@@ -76,7 +76,7 @@ class LegacyUnicodeFontProvider(
                         uvEnd = uvEnd,
                     )
 
-                    chars[char.code] = charData
+                    chars[char] = charData
                     char++
                 }
             }

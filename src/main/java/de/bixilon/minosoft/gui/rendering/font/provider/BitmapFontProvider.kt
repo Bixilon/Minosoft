@@ -76,7 +76,8 @@ class BitmapFontProvider(
                 xEnd[i]++
             }
 
-            for ((x, char) in row.unsafeCast<String>().codePoints().toArray().withIndex()) {
+            var x = 0
+            for (char in row.unsafeCast<String>().codePoints()) {
                 val xOffset = pixel.x * charWidth * x
 
                 val uvStart = Vec2(
@@ -107,6 +108,7 @@ class BitmapFontProvider(
                 )
 
                 this.chars[char] = charData
+                x++
             }
         }
         textureData.rewind()
