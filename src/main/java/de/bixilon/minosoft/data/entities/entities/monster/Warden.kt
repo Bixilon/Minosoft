@@ -10,46 +10,30 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.animal
+package de.bixilon.minosoft.data.entities.entities.monster
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
-class Frog(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class Warden(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Variant")
-    val variant: FrogVariants
-        get() = FrogVariants[data.sets.getInt(EntityDataFields.FROG_TYPE)]
-
-    val target: Int
-        get() = data.sets.getInt(EntityDataFields.FROG_TARGET)
+    @get:EntityMetaDataFunction(name = "Anger")
+    val anger: Int
+        get() = data.sets.getInt(EntityDataFields.WARDEN_ANGER)
 
 
-    enum class FrogVariants {
-        TEMPERATE,
-        WARM,
-        COLD,
-        ;
+    companion object : EntityFactory<Warden> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:warden")
 
-        companion object : ValuesEnum<FrogVariants> {
-            override val VALUES: Array<FrogVariants> = values()
-            override val NAME_MAP: Map<String, FrogVariants> = EnumUtil.getEnumValues(VALUES)
-        }
-    }
-
-    companion object : EntityFactory<Frog> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("frog")
-
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Frog {
-            return Frog(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Warden {
+            return Warden(connection, entityType, position, rotation)
         }
     }
 }

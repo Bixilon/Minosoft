@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.effect
 
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -22,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_18_2_PRE_1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W12A
 import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -34,6 +37,8 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val isAmbient: Boolean
     val hideParticles: Boolean
     val showIcon: Boolean
+    var factorCalculationData: JsonObject? = null
+        private set
 
 
     init {
@@ -55,6 +60,9 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         this.isAmbient = isAmbient
         this.hideParticles = hideParticles
         this.showIcon = showIcon
+        if (buffer.versionId >= V_22W12A) {
+            factorCalculationData = buffer.readOptional { buffer.readNBT().toJsonObject() }
+        }
     }
 
     private fun PlayInByteBuffer.readStatusEffectInstance(): StatusEffectInstance {

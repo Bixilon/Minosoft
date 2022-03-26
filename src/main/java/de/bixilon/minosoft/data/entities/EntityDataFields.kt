@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
-import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
+import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.entities.meta.ArmorStandArmRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
@@ -281,13 +281,16 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
     SKELETON_STRAY_FREEZE_CONVERTING(false),
     SKELETON_SWING_ARMS(false),
 
-    GOAT_IS_SCREAMING(false),  // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
+    GOAT_IS_SCREAMING(false),
 
 
     FROG_TYPE(0),
-    FROG_FIREWORK(null),
+    FROG_TARGET(null),
+
+    WARDEN_ANGER(0),
 
 
+    // pretty old stuff here. 1.8 mostly (or even after, I don't know and care)
     LEGACY_SKELETON_TYPE(0.toByte()),
     LEGACY_ENDERMAN_CARRIED_BLOCK(0),
     LEGACY_ENDERMAN_CARRIED_BLOCK_DATA(0),

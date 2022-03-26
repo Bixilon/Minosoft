@@ -36,6 +36,8 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.WanderingTrader
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.projectile.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
+import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
+import de.bixilon.minosoft.data.entities.entities.vehicle.boat.ChestBoat
 import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
@@ -96,6 +98,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     Marker,
     Minecart,
     ChestMinecart,
+    ChestBoat,
     CommandBlockMinecart,
     FurnaceMinecart,
     HopperMinecart,
@@ -146,6 +149,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     Villager,
     Vindicator,
     WanderingTrader,
+    Warden,
     Witch,
     WitherBoss,
     WitherSkeleton,
