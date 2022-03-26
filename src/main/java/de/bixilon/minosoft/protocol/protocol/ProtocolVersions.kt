@@ -14,8 +14,8 @@ package de.bixilon.minosoft.protocol.protocol
 
 @Suppress("UNUSED")
 object ProtocolVersions {
-    const val V_22W12A = 830
-    const val V_22W11A = 829
+    const val V_22W12A = 831
+    const val V_22W11A = 830
     const val V_1_18_2 = 829
     const val V_1_18_2_RC1 = 828
     const val V_1_18_2_PRE_3 = 827
