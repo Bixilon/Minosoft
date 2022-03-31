@@ -116,6 +116,7 @@ enum class BlockProperties {
     BLOOM("bloom", BooleanBlockPropertiesSerializer),
 
     SHRIEKING("shrieking", BooleanBlockPropertiesSerializer),
+    CAN_SUMMON("can_summon", BooleanBlockPropertiesSerializer),
 
     // ToDo: used in models
     MAP("map", BooleanBlockPropertiesSerializer),

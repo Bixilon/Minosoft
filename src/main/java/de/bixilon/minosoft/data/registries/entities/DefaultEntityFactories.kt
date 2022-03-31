@@ -46,6 +46,7 @@ import glm_.vec3.Vec3d
 
 @SuppressWarnings("deprecation")
 object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
+    Allay,
     AreaEffectCloud,
     ArmorStand,
     Arrow,
