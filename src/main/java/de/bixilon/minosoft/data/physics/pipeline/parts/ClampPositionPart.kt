@@ -11,29 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.physics.properties
+package de.bixilon.minosoft.data.physics.pipeline.parts
 
-import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.physics.pipeline.PipelineContext
+import de.bixilon.minosoft.data.physics.pipeline.PipelinePart
+import de.bixilon.minosoft.data.world.World
+import glm_.func.common.clamp
 
-class FluidProperties(val properties: EntityPhysicsProperties<*>) {
-    var submergedFluid: Fluid? = null
-    var fluids: MutableMap<Fluid, Float> = mutableMapOf()
+object ClampPositionPart : PipelinePart<Entity> {
+    override val name: String = "clamp_position"
 
-    operator fun get(fluid: Fluid): Float {
-        return fluids[fluid] ?: 0.0f
+    override fun handle(context: PipelineContext, entity: Entity) {
+        val position = entity.physics.positioning.position
+        position.x = position.x.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
+        position.z = position.z.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
     }
 
 
-    companion object {
-
-        fun Map<Fluid, Float>.max(): Float {
-            var max = 0.0f
-
-            for (height in this.values) {
-                max = maxOf(max, height)
-            }
-
-            return max
-        }
-    }
 }

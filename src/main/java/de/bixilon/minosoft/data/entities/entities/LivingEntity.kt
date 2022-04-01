@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.minosoft.data.physics.pipeline.parts.MovePart
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -70,4 +71,11 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType) 
 
     open val isSleeping: Boolean
         get() = bedPosition != null
+
+    open val isImmobile: Boolean get() = health <= 0.0
+
+    override fun initPipeline() {
+        super.initPipeline()
+        physics.pipeline.addLast(MovePart())
+    }
 }

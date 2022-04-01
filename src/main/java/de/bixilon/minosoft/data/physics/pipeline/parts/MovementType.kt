@@ -11,29 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.physics.properties
+package de.bixilon.minosoft.data.physics.pipeline.parts
 
-import de.bixilon.minosoft.data.registries.fluid.Fluid
-
-class FluidProperties(val properties: EntityPhysicsProperties<*>) {
-    var submergedFluid: Fluid? = null
-    var fluids: MutableMap<Fluid, Float> = mutableMapOf()
-
-    operator fun get(fluid: Fluid): Float {
-        return fluids[fluid] ?: 0.0f
-    }
-
-
-    companion object {
-
-        fun Map<Fluid, Float>.max(): Float {
-            var max = 0.0f
-
-            for (height in this.values) {
-                max = maxOf(max, height)
-            }
-
-            return max
-        }
-    }
+enum class MovementType {
+    INPUT,
+    CRAMMING,
+    PISTON,
+    SHULKER_BOX,
 }

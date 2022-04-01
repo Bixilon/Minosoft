@@ -15,4 +15,9 @@ package de.bixilon.minosoft.data.physics.pipeline
 
 class PipelineContext(
     var cancelRest: Boolean = false,
+
+    var sidewaysSpeed: Float = 0.0f,
+    var forwardSpeed: Float = 0.0f,
+
+    var jumping: Boolean = false,
 )

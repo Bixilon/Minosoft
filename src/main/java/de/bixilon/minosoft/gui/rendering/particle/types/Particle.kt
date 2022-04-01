@@ -121,7 +121,7 @@ abstract class Particle(
         var newVelocity = Vec3d(velocity)
         if (this.physics && newVelocity != Vec3d.EMPTY) {
             val aabb = aabb + position
-            // ToDo newVelocity = connection.collisionDetector.collide(this, newVelocity, aabb)
+            newVelocity = connection.util.collisionDetector.collide(this, newVelocity, aabb)
         }
 
         forceMove(newVelocity)

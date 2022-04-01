@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
@@ -34,6 +35,9 @@ abstract class Connection : AbstractEventMaster {
 
     open var error: Throwable? = null
         set(value) {
+            if (field == null && value != null) {
+                value.report()
+            }
             field = value
             value?.let { fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
         }

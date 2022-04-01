@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -28,6 +29,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ConnectionUtil(
     private val connection: PlayConnection,
 ) {
+    val collisionDetector = CollisionDetector(connection)
+
 
     fun sendDebugMessage(message: Any) {
         connection.fireEvent(InternalMessageReceiveEvent(connection, BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })))

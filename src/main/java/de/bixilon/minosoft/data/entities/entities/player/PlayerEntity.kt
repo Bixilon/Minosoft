@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.physics.pipeline.parts.ClampPositionPart
 import de.bixilon.minosoft.data.physics.pipeline.parts.UpdatePlayerPropertiesPart
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -24,17 +25,28 @@ import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec2.Vec2
 
 abstract class PlayerEntity(
     connection: PlayConnection,
     entityType: EntityType,
-    name: String = "TBA",
+    name: String = "<TBA>",
     properties: PlayerProperties = PlayerProperties(),
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType) {
     override val dimensions: Vec2
-        get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
+        get() {
+            val pose = pose ?: return super.dimensions
+            if (pose == Poses.SNEAKING) {
+                return when {
+                    versionId < ProtocolVersions.V_15W42A -> SNEAKING_POSITIONS[0]
+                    versionId < ProtocolVersions.V_19W12A -> SNEAKING_POSITIONS[1]
+                    else -> SNEAKING_POSITIONS[2]
+                }
+            }
+            return DIMENSIONS[pose] ?: return super.dimensions
+        }
 
     @get:EntityMetaDataFunction(name = "Gamemode")
     val gamemode: Gamemodes
@@ -70,20 +82,30 @@ abstract class PlayerEntity(
 
     var currentBiome: Biome? = null
 
+    override val isImmobile: Boolean get() = super.isImmobile || isSleeping
+
     override fun initPipeline() {
         super.initPipeline()
+        // ToDo: Update water state
+        physics.pipeline.addLast(ClampPositionPart)
         physics.pipeline.addLast(UpdatePlayerPropertiesPart)
+        // ToDo: Update pose
     }
 
     companion object {
+        private const val WIDTH = 0.6f
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
-            Poses.STANDING to Vec2(0.6f, 1.8f),
+            Poses.STANDING to Vec2(WIDTH, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
-            Poses.ELYTRA_FLYING to Vec2(0.6f, 0.6f),
-            Poses.SWIMMING to Vec2(0.6f, 0.6f),
-            Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
-            Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
+            Poses.ELYTRA_FLYING to Vec2(WIDTH, WIDTH),
+            Poses.SWIMMING to Vec2(WIDTH, WIDTH),
+            Poses.SPIN_ATTACK to Vec2(WIDTH, WIDTH),
             Poses.DYING to Vec2(0.2f, 0.2f),
+        )
+        private val SNEAKING_POSITIONS = listOf(
+            Vec2(WIDTH, 1.8f),
+            Vec2(WIDTH, 1.65f),
+            Vec2(WIDTH, 1.5f),
         )
     }
 }

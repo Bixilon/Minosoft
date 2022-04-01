@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.move.GroundChangeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.RotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.move.vehicle.SteerVehicleC2SP
 import glm_.vec3.Vec3d
 import kotlin.reflect.KClass
 
@@ -66,8 +67,9 @@ class LocalPlayerPacketSender : PipelinePart<LocalPlayerEntity> {
         val onGround = entity.physics.other.onGround
         if (entity.physics.vehicle.vehicle != null) {
             entity.connection.sendPacket(RotationC2SP(rotation, onGround))
-            // ToDo: Send SteerVehicleC2SP
+            entity.connection.sendPacket(SteerVehicleC2SP(context.sidewaysSpeed, context.forwardSpeed, context.jumping, entity.movementInput.sneaking))
             // ToDo: if can move root vehicle, send MoveVehicleC2SP
+            return
         }
 
         sendSprint(entity)
