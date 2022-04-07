@@ -99,6 +99,9 @@ class EntityData(
         VILLAGER_DATA,
         OPT_VAR_INT,
         POSE,
+
+        // CAT_VARIANT,
+        // FROG_VARIANT,
         ;
 
         companion object : ValuesEnum<EntityDataDataTypes> {

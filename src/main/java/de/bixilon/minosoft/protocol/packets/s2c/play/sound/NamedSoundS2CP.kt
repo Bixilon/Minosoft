@@ -35,6 +35,8 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     lateinit var category: SoundCategories
         private set
+    var magicRandom: Long = 0L
+        private set
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
@@ -58,6 +60,10 @@ class NamedSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT / 100.0f
         } else {
             buffer.readFloat()
+        }
+
+        if (buffer.versionId >= ProtocolVersions.V_22W14A) {
+            magicRandom = buffer.readLong()
         }
     }
 

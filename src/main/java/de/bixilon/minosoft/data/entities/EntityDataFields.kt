@@ -104,6 +104,7 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
     PLAYER_SKIN_MAIN_HAND(1.toByte()),
     PLAYER_LEFT_SHOULDER_DATA,
     PLAYER_RIGHT_SHOULDER_DATA,
+    PLAYER_LAST_DEATH_POSITION,
 
     ARMOR_STAND_FLAGS(0.toByte()),
     ARMOR_STAND_HEAD_ROTATION(ArmorStandArmRotation(0.0f, 0.0f, 0.0f)),
