@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -52,56 +53,71 @@ class EntityData(
             EntityDataDataTypes.BYTE -> buffer.readByte()
             EntityDataDataTypes.VAR_INT -> buffer.readVarInt()
             EntityDataDataTypes.SHORT -> buffer.readUnsignedShort()
-            EntityDataDataTypes.INT -> buffer.readInt()
+            EntityDataDataTypes.INTEGER -> buffer.readInt()
             EntityDataDataTypes.FLOAT -> buffer.readFloat()
             EntityDataDataTypes.STRING -> buffer.readString()
-            EntityDataDataTypes.CHAT -> buffer.readChatComponent()
+            EntityDataDataTypes.TEXT_COMPONENT -> buffer.readChatComponent()
             EntityDataDataTypes.BOOLEAN -> buffer.readBoolean()
-            EntityDataDataTypes.VEC3I -> Vec3i(buffer.readInt(), buffer.readInt(), buffer.readInt())
+            EntityDataDataTypes.VEC3I -> {
+                if (buffer.versionId < ProtocolVersions.V_1_8_PRE3) {
+                    Vec3i(buffer.readInt(), buffer.readInt(), buffer.readInt())
+                } else {
+                    buffer.readBlockPosition()
+                }
+            }
             EntityDataDataTypes.ITEM_STACK -> buffer.readItemStack()
             EntityDataDataTypes.ROTATION -> ArmorStandArmRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
-            EntityDataDataTypes.BLOCK_POSITION -> buffer.readBlockPosition()
-            EntityDataDataTypes.OPT_CHAT -> buffer.readOptional { buffer.readChatComponent() }
-            EntityDataDataTypes.OPT_BLOCK_POSITION -> buffer.readOptional { buffer.readBlockPosition() }
+            EntityDataDataTypes.OPTIONAL_TEXT_COMPONENT -> buffer.readOptional { buffer.readChatComponent() }
+            EntityDataDataTypes.OPTIONAL_VEC3I -> buffer.readOptional { buffer.readBlockPosition() }
             EntityDataDataTypes.DIRECTION -> buffer.readDirection()
-            EntityDataDataTypes.OPT_UUID -> buffer.readOptional { buffer.readUUID() }
+            EntityDataDataTypes.OPTIONAL_UUID -> buffer.readOptional { buffer.readUUID() }
             EntityDataDataTypes.NBT -> buffer.readNBT()
             EntityDataDataTypes.PARTICLE -> buffer.readParticle()
             EntityDataDataTypes.POSE -> buffer.readPose()
-            EntityDataDataTypes.BLOCK_ID -> buffer.connection.registries.blockStateRegistry[buffer.readVarInt()] // ToDo
-            EntityDataDataTypes.OPT_VAR_INT -> buffer.readVarInt() - 1
+            EntityDataDataTypes.BLOCK_STATE -> buffer.connection.registries.blockStateRegistry[buffer.readVarInt()] // ToDo
             EntityDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.registries.villagerProfessionRegistry[buffer.readVarInt()].resourceLocation, VillagerLevels[buffer.readVarInt()])
-            EntityDataDataTypes.OPT_BLOCK_ID -> buffer.connection.registries.blockStateRegistry[buffer.readVarInt()]
+            EntityDataDataTypes.OPTIONAL_BLOCK_STATE -> buffer.connection.registries.blockStateRegistry[buffer.readVarInt()]
+            EntityDataDataTypes.OPTIONAL_INTEGER, EntityDataDataTypes.FIREWORK_DATA -> {
+                val int = buffer.readVarInt()
+                if (int == 0) {
+                    return null
+                }
+                return int - 1
+            }
+            EntityDataDataTypes.GLOBAL_POSITION -> buffer.readNBT() // ToDo
+            EntityDataDataTypes.CAT_VARIANT, EntityDataDataTypes.FROG_VARIANT -> buffer.readVarInt() // ToDo
         }
     }
 
     enum class EntityDataDataTypes {
         BYTE,
         SHORT,
-        INT,
+        INTEGER,
         VAR_INT,
         FLOAT,
         STRING,
-        CHAT,
-        OPT_CHAT,
+        TEXT_COMPONENT,
+        OPTIONAL_TEXT_COMPONENT,
         ITEM_STACK,
         BOOLEAN,
         VEC3I,
         ROTATION,
-        BLOCK_POSITION,
-        OPT_BLOCK_POSITION,
+        OPTIONAL_VEC3I,
         DIRECTION,
-        OPT_UUID,
-        BLOCK_ID,
-        OPT_BLOCK_ID,
+        OPTIONAL_UUID,
+        BLOCK_STATE,
+        OPTIONAL_BLOCK_STATE,
         NBT,
         PARTICLE,
         VILLAGER_DATA,
-        OPT_VAR_INT,
         POSE,
+        OPTIONAL_INTEGER,
+        FIREWORK_DATA,
+        GLOBAL_POSITION,
 
-        // CAT_VARIANT,
-        // FROG_VARIANT,
+
+        CAT_VARIANT,
+        FROG_VARIANT,
         ;
 
         companion object : ValuesEnum<EntityDataDataTypes> {
