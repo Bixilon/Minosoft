@@ -50,11 +50,11 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         } else {
             buffer.readVec3d()
         }
-        val rotation = EntityRotation(buffer.readAngle().toDouble(), buffer.readAngle().toDouble())
+        val rotation = EntityRotation(buffer.readAngle().toDouble(), buffer.readAngle().toDouble()) // ToDo: Is yaw/pitch swapped?
         if (buffer.versionId >= ProtocolVersions.V_22W14A) {
             val headYaw = buffer.readAngle()
         }
-        val data = buffer.readInt()
+        val data = if (buffer.versionId >= ProtocolVersions.V_22W14A) buffer.readVarInt() else buffer.readInt()
 
         if (buffer.versionId >= ProtocolVersions.V_15W31A || data != 0) {
             velocity = buffer.readVelocity()
