@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic
 
 import de.bixilon.minosoft.data.container.types.generic.GenericContainer
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -127,7 +126,6 @@ open class GenericContainerScreen(
     }
 
     companion object : ContainerGUIFactory<GenericContainerScreen, GenericContainer> {
-        private val DEFAULT_TEXT_COLOR = ChatColors.DARK_GRAY
         override val clazz: KClass<GenericContainer> = GenericContainer::class
 
         override fun build(guiRenderer: GUIRenderer, container: GenericContainer): GenericContainerScreen {

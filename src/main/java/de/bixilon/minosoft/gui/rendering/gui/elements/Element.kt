@@ -161,11 +161,12 @@ abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int =
             }
             return
         }
-        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.matrix !== guiRenderer.matrix) {
+        if (!cacheUpToDate || cache.offset != offset || guiRenderer.matrixChange || cache.options != options || cache.matrix !== guiRenderer.matrix) {
             this.cache.clear()
             cache.matrix = guiRenderer.matrix
             cache.offset = Vec2i(offset)
-            val maxZ = forceRender(offset, cache, options)
+            cache.options = options
+            forceRender(offset, cache, options)
             if (cache.data !is DirectArrayFloatList) {
                 // not raw mesh data
                 cache.data.finish()

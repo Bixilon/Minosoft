@@ -17,8 +17,10 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.click.*
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item.FloatingItem
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.item.ItemInfoPopper
@@ -53,6 +55,12 @@ class ItemElement(
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        if (raw.stack == null) {
+            if (hovered) {
+                ImageElement(guiRenderer, renderWindow.WHITE_TEXTURE.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
+            }
+            return
+        }
         var options = options
         if (hovered) {
             options = options.copy(alpha = 0.7f)
@@ -65,9 +73,11 @@ class ItemElement(
     }
 
     override fun onMouseEnter(position: Vec2i, absolute: Vec2i): Boolean {
-        val stack = stack ?: return true
         renderWindow.window.cursorShape = CursorShapes.HAND
-        popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
+        val stack = this.stack
+        if (stack != null) {
+            popper = ItemInfoPopper(guiRenderer, absolute, stack).apply { show() }
+        }
         hovered = true
         cacheUpToDate = false
         return true
@@ -83,7 +93,7 @@ class ItemElement(
         popper?.hide()
         popper = null
         hovered = false
-        raw.cacheUpToDate = false
+        cacheUpToDate = false
         return true
     }
 
@@ -162,7 +172,7 @@ class ItemElement(
             return this
         }
         hovered = true
-        raw.cacheUpToDate = false
+        cacheUpToDate = false
 
         return this
     }
@@ -172,12 +182,16 @@ class ItemElement(
             return this
         }
         hovered = false
-        raw.cacheUpToDate = false
+        cacheUpToDate = false
 
         return this
     }
 
     override fun toString(): String {
         return stack.toString()
+    }
+
+    companion object {
+        private val HOVERED_COLOR = RGBColor(0xFF_FF_FF_80.toInt())
     }
 }
