@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -28,10 +28,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 abstract class BackgroundedContainerScreen<C : Container>(
     guiRenderer: GUIRenderer,
     container: C,
-    background: AtlasElement?,
-    items: Int2ObjectOpenHashMap<AtlasSlot> = background?.slots ?: Int2ObjectOpenHashMap(),
+    protected val atlasElement: AtlasElement?,
+    items: Int2ObjectOpenHashMap<AtlasSlot> = atlasElement?.slots ?: Int2ObjectOpenHashMap(),
 ) : ContainerScreen<C>(guiRenderer, container, items) {
-    private val containerBackground = AtlasImageElement(guiRenderer, background)
+    protected val containerBackground = AtlasImageElement(guiRenderer, atlasElement)
     override val customRenderer: Boolean get() = true
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

@@ -14,19 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic
 
 import de.bixilon.minosoft.data.container.types.generic.GenericContainer
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIFactory
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerScreen
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text.ContainerText
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import glm_.vec2.Vec2i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -51,27 +49,9 @@ open class GenericContainerScreen(
     override val customRenderer: Boolean get() = true
     private val containerSize = Vec2i(maxOf(header.size.x, slotRow.size.x, footer.size.x), header.size.y + slotRow.size.y * container.rows + footer.size.y)
 
-    private var containerTitle: TextElement? = null
-    private var containerTitleOffset = Vec2i.EMPTY
-    private var inventoryTitle: TextElement? = null
-    private var inventoryTitleOffset = Vec2i.EMPTY
+    private val title = ContainerText.of(guiRenderer, headerAtlas?.areas?.get("text"), container.title)
+    private val inventoryTitle = ContainerText.createInventoryTitle(guiRenderer, footerAtlas?.areas?.get("text"))
 
-
-    init {
-        container.title?.let {
-            val area = headerAtlas?.areas?.get("text") ?: return@let
-            val text = TextElement(guiRenderer, it.apply { applyDefaultColor(DEFAULT_TEXT_COLOR) }, background = false)
-            text.prefMaxSize = area.size
-            this.containerTitle = text
-            containerTitleOffset = area.start
-        }
-        footerAtlas?.areas?.get("text")?.let {
-            val text = TextElement(guiRenderer, TextComponent("Inventory").apply { applyDefaultColor(DEFAULT_TEXT_COLOR) }, background = false)
-            text.prefMaxSize = it.size
-            this.inventoryTitle = text
-            inventoryTitleOffset = it.start
-        }
-    }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val centerOffset = (size - containerSize) / 2
@@ -81,7 +61,7 @@ open class GenericContainerScreen(
 
         header.render(centerOffset, consumer, options)
         if (container.title != null) {
-            containerTitle?.render(centerOffset + containerTitleOffset, consumer, options)
+            title?.render(centerOffset, consumer, options)
         }
         centerOffset.y += header.size.y
         for (i in 0 until container.rows) {
@@ -89,7 +69,7 @@ open class GenericContainerScreen(
             centerOffset.y += slotRow.size.y
         }
         footer.render(centerOffset, consumer, options)
-        inventoryTitle?.render(centerOffset + inventoryTitleOffset, consumer, options)
+        inventoryTitle?.render(centerOffset, consumer, options)
 
         forceRenderContainerScreen(initialOffset, consumer, options)
     }

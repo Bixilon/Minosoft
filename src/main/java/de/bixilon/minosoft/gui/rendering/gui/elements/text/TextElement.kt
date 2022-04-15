@@ -47,6 +47,7 @@ open class TextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
+    shadow: Boolean = true,
 ) : Element(guiRenderer, text.toString().length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var renderInfo: TextRenderInfo
@@ -63,6 +64,14 @@ open class TextElement(
             cacheUpToDate = false
         }
     var background: Boolean = background
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            cacheUpToDate = false
+        }
+    var shadow: Boolean = shadow
         set(value) {
             if (field == value) {
                 return
@@ -110,6 +119,7 @@ open class TextElement(
                     charHeight = charHeight,
                     charMargin = charMargin,
                     scale = scale,
+                    shadow = shadow,
                 )
                 ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, InfiniteSizeElement(guiRenderer), renderWindow, null, null, renderInfo, value)
             }
@@ -142,6 +152,7 @@ open class TextElement(
             charHeight = charHeight,
             charMargin = charMargin,
             scale = scale,
+            shadow = shadow,
         )
         if (!emptyMessage) {
             ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, renderWindow, null, null, renderInfo, chatComponent)

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,7 +45,7 @@ class BaseComponent : ChatComponent {
     constructor(parent: TextComponent? = null, legacy: String = "", restrictedMode: Boolean = false) {
         val currentText = StringBuilder()
         var currentColor = parent?.color
-        var currentFormatting: MutableSet<ChatFormattingCode> = parent?.formatting?.toMutableSet() ?: TextComponent.DEFAULT_FORMATTING.toMutableSet()
+        var currentFormatting: MutableSet<ChatFormattingCode> = parent?.formatting?.toMutableSet() ?: mutableSetOf()
 
         val iterator = StringCharacterIterator(legacy)
 
@@ -98,7 +98,7 @@ class BaseComponent : ChatComponent {
                 }
             }
             push(null)
-            currentFormatting = TextComponent.DEFAULT_FORMATTING.toMutableSet()
+            currentFormatting = mutableSetOf()
             currentColor = null
             currentText.clear()
         }
@@ -161,14 +161,13 @@ class BaseComponent : ChatComponent {
 
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
 
-        val formatting = parent?.formatting?.toMutableSet() ?: TextComponent.DEFAULT_FORMATTING.toMutableSet()
+        val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
 
         formatting.addOrRemove(PreChatFormattingCodes.BOLD, json["bold"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.ITALIC, json["italic"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.UNDERLINED, json["underlined"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json["strikethrough"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
-        formatting.addOrRemove(PreChatFormattingCodes.SHADOWED, json["shadowed"]?.toBoolean())
 
         val clickEvent = json["clickEvent", "click_event"]?.toJsonObject()?.let { click -> ClickEvents.build(click, restrictedMode) }
         val hoverEvent = json["hoverEvent", "hover_event"]?.toJsonObject()?.let { hover -> HoverEvents.build(hover, restrictedMode) }

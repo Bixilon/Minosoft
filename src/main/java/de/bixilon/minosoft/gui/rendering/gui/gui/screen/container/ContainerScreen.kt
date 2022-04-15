@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -64,9 +63,5 @@ abstract class ContainerScreen<C : Container>(
     override fun onClose() {
         super.onClose()
         container.onClose()
-    }
-
-    companion object {
-        val DEFAULT_TEXT_COLOR = ChatColors.DARK_GRAY
     }
 }

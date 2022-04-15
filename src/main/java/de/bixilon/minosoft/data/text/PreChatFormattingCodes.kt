@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,8 +21,6 @@ enum class PreChatFormattingCodes(
     STRIKETHROUGH('m', "\u001b[9m"),
     UNDERLINED('n', "\u001b[4m"),
     ITALIC('o', "\u001b[3m"),
-
-    SHADOWED('s', ""),
     ;
 
     override fun toString(): String {

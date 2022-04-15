@@ -14,9 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.kutil.math.simple.FloatMath.ceil
-import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.TextStyle
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -115,9 +113,9 @@ class CharData(
         // ToDo: Obfuscated
     }
 
-    fun calculateWidth(style: TextStyle, scale: Float): Int {
+    fun calculateWidth(scale: Float, shadow: Boolean): Int {
         var width = scaledWidth.toFloat()
-        if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
+        if (shadow) {
             width += SHADOW_OFFSET
         }
 

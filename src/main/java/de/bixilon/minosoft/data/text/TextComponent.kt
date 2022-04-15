@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
@@ -30,7 +29,7 @@ import javafx.util.Duration
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
-    override val formatting: MutableSet<ChatFormattingCode> = DEFAULT_FORMATTING.toSynchronizedSet(),
+    override val formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
@@ -58,11 +57,6 @@ open class TextComponent(
 
     fun italic(): TextComponent {
         formatting.add(PreChatFormattingCodes.ITALIC)
-        return this
-    }
-
-    fun shadow(): TextComponent {
-        formatting.add(PreChatFormattingCodes.SHADOWED)
         return this
     }
 
@@ -114,9 +108,6 @@ open class TextComponent(
                 }
             }
             for (formattingCode in this.formatting) {
-                if (formattingCode == PreChatFormattingCodes.SHADOWED) {
-                    continue
-                }
                 stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)
                 stringBuilder.append(formattingCode.char)
             }
@@ -217,10 +208,5 @@ open class TextComponent(
             return false
         }
         return message == other.message && color == other.color && formatting == other.formatting && clickEvent == other.clickEvent && hoverEvent == other.hoverEvent
-    }
-
-
-    companion object {
-        val DEFAULT_FORMATTING: Set<ChatFormattingCode> = setOf(PreChatFormattingCodes.SHADOWED)
     }
 }

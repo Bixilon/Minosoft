@@ -15,10 +15,26 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
 import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text.ContainerText
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec2.Vec2i
 import kotlin.reflect.KClass
 
 class CraftingContainerScreen(guiRenderer: GUIRenderer, container: CraftingContainer) : BackgroundedContainerScreen<CraftingContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:crafting_container".toResourceLocation()]) {
+    private val title = ContainerText.of(guiRenderer, atlasElement?.areas?.get("crafting_text"), container.title)
+    private val inventoryTitle = ContainerText.createInventoryTitle(guiRenderer, atlasElement?.areas?.get("inventory_text"))
+
+
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        super.forceRender(offset, consumer, options)
+        val centerOffset = offset + (size - containerBackground.size) / 2
+        if (container.title != null) {
+            title?.render(centerOffset, consumer, options)
+        }
+        inventoryTitle?.render(centerOffset, consumer, options)
+    }
 
     companion object : ContainerGUIFactory<CraftingContainerScreen, CraftingContainer> {
         override val clazz: KClass<CraftingContainer> = CraftingContainer::class

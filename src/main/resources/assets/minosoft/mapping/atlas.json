@@ -1315,13 +1315,13 @@
         }
       },
       "areas": {
-        "inventory_text": {
-          "start": [3, 70],
-          "end": [172, 83]
-        },
         "crafting_text": {
           "start": [29, 3],
           "end": [172, 16]
+        },
+        "inventory_text": {
+          "start": [3, 70],
+          "end": [172, 83]
         }
       }
     }

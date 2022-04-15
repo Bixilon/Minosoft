@@ -33,7 +33,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val elementMaxSize = element.maxSize
         val elementSize = element.size
         val color = text.color ?: ChatColors.WHITE
-        val shadow: Boolean = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
+        val shadow = renderInfo.shadow
         val italic: Boolean = text.formatting.contains(PreChatFormattingCodes.ITALIC)
         val bold: Boolean = text.formatting.contains(PreChatFormattingCodes.BOLD)
         val strikethrough: Boolean = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
@@ -146,7 +146,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             val charData = renderWindow.font[char] ?: continue
 
-            val charWidth = charData.calculateWidth(text, renderInfo.scale)
+            val charWidth = charData.calculateWidth(renderInfo.scale, renderInfo.shadow)
             var width = charWidth
 
             if (offset.x != initialOffset.x + renderInfo.charMargin) {
