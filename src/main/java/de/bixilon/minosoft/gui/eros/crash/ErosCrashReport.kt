@@ -19,7 +19,6 @@ import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.file.watcher.FileWatcherService
-import de.bixilon.kutil.hash.HashUtil.sha1
 import de.bixilon.kutil.os.OSUtil
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
@@ -120,6 +119,7 @@ class ErosCrashReport : JavaFXWindowController() {
             "Sing me a happy song!",
             "This message should not be visible...",
             "lmfao",
+            "Your fault",
         )
 
 
@@ -127,7 +127,7 @@ class ErosCrashReport : JavaFXWindowController() {
          * Kills all connections, closes all windows, creates and saves a crash report
          * Special: Does not use any general functions/translations/..., because when a crash happens, you can't rely on anything.
          */
-        fun Throwable?.crash() {
+        fun Throwable?.crash(hideException: Boolean = false) {
             if (alreadyCrashed) {
                 return
             }
@@ -147,7 +147,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 }
             })
 
-            val details = createCrashText(this)
+            val details = createCrashText(if (hideException) null else this)
 
             var crashReportPath: String?
             try {
@@ -204,7 +204,7 @@ class ErosCrashReport : JavaFXWindowController() {
         }
 
         private fun createCrashText(exception: Throwable?): String {
-            val stack = """
+            return """
 ----- Minosoft Crash Report -----
 // ${CRASH_REPORT_COMMENTS.random()}
 
@@ -229,15 +229,7 @@ ${exception?.toStackTrace() ?: ""}
  
 -- Git Info --
 ${GitInfo.formatForCrashReport()}
-            """.trimIndent()
-
-            val hash = stack.toByteArray(StandardCharsets.UTF_8).sha1()
-
-            return """
-$stack
-
-Crash checksum (SHA-1): $hash
-            """.trimIndent()
+""".trimIndent()
         }
     }
 }
