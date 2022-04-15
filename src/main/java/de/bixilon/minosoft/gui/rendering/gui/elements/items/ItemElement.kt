@@ -47,6 +47,7 @@ class ItemElement(
 
     var _stack: ItemStack? by raw::_stack
     var stack: ItemStack? by raw::stack
+   // override var cacheUpToDate: Boolean by raw::cacheUpToDate
 
     init {
         this._parent = itemsElement
@@ -59,7 +60,6 @@ class ItemElement(
             if (hovered) {
                 ImageElement(guiRenderer, renderWindow.WHITE_TEXTURE.texture, size = this.size, tint = HOVERED_COLOR).forceRender(offset, consumer, options)
             }
-            return
         }
         var options = options
         if (hovered) {

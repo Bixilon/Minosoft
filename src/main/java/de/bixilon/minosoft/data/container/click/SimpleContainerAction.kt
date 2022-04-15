@@ -33,8 +33,9 @@ class SimpleContainerAction(
         val previous = item.copy()
         val floatingItem: ItemStack
         if (count == ContainerCounts.ALL) {
+            floatingItem = item.copy()
+            item.item.count = 0
             container.remove(slot)
-            floatingItem = item
         } else {
             // half
             val stayCount = item.item.count / 2
@@ -97,7 +98,7 @@ class SimpleContainerAction(
                 floatingItem.item._count--
                 container._set(slot, floatingItem.copy(count = 1))
             }
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to floatingItem), target))
         } finally {
             floatingItem.commit()
             target?.lock() // lock to prevent exception

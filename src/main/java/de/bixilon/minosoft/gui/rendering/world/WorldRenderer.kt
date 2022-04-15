@@ -139,7 +139,6 @@ class WorldRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
         renderWindow.textureManager.staticTextures.animator.use(shader)

@@ -69,6 +69,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             container._set(slotId, stack)
         }
+        container.serverRevision = revision
         container.lock.unlock()
         container.revision++
     }
