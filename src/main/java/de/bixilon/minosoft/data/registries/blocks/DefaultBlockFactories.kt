@@ -69,6 +69,7 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     LeavesBlock,
     PlantBlock,
     CropBlock,
+    CraftingTableBlock,
 
     FurnaceBlock,
     ChestBlock,

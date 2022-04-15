@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic.Generi
 
 object ContainerGUIFactories : DefaultClassMappingFactory<ContainerGUIFactory<*, *>>(
     GenericContainerScreen,
+    CraftingContainerScreen,
 ) {
 
     fun build(guiRenderer: GUIRenderer, container: Container): ContainerScreen<*>? {

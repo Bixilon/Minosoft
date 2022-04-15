@@ -11,22 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.containers
+package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
 import de.bixilon.minosoft.data.container.types.CraftingContainer
-import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.data.container.types.generic.*
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import kotlin.reflect.KClass
 
-object DefaultContainerFactories : DefaultFactory<ContainerFactory<*>>(
-    PlayerInventory,
+class CraftingContainerScreen(guiRenderer: GUIRenderer, container: CraftingContainer) : BackgroundedContainerScreen<CraftingContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:crafting_container".toResourceLocation()]) {
 
-    Generic9x1Container,
-    Generic9x2Container,
-    Generic9x3Container,
-    Generic9x4Container,
-    Generic9x5Container,
-    Generic9x6Container,
+    companion object : ContainerGUIFactory<CraftingContainerScreen, CraftingContainer> {
+        override val clazz: KClass<CraftingContainer> = CraftingContainer::class
 
-    CraftingContainer,
-)
+        override fun build(guiRenderer: GUIRenderer, container: CraftingContainer): CraftingContainerScreen {
+            return CraftingContainerScreen(guiRenderer, container)
+        }
+    }
+}
