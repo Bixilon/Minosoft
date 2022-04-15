@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.boss.enderdragon
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -25,11 +25,11 @@ import glm_.vec3.Vec3i
 
 class EndCrystal(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Beam target")
+    @get:SynchronizedEntityData(name = "Beam target")
     val beamTarget: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.END_CRYSTAL_BEAM_TARGET)
 
-    @EntityMetaDataFunction(name = "Show bottom")
+    @SynchronizedEntityData(name = "Show bottom")
     val showBottom: Boolean
         get() = data.sets.getBoolean(EntityDataFields.END_CRYSTAL_SHOW_BOTTOM)
 

@@ -16,8 +16,8 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
@@ -41,19 +41,19 @@ abstract class PlayerEntity(
     override val dimensions: Vec2
         get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
 
-    @get:EntityMetaDataFunction(name = "Gamemode")
+    @get:SynchronizedEntityData(name = "Gamemode")
     val gamemode: Gamemodes
         get() = tabListItem.gamemode
 
-    @get:EntityMetaDataFunction(name = "name")
+    @get:SynchronizedEntityData(name = "name")
     val name: String
         get() = tabListItem.name
 
-    @get:EntityMetaDataFunction(name = "Absorption hearts")
+    @get:SynchronizedEntityData(name = "Absorption hearts")
     val playerAbsorptionHearts: Float
         get() = data.sets.getFloat(EntityDataFields.PLAYER_ABSORPTION_HEARTS)
 
-    @get:EntityMetaDataFunction(name = "Score")
+    @get:SynchronizedEntityData(name = "Score")
     val score: Int
         get() = data.sets.getInt(EntityDataFields.PLAYER_SCORE)
 
@@ -61,15 +61,15 @@ abstract class PlayerEntity(
         return data.sets.getBitMask(EntityDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Main arm")
+    @get:SynchronizedEntityData(name = "Main arm")
     open val mainArm: Arms
         get() = if (data.sets.getByte(EntityDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
 
-    @get:EntityMetaDataFunction(name = "Left shoulder entity data")
+    @get:SynchronizedEntityData(name = "Left shoulder entity data")
     val leftShoulderData: Map<String, Any>?
         get() = data.sets.getNBT(EntityDataFields.PLAYER_LEFT_SHOULDER_DATA)
 
-    @get:EntityMetaDataFunction(name = "Right shoulder entity data")
+    @get:SynchronizedEntityData(name = "Right shoulder entity data")
     val rightShoulderData: Map<String, Any>?
         get() = data.sets.getNBT(EntityDataFields.PLAYER_RIGHT_SHOULDER_DATA)
 

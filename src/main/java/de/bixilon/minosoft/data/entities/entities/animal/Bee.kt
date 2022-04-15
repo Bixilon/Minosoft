@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -27,21 +27,21 @@ class Bee(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
         return data.sets.getBitMask(EntityDataFields.BEE_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is angry")
+    @get:SynchronizedEntityData(name = "Is angry")
     val isAngry: Boolean
         get() = getBeeFlag(0x02)
 
-    @EntityMetaDataFunction(name = "Has stung")
+    @SynchronizedEntityData(name = "Has stung")
     fun hasStung(): Boolean {
         return getBeeFlag(0x04)
     }
 
-    @EntityMetaDataFunction(name = "has Nectar")
+    @SynchronizedEntityData(name = "has Nectar")
     fun hasNectar(): Boolean {
         return getBeeFlag(0x08)
     }
 
-    @get:EntityMetaDataFunction(name = "Remaining anger time")
+    @get:SynchronizedEntityData(name = "Remaining anger time")
     val remainingAngerTimer: Int
         get() = data.sets.getInt(EntityDataFields.BEE_REMAINING_ANGER_TIME)
 

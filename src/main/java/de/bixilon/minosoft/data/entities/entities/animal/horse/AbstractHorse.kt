@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -27,32 +27,32 @@ abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType,
         return data.sets.getBitMask(EntityDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is tame")
+    @get:SynchronizedEntityData(name = "Is tame")
     val isTame: Boolean
         get() = getAbstractHorseFlag(0x02)
 
-    @get:EntityMetaDataFunction(name = "Is saddled")
+    @get:SynchronizedEntityData(name = "Is saddled")
     val isSaddled: Boolean
         get() = getAbstractHorseFlag(0x04)
 
-    @EntityMetaDataFunction(name = "Has bred")
+    @SynchronizedEntityData(name = "Has bred")
     fun hasBred(): Boolean {
         return getAbstractHorseFlag(0x08)
     }
 
-    @get:EntityMetaDataFunction(name = "Is eating")
+    @get:SynchronizedEntityData(name = "Is eating")
     val isEating: Boolean
         get() = getAbstractHorseFlag(0x10)
 
-    @get:EntityMetaDataFunction(name = "Is rearing")
+    @get:SynchronizedEntityData(name = "Is rearing")
     val isRearing: Boolean
         get() = getAbstractHorseFlag(0x20)
 
-    @get:EntityMetaDataFunction(name = "Is mouth open")
+    @get:SynchronizedEntityData(name = "Is mouth open")
     val isMouthOpen: Boolean
         get() = getAbstractHorseFlag(0x40)
 
-    @get:EntityMetaDataFunction(name = "Owner UUID")
+    @get:SynchronizedEntityData(name = "Owner UUID")
     val owner: UUID?
         get() = data.sets.getUUID(EntityDataFields.ABSTRACT_HORSE_OWNER_UUID)
 }

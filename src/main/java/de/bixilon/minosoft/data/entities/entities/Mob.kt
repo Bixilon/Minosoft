@@ -24,15 +24,15 @@ abstract class Mob(connection: PlayConnection, entityType: EntityType, position:
         return data.sets.getBitMask(EntityDataFields.MOB_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is no ai")
+    @get:SynchronizedEntityData(name = "Is no ai")
     val isNoAi: Boolean
         get() = getMobFlags(0x01)
 
-    @get:EntityMetaDataFunction(name = "Is left handed")
+    @get:SynchronizedEntityData(name = "Is left handed")
     val isLeftHanded: Boolean
         get() = getMobFlags(0x02)
 
-    @get:EntityMetaDataFunction(name = "Is aggressive")
+    @get:SynchronizedEntityData(name = "Is aggressive")
     open val isAggressive: Boolean
         get() = getMobFlags(0x04)
 }

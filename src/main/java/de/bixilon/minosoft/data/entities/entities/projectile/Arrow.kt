@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,7 @@ import glm_.vec3.Vec3d
 
 class Arrow(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractArrow(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Effect color")
+    @get:SynchronizedEntityData(name = "Effect color")
     val effectColor: Int
         get() = data.sets.getInt(EntityDataFields.ARROW_EFFECT_COLOR)
 

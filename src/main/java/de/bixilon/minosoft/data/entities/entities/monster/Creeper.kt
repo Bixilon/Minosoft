@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,15 +23,15 @@ import glm_.vec3.Vec3d
 
 class Creeper(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "State")
+    @get:SynchronizedEntityData(name = "State")
     val state: Int
         get() = data.sets.getInt(EntityDataFields.CREEPER_STATE)
 
-    @get:EntityMetaDataFunction(name = "Is charged")
+    @get:SynchronizedEntityData(name = "Is charged")
     val isCharged: Boolean
         get() = data.sets.getBoolean(EntityDataFields.CREEPER_IS_CHARGED)
 
-    @get:EntityMetaDataFunction(name = "Is ignited")
+    @get:SynchronizedEntityData(name = "Is ignited")
     val isIgnited: Boolean
         get() = data.sets.getBoolean(EntityDataFields.CREEPER_IS_IGNITED)
 

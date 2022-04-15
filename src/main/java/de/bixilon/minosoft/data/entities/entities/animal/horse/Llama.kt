@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,15 +23,15 @@ import glm_.vec3.Vec3d
 
 open class Llama(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Strength")
+    @get:SynchronizedEntityData(name = "Strength")
     val strength: Int
         get() = data.sets.getInt(EntityDataFields.LLAMA_STRENGTH)
 
-    @get:EntityMetaDataFunction(name = "CarpetColor")
+    @get:SynchronizedEntityData(name = "CarpetColor")
     val carpetColor: Int
         get() = data.sets.getInt(EntityDataFields.LLAMA_CARPET_COLOR)
 
-    @get:EntityMetaDataFunction(name = "Variant")
+    @get:SynchronizedEntityData(name = "Variant")
     val variant: Int
         get() = data.sets.getInt(EntityDataFields.LLAMA_VARIANT)
 

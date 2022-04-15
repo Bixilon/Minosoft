@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -27,7 +27,7 @@ import glm_.vec3.Vec3i
 
 class ItemEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Item")
+    @get:SynchronizedEntityData(name = "Item")
     val item: ItemStack?
         get() = data.sets.getItemStack(EntityDataFields.ITEM_ITEM)
 

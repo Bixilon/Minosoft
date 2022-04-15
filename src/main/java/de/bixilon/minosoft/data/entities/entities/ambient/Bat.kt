@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.ambient
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -27,7 +27,7 @@ class Bat(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
         return data.sets.getBitMask(EntityDataFields.BAT_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Hanging")
+    @get:SynchronizedEntityData(name = "Hanging")
     val isHanging: Boolean
         get() = getBatFlag(0x01)
 

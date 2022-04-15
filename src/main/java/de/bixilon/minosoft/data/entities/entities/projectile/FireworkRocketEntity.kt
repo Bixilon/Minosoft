@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -25,18 +25,18 @@ import glm_.vec3.Vec3d
 
 class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Item")
+    @get:SynchronizedEntityData(name = "Item")
     val fireworkItem: ItemStack?
         get() = data.sets.getItemStack(EntityDataFields.FIREWORK_ROCKET_ENTITY_ITEM)
 
-    @get:EntityMetaDataFunction(name = "Attached entity id")
+    @get:SynchronizedEntityData(name = "Attached entity id")
     override var attachedEntity: Int?
         get() = data.sets.getInt(EntityDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY)
         set(attachedEntity) {
             super.attachedEntity = attachedEntity
         }
 
-    @get:EntityMetaDataFunction(name = "Shot at angle")
+    @get:SynchronizedEntityData(name = "Shot at angle")
     val isShotAtAngle: Boolean
         get() = data.sets.getBoolean(EntityDataFields.FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE)
 

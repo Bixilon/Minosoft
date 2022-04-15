@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.hoglin
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,7 +24,7 @@ import glm_.vec3.Vec3d
 
 class Hoglin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Immune zo zombification")
+    @get:SynchronizedEntityData(name = "Immune zo zombification")
     val isImmuneToZombification: Boolean
         get() = data.sets.getBoolean(EntityDataFields.HOGLIN_IMMUNE_TO_ZOMBIFICATION)
 

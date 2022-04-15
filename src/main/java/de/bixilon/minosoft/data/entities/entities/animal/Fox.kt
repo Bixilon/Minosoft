@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,7 +24,7 @@ import java.util.*
 
 class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Variant")
+    @get:SynchronizedEntityData(name = "Variant")
     val variant: Int
         get() = data.sets.getInt(EntityDataFields.FOX_VARIANT)
 
@@ -32,39 +32,39 @@ class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
         return data.sets.getBitMask(EntityDataFields.FOX_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is sitting")
+    @get:SynchronizedEntityData(name = "Is sitting")
     val isSitting: Boolean
         get() = getFoxFlag(0x01)
 
-    @get:EntityMetaDataFunction(name = "Is crouching")
+    @get:SynchronizedEntityData(name = "Is crouching")
     override val isSneaking: Boolean
         get() = getFoxFlag(0x04)
 
-    @get:EntityMetaDataFunction(name = "Is interested")
+    @get:SynchronizedEntityData(name = "Is interested")
     val isInterested: Boolean
         get() = getFoxFlag(0x08)
 
-    @get:EntityMetaDataFunction(name = "Is pouncing")
+    @get:SynchronizedEntityData(name = "Is pouncing")
     val isPouncing: Boolean
         get() = getFoxFlag(0x10)
 
-    @get:EntityMetaDataFunction(name = "Is sleeping")
+    @get:SynchronizedEntityData(name = "Is sleeping")
     override val isSleeping: Boolean
         get() = getFoxFlag(0x20)
 
-    @get:EntityMetaDataFunction(name = "Is faceplanted")
+    @get:SynchronizedEntityData(name = "Is faceplanted")
     val isFaceplanted: Boolean
         get() = getFoxFlag(0x40)
 
-    @get:EntityMetaDataFunction(name = "Is defending")
+    @get:SynchronizedEntityData(name = "Is defending")
     val isDefending: Boolean
         get() = getFoxFlag(0x80)
 
-    @get:EntityMetaDataFunction(name = "Trusted 1")
+    @get:SynchronizedEntityData(name = "Trusted 1")
     val firstTrusted: UUID?
         get() = data.sets.getUUID(EntityDataFields.FOX_TRUSTED_1)
 
-    @get:EntityMetaDataFunction(name = "Trusted 2")
+    @get:SynchronizedEntityData(name = "Trusted 2")
     val secondTrusted: UUID?
         get() = data.sets.getUUID(EntityDataFields.FOX_TRUSTED_2)
 

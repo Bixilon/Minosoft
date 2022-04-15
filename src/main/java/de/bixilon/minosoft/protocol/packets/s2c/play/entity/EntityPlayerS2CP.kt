@@ -63,7 +63,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         var metaData: EntityData? = null
         if (buffer.versionId < ProtocolVersions.V_19W34A) {
-            metaData = buffer.readMetaData()
+            metaData = buffer.readEntityData()
         }
         entity = RemotePlayerEntity(
             connection = buffer.connection,

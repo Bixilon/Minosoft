@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,12 +23,12 @@ import glm_.vec3.Vec3d
 
 class Pig(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @EntityMetaDataFunction(name = "Has saddle")
+    @SynchronizedEntityData(name = "Has saddle")
     fun hasSaddle(): Boolean {
         return data.sets.getBoolean(EntityDataFields.PIG_HAS_SADDLE)
     }
 
-    @get:EntityMetaDataFunction(name = "Boost time")
+    @get:SynchronizedEntityData(name = "Boost time")
     val boostTime: Int
         get() = data.sets.getInt(EntityDataFields.PIG_BOOST_TIME)
 

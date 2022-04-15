@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -25,15 +25,15 @@ import glm_.vec3.Vec3d
 
 open class ItemFrame(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Item")
+    @get:SynchronizedEntityData(name = "Item")
     val item: ItemStack?
         get() = data.sets.getItemStack(EntityDataFields.ITEM_FRAME_ITEM)
 
-    @get:EntityMetaDataFunction(name = "Item rotation level")
+    @get:SynchronizedEntityData(name = "Item rotation level")
     val itemRotation: Int
         get() = data.sets.getInt(EntityDataFields.ITEM_FRAME_ROTATION)
 
-    @get:EntityMetaDataFunction(name = "Facing")
+    @get:SynchronizedEntityData(name = "Facing")
     var facing: Directions = Directions.NORTH
 
     override fun setObjectData(data: Int) {

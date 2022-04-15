@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.FlyingMob
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,7 +24,7 @@ import glm_.vec3.Vec3d
 
 class Phantom(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Size")
+    @get:SynchronizedEntityData(name = "Size")
     val size: Int
         get() = data.sets.getInt(EntityDataFields.PHANTOM_SIZE)
 

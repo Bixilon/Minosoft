@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.item
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,7 +24,7 @@ import glm_.vec3.Vec3d
 
 class PrimedTNT(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Fuse time")
+    @get:SynchronizedEntityData(name = "Fuse time")
     val fuseTime: Int
         get() = data.sets.getInt(EntityDataFields.PRIMED_TNT_FUSE_TIME)
 

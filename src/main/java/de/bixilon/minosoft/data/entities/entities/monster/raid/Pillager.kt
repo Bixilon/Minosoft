@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster.raid
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,7 @@ import glm_.vec3.Vec3d
 
 class Pillager(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractIllager(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is charging crossbow")
+    @get:SynchronizedEntityData(name = "Is charging crossbow")
     val isChargingCrossbow: Boolean
         get() = data.sets.getBoolean(EntityDataFields.PILLAGER_IS_CHARGING_CROSSBOW)
 

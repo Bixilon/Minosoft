@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -28,19 +28,19 @@ import glm_.vec3.Vec3i
 
 class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Attachment face")
+    @get:SynchronizedEntityData(name = "Attachment face")
     val attachmentFace: Directions
         get() = data.sets.getDirection(EntityDataFields.SHULKER_ATTACH_FACE)
 
-    @get:EntityMetaDataFunction(name = "Attachment position")
+    @get:SynchronizedEntityData(name = "Attachment position")
     val attachmentPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.SHULKER_ATTACHMENT_POSITION)
 
-    @get:EntityMetaDataFunction(name = "Peek")
+    @get:SynchronizedEntityData(name = "Peek")
     val peek: Byte
         get() = data.sets.getByte(EntityDataFields.SHULKER_PEEK)
 
-    @get:EntityMetaDataFunction(name = "Color")
+    @get:SynchronizedEntityData(name = "Color")
     val color: RGBColor
         get() = ChatColors[data.sets.getByte(EntityDataFields.SHULKER_COLOR).toInt()]
 

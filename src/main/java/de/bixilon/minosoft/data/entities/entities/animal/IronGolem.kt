@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -27,7 +27,7 @@ class IronGolem(connection: PlayConnection, entityType: EntityType, position: Ve
         return data.sets.getBitMask(EntityDataFields.IRON_GOLEM_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is player created")
+    @get:SynchronizedEntityData(name = "Is player created")
     val isPlayerCreated: Boolean
         get() = getIronGolemFlag(0x01)
 

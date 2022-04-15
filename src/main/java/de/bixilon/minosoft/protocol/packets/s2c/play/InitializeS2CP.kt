@@ -163,6 +163,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.registries.dimensionRegistry.setData(dimensions)
         connection.world.dimension = dimensionProperties
 
+        connection.world.entities.getId(playerEntity)?.let { connection.world.entities.remove(it) } // e.g. bungeecord sends this packet twice
         connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
         if (connection.version.versionId >= ProtocolVersions.V_19W36A && !connection.profiles.rendering.performance.fastBiomeNoise) {

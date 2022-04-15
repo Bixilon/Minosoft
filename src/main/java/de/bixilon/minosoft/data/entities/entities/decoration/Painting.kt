@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.decoration
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.Motive
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -29,8 +29,8 @@ class Painting(
     connection: PlayConnection,
     entityType: EntityType,
     position: Vec3i,
-    @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
-    @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
+    @get:SynchronizedEntityData(name = "Direction") val direction: Directions,
+    @get:SynchronizedEntityData(name = "Motive") val motive: Motive,
 ) : Entity(connection, entityType, position.entityPosition, EntityRotation(0.0f, 0.0f)) {
 
     companion object : EntityFactory<Painting> {

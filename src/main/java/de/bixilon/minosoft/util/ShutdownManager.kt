@@ -26,7 +26,8 @@ import kotlin.system.exitProcess
 
 object ShutdownManager {
     private var initialized = false
-    private var exiting = false
+    var shuttingDown = false
+        private set
 
 
     fun shutdown(message: String? = null, reason: ShutdownReasons = ShutdownReasons.UNKNOWN) {
@@ -42,10 +43,10 @@ object ShutdownManager {
 
     fun init() {
         Runtime.getRuntime().addShutdownHook(Thread({
-            if (exiting) {
+            if (shuttingDown) {
                 return@Thread
             }
-            exiting = true
+            shuttingDown = true
 
             shutdown()
         }, "Shutdown Hook"))

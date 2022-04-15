@@ -26,15 +26,15 @@ abstract class TamableAnimal(connection: PlayConnection, entityType: EntityType,
         return data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is sitting")
+    @get:SynchronizedEntityData(name = "Is sitting")
     val isSitting: Boolean
         get() = getTameableFlag(0x01)
 
-    @get:EntityMetaDataFunction(name = "Is tamed")
+    @get:SynchronizedEntityData(name = "Is tamed")
     val isTamed: Boolean
         get() = getTameableFlag(0x04)
 
-    @get:EntityMetaDataFunction(name = "Owner UUID")
+    @get:SynchronizedEntityData(name = "Owner UUID")
     val owner: UUID?
         get() = data.sets.getUUID(EntityDataFields.TAMABLE_ENTITY_OWNER_UUID)
 }

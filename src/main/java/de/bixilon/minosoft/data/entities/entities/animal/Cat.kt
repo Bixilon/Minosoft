@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,19 +26,19 @@ import glm_.vec3.Vec3d
 
 class Cat(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Variant")
+    @get:SynchronizedEntityData(name = "Variant")
     val variant: CatVariants
         get() = CatVariants.byId(data.sets.getInt(EntityDataFields.CAT_VARIANT))
 
-    @get:EntityMetaDataFunction(name = "Lying")
+    @get:SynchronizedEntityData(name = "Lying")
     val isLying: Boolean
         get() = data.sets.getBoolean(EntityDataFields.CAT_IS_LYING)
 
-    @get:EntityMetaDataFunction(name = "Relaxed")
+    @get:SynchronizedEntityData(name = "Relaxed")
     val isRelaxed: Boolean
         get() = data.sets.getBoolean(EntityDataFields.CAT_IS_RELAXED)
 
-    @get:EntityMetaDataFunction(name = "Collar color")
+    @get:SynchronizedEntityData(name = "Collar color")
     val collarColor: RGBColor
         get() = ChatColors[data.sets.getInt(EntityDataFields.CAT_GET_COLLAR_COLOR)]
 

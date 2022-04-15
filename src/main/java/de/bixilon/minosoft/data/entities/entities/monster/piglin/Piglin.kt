@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster.piglin
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,7 +24,7 @@ import glm_.vec3.Vec3d
 
 class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractPiglin(connection, entityType, position, rotation) {
 
-    @EntityMetaDataFunction(name = "Is immune to zombification")
+    @SynchronizedEntityData(name = "Is immune to zombification")
     override val isImmuneToZombification: Boolean
         get() = if (versionId < ProtocolVersions.V_20W27A) {
             super.isImmuneToZombification
@@ -33,15 +33,15 @@ class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3d
 
         }
 
-    @get:EntityMetaDataFunction(name = "Is baby")
+    @get:SynchronizedEntityData(name = "Is baby")
     val isBaby: Boolean
         get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_BABY)
 
-    @get:EntityMetaDataFunction(name = "Is charging crossbow")
+    @get:SynchronizedEntityData(name = "Is charging crossbow")
     val isChargingCrossbow: Boolean
         get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_CHARGING_CROSSBOW)
 
-    @get:EntityMetaDataFunction(name = "Is dancing")
+    @get:SynchronizedEntityData(name = "Is dancing")
     val isDancing: Boolean
         get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_DANCING)
 

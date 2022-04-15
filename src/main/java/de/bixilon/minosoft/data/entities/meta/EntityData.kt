@@ -53,7 +53,7 @@ class EntityData(
             EntityDataDataTypes.BYTE -> buffer.readByte()
             EntityDataDataTypes.VAR_INT -> buffer.readVarInt()
             EntityDataDataTypes.SHORT -> buffer.readUnsignedShort()
-            EntityDataDataTypes.INTEGER -> buffer.readInt()
+            EntityDataDataTypes.INTEGER -> if (buffer.versionId < ProtocolVersions.V_1_13) buffer.readInt() else buffer.readVarInt() // ToDo: version
             EntityDataDataTypes.FLOAT -> buffer.readFloat()
             EntityDataDataTypes.STRING -> buffer.readString()
             EntityDataDataTypes.TEXT_COMPONENT -> buffer.readChatComponent()

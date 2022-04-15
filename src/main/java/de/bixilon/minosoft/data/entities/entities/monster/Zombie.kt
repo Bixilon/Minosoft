@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,15 +23,15 @@ import glm_.vec3.Vec3d
 
 open class Zombie(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is baby")
+    @get:SynchronizedEntityData(name = "Is baby")
     val isBaby: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ZOMBIE_IS_BABY)
 
-    @get:EntityMetaDataFunction(name = "Special type")
+    @get:SynchronizedEntityData(name = "Special type")
     val specialType: Int
         get() = data.sets.getInt(EntityDataFields.ZOMBIE_SPECIAL_TYPE)
 
-    @get:EntityMetaDataFunction(name = "Is converting to drowned")
+    @get:SynchronizedEntityData(name = "Is converting to drowned")
     val isConvertingToDrowned: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ZOMBIE_DROWNING_CONVERSION)
 

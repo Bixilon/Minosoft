@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.boss.wither
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.monster.Monster
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,19 +24,19 @@ import glm_.vec3.Vec3d
 
 class WitherBoss(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Center head target entity id")
+    @get:SynchronizedEntityData(name = "Center head target entity id")
     val centerHeadTargetEntityId: Int
         get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID)
 
-    @get:EntityMetaDataFunction(name = "Left head target entity id")
+    @get:SynchronizedEntityData(name = "Left head target entity id")
     val leftHeadTargetEntityId: Int
         get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID)
 
-    @get:EntityMetaDataFunction(name = "Right head target entity id")
+    @get:SynchronizedEntityData(name = "Right head target entity id")
     val rightHeadTargetEntityId: Int
         get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID)
 
-    @get:EntityMetaDataFunction(name = "Invulnerable time")
+    @get:SynchronizedEntityData(name = "Invulnerable time")
     val invulnerableTime: Int
         get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_INVULNERABLE_TIME)
 

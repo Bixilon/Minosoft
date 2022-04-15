@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.Mob
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -25,7 +25,7 @@ import org.checkerframework.common.value.qual.IntRange
 
 open class Slime(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Size")
+    @get:SynchronizedEntityData(name = "Size")
     val size: @IntRange(from = 0.toLong()) Int
         get() = data.sets.getInt(EntityDataFields.SLIME_SIZE)
 

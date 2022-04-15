@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,7 @@ import glm_.vec3.Vec3d
 
 class GlowSquid(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Squid(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Dark ticks remaining")
+    @get:SynchronizedEntityData(name = "Dark ticks remaining")
     val darkTicksRemaining: Int
         get() = data.sets.getInt(EntityDataFields.GLOW_SQUID_DARK_TICKS_REMAINING)
 

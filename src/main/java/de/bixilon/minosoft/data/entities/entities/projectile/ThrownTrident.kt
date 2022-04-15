@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,11 +23,11 @@ import glm_.vec3.Vec3d
 
 class ThrownTrident(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractArrow(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Loyalty level")
+    @get:SynchronizedEntityData(name = "Loyalty level")
     val loyaltyLevel: Byte
         get() = data.sets.getByte(EntityDataFields.THROWN_TRIDENT_LOYALTY_LEVEL)
 
-    @get:EntityMetaDataFunction(name = "Is enchanted")
+    @get:SynchronizedEntityData(name = "Is enchanted")
     val isEnchanted: Boolean
         get() = data.sets.getBoolean(EntityDataFields.THROWN_TRIDENT_FOIL)
 

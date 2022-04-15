@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,15 +23,15 @@ import glm_.vec3.Vec3d
 
 class Strider(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Boost stime")
+    @get:SynchronizedEntityData(name = "Boost stime")
     val boostTime: Int
         get() = data.sets.getInt(EntityDataFields.STRIDER_TIME_TO_BOOST)
 
-    @get:EntityMetaDataFunction(name = "Is suffocating")
+    @get:SynchronizedEntityData(name = "Is suffocating")
     val isSuffocating: Boolean
         get() = data.sets.getBoolean(EntityDataFields.STRIDER_IS_SUFFOCATING)
 
-    @EntityMetaDataFunction(name = "Has saddle")
+    @SynchronizedEntityData(name = "Has saddle")
     val hasSaddle: Boolean
         get() = data.sets.getBoolean(EntityDataFields.STRIDER_HAS_SADDLE)
 

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,11 +23,11 @@ import glm_.vec3.Vec3d
 
 class FishingBobber(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Hooked entity id")
+    @get:SynchronizedEntityData(name = "Hooked entity id")
     val hookedEntityId: Int
         get() = data.sets.getInt(EntityDataFields.FISHING_HOOK_HOOKED_ENTITY)
 
-    @get:EntityMetaDataFunction(name = "Is catchable")
+    @get:SynchronizedEntityData(name = "Is catchable")
     val isCatchable: Boolean
         get() = data.sets.getBoolean(EntityDataFields.FISHING_HOOK_CATCHABLE)
 

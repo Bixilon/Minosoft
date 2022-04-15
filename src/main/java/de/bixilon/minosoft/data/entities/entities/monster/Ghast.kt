@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.FlyingMob
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 class Ghast(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, position, rotation) {
-    @get:EntityMetaDataFunction(name = "Is attacking")
+    @get:SynchronizedEntityData(name = "Is attacking")
     val isAttacking: Boolean
         get() = data.sets.getBoolean(EntityDataFields.GHAST_IS_ATTACKING)
 

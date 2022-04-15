@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class EntityDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId = buffer.readEntityId()
-    val data: EntityData = buffer.readMetaData()
+    val data: EntityData = buffer.readEntityData()
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return

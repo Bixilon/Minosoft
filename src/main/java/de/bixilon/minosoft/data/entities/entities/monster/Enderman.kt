@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,7 +26,7 @@ import glm_.vec3.Vec3d
 class Enderman(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
 
     // ToDo: No clue here
-    @get:EntityMetaDataFunction(name = "Carried block")
+    @get:SynchronizedEntityData(name = "Carried block")
     val carriedBlock: BlockState?
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
             connection.registries.blockStateRegistry[data.sets.getInt(EntityDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) shl 4 or data.sets.getInt(EntityDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA)]
@@ -34,11 +34,11 @@ class Enderman(connection: PlayConnection, entityType: EntityType, position: Vec
             data.sets.getBlock(EntityDataFields.ENDERMAN_CARRIED_BLOCK)
         }
 
-    @get:EntityMetaDataFunction(name = "Is screaming")
+    @get:SynchronizedEntityData(name = "Is screaming")
     val isScreaming: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ENDERMAN_IS_SCREAMING)
 
-    @get:EntityMetaDataFunction(name = "Is starring")
+    @get:SynchronizedEntityData(name = "Is starring")
     val isStarring: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ENDERMAN_IS_STARRING)
 

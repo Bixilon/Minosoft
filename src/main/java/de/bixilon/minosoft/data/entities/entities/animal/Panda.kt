@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,23 +23,23 @@ import glm_.vec3.Vec3d
 
 class Panda(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Unhappy timer")
+    @get:SynchronizedEntityData(name = "Unhappy timer")
     val unhappyTimer: Int
         get() = data.sets.getInt(EntityDataFields.PANDA_UNHAPPY_TIMER)
 
-    @get:EntityMetaDataFunction(name = "Sneeze timer")
+    @get:SynchronizedEntityData(name = "Sneeze timer")
     val sneezeTimer: Int
         get() = data.sets.getInt(EntityDataFields.PANDA_SNEEZE_TIMER)
 
-    @get:EntityMetaDataFunction(name = "Eat timer")
+    @get:SynchronizedEntityData(name = "Eat timer")
     val eatTimer: Int
         get() = data.sets.getInt(EntityDataFields.PANDA_EAT_TIMER)
 
-    @get:EntityMetaDataFunction(name = "Main gene")
+    @get:SynchronizedEntityData(name = "Main gene")
     val mainGene: Genes
         get() = Genes.byId(data.sets.getInt(EntityDataFields.PANDA_MAIN_GENE))
 
-    @get:EntityMetaDataFunction(name = "Hidden gene")
+    @get:SynchronizedEntityData(name = "Hidden gene")
     val hiddenGene: Genes
         get() = Genes.byId(data.sets.getInt(EntityDataFields.PANDA_HIDDEN_GAME))
 
@@ -47,19 +47,19 @@ class Panda(connection: PlayConnection, entityType: EntityType, position: Vec3d,
         return data.sets.getBitMask(EntityDataFields.PANDA_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is sneezing")
+    @get:SynchronizedEntityData(name = "Is sneezing")
     val isSneezing: Boolean
         get() = getPandaFlag(0x02)
 
-    @get:EntityMetaDataFunction(name = "Is rolling")
+    @get:SynchronizedEntityData(name = "Is rolling")
     val isRolling: Boolean
         get() = getPandaFlag(0x04)
 
-    @get:EntityMetaDataFunction(name = "Is sitting")
+    @get:SynchronizedEntityData(name = "Is sitting")
     val isSitting: Boolean
         get() = getPandaFlag(0x08)
 
-    @get:EntityMetaDataFunction(name = "Is on back")
+    @get:SynchronizedEntityData(name = "Is on back")
     val isOnBack: Boolean
         get() = getPandaFlag(0x10)
 

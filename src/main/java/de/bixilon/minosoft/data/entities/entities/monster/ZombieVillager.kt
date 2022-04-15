@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,11 +24,11 @@ import glm_.vec3.Vec3d
 
 class ZombieVillager(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is converting")
+    @get:SynchronizedEntityData(name = "Is converting")
     val isConverting: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ZOMBIE_VILLAGER_IS_CONVERTING)
 
-    @get:EntityMetaDataFunction(name = "Villager data")
+    @get:SynchronizedEntityData(name = "Villager data")
     val villagerData: VillagerData
         get() = data.sets.getVillagerData(EntityDataFields.ZOMBIE_VILLAGER_DATA)
 

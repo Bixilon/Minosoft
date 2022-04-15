@@ -14,14 +14,14 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 abstract class AbstractChestedHorse(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
 
-    @EntityMetaDataFunction(name = "Has chest")
+    @SynchronizedEntityData(name = "Has chest")
     fun hasChest(): Boolean {
         return data.sets.getBoolean(EntityDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST)
     }

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,16 +24,16 @@ import glm_.vec3.Vec3i
 
 class Dolphin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : WaterAnimal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Treasure position")
+    @get:SynchronizedEntityData(name = "Treasure position")
     val treasurePosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.DOLPHIN_TREASURE_POSITION)
 
-    @EntityMetaDataFunction(name = "Has fish")
+    @SynchronizedEntityData(name = "Has fish")
     fun hasFish(): Boolean {
         return data.sets.getBoolean(EntityDataFields.DOLPHIN_HAS_FISH)
     }
 
-    @get:EntityMetaDataFunction(name = "Moistness level")
+    @get:SynchronizedEntityData(name = "Moistness level")
     val moistnessLevel: Int
         get() = data.sets.getInt(EntityDataFields.DOLPHIN_MOISTNESS_LEVEL)
 

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -26,7 +26,7 @@ open class Spider(connection: PlayConnection, entityType: EntityType, position: 
         return data.sets.getBitMask(EntityDataFields.SPIDER_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is climbing")
+    @get:SynchronizedEntityData(name = "Is climbing")
     val isClimbing: Boolean
         get() = getSpiderFlag(0x01)
 

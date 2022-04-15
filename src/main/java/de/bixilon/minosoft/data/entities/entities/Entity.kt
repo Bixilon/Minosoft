@@ -210,53 +210,53 @@ abstract class Entity(
         return data.sets.getBitMask(EntityDataFields.ENTITY_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "On fire")
+    @get:SynchronizedEntityData(name = "On fire")
     val isOnFire: Boolean
         get() = getEntityFlag(0x01)
 
-    @get:EntityMetaDataFunction(name = "Is sneaking")
+    @get:SynchronizedEntityData(name = "Is sneaking")
     open val isSneaking: Boolean
         get() = getEntityFlag(0x02)
 
-    @get:EntityMetaDataFunction(name = "Is sprinting")
+    @get:SynchronizedEntityData(name = "Is sprinting")
     open val isSprinting: Boolean
         get() = getEntityFlag(0x08)
 
     val isSwimming: Boolean
         get() = getEntityFlag(0x10)
 
-    @get:EntityMetaDataFunction(name = "Is invisible")
+    @get:SynchronizedEntityData(name = "Is invisible")
     val isInvisible: Boolean
         get() = getEntityFlag(0x20)
 
-    @EntityMetaDataFunction(name = "Has glowing effect")
+    @SynchronizedEntityData(name = "Has glowing effect")
     val hasGlowingEffect: Boolean
         get() = getEntityFlag(0x20)
 
     val isFlyingWithElytra: Boolean
         get() = getEntityFlag(0x80)
 
-    @get:EntityMetaDataFunction(name = "Air supply")
+    @get:SynchronizedEntityData(name = "Air supply")
     val airSupply: Int
         get() = data.sets.getInt(EntityDataFields.ENTITY_AIR_SUPPLY)
 
-    @get:EntityMetaDataFunction(name = "Custom name")
+    @get:SynchronizedEntityData(name = "Custom name")
     val customName: ChatComponent?
         get() = data.sets.getChatComponent(EntityDataFields.ENTITY_CUSTOM_NAME)
 
-    @get:EntityMetaDataFunction(name = "Is custom name visible")
+    @get:SynchronizedEntityData(name = "Is custom name visible")
     val isCustomNameVisible: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ENTITY_CUSTOM_NAME_VISIBLE)
 
-    @get:EntityMetaDataFunction(name = "Is silent")
+    @get:SynchronizedEntityData(name = "Is silent")
     val isSilent: Boolean
         get() = data.sets.getBoolean(EntityDataFields.ENTITY_SILENT)
 
-    @EntityMetaDataFunction(name = "Has gravity")
+    @SynchronizedEntityData(name = "Has gravity")
     open val hasGravity: Boolean
         get() = !data.sets.getBoolean(EntityDataFields.ENTITY_NO_GRAVITY)
 
-    @get:EntityMetaDataFunction(name = "Pose")
+    @get:SynchronizedEntityData(name = "Pose")
     open val pose: Poses?
         get() {
             return when {
@@ -267,22 +267,22 @@ abstract class Entity(
             }
         }
 
-    @get:EntityMetaDataFunction(name = "Ticks frozen")
+    @get:SynchronizedEntityData(name = "Ticks frozen")
     val ticksFrozen: Int
         get() = data.sets.getInt(EntityDataFields.ENTITY_TICKS_FROZEN)
 
     val entityMetaDataAsString: String
         get() = entityMetaDataFormatted.toString()
 
-    // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
+    // scan all methods of current class for SynchronizedEntityData annotation and write it into a list
     val entityMetaDataFormatted: TreeMap<String, Any>
         get() {
-            // scan all methods of current class for EntityMetaDataFunction annotation and write it into a list
+            // scan all methods of current class for SynchronizedEntityData annotation and write it into a list
             val values = TreeMap<String, Any>()
             var clazz: Class<*> = this.javaClass
             while (clazz != Any::class.java) {
                 for (method in clazz.declaredMethods) {
-                    if (!method.isAnnotationPresent(EntityMetaDataFunction::class.java)) {
+                    if (!method.isAnnotationPresent(SynchronizedEntityData::class.java)) {
                         continue
                     }
                     if (method.parameterCount > 0) {
@@ -290,7 +290,7 @@ abstract class Entity(
                     }
                     method.isAccessible = true
                     try {
-                        val resourceLocation: String = method.getAnnotation(EntityMetaDataFunction::class.java).name
+                        val resourceLocation: String = method.getAnnotation(SynchronizedEntityData::class.java).name
                         if (values.containsKey(resourceLocation)) {
                             continue
                         }

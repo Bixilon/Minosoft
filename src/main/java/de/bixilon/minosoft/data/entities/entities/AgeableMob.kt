@@ -20,7 +20,7 @@ import glm_.vec3.Vec3d
 
 abstract class AgeableMob(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is baby")
+    @get:SynchronizedEntityData(name = "Is baby")
     val isBaby: Boolean
         get() = data.sets.getBoolean(EntityDataFields.AGEABLE_IS_BABY)
 }

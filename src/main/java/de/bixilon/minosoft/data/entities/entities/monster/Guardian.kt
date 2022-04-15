@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,11 +23,11 @@ import glm_.vec3.Vec3d
 
 open class Guardian(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is moving")
+    @get:SynchronizedEntityData(name = "Is moving")
     val isMoving: Boolean
         get() = data.sets.getBoolean(EntityDataFields.GUARDIAN_IS_MOVING)
 
-    @get:EntityMetaDataFunction(name = "Attacked entity id")
+    @get:SynchronizedEntityData(name = "Attacked entity id")
     val attackEntityId: Int
         get() = data.sets.getInt(EntityDataFields.GUARDIAN_TARGET_ENTITY_ID)
 

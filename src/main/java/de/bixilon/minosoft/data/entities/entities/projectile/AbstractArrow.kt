@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
@@ -26,19 +26,19 @@ abstract class AbstractArrow(connection: PlayConnection, entityType: EntityType,
         return data.sets.getBitMask(EntityDataFields.ABSTRACT_ARROW_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is critical")
+    @get:SynchronizedEntityData(name = "Is critical")
     val isCritical: Boolean
         get() = getAbstractArrowFlag(0x01)
 
-    @get:EntityMetaDataFunction(name = "Is no clip")
+    @get:SynchronizedEntityData(name = "Is no clip")
     val isNoClip: Boolean
         get() = getAbstractArrowFlag(0x02)
 
-    @get:EntityMetaDataFunction(name = "Piercing level")
+    @get:SynchronizedEntityData(name = "Piercing level")
     val piercingLevel: Byte
         get() = data.sets.getByte(EntityDataFields.ABSTRACT_ARROW_PIERCE_LEVEL)
 
-    @get:EntityMetaDataFunction(name = "Owner UUID")
+    @get:SynchronizedEntityData(name = "Owner UUID")
     val ownerUUID: UUID?
         get() = data.sets.getUUID(EntityDataFields.ABSTRACT_ARROW_OWNER_UUID)
 }

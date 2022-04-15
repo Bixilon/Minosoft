@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,15 +23,15 @@ import glm_.vec3.Vec3d
 
 class Axolotl(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Axolotl variant")
+    @get:SynchronizedEntityData(name = "Axolotl variant")
     val variant: AxolotlVariants
         get() = AxolotlVariants.byId(data.sets.getInt(EntityDataFields.AXOLOTL_VARIANT))
 
-    @get:EntityMetaDataFunction(name = "Is playing dead")
+    @get:SynchronizedEntityData(name = "Is playing dead")
     val isPlayingDead: Boolean
         get() = data.sets.getBoolean(EntityDataFields.AXOLOTL_PLAYING_DEAD)
 
-    @get:EntityMetaDataFunction(name = "Is from bucket")
+    @get:SynchronizedEntityData(name = "Is from bucket")
     val isFromBucket: Boolean
         get() = data.sets.getBoolean(EntityDataFields.AXOLOTL_FROM_BUCKET)
 

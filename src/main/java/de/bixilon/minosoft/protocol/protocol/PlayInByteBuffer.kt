@@ -170,15 +170,15 @@ class PlayInByteBuffer : InByteBuffer {
         return ret.toTypedArray()
     }
 
-    fun readMetaData(): EntityData {
-        val metaData = EntityData(connection)
-        val sets = metaData.sets
+    fun readEntityData(): EntityData {
+        val data = EntityData(connection)
+        val sets = data.sets
         if (versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
                 val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
-                sets[index] = metaData.getData(type, this)!!
+                sets[index] = data.getData(type, this)!!
                 item = readUnsignedByte()
             }
         } else {
@@ -189,14 +189,12 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: error("Can not get meta data index for id $id")
-                metaData.getData(type, this)?.let {
-                    sets[index] = it
-                }
+                val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
+                sets[index] = data.getData(type, this)
                 index = readUnsignedByte()
             }
         }
-        return metaData
+        return data
     }
 
     fun readIngredient(): Ingredient {

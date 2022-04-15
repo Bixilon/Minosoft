@@ -37,19 +37,19 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         return data.sets.getBitMask(EntityDataFields.LIVING_ENTITY_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is hand active")
+    @get:SynchronizedEntityData(name = "Is hand active")
     val isHandActive: Boolean
         get() = getLivingEntityFlag(0x01)
 
-    @get:EntityMetaDataFunction(name = "Main hand")
+    @get:SynchronizedEntityData(name = "Main hand")
     open val activeHand: Hands?
         get() = if (getLivingEntityFlag(0x02)) Hands.OFF else Hands.MAIN
 
-    @get:EntityMetaDataFunction(name = "Is auto spin attack") // aka using riptide
+    @get:SynchronizedEntityData(name = "Is auto spin attack") // aka using riptide
     val isSpinAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 
-    @get:EntityMetaDataFunction(name = "Health")
+    @get:SynchronizedEntityData(name = "Health")
     open val health: Double
         get() {
             val meta = data.sets.getFloat(EntityDataFields.LIVING_ENTITY_HEALTH)
@@ -60,23 +60,23 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
             }
         }
 
-    @get:EntityMetaDataFunction(name = "Effect color")
+    @get:SynchronizedEntityData(name = "Effect color")
     val effectColor: RGBColor
         get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_EFFECT_COLOR).asRGBColor()
 
-    @get:EntityMetaDataFunction(name = "Is effect ambient")
+    @get:SynchronizedEntityData(name = "Is effect ambient")
     val effectAmbient: Boolean
         get() = data.sets.getBoolean(EntityDataFields.LIVING_ENTITY_EFFECT_AMBIENCE)
 
-    @get:EntityMetaDataFunction(name = "Arrows in entity")
+    @get:SynchronizedEntityData(name = "Arrows in entity")
     val arrowCount: Int
         get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_ARROW_COUNT)
 
-    @get:EntityMetaDataFunction(name = "Absorption hearts")
+    @get:SynchronizedEntityData(name = "Absorption hearts")
     val absorptionHearts: Int
         get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_ABSORPTION_HEARTS)
 
-    @get:EntityMetaDataFunction(name = "Bed location")
+    @get:SynchronizedEntityData(name = "Bed location")
     val bedPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.LIVING_ENTITY_BED_POSITION)
 

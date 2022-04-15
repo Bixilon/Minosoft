@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -25,11 +25,11 @@ import glm_.vec3.Vec3d
 
 class Sheep(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Color")
+    @get:SynchronizedEntityData(name = "Color")
     val color: RGBColor
         get() = ChatColors[data.sets.getByte(EntityDataFields.SHEEP_FLAGS).toInt() and 0x0F]
 
-    @get:EntityMetaDataFunction(name = "Is sheared")
+    @get:SynchronizedEntityData(name = "Is sheared")
     val isSheared: Boolean
         get() = data.sets.getBitMask(EntityDataFields.SHEEP_FLAGS, 0x10)
 

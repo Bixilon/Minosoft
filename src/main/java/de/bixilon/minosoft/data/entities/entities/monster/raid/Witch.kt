@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster.raid
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,11 +23,11 @@ import glm_.vec3.Vec3d
 
 class Witch(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is drinking Potion")
+    @get:SynchronizedEntityData(name = "Is drinking Potion")
     val isDrinkingPotion: Boolean
         get() = data.sets.getBoolean(EntityDataFields.WITCH_IS_DRINKING_POTION)
 
-    @get:EntityMetaDataFunction(name = "Is aggressive")
+    @get:SynchronizedEntityData(name = "Is aggressive")
     override val isAggressive: Boolean
         get() = data.sets.getBoolean(EntityDataFields.LEGACY_WITCH_IS_AGGRESSIVE)
 

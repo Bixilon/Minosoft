@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,27 +24,27 @@ import glm_.vec3.Vec3i
 
 class Turtle(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Home Position")
+    @get:SynchronizedEntityData(name = "Home Position")
     val homePosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.TURTLE_HOME_POSITION)
 
-    @EntityMetaDataFunction(name = "Has egg")
+    @SynchronizedEntityData(name = "Has egg")
     val hasEgg: Boolean
         get() = data.sets.getBoolean(EntityDataFields.TURTLE_HAS_EGG)
 
-    @get:EntityMetaDataFunction(name = "Is laying egg")
+    @get:SynchronizedEntityData(name = "Is laying egg")
     val isLayingEgg: Boolean
         get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_LAYING_EGG)
 
-    @get:EntityMetaDataFunction(name = "Travel position")
+    @get:SynchronizedEntityData(name = "Travel position")
     val travelPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.TURTLE_TRAVEL_POSITION)
 
-    @get:EntityMetaDataFunction(name = "Is going home")
+    @get:SynchronizedEntityData(name = "Is going home")
     val isGoingHome: Boolean
         get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_GOING_HOME)
 
-    @get:EntityMetaDataFunction(name = "Is traveling")
+    @get:SynchronizedEntityData(name = "Is traveling")
     val isTraveling: Boolean
         get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_TRAVELING)
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,6 +19,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -56,12 +57,15 @@ class JavaFXInitializer internal constructor() : Application() {
         fun start() {
             check(initializing) { "Already initialized!" }
             Thread.setDefaultUncaughtExceptionHandler { _, exception ->
+                if (ShutdownManager.shuttingDown) {
+                    return@setDefaultUncaughtExceptionHandler
+                }
                 exception.printStackTrace(Log.FATAL_PRINT_STREAM)
                 exception.crash()
             }
 
             Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit..." }
-            Thread({ Application.launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread").start()
+            Thread({ launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread").start()
             LATCH.dec()
             await()
         }

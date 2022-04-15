@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.entities.entities.decoration
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.meta.ArmorStandArmRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -29,45 +29,45 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, position: V
         return data.sets.getBitMask(EntityDataFields.ARMOR_STAND_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is small")
+    @get:SynchronizedEntityData(name = "Is small")
     val isSmall: Boolean
         get() = getArmorStandFlag(0x01)
 
-    @EntityMetaDataFunction(name = "Has arms")
+    @SynchronizedEntityData(name = "Has arms")
     fun hasArms(): Boolean {
         return getArmorStandFlag(0x04)
     }
 
-    @EntityMetaDataFunction(name = "Has no base plate")
+    @SynchronizedEntityData(name = "Has no base plate")
     fun hasNoBasePlate(): Boolean {
         return getArmorStandFlag(0x08)
     }
 
-    @get:EntityMetaDataFunction(name = "Is marker")
+    @get:SynchronizedEntityData(name = "Is marker")
     val isMarker: Boolean
         get() = getArmorStandFlag(0x10)
 
-    @get:EntityMetaDataFunction(name = "Head rotation")
+    @get:SynchronizedEntityData(name = "Head rotation")
     val headRotation: ArmorStandArmRotation
         get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_HEAD_ROTATION)
 
-    @get:EntityMetaDataFunction(name = "Body rotation")
+    @get:SynchronizedEntityData(name = "Body rotation")
     val bodyRotation: ArmorStandArmRotation
         get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_BODY_ROTATION)
 
-    @get:EntityMetaDataFunction(name = "Left arm rotation")
+    @get:SynchronizedEntityData(name = "Left arm rotation")
     val leftArmRotation: ArmorStandArmRotation
         get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_LEFT_ARM_ROTATION)
 
-    @get:EntityMetaDataFunction(name = "Right arm rotation")
+    @get:SynchronizedEntityData(name = "Right arm rotation")
     val rightArmRotation: ArmorStandArmRotation
         get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_RIGHT_ARM_ROTATION)
 
-    @get:EntityMetaDataFunction(name = "Left leg rotation")
+    @get:SynchronizedEntityData(name = "Left leg rotation")
     val leftLegRotation: ArmorStandArmRotation
         get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_LEFT_LAG_ROTATION)
 
-    @get:EntityMetaDataFunction(name = "Right leg rotation")
+    @get:SynchronizedEntityData(name = "Right leg rotation")
     val rightLegRotation: ArmorStandArmRotation
         get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_RIGHT_LAG_ROTATION)
 

@@ -21,7 +21,7 @@ import glm_.vec3.Vec3d
 
 class ExperienceOrb : Entity {
 
-    @get:EntityMetaDataFunction(name = "Count")
+    @get:SynchronizedEntityData(name = "Count")
     val count: Int
 
     constructor(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : super(connection, entityType, position, rotation) {

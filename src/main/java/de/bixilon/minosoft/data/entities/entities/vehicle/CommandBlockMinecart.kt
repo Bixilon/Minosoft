@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.vehicle
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,11 +24,11 @@ import glm_.vec3.Vec3d
 
 class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Command")
+    @get:SynchronizedEntityData(name = "Command")
     val command: String?
         get() = data.sets.getString(EntityDataFields.MINECART_COMMAND_BLOCK_COMMAND)
 
-    @get:EntityMetaDataFunction(name = "Last output")
+    @get:SynchronizedEntityData(name = "Last output")
     val lastOutput: ChatComponent?
         get() = data.sets.getChatComponent(EntityDataFields.MINECART_COMMAND_BLOCK_LAST_OUTPUT)
 

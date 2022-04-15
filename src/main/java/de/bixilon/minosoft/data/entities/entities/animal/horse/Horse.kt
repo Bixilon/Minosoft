@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -32,16 +32,16 @@ class Horse(connection: PlayConnection, entityType: EntityType, position: Vec3d,
     private val variant: Int
         get() = data.sets.getInt(EntityDataFields.HORSE_VARIANT)
 
-    @get:EntityMetaDataFunction(name = "Color")
+    @get:SynchronizedEntityData(name = "Color")
     val color: HorseColors
         get() = HorseColors.byId(variant and 0xFF)
 
-    @get:EntityMetaDataFunction(name = "Dots")
+    @get:SynchronizedEntityData(name = "Dots")
     val dots: HorseDots
         get() = HorseDots.byId(variant shr 8)
 
     // ToDo
-    @get:EntityMetaDataFunction(name = "Armor")
+    @get:SynchronizedEntityData(name = "Armor")
     val armor: Item?
         get() {
             if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo

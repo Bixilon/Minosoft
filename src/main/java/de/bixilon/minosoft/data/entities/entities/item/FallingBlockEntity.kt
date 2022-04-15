@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.item
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,10 +26,10 @@ import glm_.vec3.Vec3i
 
 class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Block state")
+    @get:SynchronizedEntityData(name = "Block state")
     var blockState: BlockState? = null
 
-    @get:EntityMetaDataFunction(name = "Spawn position")
+    @get:SynchronizedEntityData(name = "Spawn position")
     val spawnPosition: Vec3i?
         get() = data.sets.getBlockPosition(EntityDataFields.FALLING_BLOCK_SPAWN_POSITION)
 

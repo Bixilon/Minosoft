@@ -27,24 +27,24 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, positi
     override val dimensions: Vec2
         get() = Vec2(radius * 2, super.dimensions.y)
 
-    @get:EntityMetaDataFunction(name = "Ignore radius")
+    @get:SynchronizedEntityData(name = "Ignore radius")
     val ignoreRadius: Boolean
         get() = data.sets.getBoolean(EntityDataFields.AREA_EFFECT_CLOUD_IGNORE_RADIUS)
 
-    @get:EntityMetaDataFunction(name = "Radius")
+    @get:SynchronizedEntityData(name = "Radius")
     val radius: Float
         get() = data.sets.getFloat(EntityDataFields.AREA_EFFECT_CLOUD_RADIUS)
 
-    @get:EntityMetaDataFunction(name = "Color")
+    @get:SynchronizedEntityData(name = "Color")
     val color: Int
         get() = data.sets.getInt(EntityDataFields.AREA_EFFECT_CLOUD_COLOR)
 
     // ignore radius???
-    @get:EntityMetaDataFunction(name = "Is waiting")
+    @get:SynchronizedEntityData(name = "Is waiting")
     val isWaiting: Boolean
         get() = data.sets.getBoolean(EntityDataFields.AREA_EFFECT_CLOUD_WAITING)
 
-    @get:EntityMetaDataFunction(name = "ParticleType")
+    @get:SynchronizedEntityData(name = "ParticleType")
     val particle: ParticleData
         get() = data.sets.getParticle(EntityDataFields.AREA_EFFECT_CLOUD_PARTICLE)
 

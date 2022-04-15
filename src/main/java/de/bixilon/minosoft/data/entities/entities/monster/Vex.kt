@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -27,7 +27,7 @@ class Vex(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
         return data.sets.getBitMask(EntityDataFields.VEX_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Is attacking")
+    @get:SynchronizedEntityData(name = "Is attacking")
     val isAttacking: Boolean
         get() = getVexFlag(0x01)
 

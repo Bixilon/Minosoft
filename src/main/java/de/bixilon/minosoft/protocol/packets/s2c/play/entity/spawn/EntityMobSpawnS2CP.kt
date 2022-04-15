@@ -54,7 +54,7 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val velocity = buffer.readVelocity()
 
         val data: EntityData? = if (buffer.versionId < ProtocolVersions.V_19W34A) {
-            buffer.readMetaData()
+            buffer.readEntityData()
         } else {
             null
         }

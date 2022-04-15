@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -27,16 +27,16 @@ import glm_.vec3.Vec3d
 
 class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is beging")
+    @get:SynchronizedEntityData(name = "Is beging")
     val isBegging: Boolean
         get() = data.sets.getBoolean(EntityDataFields.WOLF_IS_BEGGING)
 
-    @get:EntityMetaDataFunction(name = "Collar color")
+    @get:SynchronizedEntityData(name = "Collar color")
     val collarColor: RGBColor
         get() = ChatColors[data.sets.getInt(EntityDataFields.WOLF_COLLAR_COLOR)]
 
     // ToDo
-    @get:EntityMetaDataFunction(name = "Anger time")
+    @get:SynchronizedEntityData(name = "Anger time")
     val angerTime: Int
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
             if (data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
@@ -44,7 +44,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, 
             data.sets.getInt(EntityDataFields.WOLF_ANGER_TIME)
         }
 
-    @EntityMetaDataFunction(name = "Health")
+    @SynchronizedEntityData(name = "Health")
     override val health: Double
         get() = if (versionId > ProtocolVersions.V_19W45B) {
             super.health

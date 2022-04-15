@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -24,7 +24,7 @@ import glm_.vec3.Vec3d
 
 abstract class ThrowableItemProjectile(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableProjectile(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Item")
+    @get:SynchronizedEntityData(name = "Item")
     open val item: ItemStack?
         get() = data.sets.getItemStack(EntityDataFields.THROWABLE_ITEM_PROJECTILE_ITEM) ?: defaultItem
 

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.vehicle.boat
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -24,31 +24,31 @@ import glm_.vec3.Vec3d
 
 open class Boat(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Time since last hit")
+    @get:SynchronizedEntityData(name = "Time since last hit")
     val timeSinceLastHit: Int
         get() = data.sets.getInt(EntityDataFields.BOAT_HURT)
 
-    @get:EntityMetaDataFunction(name = "Forward direction")
+    @get:SynchronizedEntityData(name = "Forward direction")
     val forwardDirection: Int
         get() = data.sets.getInt(EntityDataFields.BOAT_HURT_DIRECTION)
 
-    @get:EntityMetaDataFunction(name = "Damage taken")
+    @get:SynchronizedEntityData(name = "Damage taken")
     val damageTaken: Float
         get() = data.sets.getFloat(EntityDataFields.BOAT_DAMAGE_TAKEN)
 
-    @get:EntityMetaDataFunction(name = "Material")
+    @get:SynchronizedEntityData(name = "Material")
     val material: BoatMaterials
         get() = BoatMaterials.byId(data.sets.getInt(EntityDataFields.BOAT_MATERIAL))
 
-    @get:EntityMetaDataFunction(name = "Left paddle turning")
+    @get:SynchronizedEntityData(name = "Left paddle turning")
     val isLeftPaddleTurning: Boolean
         get() = data.sets.getBoolean(EntityDataFields.BOAT_PADDLE_LEFT)
 
-    @get:EntityMetaDataFunction(name = "Right paddle turning")
+    @get:SynchronizedEntityData(name = "Right paddle turning")
     val isRightPaddleTurning: Boolean
         get() = data.sets.getBoolean(EntityDataFields.BOAT_PADDLE_RIGHT)
 
-    @get:EntityMetaDataFunction(name = "Splash timer")
+    @get:SynchronizedEntityData(name = "Splash timer")
     val splashTimer: Int
         get() = data.sets.getInt(EntityDataFields.BOAT_BUBBLE_TIME)
 

@@ -15,34 +15,34 @@ package de.bixilon.minosoft.data.entities.entities.vehicle
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 abstract class AbstractMinecart(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Shaking power")
+    @get:SynchronizedEntityData(name = "Shaking power")
     val shakingPower: Int
         get() = data.sets.getInt(EntityDataFields.MINECART_HURT)
 
-    @get:EntityMetaDataFunction(name = "Shaking direction")
+    @get:SynchronizedEntityData(name = "Shaking direction")
     val shakingDirection: Int
         get() = data.sets.getInt(EntityDataFields.MINECART_HURT_DIRECTION)
 
-    @get:EntityMetaDataFunction(name = "Shaking multiplier")
+    @get:SynchronizedEntityData(name = "Shaking multiplier")
     val shakingMultiplier: Float
         get() = data.sets.getInt(EntityDataFields.MINECART_DAMAGE_TAKEN).toFloat()
 
-    @get:EntityMetaDataFunction(name = "Block id")
+    @get:SynchronizedEntityData(name = "Block id")
     val blockId: Int
         get() = data.sets.getInt(EntityDataFields.MINECART_BLOCK_ID)
 
-    @get:EntityMetaDataFunction(name = "Block Y offset")
+    @get:SynchronizedEntityData(name = "Block Y offset")
     val blockYOffset: Int
         get() = data.sets.getInt(EntityDataFields.MINECART_BLOCK_Y_OFFSET)
 
-    @get:EntityMetaDataFunction(name = "Is showing block")
+    @get:SynchronizedEntityData(name = "Is showing block")
     val isShowingBlock: Boolean
         get() = data.sets.getBoolean(EntityDataFields.MINECART_SHOW_BLOCK)
 }
