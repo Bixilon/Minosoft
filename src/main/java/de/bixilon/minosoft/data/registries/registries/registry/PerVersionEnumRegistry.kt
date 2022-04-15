@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ class PerVersionEnumRegistry<T : Enum<*>>(
 
 
     fun forVersion(version: Version): EnumRegistry<T>? {
-        // must loop from highest version to lowest!
+        // must loop from the highest version to lowest!
         for ((versionId, registry) in versions) {
             if (version.versionId < versionId) {
                 continue
@@ -40,7 +40,7 @@ class PerVersionEnumRegistry<T : Enum<*>>(
 
         val versions: SortedMap<Int, EnumRegistry<T>> = sortedMapOf({ t, t2 -> t2 - t })
         for ((versionId, json) in data) {
-            versions[Integer.parseInt(versionId)] = EnumRegistry(values = values, mutable = false).initialize(json)
+            versions[versionId.toInt()] = EnumRegistry(values = values, mutable = false).initialize(json)
         }
         this.versions = versions.toMap()
     }

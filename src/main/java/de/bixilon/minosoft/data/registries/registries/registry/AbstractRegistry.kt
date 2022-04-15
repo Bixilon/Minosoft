@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
     val size: Int
@@ -23,6 +26,12 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
     operator fun get(id: Int): T?
 
     fun getId(value: T): Int
+
+    fun rawInitialize(data: Map<String, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>?, flattened: Boolean = true, metaType: Registry.MetaTypes = Registry.MetaTypes.NONE, alternative: AbstractRegistry<T>? = null): AbstractRegistry<T> {
+        return initialize(data?.toResourceLocationMap(), registries, deserializer, flattened, metaType, alternative)
+    }
+
+    fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>?, flattened: Boolean = true, metaType: Registry.MetaTypes = Registry.MetaTypes.NONE, alternative: AbstractRegistry<T>? = null): AbstractRegistry<T>
 
     fun noParentIterator(): Iterator<T>
 

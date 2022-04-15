@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.registries.other.game.event.DefaultGameEventHandlers
-import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -25,16 +24,19 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val event: GameEvent = buffer.connection.registries.gameEventRegistry[buffer.readUnsignedByte()]
+    val event = buffer.connection.registries.gameEventRegistry[buffer.readUnsignedByte()]
     val data: Float = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {
+        if (event == null) {
+            return
+        }
         val event = GameEventChangeEvent(connection, this)
         if (connection.fireEvent(event)) {
             return
         }
 
-        DefaultGameEventHandlers[this.event.resourceLocation]?.handle(data, connection)
+        DefaultGameEventHandlers[this.event]?.handle(data, connection)
     }
 
     override fun log(reducedLog: Boolean) {

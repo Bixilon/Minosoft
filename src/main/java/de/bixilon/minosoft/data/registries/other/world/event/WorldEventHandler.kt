@@ -10,20 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+package de.bixilon.minosoft.data.registries.other.world.event
+
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+import glm_.vec3.Vec3i
 
-class GameEventChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val event: ResourceLocation?,
-    val data: Float,
-) : PlayConnectionEvent(connection, initiator) {
+interface WorldEventHandler : CompanionResourceLocation {
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, EventInitiators.SERVER, packet.event, packet.data)
+    fun handle(connection: PlayConnection, position: Vec3i, data: Int, isGlobal: Boolean)
 }

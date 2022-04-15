@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,11 +17,11 @@ import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.registries.versions.Version
 import java.util.*
 
-class PerVersionRegistry<T : RegistryItem> {
-    private lateinit var versions: Map<Int, Registry<T>>
+class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator: () -> R) {
+    private lateinit var versions: Map<Int, R>
 
-    fun forVersion(version: Version): Registry<T> {
-        // must loop from highest version to lowest!
+    fun forVersion(version: Version): R {
+        // must loop from the highest version to lowest!
         for ((versionId, registry) in versions) {
             if (version.versionId < versionId) {
                 continue
@@ -31,12 +31,14 @@ class PerVersionRegistry<T : RegistryItem> {
         throw IllegalArgumentException("Can not find a registry for version $version")
     }
 
-    fun initialize(data: Map<String, Any>, deserializer: ResourceLocationDeserializer<T>) {
+    fun initialize(data: Map<String, Any>, deserializer: ResourceLocationDeserializer<E>?) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
-        val versions: SortedMap<Int, Registry<T>> = sortedMapOf({ t, t2 -> t2 - t })
+        val versions: SortedMap<Int, R> = sortedMapOf({ t, t2 -> t2 - t })
         for ((versionId, json) in data) {
-            versions[Integer.parseInt(versionId)] = Registry<T>().rawInitialize(json.toJsonObject(), null, deserializer)
+            val registry = registryCreator()
+            registry.rawInitialize(json.toJsonObject(), null, deserializer)
+            versions[Integer.parseInt(versionId)] = registry
         }
         this.versions = versions.toMap()
     }

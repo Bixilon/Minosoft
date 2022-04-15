@@ -21,10 +21,10 @@ import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
@@ -49,12 +49,14 @@ object DefaultRegistries {
 
     val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
 
-    val BLOCK_ENTITY_META_TYPE_REGISTRY: PerVersionRegistry<BlockEntityMetaType> = PerVersionRegistry()
+    val BLOCK_ENTITY_META_TYPE_REGISTRY: PerVersionRegistry<BlockEntityMetaType, Registry<BlockEntityMetaType>> = PerVersionRegistry { Registry() }
 
-    val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel> = PerVersionRegistry()
+    val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel, Registry<PluginChannel>> = PerVersionRegistry { Registry() }
 
-    val CONTAINER_TYPE_REGISTRY: PerVersionRegistry<ContainerType> = PerVersionRegistry()
-    val GAME_EVENT_REGISTRY: PerVersionRegistry<GameEvent> = PerVersionRegistry()
+    val CONTAINER_TYPE_REGISTRY: PerVersionRegistry<ContainerType, Registry<ContainerType>> = PerVersionRegistry { Registry() }
+
+    val GAME_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
+    val WORLD_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
 
 
     fun load() {
@@ -84,7 +86,9 @@ object DefaultRegistries {
         BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")].asJsonObject(), BlockEntityMetaType)
 
         CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")].asJsonObject(), ContainerType)
-        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")].asJsonObject(), GameEvent)
+
+        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")].asJsonObject(), null)
+        WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("world_events")].asJsonObject(), null)
 
         initialized = true
     }

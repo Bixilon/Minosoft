@@ -587,5 +587,12 @@
         "id": 11
       }
     }
+  },
+  "minecraft:world_events": {
+    "0": {
+      "minecraft:block_destroyed": {
+        "id": 2001
+      }
+    }
   }
 }

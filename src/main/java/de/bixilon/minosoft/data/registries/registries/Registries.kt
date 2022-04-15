@@ -37,7 +37,6 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.items.ItemRegistry
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
 import de.bixilon.minosoft.data.registries.statistics.Statistic
@@ -94,7 +93,8 @@ class Registries {
     val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
 
     val containerTypeRegistry: Registry<ContainerType> = Registry()
-    val gameEventRegistry: Registry<GameEvent> = Registry()
+    val gameEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
+    val worldEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
 
     var isFullyLoaded = false
         private set
@@ -148,7 +148,8 @@ class Registries {
 
         // id resource location stuff
         containerTypeRegistry.rawInitialize(pixlyzerData["container_types"]?.toJsonObject(), this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
-        gameEventRegistry.rawInitialize(pixlyzerData["game_events"]?.toJsonObject(), this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
+        gameEventRegistry.rawInitialize(pixlyzerData["game_events"]?.toJsonObject(), this, null, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
+        worldEventRegistry.rawInitialize(pixlyzerData["world_events"]?.toJsonObject(), this, null, alternative = DefaultRegistries.WORLD_EVENT_REGISTRY.forVersion(version))
 
 
         entityTypeRegistry.rawInitialize(pixlyzerData["entities"]?.toJsonObject(), this, EntityType)

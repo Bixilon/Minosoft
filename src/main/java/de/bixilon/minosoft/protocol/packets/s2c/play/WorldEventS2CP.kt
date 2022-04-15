@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.data.registries.other.world.event.DefaultWorldEventHandlers
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -23,7 +25,8 @@ import glm_.vec3.Vec3i
 
 @LoadPacket
 class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    private val eventId: Int = buffer.readInt()
+    val eventId: Int = buffer.readInt()
+    val event = buffer.connection.registries.worldEventRegistry[eventId]
     var position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readByteBlockPosition()
     } else {
@@ -32,7 +35,12 @@ class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val data: Int = buffer.readInt()
     val isGlobal: Boolean = buffer.readBoolean()
 
+    override fun handle(connection: PlayConnection) {
+        val handler = DefaultWorldEventHandlers[event ?: return] ?: return
+        handler.handle(connection, position, data, isGlobal)
+    }
+
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World event packet (position=$position, eventId=$eventId, data=$data, isGlobal=$isGlobal)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World event packet (position=$position, event=${event ?: eventId}, data=$data, isGlobal=$isGlobal)" }
     }
 }

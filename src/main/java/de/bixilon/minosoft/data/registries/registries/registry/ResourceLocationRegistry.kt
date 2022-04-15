@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -52,6 +54,10 @@ class ResourceLocationRegistry(
 
     override fun getId(value: ResourceLocation): Int {
         return valueIdMap[value] ?: parent?.getId(value) ?: -1
+    }
+
+    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<ResourceLocation>?, flattened: Boolean, metaType: Registry.MetaTypes, alternative: AbstractRegistry<ResourceLocation>?): AbstractRegistry<ResourceLocation> {
+        return initialize(data, alternative.unsafeCast())
     }
 
     fun initialize(data: Map<ResourceLocation, Any>?, alternative: ResourceLocationRegistry? = null): ResourceLocationRegistry {

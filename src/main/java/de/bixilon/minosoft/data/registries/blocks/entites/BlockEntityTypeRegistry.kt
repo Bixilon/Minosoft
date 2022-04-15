@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.entites
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 
@@ -29,7 +30,7 @@ class BlockEntityTypeRegistry(
         return blockTypeMap[block] ?: parentRegistry?.get(block)
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType<*>>, flattened: Boolean, metaType: MetaTypes, alternative: Registry<BlockEntityType<*>>?): Registry<BlockEntityType<*>> {
+    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType<*>>?, flattened: Boolean, metaType: MetaTypes, alternative: AbstractRegistry<BlockEntityType<*>>?): Registry<BlockEntityType<*>> {
         super.initialize(data, registries, deserializer, flattened, metaType, alternative)
 
         for ((_, type) in resourceLocationMap) {

@@ -15,8 +15,10 @@ package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
+import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
 object Vec3dUtil {
 
@@ -57,5 +59,17 @@ object Vec3dUtil {
             return end
         }
         return Vec3d(interpolateSine(delta, start.x, end.x), interpolateSine(delta, start.y, end.y), interpolateSine(delta, start.z, end.z))
+    }
+
+    fun Vec3d.min(value: Double): Vec3d {
+        return Vec3d(minOf(value, x), minOf(value, y), minOf(value, z))
+    }
+
+    fun Vec3d.max(value: Double): Vec3d {
+        return Vec3d(maxOf(value, x), maxOf(value, y), maxOf(value, z))
+    }
+
+    fun Vec3d.ceil(): Vec3i {
+        return Vec3i(x.ceil, y.ceil, z.ceil)
     }
 }

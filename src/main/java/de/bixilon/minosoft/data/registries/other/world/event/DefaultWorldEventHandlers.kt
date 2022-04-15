@@ -10,20 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+package de.bixilon.minosoft.data.registries.other.world.event
 
-class GameEventChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val event: ResourceLocation?,
-    val data: Float,
-) : PlayConnectionEvent(connection, initiator) {
+import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, EventInitiators.SERVER, packet.event, packet.data)
-}
+object DefaultWorldEventHandlers : DefaultFactory<WorldEventHandler>(
+    BlockDestroyedHandler,
+)

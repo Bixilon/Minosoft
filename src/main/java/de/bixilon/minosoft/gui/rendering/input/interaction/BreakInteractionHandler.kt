@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
+import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.modding.event.events.LegacyBlockBreakAckEvent
@@ -134,9 +135,7 @@ class BreakInteractionHandler(
             clearDigging()
             connection.world[target.blockPosition] = null
 
-            target.blockState.breakSoundEvent?.let {
-                connection.world.playSoundEvent(it, target.blockPosition, volume = target.blockState.soundEventVolume, pitch = target.blockState.soundEventPitch)
-            }
+            BlockDestroyedHandler.handleDestroy(connection, target.blockPosition, target.blockState)
         }
 
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
