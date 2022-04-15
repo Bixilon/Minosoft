@@ -164,7 +164,7 @@ abstract class Particle(
     }
 
     protected fun age() {
-        if (age++ >= maxAge) {
+        if (++age >= maxAge) {
             dead = true
         }
     }
