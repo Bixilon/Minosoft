@@ -87,7 +87,8 @@ class ErosCrashReport : JavaFXWindowController() {
     }
 
     companion object {
-        private var alreadyCrashed = false
+        var alreadyCrashed = false
+            private set
         private val CRASH_REPORT_COMMENTS = listOf(
             "Let's blame Bixilon for this",
             "But it worked once",
@@ -132,6 +133,11 @@ class ErosCrashReport : JavaFXWindowController() {
                 return
             }
             alreadyCrashed = true
+            val details = try {
+                createCrashText(if (hideException) null else this)
+            } catch (error: Throwable) {
+                error.toStackTrace()
+            }
 
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
@@ -147,7 +153,6 @@ class ErosCrashReport : JavaFXWindowController() {
                 }
             })
 
-            val details = createCrashText(if (hideException) null else this)
 
             var crashReportPath: String?
             try {
@@ -204,14 +209,43 @@ class ErosCrashReport : JavaFXWindowController() {
         }
 
         private fun createCrashText(exception: Throwable?): String {
+            var activeConnections = """
+
+-- Active Connections --"""
+
+            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                activeConnections += """
+    #${connection.connectionId}:
+        Version: ${connection.version}
+        Account: ${connection.account.username}
+        Address: ${connection.address}
+        Brand: ${connection.serverInfo.brand}
+        Events: ${connection.size}
+        State: ${connection.state}
+        Connected: ${connection.network.connected}
+        Protocol state: ${connection.network.state}
+        Compression threshold: ${connection.network.compressionThreshold}
+        Encrypted: ${connection.network.encrypted}
+        Was connected: ${connection.wasConnected}
+        Rendering: ${connection.rendering != null}
+        Error: ${connection.error}
+"""
+            }
+
+            val stackTraceText = if (exception == null) "" else """
+
+-- Stacktrace --
+${exception.toStackTrace()}"""
+
             return """
 ----- Minosoft Crash Report -----
 // ${CRASH_REPORT_COMMENTS.random()}
 
-Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.time)} (${TimeUtil.time / 1000L})
-Crash thread: ${Thread.currentThread().name}
-
-${exception?.toStackTrace() ?: ""}
+-- General Information --
+    Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.time)} (${TimeUtil.time / 1000L})
+    Crash thread: ${Thread.currentThread().name}
+$stackTraceText
+$activeConnections
 
 -- Runtime Details --
     Start arguments: ${CommandLineArguments.ARGUMENTS}
@@ -229,7 +263,7 @@ ${exception?.toStackTrace() ?: ""}
  
 -- Git Info --
 ${GitInfo.formatForCrashReport()}
-""".trimIndent()
+"""
         }
     }
 }

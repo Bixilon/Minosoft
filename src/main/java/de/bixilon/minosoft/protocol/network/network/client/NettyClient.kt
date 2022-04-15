@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -187,7 +188,7 @@ class NettyClient(
         }
         if (cause !is NetworkException || cause is CriticalNetworkException) {
             connection.error = cause
-            if (reportErrors) {
+            if (reportErrors && !ErosCrashReport.alreadyCrashed) {
                 cause.report()
                 errorReported = true
             }
