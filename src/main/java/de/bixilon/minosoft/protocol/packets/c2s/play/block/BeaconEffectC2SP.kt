@@ -17,21 +17,31 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class BeaconEffectC2SP(
-    val primaryEffect: Int,
-    val secondaryEffect: Int,
+    val primaryEffect: Int?,
+    val secondaryEffect: Int?,
 ) : PlayC2SPacket {
 
     constructor(connection: PlayConnection, primaryEffect: StatusEffect, secondaryEffect: StatusEffect) : this(connection.registries.statusEffectRegistry.getId(primaryEffect), connection.registries.statusEffectRegistry.getId(secondaryEffect))
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeVarInt(primaryEffect)
-        buffer.writeVarInt(secondaryEffect)
+        if (buffer.versionId < ProtocolVersions.V_22W15A) {
+            buffer.writeVarInt(primaryEffect ?: -1)
+            buffer.writeVarInt(secondaryEffect ?: -1)
+        } else {
+            if (primaryEffect != null) {
+                buffer.writeVarInt(primaryEffect)
+            }
+            if (secondaryEffect != null) {
+                buffer.writeVarInt(secondaryEffect)
+            }
+        }
     }
 
     override fun log(reducedLog: Boolean) {
