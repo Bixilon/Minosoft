@@ -244,9 +244,10 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-        <javafx.version>19-ea+3</javafx.version>
+        <javafx.version>19-ea+5</javafx.version>
         <kotlin.version>1.6.20</kotlin.version>
         <lwjgl.version>3.3.1</lwjgl.version>
+        <ikonli.version>12.3.1</ikonli.version>
     </properties>
 
 
@@ -417,12 +418,12 @@
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-fontawesome5-pack</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
