@@ -90,10 +90,11 @@ object MicrosoftOAuthUtils {
             "TokenType" to "JWT",
         ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL)
 
-        response.body!!
-        if (response.statusCode != 200) {
+
+        if (response.statusCode != 200 || response.body == null) {
             throw LoginException(response.statusCode, "Could not authenticate with xbox live token", response.body.toString())
         }
+
         return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asJsonObject()["xui"].asJsonList()[0].asJsonObject()["uhs"].unsafeCast())
     }
 

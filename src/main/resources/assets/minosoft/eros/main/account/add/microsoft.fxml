@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <!--
   ~ Minosoft
   ~ Copyright (C) 2020-2022 Moritz Zwerger
@@ -14,8 +13,30 @@
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.web.WebView?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/16"> <!-- fx:controller="de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController"-->
-    <WebView fx:id="webView" HBox.hgrow="ALWAYS"/>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="90.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17"> <!-- fx:controller="de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController"-->
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+        <TextFlow fx:id="textFX" prefHeight="200.0" prefWidth="200.0">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+            <Text text="Please open https://microsoft.com/link and enter the following code to proceed with the login:"/>
+        </TextFlow>
+        <TextField fx:id="codeFX" editable="false" promptText="Loading...." GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </GridPane.margin>
+        </TextField>
+    </GridPane>
 </HBox>
