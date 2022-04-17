@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.accounts.types.microsoft
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -44,18 +45,23 @@ class MicrosoftAccount(
     override fun logout(clientToken: String) = Unit
 
     @Synchronized
-    override fun check(@Nullable clientToken: String) {
+    override fun check(latch: CountUpAndDownLatch?, @Nullable clientToken: String) {
         if (accessToken != null) {
             return
         }
+        val innerLatch = CountUpAndDownLatch(3, latch)
         try {
             state = AccountStates.REFRESHING
             val (xboxLiveToken, userHash) = MicrosoftOAuthUtils.getXboxLiveToken(authorizationToken)
+            innerLatch.dec()
             val xstsToken = MicrosoftOAuthUtils.getXSTSToken(xboxLiveToken)
+            innerLatch.dec()
 
             accessToken = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(userHash, xstsToken)
+            innerLatch.dec()
             state = AccountStates.WORKING
         } catch (exception: Throwable) {
+            innerLatch.count = 0
             this.error = exception
             this.state = AccountStates.ERRORED
             throw exception

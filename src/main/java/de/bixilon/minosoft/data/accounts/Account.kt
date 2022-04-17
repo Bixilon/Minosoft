@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
@@ -48,10 +49,10 @@ abstract class Account(
     abstract fun join(serverId: String)
 
     abstract fun logout(clientToken: String)
-    abstract fun check(clientToken: String)
+    abstract fun check(latch: CountUpAndDownLatch?, clientToken: String)
 
     @Synchronized
-    open fun tryCheck(clientToken: String) {
+    open fun tryCheck(latch: CountUpAndDownLatch?, clientToken: String) {
         if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
             // already checking
             return
@@ -60,6 +61,6 @@ abstract class Account(
             // Nothing to do
             return
         }
-        check(clientToken)
+        check(latch, clientToken)
     }
 }

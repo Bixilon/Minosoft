@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.main.account
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
@@ -113,17 +114,31 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
     }
 
 
-    fun checkAccount(account: Account, select: Boolean, checkOnly: Boolean = false) {
+    fun checkAccount(account: Account, select: Boolean, checkOnly: Boolean = false, onSuccess: ((Account) -> Unit)? = null) {
+        if (account.state == AccountStates.WORKING) {
+            onSuccess?.let { DefaultThreadPool += { it(account) } }
+            return
+        }
+        if (account.state == AccountStates.CHECKING || account.state == AccountStates.REFRESHING) {
+            return
+        }
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Checking account $account" }
+        val latch = CountUpAndDownLatch(2)
+        val dialog = CheckingDialog(latch, account)
+        dialog.show()
         val profile = ErosProfileManager.selected.general.accountProfile
         DefaultThreadPool += {
+            latch.dec()
             try {
-                account.tryCheck(profile.clientToken) // ToDo: Show error
+                account.tryCheck(latch, profile.clientToken) // ToDo: Show error
                 if (select) {
                     profile.selected = account
                 }
                 Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Account is working: $account" }
+                JavaFXUtil.runLater { dialog.close() }
+                onSuccess?.invoke(account)
             } catch (exception: Throwable) {
+                JavaFXUtil.runLater { dialog.close() }
                 Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Error while checking account $account: $exception" }
                 exception.printStackTrace()
                 if (account.state == AccountStates.ERRORED || account.state == AccountStates.EXPIRED) {

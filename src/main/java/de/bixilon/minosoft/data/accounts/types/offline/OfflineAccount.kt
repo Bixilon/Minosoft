@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.accounts.types.offline
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -35,7 +36,7 @@ class OfflineAccount(username: String) : Account(username) {
 
     override fun logout(clientToken: String) = Unit
 
-    override fun check(clientToken: String) = Unit
+    override fun check(latch: CountUpAndDownLatch?, clientToken: String) = Unit
 
     override fun toString(): String {
         return "OfflineAccount{$username}"

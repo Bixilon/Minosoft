@@ -99,6 +99,9 @@ minosoft:main.account.state.working=Working
 minosoft:main.account.state.expired=Expired
 minosoft:main.account.state.errored=Errored
 
+minosoft:main.account.checking_dialog.title=Checking account... - Minosoft
+minosoft:main.account.checking_dialog.header=Checking account... Please wait
+
 
 minosoft:main.account.card.connection_count=%1$s connections
 

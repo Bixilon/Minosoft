@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -63,17 +64,19 @@ class MojangAccount(
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account login successful (username=$username)" }
     }
 
-    override fun check(clientToken: String) {
+    override fun check(latch: CountUpAndDownLatch?, clientToken: String) {
         if (refreshed) {
             return
         }
         try {
+            latch?.inc()
             refresh(clientToken)
         } catch (exception: Throwable) {
             this.error = exception
             state = AccountStates.ERRORED
             throw exception
         }
+        latch?.dec()
     }
 
     @Synchronized

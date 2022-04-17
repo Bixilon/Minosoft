@@ -55,7 +55,7 @@ object MicrosoftOAuthUtils {
         account.state = AccountStates.WORKING
 
         account.accessToken = accessToken
-        account.check("") // client token does not exist for microsoft accounts
+        account.check(null, "") // client token does not exist for microsoft accounts
 
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (uuid=${account.uuid})" }
 

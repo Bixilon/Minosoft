@@ -14,12 +14,10 @@
 package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
@@ -150,15 +148,8 @@ class MainErosController : JavaFXWindowController() {
             activity = ErosMainActivities.ACCOUNT
             return
         }
-        if (account.state == AccountStates.WORKING) {
-            DefaultThreadPool += { onSuccess(account) }
-            return
-        }
-        if (account.state == AccountStates.CHECKING || account.state == AccountStates.REFRESHING) {
-            return
-        }
 
-        getController(ErosMainActivities.ACCOUNT).unsafeCast<AccountController>().checkAccount(account, false)
+        getController(ErosMainActivities.ACCOUNT).unsafeCast<AccountController>().checkAccount(account, false, onSuccess = onSuccess)
     }
 
 
