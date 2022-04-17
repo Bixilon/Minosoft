@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.account
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.BooleanUtil.decide
@@ -36,6 +37,9 @@ import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -108,7 +112,9 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         }
     }
 
-    private fun checkAccount(account: Account, select: Boolean) {
+
+    fun checkAccount(account: Account, select: Boolean, checkOnly: Boolean = false) {
+        Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Checking account $account" }
         val profile = ErosProfileManager.selected.general.accountProfile
         DefaultThreadPool += {
             try {
@@ -116,13 +122,22 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 if (select) {
                     profile.selected = account
                 }
+                Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Account is working: $account" }
             } catch (exception: Throwable) {
-                exception.report()
+                Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Error while checking account $account: $exception" }
+                exception.printStackTrace()
+                if (account.state == AccountStates.ERRORED || account.state == AccountStates.EXPIRED) {
+                    val refreshHandler = account.erosType?.refreshHandler
+                    if (refreshHandler == null || checkOnly) {
+                        exception.report()
+                    } else {
+                        refreshHandler(this, account)
+                    }
+                }
             }
             JavaFXUtil.runLater { refreshList() }
         }
     }
-
 
     private fun setAccountInfo(account: Account?) {
         if (account == null) {
@@ -176,7 +191,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             it.add(Button("Check").apply {
                 setOnAction {
                     isDisable = true
-                    checkAccount(account, false)
+                    checkAccount(account, false, true)
                 }
                 ctext = CHECK
                 if (account.state == AccountStates.WORKING || account.state == AccountStates.CHECKING || account.state == AccountStates.REFRESHING) {
@@ -240,7 +255,18 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 ),
                 icon = FontAwesomeBrands.MICROSOFT,
                 addHandler = { MicrosoftAddController(it).show() },
+                refreshHandler = { controller, account -> MicrosoftAddController(controller, account).show() }
             ),
         )
+
+        val <T : Account>T.erosType: ErosAccountType<T>?
+            get() {
+                for (type in ACCOUNT_TYPES) {
+                    if (type.resourceLocation == this.type) {
+                        return type.unsafeCast()
+                    }
+                }
+                return null
+            }
     }
 }

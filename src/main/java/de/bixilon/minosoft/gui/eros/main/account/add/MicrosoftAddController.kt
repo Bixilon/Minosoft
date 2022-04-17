@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.main.account.add
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.http.QueryUtil.fromQuery
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
@@ -32,6 +33,7 @@ import java.net.URL
 
 class MicrosoftAddController(
     private val accountController: AccountController,
+    private val account: MicrosoftAccount? = null,
 ) : JavaFXWindowController() {
     @FXML private lateinit var webView: WebView
 

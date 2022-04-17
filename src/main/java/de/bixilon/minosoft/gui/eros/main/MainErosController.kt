@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
@@ -29,7 +31,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
 import de.bixilon.minosoft.util.ShutdownManager
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
@@ -61,11 +62,18 @@ class MainErosController : JavaFXWindowController() {
 
     private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (just not the default)
         set(value) {
+            if (field === value) {
+                return
+            }
             field = value
-            contentFX.children.setAll(controllers.getOrPut(value) { JavaFXUtil.loadEmbeddedController(field.layout) }.root)
+            contentFX.children.setAll(getController(activity).root)
 
             highlightIcon(iconMap[value])
         }
+
+    private fun getController(activity: ErosMainActivities): EmbeddedJavaFXController<*> {
+        return controllers.getOrPut(activity) { JavaFXUtil.loadEmbeddedController(activity.layout) }
+    }
 
     private fun highlightIcon(iconToSelect: FontIcon?) {
         for (icon in iconMap.values) {
@@ -150,16 +158,7 @@ class MainErosController : JavaFXWindowController() {
             return
         }
 
-        DefaultThreadPool += {
-            try {
-                account.tryCheck(profile.clientToken)
-                onSuccess(account)
-            } catch (exception: Throwable) {
-                exception.printStackTrace()
-                Platform.runLater { activity = ErosMainActivities.ACCOUNT }
-                // ToDo: Show account window and do account error handling
-            }
-        }
+        getController(ErosMainActivities.ACCOUNT).unsafeCast<AccountController>().checkAccount(account, false)
     }
 
 

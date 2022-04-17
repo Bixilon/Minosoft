@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
@@ -51,6 +52,11 @@ class AccountCardController : AbstractCardController<Account>() {
 
         avatarFX.image = item.avatar
         accountNameFX.text = item.username
+        item::state.observeFX(this) {
+            if (this.item == item) {
+                stateFX.text = it
+            }
+        }
         stateFX.text = item.state
         connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(item.connections.size)
     }

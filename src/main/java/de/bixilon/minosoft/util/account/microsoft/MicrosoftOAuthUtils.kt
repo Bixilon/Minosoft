@@ -18,6 +18,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonList
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
+import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -51,6 +52,7 @@ object MicrosoftOAuthUtils {
             authorizationToken = authorizationToken,
             properties = PlayerProperties.fetch(uuid),
         )
+        account.state = AccountStates.WORKING
 
         account.accessToken = accessToken
         account.check("") // client token does not exist for microsoft accounts
