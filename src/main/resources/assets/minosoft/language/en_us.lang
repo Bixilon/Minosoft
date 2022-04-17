@@ -84,13 +84,20 @@ minosoft:server_list.refresh.text2=information
 
 
 
-minosoft:main.account.list.info.button.verify=Verify
+minosoft:main.account.list.info.button.check=Check
 minosoft:main.account.list.info.button.use=Use
 minosoft:main.account.list.info.button.add=Add account
 minosoft:main.account.no_account_selected=No account selected
 minosoft:main.account.type.mojang=Mojang
 minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
+
+minosoft:main.account.state.unchecked=Unchecked
+minosoft:main.account.state.checking=Checking...
+minosoft:main.account.state.refreshing=Refreshing...
+minosoft:main.account.state.working=Working
+minosoft:main.account.state.expired=Expired
+minosoft:main.account.state.errored=Errored
 
 
 minosoft:main.account.card.connection_count=%1$s connections

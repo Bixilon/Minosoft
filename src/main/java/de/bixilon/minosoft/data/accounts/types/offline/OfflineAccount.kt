@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.accounts.types
+package de.bixilon.minosoft.data.accounts.types.offline
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -23,6 +24,9 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class OfflineAccount(username: String) : Account(username) {
     override val id: String = username
     override val type: ResourceLocation = RESOURCE_LOCATION
+    override var state: AccountStates
+        get() = AccountStates.WORKING
+        set(value) {}
 
     @JsonIgnore
     override val properties: PlayerProperties? = null
@@ -31,7 +35,7 @@ class OfflineAccount(username: String) : Account(username) {
 
     override fun logout(clientToken: String) = Unit
 
-    override fun verify(clientToken: String) = Unit
+    override fun check(clientToken: String) = Unit
 
     override fun toString(): String {
         return "OfflineAccount{$username}"

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -51,7 +51,7 @@ class AccountCardController : AbstractCardController<Account>() {
 
         avatarFX.image = item.avatar
         accountNameFX.text = item.username
-        stateFX.text = "Unchecked"
+        stateFX.text = item.state
         connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(item.connections.size)
     }
 

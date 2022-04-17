@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
@@ -133,6 +134,7 @@ class MainErosController : JavaFXWindowController() {
         }
     }
 
+    @Synchronized
     fun verifyAccount(account: Account? = null, onSuccess: (Account) -> Unit) {
         val profile = ErosProfileManager.selected.general.accountProfile
         val account = account ?: profile.selected
@@ -140,10 +142,17 @@ class MainErosController : JavaFXWindowController() {
             activity = ErosMainActivities.ACCOUNT
             return
         }
+        if (account.state == AccountStates.WORKING) {
+            DefaultThreadPool += { onSuccess(account) }
+            return
+        }
+        if (account.state == AccountStates.CHECKING || account.state == AccountStates.REFRESHING) {
+            return
+        }
 
         DefaultThreadPool += {
             try {
-                account.verify(profile.clientToken)
+                account.tryCheck(profile.clientToken)
                 onSuccess(account)
             } catch (exception: Throwable) {
                 exception.printStackTrace()

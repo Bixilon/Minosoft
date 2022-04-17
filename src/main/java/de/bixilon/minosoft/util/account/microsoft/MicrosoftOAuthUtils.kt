@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonList
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
-import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.AccountUtil
@@ -53,7 +53,7 @@ object MicrosoftOAuthUtils {
         )
 
         account.accessToken = accessToken
-        account.verify("")
+        account.check("") // client token does not exist for microsoft accounts
 
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (uuid=${account.uuid})" }
 

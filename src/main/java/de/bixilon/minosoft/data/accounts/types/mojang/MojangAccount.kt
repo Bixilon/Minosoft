@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.accounts.types
+package de.bixilon.minosoft.data.accounts.types.mojang
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.nullCast
@@ -19,6 +19,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -58,18 +59,26 @@ class MojangAccount(
         if (response.statusCode != 200) {
             throw AuthenticationException(response.statusCode)
         }
-
+        state = AccountStates.EXPIRED
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account login successful (username=$username)" }
     }
 
-    override fun verify(clientToken: String) {
+    override fun check(clientToken: String) {
         if (refreshed) {
             return
         }
-        refresh(clientToken)
+        try {
+            refresh(clientToken)
+        } catch (exception: Throwable) {
+            this.error = exception
+            state = AccountStates.ERRORED
+            throw exception
+        }
     }
 
+    @Synchronized
     fun refresh(clientToken: String) {
+        state = AccountStates.REFRESHING
         val response = mutableMapOf(
             "accessToken" to accessToken,
             "clientToken" to clientToken,
@@ -84,6 +93,7 @@ class MojangAccount(
         this.accessToken = response.body["accessToken"].unsafeCast()
 
         refreshed = true
+        state = AccountStates.WORKING
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account refresh successful (username=$username)" }
     }
 
@@ -118,7 +128,7 @@ class MojangAccount(
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang login successful (email=$email)" }
 
             val uuid = response.body["selectedProfile"].asJsonObject()["id"].toString().toUUID()
-            return MojangAccount(
+            val account = MojangAccount(
                 id = response.body["user"].asJsonObject()["id"].unsafeCast(),
                 username = response.body["selectedProfile"].asJsonObject()["name"].unsafeCast(),
                 uuid = uuid,
@@ -126,6 +136,8 @@ class MojangAccount(
                 accessToken = response.body["accessToken"].unsafeCast(),
                 properties = PlayerProperties.fetch(uuid),
             )
+            account.state = AccountStates.WORKING
+            return account
         }
     }
 }

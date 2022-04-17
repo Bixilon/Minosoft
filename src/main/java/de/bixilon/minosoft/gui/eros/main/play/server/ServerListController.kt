@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server
 
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
@@ -126,46 +125,44 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         val ping = serverCard.ping
         val pingVersion = serverCard.ping.serverVersion ?: return
         Eros.mainErosController.verifyAccount { account ->
-            DefaultThreadPool += {
-                val connection = PlayConnection(
-                    address = ping.tryAddress ?: DNSUtil.getServerAddress(server.address),
-                    account = account,
-                    version = serverCard.server.forcedVersion ?: pingVersion,
-                    profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
-                )
-                account.connections[server] = connection
-                serverCard.connections += connection
+            val connection = PlayConnection(
+                address = ping.tryAddress ?: DNSUtil.getServerAddress(server.address),
+                account = account,
+                version = serverCard.server.forcedVersion ?: pingVersion,
+                profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
+            )
+            account.connections[server] = connection
+            serverCard.connections += connection
 
-                connection::state.observeFX(this) {
-                    if (it.disconnected) {
-                        account.connections -= server
-                        serverCard.connections -= connection
-                    }
-                    JavaFXUtil.runLater { updateServer(server) }
+            connection::state.observeFX(this) {
+                if (it.disconnected) {
+                    account.connections -= server
+                    serverCard.connections -= connection
                 }
-
-                connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
-                    KickDialog(
-                        title = "minosoft:connection.kick.title".toResourceLocation(),
-                        header = "minosoft:connection.kick.header".toResourceLocation(),
-                        description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
-                        reason = event.reason,
-                    ).show()
-                })
-                connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
-                    KickDialog(
-                        title = "minosoft:connection.login_kick.title".toResourceLocation(),
-                        header = "minosoft:connection.login_kick.header".toResourceLocation(),
-                        description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
-                        reason = event.reason,
-                    ).show()
-                })
-                val latch = CountUpAndDownLatch(0)
-                val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
-                connection::state.observeFX(this) { if (it.disconnected) assetsDialog.close() }
-                ConnectingDialog(connection).show()
-                connection.connect(latch)
+                JavaFXUtil.runLater { updateServer(server) }
             }
+
+            connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
+                KickDialog(
+                    title = "minosoft:connection.kick.title".toResourceLocation(),
+                    header = "minosoft:connection.kick.header".toResourceLocation(),
+                    description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
+                    reason = event.reason,
+                ).show()
+            })
+            connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
+                KickDialog(
+                    title = "minosoft:connection.login_kick.title".toResourceLocation(),
+                    header = "minosoft:connection.login_kick.header".toResourceLocation(),
+                    description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
+                    reason = event.reason,
+                ).show()
+            })
+            val latch = CountUpAndDownLatch(0)
+            val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
+            connection::state.observeFX(this) { if (it.disconnected) assetsDialog.close() }
+            ConnectingDialog(connection).show()
+            connection.connect(latch)
         }
     }
 

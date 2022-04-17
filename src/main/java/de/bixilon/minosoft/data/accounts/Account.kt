@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,9 +18,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
-import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
-import de.bixilon.minosoft.data.accounts.types.MojangAccount
-import de.bixilon.minosoft.data.accounts.types.OfflineAccount
+import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
+import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -37,6 +37,8 @@ abstract class Account(
     abstract val id: String
     abstract val type: ResourceLocation
     abstract val properties: PlayerProperties?
+    @JsonIgnore open var state: AccountStates = AccountStates.UNCHECKED
+    @JsonIgnore open var error: Throwable? = null
 
     @Transient
     @JsonIgnore
@@ -45,5 +47,18 @@ abstract class Account(
     abstract fun join(serverId: String)
 
     abstract fun logout(clientToken: String)
-    abstract fun verify(clientToken: String)
+    abstract fun check(clientToken: String)
+
+    @Synchronized
+    open fun tryCheck(clientToken: String) {
+        if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
+            // already checking
+            return
+        }
+        if (state == AccountStates.WORKING) {
+            // Nothing to do
+            return
+        }
+        check(clientToken)
+    }
 }

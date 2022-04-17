@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,13 +20,15 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
-import de.bixilon.minosoft.data.accounts.types.MojangAccount
-import de.bixilon.minosoft.data.accounts.types.OfflineAccount
+import de.bixilon.minosoft.data.accounts.AccountStates
+import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
+import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
@@ -106,6 +108,21 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         }
     }
 
+    private fun checkAccount(account: Account, select: Boolean) {
+        val profile = ErosProfileManager.selected.general.accountProfile
+        DefaultThreadPool += {
+            try {
+                account.tryCheck(profile.clientToken) // ToDo: Show error
+                if (select) {
+                    profile.selected = account
+                }
+            } catch (exception: Throwable) {
+                exception.report()
+            }
+            JavaFXUtil.runLater { refreshList() }
+        }
+    }
+
 
     private fun setAccountInfo(account: Account?) {
         if (account == null) {
@@ -156,25 +173,20 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 ctext = TranslatableComponents.GENERAL_DELETE
             }, 1, 0)
 
-            it.add(Button("Verify").apply {
+            it.add(Button("Check").apply {
                 setOnAction {
                     isDisable = true
-                    DefaultThreadPool += {
-                        account.verify(profile.clientToken)
-                        JavaFXUtil.runLater { refreshList() }
-                    }
+                    checkAccount(account, false)
                 }
-                ctext = VERIFY
+                ctext = CHECK
+                if (account.state == AccountStates.WORKING || account.state == AccountStates.CHECKING || account.state == AccountStates.REFRESHING) {
+                    isDisable = true
+                }
             }, 3, 0)
             it.add(Button("Use").apply {
                 setOnAction {
                     isDisable = true
-
-                    DefaultThreadPool += {
-                        account.verify(profile.clientToken) // ToDo: Show error
-                        profile.selected = account
-                        JavaFXUtil.runLater { refreshList() }
-                    }
+                    checkAccount(account, true)
                 }
                 isDisable = profile.selected == account
                 ctext = USE
@@ -194,12 +206,13 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
     companion object {
         val LAYOUT = "minosoft:eros/main/account/account.fxml".toResourceLocation()
 
-        private val VERIFY = "minosoft:main.account.list.info.button.verify".toResourceLocation()
+        private val CHECK = "minosoft:main.account.list.info.button.check".toResourceLocation()
         private val USE = "minosoft:main.account.list.info.button.use".toResourceLocation()
         private val ADD = "minosoft:main.account.list.info.button.add".toResourceLocation()
 
         private val ACCOUNT_INFO_PROPERTIES: List<Pair<ResourceLocation, (account: Account) -> Any?>> = listOf(
             "minosoft:main.account.account_info.id".toResourceLocation() to { it.id },
+            "minosoft:main.account.account_info.state".toResourceLocation() to { it.state },
         )
 
         val ACCOUNT_TYPES = listOf(
