@@ -126,8 +126,16 @@ class MainErosController : JavaFXWindowController() {
             if (profile != ErosProfileManager.selected.general.accountProfile) {
                 return@profileWatchFX
             }
-            accountImageFX.image = it?.avatar
-            accountNameFX.ctext = it?.username ?: NO_ACCOUNT_SELECTED
+            if (it == null) {
+                accountImageFX.isManaged = false
+                accountImageFX.isVisible = false
+                accountNameFX.ctext = NO_ACCOUNT_SELECTED
+            } else {
+                accountImageFX.isManaged = true
+                accountImageFX.isVisible = true
+                accountImageFX.image = it.avatar
+                accountNameFX.ctext = it.username
+            }
         }
         accountFX.clickable()
 

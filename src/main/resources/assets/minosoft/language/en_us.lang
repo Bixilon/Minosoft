@@ -106,6 +106,7 @@ minosoft:main.account.checking_dialog.header=Checking account... Please wait
 minosoft:main.account.card.connection_count=%1$s connections
 
 minosoft:main.account.account_info.id=Id
+minosoft:main.account.account_info.state=State
 minosoft:main.account.account_info.email=E-Mail
 minosoft:main.account.account_info.uuid=UUID
 

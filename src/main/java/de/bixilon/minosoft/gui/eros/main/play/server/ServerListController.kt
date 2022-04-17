@@ -323,7 +323,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     connect(serverCard)
                 }
                 val selected = account.selected
-                isDisable = selected == null || !serverCard.canConnect(selected)
+                isDisable = selected != null && !serverCard.canConnect(selected)
                 // ToDo: Also disable, if currently connecting
                 ctext = CONNECT
                 serverCard.ping::state.observeFX(this) { isDisable = selected == null || !serverCard.canConnect(selected) }

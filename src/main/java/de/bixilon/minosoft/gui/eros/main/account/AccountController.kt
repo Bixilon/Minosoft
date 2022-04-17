@@ -246,22 +246,6 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         )
 
         val ACCOUNT_TYPES = listOf(
-            ErosAccountType<MojangAccount>(
-                resourceLocation = MojangAccount.RESOURCE_LOCATION,
-                translationKey = "minosoft:main.account.type.mojang".toResourceLocation(),
-                additionalDetails = listOf(
-                    "minosoft:main.account.account_info.email".toResourceLocation() to { it.email },
-                    "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
-                ),
-                icon = FontAwesomeSolid.BUILDING,
-                addHandler = { MojangAddController(it).show() },
-            ),
-            ErosAccountType<OfflineAccount>(
-                resourceLocation = OfflineAccount.RESOURCE_LOCATION,
-                translationKey = "minosoft:main.account.type.offline".toResourceLocation(),
-                icon = FontAwesomeSolid.MAP,
-                addHandler = { OfflineAddController(it).show() },
-            ),
             ErosAccountType<MicrosoftAccount>(
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.microsoft".toResourceLocation(),
@@ -271,6 +255,22 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 icon = FontAwesomeBrands.MICROSOFT,
                 addHandler = { MicrosoftAddController(it).show() },
                 refreshHandler = { controller, account -> MicrosoftAddController(controller, account).show() }
+            ),
+            ErosAccountType<OfflineAccount>(
+                resourceLocation = OfflineAccount.RESOURCE_LOCATION,
+                translationKey = "minosoft:main.account.type.offline".toResourceLocation(),
+                icon = FontAwesomeSolid.MAP,
+                addHandler = { OfflineAddController(it).show() },
+            ),
+            ErosAccountType<MojangAccount>(
+                resourceLocation = MojangAccount.RESOURCE_LOCATION,
+                translationKey = "minosoft:main.account.type.mojang".toResourceLocation(),
+                additionalDetails = listOf(
+                    "minosoft:main.account.account_info.email".toResourceLocation() to { it.email },
+                    "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
+                ),
+                icon = FontAwesomeSolid.BUILDING,
+                addHandler = { MojangAddController(it).show() },
             ),
         )
 
