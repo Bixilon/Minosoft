@@ -128,6 +128,8 @@ minosoft:main.account.add.mojang.password.placeholder=********
 minosoft:main.account.add.mojang.add_button=Add
 minosoft:main.account.add.mojang.cancel_button=Cancel
 
+minosoft:main.account.add.microsoft.please_wait.device_code=Obtaining device code...Please wait!
+
 minosoft:main.account.add.microsoft.title=Add microsoft account - Minosoft
 minosoft:main.account.add.microsoft.header=Please use a web browser to open the page %1$s and enter the following code in order to proceed with the login
 minosoft:main.account.add.microsoft.cancel=Cancel
@@ -206,3 +208,7 @@ minosoft:menu.pause.exit.confirm=§cClick again to exit
 
 minosoft:main.about.text=Glad that you test my software :)\nThis project is really in early stage, don't use it on anti cheat protected servers\nI am looking for contributors :) Please help me make this usable
 minosoft:main.about.crash=Create crash report
+
+
+minosoft:main.account.please_wait.title=Please wait... - Minosoft
+minosoft:main.account.please_wait.header=Please wait...

@@ -51,8 +51,8 @@ class MojangAddController(
     @FXML private lateinit var cancelButtonFX: Button
 
 
-    fun show() {
-            JavaFXUtil.openModalAsync(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL) { stage.show() }
+    public override fun show() {
+        JavaFXUtil.openModalAsync(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL) { super.show() }
     }
 
     override fun init() {
@@ -116,7 +116,7 @@ class MojangAddController(
                 profile.selected = account
                 JavaFXUtil.runLater {
                     accountController.refreshList()
-                    stage.hide()
+                    close()
                 }
             } catch (exception: Exception) {
                 JavaFXUtil.runLater {
@@ -131,7 +131,7 @@ class MojangAddController(
 
     @FXML
     fun cancel() {
-        stage.hide()
+        close()
     }
 
     companion object {

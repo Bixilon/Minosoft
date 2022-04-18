@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,10 +35,10 @@ class KickDialog(
     @FXML private lateinit var reconnectButtonFX: Button
     @FXML private lateinit var closeButtonFX: Button
 
-    fun show() {
+    public override fun show() {
         JavaFXUtil.runLater {
             JavaFXUtil.openModal(title, LAYOUT, this)
-            stage.show()
+            super.show()
         }
     }
 
@@ -49,9 +49,7 @@ class KickDialog(
         reasonFX.text = reason
 
         reconnectButtonFX.isDisable = true // ToDo
-        closeButtonFX.setOnAction {
-            stage.hide()
-        }
+        closeButtonFX.setOnAction { close() }
     }
 
     companion object {

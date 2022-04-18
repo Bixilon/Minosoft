@@ -124,7 +124,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         }
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Checking account $account" }
         val latch = CountUpAndDownLatch(2)
-        val dialog = CheckingDialog(latch, account)
+        val dialog = CheckingDialog(latch)
         dialog.show()
         val profile = ErosProfileManager.selected.general.accountProfile
         DefaultThreadPool += {

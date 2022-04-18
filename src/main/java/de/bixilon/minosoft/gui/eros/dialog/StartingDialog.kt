@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -35,13 +35,14 @@ class StartingDialog(
     @FXML private lateinit var progressFX: ProgressBar
     @FXML private lateinit var exitButtonFX: Button
 
-    fun show() {
+    public override fun show() {
         JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) {
-            if (latch.count == 0) {
+            if (latch.count == 0 || closing) {
                 return@openModalAsync
             }
+            latch += { JavaFXUtil.runLater { update() } }
             update()
-            stage.show()
+            super.show()
         }
     }
 
@@ -49,11 +50,6 @@ class StartingDialog(
     override fun init() {
         headerFX.text = HEADER
         exitButtonFX.ctext = TranslatableComponents.GENERAL_EXIT
-        latch += {
-            JavaFXUtil.runLater {
-                update()
-            }
-        }
     }
 
     private fun update() {

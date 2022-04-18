@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -26,20 +25,22 @@ import javafx.scene.text.TextFlow
 
 class CheckingDialog(
     val latch: CountUpAndDownLatch,
-    val account: Account,
 ) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var progressFX: ProgressBar
     @FXML private lateinit var cancelButtonFX: Button
 
-    fun show() {
+
+    public override fun show() {
         JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) {
-            update()
-            stage.show()
+            if (closing) {
+                return@openModalAsync
+            }
             latch += { update() }
+            update()
+            super.show()
         }
     }
-
 
     override fun init() {
         headerFX.text = HEADER

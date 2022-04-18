@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,16 +13,29 @@
 
 package de.bixilon.minosoft.gui.eros.controller
 
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.bringToFront
 import javafx.stage.Stage
 
 abstract class JavaFXWindowController : JavaFXController() {
     lateinit var stage: Stage
 
 
-    fun close() {
-        if (this::stage.isInitialized) {
-            stage.close()
+    protected var closing = false
+    protected open fun show() {
+        if (closing) {
+            return
+        }
+        JavaFXUtil.runLater {
+            stage.show()
+            stage.bringToFront()
         }
     }
 
+    open fun close() {
+        closing = true
+        if (this::stage.isInitialized) {
+            JavaFXUtil.runLater { stage.close() }
+        }
+    }
 }

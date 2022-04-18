@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
+import de.bixilon.minosoft.gui.eros.dialog.PleaseWaitDialog
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
+import de.bixilon.minosoft.gui.eros.main.account.CheckingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -43,18 +46,23 @@ class MicrosoftAddController(
     @FXML private lateinit var codeFX: TextField
     @FXML private lateinit var cancelFX: Button
 
+    private var deviceCodeDialog: PleaseWaitDialog? = null
 
     fun request() {
-        MicrosoftOAuthUtils.obtainDeviceCodeAsync(this::codeCallback, this::errorCallback, this::authenticationResponseCallback)
+        deviceCodeDialog = PleaseWaitDialog(header = "minosoft:main.account.add.microsoft.please_wait.device_code".toResourceLocation())
+        deviceCodeDialog?.show()
+        MicrosoftOAuthUtils.obtainDeviceCodeAsync(this::codeCallback, this::errorCallback, this::successCallback)
     }
 
     private fun errorCallback(exception: Throwable) {
+        deviceCodeDialog?.close()
         JavaFXUtil.runLater { stage.close() }
         exception.report()
     }
 
     private fun codeCallback(code: MicrosoftDeviceCode) {
         JavaFXUtil.runLater {
+            deviceCodeDialog?.close()
             JavaFXUtil.openModal(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL)
             headerFX.text = HEADER(code.verificationURI)
             codeFX.text = code.userCode
@@ -62,15 +70,28 @@ class MicrosoftAddController(
         }
     }
 
-    private fun authenticationResponseCallback(response: AuthenticationResponse) {
-        val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(response)
-        profile.entries[account.id] = account
-        if (this.account == null) {
-            profile.selected = account
-        }
-        JavaFXUtil.runLater {
-            stage.hide()
-            accountController.refreshList()
+    private fun successCallback(response: AuthenticationResponse) {
+        JavaFXUtil.runLater { close() }
+        val latch = CountUpAndDownLatch(1)
+        val checkingDialog = CheckingDialog(latch)
+        checkingDialog.show()
+
+        try {
+            val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(response, latch)
+            profile.entries[account.id] = account
+            if (this.account == null) {
+                profile.selected = account
+            }
+            latch.dec()
+            JavaFXUtil.runLater {
+                checkingDialog.close()
+                accountController.refreshList()
+            }
+        } catch (exception: Throwable) {
+            latch.count = 0
+            checkingDialog.close()
+            exception.printStackTrace()
+            exception.report()
         }
     }
 

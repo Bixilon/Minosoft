@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util.account.microsoft
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
@@ -45,14 +46,14 @@ object MicrosoftOAuthUtils {
     const val MAX_CHECK_TIME = 900
 
     fun obtainDeviceCodeAsync(
-        tokenCallback: (MicrosoftDeviceCode) -> Unit,
+        deviceCodeCallback: (MicrosoftDeviceCode) -> Unit,
         errorCallback: (Throwable) -> Unit,
         successCallback: (AuthenticationResponse) -> Unit,
     ) {
         DefaultThreadPool += {
             val deviceCode = obtainDeviceCode()
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Obtained device code: ${deviceCode.userCode}" }
-            tokenCallback(deviceCode)
+            deviceCodeCallback(deviceCode)
             val start = TimeUtil.time / 1000
 
             fun checkToken() {
@@ -124,16 +125,22 @@ object MicrosoftOAuthUtils {
         return Jackson.MAPPER.convertValue(response.body, AuthenticationResponse::class.java)
     }
 
-    fun loginToMicrosoftAccount(response: AuthenticationResponse): MicrosoftAccount {
+    fun loginToMicrosoftAccount(response: AuthenticationResponse, latch: CountUpAndDownLatch? = null): MicrosoftAccount {
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Logging into microsoft account..." }
+        latch?.let { it.count += 6 }
         val msaTokens = response.saveTokens()
         val xboxLiveToken = getXboxLiveToken(msaTokens)
+        latch?.dec()
         val xstsToken = getXSTSToken(xboxLiveToken)
+        latch?.dec()
 
         val minecraftToken = getMinecraftBearerAccessToken(xboxLiveToken, xstsToken).saveTokens()
+        latch?.dec()
         val profile = AccountUtil.fetchMinecraftProfile(minecraftToken)
+        latch?.dec()
 
         val playerProperties = PlayerProperties.fetch(profile.uuid)
+        latch?.dec()
 
         val account = MicrosoftAccount(
             uuid = profile.uuid,
@@ -145,6 +152,7 @@ object MicrosoftOAuthUtils {
         account.state = AccountStates.WORKING
 
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (username=${account.username}, uuid=${account.uuid})" }
+        latch?.dec()
 
         return account
     }

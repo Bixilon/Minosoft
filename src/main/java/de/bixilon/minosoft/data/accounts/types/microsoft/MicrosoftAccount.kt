@@ -24,6 +24,9 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.jetbrains.annotations.Nullable
 import java.util.*
 
@@ -101,7 +104,7 @@ class MicrosoftAccount(
             minecraft = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(xboxLiveToken, xstsToken).saveTokens()
             latch?.dec()
         } catch (exception: Throwable) {
-            exception.printStackTrace()
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
             refreshMicrosoftToken(latch)
         }
         save()
@@ -121,7 +124,7 @@ class MicrosoftAccount(
             latch?.dec()
             state = AccountStates.WORKING
         } catch (exception: Throwable) {
-            exception.printStackTrace()
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
             refreshMinecraftToken(latch)
         }
     }

@@ -45,10 +45,8 @@ class OfflineAddController(
     @FXML private lateinit var cancelButtonFX: Button
 
 
-    fun show() {
-        JavaFXUtil.openModalAsync(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL) {
-            stage.show()
-        }
+    public override fun show() {
+        JavaFXUtil.openModalAsync(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL) { super.show() }
     }
 
     override fun init() {
@@ -87,12 +85,12 @@ class OfflineAddController(
         accountProfile.selected = account
 
         accountController.refreshList()
-        stage.hide()
+        close()
     }
 
     @FXML
     fun cancel() {
-        stage.hide()
+        close()
     }
 
     companion object {

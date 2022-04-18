@@ -11,9 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.dialog.connection
+package de.bixilon.minosoft.gui.eros.dialog
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -23,56 +22,37 @@ import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
 import javafx.scene.text.TextFlow
 
-class VerifyAssetsDialog(
-    val latch: CountUpAndDownLatch,
+class PleaseWaitDialog(
+    private val title: Any = TITLE,
+    private val header: Any = HEADER,
+    private val onCancel: (() -> Unit)? = null,
 ) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
-    @FXML private lateinit var countTextFX: TextFlow
-    @FXML private lateinit var mibTextFX: TextFlow
     @FXML private lateinit var progressFX: ProgressBar
     @FXML private lateinit var cancelButtonFX: Button
 
-    public override fun show() {
-        JavaFXUtil.runLater {
-            JavaFXUtil.openModal(TITLE, LAYOUT, this)
-            latch += { JavaFXUtil.runLater { update() } }
-            update()
-            super.show()
-        }
-    }
 
+    public override fun show() {
+        JavaFXUtil.openModalAsync(title, LAYOUT, this) { super.show() }
+    }
 
     override fun init() {
-        headerFX.text = HEADER
-        cancelButtonFX.isDisable = true
+        headerFX.text = header
+        if (onCancel != null) {
+            cancelButtonFX.isDisable = false
+        }
     }
 
-    private fun update() {
-        val count = latch.count
-        val total = latch.total
-        if (count <= 0 && total > 0) {
-            stage.close()
-            return
-        }
-        countTextFX.text = "${total - count}/${total}"
-        mibTextFX.text = "No clue how much MiB :)"
-        val progress = if (total <= 0) {
-            0.0
-        } else {
-            (total - count.toDouble()) / total.toDouble()
-        }
-        progressFX.progress = progress
-    }
 
     @FXML
     fun cancel() {
-        TODO("Not yet implemented")
+        onCancel?.invoke()
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/connection/verify_assets.fxml".toResourceLocation()
+        private val LAYOUT = "minosoft:eros/main/account/checking.fxml".toResourceLocation()
 
-        private val TITLE = "minosoft:connection.dialog.verify_assets.title".toResourceLocation()
-        private val HEADER = "minosoft:connection.dialog.verify_assets.header".toResourceLocation()
+        private val TITLE = "minosoft:main.account.please_wait.title".toResourceLocation()
+        private val HEADER = "minosoft:main.account.please_wait.header".toResourceLocation()
     }
 }

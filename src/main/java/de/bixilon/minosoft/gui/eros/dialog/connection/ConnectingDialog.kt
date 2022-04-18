@@ -33,7 +33,7 @@ class ConnectingDialog(
     @FXML private lateinit var progressFX: ProgressBar
     @FXML private lateinit var cancelButtonFX: Button
 
-    fun show() {
+    public override fun show() {
         JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) { update(connection.state) }
     }
 
@@ -46,12 +46,11 @@ class ConnectingDialog(
     private fun update(state: PlayConnectionStates) {
         val step = state.step
         if (!stage.isShowing && step >= 0) {
-            stage.show()
+            super.show()
         }
         progressFX.progress = step.toDouble() / (PROGRESS_STEPS - 1).toDouble()
         if (progressFX.progress == 1.0) {
-            stage.hide()
-            return
+            return close()
         }
         statusTextFX.text = state
     }
@@ -59,7 +58,7 @@ class ConnectingDialog(
     @FXML
     fun cancel() {
         connection.network.disconnect()
-        stage.hide()
+        close()
     }
 
     companion object {
