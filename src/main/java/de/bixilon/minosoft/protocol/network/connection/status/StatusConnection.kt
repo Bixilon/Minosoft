@@ -137,6 +137,9 @@ class StatusConnection(
         // timeout task
         // ToDo: Cancel on success
         TimeWorker.runIn(30000) {
+            if (state == StatusConnectionStates.ERROR) {
+                return@runIn
+            }
             if (state != StatusConnectionStates.PING_DONE) {
                 network.disconnect()
                 error = TimeoutException()

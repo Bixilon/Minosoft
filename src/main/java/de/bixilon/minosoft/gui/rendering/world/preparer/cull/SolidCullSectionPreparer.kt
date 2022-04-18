@@ -30,9 +30,10 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -66,8 +67,8 @@ class SolidCullSectionPreparer(
         val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()
         section.acquire()
         neighbours.acquire()
-        var blockEntity: BlockEntity? = null
-        var model: BakedBlockModel
+        var blockEntity: BlockEntity?
+        var model: SingleBlockRenderable
         var blockState: BlockState
         var position: Vec3i
         var rendered: Boolean
@@ -95,7 +96,11 @@ class SolidCullSectionPreparer(
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
                     }
-                    model = blockState.blockModel ?: continue
+                    model = if (blockEntityModel is MeshedBlockEntityRenderer) {
+                        blockEntityModel
+                    } else {
+                        blockState.blockModel ?: continue
+                    }
 
 
                     if (y == 0) {

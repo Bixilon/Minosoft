@@ -11,19 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.baked.block
+package de.bixilon.minosoft.gui.rendering.world.entities
 
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
-import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
-import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import java.util.*
 
-interface BakedBlockModel : BakedModel, SingleBlockRenderable {
+interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
+    override val blockState: BlockState
+        get() = TODO("Not yet implemented")
+    override var light: Int
+        get() = 0
+        set(value) {}
 
-    fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>
+    override fun draw(renderWindow: RenderWindow) = Unit
+    override fun load() = Unit
+    override fun unload() = Unit
 
-    fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture?
 }
