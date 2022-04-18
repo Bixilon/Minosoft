@@ -115,8 +115,17 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
 
     fun checkAccount(account: Account, select: Boolean, checkOnly: Boolean = false, onSuccess: ((Account) -> Unit)? = null) {
+        val profile = ErosProfileManager.selected.general.accountProfile
         if (account.state == AccountStates.WORKING) {
-            onSuccess?.let { DefaultThreadPool += { it(account) } }
+            onSuccess?.let {
+                DefaultThreadPool += {
+                    it(account)
+                }
+            }
+
+            if (select) {
+                profile.selected = account
+            }
             return
         }
         if (account.state == AccountStates.CHECKING || account.state == AccountStates.REFRESHING) {
@@ -126,7 +135,6 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val latch = CountUpAndDownLatch(2)
         val dialog = CheckingDialog(latch)
         dialog.show()
-        val profile = ErosProfileManager.selected.general.accountProfile
         DefaultThreadPool += {
             latch.dec()
             try {
