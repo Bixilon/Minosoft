@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.accounts.types.microsoft
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -30,34 +30,27 @@ import java.util.*
 class MicrosoftAccount(
     val uuid: UUID,
     username: String,
-    @field:JsonProperty private val authorizationToken: String,
+    @field:JsonProperty private var msa: MicrosoftTokens,
+    @field:JsonProperty private var minecraft: MinecraftTokens,
     override val properties: PlayerProperties?,
 ) : Account(username) {
-    @Transient @JsonIgnore var accessToken: String? = null
     override val id: String = uuid.toString()
     override val type: ResourceLocation = RESOURCE_LOCATION
 
     @Synchronized
     override fun join(serverId: String) {
-        AccountUtil.joinMojangServer(username, accessToken!!, uuid, serverId)
+        tryCheck(null, "null")
+        AccountUtil.joinMojangServer(username, minecraft.accessToken, uuid, serverId)
     }
 
     override fun logout(clientToken: String) = Unit
 
     @Synchronized
     override fun check(latch: CountUpAndDownLatch?, @Nullable clientToken: String) {
-        if (accessToken != null) {
-            return
-        }
-        val innerLatch = CountUpAndDownLatch(3, latch)
+        val innerLatch = CountUpAndDownLatch(1, latch)
         try {
-            state = AccountStates.REFRESHING
-            val (xboxLiveToken, userHash) = MicrosoftOAuthUtils.getXboxLiveToken(authorizationToken)
-            innerLatch.dec()
-            val xstsToken = MicrosoftOAuthUtils.getXSTSToken(xboxLiveToken)
-            innerLatch.dec()
-
-            accessToken = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(userHash, xstsToken)
+            this.error = null
+            checkMinecraftToken(innerLatch)
             innerLatch.dec()
             state = AccountStates.WORKING
         } catch (exception: Throwable) {
@@ -65,6 +58,71 @@ class MicrosoftAccount(
             this.error = exception
             this.state = AccountStates.ERRORED
             throw exception
+        }
+    }
+
+    override fun tryCheck(latch: CountUpAndDownLatch?, clientToken: String) {
+        if (state == AccountStates.CHECKING || state == AccountStates.REFRESHING) {
+            // already checking
+            return
+        }
+        if (minecraft.expires >= TimeUtil.time / 1000) {
+            return check(latch, "null")
+        }
+        if (state == AccountStates.WORKING) {
+            // Nothing to do
+            return
+        }
+        check(latch, clientToken)
+    }
+
+    private fun refreshMicrosoftToken(latch: CountUpAndDownLatch?) {
+        state = AccountStates.REFRESHING
+        latch?.inc()
+        msa = MicrosoftOAuthUtils.refreshToken(msa).saveTokens()
+        latch?.dec()
+    }
+
+    private fun refreshMinecraftToken(latch: CountUpAndDownLatch?) {
+        state = AccountStates.REFRESHING
+        val time = TimeUtil.time / 1000
+        if (time >= msa.expires) {
+            // token expired
+            refreshMicrosoftToken(latch)
+        }
+
+        try {
+            latch?.let { it.count += 3 }
+            val xboxLiveToken = MicrosoftOAuthUtils.getXboxLiveToken(msa)
+            latch?.dec()
+            val xstsToken = MicrosoftOAuthUtils.getXSTSToken(xboxLiveToken)
+            latch?.dec()
+
+            minecraft = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(xboxLiveToken, xstsToken).saveTokens()
+            latch?.dec()
+        } catch (exception: Throwable) {
+            exception.printStackTrace()
+            refreshMicrosoftToken(latch)
+        }
+        save()
+    }
+
+    private fun checkMinecraftToken(latch: CountUpAndDownLatch?) {
+        state = AccountStates.CHECKING
+        val time = TimeUtil.time / 1000
+        if (time >= minecraft.expires) {
+            // token expired
+            refreshMinecraftToken(latch)
+        }
+
+        try {
+            latch?.inc()
+            AccountUtil.fetchMinecraftProfile(minecraft)
+            latch?.dec()
+            state = AccountStates.WORKING
+        } catch (exception: Throwable) {
+            exception.printStackTrace()
+            refreshMinecraftToken(latch)
         }
     }
 

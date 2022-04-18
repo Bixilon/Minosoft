@@ -253,8 +253,8 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
                 ),
                 icon = FontAwesomeBrands.MICROSOFT,
-                addHandler = { MicrosoftAddController(it).show() },
-                refreshHandler = { controller, account -> MicrosoftAddController(controller, account).show() }
+                addHandler = { MicrosoftAddController(it).request() },
+                refreshHandler = { controller, account -> MicrosoftAddController(controller, account).request() }
             ),
             ErosAccountType<OfflineAccount>(
                 resourceLocation = OfflineAccount.RESOURCE_LOCATION,

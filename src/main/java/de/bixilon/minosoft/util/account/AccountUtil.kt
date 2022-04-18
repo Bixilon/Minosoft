@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.util.account
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.uuid.UUIDUtil.trim
-import de.bixilon.minosoft.data.accounts.MojangAccountInfo
+import de.bixilon.minosoft.data.accounts.types.microsoft.MinecraftTokens
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException
+import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftProfile
 import de.bixilon.minosoft.util.http.HTTP2.getJson
 import de.bixilon.minosoft.util.http.HTTP2.postJson
-import de.bixilon.minosoft.util.http.exceptions.AuthenticationException
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -29,24 +29,16 @@ import java.util.*
 object AccountUtil {
     private const val MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join"
 
-    fun getMojangAccountInfo(bearerToken: String): MojangAccountInfo {
+    fun fetchMinecraftProfile(token: MinecraftTokens): MinecraftProfile {
         val response = ProtocolDefinition.MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL.getJson(mapOf(
-            "Authorization" to "Bearer $bearerToken"
+            "Authorization" to "Bearer ${token.accessToken}",
         ))
 
-        response.body!!
         if (response.statusCode != 200) {
-            val errorMessage = when (response.statusCode) {
-                404 -> "You don't have a copy of minecraft!"
-                else -> response.body["errorMessage"].unsafeCast()
-            }
-            throw LoginException(response.statusCode, "Could not get minecraft profile", errorMessage)
+            throw MinecraftAPIException(response) // 404 means that the account has not purchased minecraft
         }
 
-        return MojangAccountInfo(
-            id = response.body["id"].unsafeCast(),
-            name = response.body["name"].unsafeCast(),
-        )
+        return Jackson.MAPPER.convertValue(response.body, MinecraftProfile::class.java)
     }
 
     fun joinMojangServer(username: String, accessToken: String, selectedProfile: UUID, serverId: String) {
@@ -57,9 +49,8 @@ object AccountUtil {
         ).postJson(MOJANG_URL_JOIN)
 
 
-        if (response.statusCode != 204) {
-            response.body!!
-            throw AuthenticationException(response.statusCode, response.body["errorMessage"]?.nullCast())
+        if (response.statusCode != 204 && response.statusCode != 200) {
+            throw MinecraftAPIException(response)
         }
 
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang server join successful (username=$username, serverId=$serverId)" }

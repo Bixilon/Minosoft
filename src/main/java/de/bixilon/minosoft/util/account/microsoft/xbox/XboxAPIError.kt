@@ -11,19 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.util.account.microsoft.xbox
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import com.fasterxml.jackson.annotation.JsonProperty
 
-enum class URLProtocols(val protocol: String, val prefix: String, val restricted: Boolean = false) {
-    HTTP("http", "http://"),
-    HTTPS("https", "https://"),
-    FILE("file", "file:", true),
-    ;
-
-    companion object : ValuesEnum<URLProtocols> {
-        override val VALUES: Array<URLProtocols> = values()
-        override val NAME_MAP: Map<String, URLProtocols> = EnumUtil.getEnumValues(VALUES)
-    }
-}
+data class XboxAPIError(
+    @JsonProperty("Identity") val identity: Int,
+    @JsonProperty("XErr") val error: Long,
+    @JsonProperty("Message") val message: String?,
+    @JsonProperty("Redirect") val redirect: String?,
+)

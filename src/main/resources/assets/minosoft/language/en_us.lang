@@ -128,8 +128,9 @@ minosoft:main.account.add.mojang.password.placeholder=********
 minosoft:main.account.add.mojang.add_button=Add
 minosoft:main.account.add.mojang.cancel_button=Cancel
 
-minosoft:main.account.add.microsoft.title=Add microsoft account
-
+minosoft:main.account.add.microsoft.title=Add microsoft account - Minosoft
+minosoft:main.account.add.microsoft.header=Please use a web browser to open the page %1$s and enter the following code in order to proceed with the login
+minosoft:main.account.add.microsoft.cancel=Cancel
 
 minosoft:connection.kick.title=Kicked from server
 minosoft:connection.kick.header=You got kicked

@@ -11,19 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.util.account.microsoft
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.exception.ExceptionUtil
+import de.bixilon.minosoft.util.http.HTTPResponse
+import de.bixilon.minosoft.util.json.Jackson
 
-enum class URLProtocols(val protocol: String, val prefix: String, val restricted: Boolean = false) {
-    HTTP("http", "http://"),
-    HTTPS("https", "https://"),
-    FILE("file", "file:", true),
-    ;
+class MicrosoftAPIException(
+    val errorCode: Int,
+    val error: MicrosoftAPIError?,
+) : Exception(error?.errorDescription) {
 
-    companion object : ValuesEnum<URLProtocols> {
-        override val VALUES: Array<URLProtocols> = values()
-        override val NAME_MAP: Map<String, URLProtocols> = EnumUtil.getEnumValues(VALUES)
-    }
+    constructor(response: HTTPResponse<Map<String, Any>?>) : this(response.statusCode, response.body?.let { ExceptionUtil.tryCatch(Throwable::class.java) { Jackson.MAPPER.convertValue(it, MicrosoftAPIError::class.java) } })
 }

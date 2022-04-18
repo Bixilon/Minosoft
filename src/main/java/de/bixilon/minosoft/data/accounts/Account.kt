@@ -63,4 +63,8 @@ abstract class Account(
         }
         check(latch, clientToken)
     }
+
+    fun save() {
+        println("ToDo") // ToDo
+    }
 }

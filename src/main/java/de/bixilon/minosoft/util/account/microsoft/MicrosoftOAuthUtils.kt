@@ -13,78 +13,148 @@
 
 package de.bixilon.minosoft.util.account.microsoft
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.json.JsonUtil.asJsonList
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.kutil.primitive.LongUtil.toLong
-import de.bixilon.kutil.uuid.UUIDUtil.toUUID
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.time.TimeWorkerTask
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftTokens
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.AccountUtil
-import de.bixilon.minosoft.util.account.LoginException
+import de.bixilon.minosoft.util.account.microsoft.code.MicrosoftDeviceCode
+import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException
+import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftBearerResponse
+import de.bixilon.minosoft.util.account.microsoft.xbox.XSTSToken
+import de.bixilon.minosoft.util.account.microsoft.xbox.XboxAPIError
+import de.bixilon.minosoft.util.account.microsoft.xbox.XboxAPIException
+import de.bixilon.minosoft.util.account.microsoft.xbox.XboxLiveToken
 import de.bixilon.minosoft.util.http.HTTP2.postData
 import de.bixilon.minosoft.util.http.HTTP2.postJson
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
-import java.net.URL
-import java.net.URLConnection
-import java.net.URLStreamHandler
+import java.util.concurrent.TimeoutException
 
 object MicrosoftOAuthUtils {
+    const val TENANT = "consumers"
+    const val DEVICE_CODE_URL = "https://login.microsoftonline.com/$TENANT/oauth2/v2.0/devicecode"
+    const val TOKEN_CHECK_URL = "https://login.microsoftonline.com/$TENANT/oauth2/v2.0/token"
+    const val MAX_CHECK_TIME = 900
 
-    fun loginToMicrosoftAccount(authorizationCode: String): MicrosoftAccount {
+    fun obtainDeviceCodeAsync(
+        tokenCallback: (MicrosoftDeviceCode) -> Unit,
+        errorCallback: (Throwable) -> Unit,
+        successCallback: (AuthenticationResponse) -> Unit,
+    ) {
+        DefaultThreadPool += {
+            val deviceCode = obtainDeviceCode()
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Obtained device code: ${deviceCode.userCode}" }
+            tokenCallback(deviceCode)
+            val start = TimeUtil.time / 1000
+
+            fun checkToken() {
+                try {
+                    val response = checkDeviceCode(deviceCode)
+                    val time = TimeUtil.time / 1000
+                    if (time > start + MAX_CHECK_TIME || time > deviceCode.expires) {
+                        throw TimeoutException("Could not obtain access for device code: ${deviceCode.userCode}")
+                    }
+                    if (response == null) {
+                        // no response yet
+                        TimeWorker += TimeWorkerTask(deviceCode.interval * 1000, true) { checkToken() }
+                        return
+                    }
+                    Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Code (${deviceCode.userCode}) is valid, logging in..." }
+                    successCallback(response)
+                } catch (exception: Throwable) {
+                    exception.printStackTrace()
+                    errorCallback(exception)
+                }
+            }
+            checkToken()
+        }
+    }
+
+    fun obtainDeviceCode(): MicrosoftDeviceCode {
+        val response = mapOf(
+            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
+            "scope" to "XboxLive.signin offline_access",
+        ).postData(DEVICE_CODE_URL)
+
+        if (response.statusCode != 200) {
+            throw MicrosoftAPIException(response)
+        }
+
+        return Jackson.MAPPER.convertValue(response.body, MicrosoftDeviceCode::class.java)
+    }
+
+    fun checkDeviceCode(deviceCode: MicrosoftDeviceCode): AuthenticationResponse? {
+        val response = mapOf(
+            "grant_type" to "urn:ietf:params:oauth:grant-type:device_code",
+            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
+            "device_code" to deviceCode.deviceCode,
+        ).postData(TOKEN_CHECK_URL)
+
+        if (response.statusCode != 200) {
+            val error = MicrosoftAPIException(response)
+            if (error.error?.error == "authorization_pending") {
+                return null
+            }
+            throw error
+        }
+
+        return Jackson.MAPPER.convertValue(response.body, AuthenticationResponse::class.java)
+    }
+
+    fun refreshToken(token: MicrosoftTokens): AuthenticationResponse {
+        val response = mapOf(
+            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
+            "grant_type" to "refresh_token",
+            "scope" to "XboxLive.signin offline_access",
+            "refresh_token" to token.refreshToken,
+        ).postData(TOKEN_CHECK_URL)
+
+        if (response.statusCode != 200) {
+            throw MicrosoftAPIException(response)
+        }
+
+        return Jackson.MAPPER.convertValue(response.body, AuthenticationResponse::class.java)
+    }
+
+    fun loginToMicrosoftAccount(response: AuthenticationResponse): MicrosoftAccount {
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Logging into microsoft account..." }
-        val authorizationToken = getAuthorizationToken(authorizationCode)
-        val (xboxLiveToken, userHash) = getXboxLiveToken(authorizationToken)
+        val msaTokens = response.saveTokens()
+        val xboxLiveToken = getXboxLiveToken(msaTokens)
         val xstsToken = getXSTSToken(xboxLiveToken)
 
-        val accessToken = getMinecraftBearerAccessToken(userHash, xstsToken)
-        val accountInfo = AccountUtil.getMojangAccountInfo(accessToken)
+        val minecraftToken = getMinecraftBearerAccessToken(xboxLiveToken, xstsToken).saveTokens()
+        val profile = AccountUtil.fetchMinecraftProfile(minecraftToken)
 
-        val uuid = accountInfo.id.toUUID()
+        val playerProperties = PlayerProperties.fetch(profile.uuid)
+
         val account = MicrosoftAccount(
-            uuid = uuid,
-            username = accountInfo.name,
-            authorizationToken = authorizationToken,
-            properties = PlayerProperties.fetch(uuid),
+            uuid = profile.uuid,
+            username = profile.name,
+            msa = msaTokens,
+            minecraft = minecraftToken,
+            properties = playerProperties,
         )
         account.state = AccountStates.WORKING
 
-        account.accessToken = accessToken
-        account.check(null, "") // client token does not exist for microsoft accounts
-
-        Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (uuid=${account.uuid})" }
+        Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (username=${account.username}, uuid=${account.uuid})" }
 
         return account
     }
 
-    fun getAuthorizationToken(authorizationCode: String): String {
-        val response = mapOf(
-            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
-            "code" to authorizationCode,
-            "grant_type" to "authorization_code",
-            "scope" to "service::user.auth.xboxlive.com::MBI_SSL",
-        ).postData(ProtocolDefinition.MICROSOFT_ACCOUNT_AUTH_TOKEN_URL)
-        if (response.statusCode != 200) {
-            throw LoginException(response.statusCode, "Could not get authorization token", response.body.toString())
-        }
-        response.body!!
-        return response.body["access_token"].unsafeCast()
-    }
-
-    /**
-     * returns A: XBL Token; B: UHS Token
-     */
-    fun getXboxLiveToken(authorizationToken: String): Pair<String, String> {
+    fun getXboxLiveToken(msaTokens: MicrosoftTokens): XboxLiveToken {
         val response = mapOf(
             "Properties" to mapOf(
                 "AuthMethod" to "RPS",
                 "SiteName" to "user.auth.xboxlive.com",
-                "RpsTicket" to authorizationToken
+                "RpsTicket" to "d=${msaTokens.accessToken}",
             ),
             "RelyingParty" to "http://auth.xboxlive.com",
             "TokenType" to "JWT",
@@ -92,56 +162,46 @@ object MicrosoftOAuthUtils {
 
 
         if (response.statusCode != 200 || response.body == null) {
-            throw LoginException(response.statusCode, "Could not authenticate with xbox live token", response.body.toString())
+            throw XboxAPIException(response)
         }
 
-        return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asJsonObject()["xui"].asJsonList()[0].asJsonObject()["uhs"].unsafeCast())
+        return Jackson.MAPPER.convertValue(response.body, XboxLiveToken::class.java)
     }
 
-    fun getXSTSToken(xBoxLiveToken: String): String {
+    fun getXSTSToken(xBoxLiveToken: XboxLiveToken): XSTSToken {
         val response = mapOf(
             "Properties" to mapOf(
                 "SandboxId" to "RETAIL",
-                "UserTokens" to listOf(xBoxLiveToken)
+                "UserTokens" to listOf(xBoxLiveToken.token)
             ),
             "RelyingParty" to "rp://api.minecraftservices.com/",
             "TokenType" to "JWT",
         ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XSTS_URL)
 
-        response.body!!
         if (response.statusCode != 200) {
-            val errorMessage = when (response.body["XErr"].toLong()) {
+            val error = Jackson.MAPPER.convertValue(response.body, XboxAPIError::class.java)
+            val errorMessage = when (error.error) {
                 2148916233 -> "You don't have an XBox account!"
+                2148916235 -> "Xbox Live is banned in your country!"
+                2148916236, 2148916237 -> "Your account needs adult verification (South Korea)"
                 2148916238 -> "This account is a child account!"
-                else -> response.body["Message"].unsafeCast()
+                else -> error.message ?: "Unknown"
             }
-            throw LoginException(response.statusCode, "Could not get xsts token", errorMessage)
+            throw XboxAPIException(response.statusCode, error, errorMessage)
         }
-        return response.body["Token"].unsafeCast()
+
+        return Jackson.MAPPER.convertValue(response.body, XSTSToken::class.java)
     }
 
-    fun getMinecraftBearerAccessToken(userHash: String, xstsToken: String): String {
+    fun getMinecraftBearerAccessToken(xBoxLiveToken: XboxLiveToken, xstsToken: XSTSToken): MinecraftBearerResponse {
         val response = mapOf(
-            "identityToken" to "XBL3.0 x=${userHash};${xstsToken}",
+            "identityToken" to "XBL3.0 x=${xBoxLiveToken.userHash};${xstsToken.token}",
             "ensureLegacyEnabled" to true,
         ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL)
 
-        response.body!!
         if (response.statusCode != 200) {
-            throw LoginException(response.statusCode, "Could not get minecraft access token ", (response.body["errorMessage"] ?: response.body["error"] ?: "unknown").unsafeCast())
+            throw MinecraftAPIException(response)
         }
-        return response.body["access_token"].unsafeCast()
-    }
-
-
-    init {
-        URLProtocolStreamHandlers.PROTOCOLS["ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID] = LoginURLHandler
-    }
-
-    private object LoginURLHandler : URLStreamHandler() {
-
-        override fun openConnection(url: URL): URLConnection {
-            return URLProtocolStreamHandlers.NULL_URL_CONNECTION
-        }
+        return Jackson.MAPPER.convertValue(response.body, MinecraftBearerResponse::class.java)
     }
 }

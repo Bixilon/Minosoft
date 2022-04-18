@@ -11,19 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.data.accounts.types.microsoft
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-
-enum class URLProtocols(val protocol: String, val prefix: String, val restricted: Boolean = false) {
-    HTTP("http", "http://"),
-    HTTPS("https", "https://"),
-    FILE("file", "file:", true),
-    ;
-
-    companion object : ValuesEnum<URLProtocols> {
-        override val VALUES: Array<URLProtocols> = values()
-        override val NAME_MAP: Map<String, URLProtocols> = EnumUtil.getEnumValues(VALUES)
-    }
-}
+data class MinecraftTokens(
+    val accessToken: String,
+    val expires: Long,
+)

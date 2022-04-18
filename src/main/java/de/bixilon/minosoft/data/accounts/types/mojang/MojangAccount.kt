@@ -97,6 +97,7 @@ class MojangAccount(
 
         refreshed = true
         state = AccountStates.WORKING
+        save()
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account refresh successful (username=$username)" }
     }
 

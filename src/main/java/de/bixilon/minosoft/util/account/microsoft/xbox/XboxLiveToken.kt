@@ -11,19 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.util.account.microsoft.xbox
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.kutil.json.JsonUtil.asJsonList
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 
-enum class URLProtocols(val protocol: String, val prefix: String, val restricted: Boolean = false) {
-    HTTP("http", "http://"),
-    HTTPS("https", "https://"),
-    FILE("file", "file:", true),
-    ;
-
-    companion object : ValuesEnum<URLProtocols> {
-        override val VALUES: Array<URLProtocols> = values()
-        override val NAME_MAP: Map<String, URLProtocols> = EnumUtil.getEnumValues(VALUES)
-    }
+data class XboxLiveToken(
+    @JsonProperty("IssueInstant") val issueInstant: String,
+    @JsonProperty("NotAfter") val notAfter: String,
+    @JsonProperty("Token") val token: String,
+    @JsonProperty("DisplayClaims") val displayClaims: Map<String, Any>,
+) {
+    @JsonIgnore val userHash = displayClaims["xui"].asJsonList()[0].asJsonObject()["uhs"]
 }

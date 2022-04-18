@@ -11,19 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.util.account.microsoft.minecraft
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.data.accounts.types.microsoft.MinecraftTokens
+import de.bixilon.minosoft.util.account.microsoft.AuthenticationResponse
+import java.util.*
 
-enum class URLProtocols(val protocol: String, val prefix: String, val restricted: Boolean = false) {
-    HTTP("http", "http://"),
-    HTTPS("https", "https://"),
-    FILE("file", "file:", true),
-    ;
+data class MinecraftBearerResponse(
+    val username: UUID,
+    val roles: List<Any>,
+    val accessToken: String,
+    val tokenType: AuthenticationResponse.TokenTypes,
+    val expiresIn: Int,
+) {
+    val expires = (TimeUtil.time / 1000) + expiresIn
 
-    companion object : ValuesEnum<URLProtocols> {
-        override val VALUES: Array<URLProtocols> = values()
-        override val NAME_MAP: Map<String, URLProtocols> = EnumUtil.getEnumValues(VALUES)
+
+    fun saveTokens(): MinecraftTokens {
+        return MinecraftTokens(accessToken = accessToken, expires = expires)
     }
 }

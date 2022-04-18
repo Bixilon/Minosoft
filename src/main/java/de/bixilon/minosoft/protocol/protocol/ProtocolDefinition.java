@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -66,8 +66,8 @@ public final class ProtocolDefinition {
     public static final int ITEM_STACK_MAX_SIZE = 64;
 
 
-    public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "00000000402b5328"; // ToDo: Should we use our own application id?
-    // public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "fe6f0fbf-3038-486a-9c84-6a28b71e0455";
+    // public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "00000000402b5328"; // ToDo: Should we use our own application id?
+    public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "feb3836f-0333-4185-8eb9-4cbf0498f947"; // Minosoft 2 (microsoft-bixilon2)
     public static final String MICROSOFT_ACCOUNT_OAUTH_FLOW_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=" + MICROSOFT_ACCOUNT_APPLICATION_ID + "&scope=XboxLive.signin%20offline_access&response_type=code";
     public static final String MICROSOFT_ACCOUNT_AUTH_TOKEN_URL = "https://login.live.com/oauth20_token.srf";
     public static final String MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL = "https://user.auth.xboxlive.com/user/authenticate";
