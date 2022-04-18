@@ -224,6 +224,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
         if (wasSelected) {
             serverListViewFX.selectionModel.select(card)
+            setServerInfo(card)
         }
     }
 
