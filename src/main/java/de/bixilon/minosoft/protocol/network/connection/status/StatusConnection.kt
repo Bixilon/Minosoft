@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.status
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -34,6 +35,7 @@ import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.concurrent.TimeoutException
 
 class StatusConnection(
     address: String,
@@ -54,6 +56,7 @@ class StatusConnection(
     var serverVersion: Version? = null
 
     var state by watched(StatusConnectionStates.WAITING)
+
 
     override var error: Throwable?
         get() = super.error
@@ -131,6 +134,16 @@ class StatusConnection(
         error = null
         state = StatusConnectionStates.RESOLVING
 
+        // timeout task
+        // ToDo: Cancel on success
+        TimeWorker.runIn(30000) {
+            if (state != StatusConnectionStates.PING_DONE) {
+                network.disconnect()
+                error = TimeoutException()
+                state = StatusConnectionStates.ERROR
+            }
+        }
+
         DefaultThreadPool += execute@{
             try {
                 resolve()
@@ -154,7 +167,7 @@ class StatusConnection(
             return super.registerEvent(invoker)
         }
 
-         super.registerEvent(invoker)
+        super.registerEvent(invoker)
 
 
         when {

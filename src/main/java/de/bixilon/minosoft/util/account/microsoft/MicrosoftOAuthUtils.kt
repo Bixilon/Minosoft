@@ -15,7 +15,6 @@ package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -65,7 +64,7 @@ object MicrosoftOAuthUtils {
                     }
                     if (response == null) {
                         // no response yet
-                        TimeWorker += TimeWorkerTask(deviceCode.interval * 1000, true) { checkToken() }
+                        TimeWorker.runIn(deviceCode.interval * 1000) { checkToken() }
                         return
                     }
                     Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Code (${deviceCode.userCode}) is valid, logging in..." }
