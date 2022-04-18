@@ -139,7 +139,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     account.connections -= server
                     serverCard.connections -= connection
                 }
-                JavaFXUtil.runLater { updateServer(server) }
+                JavaFXUtil.runLater { updateServer(server, true) }
             }
 
             connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
@@ -200,7 +200,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         }
     }
 
-    private fun updateServer(server: Server) {
+    private fun updateServer(server: Server, refreshInfo: Boolean = false) {
         val serverType = serverType ?: return
         if (server !in serverType.servers) {
             return
@@ -224,7 +224,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
         if (wasSelected) {
             serverListViewFX.selectionModel.select(card)
-            setServerInfo(card)
+            if (refreshInfo) {
+                setServerInfo(card)
+            }
         }
     }
 
@@ -316,7 +318,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 }
                 isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR
                 ctext = TranslatableComponents.GENERAL_REFRESH
-                serverCard.ping::state.observeFX(this) { isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR }
+                serverCard.ping::state.observeFX(this) { state -> isDisable = state != StatusConnectionStates.PING_DONE && state != StatusConnectionStates.ERROR }
             }, 3, 0)
             it.add(Button("Connect").apply {
                 setOnAction {
