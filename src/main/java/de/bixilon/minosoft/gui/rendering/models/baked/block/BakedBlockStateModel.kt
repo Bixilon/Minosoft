@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
 
@@ -67,15 +66,6 @@ class BakedBlockStateModel(
             }
         }
         return rendered
-    }
-
-    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: SingleWorldMesh, light: Int) {
-        TODO()
-        val floatStart = start.toVec3()
-        val floatEnd = end.toVec3()
-        for (face in faces[side.ordinal]) {
-            face.greedyRender(floatStart, floatEnd, side, mesh, light)
-        }
     }
 
     override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
