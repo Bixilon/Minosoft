@@ -30,5 +30,7 @@ data class MicrosoftDeviceCode(
     init {
         check(verificationURI.protocol == URLProtocols.HTTPS.protocol) { "Insecure url: $verificationURI" }
         check(verificationURI.host == "login.microsoftonline.com" || verificationURI.host == "www.microsoft.com" || verificationURI.host == "microsoft.com") { "Invalid verification host: $verificationURI" }
+
+        check(interval in 1..20) { "Polling interval out of range: $interval" }
     }
 }
