@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
@@ -65,6 +66,14 @@ abstract class Account(
     }
 
     fun save() {
-        println("ToDo") // ToDo
+        // ToDo: Optimize
+        profiles@ for (profile in AccountProfileManager.profiles.values) {
+            for ((_, account) in profile.entries) {
+                if (account === this) {
+                    AccountProfileManager.saveAsync(profile)
+                    break@profiles
+                }
+            }
+        }
     }
 }
