@@ -28,8 +28,9 @@ class SignBlockEntityRenderer(
 ) : MeshedBlockEntityRenderer<SignBlockEntity> {
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
-        val model = this.blockState.block.nullCast<SignBlock>() ?: return false
+        val model = this.blockState.block.nullCast<SignBlock>()?.model ?: return false
         println("Rendering sign at $position")
+
 
         // ToDo
 
