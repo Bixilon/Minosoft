@@ -13,30 +13,28 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import glm_.vec3.Vec3i
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
-    protected open var renderer: BlockEntityRenderer<out BlockEntity>? = null
-    open val nbt: Map<String, Any> = mapOf()
+abstract class MeshedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    open fun updateNBT(nbt: Map<String, Any>) = Unit
-
-    open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
-
-    open fun getRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
-        if (this.renderer?.blockState != blockState) {
-            this.renderer = createRenderer(renderWindow, blockState, blockPosition, light)
-        } else {
-            this.renderer?.light = light
+    override fun getRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): MeshedBlockEntityRenderer<*>? {
+        var renderer = this.renderer
+        if (renderer is MeshedBlockEntityRenderer<*> && renderer.blockState == blockState) {
+            return renderer
         }
-        return this.renderer
+        renderer = createMeshedRenderer(renderWindow, blockState, blockPosition)
+        this.renderer = renderer
+        return renderer
     }
 
-    protected open fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? = null
+    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<*> {
+        throw IllegalAccessException()
+    }
+
+    abstract fun createMeshedRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): MeshedBlockEntityRenderer<*>
 }

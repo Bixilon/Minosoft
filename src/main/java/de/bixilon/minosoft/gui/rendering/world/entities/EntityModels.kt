@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 
 class EntityModels(val renderWindow: RenderWindow) {
     private val unbakedModels: MutableMap<ResourceLocation, SkeletalModel> = mutableMapOf()
-    val models: MutableMap<ResourceLocation, BakedSkeletalModel> = mutableMapOf()
+    val skeletal: MutableMap<ResourceLocation, BakedSkeletalModel> = mutableMapOf()
 
     @Synchronized
     fun loadUnbakedModel(path: ResourceLocation): SkeletalModel {
@@ -30,7 +30,7 @@ class EntityModels(val renderWindow: RenderWindow) {
     }
 
     fun loadModel(name: ResourceLocation, path: ResourceLocation, textureOverride: MutableMap<Int, AbstractTexture> = mutableMapOf()): BakedSkeletalModel {
-        return models.getOrPut(name) { loadUnbakedModel(path).bake(renderWindow, textureOverride) }
+        return skeletal.getOrPut(name) { loadUnbakedModel(path).bake(renderWindow, textureOverride) }
     }
 
     fun cleanup() {

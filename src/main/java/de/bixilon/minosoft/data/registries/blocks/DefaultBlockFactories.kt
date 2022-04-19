@@ -34,6 +34,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.CommandB
 import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.DaylightDetectorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.PistonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.redstone.SculkSensorBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.StandingSignBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.WallSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.leaves.LeavesBlock
 import de.bixilon.minosoft.data.registries.blocks.types.plant.CropBlock
 import de.bixilon.minosoft.data.registries.blocks.types.plant.PlantBlock
@@ -78,7 +80,8 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     JukeboxBlock,
     DispenserBlock,
     DropperBlock,
-    SignBlock,
+    WallSignBlock,
+    StandingSignBlock,
     MobSpawnerBlock,
     PistonBlock,
     BrewingStandBlock,

@@ -14,13 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.world.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 
 interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override val blockState: BlockState
-        get() = TODO("Not yet implemented")
     override var light: Int
         get() = 0
         set(value) {}

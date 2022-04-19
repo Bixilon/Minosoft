@@ -11,10 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities.renderer
+package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.SignBlock
 import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec3.Vec3i
@@ -22,10 +24,15 @@ import java.util.*
 
 class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
+    override val blockState: BlockState,
 ) : MeshedBlockEntityRenderer<SignBlockEntity> {
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
+        val model = this.blockState.block.nullCast<SignBlock>() ?: return false
         println("Rendering sign at $position")
+
+        // ToDo
+
         return true
     }
 }

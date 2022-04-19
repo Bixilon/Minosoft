@@ -11,12 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.data.registries.blocks.types.entity.sign
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader
+import de.bixilon.minosoft.data.entities.block.SignBlockEntity
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignModel
 
-interface EntityRendererRegister {
-
-    fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) = Unit
+abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data) {
+    abstract val model: SignModel?
 }
+

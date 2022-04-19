@@ -43,7 +43,6 @@ class SingleChestRenderer(
     light,
 ) {
 
-
     companion object {
         val SINGLE_MODEL = "minecraft:block/entities/single_chest".toResourceLocation().bbModel()
 

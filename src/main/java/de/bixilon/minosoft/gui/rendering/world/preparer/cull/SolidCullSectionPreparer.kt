@@ -92,7 +92,7 @@ class SolidCullSectionPreparer(
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     blockEntity = section.blockEntities.unsafeGet(x, y, z)
                     val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[6].toInt())
-                    if (blockEntityModel != null) {
+                    if (blockEntityModel != null) { // ToDo: ignore if is MeshedBlockEntityRenderer?
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
                     }

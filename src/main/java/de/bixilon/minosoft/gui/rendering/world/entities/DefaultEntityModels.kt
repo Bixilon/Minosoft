@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities
 
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.standing.StandingSignModels
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.wall.WallSignModels
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.DoubleChestRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage.SingleChestRenderer
 
@@ -24,5 +26,24 @@ object DefaultEntityModels {
 
         DoubleChestRenderer.NormalChest,
         DoubleChestRenderer.TrappedChest,
+
+
+        StandingSignModels.Acacia,
+        StandingSignModels.Birch,
+        StandingSignModels.Crimson,
+        StandingSignModels.DarkOak,
+        StandingSignModels.Jungle,
+        StandingSignModels.Oak,
+        StandingSignModels.Spruce,
+        StandingSignModels.WarpedSign,
+
+        WallSignModels.Acacia,
+        WallSignModels.Birch,
+        WallSignModels.Crimson,
+        WallSignModels.DarkOak,
+        WallSignModels.Jungle,
+        WallSignModels.Oak,
+        WallSignModels.Spruce,
+        WallSignModels.WarpedSign,
     )
 }

@@ -11,18 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.entity
+package de.bixilon.minosoft.data.registries.blocks.types.entity.sign
 
-import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.standing.StandingSignModel
 
-open class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data) {
+open class StandingSignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : SignBlock(resourceLocation, registries, data) {
+    override var model: StandingSignModel? = null
 
-    companion object : BlockFactory<SignBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SignBlock {
-            return SignBlock(resourceLocation, registries, data)
+    companion object : BlockFactory<StandingSignBlock>, MultiClassFactory<StandingSignBlock> {
+        override val ALIASES: Set<String> = setOf("SignBlock")
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): StandingSignBlock {
+            return StandingSignBlock(resourceLocation, registries, data)
         }
     }
 }

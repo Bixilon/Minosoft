@@ -18,12 +18,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.SignBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
-class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
     var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.of("") }
 
 
@@ -35,8 +35,8 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         }
     }
 
-    override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): SignBlockEntityRenderer {
-        return SignBlockEntityRenderer(this)
+    override fun createMeshedRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
+        return SignBlockEntityRenderer(this, blockState)
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {

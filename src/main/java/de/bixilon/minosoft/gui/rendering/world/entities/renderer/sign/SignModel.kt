@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.entities
+package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.ModelLoader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
-interface EntityRendererRegister {
-
-    fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) = Unit
-}
+abstract class SignModel(
+    val texture: AbstractTexture,
+)
