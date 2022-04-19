@@ -31,6 +31,7 @@ import de.bixilon.minosoft.util.http.exceptions.AuthenticationException
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.net.ConnectException
 import java.util.*
 
 @Deprecated("Mojang authentication is legacy. Will be removed in the future!")
@@ -71,6 +72,9 @@ class MojangAccount(
         try {
             latch?.inc()
             refresh(clientToken)
+        } catch (exception: ConnectException) {
+            exception.printStackTrace()
+            state = AccountStates.OFFLINE
         } catch (exception: Throwable) {
             this.error = exception
             state = AccountStates.ERRORED

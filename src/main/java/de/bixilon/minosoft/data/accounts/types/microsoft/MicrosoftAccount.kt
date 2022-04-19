@@ -28,6 +28,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.jetbrains.annotations.Nullable
+import java.net.ConnectException
 import java.util.*
 
 class MicrosoftAccount(
@@ -56,10 +57,16 @@ class MicrosoftAccount(
             checkMinecraftToken(innerLatch)
             innerLatch.dec()
             state = AccountStates.WORKING
+        } catch (exception: ConnectException) {
+            innerLatch.count = 0
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Could not check account ($this), we are probably offline" }
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
+            this.state = AccountStates.OFFLINE
         } catch (exception: Throwable) {
             innerLatch.count = 0
             this.error = exception
             this.state = AccountStates.ERRORED
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
             throw exception
         }
     }
@@ -124,7 +131,6 @@ class MicrosoftAccount(
             latch?.dec()
             state = AccountStates.WORKING
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { exception }
             refreshMinecraftToken(latch)
         }
     }

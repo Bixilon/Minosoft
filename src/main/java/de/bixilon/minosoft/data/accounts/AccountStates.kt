@@ -47,6 +47,11 @@ enum class AccountStates : Translatable {
      * The account is invalid because of some other reason
      */
     ERRORED,
+
+    /**
+     * Could not check account state, because we are offline
+     */
+    OFFLINE,
     ;
 
     override val translationKey: ResourceLocation = "minosoft:main.account.state.${name.lowercase()}".toResourceLocation()

@@ -142,7 +142,9 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 if (select) {
                     profile.selected = account
                 }
-                Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Account is working: $account" }
+                if (account.state == AccountStates.WORKING) {
+                    Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Account is working: $account" }
+                }
                 JavaFXUtil.runLater { dialog.close() }
                 onSuccess?.invoke(account)
             } catch (exception: Throwable) {

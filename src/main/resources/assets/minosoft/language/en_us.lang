@@ -98,6 +98,7 @@ minosoft:main.account.state.refreshing=Refreshing...
 minosoft:main.account.state.working=Working
 minosoft:main.account.state.expired=Expired
 minosoft:main.account.state.errored=Errored
+minosoft:main.account.state.offline=Offline
 
 minosoft:main.account.checking_dialog.title=Checking account... - Minosoft
 minosoft:main.account.checking_dialog.header=Checking account... Please wait
