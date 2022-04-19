@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
@@ -72,9 +75,6 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 

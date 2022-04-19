@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.world.mesh
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.util.KUtil.format
-import glm_.vec3.Vec3
 
 class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
     val opaque: MutableList<SingleWorldMesh> = mutableListOf()

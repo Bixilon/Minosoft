@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.other.world.event.handlers
 
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.other.world.event.WorldEventHandler
@@ -23,8 +25,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.max
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 
 object BlockDestroyedHandler : WorldEventHandler {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block_destroyed".toResourceLocation()

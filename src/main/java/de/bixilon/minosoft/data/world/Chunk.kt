@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -26,8 +28,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 
 /**
  * Collection of chunks sections (from the lowest section to the highest section in y axis)

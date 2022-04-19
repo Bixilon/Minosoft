@@ -12,6 +12,15 @@
  */
 package de.bixilon.minosoft.data.player
 
+import de.bixilon.kotlinglm.func.common.clamp
+import de.bixilon.kotlinglm.func.common.floor
+import de.bixilon.kotlinglm.func.cos
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.func.sin
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -60,15 +69,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
-import glm_.func.common.clamp
-import glm_.func.common.floor
-import glm_.func.cos
-import glm_.func.rad
-import glm_.func.sin
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 import kotlin.math.max
 import kotlin.math.pow
 

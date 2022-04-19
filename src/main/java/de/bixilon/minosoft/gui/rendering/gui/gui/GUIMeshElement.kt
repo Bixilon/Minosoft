@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui
 
+import de.bixilon.kotlinglm.vec2.Vec2d
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -30,8 +32,6 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 
 open class GUIMeshElement<T : Element>(
     val element: T,

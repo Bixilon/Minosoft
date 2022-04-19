@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.target
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -27,8 +29,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 class TargetHandler(
     private val renderWindow: RenderWindow,

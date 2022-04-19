@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.item.UseItemC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.PositionRotationC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec3.Vec3
 
 class InteractInteractionHandler(
     val renderWindow: RenderWindow,

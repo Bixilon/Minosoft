@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
-import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL30.*
 import java.nio.ByteBuffer
 

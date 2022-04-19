@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.provider
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonList
 import de.bixilon.kutil.latch.CountUpAndDownLatch
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BitmapFontProvider(

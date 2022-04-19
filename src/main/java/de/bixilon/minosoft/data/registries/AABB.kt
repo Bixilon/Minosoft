@@ -14,6 +14,10 @@
 package de.bixilon.minosoft.data.registries
 
 import com.google.gson.JsonObject
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
@@ -23,11 +27,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ONE
-import glm_.Java.Companion.glm
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
-import glm_.vec3.Vec3t
 
 
 class AABB {
@@ -43,8 +42,8 @@ class AABB {
     constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))
 
     constructor(min: Vec3d, max: Vec3d) {
-        this.min = Vec3d(glm.min(min.x, max.x), glm.min(min.y, max.y), glm.min(min.z, max.z))
-        this.max = Vec3d(glm.max(min.x, max.x), glm.max(min.y, max.y), glm.max(min.z, max.z))
+        this.min = Vec3d(minOf(min.x, max.x), minOf(min.y, max.y), minOf(min.z, max.z))
+        this.max = Vec3d(maxOf(min.x, max.x), maxOf(min.y, max.y), maxOf(min.z, max.z))
     }
 
     private constructor(unsafe: Boolean, min: Vec3d, max: Vec3d) {
@@ -63,8 +62,8 @@ class AABB {
     }
 
     operator fun plus(other: AABB): AABB {
-        val newMin = Vec3d(glm.min(min.x, other.min.x), glm.min(min.y, other.min.y), glm.min(min.z, other.min.z))
-        val newMax = Vec3d(glm.max(max.x, other.max.x), glm.max(max.y, other.max.y), glm.max(max.z, other.max.z))
+        val newMin = Vec3d(minOf(min.x, other.min.x), minOf(min.y, other.min.y), minOf(min.z, other.min.z))
+        val newMax = Vec3d(maxOf(max.x, other.max.x), maxOf(max.y, other.max.y), maxOf(max.z, other.max.z))
         return AABB(true, newMin, newMax)
     }
 
@@ -144,10 +143,10 @@ class AABB {
         val otherMin = other.min(axis)
         val otherMax = other.max(axis)
         if (offset > 0 && thisMin <= otherMax + offset) {
-            return glm.min(thisMin - otherMax, offset)
+            return minOf(thisMin - otherMax, offset)
         }
         if (offset < 0 && thisMax >= otherMin + offset) {
-            return glm.max(thisMax - otherMin, offset)
+            return maxOf(thisMax - otherMin, offset)
         }
         return offset
     }
@@ -183,8 +182,8 @@ class AABB {
         for (axis in Axes.VALUES) {
             val t1 = getLengthMultiplier(position, direction, min, axis)
             val t2 = getLengthMultiplier(position, direction, max, axis)
-            tMin = glm.max(tMin, glm.min(t1, t2))
-            tMax = glm.min(tMax, glm.max(t1, t2))
+            tMin = maxOf(tMin, minOf(t1, t2))
+            tMax = minOf(tMax, maxOf(t1, t2))
         }
         return if (tMax > tMin) {
             tMin

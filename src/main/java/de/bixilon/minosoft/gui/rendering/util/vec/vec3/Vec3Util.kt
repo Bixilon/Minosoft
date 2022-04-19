@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import de.bixilon.kotlinglm.func.cos
+import de.bixilon.kotlinglm.func.sin
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3t
+import de.bixilon.kotlinglm.vec3.swizzle.xy
+import de.bixilon.kotlinglm.vec3.swizzle.xz
+import de.bixilon.kotlinglm.vec3.swizzle.yz
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
-import glm_.func.cos
-import glm_.func.sin
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3t
-import glm_.vec3.swizzle.xy
-import glm_.vec3.swizzle.xz
-import glm_.vec3.swizzle.yz
 import kotlin.math.PI
 import kotlin.math.sin
 

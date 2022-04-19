@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.top
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.vertical
-import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 /**

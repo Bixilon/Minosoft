@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2i
 
 class WorldInfoHUDElement(guiRenderer: GUIRenderer) : TextElement(guiRenderer, ""), LayoutedElement, Pollable {
     override val layoutOffset: Vec2i = Vec2i(2, 2)

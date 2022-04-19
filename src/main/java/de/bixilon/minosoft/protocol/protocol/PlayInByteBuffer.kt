@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -37,7 +38,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.recipes.Ingredient
-import glm_.vec3.Vec3i
 
 
 class PlayInByteBuffer : InByteBuffer {

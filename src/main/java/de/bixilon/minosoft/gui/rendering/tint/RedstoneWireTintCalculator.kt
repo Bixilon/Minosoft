@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.tint
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.text.RGBColor
-import glm_.func.common.clamp
 
 object RedstoneWireTintCalculator : TintProvider {
     private val COLORS = IntArray(16) {

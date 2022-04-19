@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.world.biome.source
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import glm_.func.common.clamp
 
 class SpatialBiomeArray(val data: Array<Biome>) : BiomeSource {
 

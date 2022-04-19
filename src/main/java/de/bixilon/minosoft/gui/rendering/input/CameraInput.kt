@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -21,8 +23,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.glm
-import glm_.vec2.Vec2d
 
 class CameraInput(
     private val renderWindow: RenderWindow,
@@ -137,7 +137,7 @@ class CameraInput(
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(delta.y + player.rotation.pitch, -89.9, 89.9)
+        val pitch = GLM.clamp(delta.y + player.rotation.pitch, -89.9, 89.9)
         val rotation = EntityRotation(yaw, pitch)
         player.rotation = rotation
     }

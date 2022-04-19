@@ -13,6 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
+import de.bixilon.kotlinglm.func.common.ceil
+import de.bixilon.kotlinglm.func.common.clamp
+import de.bixilon.kotlinglm.func.common.floor
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
@@ -23,16 +32,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.func.common.ceil
-import glm_.func.common.clamp
-import glm_.func.common.floor
-import glm_.glm
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
-import glm_.vec3.Vec3t
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -275,14 +274,14 @@ object VecUtil {
         val directionXDistance = getLengthMultiplier(direction, position, Axes.X)
         val directionYDistance = getLengthMultiplier(direction, position, Axes.Y)
         val directionZDistance = getLengthMultiplier(direction, position, Axes.Z)
-        return glm.min(directionXDistance, directionYDistance, directionZDistance)
+        return minOf(directionXDistance, directionYDistance, directionZDistance)
     }
 
     val Vec3.min: Float
-        get() = glm.min(this.x, this.y, this.z)
+        get() = minOf(this.x, this.y, this.z)
 
     val Vec3.max: Float
-        get() = glm.max(this.x, this.y, this.z)
+        get() = maxOf(this.x, this.y, this.z)
 
     val Vec3.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)

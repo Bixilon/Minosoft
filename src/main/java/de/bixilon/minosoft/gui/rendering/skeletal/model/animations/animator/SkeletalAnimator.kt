@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.SkeletalKeyframe
-import glm_.vec3.Vec3
 
 data class SkeletalAnimator(
     val name: String,

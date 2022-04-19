@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
@@ -36,8 +38,6 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.acquire
 import de.bixilon.minosoft.util.chunk.ChunkUtil.release
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 import java.util.*
 
 class SolidCullSectionPreparer(

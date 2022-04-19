@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.biomes
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.func.common.clamp
 import java.util.*
 
 data class Biome(

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
@@ -29,8 +31,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.min
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
-import glm_.vec2.Vec2i
-import glm_.vec4.Vec4i
 
 abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false

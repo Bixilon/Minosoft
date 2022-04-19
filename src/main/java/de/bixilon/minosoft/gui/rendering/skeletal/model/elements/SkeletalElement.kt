@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.faces.SkeletalFace
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 import java.util.*
 
 data class SkeletalElement(

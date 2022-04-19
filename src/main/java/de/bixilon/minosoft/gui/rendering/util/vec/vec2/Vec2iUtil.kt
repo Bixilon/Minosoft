@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
-import glm_.func.rad
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import glm_.vec2.Vec2t
 
 object Vec2iUtil {
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
-import glm_.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2i
 
 class AtlasArea(
     val start: Vec2i,

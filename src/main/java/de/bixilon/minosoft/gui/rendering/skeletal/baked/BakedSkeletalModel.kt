@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.baked
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.unbaked.ModelBakeUtil
@@ -22,9 +25,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
-import glm_.glm
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import java.util.*
@@ -79,7 +79,7 @@ class BakedSkeletalModel(
                 val origin = element.origin.fromBlockCoordinates()
 
                 element.rotation.let {
-                    val rad = -glm.radians(it)
+                    val rad = -GLM.radians(it)
                     for ((index, position) in positions.withIndex()) {
                         val out = Vec3(position)
                         out.rotateAssign(rad[0], Axes.X, origin, element.rescale)

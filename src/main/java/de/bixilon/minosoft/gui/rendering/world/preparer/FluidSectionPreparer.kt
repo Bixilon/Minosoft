@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.world.preparer
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import glm_.vec2.Vec2i
 
 interface FluidSectionPreparer {
 

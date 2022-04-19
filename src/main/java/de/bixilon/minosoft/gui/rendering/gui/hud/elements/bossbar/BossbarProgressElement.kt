@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.util.ProgressElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import glm_.vec2.Vec2i
 
 open class BossbarProgressElement(
     guiRenderer: GUIRenderer,

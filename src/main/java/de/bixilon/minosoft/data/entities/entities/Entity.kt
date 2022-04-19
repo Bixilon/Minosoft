@@ -12,6 +12,11 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
+import de.bixilon.kotlinglm.func.common.floor
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
@@ -58,11 +63,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.func.common.floor
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import kotlin.math.abs

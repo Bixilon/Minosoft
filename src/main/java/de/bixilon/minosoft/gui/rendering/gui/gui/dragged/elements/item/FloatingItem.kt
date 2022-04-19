@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.dragged.elements.item
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.click.SimpleContainerAction
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import glm_.vec2.Vec2i
 
 class FloatingItem(
     guiRenderer: GUIRenderer,

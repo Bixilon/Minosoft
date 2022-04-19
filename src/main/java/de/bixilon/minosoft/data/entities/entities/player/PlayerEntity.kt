@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.entities.entities.player
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -26,8 +28,6 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3d
 
 abstract class PlayerEntity(
     connection: PlayConnection,

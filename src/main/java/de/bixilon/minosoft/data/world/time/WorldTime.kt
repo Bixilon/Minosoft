@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.time
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.fractional
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.func.common.clamp
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos

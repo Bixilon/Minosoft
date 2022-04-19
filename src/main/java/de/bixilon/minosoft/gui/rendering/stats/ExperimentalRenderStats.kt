@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.avg.Average
 import de.bixilon.kutil.avg.LongAverage
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil
-import glm_.func.common.clamp
 import kotlin.random.Random
 
 class ExperimentalRenderStats : AbstractRenderStats {

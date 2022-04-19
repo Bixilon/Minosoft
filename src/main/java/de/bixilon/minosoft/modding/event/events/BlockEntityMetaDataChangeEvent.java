@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
+import de.bixilon.kotlinglm.vec3.Vec3i;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockDataS2CP;
-import glm_.vec3.Vec3i;
 
 import java.util.Map;
 

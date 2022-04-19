@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
@@ -54,8 +56,6 @@ import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 
 class RenderWindow(
     val connection: PlayConnection,

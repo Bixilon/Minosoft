@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 import kotlin.random.Random
 
 abstract class SpellParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d(0.5f - Random.nextDouble(), velocity.y, 0.5 - Random.nextDouble()), data) {

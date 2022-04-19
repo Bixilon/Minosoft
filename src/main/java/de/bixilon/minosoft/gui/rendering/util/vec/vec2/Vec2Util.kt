@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import glm_.vec2.Vec2
 
 object Vec2Util {
 

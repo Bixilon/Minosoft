@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.centerf
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 interface AbstractAudioPlayer {
 

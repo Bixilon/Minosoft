@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import glm_.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2
 
 object Vec2Serializer : SimpleModule() {
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.Arms.Companion.opposite
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElemen
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.marginOf
-import glm_.vec2.Vec2i
 
 class HotbarOffhandElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val frames = arrayOf(

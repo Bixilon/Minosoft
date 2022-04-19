@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2d
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -37,10 +41,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.glm
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 
 class GUIRenderer(
     val connection: PlayConnection,
@@ -91,7 +91,7 @@ class GUIRenderer(
 
     private fun recalculateMatrices(windowSize: Vec2i = renderWindow.window.size, scale: Float = profile.scale) {
         scaledSize = windowSize.scale(scale)
-        matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
+        matrix = GLM.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
         matrixChange = true
 
         gui.onMatrixChange()

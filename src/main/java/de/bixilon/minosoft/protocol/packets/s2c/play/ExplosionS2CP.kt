@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3i
 
 @LoadPacket
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
@@ -20,8 +22,6 @@ import de.bixilon.minosoft.gui.rendering.particle.types.norender.NoRenderParticl
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 class EntityEmitterParticle(
     connection: PlayConnection,

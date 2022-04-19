@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
-import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL30.*
 
 class OpenGLRenderbuffer(

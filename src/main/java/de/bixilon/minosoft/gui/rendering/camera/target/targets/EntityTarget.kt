@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.target.targets
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
-import glm_.vec3.Vec3d
 
 class EntityTarget(
     position: Vec3d,

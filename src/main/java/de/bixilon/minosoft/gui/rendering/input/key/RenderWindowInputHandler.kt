@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.input.key
 
+import de.bixilon.kotlinglm.vec2.Vec2d
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyAction
@@ -38,8 +40,6 @@ import de.bixilon.minosoft.modding.loading.Priorities
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2d
-import glm_.vec2.Vec2i
 
 class RenderWindowInputHandler(
     val renderWindow: RenderWindow,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import glm_.func.cos
-import glm_.func.rad
-import glm_.func.sin
-import glm_.vec3.Vec3
+import de.bixilon.kotlinglm.func.cos
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.func.sin
+import de.bixilon.kotlinglm.vec3.Vec3
 
 data class EntityRotation(
     val yaw: Double,

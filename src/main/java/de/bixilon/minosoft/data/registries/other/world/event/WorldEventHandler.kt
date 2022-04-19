@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.registries.other.world.event
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
 
 interface WorldEventHandler : CompanionResourceLocation {
 

@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import glm_.vec2.Vec2i
 
 open class SpacerElement(guiRenderer: GUIRenderer, override var size: Vec2i) : Element(guiRenderer) {
 

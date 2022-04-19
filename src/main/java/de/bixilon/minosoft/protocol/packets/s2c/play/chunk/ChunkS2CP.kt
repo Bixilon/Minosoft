@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
@@ -42,8 +44,6 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 import java.util.*
 
 @LoadPacket

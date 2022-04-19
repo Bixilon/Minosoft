@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.outliner
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.fasterxml.jackson.module.kotlin.convertValue
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.json.Jackson
-import glm_.vec3.Vec3
 import java.util.*
 
 class SkeletalOutliner(

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.entity.container.storage
 
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.container.storage.EnderChestBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
@@ -21,8 +23,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class EnderChestBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : StorageBlock<EnderChestBlockEntity>(resourceLocation, registries, data) {

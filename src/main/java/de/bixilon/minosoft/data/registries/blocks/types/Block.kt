@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.blocks.types
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
@@ -39,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.CastUtil.asAnyMap
-import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class Block(

@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion
 
+import de.bixilon.kotlinglm.func.common.clamp
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.func.common.clamp
-import glm_.vec3.Vec3d
 
 abstract class EmotionParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 

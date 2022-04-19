@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import glm_.vec2.Vec2i
 
 class ColorElement(
     guiRenderer: GUIRenderer,

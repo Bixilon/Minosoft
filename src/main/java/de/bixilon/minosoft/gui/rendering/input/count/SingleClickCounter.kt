@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.input.count
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
-import glm_.vec2.Vec2i
 
 class SingleClickCounter(
     val maxDelay: Int = ClickCounter.MAX_DELAY,

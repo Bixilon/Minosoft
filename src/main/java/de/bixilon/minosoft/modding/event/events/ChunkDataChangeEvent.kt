@@ -12,12 +12,12 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.chunk.ChunkS2CP
-import glm_.vec2.Vec2i
 
 /**
  * Fired when a new chunk is received or a full chunk changes

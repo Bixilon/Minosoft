@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 
 class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, EntitiesMeshStruct, initialCacheSize = initialCacheSize) {
 

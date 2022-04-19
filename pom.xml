@@ -380,9 +380,9 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.kotlin-graphics</groupId>
-            <artifactId>glm</artifactId>
-            <version>0.9.9.1-build-3</version>
+            <groupId>de.bixilon</groupId>
+            <artifactId>kotlin-glm</artifactId>
+            <version>0.9.9.1-6</version>
         </dependency>
         <dependency>
             <groupId>com.github.oshi</groupId>

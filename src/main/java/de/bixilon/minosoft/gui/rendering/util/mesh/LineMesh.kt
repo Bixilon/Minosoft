@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.primitive.BooleanUtil.toInt
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
@@ -22,8 +24,6 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow) {
 

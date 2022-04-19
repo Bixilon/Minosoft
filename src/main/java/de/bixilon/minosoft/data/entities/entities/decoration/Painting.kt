@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration
 
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -22,8 +24,6 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 
 class Painting(
     connection: PlayConnection,

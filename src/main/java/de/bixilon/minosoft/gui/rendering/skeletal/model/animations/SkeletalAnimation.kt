@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.SkeletalAnimator
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
-import glm_.func.rad
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 import java.util.*
 
 data class SkeletalAnimation(

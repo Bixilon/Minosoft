@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.text.ContainerText
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2i
 import kotlin.reflect.KClass
 
 class CraftingContainerScreen(guiRenderer: GUIRenderer, container: CraftingContainer) : BackgroundedContainerScreen<CraftingContainer>(guiRenderer, container, guiRenderer.atlasManager["minecraft:crafting_container".toResourceLocation()]) {

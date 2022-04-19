@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2t
 
 interface GUIVertexConsumer {
     val order: Array<Pair<Int, Int>>

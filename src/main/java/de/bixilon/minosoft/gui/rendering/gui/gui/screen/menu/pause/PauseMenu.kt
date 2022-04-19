@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug.DebugMenu
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.ShutdownManager
-import glm_.vec2.Vec2i
 
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 

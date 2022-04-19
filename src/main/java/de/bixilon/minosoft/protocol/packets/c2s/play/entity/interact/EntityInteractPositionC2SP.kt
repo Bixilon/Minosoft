@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
 
 @LoadPacket(parent = true)
 class EntityInteractPositionC2SP(

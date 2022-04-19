@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.storage
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.container.storage.StorageBlockEntity
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.world.entities.EntityRendererRegister
 import de.bixilon.minosoft.util.DateUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec3.Vec3i
 
 class DoubleChestRenderer(
     val entity: StorageBlockEntity,

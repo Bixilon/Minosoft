@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.models.properties
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import glm_.vec2.Vec2
 
 data class FaceProperties(
     override val sizeStart: Vec2,

@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
 import java.util.*
 
 class WorldQueueItem(

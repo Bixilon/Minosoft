@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.RGBColor
@@ -24,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec3.Vec3
 
 class FireOverlay(
     private val renderWindow: RenderWindow,

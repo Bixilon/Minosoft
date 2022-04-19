@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.world
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -21,8 +23,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import glm_.glm
-import glm_.vec3.Vec3
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
@@ -63,7 +63,7 @@ class LightMap(renderWindow: RenderWindow) {
             if (nightVisionEffect.duration > 200) {
                 1.0f
             } else {
-                0.7f + sin((nightVisionEffect.duration.toFloat()) * glm.PIf * 0.2f) * 0.3f
+                0.7f + sin((nightVisionEffect.duration.toFloat()) * GLM.PIf * 0.2f) * 0.3f
             }
         } else if (underwaterVisibility > 0.0f && connection.player.activeStatusEffects[conduitPowerStatusEffect] != null) {
             underwaterVisibility

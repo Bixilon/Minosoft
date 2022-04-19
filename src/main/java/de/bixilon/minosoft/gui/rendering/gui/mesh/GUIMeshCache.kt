@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 import de.bixilon.minosoft.util.collections.floats.HeapArrayFloatList
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import glm_.vec2.Vec2t
 
 class GUIMeshCache(
     var matrix: Mat4,

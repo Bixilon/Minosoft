@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -23,8 +25,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.modding.event.EventInitiators
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3d
 
 class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     private val connection = guiRenderer.connection

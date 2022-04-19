@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import glm_.vec3.Vec3
 import java.util.*
 
 data class SkeletalKeyframe(

@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.kotlinglm.vec2.Vec2t
+import de.bixilon.kotlinglm.vec3.Vec3t
+import de.bixilon.kotlinglm.vec4.Vec4t
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -39,9 +42,6 @@ import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
-import glm_.vec2.Vec2t
-import glm_.vec3.Vec3t
-import glm_.vec4.Vec4t
 import org.kamranzafar.jtar.TarHeader
 import java.util.*
 

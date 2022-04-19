@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil.nullCompare
-import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class TabListEntryElement(

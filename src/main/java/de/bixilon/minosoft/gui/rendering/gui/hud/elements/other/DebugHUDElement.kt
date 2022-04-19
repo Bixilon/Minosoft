@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.minosoft.config.key.KeyAction
@@ -53,8 +55,6 @@ import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
-import glm_.vec2.Vec2i
-import glm_.vec4.Vec4i
 import kotlin.math.abs
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {

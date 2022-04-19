@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import glm_.vec2.Vec2i
-import glm_.vec4.Vec4i
 
 class GridCell(
     guiRenderer: GUIRenderer,

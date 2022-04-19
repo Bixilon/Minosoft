@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
@@ -20,9 +22,6 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.glm
-import glm_.vec3.Vec3d
-import kotlin.math.max
 import kotlin.math.sin
 
 class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: Float, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
@@ -34,7 +33,7 @@ class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: F
         this.velocity.y += 0.2
 
         fun getColor(offset: Float): Float {
-            return max(0.0f, sin((colorModifier + offset) * 2 * glm.PIf) * 0.65f + 0.35f)
+            return maxOf(0.0f, sin((colorModifier + offset) * 2 * GLM.PIf) * 0.65f + 0.35f)
         }
 
         this.color = RGBColor(

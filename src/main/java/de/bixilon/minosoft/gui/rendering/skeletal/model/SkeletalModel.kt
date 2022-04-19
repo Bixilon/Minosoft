@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
@@ -23,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResol
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import glm_.vec3.Vec3
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 data class SkeletalModel(

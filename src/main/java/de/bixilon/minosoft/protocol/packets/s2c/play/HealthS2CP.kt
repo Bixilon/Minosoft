@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.func.common.clamp
 
 @LoadPacket
 class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {

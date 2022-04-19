@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.modding.event.events.BlocksSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -24,8 +26,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 
 @LoadPacket
 class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {

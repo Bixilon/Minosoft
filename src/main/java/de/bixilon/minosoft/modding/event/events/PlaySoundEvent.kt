@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.NamedSoundS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.sound.SoundEventS2CP
-import glm_.vec3.Vec3
 
 class PlaySoundEvent(
     connection: PlayConnection,

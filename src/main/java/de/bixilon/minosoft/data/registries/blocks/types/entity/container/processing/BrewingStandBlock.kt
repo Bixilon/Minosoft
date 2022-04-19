@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.entity.container.processing
 
+import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.container.processing.BrewingStandBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
@@ -23,8 +25,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class BrewingStandBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : ProcessingBlock<BrewingStandBlockEntity>(resourceLocation, registries, data) {

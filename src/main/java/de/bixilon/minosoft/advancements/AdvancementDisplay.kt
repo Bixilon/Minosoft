@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.advancements
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
-import glm_.vec2.Vec2
 
 data class AdvancementDisplay(
     val title: ChatComponent,

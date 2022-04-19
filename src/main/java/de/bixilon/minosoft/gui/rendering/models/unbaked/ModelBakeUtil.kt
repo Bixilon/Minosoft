@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
-import glm_.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2
 
 object ModelBakeUtil {
 

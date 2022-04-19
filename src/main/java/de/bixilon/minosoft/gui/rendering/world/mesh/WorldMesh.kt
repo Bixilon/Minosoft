@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.world.mesh
 
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 class WorldMesh(
     renderWindow: RenderWindow,

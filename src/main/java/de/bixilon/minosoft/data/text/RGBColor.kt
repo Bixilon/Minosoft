@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.data.text
 
-import glm_.func.common.clamp
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
+import de.bixilon.kotlinglm.func.common.clamp
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec4.Vec4
 import org.checkerframework.common.value.qual.IntRange
 
 class RGBColor(val rgba: Int) : ChatCode, TextFormattable {

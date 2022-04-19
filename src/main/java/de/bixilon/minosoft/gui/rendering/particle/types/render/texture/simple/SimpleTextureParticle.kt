@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.TextureParticle
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3d
 
 abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
     override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.renderWindow?.textureManager?.staticTextures?.get(it) }

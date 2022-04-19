@@ -13,6 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -23,11 +28,6 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import glm_.func.rad
-import glm_.glm
-import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
-import glm_.vec3.Vec3
 
 class MatrixHandler(
     private val renderWindow: RenderWindow,
@@ -86,11 +86,11 @@ class MatrixHandler(
 
 
     private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition) {
-        viewMatrix = glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
+        viewMatrix = GLM.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
-        projectionMatrix = glm.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, NEAR_PLANE, minOf(fogEnd + 2.0f, FAR_PLANE))
+        projectionMatrix = GLM.perspective(fov.rad.toFloat(), screenDimensions.x / screenDimensions.y, NEAR_PLANE, minOf(fogEnd + 2.0f, FAR_PLANE))
     }
 
     fun init() {

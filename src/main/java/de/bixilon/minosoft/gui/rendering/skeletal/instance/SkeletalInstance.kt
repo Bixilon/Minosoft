@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3i
 import java.util.*
 
 class SkeletalInstance(

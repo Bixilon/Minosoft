@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.world.map
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
-import glm_.vec2.Vec2i
 
 class Map(
     val id: Int,

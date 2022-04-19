@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.atlas
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 
 interface TextureLike {
     val texture: AbstractTexture
