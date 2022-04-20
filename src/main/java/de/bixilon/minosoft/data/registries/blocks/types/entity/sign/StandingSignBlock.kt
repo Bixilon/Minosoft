@@ -17,10 +17,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.standing.StandingSignModel
 
 open class StandingSignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : SignBlock(resourceLocation, registries, data) {
-    override var model: StandingSignModel? = null
 
     companion object : BlockFactory<StandingSignBlock>, MultiClassFactory<StandingSignBlock> {
         override val ALIASES: Set<String> = setOf("SignBlock")

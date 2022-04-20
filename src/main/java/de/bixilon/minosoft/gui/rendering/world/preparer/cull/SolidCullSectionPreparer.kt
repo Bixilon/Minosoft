@@ -92,14 +92,14 @@ class SolidCullSectionPreparer(
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     blockEntity = section.blockEntities.unsafeGet(x, y, z)
                     val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[6].toInt())
-                    if (blockEntityModel != null) { // ToDo: ignore if is MeshedBlockEntityRenderer?
+                    if (blockEntityModel != null) {
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
                     }
-                    model = if (blockEntityModel is MeshedBlockEntityRenderer) {
+                    model = blockState.blockModel ?: if (blockEntityModel is MeshedBlockEntityRenderer) {
                         blockEntityModel
                     } else {
-                        blockState.blockModel ?: continue
+                        continue
                     }
 
 
@@ -167,6 +167,10 @@ class SolidCullSectionPreparer(
                     }
                     tints = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
                     rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
+
+                    if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
+                        rendered = rendered || blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
+                    }
 
                     if (rendered) {
                         mesh.addBlock(x, y, z)

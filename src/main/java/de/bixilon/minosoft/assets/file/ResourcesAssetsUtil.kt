@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets
 object ResourcesAssetsUtil {
 
     fun create(clazz: Class<*>, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): AssetsManager {
-        val rootResources = clazz.classLoader.getResource("assets") ?: throw FileNotFoundException("Can not find assets folder in $clazz")
+        val rootResources = clazz.classLoader.getResource(prefix) ?: throw FileNotFoundException("Can not find assets folder in $clazz")
 
         return when (rootResources.protocol) {
             "file" -> DirectoryAssetsManager(rootResources.path, canUnload, prefix) // Read them directly from the folder

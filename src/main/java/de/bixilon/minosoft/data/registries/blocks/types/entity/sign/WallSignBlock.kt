@@ -16,10 +16,8 @@ package de.bixilon.minosoft.data.registries.blocks.types.entity.sign
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.wall.WallSignModel
 
 open class WallSignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : SignBlock(resourceLocation, registries, data) {
-    override var model: WallSignModel? = null
 
     companion object : BlockFactory<WallSignBlock> {
 

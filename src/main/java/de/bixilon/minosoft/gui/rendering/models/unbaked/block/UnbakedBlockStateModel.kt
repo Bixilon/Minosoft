@@ -63,7 +63,7 @@ data class UnbakedBlockStateModel(
 
         for (element in model.elements) {
             for (face in element.faces) {
-                val texture = textures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
+                val texture = textures[face.texture.removePrefix("#")] ?: throw IllegalArgumentException("Can not find texture variable ${face.texture}")// ToDo: Allow direct texture names?
                 val positions = face.direction.getPositions(element.from, element.to)
 
                 element.rotation?.let {

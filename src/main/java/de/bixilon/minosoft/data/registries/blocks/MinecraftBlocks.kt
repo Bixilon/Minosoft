@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -189,7 +189,7 @@ object MinecraftBlocks {
     val LADDER = "minecraft:ladder".toResourceLocation()
     val RAIL = "minecraft:rail".toResourceLocation()
     val COBBLESTONE_STAIRS = "minecraft:cobblestone_stairs".toResourceLocation()
-    val OAK_WALL_SIGN = "minecraft:oak_wall_sign".toResourceLocation()
+    val OAK_WALL_SIGN = "minecraft:oak_wall_sign.json".toResourceLocation()
     val SPRUCE_WALL_SIGN = "minecraft:spruce_wall_sign".toResourceLocation()
     val BIRCH_WALL_SIGN = "minecraft:birch_wall_sign".toResourceLocation()
     val ACACIA_WALL_SIGN = "minecraft:acacia_wall_sign".toResourceLocation()

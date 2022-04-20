@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.SignBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.StandingSignBlock
+import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import glm_.vec3.Vec3i
 import java.util.*
 
 class SignBlockEntityRenderer(
@@ -28,9 +28,12 @@ class SignBlockEntityRenderer(
 ) : MeshedBlockEntityRenderer<SignBlockEntity> {
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
-        val model = this.blockState.block.nullCast<SignBlock>()?.model ?: return false
-        println("Rendering sign at $position")
-
+        val block = this.blockState.block
+        if (block is StandingSignBlock) {
+            println("Rendering standing sign at $position (${block.resourceLocation})")
+        } else if (block is WallSignBlock) {
+            println("Rendering wall sign at $position (${block.resourceLocation})")
+        }
 
         // ToDo
 

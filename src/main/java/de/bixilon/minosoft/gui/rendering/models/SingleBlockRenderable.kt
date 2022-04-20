@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import glm_.vec3.Vec3i
 import java.util.*
 
 interface SingleBlockRenderable {

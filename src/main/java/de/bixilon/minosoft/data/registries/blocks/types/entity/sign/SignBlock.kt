@@ -17,9 +17,6 @@ import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignModel
 
-abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data) {
-    abstract val model: SignModel?
-}
+abstract class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data)
 
