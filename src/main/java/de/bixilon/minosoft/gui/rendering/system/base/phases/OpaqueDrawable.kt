@@ -20,7 +20,7 @@ interface OpaqueDrawable : Renderer {
         get() = false
 
     fun setupOpaque() {
-        renderSystem.reset()
+        renderSystem.reset(faceCulling = false)
     }
 
     fun drawOpaque()

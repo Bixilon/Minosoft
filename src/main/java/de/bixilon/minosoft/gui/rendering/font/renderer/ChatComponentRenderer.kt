@@ -13,14 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
+import de.bixilon.kotlinglm.GLM
+import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 interface ChatComponentRenderer<T : ChatComponent> {
 
@@ -29,14 +35,48 @@ interface ChatComponentRenderer<T : ChatComponent> {
      */
     fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
 
+    fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: T)
 
     companion object : ChatComponentRenderer<ChatComponent> {
+        const val TEXT_BLOCK_RESOLUTION = 64
+        var a = 0.0f
 
         override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
             return when (text) {
                 is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, text)
                 is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, text)
                 else -> TODO("Don't know how to render ${text::class.java}")
+            }
+        }
+
+        override fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: ChatComponent) {
+            when (text) {
+                is BaseComponent -> BaseComponentRenderer.render3DFlat(matrix, mesh, text)
+                is TextComponent -> TextComponentRenderer.render3DFlat(matrix, mesh, text)
+                else -> TODO("Don't know how to render ${text::class.java}")
+            }
+        }
+
+        fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent) {
+            val positionMatrix = Mat4()
+                .translateAssign(position)
+                .rotateAssign(a.rad, Vec3(0, 1, 0)) * Mat4()
+                .translateAssign(-position)
+
+            var orthoMatrix = positionMatrix * GLM.ortho(0.0f, TEXT_BLOCK_RESOLUTION.toFloat(), TEXT_BLOCK_RESOLUTION.toFloat(), 0.0f)
+            a += 3.0f
+            if (a > 360) {
+                a = 0.0f
+            }
+
+            val text = "abcdefghijkl"
+
+
+            for ((index, char) in text.codePoints().toArray().withIndex()) {
+                val data = renderWindow.font[char] ?: continue
+                val width = data.render3d(orthoMatrix, mesh, ChatColors[index % ChatColors.VALUES.size])
+                val translated = Mat4().translateAssign(Vec3(width, 0, 0))
+                orthoMatrix = orthoMatrix * translated
             }
         }
     }

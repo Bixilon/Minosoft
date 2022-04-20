@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
@@ -185,5 +187,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         pushLine()
         return false
+    }
+
+    override fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: TextComponent) {
+        TODO("Not yet implemented")
     }
 }

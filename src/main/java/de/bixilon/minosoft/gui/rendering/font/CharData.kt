@@ -13,15 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec2.Vec2t
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 class CharData(
     private val renderWindow: RenderWindow,
@@ -120,6 +124,30 @@ class CharData(
         }
 
         return (width * scale).ceil
+    }
+
+    fun render3d(matrix: Mat4, mesh: WorldMesh, color: RGBColor): Float {
+        val endMatrix = matrix * Mat4().translateAssign(Vec3(width, Font.CHAR_HEIGHT.toFloat(), 0))
+        val startPosition = matrix * Vec4(1, 1, 1, 1)
+        val endPosition = endMatrix * Vec4(1, 1, 1, 1)
+        val positions = arrayOf(
+            Vec3(startPosition.x, startPosition.y, startPosition.z),
+            Vec3(endPosition.x, startPosition.y, endPosition.z),
+            Vec3(endPosition.x, endPosition.y, endPosition.z),
+            Vec3(startPosition.x, endPosition.y, startPosition.z),
+        )
+        val texturePositions = arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+
+        val opaqueMesh = mesh.opaqueMesh ?: return 0.0f
+        for ((vertexIndex, textureIndex) in opaqueMesh.order) {
+            opaqueMesh.addVertex(positions[vertexIndex].array, texturePositions[textureIndex], texture ?: return 0.0f, color.rgb, 0xFF)
+        }
+        return width.toFloat()
     }
 
 

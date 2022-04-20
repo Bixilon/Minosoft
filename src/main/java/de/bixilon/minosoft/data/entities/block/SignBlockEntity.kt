@@ -42,7 +42,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
     }
 
     override fun createMeshedRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
-        return SignBlockEntityRenderer(this, blockState)
+        return SignBlockEntityRenderer(this, renderWindow, blockState)
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {
