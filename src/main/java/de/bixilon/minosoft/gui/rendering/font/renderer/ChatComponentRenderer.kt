@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
-import de.bixilon.kotlinglm.GLM
-import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
@@ -26,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 interface ChatComponentRenderer<T : ChatComponent> {
@@ -58,12 +57,11 @@ interface ChatComponentRenderer<T : ChatComponent> {
         }
 
         fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent) {
+            position.z = -1.0f
             val positionMatrix = Mat4()
+                .rotateDegreesAssign(rotation)
                 .translateAssign(position)
-                .rotateAssign(a.rad, Vec3(0, 1, 0)) * Mat4()
-                .translateAssign(-position)
 
-            var orthoMatrix = positionMatrix * GLM.ortho(0.0f, TEXT_BLOCK_RESOLUTION.toFloat(), TEXT_BLOCK_RESOLUTION.toFloat(), 0.0f)
             a += 3.0f
             if (a > 360) {
                 a = 0.0f
@@ -74,9 +72,9 @@ interface ChatComponentRenderer<T : ChatComponent> {
 
             for ((index, char) in text.codePoints().toArray().withIndex()) {
                 val data = renderWindow.font[char] ?: continue
-                val width = data.render3d(orthoMatrix, mesh, ChatColors[index % ChatColors.VALUES.size])
-                val translated = Mat4().translateAssign(Vec3(width, 0, 0))
-                orthoMatrix = orthoMatrix * translated
+                val color = ChatColors[index % ChatColors.VALUES.size]
+                val width = data.render3d(positionMatrix, mesh, color, false, false, false, false, false, scale) + 1.0f
+                positionMatrix.translateAssign(Vec3((width / TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
             }
         }
     }

@@ -17,14 +17,16 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec2.Vec2t
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.math.simple.FloatMath.ceil
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 class CharData(
@@ -126,30 +128,25 @@ class CharData(
         return (width * scale).ceil
     }
 
-    fun render3d(matrix: Mat4, mesh: WorldMesh, color: RGBColor): Float {
-        val endMatrix = matrix * Mat4().translateAssign(Vec3(width, Font.CHAR_HEIGHT.toFloat(), 0))
-        val startPosition = matrix * Vec4(1, 1, 1, 1)
-        val endPosition = endMatrix * Vec4(1, 1, 1, 1)
-        val positions = arrayOf(
-            Vec3(startPosition.x, startPosition.y, startPosition.z),
-            Vec3(endPosition.x, startPosition.y, endPosition.z),
-            Vec3(endPosition.x, endPosition.y, endPosition.z),
-            Vec3(startPosition.x, endPosition.y, startPosition.z),
-        )
-        val texturePositions = arrayOf(
-            Vec2(uvEnd.x, uvStart.y),
-            uvStart,
-            Vec2(uvStart.x, uvEnd.y),
-            uvEnd,
-        )
-
-        val opaqueMesh = mesh.opaqueMesh ?: return 0.0f
-        for ((vertexIndex, textureIndex) in opaqueMesh.order) {
-            opaqueMesh.addVertex(positions[vertexIndex].array, texturePositions[textureIndex], texture ?: return 0.0f, color.rgb, 0xFF)
-        }
+    fun render3d(transform: Mat4, mesh: WorldMesh, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float): Float {
+        val consumer = MeshConsumer(mesh.opaqueMesh!!, transform)
+        render(Vec2i(0, 0), color, shadow, italic, bold, strikethrough, underlined, consumer, null, scale)
         return width.toFloat()
     }
 
+
+    private class MeshConsumer(val mesh: SingleWorldMesh, val transform: Mat4) : GUIVertexConsumer {
+        override val order: Array<Pair<Int, Int>> get() = mesh.order
+
+        override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+            val transformed = transform * Vec4(position.x.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, 1.0f, 1.0f)
+            mesh.addVertex(transformed.array, uv, texture, tint.rgb, 0xFF)
+        }
+
+        override fun addCache(cache: GUIMeshCache) {
+            throw IllegalStateException()
+        }
+    }
 
     companion object {
         const val ITALIC_OFFSET = 2.5f
