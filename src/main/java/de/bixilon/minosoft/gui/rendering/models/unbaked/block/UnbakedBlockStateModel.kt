@@ -104,7 +104,16 @@ data class UnbakedBlockStateModel(
                 }
 
                 val (sizeStart, sizeEnd) = face.direction.getSize(element.from, element.to)
-                val touching = (if (face.direction.negative) element.from[face.direction.axis] else element.to[face.direction.axis] - 1.0f) == 0.0f
+
+                var touching = true
+                rotation?.let {
+                    if (it.x % 90 != 0 || it.y % 90 != 0) {
+                        touching = false
+                    }
+                }
+
+                touching = touching && (if (face.direction.negative) element.from[face.direction.axis] else element.to[face.direction.axis] - 1.0f) == 0.0f
+
                 var shade = 1.0f
                 if (element.shade) {
                     shade = when (direction) {
