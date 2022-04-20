@@ -169,7 +169,7 @@ class SolidCullSectionPreparer(
                     rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
 
                     if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
-                        rendered = rendered || blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
+                        rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints) || rendered
                     }
 
                     if (rendered) {
