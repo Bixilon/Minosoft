@@ -14,10 +14,12 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -25,13 +27,17 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
     var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.of("") }
+    var color: RGBColor = ChatColors.BLACK
+    var glowing = false
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
-        for (i in 0 until ProtocolDefinition.SIGN_LINES) {
-            val tag = nbt["Text$i"].nullCast<String>() ?: continue
+        color = nbt["Color"]?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it] } ?: ChatColors.BLACK
+        glowing = nbt["GlowingText"]?.toBoolean() ?: false
+        for (i in 1..ProtocolDefinition.SIGN_LINES) {
+            val tag = nbt["Text$i"]?.toString() ?: continue
 
-            lines[i] = ChatComponent.of(tag, translator = connection.language)
+            lines[i - 1] = ChatComponent.of(tag, translator = connection.language)
         }
     }
 
