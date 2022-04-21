@@ -44,13 +44,13 @@ class SignBlockEntityRenderer(
         if (block is StandingSignBlock) {
             // println("Rendering standing sign at $position (${block.resourceLocation})")
         } else if (block is WallSignBlock) {
-            renderWallText(position, mesh, blockState)
+            renderWallText(position, mesh, light[6].toInt())
         }
 
         return true
     }
 
-    private fun renderWallText(position: Vec3i, mesh: WorldMesh, blockState: BlockState) {
+    private fun renderWallText(position: Vec3i, mesh: WorldMesh, light: Int) {
         val yRotation = when (val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH) {
             Directions.SOUTH -> 0.0f
             Directions.EAST -> 90.0f
@@ -64,7 +64,7 @@ class SignBlockEntityRenderer(
         val textPosition = position.toVec3 + rotationVector
 
         for (line in sign.lines) {
-            ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, yRotation, 0.0f), mesh, line)
+            ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, yRotation, 0.0f), mesh, line, light)
             textPosition.y -= 0.11f
         }
     }

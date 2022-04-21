@@ -128,19 +128,19 @@ class CharData(
         return (width * scale).ceil
     }
 
-    fun render3d(transform: Mat4, mesh: WorldMesh, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float): Float {
-        val consumer = MeshConsumer(mesh.opaqueMesh!!, transform)
+    fun render3d(transform: Mat4, mesh: WorldMesh, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float, light: Int): Float {
+        val consumer = MeshConsumer(mesh.opaqueMesh!!, transform, light)
         render(Vec2i(0, 0), color, shadow, italic, bold, strikethrough, underlined, consumer, null, scale)
         return width.toFloat()
     }
 
 
-    private class MeshConsumer(val mesh: SingleWorldMesh, val transform: Mat4) : GUIVertexConsumer {
+    private class MeshConsumer(val mesh: SingleWorldMesh, val transform: Mat4, val light: Int) : GUIVertexConsumer {
         override val order: Array<Pair<Int, Int>> get() = mesh.order
 
         override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
             val transformed = transform * Vec4(position.x.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, -position.y.toFloat() / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION, 1.0f, 1.0f)
-            mesh.addVertex(transformed.array, uv, texture, tint.rgb, 0xFF)
+            mesh.addVertex(transformed.array, uv, texture, tint.rgb, light)
         }
 
         override fun addCache(cache: GUIMeshCache) {

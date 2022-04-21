@@ -56,7 +56,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent) {
+        fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent, light: Int) {
             val rotationMatrix = Mat4()
                 .rotateDegreesAssign(rotation)
                 .translateAssign(Vec3(0, 0, -1))
@@ -71,7 +71,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             for ((index, char) in text.codePoints().toArray().withIndex()) {
                 val data = renderWindow.font[char] ?: continue
                 val color = ChatColors[index % ChatColors.VALUES.size]
-                val width = data.render3d(transformMatrix, mesh, color, false, false, false, false, false, scale) + Font.HORIZONTAL_SPACING
+                val width = data.render3d(transformMatrix, mesh, color, shadow = false, italic = false, bold = false, strikethrough = false, underlined = false, scale = scale, light = light) + Font.HORIZONTAL_SPACING
                 transformMatrix.translateAssign(Vec3((width / TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
             }
         }
