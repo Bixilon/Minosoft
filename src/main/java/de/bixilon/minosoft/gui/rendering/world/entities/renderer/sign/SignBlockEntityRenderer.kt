@@ -15,8 +15,11 @@ package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -34,16 +37,26 @@ class SignBlockEntityRenderer(
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
-        if (position.x != 0 || position.y != 1 || position.z != 0) {
-            return false
-        }
         if (block is StandingSignBlock) {
             // println("Rendering standing sign at $position (${block.resourceLocation})")
         } else if (block is WallSignBlock) {
             println("Rendering wall sign at $position (${block.resourceLocation})")
+            val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH
+
+            val yRotation = when (rotation) {
+                Directions.NORTH -> 0.0f
+                Directions.EAST -> 90.0f
+                Directions.SOUTH -> 180.0f
+                Directions.WEST -> 270.0f
+                else -> TODO()
+            }
+
+            val rotationVector = Vec3(180.0f, yRotation, 180.0f)
+            for ((index, line) in sign.lines.withIndex()) {
+                ChatComponentRenderer.render3dFlat(renderWindow, position.toVec3 + Vec3(0.95f, 0.75f - (index * 0.1f), 1.86f), 1.0f, rotationVector, mesh, line)
+            }
         }
 
-        ChatComponentRenderer.render3dFlat(renderWindow, position.toVec3 + Vec3(0, 1.0f, 0.0f), 1.0f, Vec3(), mesh, sign.lines[0])
         // ToDo
 
         return true

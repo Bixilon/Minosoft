@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -37,8 +38,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
     fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: T)
 
     companion object : ChatComponentRenderer<ChatComponent> {
-        const val TEXT_BLOCK_RESOLUTION = 64
-        var a = 0.0f
+        const val TEXT_BLOCK_RESOLUTION = 128
 
         override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
             return when (text) {
@@ -57,15 +57,9 @@ interface ChatComponentRenderer<T : ChatComponent> {
         }
 
         fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent) {
-            position.z = -1.0f
             val positionMatrix = Mat4()
-                .rotateDegreesAssign(rotation)
                 .translateAssign(position)
-
-            a += 3.0f
-            if (a > 360) {
-                a = 0.0f
-            }
+                .rotateDegreesAssign(rotation)
 
             val text = "abcdefghijkl"
 
@@ -73,7 +67,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             for ((index, char) in text.codePoints().toArray().withIndex()) {
                 val data = renderWindow.font[char] ?: continue
                 val color = ChatColors[index % ChatColors.VALUES.size]
-                val width = data.render3d(positionMatrix, mesh, color, false, false, false, false, false, scale) + 1.0f
+                val width = data.render3d(positionMatrix, mesh, color, false, false, false, false, false, scale) + Font.HORIZONTAL_SPACING
                 positionMatrix.translateAssign(Vec3((width / TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
             }
         }
