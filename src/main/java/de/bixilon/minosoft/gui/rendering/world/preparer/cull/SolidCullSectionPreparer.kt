@@ -166,7 +166,7 @@ class SolidCullSectionPreparer(
                         random.setSeed(0L)
                     }
                     tints = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
-                    rendered = false // rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
+                    rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
 
                     if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
                         rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints) || rendered

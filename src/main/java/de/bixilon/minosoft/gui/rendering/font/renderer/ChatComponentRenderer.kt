@@ -57,18 +57,22 @@ interface ChatComponentRenderer<T : ChatComponent> {
         }
 
         fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent) {
+            val rotationMatrix = Mat4()
+                .rotateDegreesAssign(rotation)
+                .translateAssign(Vec3(0, 0, -1))
+
             val positionMatrix = Mat4()
                 .translateAssign(position)
-                .rotateDegreesAssign(rotation)
 
-            val text = "abcdefghijkl"
+            val transformMatrix = positionMatrix * rotationMatrix
+            val text = "abcdefghijklmnop"
 
 
             for ((index, char) in text.codePoints().toArray().withIndex()) {
                 val data = renderWindow.font[char] ?: continue
                 val color = ChatColors[index % ChatColors.VALUES.size]
-                val width = data.render3d(positionMatrix, mesh, color, false, false, false, false, false, scale) + Font.HORIZONTAL_SPACING
-                positionMatrix.translateAssign(Vec3((width / TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
+                val width = data.render3d(transformMatrix, mesh, color, false, false, false, false, false, scale) + Font.HORIZONTAL_SPACING
+                transformMatrix.translateAssign(Vec3((width / TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
             }
         }
     }

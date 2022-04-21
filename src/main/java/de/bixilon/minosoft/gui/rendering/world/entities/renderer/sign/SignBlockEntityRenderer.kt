@@ -43,22 +43,17 @@ class SignBlockEntityRenderer(
             println("Rendering wall sign at $position (${block.resourceLocation})")
             val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH
 
-            val yRotation = when (rotation) {
-                Directions.NORTH -> 0.0f
-                Directions.EAST -> 90.0f
-                Directions.SOUTH -> 180.0f
-                Directions.WEST -> 270.0f
-                else -> TODO()
-            }
-
-            val rotationVector = Vec3(180.0f, yRotation, 180.0f)
             for ((index, line) in sign.lines.withIndex()) {
-                ChatComponentRenderer.render3dFlat(renderWindow, position.toVec3 + Vec3(0.95f, 0.75f - (index * 0.1f), 1.86f), 1.0f, rotationVector, mesh, line)
+                ChatComponentRenderer.render3dFlat(renderWindow, position.toVec3 + Vec3(PIXEL_SCALE * 5, 0.75f - (index * 0.11f), 0.126f), 1.2f, Vec3(0.0f, 0.0f, 0.0f), mesh, line)
             }
         }
 
         // ToDo
 
         return true
+    }
+
+    companion object {
+        private const val PIXEL_SCALE = 1.0f / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION
     }
 }

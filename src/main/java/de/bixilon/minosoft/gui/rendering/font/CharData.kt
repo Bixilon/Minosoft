@@ -144,7 +144,7 @@ class CharData(
         }
 
         override fun addCache(cache: GUIMeshCache) {
-            throw IllegalStateException()
+            throw IllegalStateException("This is not hud!")
         }
     }
 
