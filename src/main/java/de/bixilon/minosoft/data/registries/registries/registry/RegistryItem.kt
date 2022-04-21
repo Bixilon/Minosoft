@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -39,8 +39,7 @@ abstract class RegistryItem : ResourceLocationAble {
             val javaField = field.javaField ?: continue
             var value: Any? = null
             for (key in keys) {
-                val currentValue = registries[javaField.type as Class<out RegistryItem>]?.get(key) ?: continue
-                value = currentValue
+                value = registries[javaField.type as Class<out RegistryItem>]?.get(key) ?: continue
                 break
             }
             value ?: continue

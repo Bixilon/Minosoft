@@ -179,6 +179,7 @@ class Registries {
             field.get(this).unsafeCast<Registry<*>>().postInit(this)
         }
         isFullyLoaded = true
+        shapes.clear()
     }
 
     private fun loadShapes(pixlyzerData: Map<String, Any>?) {
