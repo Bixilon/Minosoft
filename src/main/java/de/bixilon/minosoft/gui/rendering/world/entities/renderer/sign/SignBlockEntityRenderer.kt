@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -24,7 +26,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.StandingSign
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
@@ -40,20 +44,41 @@ class SignBlockEntityRenderer(
         if (block is StandingSignBlock) {
             // println("Rendering standing sign at $position (${block.resourceLocation})")
         } else if (block is WallSignBlock) {
-            println("Rendering wall sign at $position (${block.resourceLocation})")
-            val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH
-
-            for ((index, line) in sign.lines.withIndex()) {
-                ChatComponentRenderer.render3dFlat(renderWindow, position.toVec3 + Vec3(PIXEL_SCALE * 5, 0.75f - (index * 0.11f), 0.126f), 1.2f, Vec3(0.0f, 0.0f, 0.0f), mesh, line)
-            }
+            renderWallText(position, mesh, blockState)
         }
-
-        // ToDo
 
         return true
     }
 
+    private fun renderWallText(position: Vec3i, mesh: WorldMesh, blockState: BlockState) {
+        val yRotation = when (val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH) {
+            Directions.SOUTH -> 0.0f
+            Directions.EAST -> 90.0f
+            Directions.NORTH -> 180.0f
+            Directions.WEST -> 270.0f
+            else -> TODO("Sign can not have this facing: $rotation")
+        }
+
+        val rotationVector = Vec3(PIXEL_SCALE * 5, 0.75f, 2.0f / UnbakedElement.BLOCK_RESOLUTION + 0.001f)
+        rotationVector.signRotate(-yRotation.rad)
+        val textPosition = position.toVec3 + rotationVector
+
+        for (line in sign.lines) {
+            ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, yRotation, 0.0f), mesh, line)
+            textPosition.y -= 0.11f
+        }
+    }
+
+    private fun Vec3.signRotate(yRotation: Float) {
+        this -= 0.5f
+
+        rotateAssign(yRotation, Axes.Y)
+
+        this += 0.5f
+    }
+
     companion object {
         private const val PIXEL_SCALE = 1.0f / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION
+        private const val TEXT_SCALE = 1.2f
     }
 }
