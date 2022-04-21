@@ -290,6 +290,8 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
 
     WARDEN_ANGER(0),
 
+    MOTIVE(null),
+
 
     // pretty old stuff here. 1.8 mostly (or even after, I don't know and care)
     LEGACY_SKELETON_TYPE(0.toByte()),

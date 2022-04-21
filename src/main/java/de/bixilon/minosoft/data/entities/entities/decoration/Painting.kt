@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Painting(
@@ -30,14 +31,14 @@ class Painting(
     entityType: EntityType,
     position: Vec3i,
     @get:SynchronizedEntityData(name = "Direction") val direction: Directions,
-    @get:SynchronizedEntityData(name = "Motive") val motive: Motive,
+    @get:SynchronizedEntityData(name = "Motive") val motive: Motive?,
 ) : Entity(connection, entityType, position.entityPosition, EntityRotation(0.0f, 0.0f)) {
 
     companion object : EntityFactory<Painting> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("painting")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Painting? {
-            throw IllegalAccessError("Can not build painting!")
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Painting {
+            return Painting(connection, entityType, position.toVec3i(), Directions.NORTH, null) // ToDo: Get data from entity data (22w16a+)
         }
     }
 }

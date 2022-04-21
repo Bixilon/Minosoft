@@ -86,6 +86,7 @@ class EntityData(
             }
             EntityDataDataTypes.GLOBAL_POSITION -> buffer.readNBT() // ToDo
             EntityDataDataTypes.OPTIONAL_GLOBAL_POSITION -> buffer.readPlayOptional { readNBT() } // ToDo
+            EntityDataDataTypes.MOTIVE -> buffer.connection.registries.motiveRegistry[buffer.readVarInt()]
             EntityDataDataTypes.CAT_VARIANT, EntityDataDataTypes.FROG_VARIANT -> buffer.readVarInt() // ToDo
         }
     }
@@ -116,6 +117,7 @@ class EntityData(
         FIREWORK_DATA,
         GLOBAL_POSITION,
         OPTIONAL_GLOBAL_POSITION,
+        MOTIVE,
 
 
         CAT_VARIANT,
