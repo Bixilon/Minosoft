@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.util.Broken
@@ -55,6 +56,13 @@ class SignBlockEntityRenderer(
 
     private fun renderText(position: Vec3i, rotationVector: Vec3, yRotation: Float, mesh: WorldMesh, light: Int) {
         val textPosition = position.toVec3 + rotationVector
+
+        val textMesh = mesh.textMesh!!
+        var primitives = 0
+        for (line in sign.lines) {
+            primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
+        }
+        textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX)
 
         for (line in sign.lines) {
             ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), mesh, line, light)

@@ -13,19 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
@@ -206,7 +204,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return count
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: TextComponent, light: Int) {
+    override fun render3dFlat(renderWindow: RenderWindow, scale: Float, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
         val color = text.color ?: ChatColors.BLACK
         val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)
         val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
@@ -214,8 +212,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         val underlined = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
         for (char in text.message.codePoints()) {
             val data = renderWindow.font[char] ?: continue
-            val width = data.render3d(matrix, mesh, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale, light = light) + Font.HORIZONTAL_SPACING
-            matrix.translateAssign(Vec3((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
+            val width = data.render3d(consumer, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale) + Font.HORIZONTAL_SPACING
+            consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION) * scale)
         }
     }
 }

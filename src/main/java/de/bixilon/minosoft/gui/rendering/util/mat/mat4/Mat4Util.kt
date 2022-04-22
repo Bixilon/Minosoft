@@ -31,4 +31,17 @@ object Mat4Util {
         }
         return this
     }
+
+
+    operator fun Mat4.times(vec3: Vec3): Vec3 {
+        return this.times(vec3, vec3)
+    }
+
+    fun Mat4.times(vec3: Vec3, res: Vec3): Vec3 {
+        val array = vec3.array
+        res[0] = this[0, 0] * array[0] + this[1, 0] * array[1] + this[2, 0] * array[2] + this[3, 0]
+        res[1] = this[0, 1] * array[0] + this[1, 1] * array[1] + this[2, 1] * array[2] + this[3, 1]
+        res[2] = this[0, 2] * array[0] + this[1, 2] * array[1] + this[2, 2] * array[2] + this[3, 2]
+        return res
+    }
 }

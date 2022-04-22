@@ -50,4 +50,8 @@ class GUIMeshCache(
         data.addAll(cache.data)
         revision++
     }
+
+    override fun ensureSize(size: Int) {
+        data.ensureSize(size)
+    }
 }

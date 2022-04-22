@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -34,7 +35,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
      */
     fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
 
-    fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: T, light: Int)
+    fun render3dFlat(renderWindow: RenderWindow, scale: Float, consumer: WorldGUIConsumer, text: T, light: Int)
 
     fun calculatePrimitiveCount(text: T): Int
 
@@ -49,10 +50,10 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: ChatComponent, light: Int) {
+        override fun render3dFlat(renderWindow: RenderWindow, scale: Float, consumer: WorldGUIConsumer, text: ChatComponent, light: Int) {
             when (text) {
-                is BaseComponent -> BaseComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, text, light)
-                is TextComponent -> TextComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, text, light)
+                is BaseComponent -> BaseComponentRenderer.render3dFlat(renderWindow, scale, consumer, text, light)
+                is TextComponent -> TextComponentRenderer.render3dFlat(renderWindow, scale, consumer, text, light)
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }
@@ -67,7 +68,8 @@ interface ChatComponentRenderer<T : ChatComponent> {
             val primitives = calculatePrimitiveCount(text)
             textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX)
 
-            render3dFlat(renderWindow, matrix, scale, textMesh, text, light)
+            val consumer = WorldGUIConsumer(textMesh, matrix, light)
+            render3dFlat(renderWindow, scale, consumer, text, light)
         }
 
         override fun calculatePrimitiveCount(text: ChatComponent): Int {

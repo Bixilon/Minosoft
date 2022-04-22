@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
@@ -33,9 +32,9 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
         return false
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: BaseComponent, light: Int) {
+    override fun render3dFlat(renderWindow: RenderWindow, scale: Float, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
         for (part in text.parts) {
-            ChatComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, part, light)
+            ChatComponentRenderer.render3dFlat(renderWindow, scale, consumer, part, light)
         }
     }
 
