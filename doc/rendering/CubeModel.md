@@ -1,4 +1,4 @@
 Cube uv:
 
 bottom->top
-east->north->south->west
+east->north->west->south

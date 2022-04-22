@@ -4,7 +4,10 @@
       "__comment": "Sign",
       "from": [0, 9.5, 7],
       "to": [16, 17.5, 9],
-      "y": 180,
+      "rotation": {
+        "axis": "Y",
+        "angle": 180.0
+      },
       "faces": {
         "down": {
           "uv": [0.5, 0, 4.5, 1],
@@ -19,15 +22,15 @@
           "texture": "#sign"
         },
         "north": {
-          "uv": [0.5, 1, 4.5, 7],
-          "texture": "#sign"
-        },
-        "south": {
-          "uv": [4.5, 1, 8.0, 7],
+          "uv": [0.5, 1, 6.5, 7],
           "texture": "#sign"
         },
         "west": {
-          "uv": [8.0, 1, 8.5, 7],
+          "uv": [6.5, 1, 7.0, 7],
+          "texture": "#sign"
+        },
+        "south": {
+          "uv": [7.0, 1, 13.0, 7],
           "texture": "#sign"
         }
       }
@@ -36,7 +39,10 @@
       "__comment": "Stick",
       "from": [7.5, 0, 7.5],
       "to": [8.5, 9.5, 8.5],
-      "y": 180,
+      "rotation": {
+        "axis": "Y",
+        "angle": 180.0
+      },
       "faces": {
         "down": {
           "uv": [0.5, 7, 1.0, 7.5],
@@ -51,11 +57,11 @@
           "uv": [0.5, 8, 1.0, 15],
           "texture": "#sign"
         },
-        "south": {
+        "west": {
           "uv": [1.0, 8, 1.5, 15],
           "texture": "#sign"
         },
-        "west": {
+        "south": {
           "uv": [1.5, 8, 2.0, 15],
           "texture": "#sign"
         }
