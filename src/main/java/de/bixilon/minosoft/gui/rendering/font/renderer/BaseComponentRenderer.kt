@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
@@ -33,7 +33,7 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
         return false
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: BaseComponent, light: Int) {
+    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: BaseComponent, light: Int) {
         for (part in text.parts) {
             ChatComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, part, light)
         }

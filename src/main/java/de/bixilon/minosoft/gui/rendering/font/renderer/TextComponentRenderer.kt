@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
@@ -190,7 +190,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return false
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: TextComponent, light: Int) {
+    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: TextComponent, light: Int) {
         for ((index, char) in text.message.codePoints().toArray().withIndex()) {
             val data = renderWindow.font[char] ?: continue
             val color = ChatColors[index % ChatColors.VALUES.size]

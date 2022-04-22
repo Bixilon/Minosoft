@@ -30,6 +30,7 @@ class WorldMesh(
     var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 100000)
     var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 10000)
     var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
+    var textMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
     var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
@@ -41,6 +42,7 @@ class WorldMesh(
         this.opaqueMesh?.load()
         this.translucentMesh?.load()
         this.transparentMesh?.load()
+        this.textMesh?.load()
         val blockEntities = this.blockEntities
         if (blockEntities != null) {
             for (blockEntity in blockEntities) {
@@ -76,6 +78,14 @@ class WorldMesh(
                 meshes++
             }
         }
+        textMesh?.let {
+            if (it.data.isEmpty) {
+                it.data.unload()
+                textMesh = null
+            } else {
+                meshes++
+            }
+        }
         blockEntities?.let {
             if (it.isEmpty()) {
                 blockEntities = null
@@ -91,6 +101,7 @@ class WorldMesh(
         opaqueMesh?.unload()
         translucentMesh?.unload()
         transparentMesh?.unload()
+        textMesh?.unload()
 
         val blockEntities = blockEntities
         if (blockEntities != null) {

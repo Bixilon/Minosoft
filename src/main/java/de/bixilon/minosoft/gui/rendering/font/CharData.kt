@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 class CharData(
     private val renderWindow: RenderWindow,
@@ -128,8 +127,8 @@ class CharData(
         return (width * scale).ceil
     }
 
-    fun render3d(transform: Mat4, mesh: WorldMesh, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float, light: Int): Float {
-        val consumer = MeshConsumer(mesh.opaqueMesh!!, transform, light)
+    fun render3d(transform: Mat4, mesh: SingleWorldMesh, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float, light: Int): Float {
+        val consumer = MeshConsumer(mesh, transform, light)
         render(Vec2i(0, 0), color, shadow, italic, bold, strikethrough, underlined, consumer, null, scale)
         return width.toFloat()
     }

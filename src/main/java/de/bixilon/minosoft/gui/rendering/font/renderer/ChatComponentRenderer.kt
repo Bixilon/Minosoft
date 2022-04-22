@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.mat.mat4.Mat4Util.rotateDegreesAssign
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 interface ChatComponentRenderer<T : ChatComponent> {
@@ -33,7 +34,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
      */
     fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
 
-    fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: T, light: Int)
+    fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: T, light: Int)
 
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
@@ -46,7 +47,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: ChatComponent, light: Int) {
+        override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: ChatComponent, light: Int) {
             when (text) {
                 is BaseComponent -> BaseComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, text, light)
                 is TextComponent -> TextComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, text, light)
@@ -61,7 +62,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
                 .translateAssign(Vec3(0, 0, -1))
 
 
-            render3dFlat(renderWindow, matrix, scale, mesh, text, light)
+            render3dFlat(renderWindow, matrix, scale, mesh.textMesh!!, text, light)
         }
     }
 }

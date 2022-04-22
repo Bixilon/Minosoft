@@ -15,13 +15,23 @@
 
 out vec4 foutColor;
 
-#include "minosoft:animation/header_fragment"
+
+flat in uint finTextureIndex;
+in vec3 finTextureCoordinates;
+
+in vec4 finTintColor;
+
 
 #include "minosoft:texture"
 #include "minosoft:alpha"
-
-#define MIPMAP_LEVEL 0.0f
+#include "minosoft:fog"
 
 void main() {
-    #include "minosoft:animation/main_fragment"
+    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
+    discard_if_0(texelColor.a);
+
+    foutColor = texelColor * finTintColor;
+    set_alpha_transparent();
+
+    set_fog();
 }
