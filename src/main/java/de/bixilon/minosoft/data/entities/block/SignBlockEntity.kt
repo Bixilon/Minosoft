@@ -37,7 +37,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
         for (i in 1..ProtocolDefinition.SIGN_LINES) {
             val tag = nbt["Text$i"]?.toString() ?: continue
 
-            lines[i - 1] = ChatComponent.of(tag, translator = connection.language)
+            lines[i - 1] = ChatComponent.of(tag, translator = connection.language).apply { cut(MAX_LINE_LENGTH) }
         }
     }
 
@@ -47,6 +47,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
 
     companion object : BlockEntityFactory<SignBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:sign")
+        const val MAX_LINE_LENGTH = 16
 
         override fun build(connection: PlayConnection): SignBlockEntity {
             return SignBlockEntity(connection)

@@ -96,6 +96,6 @@ class SignBlockEntityRenderer(
         private const val TEXT_SCALE = 1.35f
         private const val Z_OFFSET = 0.001f
         private const val X_OFFSET = PIXEL_SCALE * 6
-        private const val Y_OFFSET = 0.03f
+        private const val Y_OFFSET = 0.04f
     }
 }
