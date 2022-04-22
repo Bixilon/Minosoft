@@ -436,7 +436,7 @@ class WorldRenderer(
                         neighbourChunks = it.unsafeCast()
                     }
                     val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
-                    val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight)
+                    val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
                     solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
                     if (section.blocks.fluidCount > 0) {
                         fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)

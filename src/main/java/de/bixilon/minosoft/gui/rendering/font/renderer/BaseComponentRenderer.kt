@@ -38,4 +38,12 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
             ChatComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, part, light)
         }
     }
+
+    override fun calculatePrimitiveCount(text: BaseComponent): Int {
+        var count = 0
+        for (part in text.parts) {
+            count += ChatComponentRenderer.calculatePrimitiveCount(part)
+        }
+        return count
+    }
 }

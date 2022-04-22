@@ -48,4 +48,6 @@ interface GUIVertexConsumer {
     }
 
     fun addCache(cache: GUIMeshCache)
+
+    fun ensureSize(size: Int)
 }

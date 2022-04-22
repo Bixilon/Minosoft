@@ -36,6 +36,8 @@ interface ChatComponentRenderer<T : ChatComponent> {
 
     fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: T, light: Int)
 
+    fun calculatePrimitiveCount(text: T): Int
+
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
 
@@ -61,8 +63,19 @@ interface ChatComponentRenderer<T : ChatComponent> {
                 .rotateDegreesAssign(rotation)
                 .translateAssign(Vec3(0, 0, -1))
 
+            val textMesh = mesh.textMesh!!
+            val primitives = calculatePrimitiveCount(text)
+            textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX)
 
-            render3dFlat(renderWindow, matrix, scale, mesh.textMesh!!, text, light)
+            render3dFlat(renderWindow, matrix, scale, textMesh, text, light)
+        }
+
+        override fun calculatePrimitiveCount(text: ChatComponent): Int {
+            return when (text) {
+                is BaseComponent -> BaseComponentRenderer.calculatePrimitiveCount(text)
+                is TextComponent -> TextComponentRenderer.calculatePrimitiveCount(text)
+                else -> TODO("Don't know how to render ${text::class.java}")
+            }
         }
     }
 }

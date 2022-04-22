@@ -190,6 +190,22 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return false
     }
 
+    override fun calculatePrimitiveCount(text: TextComponent): Int {
+        val length = text.message.length
+        var count = length
+        if (text.formatting.contains(PreChatFormattingCodes.BOLD)) {
+            count += length
+        }
+        if (text.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
+            count += length
+        }
+        if (text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
+            count += length
+        }
+
+        return count
+    }
+
     override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: TextComponent, light: Int) {
         val color = text.color ?: ChatColors.BLACK
         val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)

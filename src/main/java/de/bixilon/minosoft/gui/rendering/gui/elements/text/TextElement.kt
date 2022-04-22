@@ -180,6 +180,11 @@ open class TextElement(
             }
         }
 
+        var vertices = ChatComponentRenderer.calculatePrimitiveCount(chatComponent) * consumer.order.size * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX
+        if (shadow) {
+            vertices *= 2
+        }
+        consumer.ensureSize(vertices)
         ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, renderWindow, consumer, options, renderInfo, chatComponent)
         renderInfo.currentLineNumber = 0
     }
