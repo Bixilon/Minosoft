@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.check.CheckUtil.check
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
@@ -36,14 +36,15 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
     fun load(renderWindow: RenderWindow, latch: CountUpAndDownLatch): Font {
         val fontIndex = renderWindow.connection.assetsManager[FONT_INDEX].readJsonObject()
 
-        val providers: MutableList<FontProvider> = synchronizedListOf()
+        val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
+        val providers: Array<FontProvider?> = arrayOfNulls(providersRaw.size)
 
         val fontLatch = CountUpAndDownLatch(1, latch)
-        for (provider in fontIndex["providers"].listCast<Map<String, Any>>()!!) {
+        for ((index, provider) in providersRaw.withIndex()) {
             val type = provider["type"].toResourceLocation()
             fontLatch.inc()
             DefaultThreadPool += {
-                providers += this[type].check { "Unknown font provider type $type" }.build(renderWindow, provider)
+                providers[index] = this[type].check { "Unknown font provider type $type" }.build(renderWindow, provider)
                 fontLatch.dec()
             }
         }
@@ -51,7 +52,7 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
         fontLatch.await()
 
         return Font(
-            providers = providers.toTypedArray(),
+            providers = providers.unsafeCast(),
         )
     }
 }
