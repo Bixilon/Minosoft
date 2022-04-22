@@ -1325,5 +1325,12 @@
         }
       }
     }
+  },
+  "minecraft:sign_front": {
+    "0": {
+      "texture": "minecraft:entity/signs/oak",
+      "start": [2, 2],
+      "end": [26, 14]
+    }
   }
 }

@@ -23,10 +23,9 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
-    var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.of("") }
+    var lines: Array<ChatComponent> = Array(LINES) { ChatComponent.of("") }
     var color: RGBColor = ChatColors.BLACK
     var glowing = false
 
@@ -34,7 +33,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
     override fun updateNBT(nbt: Map<String, Any>) {
         color = nbt["Color"]?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it] } ?: ChatColors.BLACK
         glowing = nbt["GlowingText"]?.toBoolean() ?: false
-        for (i in 1..ProtocolDefinition.SIGN_LINES) {
+        for (i in 1..LINES) {
             val tag = nbt["Text$i"]?.toString() ?: continue
 
             lines[i - 1] = ChatComponent.of(tag, translator = connection.language).apply { cut(MAX_LINE_LENGTH) }
@@ -47,6 +46,7 @@ class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection
 
     companion object : BlockEntityFactory<SignBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:sign")
+        const val LINES = 4
         const val MAX_LINE_LENGTH = 16
 
         override fun build(connection: PlayConnection): SignBlockEntity {

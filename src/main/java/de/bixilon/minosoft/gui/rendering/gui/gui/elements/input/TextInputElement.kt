@@ -36,16 +36,20 @@ import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 
 class TextInputElement(
     guiRenderer: GUIRenderer,
+    value: String = "",
     val maxLength: Int = Int.MAX_VALUE,
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
     var onChange: () -> Unit = {},
+    val background: Boolean = true,
+    shadow: Boolean = true,
+    parent: Element? = null,
 ) : Element(guiRenderer) {
     private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
-    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this)
-    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, shadow = shadow)
+    private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var cursorOffset: Vec2i = Vec2i.EMPTY
-    val _value = StringBuffer(256)
+    val _value = StringBuffer(256).append(value)
     var value: String
         get() = _value.toString()
         set(value) {
@@ -62,14 +66,26 @@ class TextInputElement(
     var _pointer = 0
     private var cursorTick = 0
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        background.render(offset, consumer, options)
+    init {
+        this.parent = parent
+        _pointer = value.length
+        forceSilentApply()
+    }
 
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        if (background) {
+            backgroundElement.render(offset, consumer, options)
+        }
         textElement.render(offset, consumer, options)
 
-        if (cursorTick < 20) {
+        if (cursorTick >= 20) {
             cursor.render(offset + cursorOffset, consumer, options)
         }
+    }
+
+    fun hideCursor() {
+        cursorTick = 0
+        cacheEnabled = false
     }
 
     override fun forceSilentApply() {
@@ -80,7 +96,7 @@ class TextInputElement(
             textElement.forceSilentApply()
             textUpToDate = true
         }
-        background.size = _size
+        backgroundElement.size = _size
 
         cursorOffset = if (_pointer == 0) {
             Vec2i.EMPTY

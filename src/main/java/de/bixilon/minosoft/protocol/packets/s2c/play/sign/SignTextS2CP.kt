@@ -20,7 +20,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -38,7 +37,7 @@ class SignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val lines: MutableList<ChatComponent> = mutableListOf()
-        for (i in 0 until ProtocolDefinition.SIGN_LINES) {
+        for (i in 0 until SignBlockEntity.LINES) {
             lines.add(buffer.readChatComponent())
         }
         this.lines = lines.toTypedArray()

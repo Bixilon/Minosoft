@@ -58,8 +58,16 @@ object Vec2iUtil {
         return this.x < other.x || this.y < other.y
     }
 
+    infix fun Vec2i.isSmallerEquals(other: Vec2i): Boolean {
+        return this.x <= other.x || this.y <= other.y
+    }
+
     infix fun Vec2i.isGreater(other: Vec2i): Boolean {
         return this.x > other.x || this.y > other.y
+    }
+
+    infix fun Vec2i.isGreaterEquals(other: Vec2i): Boolean {
+        return this.x >= other.x || this.y >= other.y
     }
 
     val Vec2i.rad: Vec2

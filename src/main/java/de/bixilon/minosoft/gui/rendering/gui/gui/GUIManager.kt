@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.SignEditorScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
@@ -56,6 +57,7 @@ class GUIManager(
 
     private fun registerDefaultElements() {
         ContainerGUIManager.register(guiRenderer)
+        SignEditorScreen.register(guiRenderer)
     }
 
     override fun postInit() {
@@ -234,7 +236,6 @@ class GUIManager(
         onMouseMove(guiRenderer.currentMousePosition)
     }
 
-    @Deprecated("Only use for dynamic gui (e.g. dialogs, ...)")
     fun push(element: LayoutedElement) {
         val layouted = LayoutedGUIElement(element)
         layouted.init()

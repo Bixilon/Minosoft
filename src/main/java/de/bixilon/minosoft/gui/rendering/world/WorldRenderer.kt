@@ -244,6 +244,7 @@ class WorldRenderer(
                 prepareWorld()
             }
         })
+        connection.registerEvent(CallbackEventInvoker.of<BlockDataChangeEvent> { queueSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(),
             KeyBinding(

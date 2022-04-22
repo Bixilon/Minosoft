@@ -39,7 +39,8 @@ class MarkTextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
-) : TextElement(guiRenderer, text, fontAlignment, background, backgroundColor, noBorder, parent, scale) {
+    shadow: Boolean = true,
+) : TextElement(guiRenderer, text, fontAlignment, background, backgroundColor, noBorder, parent, scale, shadow) {
     var markStartPosition = 0
     var markEndPosition = 0
 
