@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import java.util.*
 
 class BakedBlockStateModel(
@@ -58,7 +59,7 @@ class BakedBlockStateModel(
                     continue
                 }
                 tint = tints?.getOrNull(face.tintIndex) ?: -1
-                currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[6]).toInt()
+                currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[SolidCullSectionPreparer.SELF_LIGHT_INDEX]).toInt()
                 face.singleRender(positionArray, mesh, currentLight, ambientLight, tint)
                 if (!rendered) {
                     rendered = true
