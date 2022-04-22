@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
-import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.util.Broken
@@ -40,7 +40,7 @@ class SignBlockEntityRenderer(
     val sign: SignBlockEntity,
     val renderWindow: RenderWindow,
     override val blockState: BlockState,
-) : MeshedBlockEntityRenderer<SignBlockEntity> {
+) : OnlyMeshedBlockEntityRenderer<SignBlockEntity> {
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
@@ -87,9 +87,7 @@ class SignBlockEntityRenderer(
 
     private fun Vec3.signRotate(yRotation: Float) {
         this -= 0.5f
-
         rotateAssign(yRotation, Axes.Y)
-
         this += 0.5f
     }
 

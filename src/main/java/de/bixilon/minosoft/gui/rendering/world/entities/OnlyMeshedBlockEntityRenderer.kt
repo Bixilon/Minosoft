@@ -14,15 +14,5 @@
 package de.bixilon.minosoft.gui.rendering.world.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 
-interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
-    override var light: Int
-        get() = 0
-        set(value) {}
-    override fun draw(renderWindow: RenderWindow) = Unit
-    override fun load() = Unit
-    override fun unload() = Unit
-
-}
+interface OnlyMeshedBlockEntityRenderer<E : BlockEntity> : MeshedBlockEntityRenderer<E>

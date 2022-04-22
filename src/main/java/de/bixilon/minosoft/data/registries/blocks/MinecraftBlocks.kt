@@ -189,7 +189,7 @@ object MinecraftBlocks {
     val LADDER = "minecraft:ladder".toResourceLocation()
     val RAIL = "minecraft:rail".toResourceLocation()
     val COBBLESTONE_STAIRS = "minecraft:cobblestone_stairs".toResourceLocation()
-    val OAK_WALL_SIGN = "minecraft:oak_wall_sign.json".toResourceLocation()
+    val OAK_WALL_SIGN = "minecraft:oak_wall_sign".toResourceLocation()
     val SPRUCE_WALL_SIGN = "minecraft:spruce_wall_sign".toResourceLocation()
     val BIRCH_WALL_SIGN = "minecraft:birch_wall_sign".toResourceLocation()
     val ACACIA_WALL_SIGN = "minecraft:acacia_wall_sign".toResourceLocation()

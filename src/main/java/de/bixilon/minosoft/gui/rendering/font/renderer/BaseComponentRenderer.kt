@@ -33,9 +33,9 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
         return false
     }
 
-    override fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: BaseComponent) {
+    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: BaseComponent, light: Int) {
         for (part in text.parts) {
-            ChatComponentRenderer.render3DFlat(matrix, mesh, text)
+            ChatComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, part, light)
         }
     }
 }

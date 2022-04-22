@@ -17,11 +17,9 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -35,7 +33,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
      */
     fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: T): Boolean
 
-    fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: T)
+    fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: T, light: Int)
 
     companion object : ChatComponentRenderer<ChatComponent> {
         const val TEXT_BLOCK_RESOLUTION = 128
@@ -48,32 +46,22 @@ interface ChatComponentRenderer<T : ChatComponent> {
             }
         }
 
-        override fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: ChatComponent) {
+        override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: ChatComponent, light: Int) {
             when (text) {
-                is BaseComponent -> BaseComponentRenderer.render3DFlat(matrix, mesh, text)
-                is TextComponent -> TextComponentRenderer.render3DFlat(matrix, mesh, text)
+                is BaseComponent -> BaseComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, text, light)
+                is TextComponent -> TextComponentRenderer.render3dFlat(renderWindow, matrix, scale, mesh, text, light)
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }
 
         fun render3dFlat(renderWindow: RenderWindow, position: Vec3, scale: Float, rotation: Vec3, mesh: WorldMesh, text: ChatComponent, light: Int) {
-            val rotationMatrix = Mat4()
+            val matrix = Mat4()
+                .translateAssign(position)
                 .rotateDegreesAssign(rotation)
                 .translateAssign(Vec3(0, 0, -1))
 
-            val positionMatrix = Mat4()
-                .translateAssign(position)
 
-            val transformMatrix = positionMatrix * rotationMatrix
-            val text = "abcdefghijklmnop"
-
-
-            for ((index, char) in text.codePoints().toArray().withIndex()) {
-                val data = renderWindow.font[char] ?: continue
-                val color = ChatColors[index % ChatColors.VALUES.size]
-                val width = data.render3d(transformMatrix, mesh, color, shadow = false, italic = false, bold = false, strikethrough = false, underlined = false, scale = scale, light = light) + Font.HORIZONTAL_SPACING
-                transformMatrix.translateAssign(Vec3((width / TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
-            }
+            render3dFlat(renderWindow, matrix, scale, mesh, text, light)
         }
     }
 }

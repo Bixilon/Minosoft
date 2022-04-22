@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
@@ -189,7 +190,12 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return false
     }
 
-    override fun render3DFlat(matrix: Mat4, mesh: WorldMesh, text: TextComponent) {
-        TODO("Not yet implemented")
+    override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: WorldMesh, text: TextComponent, light: Int) {
+        for ((index, char) in text.message.codePoints().toArray().withIndex()) {
+            val data = renderWindow.font[char] ?: continue
+            val color = ChatColors[index % ChatColors.VALUES.size]
+            val width = data.render3d(matrix, mesh, color, shadow = false, italic = false, bold = false, strikethrough = false, underlined = false, scale = scale, light = light) + Font.HORIZONTAL_SPACING
+            matrix.translateAssign(Vec3((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
+        }
     }
 }

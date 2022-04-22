@@ -33,7 +33,7 @@ object RenderConstants {
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
 
-    const val FRUSTUM_CULLING_ENABLED = false
+    const val FRUSTUM_CULLING_ENABLED = true
     const val SHOW_FPS_IN_WINDOW_TITLE = true
 
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
