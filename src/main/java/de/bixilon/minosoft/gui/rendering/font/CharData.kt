@@ -130,7 +130,7 @@ class CharData(
     fun render3d(transform: Mat4, mesh: SingleWorldMesh, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float, light: Int): Float {
         val consumer = MeshConsumer(mesh, transform, light)
         render(Vec2i(0, 0), color, shadow, italic, bold, strikethrough, underlined, consumer, null, scale)
-        return width.toFloat()
+        return scaledWidth.toFloat()
     }
 
 

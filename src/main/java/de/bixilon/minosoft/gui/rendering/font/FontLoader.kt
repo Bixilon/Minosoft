@@ -39,16 +39,14 @@ object FontLoader : DefaultFactory<FontProviderFactory<*>>(
         val providersRaw = fontIndex["providers"].listCast<Map<String, Any>>()!!
         val providers: Array<FontProvider?> = arrayOfNulls(providersRaw.size)
 
-        val fontLatch = CountUpAndDownLatch(1, latch)
+        val fontLatch = CountUpAndDownLatch(providersRaw.size, latch)
         for ((index, provider) in providersRaw.withIndex()) {
             val type = provider["type"].toResourceLocation()
-            fontLatch.inc()
             DefaultThreadPool += {
                 providers[index] = this[type].check { "Unknown font provider type $type" }.build(renderWindow, provider)
                 fontLatch.dec()
             }
         }
-        fontLatch.dec()
         fontLatch.await()
 
         return Font(

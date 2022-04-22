@@ -191,10 +191,14 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
     }
 
     override fun render3dFlat(renderWindow: RenderWindow, matrix: Mat4, scale: Float, mesh: SingleWorldMesh, text: TextComponent, light: Int) {
-        for ((index, char) in text.message.codePoints().toArray().withIndex()) {
+        val color = text.color ?: ChatColors.BLACK
+        val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)
+        val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
+        val strikethrough = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
+        val underlined = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+        for (char in text.message.codePoints()) {
             val data = renderWindow.font[char] ?: continue
-            val color = ChatColors[index % ChatColors.VALUES.size]
-            val width = data.render3d(matrix, mesh, color, shadow = false, italic = false, bold = false, strikethrough = false, underlined = false, scale = scale, light = light) + Font.HORIZONTAL_SPACING
+            val width = data.render3d(matrix, mesh, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale, light = light) + Font.HORIZONTAL_SPACING
             matrix.translateAssign(Vec3((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION) * scale, 0, 0))
         }
     }
