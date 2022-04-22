@@ -88,10 +88,10 @@ class SolidCullSectionPreparer(
                     if (blockState.block is FluidBlock) {
                         continue
                     }
-                    light[6] = sectionLight[y shl 8 or (z shl 4) or x]
+                    light[SELF_LIGHT_INDEX] = sectionLight[y shl 8 or (z shl 4) or x]
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     blockEntity = section.blockEntities.unsafeGet(x, y, z)
-                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[6].toInt())
+                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[SELF_LIGHT_INDEX].toInt())
                     if (blockEntityModel != null) {
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
@@ -181,5 +181,9 @@ class SolidCullSectionPreparer(
         section.release()
         neighbours.release()
         mesh.blockEntities = blockEntities
+    }
+
+    companion object {
+        const val SELF_LIGHT_INDEX = 6 // after all directions
     }
 }
