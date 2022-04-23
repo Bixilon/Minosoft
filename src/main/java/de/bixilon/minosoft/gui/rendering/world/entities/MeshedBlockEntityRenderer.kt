@@ -11,19 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.entity
+package de.bixilon.minosoft.gui.rendering.world.entities
 
-import de.bixilon.minosoft.data.entities.block.SignBlockEntity
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 
-open class SignBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<SignBlockEntity>(resourceLocation, registries, data) {
+interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, SingleBlockRenderable {
+    override var light: Int
+        get() = 0
+        set(value) {}
+    override fun draw(renderWindow: RenderWindow) = Unit
+    override fun load() = Unit
+    override fun unload() = Unit
 
-    companion object : BlockFactory<SignBlock> {
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SignBlock {
-            return SignBlock(resourceLocation, registries, data)
-        }
-    }
 }
-

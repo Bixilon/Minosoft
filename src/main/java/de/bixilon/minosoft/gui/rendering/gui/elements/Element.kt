@@ -199,13 +199,11 @@ abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int =
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change
      */
-    @Deprecated("Generally a bad idea to call")
     abstract fun forceSilentApply()
 
     /**
      * Force applied all changes made to any property and calls `parent?.onChildChange(this)`
      */
-    @Deprecated("Generally a bad idea to call")
     open fun forceApply() {
         if (this is Pollable) {
             poll()

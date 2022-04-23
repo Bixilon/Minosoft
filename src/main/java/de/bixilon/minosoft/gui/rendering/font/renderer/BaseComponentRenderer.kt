@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font.renderer
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -29,5 +30,19 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
             }
         }
         return false
+    }
+
+    override fun render3dFlat(renderWindow: RenderWindow, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
+        for (part in text.parts) {
+            ChatComponentRenderer.render3dFlat(renderWindow, offset, scale, maxSize, consumer, part, light)
+        }
+    }
+
+    override fun calculatePrimitiveCount(text: BaseComponent): Int {
+        var count = 0
+        for (part in text.parts) {
+            count += ChatComponentRenderer.calculatePrimitiveCount(part)
+        }
+        return count
     }
 }

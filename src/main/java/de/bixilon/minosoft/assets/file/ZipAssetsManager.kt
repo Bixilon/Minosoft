@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.assets.file
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import java.io.File
@@ -27,6 +28,7 @@ import java.util.zip.ZipInputStream
 class ZipAssetsManager(
     private val inputStream: ZipInputStream,
     canUnload: Boolean = true,
+    val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : FileAssetsManager(canUnload) {
 
     override fun load(latch: CountUpAndDownLatch) {
@@ -42,7 +44,7 @@ class ZipAssetsManager(
                 "pack.png" -> image = inputStream.readAllBytes()
                 "pack.mcmeta" -> properties = inputStream.readJson(false)
                 else -> {
-                    val resourceLocation = name.toAssetName() ?: continue
+                    val resourceLocation = name.toAssetName(prefix = prefix) ?: continue
                     namespaces += resourceLocation.namespace
                     assets[resourceLocation] = inputStream.readAllBytes()
                 }
@@ -54,6 +56,6 @@ class ZipAssetsManager(
         loaded = true
     }
 
-    constructor(file: File, canUnload: Boolean = true) : this(ZipInputStream(FileInputStream(file)), canUnload)
-    constructor(path: String, canUnload: Boolean = true) : this(File(path), canUnload)
+    constructor(file: File, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(ZipInputStream(FileInputStream(file)), canUnload, prefix)
+    constructor(path: String, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(File(path), canUnload, prefix)
 }

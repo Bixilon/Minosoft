@@ -191,7 +191,7 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes ${stopwatch.totalTime()}" }
 
-        for (model in modelLoader.entities.models.values) {
+        for (model in modelLoader.entities.skeletal.values) {
             model.loadMesh(this)
         }
 

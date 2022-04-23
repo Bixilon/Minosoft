@@ -33,7 +33,7 @@ open class TextComponent(
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
-    override val message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
+    override var message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
 
     fun obfuscate(): TextComponent {
         formatting.add(PreChatFormattingCodes.OBFUSCATED)
@@ -195,10 +195,20 @@ open class TextComponent(
         return this
     }
 
+    override fun cut(length: Int) {
+        if (length <= 0) {
+            throw IllegalArgumentException("Can not cut <= 0: $length")
+        }
+        if (length >= message.length) {
+            throw IllegalArgumentException("Can not cut beyond length: $length >= ${message.length}")
+        }
+
+        message = message.substring(0, length)
+    }
+
     override fun hashCode(): Int {
         return message.hashCode()
     }
-
 
     override fun equals(other: Any?): Boolean {
         if (other === this) {

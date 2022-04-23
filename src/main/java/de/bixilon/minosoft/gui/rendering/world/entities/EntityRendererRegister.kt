@@ -18,5 +18,5 @@ import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 
 interface EntityRendererRegister {
 
-    fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) {}
+    fun register(renderWindow: RenderWindow, modelLoader: ModelLoader) = Unit
 }

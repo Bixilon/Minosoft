@@ -73,4 +73,8 @@ class GUIMesh(
             data.add(Float.fromBits(color))
         }
     }
+
+    override fun ensureSize(size: Int) {
+        data.ensureSize(size)
+    }
 }

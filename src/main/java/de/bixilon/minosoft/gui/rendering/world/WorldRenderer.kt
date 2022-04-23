@@ -44,10 +44,12 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -87,6 +89,7 @@ class WorldRenderer(
     private val frustum = renderWindow.camera.matrixHandler.frustum
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
+    private val textShader = renderSystem.createShader("minosoft:world/text".toResourceLocation())
     private val world: World = connection.world
     private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderWindow)
     private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
@@ -138,17 +141,22 @@ class WorldRenderer(
         }
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    private fun loadWorldShader(shader: Shader, animations: Boolean = true) {
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
-        renderWindow.textureManager.staticTextures.animator.use(shader)
+        if (animations) {
+            renderWindow.textureManager.staticTextures.animator.use(shader)
+        }
         renderWindow.lightMap.use(shader)
+    }
+
+    override fun postInit(latch: CountUpAndDownLatch) {
+        loadWorldShader(this.shader)
 
         transparentShader.defines["TRANSPARENT"] = ""
-        transparentShader.load()
-        renderWindow.textureManager.staticTextures.use(transparentShader)
-        renderWindow.textureManager.staticTextures.animator.use(transparentShader)
-        renderWindow.lightMap.use(transparentShader)
+        loadWorldShader(this.transparentShader)
+
+        loadWorldShader(this.textShader, false)
 
 
         connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange() })
@@ -237,6 +245,7 @@ class WorldRenderer(
                 prepareWorld()
             }
         })
+        connection.registerEvent(CallbackEventInvoker.of<BlockDataChangeEvent> { queueSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(),
             KeyBinding(
@@ -429,7 +438,7 @@ class WorldRenderer(
                         neighbourChunks = it.unsafeCast()
                     }
                     val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
-                    val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight)
+                    val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
                     solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
                     if (section.blocks.fluidCount > 0) {
                         fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
@@ -655,6 +664,8 @@ class WorldRenderer(
         for (mesh in visible.opaque) {
             mesh.draw()
         }
+
+        renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
         for (blockEntity in visible.blockEntities) {
             blockEntity.draw(renderWindow)
         }
@@ -678,6 +689,12 @@ class WorldRenderer(
 
     override fun drawTransparent() {
         for (mesh in visible.transparent) {
+            mesh.draw()
+        }
+
+        renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
+        textShader.use()
+        for (mesh in visible.text) {
             mesh.draw()
         }
     }

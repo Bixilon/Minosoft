@@ -13,11 +13,11 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -29,20 +29,18 @@ class SignTextC2SP(
     val lines: Array<ChatComponent>,
 ) : PlayC2SPacket {
 
+    init {
+        check(lines.size == SignBlockEntity.LINES) { "A sign has ${SignBlockEntity.LINES} lines (not ${lines.size})!" }
+    }
+
     override fun write(buffer: PlayOutByteBuffer) {
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.writeByteBlockPosition(position)
         } else {
             buffer.writePosition(position)
         }
-        if (buffer.versionId < ProtocolVersions.V_14W25A || buffer.versionId >= ProtocolVersions.V_15W35A) {
-            for (i in 0 until ProtocolDefinition.SIGN_LINES) {
-                buffer.writeString(lines[i].message)
-            }
-        } else {
-            for (i in 0 until ProtocolDefinition.SIGN_LINES) {
-                buffer.writeChatComponent(lines[i])
-            }
+        for (line in lines) {
+            buffer.writeChatComponent(line)
         }
     }
 

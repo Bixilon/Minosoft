@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -83,10 +84,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun wrap(): Boolean {
+            pushLine()
             if (addY(renderInfo.charHeight)) {
                 return true
             }
-            pushLine()
             renderInfo.currentLineNumber++
             offset.x = initialOffset.x + renderInfo.charMargin
             applyOffset()
@@ -95,9 +96,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         fun addX(width: Int, wrap: Boolean = true): Boolean {
             val nextX = offset.x + width
-            val nextSizeX = nextX - initialOffset.x + renderInfo.charMargin // end margin
+            val nextSizeX = nextX - initialOffset.x - renderInfo.charMargin // end margin
             if (nextSizeX > elementMaxSize.x) {
                 if (!wrap) {
+                    pushLine()
                     return true
                 }
                 if (wrap()) {
@@ -162,7 +164,6 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val previousY = offset.y
 
             if (addX(width)) {
-                pushLine(index)
                 return true
             }
 
@@ -185,5 +186,40 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         pushLine()
         return false
+    }
+
+    override fun calculatePrimitiveCount(text: TextComponent): Int {
+        val length = text.message.length
+        var count = length
+        if (text.formatting.contains(PreChatFormattingCodes.BOLD)) {
+            count += length
+        }
+        if (text.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
+            count += length
+        }
+        if (text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
+            count += length
+        }
+
+        return count
+    }
+
+    override fun render3dFlat(renderWindow: RenderWindow, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
+        val color = text.color ?: ChatColors.BLACK
+        val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)
+        val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
+        val strikethrough = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
+        val underlined = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+
+        for (char in text.message.codePoints()) {
+            val data = renderWindow.font[char] ?: continue
+            val expectedWidth = ((data.width + Font.HORIZONTAL_SPACING) * scale).toInt()
+            if (maxSize.x - offset.x < expectedWidth) { // ToDo
+                return
+            }
+            val width = ((data.render3d(consumer, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale) + Font.HORIZONTAL_SPACING) * scale).toInt()
+            offset.x += width
+            consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION.toFloat()))
+        }
     }
 }

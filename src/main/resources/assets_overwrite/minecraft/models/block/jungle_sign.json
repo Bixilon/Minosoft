@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_standing_sign",
+  "textures": {
+    "particle": "minecraft:block/jungle_planks",
+    "sign": "minecraft:entity/signs/jungle"
+  }
+}

@@ -78,18 +78,14 @@ open class Registry<T : RegistryItem>(
                 idValueMap[any] = value
                 valueIdMap[value] = any
             }
-            is ResourceLocation -> {
-                resourceLocationMap[any] = value
-            }
-            is ResourceLocationAble -> {
-                resourceLocationMap[any.resourceLocation] = value
-            }
+            is ResourceLocation -> resourceLocationMap[any] = value
+            is ResourceLocationAble -> resourceLocationMap[any.resourceLocation] = value
             is MultiResourceLocationAble -> {
                 for (resourceLocation in any.ALIASES) {
                     resourceLocationMap[resourceLocation] = value
                 }
             }
-            else -> TODO()
+            else -> TODO("Can not set $any, value=$value")
         }
     }
 

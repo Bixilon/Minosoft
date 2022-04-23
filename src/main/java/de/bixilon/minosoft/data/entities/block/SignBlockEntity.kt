@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,26 +13,40 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-    var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.of("") }
+class SignBlockEntity(connection: PlayConnection) : MeshedBlockEntity(connection) {
+    var lines: Array<ChatComponent> = Array(LINES) { ChatComponent.of("") }
+    var color: RGBColor = ChatColors.BLACK
+    var glowing = false
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
-        for (i in 0 until ProtocolDefinition.SIGN_LINES) {
-            val tag = nbt["Text$i"].nullCast<String>() ?: continue
+        color = nbt["Color"]?.toString()?.lowercase()?.let { ChatColors.NAME_MAP[it] } ?: ChatColors.BLACK
+        glowing = nbt["GlowingText"]?.toBoolean() ?: false
+        for (i in 1..LINES) {
+            val tag = nbt["Text$i"]?.toString() ?: continue
 
-            lines[i] = ChatComponent.of(tag, translator = connection.language)
+            lines[i - 1] = ChatComponent.of(tag, translator = connection.language)
         }
+    }
+
+    override fun createMeshedRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i): SignBlockEntityRenderer {
+        return SignBlockEntityRenderer(this, renderWindow, blockState)
     }
 
     companion object : BlockEntityFactory<SignBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:sign")
+        const val LINES = 4
 
         override fun build(connection: PlayConnection): SignBlockEntity {
             return SignBlockEntity(connection)

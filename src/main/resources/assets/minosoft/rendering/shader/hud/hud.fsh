@@ -20,6 +20,8 @@ out vec4 foutColor;
 #include "minosoft:texture"
 #include "minosoft:alpha"
 
+#define MIPMAP_LEVEL 0.0f
+
 void main() {
     #include "minosoft:animation/main_fragment"
 }

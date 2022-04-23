@@ -58,6 +58,7 @@ import de.bixilon.minosoft.util.task.worker.StartupTasks
 object Minosoft {
     val MAIN_THREAD: Thread = Thread.currentThread()
     val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
+    val OVERWRITE_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false, prefix = "assets_overwrite")
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
@@ -66,6 +67,7 @@ object Minosoft {
         CommandLineArguments.parse(args)
         KUtil.initUtilClasses()
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
+        OVERWRITE_ASSETS_MANAGER.load(CountUpAndDownLatch(0)) // ToDo: async
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {

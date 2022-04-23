@@ -55,7 +55,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
         }
 
         val previousOutside = lastPosition == null
-        this.lastPosition = offset
+        this.lastPosition = Vec2i(offset)
 
         if (previousOutside) {
             return element.onMouseEnter(offset, position)
@@ -77,7 +77,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
         }
 
         val previousOutside = lastDragPosition == null
-        this.lastDragPosition = offset
+        this.lastDragPosition = Vec2i(offset)
 
         if (previousOutside) {
             return element.onDragEnter(offset, position, dragged)

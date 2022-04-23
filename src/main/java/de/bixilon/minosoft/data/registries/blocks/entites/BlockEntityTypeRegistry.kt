@@ -30,6 +30,13 @@ class BlockEntityTypeRegistry(
         return blockTypeMap[block] ?: parentRegistry?.get(block)
     }
 
+    override fun get(any: Any?): BlockEntityType<*>? {
+        if (any is Block) {
+            return get(any)
+        }
+        return super.get(any)
+    }
+
     override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType<*>>?, flattened: Boolean, metaType: MetaTypes, alternative: AbstractRegistry<BlockEntityType<*>>?): Registry<BlockEntityType<*>> {
         super.initialize(data, registries, deserializer, flattened, metaType, alternative)
 

@@ -1325,5 +1325,48 @@
         }
       }
     }
+  },
+  "minecraft:sign_front": {
+    "0": {
+      "texture": "minecraft:textures/entity/signs/oak.png",
+      "resolution": [64, 32],
+      "start": [2, 2],
+      "end": [26, 14]
+    }
+  },
+  "minosoft:switch_normal": {
+    "0": {
+      "texture": "minosoft:textures/icons.png",
+      "start": [0, 10],
+      "end": [30, 31]
+    }
+  },
+  "minosoft:switch_disabled": {
+    "0": {
+      "texture": "minosoft:textures/icons.png",
+      "start": [30, 10],
+      "end": [60, 31]
+    }
+  },
+  "minosoft:switch_hovered": {
+    "0": {
+      "texture": "minosoft:textures/icons.png",
+      "start": [60, 10],
+      "end": [90, 31]
+    }
+  },
+  "minosoft:switch_state_off": {
+    "0": {
+      "texture": "minosoft:textures/icons.png",
+      "start": [90, 10],
+      "end": [96, 31]
+    }
+  },
+  "minosoft:switch_state_on": {
+    "0": {
+      "texture": "minosoft:textures/icons.png",
+      "start": [96, 10],
+      "end": [102, 31]
+    }
   }
 }

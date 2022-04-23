@@ -44,7 +44,7 @@ class UnbakedMultipartModel(
                 }
             }
             for (direction in Directions.VALUES) {
-                sizes[direction.ordinal] += bakedModel.getTouchingFaceProperties(RANDOM, direction) // There is no random here!
+                sizes[direction.ordinal] += bakedModel.getTouchingFaceProperties(RANDOM, direction) ?: continue // There is no random here!
             }
             baked[index] = bakedModel
         }

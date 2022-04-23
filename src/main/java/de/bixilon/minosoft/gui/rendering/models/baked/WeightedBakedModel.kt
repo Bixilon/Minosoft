@@ -66,5 +66,4 @@ class WeightedBakedModel(
         random.setSeed(VecUtil.generatePositionHash(blockPosition.x, blockPosition.y, blockPosition.z))
         return getModel(random)?.getParticleTexture(random, blockPosition)
     }
-
 }

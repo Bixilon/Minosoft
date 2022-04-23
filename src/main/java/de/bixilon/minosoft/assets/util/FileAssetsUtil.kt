@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
 import de.bixilon.kutil.hex.HexUtil.isHexString
 import de.bixilon.kutil.random.RandomStringUtil.randomString
+import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -115,11 +116,11 @@ object FileAssetsUtil {
         return saveAndGet(ByteArrayInputStream(data), compress, false, hashType)
     }
 
-    fun String.toAssetName(verifyPrefix: Boolean = true): ResourceLocation? {
-        if (verifyPrefix && !startsWith("assets/")) {
+    fun String.toAssetName(verifyPrefix: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX): ResourceLocation? {
+        if (verifyPrefix && !startsWith("$prefix/")) {
             return null
         }
-        val split = removePrefix("assets/").split("/", limit = 2)
+        val split = removePrefix("$prefix/").split("/", limit = 2)
         if (split.size != 2) {
             return null
         }

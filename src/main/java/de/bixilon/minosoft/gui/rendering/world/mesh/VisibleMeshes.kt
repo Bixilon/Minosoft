@@ -22,10 +22,11 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
     val opaque: MutableList<SingleWorldMesh> = mutableListOf()
     val translucent: MutableList<SingleWorldMesh> = mutableListOf()
     val transparent: MutableList<SingleWorldMesh> = mutableListOf()
+    val text: MutableList<SingleWorldMesh> = mutableListOf()
     val blockEntities: MutableList<BlockEntityRenderer<*>> = mutableListOf()
 
     val sizeString: String
-        get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${blockEntities.size.format()}"
+        get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${text.size.format()}|${blockEntities.size.format()}"
 
 
     fun addMesh(mesh: WorldMesh) {
@@ -42,6 +43,10 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
             it.distance = distance
             transparent += it
         }
+        mesh.textMesh?.let {
+            it.distance = distance
+            text += it
+        }
         mesh.blockEntities?.let {
             blockEntities += it
         }
@@ -52,6 +57,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
         opaque.sortBy { it.distance }
         translucent.sortBy { -it.distance }
         transparent.sortBy { it.distance }
+        text.sortBy { it.distance }
     }
 
 
@@ -59,6 +65,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
         mesh.opaqueMesh?.let { opaque -= it }
         mesh.translucentMesh?.let { translucent -= it }
         mesh.transparentMesh?.let { transparent -= it }
+        mesh.textMesh?.let { text -= it }
         mesh.blockEntities?.let { blockEntities -= it }
     }
 
@@ -66,6 +73,7 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
         opaque.clear()
         translucent.clear()
         transparent.clear()
+        text.clear()
         blockEntities.clear()
     }
 }

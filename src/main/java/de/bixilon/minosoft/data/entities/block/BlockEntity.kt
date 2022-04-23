@@ -29,7 +29,7 @@ abstract class BlockEntity(
 
     open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
 
-    fun getRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
+    open fun getRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
         if (this.renderer?.blockState != blockState) {
             this.renderer = createRenderer(renderWindow, blockState, blockPosition, light)
         } else {

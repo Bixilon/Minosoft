@@ -36,14 +36,20 @@ import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 
 class TextInputElement(
     guiRenderer: GUIRenderer,
+    value: String = "",
     val maxLength: Int = Int.MAX_VALUE,
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
     var onChange: () -> Unit = {},
+    val background: Boolean = true,
+    shadow: Boolean = true,
+    scale: Float = 1.0f,
+    val cutAtSize: Boolean = false,
+    parent: Element? = null,
 ) : Element(guiRenderer) {
-    private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
-    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this)
-    private val background = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
+    private val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
+    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
+    private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var cursorOffset: Vec2i = Vec2i.EMPTY
     val _value = StringBuffer(256)
     var value: String
@@ -53,18 +59,24 @@ class TextInputElement(
             if (_value.equals(value)) {
                 return
             }
-            _value.replace(0, _value.length, value)
-            onChange()
-            textUpToDate = false
+            _set(value)
             forceApply()
         }
     private var textUpToDate = false
     var _pointer = 0
     private var cursorTick = 0
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        background.render(offset, consumer, options)
+    init {
+        this.parent = parent
+        this._value.append(if (value.length > maxLength) value.substring(0, maxLength) else value)
+        _pointer = this._value.length
+        forceSilentApply()
+    }
 
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        if (background) {
+            backgroundElement.render(offset, consumer, options)
+        }
         textElement.render(offset, consumer, options)
 
         if (cursorTick < 20) {
@@ -72,15 +84,54 @@ class TextInputElement(
         }
     }
 
+    fun hideCursor() {
+        cursorTick = 20
+        cacheUpToDate = false
+    }
+
+    fun showCursor() {
+        cursorTick = 19
+        cacheUpToDate = false
+    }
+
+    fun unmark() {
+        textElement.unmark()
+    }
+
+    private fun _set(value: String) {
+        _value.replace(0, _value.length, value)
+        _pointer = value.length
+        onChange()
+        textUpToDate = false
+    }
+
+    private fun cutOffText() {
+        if (!cutAtSize) {
+            return
+        }
+
+        val newValue = StringBuilder()
+        for (line in textElement.renderInfo.lines) {
+            newValue.append(line.text.message)
+        }
+        if (newValue.length != this._value.length) {
+            _set(newValue.toString())
+        }
+        if (_pointer > newValue.length) {
+            _pointer = newValue.length
+        }
+    }
+
     override fun forceSilentApply() {
-        _size = Vec2i(prefMaxSize)
         if (!textUpToDate) {
             textElement._chatComponent = TextComponent(_value)
             textElement.unmark()
             textElement.forceSilentApply()
             textUpToDate = true
+            cutOffText()
         }
-        background.size = _size
+        _size = Vec2i(textElement.size)
+        backgroundElement.size = prefMaxSize
 
         cursorOffset = if (_pointer == 0) {
             Vec2i.EMPTY
@@ -88,7 +139,7 @@ class TextInputElement(
             val preCursorText = if (_pointer == value.length) {
                 textElement
             } else {
-                TextElement(guiRenderer, value.substring(0, _pointer), parent = this)
+                TextElement(guiRenderer, value.substring(0, _pointer), scale = textElement.scale, parent = this)
             }
             Vec2i(preCursorText.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.renderInfo.lines.size - 1, 0) * preCursorText.charHeight)
         }

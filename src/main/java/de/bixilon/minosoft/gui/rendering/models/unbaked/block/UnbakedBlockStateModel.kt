@@ -63,7 +63,7 @@ data class UnbakedBlockStateModel(
 
         for (element in model.elements) {
             for (face in element.faces) {
-                val texture = textures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
+                val texture = textures[face.texture.removePrefix("#")] ?: throw IllegalArgumentException("Can not find texture variable ${face.texture}")// ToDo: Allow direct texture names?
                 val positions = face.direction.getPositions(element.from, element.to)
 
                 element.rotation?.let {
@@ -104,7 +104,16 @@ data class UnbakedBlockStateModel(
                 }
 
                 val (sizeStart, sizeEnd) = face.direction.getSize(element.from, element.to)
-                val touching = (if (face.direction.negative) element.from[face.direction.axis] else element.to[face.direction.axis] - 1.0f) == 0.0f
+
+                var touching = true
+                rotation?.let {
+                    if (it.x % 90 != 0 || it.y % 90 != 0) {
+                        touching = false
+                    }
+                }
+
+                touching = touching && (if (face.direction.negative) element.from[face.direction.axis] else element.to[face.direction.axis] - 1.0f) == 0.0f
+
                 var shade = 1.0f
                 if (element.shade) {
                     shade = when (direction) {
@@ -140,10 +149,13 @@ data class UnbakedBlockStateModel(
 
         val finalTouchingProperties: Array<Array<AbstractFaceProperties>?> = arrayOfNulls(faces.size)
         for ((index, sizeArray) in touchingFaceProperties.withIndex()) {
+            if (sizeArray.isEmpty()) {
+                continue
+            }
             finalTouchingProperties[index] = sizeArray.toTypedArray()
         }
 
-        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties.unsafeCast(), particleTexture)
+        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties, particleTexture)
         this.baked = baked
         return baked
     }

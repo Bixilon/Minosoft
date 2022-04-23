@@ -24,15 +24,21 @@ abstract class Mesh(
     val renderWindow: RenderWindow,
     private val struct: MeshStruct,
     private val primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType,
-    initialCacheSize: Int = 10000,
+    var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
     data: DirectArrayFloatList? = null,
+    val onDemand: Boolean = false,
 ) {
     val order = renderWindow.renderSystem.primitiveMeshOrder
     val reversedOrder = order.reversedArray()
-    private var _data: DirectArrayFloatList? = data ?: DirectArrayFloatList(initialCacheSize)
+    private var _data: DirectArrayFloatList? = data ?: if (onDemand) null else DirectArrayFloatList(initialCacheSize)
     var data: DirectArrayFloatList
-        get() = _data as DirectArrayFloatList
+        get() {
+            if (onDemand && _data == null) {
+                _data = DirectArrayFloatList(initialCacheSize)
+            }
+            return _data as DirectArrayFloatList
+        }
         set(value) {
             _data = value
         }

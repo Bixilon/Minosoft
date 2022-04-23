@@ -12,7 +12,11 @@
  */
 
 
+#ifdef MIPMAP_LEVEL
+vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1, MIPMAP_LEVEL);
+#else
 vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1);
+#endif
 discard_if_0(firstTexelColor.a);
 
 if (finInterpolation == 0.0f) {
@@ -26,8 +30,11 @@ if (finInterpolation == 0.0f) {
     #endif
     return;
 }
-
+    #ifdef MIPMAP_LEVEL
+vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2, MIPMAP_LEVEL);
+#else
 vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2);
+#endif
 
 discard_if_0(secondTexelColor.a);
 

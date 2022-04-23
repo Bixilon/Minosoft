@@ -61,8 +61,6 @@ public final class ProtocolDefinition {
     public static final int SECTION_HEIGHT_Y = 16;
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
-
-    public static final int SIGN_LINES = 4;
     public static final int ITEM_STACK_MAX_SIZE = 64;
 
 

@@ -22,17 +22,17 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import java.util.*
 
 class BakedBlockStateModel(
-    private val faces: Array<Array<BakedFace>>,
-    private val touchingFaceProperties: Array<Array<AbstractFaceProperties>>,
-    private val particleTexture: AbstractTexture?,
+    val faces: Array<Array<BakedFace>>,
+    val touchingFaceProperties: Array<Array<AbstractFaceProperties>?>,
+    val particleTexture: AbstractTexture?,
 ) : BakedBlockModel {
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>? {
         return touchingFaceProperties[direction.ordinal]
     }
 
@@ -59,7 +59,7 @@ class BakedBlockStateModel(
                     continue
                 }
                 tint = tints?.getOrNull(face.tintIndex) ?: -1
-                currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[6]).toInt()
+                currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[SolidCullSectionPreparer.SELF_LIGHT_INDEX]).toInt()
                 face.singleRender(positionArray, mesh, currentLight, ambientLight, tint)
                 if (!rendered) {
                     rendered = true
@@ -67,15 +67,6 @@ class BakedBlockStateModel(
             }
         }
         return rendered
-    }
-
-    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: SingleWorldMesh, light: Int) {
-        TODO()
-        val floatStart = start.toVec3()
-        val floatEnd = end.toVec3()
-        for (face in faces[side.ordinal]) {
-            face.greedyRender(floatStart, floatEnd, side, mesh, light)
-        }
     }
 
     override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {

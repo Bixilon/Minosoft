@@ -43,7 +43,6 @@ class DoubleChestRenderer(
     light,
 ) {
 
-
     companion object {
         val DOUBLE_MODEL = "minecraft:block/entities/double_chest".toResourceLocation().bbModel()
 

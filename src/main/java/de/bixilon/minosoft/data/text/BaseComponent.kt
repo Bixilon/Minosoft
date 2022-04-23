@@ -197,6 +197,21 @@ class BaseComponent : ChatComponent {
         }
     }
 
+    override fun cut(length: Int) {
+        if (length <= 0) {
+            throw IllegalArgumentException("Can not cut <= 0: $length")
+        }
+        var remaining = length
+        for (part in parts) {
+            val partLength = part.length
+            if (remaining - partLength < 0) {
+                part.cut(remaining)
+                break
+            }
+            remaining -= partLength
+        }
+    }
+
     override val ansiColoredMessage: String
         get() {
             val stringBuilder = StringBuilder()

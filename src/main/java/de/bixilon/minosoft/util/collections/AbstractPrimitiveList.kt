@@ -20,7 +20,7 @@ abstract class AbstractPrimitiveList<T> : Clearable {
     abstract val size: Int
     abstract val isEmpty: Boolean
 
-    protected abstract fun ensureSize(needed: Int)
+    abstract fun ensureSize(needed: Int)
     abstract fun add(value: T)
 
     abstract fun finish()

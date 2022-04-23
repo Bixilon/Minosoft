@@ -39,7 +39,8 @@ class MarkTextElement(
     noBorder: Boolean = false,
     parent: Element? = null,
     scale: Float = 1.0f,
-) : TextElement(guiRenderer, text, fontAlignment, background, backgroundColor, noBorder, parent, scale) {
+    shadow: Boolean = true,
+) : TextElement(guiRenderer, text, fontAlignment, background, backgroundColor, noBorder, parent, scale, shadow) {
     var markStartPosition = 0
     var markEndPosition = 0
 
@@ -79,17 +80,17 @@ class MarkTextElement(
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (markStartPosition >= 0) {
             val message = chatComponent.message // ToDo: This does not include formatting
-            val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), parent = _parent)
-            val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), parent = _parent)
+            val preMark = TextElement(guiRenderer, message.substring(0, markStartPosition), scale = scale, parent = _parent)
+            val mark = TextElement(guiRenderer, message.substring(markStartPosition, markEndPosition), scale = scale, parent = _parent)
             val markOffset = Vec2i(preMark.renderInfo.lines.lastOrNull()?.width ?: 0, preMark.size.y)
             if (markOffset.y > 0 && (preMark.renderInfo.lines.lastOrNull()?.width ?: 0) <= (renderInfo.lines.lastOrNull()?.width ?: 0)) {
-                markOffset.y -= Font.TOTAL_CHAR_HEIGHT
+                markOffset.y -= (Font.TOTAL_CHAR_HEIGHT * scale).toInt()
             }
 
             for (line in mark.renderInfo.lines) {
-                ColorElement(guiRenderer, size = Vec2i(line.width, Font.TOTAL_CHAR_HEIGHT), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
+                ColorElement(guiRenderer, size = Vec2i(line.width, Font.TOTAL_CHAR_HEIGHT * scale), color = ChatColors.DARK_BLUE).render(offset + markOffset, consumer, options)
                 markOffset.x = 0
-                markOffset.y += Font.TOTAL_CHAR_HEIGHT
+                markOffset.y += (Font.TOTAL_CHAR_HEIGHT * scale).toInt()
             }
         }
 

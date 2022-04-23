@@ -122,6 +122,10 @@ class CharData(
         return (width * scale).ceil
     }
 
+    fun render3d(consumer: WorldGUIConsumer, color: RGBColor, shadow: Boolean, italic: Boolean, bold: Boolean, strikethrough: Boolean, underlined: Boolean, scale: Float): Float {
+        render(Vec2i(0, 0), color, shadow, italic, bold, strikethrough, underlined, consumer, null, scale)
+        return scaledWidth.toFloat()
+    }
 
     companion object {
         const val ITALIC_OFFSET = 2.5f

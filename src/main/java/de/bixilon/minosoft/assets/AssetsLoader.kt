@@ -28,7 +28,8 @@ object AssetsLoader {
     fun create(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch, property: AssetsVersionProperty = AssetsVersionProperties[version] ?: throw IllegalAccessException("$version has no assets!")): AssetsManager {
         val assetsManager = PriorityAssetsManager()
 
-        for (resourcePack in profile.assets.resourcePacks) {
+        assetsManager += Minosoft.OVERWRITE_ASSETS_MANAGER
+        for (resourcePack in profile.assets.resourcePacks.reversed()) {
             resourcePack.type.creator(resourcePack).let {
                 it.load(latch)
                 assetsManager += it

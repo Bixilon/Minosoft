@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize) {
+class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand) {
     var distance: Float = 0.0f // Used for sorting
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {

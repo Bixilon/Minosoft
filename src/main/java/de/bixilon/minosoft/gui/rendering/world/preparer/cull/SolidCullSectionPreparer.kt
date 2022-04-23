@@ -30,9 +30,11 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
+import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -66,8 +68,8 @@ class SolidCullSectionPreparer(
         val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()
         section.acquire()
         neighbours.acquire()
-        var blockEntity: BlockEntity? = null
-        var model: BakedBlockModel
+        var blockEntity: BlockEntity?
+        var model: SingleBlockRenderable
         var blockState: BlockState
         var position: Vec3i
         var rendered: Boolean
@@ -87,15 +89,19 @@ class SolidCullSectionPreparer(
                     if (blockState.block is FluidBlock) {
                         continue
                     }
-                    light[6] = sectionLight[y shl 8 or (z shl 4) or x]
+                    light[SELF_LIGHT_INDEX] = sectionLight[y shl 8 or (z shl 4) or x]
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     blockEntity = section.blockEntities.unsafeGet(x, y, z)
-                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[6].toInt())
-                    if (blockEntityModel != null) {
+                    val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[SELF_LIGHT_INDEX].toInt())
+                    if (blockEntityModel != null && (blockEntityModel !is OnlyMeshedBlockEntityRenderer)) {
                         blockEntities += blockEntityModel
                         mesh.addBlock(x, y, z)
                     }
-                    model = blockState.blockModel ?: continue
+                    model = blockState.blockModel ?: if (blockEntityModel is MeshedBlockEntityRenderer) {
+                        blockEntityModel
+                    } else {
+                        continue
+                    }
 
 
                     if (y == 0) {
@@ -163,6 +169,10 @@ class SolidCullSectionPreparer(
                     tints = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
                     rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
 
+                    if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
+                        rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints) || rendered
+                    }
+
                     if (rendered) {
                         mesh.addBlock(x, y, z)
                     }
@@ -172,5 +182,9 @@ class SolidCullSectionPreparer(
         section.release()
         neighbours.release()
         mesh.blockEntities = blockEntities
+    }
+
+    companion object {
+        const val SELF_LIGHT_INDEX = 6 // after all directions
     }
 }

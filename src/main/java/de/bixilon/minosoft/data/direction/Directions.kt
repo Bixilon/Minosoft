@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.Broken
 import kotlin.math.abs
 
 enum class Directions(
@@ -82,7 +83,7 @@ enum class Directions(
             SOUTH -> WEST
             WEST -> NORTH
             EAST -> SOUTH
-            else -> TODO()
+            else -> Broken("Rotation: $this")
         }
     }
 

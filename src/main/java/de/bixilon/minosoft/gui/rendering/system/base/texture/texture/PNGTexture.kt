@@ -37,6 +37,7 @@ class PNGTexture(
 
     override lateinit var textureArrayUV: Vec2
     override lateinit var singlePixelSize: Vec2
+    override var atlasSize: Int = -1
     override var state: TextureStates = TextureStates.DECLARED
         private set
     override lateinit var size: Vec2i

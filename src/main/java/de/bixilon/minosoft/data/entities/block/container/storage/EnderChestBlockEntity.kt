@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class EnderChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
     override fun createRenderer(renderWindow: RenderWindow, blockState: BlockState, blockPosition: Vec3i, light: Int): BlockEntityRenderer<out BlockEntity>? {
-        val model = renderWindow.modelLoader.entities.models[SingleChestRenderer.EnderChest.MODEL] ?: return null
+        val model = renderWindow.modelLoader.entities.skeletal[SingleChestRenderer.EnderChest.MODEL] ?: return null
         return SingleChestRenderer(this, renderWindow, blockState, blockPosition, model, light)
     }
 

@@ -22,9 +22,7 @@ import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFacePropertie
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
-import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 
 class BakedFace(
@@ -53,36 +51,6 @@ class BakedFace(
         for ((index, textureIndex) in meshToUse.order) {
             val indexPosition = positions[index].array
             meshToUse.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, color.rgb, light)
-        }
-    }
-
-    fun greedyRender(start: Vec3, end: Vec3, side: Directions, mesh: SingleWorldMesh, light: Int) {
-        val multiplier = end - start
-        val positions = arrayOf(
-            (positions[0] * multiplier) + start,
-            (positions[1] * multiplier) + start,
-            (positions[2] * multiplier) + start,
-            (positions[3] * multiplier) + start,
-        )
-        val fixPosition = this.positions[0][side.axis]
-        for (position in positions) {
-            when (side.axis) {
-                Axes.X -> position.x = start.x + fixPosition
-                Axes.Y -> position.y = start.y + fixPosition
-                Axes.Z -> position.z = start.z + fixPosition
-            }
-        }
-
-        val uvMultiplier = side.getUVMultiplier(start, end)
-        val uv = arrayOf(
-            uv[0] * uvMultiplier,
-            uv[1] * uvMultiplier,
-            uv[2] * uvMultiplier,
-            uv[3] * uvMultiplier,
-        )
-        for ((index, textureIndex) in mesh.order) {
-            // ToDo
-            mesh.addVertex(positions[index].array, uv[textureIndex], texture, 0xFFFFFF, light)
         }
     }
 }

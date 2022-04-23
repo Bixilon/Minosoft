@@ -281,7 +281,7 @@ class RenderWindowInputHandler(
         }
 
 
-        if (inputHandler != this.inputHandler) {
+        if (inputHandler != this.inputHandler && this.inputHandler != null) {
             skipCharPress = true
             skipMouseMove = true
         }
