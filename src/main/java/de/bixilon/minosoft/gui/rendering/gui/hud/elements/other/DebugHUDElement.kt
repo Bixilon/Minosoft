@@ -87,14 +87,14 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4i(2)
         layout += TextElement(guiRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
-        layout += AutoTextElement(guiRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.rounded10}" }
+        layout += AutoTextElement(guiRenderer, 1) { "FPS §d${renderWindow.renderStats.smoothAvgFPS.rounded10}" }
         renderWindow.renderer[WorldRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=$loadedMeshesSize, cQ=$culledQueuedSize, q=$queueSize, pT=$preparingTasksSize/$maxPreparingTasks, l=$meshesToLoadSize/$maxMeshesToLoad, w=${connection.world.chunks.size}" }
+            layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=${loadedMeshesSize.format()}, cQ=${culledQueuedSize.format()}, q=${queueSize.format()}, pT=${preparingTasksSize.format()}/${maxPreparingTasks.format()}, l=${meshesToLoadSize.format()}/${maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
         }
-        layout += AutoTextElement(guiRenderer, 1) { "E t=${connection.world.entities.size}" }
+        layout += AutoTextElement(guiRenderer, 1) { "E t=${connection.world.entities.size.format()}" }
 
         renderWindow.renderer[ParticleRenderer]?.apply {
-            layout += AutoTextElement(guiRenderer, 1) { "P t=$size" }
+            layout += AutoTextElement(guiRenderer, 1) { "P t=${size.format()}" }
         }
 
         val audioProfile = connection.profiles.audio
@@ -127,8 +127,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         connection.player.apply {
             // ToDo: Only update when the position changes
             layout += AutoTextElement(guiRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
-            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo.blockPosition) { "Block ${x.format()} ${y.format()} ${z.format()}" } }
+            layout += AutoTextElement(guiRenderer, 1) { with(positionInfo) { "Chunk ${inChunkSectionPosition.format()} in (${chunkPosition.x.format()} ${sectionHeight.format()} ${chunkPosition.y.format()})" } }
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
@@ -139,7 +139,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 }
 
                 guiRenderer.renderWindow.connection.player.rotation.apply {
-                    text += " yaw=${yaw.rounded10}, pitch=${pitch.rounded10}"
+                    text += " yaw=§d${yaw.rounded10}§r, pitch=§d${pitch.rounded10}"
                 }
 
                 text
@@ -174,7 +174,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             })
         }
 
-        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + (renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation ?: "None") }
+        layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
 
         return layout
     }
@@ -208,9 +208,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "Display TBA", HorizontalAlignments.RIGHT).apply {
+        layout += TextElement(guiRenderer, "Display <?>", HorizontalAlignments.RIGHT).apply {
             guiRenderer.renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
-                text = "Display ${it.size.x}x${it.size.y}"
+                text = "Display ${it.size.x.format()}x${it.size.y.format()}"
             })
         }
 
@@ -229,7 +229,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "${connection.size}x listeners", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "${connection.size.format()}x listeners", HorizontalAlignments.RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
