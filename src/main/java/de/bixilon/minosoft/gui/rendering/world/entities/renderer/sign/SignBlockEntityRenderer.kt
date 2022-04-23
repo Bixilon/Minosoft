@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign
 
 import de.bixilon.kotlinglm.func.rad
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.StandingSignBlock
 import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.WallSignBlock
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
@@ -65,7 +67,7 @@ class SignBlockEntityRenderer(
         textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX)
 
         for (line in sign.lines) {
-            ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), mesh, line, light)
+            ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), Vec2i(SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE), mesh, line, light)
             textPosition.y -= 0.11f
         }
     }

@@ -204,16 +204,22 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         return count
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, scale: Float, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
+    override fun render3dFlat(renderWindow: RenderWindow, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: TextComponent, light: Int) {
         val color = text.color ?: ChatColors.BLACK
         val italic = text.formatting.contains(PreChatFormattingCodes.ITALIC)
         val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
         val strikethrough = text.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)
         val underlined = text.formatting.contains(PreChatFormattingCodes.UNDERLINED)
+
         for (char in text.message.codePoints()) {
             val data = renderWindow.font[char] ?: continue
-            val width = data.render3d(consumer, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale) + Font.HORIZONTAL_SPACING
-            consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION) * scale)
+            val expectedWidth = ((data.width + Font.HORIZONTAL_SPACING) * scale).toInt()
+            if (maxSize.x - offset.x < expectedWidth) { // ToDo
+                return
+            }
+            val width = ((data.render3d(consumer, color, shadow = false, italic = italic, bold = bold, strikethrough = strikethrough, underlined = underlined, scale = scale) + Font.HORIZONTAL_SPACING) * scale).toInt()
+            offset.x += width
+            consumer.offset((width / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION.toFloat()))
         }
     }
 }

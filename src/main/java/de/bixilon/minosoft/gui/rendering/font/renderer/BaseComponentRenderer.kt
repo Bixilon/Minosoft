@@ -32,9 +32,9 @@ object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
         return false
     }
 
-    override fun render3dFlat(renderWindow: RenderWindow, scale: Float, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
+    override fun render3dFlat(renderWindow: RenderWindow, offset: Vec2i, scale: Float, maxSize: Vec2i, consumer: WorldGUIConsumer, text: BaseComponent, light: Int) {
         for (part in text.parts) {
-            ChatComponentRenderer.render3dFlat(renderWindow, scale, consumer, part, light)
+            ChatComponentRenderer.render3dFlat(renderWindow, offset, scale, maxSize, consumer, part, light)
         }
     }
 
