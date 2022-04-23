@@ -11,13 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.gui.confirmation
+package de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
+import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
-class ConfirmationC {
-    var copyToClipboard by delegate(true)
-    var openFile by delegate(true)
-    var openURL by delegate(true)
-    var sendMessage by delegate(true)
-}
+abstract class AbstractCheckboxElement(guiRenderer: GUIRenderer) : Element(guiRenderer)

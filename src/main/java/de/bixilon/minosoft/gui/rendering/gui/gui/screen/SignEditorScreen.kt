@@ -21,13 +21,17 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.entity.sign.SignBlock
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.input.checkbox.SwitchElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
@@ -56,6 +60,7 @@ class SignEditorScreen(
     private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
     private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", 256, scale = TEXT_SCALE, background = false, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2i(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
+    private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
     override var activeElement: Element? = null
     override var activeDragElement: Element? = null
     private var activeLine = 0
@@ -68,11 +73,15 @@ class SignEditorScreen(
     }
 
     private fun getTexture(): AbstractTexture? {
-        return blockState?.blockModel?.nullCast<BakedBlockStateModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: guiRenderer.atlasManager["minecraft:sign_front"]?.texture
+        if (blockState?.block !is SignBlock) {
+            return guiRenderer.atlasManager["minecraft:sign_front"]?.texture
+        }
+        return blockState.blockModel?.nullCast<BakedBlockStateModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: guiRenderer.atlasManager["minecraft:sign_front"]?.texture
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
+        lengthLimitSwitch.render(offset + VerticalAlignments.BOTTOM.getOffset(size, lengthLimitSwitch.size), consumer, options)
 
         val size = size
 
@@ -111,8 +120,21 @@ class SignEditorScreen(
         guiRenderer.connection.sendPacket(SignTextC2SP(blockPosition, text))
     }
 
+    override fun forceSilentApply() {
+        super.forceSilentApply()
+
+        for (line in lines) {
+            line.prefMaxSize = Vec2i(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE else -1, line.prefMaxSize.y)
+        }
+    }
+
     override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
         val size = size
+
+        if (position.y in size.y - lengthLimitSwitch.size.y..size.y) {
+            position.y -= size.y - lengthLimitSwitch.size.y
+            getAtCheck(position, lengthLimitSwitch, HorizontalAlignments.LEFT, false)?.let { return it }
+        }
 
         position.y -= size.y / 8
         getAtCheck(position, headerElement, HorizontalAlignments.CENTER, true)?.let { return it }

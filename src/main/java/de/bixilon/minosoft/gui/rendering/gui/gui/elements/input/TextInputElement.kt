@@ -47,7 +47,7 @@ class TextInputElement(
     val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT * scale))
+    private val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
     private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
     private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var cursorOffset: Vec2i = Vec2i.EMPTY
@@ -116,6 +116,9 @@ class TextInputElement(
         }
         if (newValue.length != this._value.length) {
             _set(newValue.toString())
+        }
+        if (_pointer > newValue.length) {
+            _pointer = newValue.length
         }
     }
 

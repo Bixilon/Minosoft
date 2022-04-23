@@ -31,7 +31,7 @@ enum class VerticalAlignments {
         }
 
         fun VerticalAlignments.getOffset(size: Vec2i, childSize: Vec2i): Vec2i {
-            return Vec2i(0, getOffset(size.x, childSize.x))
+            return Vec2i(0, getOffset(size.y, childSize.y))
         }
     }
 }
