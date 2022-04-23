@@ -105,7 +105,7 @@ class FluidCullSectionPreparer(
                         val model = neighbour.blockModel ?: return false
                         random.setSeed(VecUtil.generatePositionHash(neighbourPosition.x, neighbourPosition.y, neighbourPosition.z))
                         val size = model.getTouchingFaceProperties(random, direction.inverted)
-                        return size.canCull(FLUID_FACE_PROPERTY, false)
+                        return size?.canCull(FLUID_FACE_PROPERTY, false) ?: false
                     }
 
                     val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {

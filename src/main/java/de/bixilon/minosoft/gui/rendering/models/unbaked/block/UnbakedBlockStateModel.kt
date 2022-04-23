@@ -149,10 +149,13 @@ data class UnbakedBlockStateModel(
 
         val finalTouchingProperties: Array<Array<AbstractFaceProperties>?> = arrayOfNulls(faces.size)
         for ((index, sizeArray) in touchingFaceProperties.withIndex()) {
+            if (sizeArray.isEmpty()) {
+                continue
+            }
             finalTouchingProperties[index] = sizeArray.toTypedArray()
         }
 
-        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties.unsafeCast(), particleTexture)
+        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties, particleTexture)
         this.baked = baked
         return baked
     }

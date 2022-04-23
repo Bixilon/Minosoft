@@ -20,6 +20,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.block.SignBlockEntity
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -32,8 +33,12 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout.Companion.getAtCheck
 import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
+import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
@@ -43,11 +48,12 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.block.SignTextC2SP
 class SignEditorScreen(
     guiRenderer: GUIRenderer,
     val blockPosition: Vec3i,
-    val blockEntity: SignBlockEntity? = null,
+    val blockState: BlockState? = guiRenderer.connection.world[blockPosition],
+    val blockEntity: SignBlockEntity? = guiRenderer.connection.world.getBlockEntity(blockPosition).nullCast(),
 ) : Screen(guiRenderer), AbstractLayout<Element> {
     private val headerElement = TextElement(guiRenderer, "Edit sign message", background = false, scale = 3.0f, parent = this)
     private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = false, parent = this)
-    private val backgroundElement = ImageElement(guiRenderer, guiRenderer.atlasManager["minecraft:sign_front"]?.texture, uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
+    private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
     private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", 256, scale = TEXT_SCALE, background = false, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2i(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
     override var activeElement: Element? = null
@@ -59,6 +65,10 @@ class SignEditorScreen(
             line.prefMaxSize = Vec2i(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE)
             line.hideCursor()
         }
+    }
+
+    private fun getTexture(): AbstractTexture? {
+        return blockState?.blockModel?.nullCast<BakedBlockStateModel>()?.faces?.firstOrNull()?.firstOrNull()?.texture ?: guiRenderer.atlasManager["minecraft:sign_front"]?.texture
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -119,8 +129,7 @@ class SignEditorScreen(
         position.y -= (1.8f * BACKGROUND_SCALE).toInt()
 
         for (line in lines) {
-            getAtCheck(position, line, HorizontalAlignments.CENTER, false)?.let { return it }
-            position.y -= (Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE).toInt()
+            getAtCheck(position, line, HorizontalAlignments.CENTER, true, Vec2i(SignBlockEntityRenderer.SIGN_MAX_WIDTH, (Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE).toInt()))?.let { return it }
             if (position.y < 0) {
                 return null
             }
@@ -140,6 +149,7 @@ class SignEditorScreen(
         }
         activeLine %= lines.size
         this.activeLine = activeLine
+        lines[activeLine].showCursor()
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
@@ -147,12 +157,25 @@ class SignEditorScreen(
             if (key == KeyCodes.KEY_UP) {
                 modifyActiveLine(-1)
                 return true
-            } else if (key == KeyCodes.KEY_DOWN || key == KeyCodes.KEY_ENTER || key == KeyCodes.KEY_KP_ENTER) {
+            } else if (key == KeyCodes.KEY_DOWN || key == KeyCodes.KEY_ENTER || key == KeyCodes.KEY_KP_ENTER || key == KeyCodes.KEY_TAB) {
                 modifyActiveLine(1)
                 return true
             }
         }
         return lines[activeLine].onKey(key, type)
+    }
+
+    override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
+        val (element, offset) = getAt(position) ?: return false
+        val lineIndex = lines.indexOf(element)
+        if (element is TextInputElement && lineIndex >= 0 && lineIndex != this.activeLine) {
+            val activeLine = lines[this.activeLine]
+            activeLine.hideCursor()
+            activeLine.unmark()
+            this.activeLine = lineIndex
+            element.showCursor()
+        }
+        return element.onMouseAction(offset, button, action, count)
     }
 
     override fun onCharPress(char: Int): Boolean {
@@ -168,13 +191,12 @@ class SignEditorScreen(
         private val SIGN_UV_START = Vec2(0.5 / 16.0f, 1.0f / 32.0f)
         private val SIGN_UV_END = Vec2(6.5 / 16.0f, 7.0f / 32.0f)
         private const val TEXT_SCALE = 2.0f
-        private val LINES_SIZE = Vec2i(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * SignBlockEntity.LINES * TEXT_SCALE)
 
         private const val BACKGROUND_SCALE = 9
         private val BACKGROUND_SIZE = Vec2i(24, 12) * BACKGROUND_SCALE
 
         fun register(guiRenderer: GUIRenderer) {
-            guiRenderer.connection.registerEvent(CallbackEventInvoker.of<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.blockPosition, it.connection.world.getBlockEntity(it.blockPosition).nullCast())) })
+            guiRenderer.connection.registerEvent(CallbackEventInvoker.of<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.blockPosition)) })
         }
     }
 }

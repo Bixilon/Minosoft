@@ -23,7 +23,7 @@ import java.util.*
 
 interface BakedBlockModel : BakedModel, SingleBlockRenderable {
 
-    fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>
+    fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>?
 
     fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture?
 }

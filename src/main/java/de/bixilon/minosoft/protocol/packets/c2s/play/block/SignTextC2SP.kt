@@ -39,14 +39,8 @@ class SignTextC2SP(
         } else {
             buffer.writePosition(position)
         }
-        if (buffer.versionId < ProtocolVersions.V_14W25A || buffer.versionId >= ProtocolVersions.V_15W35A) {
-            for (i in 0 until SignBlockEntity.LINES) {
-                buffer.writeString(lines[i].message)
-            }
-        } else {
-            for (i in 0 until SignBlockEntity.LINES) {
-                buffer.writeChatComponent(lines[i])
-            }
+        for (line in lines) {
+            buffer.writeChatComponent(line)
         }
     }
 

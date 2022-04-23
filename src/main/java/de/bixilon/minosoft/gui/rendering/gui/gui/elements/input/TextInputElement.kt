@@ -86,7 +86,12 @@ class TextInputElement(
 
     fun hideCursor() {
         cursorTick = 20
-        cacheEnabled = false
+        cacheUpToDate = false
+    }
+
+    fun showCursor() {
+        cursorTick = 19
+        cacheUpToDate = false
     }
 
     fun unmark() {
@@ -123,7 +128,7 @@ class TextInputElement(
             cutOffText()
         }
         _size = Vec2i(textElement.size)
-        backgroundElement.size = _size
+        backgroundElement.size = prefMaxSize
 
         cursorOffset = if (_pointer == 0) {
             Vec2i.EMPTY

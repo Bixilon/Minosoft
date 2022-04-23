@@ -125,11 +125,10 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
 
     companion object {
 
-        fun Element.getAtCheck(position: Vec2i, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false): Pair<Element, Vec2i>? {
+        fun Element.getAtCheck(position: Vec2i, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false, size: Vec2i = element.size): Pair<Element, Vec2i>? {
             if (position.x < 0 || position.y < 0) {
                 return null
             }
-            val size = element.size
             if (position.y >= size.y) {
                 if (modifyY) {
                     position.y -= size.y

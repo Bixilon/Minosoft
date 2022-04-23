@@ -27,12 +27,12 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPre
 import java.util.*
 
 class BakedBlockStateModel(
-    private val faces: Array<Array<BakedFace>>,
-    private val touchingFaceProperties: Array<Array<AbstractFaceProperties>>,
-    private val particleTexture: AbstractTexture?,
+    val faces: Array<Array<BakedFace>>,
+    val touchingFaceProperties: Array<Array<AbstractFaceProperties>?>,
+    val particleTexture: AbstractTexture?,
 ) : BakedBlockModel {
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>? {
         return touchingFaceProperties[direction.ordinal]
     }
 
