@@ -58,6 +58,8 @@ open class GUIMeshElement<T : Element>(
         }
     override val activeWhenHidden: Boolean
         get() = element.activeWhenHidden
+    override val canPop: Boolean
+        get() = element.canPop
 
     init {
         element.cache.data = mesh.data

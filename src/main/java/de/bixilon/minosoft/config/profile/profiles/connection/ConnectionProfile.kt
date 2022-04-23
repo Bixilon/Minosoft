@@ -56,6 +56,8 @@ class ConnectionProfile(
 
     val skin = SkinC()
 
+    var autoRespawn by delegate(false)
+
     override fun toString(): String {
         return ConnectionProfileManager.getName(this)
     }

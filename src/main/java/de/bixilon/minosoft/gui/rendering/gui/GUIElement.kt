@@ -23,6 +23,8 @@ interface GUIElement : InputHandler, DraggableHandler {
     var enabled: Boolean
     val activeWhenHidden: Boolean
         get() = false
+    val canPop: Boolean
+        get() = true
 
     /**
      * Initializes the element (e.g. getting atlas elements, creating shaders, creating textures, etc)

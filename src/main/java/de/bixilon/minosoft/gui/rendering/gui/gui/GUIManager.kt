@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.SignEditorScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.RespawnMenu
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.input.DraggableHandler
@@ -58,6 +59,7 @@ class GUIManager(
     private fun registerDefaultElements() {
         ContainerGUIManager.register(guiRenderer)
         SignEditorScreen.register(guiRenderer)
+        RespawnMenu.register(guiRenderer)
     }
 
     override fun postInit() {
@@ -244,7 +246,7 @@ class GUIManager(
     }
 
     fun pop(element: GUIElement) {
-        if (elementOrder.isEmpty()) {
+        if (elementOrder.isEmpty() || !element.canPop) {
             return
         }
 
@@ -270,6 +272,9 @@ class GUIManager(
             guiRenderer.dragged.element = null
             return
         }
+        if (elementOrder.firstOrNull()?.canPop == false) {
+            return
+        }
         val previous = elementOrder.removeFirstOrNull() ?: return
         previous.onClose()
         if (elementOrder.isEmpty()) {
@@ -282,10 +287,16 @@ class GUIManager(
     }
 
     fun clear() {
+        val remaining: MutableList<GUIElement> = mutableListOf()
         for (element in elementOrder) {
+            if (!element.canPop) {
+                remaining += element
+                continue
+            }
             element.onClose()
         }
         elementOrder.clear()
+        elementOrder += remaining
         guiRenderer.popper.clear()
         guiRenderer.dragged.element = null
         renderWindow.inputHandler.inputHandler = null

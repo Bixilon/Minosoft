@@ -36,6 +36,7 @@ abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int =
     var ignoreDisplaySize = false
     val renderWindow = guiRenderer.renderWindow
     open val activeWhenHidden = false
+    open var canPop: Boolean = true
 
     protected open var _parent: Element? = null
     open var parent: Element?

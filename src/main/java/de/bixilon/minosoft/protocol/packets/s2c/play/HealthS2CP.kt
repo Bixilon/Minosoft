@@ -41,8 +41,8 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
         connection.fireEvent(UpdateHealthEvent(connection, this))
-        if (hp == 0.0f) {
-            // ToDo: remove auto respawn
+
+        if (hp == 0.0f && connection.profiles.connection.autoRespawn) {
             connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
         }
     }

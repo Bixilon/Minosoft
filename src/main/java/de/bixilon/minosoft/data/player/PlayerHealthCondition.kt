@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.data.player
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+
 class PlayerHealthCondition {
-    var hp = 20.0f
-    var hunger = 20
-    var saturation = 0.0f
+    var hp by watched(20.0f)
+    var hunger by watched(20)
+    var saturation by watched(0.0f)
 }
