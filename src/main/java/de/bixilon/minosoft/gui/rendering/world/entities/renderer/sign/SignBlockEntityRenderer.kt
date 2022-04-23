@@ -73,7 +73,7 @@ class SignBlockEntityRenderer(
     private fun renderStandingText(position: Vec3i, mesh: WorldMesh, light: Int) {
         val yRotation = (this.blockState.properties[BlockProperties.ROTATION]?.toInt() ?: 0) * 22.5f
 
-        val rotationVector = Vec3(X_OFFSET, 17.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 9.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET + 0.0035f)
+        val rotationVector = Vec3(X_OFFSET, 17.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 9.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
         rotationVector.signRotate(yRotation.rad)
         renderText(position, rotationVector, yRotation, mesh, light)
     }
@@ -101,7 +101,7 @@ class SignBlockEntityRenderer(
     companion object {
         private const val PIXEL_SCALE = 1.0f / ChatComponentRenderer.TEXT_BLOCK_RESOLUTION
         private const val TEXT_SCALE = 1.35f
-        private const val Z_OFFSET = 0.003f
+        private const val Z_OFFSET = 0.01f
         private const val X_OFFSET = PIXEL_SCALE * 6
         private const val Y_OFFSET = 0.04f
     }

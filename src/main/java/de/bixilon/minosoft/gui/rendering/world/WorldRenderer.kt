@@ -44,6 +44,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
@@ -663,6 +664,8 @@ class WorldRenderer(
         for (mesh in visible.opaque) {
             mesh.draw()
         }
+
+        renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
         for (blockEntity in visible.blockEntities) {
             blockEntity.draw(renderWindow)
         }
@@ -689,6 +692,7 @@ class WorldRenderer(
             mesh.draw()
         }
 
+        renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
         textShader.use()
         for (mesh in visible.text) {
             mesh.draw()
