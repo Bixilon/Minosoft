@@ -79,14 +79,18 @@ class TextInputElement(
         }
         textElement.render(offset, consumer, options)
 
-        if (cursorTick <= 20) {
+        if (cursorTick < 20) {
             cursor.render(offset + cursorOffset, consumer, options)
         }
     }
 
     fun hideCursor() {
-        cursorTick = 0
+        cursorTick = 20
         cacheEnabled = false
+    }
+
+    fun unmark() {
+        textElement.unmark()
     }
 
     private fun _set(value: String) {
@@ -127,7 +131,7 @@ class TextInputElement(
             val preCursorText = if (_pointer == value.length) {
                 textElement
             } else {
-                TextElement(guiRenderer, value.substring(0, _pointer), parent = this)
+                TextElement(guiRenderer, value.substring(0, _pointer), scale = textElement.scale, parent = this)
             }
             Vec2i(preCursorText.renderInfo.lines.lastOrNull()?.width ?: 0, maxOf(preCursorText.renderInfo.lines.size - 1, 0) * preCursorText.charHeight)
         }

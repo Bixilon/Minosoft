@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.gui.input.DragTarget
 import de.bixilon.minosoft.gui.rendering.gui.input.InputElement
@@ -118,5 +120,31 @@ interface AbstractLayout<T : Element> : InputElement, DragTarget {
 
     override fun onDragChar(char: Char, draggable: Dragged): Element? {
         return activeDragElement?.onDragChar(char, draggable)
+    }
+
+
+    companion object {
+
+        fun Element.getAtCheck(position: Vec2i, element: Element, horizontalAlignments: HorizontalAlignments = HorizontalAlignments.LEFT, modifyY: Boolean = false): Pair<Element, Vec2i>? {
+            if (position.x < 0 || position.y < 0) {
+                return null
+            }
+            val size = element.size
+            if (position.y >= size.y) {
+                if (modifyY) {
+                    position.y -= size.y
+                }
+                return null
+            }
+            val offset = horizontalAlignments.getOffset(this.size.x, size.x)
+            if (position.x < offset) {
+                return null
+            }
+            val xPosition = position.x - offset
+            if (xPosition >= size.x) {
+                return null
+            }
+            return Pair(element, Vec2i(xPosition, position.y))
+        }
     }
 }

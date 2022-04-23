@@ -117,13 +117,13 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {
-        lastPosition = position
+        lastPosition = Vec2i(position)
         return element.onMouseMove(position, position)
     }
 
     override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
         val mouseButton = MouseButtons[key] ?: return element.onKey(key, type)
-        val position = lastPosition ?: return false
+        val position = Vec2i(lastPosition ?: return false)
 
         val mouseAction = MouseActions[type] ?: return false
 
@@ -131,12 +131,12 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
-        val position = lastPosition ?: return false
+        val position = Vec2i(lastPosition ?: return false)
         return element.onScroll(position, scrollOffset)
     }
 
     override fun onDragMove(position: Vec2i, dragged: Dragged): Element? {
-        lastDragPosition = position
+        lastDragPosition = Vec2i(position)
         if (!this.dragged) {
             this.dragged = true
             return element.onDragEnter(position, position, dragged)
@@ -146,7 +146,7 @@ open class GUIMeshElement<T : Element>(
 
     override fun onDragKey(type: KeyChangeTypes, key: KeyCodes, dragged: Dragged): Element? {
         val mouseButton = MouseButtons[key] ?: return element.onDragKey(key, type, dragged)
-        val position = lastDragPosition ?: return null
+        val position = Vec2i(lastDragPosition ?: return null)
 
         val mouseAction = MouseActions[type] ?: return null
 
@@ -154,7 +154,7 @@ open class GUIMeshElement<T : Element>(
     }
 
     override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
-        return element.onDragScroll(lastDragPosition ?: return null, scrollOffset, dragged)
+        return element.onDragScroll(Vec2i(lastDragPosition ?: return null), scrollOffset, dragged)
     }
 
     override fun onDragChar(char: Int, dragged: Dragged): Element? {
