@@ -22,7 +22,7 @@
     "": {
       "type": "object",
       "patternProperties": {
-        "[0-9]+": {
+        "\\d+": {
           "type": "object",
           "properties": {
             "texture": {
@@ -35,10 +35,13 @@
             "end": {
               "$ref": "#/definitions/vec2i"
             },
+            "resolution": {
+              "$ref": "#/definitions/vec2i"
+            },
             "slots": {
               "type": "object",
               "patternProperties": {
-                "[0-9]+": {
+                "\\d+": {
                   "properties": {
                     "start": {
                       "$ref": "#/definitions/vec2i"

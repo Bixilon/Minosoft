@@ -29,6 +29,7 @@ interface AbstractTexture {
     val resourceLocation: ResourceLocation
 
     var textureArrayUV: Vec2
+    var atlasSize: Int
     var singlePixelSize: Vec2
     val state: TextureStates
     val size: Vec2i
@@ -40,6 +41,7 @@ interface AbstractTexture {
     var data: ByteBuffer?
     var mipmapData: Array<ByteBuffer>?
     var generateMipMaps: Boolean
+
 
     fun load(assetsManager: AssetsManager)
 

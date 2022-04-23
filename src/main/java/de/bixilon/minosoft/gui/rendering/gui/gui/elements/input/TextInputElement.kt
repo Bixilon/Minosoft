@@ -43,13 +43,15 @@ class TextInputElement(
     var onChange: () -> Unit = {},
     val background: Boolean = true,
     shadow: Boolean = true,
+    scale: Float = 1.0f,
+    val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT))
-    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, shadow = shadow)
+    private val cursor = ColorElement(guiRenderer, size = Vec2i(1, Font.TOTAL_CHAR_HEIGHT * scale))
+    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
     private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
     private var cursorOffset: Vec2i = Vec2i.EMPTY
-    val _value = StringBuffer(256).append(value)
+    val _value = StringBuffer(256)
     var value: String
         get() = _value.toString()
         set(value) {
@@ -57,9 +59,7 @@ class TextInputElement(
             if (_value.equals(value)) {
                 return
             }
-            _value.replace(0, _value.length, value)
-            onChange()
-            textUpToDate = false
+            _set(value)
             forceApply()
         }
     private var textUpToDate = false
@@ -68,7 +68,8 @@ class TextInputElement(
 
     init {
         this.parent = parent
-        _pointer = value.length
+        this._value.append(if (value.length > maxLength) value.substring(0, maxLength) else value)
+        _pointer = this._value.length
         forceSilentApply()
     }
 
@@ -78,7 +79,7 @@ class TextInputElement(
         }
         textElement.render(offset, consumer, options)
 
-        if (cursorTick >= 20) {
+        if (cursorTick <= 20) {
             cursor.render(offset + cursorOffset, consumer, options)
         }
     }
@@ -88,14 +89,36 @@ class TextInputElement(
         cacheEnabled = false
     }
 
+    private fun _set(value: String) {
+        _value.replace(0, _value.length, value)
+        _pointer = value.length
+        onChange()
+        textUpToDate = false
+    }
+
+    private fun cutOffText() {
+        if (!cutAtSize) {
+            return
+        }
+
+        val newValue = StringBuilder()
+        for (line in textElement.renderInfo.lines) {
+            newValue.append(line.text.message)
+        }
+        if (newValue.length != this._value.length) {
+            _set(newValue.toString())
+        }
+    }
+
     override fun forceSilentApply() {
-        _size = Vec2i(prefMaxSize)
         if (!textUpToDate) {
             textElement._chatComponent = TextComponent(_value)
             textElement.unmark()
             textElement.forceSilentApply()
             textUpToDate = true
+            cutOffText()
         }
+        _size = Vec2i(textElement.size)
         backgroundElement.size = _size
 
         cursorOffset = if (_pointer == 0) {

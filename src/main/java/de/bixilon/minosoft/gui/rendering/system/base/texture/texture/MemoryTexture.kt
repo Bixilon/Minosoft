@@ -34,6 +34,7 @@ class MemoryTexture(
 ) : AbstractTexture {
     override lateinit var textureArrayUV: Vec2
     override lateinit var singlePixelSize: Vec2
+    override var atlasSize: Int = -1
     override lateinit var renderData: TextureRenderData
     override var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
         private set

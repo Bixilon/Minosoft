@@ -1328,7 +1328,8 @@
   },
   "minecraft:sign_front": {
     "0": {
-      "texture": "minecraft:entity/signs/oak",
+      "texture": "minecraft:textures/entity/signs/oak.png",
+      "resolution": [64, 32],
       "start": [2, 2],
       "end": [26, 14]
     }

@@ -84,10 +84,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun wrap(): Boolean {
+            pushLine()
             if (addY(renderInfo.charHeight)) {
                 return true
             }
-            pushLine()
             renderInfo.currentLineNumber++
             offset.x = initialOffset.x + renderInfo.charMargin
             applyOffset()
@@ -96,9 +96,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         fun addX(width: Int, wrap: Boolean = true): Boolean {
             val nextX = offset.x + width
-            val nextSizeX = nextX - initialOffset.x + renderInfo.charMargin // end margin
+            val nextSizeX = nextX - initialOffset.x - renderInfo.charMargin // end margin
             if (nextSizeX > elementMaxSize.x) {
                 if (!wrap) {
+                    pushLine()
                     return true
                 }
                 if (wrap()) {
@@ -163,7 +164,6 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val previousY = offset.y
 
             if (addX(width)) {
-                pushLine(index)
                 return true
             }
 

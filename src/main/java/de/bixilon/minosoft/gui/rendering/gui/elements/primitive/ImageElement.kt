@@ -24,16 +24,17 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 open class ImageElement(
     guiRenderer: GUIRenderer,
-    texture: AbstractTexture,
+    texture: AbstractTexture?,
     uvStart: Vec2 = Vec2.EMPTY,
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
-    size: Vec2i = texture.size,
+    size: Vec2i = texture?.size ?: Vec2i.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
-    var texture: AbstractTexture = texture
+    var texture: AbstractTexture? = texture
         set(value) {
             field = value
             cacheUpToDate = false
@@ -76,7 +77,7 @@ open class ImageElement(
     constructor(guiRenderer: GUIRenderer, texture: AbstractTexture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2i = texture.size, tint: RGBColor = ChatColors.WHITE) : this(guiRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        consumer.addQuad(offset, offset + size, texture, uvStart, uvEnd, tint, options)
+        consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)
     }
 
     override fun forceSilentApply() = Unit

@@ -204,7 +204,7 @@ class BaseComponent : ChatComponent {
         var remaining = length
         for (part in parts) {
             val partLength = part.length
-            if (remaining - partLength <= 0) {
+            if (remaining - partLength < 0) {
                 part.cut(remaining)
                 break
             }

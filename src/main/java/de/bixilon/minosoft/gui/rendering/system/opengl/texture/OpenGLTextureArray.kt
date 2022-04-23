@@ -141,6 +141,7 @@ class OpenGLTextureArray(
                 texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
                 texture.singlePixelSize = singlePixelSize
                 texture.textureArrayUV = uvEnd ?: Vec2(1.0f, 1.0f)
+                texture.atlasSize = arrayResolution
             }
         }
 

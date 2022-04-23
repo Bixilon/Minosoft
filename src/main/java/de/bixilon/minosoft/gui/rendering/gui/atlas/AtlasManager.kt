@@ -72,6 +72,7 @@ class AtlasManager(private val renderWindow: RenderWindow) {
                     )
                 }
             }
+
             val areas: MutableMap<String, AtlasArea> = mutableMapOf()
             versionData["areas"].toJsonObject()?.let {
                 for ((areaName, areaPosition) in it) {
@@ -83,9 +84,12 @@ class AtlasManager(private val renderWindow: RenderWindow) {
                 }
             }
 
+            val resolution = versionData["resolution"]?.toVec2i()
+
             val atlasElement = AtlasElement(
                 texture = texture,
                 start = start,
+                resolution = resolution,
                 end = end,
                 slots = slots,
                 areas = areas,
@@ -100,8 +104,9 @@ class AtlasManager(private val renderWindow: RenderWindow) {
 
     fun postInit() {
         for (element in elements.values) {
-            element.uvStart = ATLAS_SINGLE_PIXEL_SIZE * element.start
-            element.uvEnd = ATLAS_SINGLE_PIXEL_SIZE * element.end
+            val singePixelSize = element.resolution?.let { Vec2(1.0f) / it / (Vec2(element.texture.atlasSize) / it) } ?: ATLAS_SINGLE_DEFAULT_PIXEL_SIZE
+            element.uvStart = singePixelSize * element.start
+            element.uvEnd = singePixelSize * element.end
         }
     }
 
@@ -116,7 +121,7 @@ class AtlasManager(private val renderWindow: RenderWindow) {
     companion object {
         private val ATLAS_DATA = "minosoft:mapping/atlas.json".toResourceLocation()
 
-        private val ATLAS_SIZE = Vec2i(256, 256)
-        private val ATLAS_SINGLE_PIXEL_SIZE = Vec2(1.0f) / ATLAS_SIZE
+        private val ATLAS_DEFAULT_SIZE = Vec2i(256, 256)
+        private val ATLAS_SINGLE_DEFAULT_PIXEL_SIZE = Vec2(1.0f) / ATLAS_DEFAULT_SIZE
     }
 }

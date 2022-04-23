@@ -104,5 +104,6 @@ class SignBlockEntityRenderer(
         private const val Z_OFFSET = 0.01f
         private const val X_OFFSET = PIXEL_SCALE * 6
         private const val Y_OFFSET = 0.04f
+        const val SIGN_MAX_WIDTH = 90 // 15x the char W. W has a width of 5sp
     }
 }
