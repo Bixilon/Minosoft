@@ -75,6 +75,9 @@ class InteractInteractionHandler(
         if (target.distance >= connection.player.reachDistance) {
             return InteractionResults.PASS
         }
+        if (connection.world.border.isOutside(target.blockPosition)) {
+            return InteractionResults.CONSUME
+        }
         // if out of world (border): return CONSUME
 
         try {

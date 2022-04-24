@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -68,6 +69,7 @@ class World(
     val time = WorldTime(this)
     val weather = WorldWeather()
     val view = WorldView(connection)
+    val border = WorldBorder()
     private val random = Random
 
     var audioPlayer: AbstractAudioPlayer? = null
@@ -117,7 +119,9 @@ class World(
     }
 
     fun isPositionChangeable(blockPosition: Vec3i): Boolean {
-        // ToDo: World border
+        if (border.isOutside(blockPosition)) {
+            return false
+        }
         val dimension = connection.world.dimension!!
         return (blockPosition.y >= dimension.minY || blockPosition.y < dimension.height)
     }

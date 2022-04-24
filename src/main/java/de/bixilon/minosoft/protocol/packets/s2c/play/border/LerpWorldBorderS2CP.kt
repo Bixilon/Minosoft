@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.border
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -24,6 +25,10 @@ class LerpWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     val oldRadius = buffer.readDouble()
     val newRadius = buffer.readDouble()
     val speed = buffer.readVarLong()
+
+    override fun handle(connection: PlayConnection) {
+        connection.world.border.lerp(oldRadius, newRadius, speed)
+    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Lerp size world border (oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed)" }

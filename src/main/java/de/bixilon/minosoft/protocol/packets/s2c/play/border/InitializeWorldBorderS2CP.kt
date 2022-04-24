@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.border
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -21,8 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(parent = true)
 class InitializeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
-    val x = buffer.readDouble()
-    val z = buffer.readDouble()
+    val center = buffer.readVec2d()
     val oldRadius = buffer.readDouble()
     val newRadius = buffer.readDouble()
     val speed = buffer.readVarLong()
@@ -30,7 +30,15 @@ class InitializeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     val warningTime = buffer.readVarInt()
     val warningBlocks = buffer.readVarInt()
 
+    override fun handle(connection: PlayConnection) {
+        connection.world.border.center = center
+        connection.world.border.lerp(oldRadius, newRadius, speed)
+        connection.world.border.portalBound = portalBound
+        connection.world.border.warningTime = warningTime
+        connection.world.border.warningBlocks = warningBlocks
+    }
+
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize world border (x=$x, z=$z, oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
     }
 }

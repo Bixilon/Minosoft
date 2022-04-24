@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.border
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -21,10 +22,13 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(parent = true)
 class CenterWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
-    val x = buffer.readDouble()
-    val z = buffer.readDouble()
+    val center = buffer.readVec2d()
+
+    override fun handle(connection: PlayConnection) {
+        connection.world.border.center = center
+    }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Center set world border (x=$x, z=$z)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Center set world border (center=$center)" }
     }
 }

@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
@@ -306,6 +307,10 @@ open class InByteBuffer {
 
     fun readVec2f(): Vec2 {
         return Vec2(readFloat(), readFloat())
+    }
+
+    fun readVec2d(): Vec2d {
+        return Vec2d(readDouble(), readDouble())
     }
 
     fun readVec3f(): Vec3 {

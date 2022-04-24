@@ -111,6 +111,11 @@ class BreakInteractionHandler(
             return false
         }
 
+        if (!connection.world.isPositionChangeable(target.blockPosition)) {
+            cancelDigging()
+            return false
+        }
+
         // check if we look at another block or our inventory changed
         if (breakPosition != target.blockPosition || breakBlockState != target.blockState || breakSelectedSlot != connection.player.selectedHotbarSlot) {
             cancelDigging()
