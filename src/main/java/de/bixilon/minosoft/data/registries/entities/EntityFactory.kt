@@ -26,9 +26,9 @@ interface EntityFactory<T : Entity> : CompanionResourceLocation {
     /**
      * Tweaks the entity resource location. Used for pre flattening versions.
      */
-    fun tweak(connection: PlayConnection, entityData: EntityData?, versionId: Int): ResourceLocation {
+    fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
         return RESOURCE_LOCATION
     }
 
-    fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): T?
+    fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): T?
 }

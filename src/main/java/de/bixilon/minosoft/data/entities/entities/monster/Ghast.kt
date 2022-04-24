@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.FlyingMob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Ghast(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, position, rotation) {
+class Ghast(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, data, position, rotation) {
     @get:SynchronizedEntityData(name = "Is attacking")
     val isAttacking: Boolean
         get() = data.sets.getBoolean(EntityDataFields.GHAST_IS_ATTACKING)
@@ -31,8 +32,8 @@ class Ghast(connection: PlayConnection, entityType: EntityType, position: Vec3d,
     companion object : EntityFactory<Ghast> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("ghast")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Ghast {
-            return Ghast(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Ghast {
+            return Ghast(connection, entityType, data, position, rotation)
         }
     }
 }

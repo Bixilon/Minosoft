@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.entities.entities.animal.water
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class GlowSquid(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Squid(connection, entityType, position, rotation) {
+class GlowSquid(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Squid(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Dark ticks remaining")
     val darkTicksRemaining: Int
@@ -31,8 +32,8 @@ class GlowSquid(connection: PlayConnection, entityType: EntityType, position: Ve
     companion object : EntityFactory<GlowSquid> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("glow_squid")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): GlowSquid {
-            return GlowSquid(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): GlowSquid {
+            return GlowSquid(connection, entityType, data, position, rotation)
         }
     }
 }

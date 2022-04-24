@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.entities.entities.monster.raid
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Witch(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
+class Witch(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Is drinking Potion")
     val isDrinkingPotion: Boolean
@@ -34,8 +35,8 @@ class Witch(connection: PlayConnection, entityType: EntityType, position: Vec3d,
     companion object : EntityFactory<Witch> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("witch")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Witch {
-            return Witch(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Witch {
+            return Witch(connection, entityType, data, position, rotation)
         }
     }
 }

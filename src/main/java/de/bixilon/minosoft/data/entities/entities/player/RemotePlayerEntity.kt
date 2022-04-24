@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.player
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -27,17 +28,18 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class RemotePlayerEntity(
     connection: PlayConnection,
     entityType: EntityType,
+    data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
     properties: PlayerProperties = PlayerProperties(),
     tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
-) : PlayerEntity(connection, entityType, position, rotation, name, properties, tabListItem) {
+) : PlayerEntity(connection, entityType, data, position, rotation, name, properties, tabListItem) {
 
     companion object : EntityFactory<PlayerEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:player")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): RemotePlayerEntity? {
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): RemotePlayerEntity? {
             throw IllegalAccessError("Can not build player entity!")
         }
     }

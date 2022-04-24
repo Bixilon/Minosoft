@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Zoglin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+class Zoglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Is baby")
     val isBaby: Boolean
@@ -31,8 +32,8 @@ class Zoglin(connection: PlayConnection, entityType: EntityType, position: Vec3d
     companion object : EntityFactory<Zoglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zoglin")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Zoglin {
-            return Zoglin(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Zoglin {
+            return Zoglin(connection, entityType, data, position, rotation)
         }
     }
 }

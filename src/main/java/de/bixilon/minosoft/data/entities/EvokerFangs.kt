@@ -13,19 +13,20 @@
 package de.bixilon.minosoft.data.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class EvokerFangs(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+class EvokerFangs(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<EvokerFangs> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("evoker_fangs")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): EvokerFangs {
-            return EvokerFangs(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): EvokerFangs {
+            return EvokerFangs(connection, entityType, data, position, rotation)
         }
     }
 }

@@ -16,7 +16,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -38,6 +37,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.recipes.Ingredient
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 
 class PlayInByteBuffer : InByteBuffer {
@@ -170,15 +170,14 @@ class PlayInByteBuffer : InByteBuffer {
         return ret.toTypedArray()
     }
 
-    fun readEntityData(): EntityData {
-        val data = EntityData(connection)
-        val sets = data.sets
+    fun readEntityData(): Int2ObjectOpenHashMap<Any?> {
+        val data: Int2ObjectOpenHashMap<Any?> = Int2ObjectOpenHashMap()
         if (versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
                 val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
-                sets[index] = type.type.read(this)
+                data[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
         } else {
@@ -190,7 +189,7 @@ class PlayInByteBuffer : InByteBuffer {
                     readVarInt()
                 }
                 val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
-                sets[index] = type.type.read(this)!!
+                data[index] = type.type.read(this)
                 index = readUnsignedByte()
             }
         }

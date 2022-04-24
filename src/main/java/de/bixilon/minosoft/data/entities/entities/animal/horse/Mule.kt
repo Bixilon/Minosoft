@@ -14,18 +14,19 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Mule(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, position, rotation) {
+class Mule(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<Mule> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("mule")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Mule {
-            return Mule(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Mule {
+            return Mule(connection, entityType, data, position, rotation)
         }
     }
 }

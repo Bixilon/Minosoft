@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,8 +29,6 @@ object RunConfiguration {
     var LOG_COLOR_LEVEL = true // The level (e.g. [INFO]) should be colored
     var LOG_COLOR_TYPE = true // The type (e.g. [OTHER]) should be colored
     var LOG_RELATIVE_TIME = false // prefix all log messages with the relative start time in milliseconds instead of the formatted time
-
-    var VERBOSE_ENTITY_META_DATA_LOGGING = false // if true, the entity meta data is getting serialized
 
     var DISABLE_EROS = false // if true, the whole javafx eros part is disabled
     var DISABLE_RENDERING = false // if true, rendering is disabled

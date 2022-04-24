@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.FlyingMob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Phantom(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, position, rotation) {
+class Phantom(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Size")
     val size: Int
@@ -32,8 +33,8 @@ class Phantom(connection: PlayConnection, entityType: EntityType, position: Vec3
     companion object : EntityFactory<Phantom> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("phantom")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Phantom {
-            return Phantom(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Phantom {
+            return Phantom(connection, entityType, data, position, rotation)
         }
     }
 }

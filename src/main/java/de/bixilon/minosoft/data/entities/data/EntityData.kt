@@ -35,9 +35,27 @@ import java.util.*
 
 class EntityData(
     val connection: PlayConnection,
+    data: Int2ObjectOpenHashMap<Any?>? = null,
 ) {
-    val lock = SimpleLock()
-    val sets: EntityDataHashMap = EntityDataHashMap()
+    private val lock = SimpleLock()
+    private val data: Int2ObjectOpenHashMap<Any> = Int2ObjectOpenHashMap<Any>()
+    @Deprecated("ABC") val sets: EntityDataHashMap = EntityDataHashMap()
+
+    init {
+        data?.let { merge(it) }
+    }
+
+    fun merge(data: Int2ObjectOpenHashMap<Any?>) {
+        lock.lock()
+        for ((index, value) in data) {
+            if (value == null) {
+                this.data.remove(index)
+                continue
+            }
+            this.data[index] = value
+        }
+        lock.unlock()
+    }
 
     override fun toString(): String {
         return sets.toString()

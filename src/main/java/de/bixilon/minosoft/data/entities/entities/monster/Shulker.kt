@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
+class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Attachment face")
     val attachmentFace: Directions
@@ -48,8 +49,8 @@ class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3
     companion object : EntityFactory<Shulker> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("shulker")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Shulker {
-            return Shulker(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Shulker {
+            return Shulker(connection, entityType, data, position, rotation)
         }
     }
 }

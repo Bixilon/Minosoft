@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -23,7 +24,7 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-class Horse(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
+class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
         return data.sets.getBitMask(EntityDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
@@ -93,8 +94,8 @@ class Horse(connection: PlayConnection, entityType: EntityType, position: Vec3d,
         private val LEGACY_DIAMOND_ARMOR = ResourceLocation("diamond_horse_armor")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("horse")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Horse {
-            return Horse(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Horse {
+            return Horse(connection, entityType, data, position, rotation)
         }
     }
 }

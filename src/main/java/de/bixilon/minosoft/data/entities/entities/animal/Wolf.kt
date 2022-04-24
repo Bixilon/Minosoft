@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
+class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Is beging")
     val isBegging: Boolean
@@ -55,8 +56,8 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, 
     companion object : EntityFactory<Wolf> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wolf")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Wolf {
-            return Wolf(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Wolf {
+            return Wolf(connection, entityType, data, position, rotation)
         }
     }
 }

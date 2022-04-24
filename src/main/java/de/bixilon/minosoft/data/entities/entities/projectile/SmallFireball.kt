@@ -14,12 +14,13 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class SmallFireball(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Fireball(connection, entityType, position, rotation) {
+class SmallFireball(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Fireball(connection, entityType, data, position, rotation) {
     override val defaultItemType: ResourceLocation
         get() = DEFAULT_ITEM
 
@@ -27,8 +28,8 @@ class SmallFireball(connection: PlayConnection, entityType: EntityType, position
         private val DEFAULT_ITEM = ResourceLocation("fire_charge")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("small_fireball")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): SmallFireball {
-            return SmallFireball(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SmallFireball {
+            return SmallFireball(connection, entityType, data, position, rotation)
         }
     }
 }

@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.entities.entities.animal
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Panda(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class Panda(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Unhappy timer")
     val unhappyTimer: Int
@@ -84,8 +85,8 @@ class Panda(connection: PlayConnection, entityType: EntityType, position: Vec3d,
     companion object : EntityFactory<Panda> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("panda")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Panda {
-            return Panda(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Panda {
+            return Panda(connection, entityType, data, position, rotation)
         }
     }
 }

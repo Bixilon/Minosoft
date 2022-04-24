@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -23,7 +24,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import org.checkerframework.common.value.qual.IntRange
 
-open class Slime(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, position, rotation) {
+open class Slime(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Size")
     val size: @IntRange(from = 0.toLong()) Int
@@ -33,8 +34,8 @@ open class Slime(connection: PlayConnection, entityType: EntityType, position: V
     companion object : EntityFactory<Slime> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("slime")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Slime {
-            return Slime(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Slime {
+            return Slime(connection, entityType, data, position, rotation)
         }
     }
 }

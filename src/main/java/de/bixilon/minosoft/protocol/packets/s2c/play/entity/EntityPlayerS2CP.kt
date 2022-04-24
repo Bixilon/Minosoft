@@ -24,10 +24,10 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 
 @LoadPacket(threadSafe = false)
@@ -61,25 +61,19 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.connection.registries.itemRegistry[buffer.readUnsignedShort()] // current item
         }
 
-        var metaData: EntityData? = null
+        var data: Int2ObjectOpenHashMap<Any?>? = null
         if (buffer.versionId < ProtocolVersions.V_19W34A) {
-            metaData = buffer.readEntityData()
+            data = buffer.readEntityData()
         }
         entity = RemotePlayerEntity(
             connection = buffer.connection,
             entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!,
+            data = EntityData(buffer.connection, data),
             position = position,
             rotation = EntityRotation(yaw.toDouble(), pitch.toDouble()),
             name = name,
             properties = properties,
         )
-
-        if (metaData != null) {
-            entity.data.sets.putAll(metaData.sets)
-            if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
-                Log.log(LogMessageType.OTHER, level = LogLevels.VERBOSE) { "Players metadata of $entity: ${entity.data}" }
-            }
-        }
     }
 
     override fun handle(connection: PlayConnection) {

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.vehicle.boat
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class Boat(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+open class Boat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Time since last hit")
     val timeSinceLastHit: Int
@@ -73,8 +74,8 @@ open class Boat(connection: PlayConnection, entityType: EntityType, position: Ve
     companion object : EntityFactory<Boat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("boat")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Boat {
-            return Boat(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Boat {
+            return Boat(connection, entityType, data, position, rotation)
         }
     }
 }

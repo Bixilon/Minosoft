@@ -15,12 +15,13 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Skeleton(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
+class Skeleton(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, data, position, rotation) {
 
     val isFreezeConverting: Boolean
         get() = data.sets[EntityDataFields.SKELETON_STRAY_FREEZE_CONVERTING]
@@ -29,8 +30,8 @@ class Skeleton(connection: PlayConnection, entityType: EntityType, position: Vec
     companion object : EntityFactory<Skeleton> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("skeleton")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Skeleton {
-            return Skeleton(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Skeleton {
+            return Skeleton(connection, entityType, data, position, rotation)
         }
     }
 }

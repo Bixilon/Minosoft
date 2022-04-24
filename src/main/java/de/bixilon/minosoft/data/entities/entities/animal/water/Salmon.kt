@@ -14,18 +14,19 @@ package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Salmon(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractSchoolingFish(connection, entityType, position, rotation) {
+class Salmon(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSchoolingFish(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<Salmon> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("salmon")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Salmon {
-            return Salmon(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Salmon {
+            return Salmon(connection, entityType, data, position, rotation)
         }
     }
 }

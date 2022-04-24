@@ -159,7 +159,7 @@ class GLFWWindow(
 
     override fun init(profile: RenderingProfile) {
         GLFWErrorCallback.createPrint(System.err).set()
-        check(glfwInit()) { "Unable to KeyCodes.initialize GLFW" }
+        check(glfwInit()) { "Unable to initialize GLFW" }
 
         glfwDefaultWindowHints()
         if (renderWindow.preferQuads) {
@@ -173,7 +173,7 @@ class GLFWWindow(
         window = glfwCreateWindow(size.x, size.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
             destroy()
-            throw RuntimeException("Failed to KeyCodes.create the GLFW window")
+            throw RuntimeException("Failed to create the GLFW window")
         }
 
         glfwMakeContextCurrent(window)
@@ -506,9 +506,5 @@ class GLFWWindow(
                     CursorShapes.VERTICAL_RESIZE -> GLFW_VRESIZE_CURSOR
                 }
             }
-
-        init {
-            val keyCodes: Map<Int, KeyCodes>
-        }
     }
 }

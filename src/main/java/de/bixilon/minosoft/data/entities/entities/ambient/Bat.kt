@@ -15,13 +15,14 @@ package de.bixilon.minosoft.data.entities.entities.ambient
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class Bat(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AmbientCreature(connection, entityType, position, rotation) {
+class Bat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AmbientCreature(connection, entityType, data, position, rotation) {
 
     private fun getBatFlag(bitMask: Int): Boolean {
         return data.sets.getBitMask(EntityDataFields.BAT_FLAGS, bitMask)
@@ -35,8 +36,8 @@ class Bat(connection: PlayConnection, entityType: EntityType, position: Vec3d, r
     companion object : EntityFactory<Bat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("bat")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Bat {
-            return Bat(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Bat {
+            return Bat(connection, entityType, data, position, rotation)
         }
     }
 }

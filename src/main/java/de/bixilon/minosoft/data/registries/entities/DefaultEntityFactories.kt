@@ -168,17 +168,17 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     GlowSquid,
     EvokerFangs,
 ) {
-    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
+    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {
         val factory = this[resourceLocation] ?: throw UnknownEntityException("Can not find entity type: $resourceLocation")
-        return buildEntity(factory, connection, position, rotation, entityData, versionId)
+        return buildEntity(factory, connection, position, rotation, data, versionId)
     }
 
-    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityData: EntityData?, versionId: Int): Entity? {
-        val tweakedResourceLocation = factory.tweak(connection, entityData, versionId)
+    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {
+        val tweakedResourceLocation = factory.tweak(connection, data, versionId)
 
         val tweakedFactory = this[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")
 
         val tweakedEntityType = connection.registries.entityTypeRegistry[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
-        return tweakedFactory.build(connection, tweakedEntityType, position, rotation)
+        return tweakedFactory.build(connection, tweakedEntityType, data ?: EntityData(connection), position, rotation)
     }
 }

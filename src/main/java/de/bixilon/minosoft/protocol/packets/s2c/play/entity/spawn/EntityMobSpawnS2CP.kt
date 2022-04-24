@@ -22,10 +22,10 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 
 @LoadPacket(threadSafe = false)
@@ -53,20 +53,18 @@ class EntityMobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val headYaw = buffer.readAngle()
         val velocity = buffer.readVelocity()
 
-        val data: EntityData? = if (buffer.versionId < ProtocolVersions.V_19W34A) {
+        val rawData: Int2ObjectOpenHashMap<Any?>? = if (buffer.versionId < ProtocolVersions.V_19W34A) {
             buffer.readEntityData()
         } else {
             null
         }
+        val data = EntityData(buffer.connection, rawData)
         val entityType = buffer.connection.registries.entityTypeRegistry[typeId]
         entity = entityType.build(buffer.connection, position, rotation, data, buffer.versionId)!!
         entity.setHeadRotation(headYaw)
         entity.velocity = velocity
-        data?.let {
-            entity.data.sets.putAll(it.sets)
-            if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
-                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity data (entityId=$entityId): ${entity.entityMetaDataAsString}" }
-            }
+        if (rawData != null) {
+            entity.data.merge(rawData)
         }
     }
 

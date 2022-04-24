@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ItemFrame(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, position, rotation) {
+open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Item")
     val item: ItemStack?
@@ -43,8 +44,8 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, positio
     companion object : EntityFactory<ItemFrame> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item_frame")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ItemFrame {
-            return ItemFrame(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemFrame {
+            return ItemFrame(connection, entityType, data, position, rotation)
         }
     }
 }

@@ -24,17 +24,17 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
  * This class is just for the hashmap, it is not used anywhere
  */
 @Deprecated("Replaced with ZombifiedPiglin")
-class ZombiePigman(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, position, rotation) {
+class ZombiePigman(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ZombifiedPiglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_pigman")
 
-        override fun tweak(connection: PlayConnection, entityData: EntityData?, versionId: Int): ResourceLocation {
+        override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
             return ZombifiedPiglin.RESOURCE_LOCATION
         }
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin? {
-            return ZombifiedPiglin.build(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin? {
+            return ZombifiedPiglin.build(connection, entityType, data, position, rotation)
         }
     }
 }

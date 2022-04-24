@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.boss.wither
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.monster.Monster
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class WitherBoss(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+class WitherBoss(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
     @get:SynchronizedEntityData(name = "Center head target entity id")
     val centerHeadTargetEntityId: Int
@@ -44,8 +45,8 @@ class WitherBoss(connection: PlayConnection, entityType: EntityType, position: V
     companion object : EntityFactory<WitherBoss> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wither")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): WitherBoss {
-            return WitherBoss(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): WitherBoss {
+            return WitherBoss(connection, entityType, data, position, rotation)
         }
     }
 }

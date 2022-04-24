@@ -14,18 +14,19 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class ElderGuardian(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Guardian(connection, entityType, position, rotation) {
+class ElderGuardian(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Guardian(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ElderGuardian> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("elder_guardian")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ElderGuardian {
-            return ElderGuardian(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ElderGuardian {
+            return ElderGuardian(connection, entityType, data, position, rotation)
         }
     }
 }

@@ -72,6 +72,7 @@ import kotlin.random.Random
 abstract class Entity(
     protected val connection: PlayConnection,
     val type: EntityType,
+    val data: EntityData,
     position: Vec3d,
     var rotation: EntityRotation,
 ) : PhysicsEntity {
@@ -90,7 +91,6 @@ abstract class Entity(
     protected val versionId: Int = connection.version.versionId
     open var attachedEntity: Int? = null
 
-    val data: EntityData = EntityData(connection)
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
     val activelyRiding = false // ToDo: When player has a vehicle and movement is pressed

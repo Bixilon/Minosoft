@@ -14,8 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.PathfinderMob
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class WaterAnimal(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, position, rotation)
+abstract class WaterAnimal(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, data, position, rotation)

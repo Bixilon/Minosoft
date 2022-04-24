@@ -18,6 +18,7 @@ import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -29,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.sp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
     private val entityEffectParticle = connection.registries.particleTypeRegistry[EntityEffectParticle]
     private val ambientEntityEffectParticle = connection.registries.particleTypeRegistry[AmbientEntityEffectParticle]
 

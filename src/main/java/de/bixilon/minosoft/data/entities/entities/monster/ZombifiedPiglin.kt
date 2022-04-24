@@ -14,18 +14,19 @@ package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ZombifiedPiglin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
+open class ZombifiedPiglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, data, position, rotation) {
 
     companion object : EntityFactory<ZombifiedPiglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombified_piglin")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin {
-            return ZombifiedPiglin(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin {
+            return ZombifiedPiglin(connection, entityType, data, position, rotation)
         }
     }
 }

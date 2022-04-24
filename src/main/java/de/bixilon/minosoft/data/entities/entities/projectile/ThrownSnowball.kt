@@ -14,12 +14,13 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class ThrownSnowball(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
+class ThrownSnowball(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
 
     override val defaultItemType: ResourceLocation
         get() = DEFAULT_ITEM
@@ -28,8 +29,8 @@ class ThrownSnowball(connection: PlayConnection, entityType: EntityType, positio
         private val DEFAULT_ITEM = ResourceLocation("snowball")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("snowball")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ThrownSnowball {
-            return ThrownSnowball(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownSnowball {
+            return ThrownSnowball(connection, entityType, data, position, rotation)
         }
     }
 }
