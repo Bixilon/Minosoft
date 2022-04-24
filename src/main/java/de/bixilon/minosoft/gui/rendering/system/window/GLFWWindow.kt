@@ -38,6 +38,7 @@ import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWImage
+import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
@@ -354,6 +355,10 @@ class GLFWWindow(
     companion object {
 
         init {
+            if (PlatformInfo.OS == OSTypes.MAC) {
+                Configuration.GLFW_LIBRARY_NAME.set("glfw_async")
+            }
+
             GLFWErrorCallback.createPrint(System.err).set()
             check(glfwInit()) { "Unable to initialize GLFW" }
         }
