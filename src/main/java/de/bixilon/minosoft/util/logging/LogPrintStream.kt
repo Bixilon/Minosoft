@@ -29,6 +29,9 @@ class LogPrintStream(
         if (string.startsWith("ERROR StatusLogger Log4j2")) {
             return
         }
+        if (string.startsWith("Unknown element") && string.endsWith("):")) {
+            return
+        }
         Log.log(message = string, type = type, level = level)
     }
 }
