@@ -10,24 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.registries.entities.variants
 
-package de.bixilon.minosoft.data.entities.data.types.registry
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
-import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+abstract class AbstractEntityVariant(
+    override val resourceLocation: ResourceLocation,
+    data: JsonObject,
+) : RegistryItem() {
+    val texture = data["texture"].toResourceLocation().texture()
 
-class VariantsEntityDataType {
-
-    object CatVariantType : RegistryEntityDataType<CatVariant> {
-        override fun read(buffer: PlayInByteBuffer): CatVariant? {
-            return read(buffer, buffer.connection.registries.catVariants)
-        }
-    }
-
-    object FrogVariantType : RegistryEntityDataType<FrogVariant> {
-        override fun read(buffer: PlayInByteBuffer): FrogVariant? {
-            return read(buffer, buffer.connection.registries.frogVariants)
-        }
+    override fun toString(): String {
+        return resourceLocation.full
     }
 }

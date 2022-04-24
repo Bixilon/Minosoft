@@ -11,23 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.data.types.registry
+package de.bixilon.minosoft.data.registries.entities.variants
 
-import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
-import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 
-class VariantsEntityDataType {
+class FrogVariant(
+    resourceLocation: ResourceLocation,
+    data: JsonObject,
+) : AbstractEntityVariant(resourceLocation, data) {
 
-    object CatVariantType : RegistryEntityDataType<CatVariant> {
-        override fun read(buffer: PlayInByteBuffer): CatVariant? {
-            return read(buffer, buffer.connection.registries.catVariants)
-        }
-    }
+    companion object : ResourceLocationDeserializer<FrogVariant> {
 
-    object FrogVariantType : RegistryEntityDataType<FrogVariant> {
-        override fun read(buffer: PlayInByteBuffer): FrogVariant? {
-            return read(buffer, buffer.connection.registries.frogVariants)
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): FrogVariant? {
+            return FrogVariant(resourceLocation, data)
         }
     }
 }

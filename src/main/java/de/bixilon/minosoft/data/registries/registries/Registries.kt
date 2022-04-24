@@ -30,6 +30,8 @@ import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
+import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.inventory.CreativeModeTab
@@ -67,6 +69,9 @@ class Registries {
 
     val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
     val villagerTypeRegistry = ResourceLocationRegistry()
+
+    val catVariants: Registry<CatVariant> = Registry()
+    val frogVariants: Registry<FrogVariant> = Registry()
 
     val equipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val handEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
@@ -170,10 +175,13 @@ class Registries {
         blockEntityTypeRegistry.rawInitialize(pixlyzerData["block_entities"]?.toJsonObject(), this, BlockEntityType)
 
         villagerProfessionRegistry.rawInitialize(pixlyzerData["villager_professions"]?.toJsonObject(), this, VillagerProfession)
-        villagerTypeRegistry.rawInitialize(pixlyzerData["villager_types"]?.toJsonObject(), this, VillagerProfession)
+        villagerTypeRegistry.rawInitialize(pixlyzerData["villager_types"]?.toJsonObject())
 
 
         blockDataDataDataTypeRegistry.rawInitialize(pixlyzerData["block_data_data_types"]?.toJsonObject(), this, BlockDataDataType, alternative = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version))
+
+        catVariants.rawInitialize(pixlyzerData["variants/cat"]?.toJsonObject(), this, CatVariant)
+        frogVariants.rawInitialize(pixlyzerData["variants/frog"]?.toJsonObject(), this, FrogVariant)
 
 
         // post init
