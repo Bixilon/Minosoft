@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -19,7 +19,16 @@ class LogPrintStream(
     val level: LogLevels,
 ) : PrintStream(nullOutputStream()) {
 
-    override fun print(string: String) {
+    override fun print(string: String?) {
+        if (string == null) {
+            return
+        }
+        if (string.startsWith("SLF4J: ")) {
+            return
+        }
+        if (string.startsWith("ERROR StatusLogger Log4j2")) {
+            return
+        }
         Log.log(message = string, type = type, level = level)
     }
 }

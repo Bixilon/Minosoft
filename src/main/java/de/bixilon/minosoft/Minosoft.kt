@@ -64,6 +64,7 @@ object Minosoft {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        Log::class.java.forceInit()
         CommandLineArguments.parse(args)
         KUtil.initUtilClasses()
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))

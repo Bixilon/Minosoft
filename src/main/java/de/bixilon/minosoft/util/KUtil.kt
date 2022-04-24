@@ -40,7 +40,6 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
-import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
 import org.kamranzafar.jtar.TarHeader
 import java.util.*
@@ -243,7 +242,6 @@ object KUtil {
 
     fun initUtilClasses() {
         DefaultThreadPool += { GlobalEventMaster::class.java.forceInit() }
-        DefaultThreadPool += { Log::class.java.forceInit() }
         DefaultThreadPool += { ShutdownManager::class.java.forceInit() }
         DefaultThreadPool += { Jackson::class.java.forceInit() }
         DefaultThreadPool += { URLProtocolStreamHandlers::class.java.forceInit() }
