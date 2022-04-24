@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
-import de.bixilon.minosoft.data.entities.meta.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.modding.event.events.EntityDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket

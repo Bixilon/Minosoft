@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13
 
+object IntEntityDataType : EntityDataType<Int> {
 
-class BlockEntityMetaType(
-    override val resourceLocation: ResourceLocation,
-) : RegistryItem() {
-
-    companion object : ResourceLocationDeserializer<BlockEntityMetaType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityMetaType {
-            return BlockEntityMetaType(resourceLocation)
+    override fun read(buffer: PlayInByteBuffer): Int {
+        if (buffer.versionId < V_1_13) { // ToDo: Version
+            return buffer.readInt()
         }
+        return buffer.readVarInt()
     }
 }

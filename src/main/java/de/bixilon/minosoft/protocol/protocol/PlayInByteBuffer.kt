@@ -16,7 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.meta.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -84,7 +84,7 @@ class PlayInByteBuffer : InByteBuffer {
         return ChatComponent.of(readString(), connection.language, null)
     }
 
-    fun readParticle(): ParticleData {
+    fun readParticleData(): ParticleData {
         val type = connection.registries.particleTypeRegistry[readVarInt()]
         return readParticleData(type)
     }

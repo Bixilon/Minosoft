@@ -40,7 +40,7 @@
       "OFF_HAND"
     ]
   },
-  "minecraft:entity_meta_data_data_types": {
+  "minecraft:entity_data_data_types": {
     "0": [
       "BYTE",
       "SHORT",

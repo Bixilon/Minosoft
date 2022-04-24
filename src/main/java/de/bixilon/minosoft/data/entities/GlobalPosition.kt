@@ -10,13 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
+package de.bixilon.minosoft.data.entities
 
-data class VillagerData(
-    val type: ResourceLocation,
-    val profession: VillagerProfession,
-    val level: Int,
-)
+class GlobalPosition

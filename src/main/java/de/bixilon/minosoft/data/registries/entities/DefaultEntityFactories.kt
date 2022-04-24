@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.entities
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.EvokerFangs
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.*
 import de.bixilon.minosoft.data.entities.entities.ambient.Bat
 import de.bixilon.minosoft.data.entities.entities.animal.*
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EndCrystal
 import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EnderDragon
 import de.bixilon.minosoft.data.entities.entities.boss.wither.WitherBoss
 import de.bixilon.minosoft.data.entities.entities.decoration.*
+import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStand
 import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
@@ -39,7 +41,6 @@ import de.bixilon.minosoft.data.entities.entities.projectile.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.ChestBoat
-import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

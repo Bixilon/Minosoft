@@ -11,26 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.meta
+package de.bixilon.minosoft.data.entities.data
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.Poses
+import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStandArmRotation
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -48,94 +43,13 @@ class EntityData(
         return sets.toString()
     }
 
-    fun getData(type: EntityDataDataTypes, buffer: PlayInByteBuffer): Any? {
-        return when (type) {
-            EntityDataDataTypes.BYTE -> buffer.readByte()
-            EntityDataDataTypes.VAR_INT -> buffer.readVarInt()
-            EntityDataDataTypes.SHORT -> buffer.readUnsignedShort()
-            EntityDataDataTypes.INTEGER -> if (buffer.versionId < ProtocolVersions.V_1_13) buffer.readInt() else buffer.readVarInt() // ToDo: version
-            EntityDataDataTypes.FLOAT -> buffer.readFloat()
-            EntityDataDataTypes.STRING -> buffer.readString()
-            EntityDataDataTypes.TEXT_COMPONENT -> buffer.readChatComponent()
-            EntityDataDataTypes.BOOLEAN -> buffer.readBoolean()
-            EntityDataDataTypes.VEC3I -> {
-                if (buffer.versionId < ProtocolVersions.V_1_8_PRE3) {
-                    Vec3i(buffer.readInt(), buffer.readInt(), buffer.readInt())
-                } else {
-                    buffer.readBlockPosition()
-                }
-            }
-            EntityDataDataTypes.ITEM_STACK -> buffer.readItemStack()
-            EntityDataDataTypes.ROTATION -> ArmorStandArmRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
-            EntityDataDataTypes.OPTIONAL_TEXT_COMPONENT -> buffer.readOptional { buffer.readChatComponent() }
-            EntityDataDataTypes.OPTIONAL_VEC3I -> buffer.readOptional { buffer.readBlockPosition() }
-            EntityDataDataTypes.DIRECTION -> buffer.readDirection()
-            EntityDataDataTypes.OPTIONAL_UUID -> buffer.readOptional { buffer.readUUID() }
-            EntityDataDataTypes.NBT -> buffer.readNBT()
-            EntityDataDataTypes.PARTICLE -> buffer.readParticle()
-            EntityDataDataTypes.POSE -> buffer.readPose()
-            EntityDataDataTypes.BLOCK_STATE -> buffer.connection.registries.blockStateRegistry[buffer.readVarInt()] // ToDo
-            EntityDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.registries.villagerProfessionRegistry[buffer.readVarInt()].resourceLocation, VillagerLevels[buffer.readVarInt()])
-            EntityDataDataTypes.OPTIONAL_BLOCK_STATE -> buffer.connection.registries.blockStateRegistry[buffer.readVarInt()]
-            EntityDataDataTypes.OPTIONAL_INTEGER, EntityDataDataTypes.FIREWORK_DATA -> {
-                val int = buffer.readVarInt()
-                if (int == 0) {
-                    return null
-                }
-                return int - 1
-            }
-            EntityDataDataTypes.GLOBAL_POSITION -> buffer.readNBT() // ToDo
-            EntityDataDataTypes.OPTIONAL_GLOBAL_POSITION -> buffer.readPlayOptional { readNBT() } // ToDo
-            EntityDataDataTypes.MOTIVE -> buffer.connection.registries.motiveRegistry[buffer.readVarInt()]
-            EntityDataDataTypes.CAT_VARIANT, EntityDataDataTypes.FROG_VARIANT -> buffer.readVarInt() // ToDo
-        }
-    }
-
-    enum class EntityDataDataTypes {
-        BYTE,
-        SHORT,
-        INTEGER,
-        VAR_INT,
-        FLOAT,
-        STRING,
-        TEXT_COMPONENT,
-        OPTIONAL_TEXT_COMPONENT,
-        ITEM_STACK,
-        BOOLEAN,
-        VEC3I,
-        ROTATION,
-        OPTIONAL_VEC3I,
-        DIRECTION,
-        OPTIONAL_UUID,
-        BLOCK_STATE,
-        OPTIONAL_BLOCK_STATE,
-        NBT,
-        PARTICLE,
-        VILLAGER_DATA,
-        POSE,
-        OPTIONAL_INTEGER,
-        FIREWORK_DATA,
-        GLOBAL_POSITION,
-        OPTIONAL_GLOBAL_POSITION,
-        MOTIVE,
-
-
-        CAT_VARIANT,
-        FROG_VARIANT,
-        ;
-
-        companion object : ValuesEnum<EntityDataDataTypes> {
-            override val VALUES = values()
-            override val NAME_MAP: Map<String, EntityDataDataTypes> = EnumUtil.getEnumValues(VALUES)
-        }
-    }
-
     inner class EntityDataHashMap : Int2ObjectOpenHashMap<Any>() {
 
-        operator fun <K> get(field: EntityDataFields): K {
+        inline operator fun <reified K> get(field: EntityDataFields): K? {
             lock.acquire()
             try {
                 val index: Int = this@EntityData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue.unsafeCast() // Can not find field.
+                val data = get(index) ?: return null
                 get(index)?.let {
                     try {
                         return it as K

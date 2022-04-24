@@ -10,13 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
+package de.bixilon.minosoft.data.entities.data.types.registry
 
-data class VillagerData(
-    val type: ResourceLocation,
-    val profession: VillagerProfession,
-    val level: Int,
-)
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+
+class VariantsEntityDataType {
+
+    object CatVariantType : RegistryEntityDataType<Any> {
+        override fun read(buffer: PlayInByteBuffer): Any? {
+            TODO("Cat variant")
+        }
+    }
+
+    object FrogVariantType : RegistryEntityDataType<Any> {
+        override fun read(buffer: PlayInByteBuffer): Any? {
+            TODO("Frog variant")
+        }
+    }
+}

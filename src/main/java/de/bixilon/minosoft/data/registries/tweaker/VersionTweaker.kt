@@ -13,11 +13,11 @@
 package de.bixilon.minosoft.data.registries.tweaker
 
 import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 object VersionTweaker {

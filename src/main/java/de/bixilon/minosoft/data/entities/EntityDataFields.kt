@@ -16,11 +16,9 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
+import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStandArmRotation
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
-import de.bixilon.minosoft.data.entities.meta.ArmorStandArmRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData

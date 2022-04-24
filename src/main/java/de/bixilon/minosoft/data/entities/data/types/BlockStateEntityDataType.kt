@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
+package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.data.entities.data.types.registry.RegistryEntityDataType
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-enum class VillagerLevels {
-    NOVICE,
-    APPRENTICE,
-    JOURNEYMAN,
-    EXPERT,
-    MASTER,
-    ;
+object BlockStateEntityDataType : RegistryEntityDataType<BlockState> {
 
-    companion object : ValuesEnum<VillagerLevels> {
-        override val VALUES = values()
-        override val NAME_MAP: Map<String, VillagerLevels> = EnumUtil.getEnumValues(VALUES)
+    override fun read(buffer: PlayInByteBuffer): BlockState? {
+        return read(buffer, buffer.connection.registries.blockStateRegistry)
     }
 }

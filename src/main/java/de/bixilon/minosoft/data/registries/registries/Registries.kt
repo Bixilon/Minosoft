@@ -17,8 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
-import de.bixilon.minosoft.data.entities.meta.EntityData
+import de.bixilon.minosoft.data.entities.block.BlockDataDataType
+import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
 import de.bixilon.minosoft.data.registries.*
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
@@ -66,13 +66,14 @@ class Registries {
     val recipes = RecipeRegistry()
 
     val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
+    val villagerTypeRegistry = ResourceLocationRegistry()
 
     val equipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val handEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
 
-    val entityDataDataDataTypesRegistry: EnumRegistry<EntityData.EntityDataDataTypes> = EnumRegistry(values = EntityData.EntityDataDataTypes)
+    val entityDataDataDataTypesRegistry: EnumRegistry<EntityDataDataTypes> = EnumRegistry(values = EntityDataDataTypes)
 
     val titleActionsRegistry: EnumRegistry<TitleS2CF.TitleActions> = EnumRegistry(values = TitleS2CF.TitleActions)
 
@@ -90,7 +91,7 @@ class Registries {
     val entityTypeRegistry: Registry<EntityType> = Registry()
 
     val blockEntityTypeRegistry = BlockEntityTypeRegistry()
-    val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
+    val blockDataDataDataTypeRegistry: Registry<BlockDataDataType> = Registry()
 
     val containerTypeRegistry: Registry<ContainerType> = Registry()
     val gameEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
@@ -135,7 +136,7 @@ class Registries {
         loadEnumRegistry(version, pixlyzerData["armor_equipment_slots"], armorEquipmentSlotRegistry, DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY)
         loadEnumRegistry(version, pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
 
-        loadEnumRegistry(version, pixlyzerData["entity_data_data_types"], entityDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["entity_data_data_types"], entityDataDataDataTypesRegistry, DefaultRegistries.ENTITY_DATA_DATA_TYPES_REGISTRY)
 
         loadEnumRegistry(version, pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
         loadEnumRegistry(version, pixlyzerData["entity_animations"], entityAnimationRegistry, DefaultRegistries.ENTITY_ANIMATION_REGISTRY)
@@ -169,9 +170,10 @@ class Registries {
         blockEntityTypeRegistry.rawInitialize(pixlyzerData["block_entities"]?.toJsonObject(), this, BlockEntityType)
 
         villagerProfessionRegistry.rawInitialize(pixlyzerData["villager_professions"]?.toJsonObject(), this, VillagerProfession)
+        villagerTypeRegistry.rawInitialize(pixlyzerData["villager_types"]?.toJsonObject(), this, VillagerProfession)
 
 
-        blockEntityMetaDataTypeRegistry.rawInitialize(pixlyzerData["block_entity_meta_data_types"]?.toJsonObject(), this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
+        blockDataDataDataTypeRegistry.rawInitialize(pixlyzerData["block_data_data_types"]?.toJsonObject(), this, BlockDataDataType, alternative = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version))
 
 
         // post init

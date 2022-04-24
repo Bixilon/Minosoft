@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,23 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
+package de.bixilon.minosoft.data.entities.data.types
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-enum class VillagerTypes {
-    DESSERT,
-    JUNGLE,
-    PLAINS,
-    SAVANNA,
-    SNOW,
-    SWAMP,
-    TAIGA,
-    ;
+object Vec3EntityDataType : EntityDataType<Vec3> {
 
-    companion object : ValuesEnum<VillagerTypes> {
-        override val VALUES = values()
-        override val NAME_MAP: Map<String, VillagerTypes> = EnumUtil.getEnumValues(VALUES)
+    override fun read(buffer: PlayInByteBuffer): Vec3 {
+        return buffer.readVec3f()
     }
 }

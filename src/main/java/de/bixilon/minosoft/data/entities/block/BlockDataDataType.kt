@@ -11,24 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.entities
+package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.data.EntityData
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 
-interface EntityFactory<T : Entity> : CompanionResourceLocation {
 
-    /**
-     * Tweaks the entity resource location. Used for pre flattening versions.
-     */
-    fun tweak(connection: PlayConnection, entityData: EntityData?, versionId: Int): ResourceLocation {
-        return RESOURCE_LOCATION
+class BlockDataDataType(
+    override val resourceLocation: ResourceLocation,
+) : RegistryItem() {
+
+    companion object : ResourceLocationDeserializer<BlockDataDataType> {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockDataDataType {
+            return BlockDataDataType(resourceLocation)
+        }
     }
-
-    fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): T?
 }

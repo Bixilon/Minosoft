@@ -18,8 +18,8 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityObjectType
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
-import de.bixilon.minosoft.data.entities.meta.EntityData
+import de.bixilon.minosoft.data.entities.block.BlockDataDataType
+import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
@@ -40,7 +40,7 @@ object DefaultRegistries {
     val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
     val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
 
-    val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityData.EntityDataDataTypes)
+    val ENTITY_DATA_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataDataTypes)
 
     val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CF.TitleActions)
 
@@ -49,7 +49,7 @@ object DefaultRegistries {
 
     val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
 
-    val BLOCK_ENTITY_META_TYPE_REGISTRY: PerVersionRegistry<BlockEntityMetaType, Registry<BlockEntityMetaType>> = PerVersionRegistry { Registry() }
+    val BLOCK_DATA_TYPE_REGISTRY: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry() }
 
     val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel, Registry<PluginChannel>> = PerVersionRegistry { Registry() }
 
@@ -69,7 +69,7 @@ object DefaultRegistries {
         ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")].asJsonObject())
         ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")].asJsonObject())
 
-        ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")].asJsonObject()) // ToDo
+        ENTITY_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_data_data_types")].asJsonObject()) // ToDo
 
         TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")].asJsonObject())
 
@@ -83,7 +83,7 @@ object DefaultRegistries {
 
         ENTITY_OBJECT_REGISTRY.rawInitialize(registriesJson[ResourceLocation("entity_objects")].asJsonObject(), null, EntityObjectType)
 
-        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")].asJsonObject(), BlockEntityMetaType)
+        BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_data_data_types")].asJsonObject(), BlockDataDataType)
 
         CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")].asJsonObject(), ContainerType)
 

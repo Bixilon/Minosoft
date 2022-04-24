@@ -10,13 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
+package de.bixilon.minosoft.data.entities.data.types
 
-data class VillagerData(
-    val type: ResourceLocation,
-    val profession: VillagerProfession,
-    val level: Int,
-)
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.minosoft.data.entities.GlobalPosition
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+
+object GlobalPositionEntityDataType : EntityDataType<GlobalPosition> {
+
+    override fun read(buffer: PlayInByteBuffer): GlobalPosition? {
+        return buffer.readNBT()?.toJsonObject()?.toGlobalPosition()
+    }
+
+
+    fun JsonObject.toGlobalPosition(): GlobalPosition {
+        TODO("Not yet implemented")
+    }
+}

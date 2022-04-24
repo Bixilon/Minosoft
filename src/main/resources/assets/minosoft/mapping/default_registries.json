@@ -108,7 +108,7 @@
       }
     }
   },
-  "minecraft:block_entity_meta_data_types": {
+  "minecraft:block_data_data_types": {
     "0": {
       "minecraft:spawner": {
         "id": 1

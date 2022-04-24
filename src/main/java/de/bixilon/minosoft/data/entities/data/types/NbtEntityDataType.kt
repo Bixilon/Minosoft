@@ -10,13 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
+package de.bixilon.minosoft.data.entities.data.types
 
-data class VillagerData(
-    val type: ResourceLocation,
-    val profession: VillagerProfession,
-    val level: Int,
-)
+import com.google.gson.JsonObject
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+
+object NbtEntityDataType : EntityDataType<JsonObject> {
+
+    override fun read(buffer: PlayInByteBuffer): JsonObject? {
+        return buffer.readNBT().nullCast()
+    }
+}

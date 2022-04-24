@@ -14,9 +14,9 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
-import de.bixilon.minosoft.data.entities.meta.EntityData
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
