@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,26 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-interface TextureManager {
-    var staticTextures: StaticTextureArray
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+
+abstract class TextureManager {
+    abstract var staticTextures: StaticTextureArray
+
+    lateinit var debugTexture: AbstractTexture
+        private set
+    lateinit var whiteTexture: TextureLikeTexture
+        private set
+
+    fun loadDefaultTextures() {
+        if (this::debugTexture.isInitialized) {
+            throw IllegalStateException("Already initialized!")
+        }
+        debugTexture = staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
+        whiteTexture = TextureLikeTexture(texture = staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
+    }
 }

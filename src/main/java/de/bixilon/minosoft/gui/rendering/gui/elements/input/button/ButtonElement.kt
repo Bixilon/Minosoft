@@ -98,7 +98,7 @@ open class ButtonElement(
             disabled -> disabledAtlas
             hovered -> hoveredAtlas
             else -> normalAtlas
-        } ?: guiRenderer.renderWindow.WHITE_TEXTURE
+        } ?: guiRenderer.renderWindow.textureManager.whiteTexture
 
         val size = size
         val background = AtlasImageElement(guiRenderer, texture)

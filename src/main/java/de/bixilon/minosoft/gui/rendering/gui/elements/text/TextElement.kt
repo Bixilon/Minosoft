@@ -176,7 +176,7 @@ open class TextElement(
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
-                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), renderWindow.WHITE_TEXTURE, backgroundColor, options)
+                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), renderWindow.textureManager.whiteTexture, backgroundColor, options)
             }
         }
 

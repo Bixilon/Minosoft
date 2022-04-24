@@ -39,11 +39,12 @@ class BakedItemModel(
         val percent = (durability / maxDurability.toFloat())
         val width = size.x
         val fillWidth = width * percent
+        val whiteTexture = guiRenderer.renderWindow.textureManager.whiteTexture
 
-        consumer.addQuad(offset + Vec2i(2, size.y - 3), offset + Vec2i(size.x, size.y - 1), guiRenderer.renderWindow.WHITE_TEXTURE, tint = ChatColors.BLACK, options = options)
+        consumer.addQuad(offset + Vec2i(2, size.y - 3), offset + Vec2i(size.x, size.y - 1), whiteTexture, tint = ChatColors.BLACK, options = options)
 
         val color = RGBColor(1.0f - percent, percent, 0.0f) // ToDo: Color transition, something like https://gist.github.com/mlocati/7210513
-        consumer.addQuad(offset + Vec2i(1, size.y - 3), offset + Vec2i(fillWidth - 1, size.y - 2), guiRenderer.renderWindow.WHITE_TEXTURE, tint = color, options = options)
+        consumer.addQuad(offset + Vec2i(1, size.y - 3), offset + Vec2i(fillWidth - 1, size.y - 2), whiteTexture, tint = color, options = options)
     }
 
     fun render2d(guiRenderer: GUIRenderer, offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?, size: Vec2i, stack: ItemStack) {
@@ -53,7 +54,7 @@ class BakedItemModel(
         renderDurability(guiRenderer, offset, consumer, options, size, stack)
 
         if (stack._enchanting?.enchantments?.isNotEmpty() == true) {
-            consumer.addQuad(offset, offset + size, guiRenderer.renderWindow.WHITE_TEXTURE, tint = ChatColors.BLUE, options = options.copy(alpha = 0.5f))
+            consumer.addQuad(offset, offset + size, guiRenderer.renderWindow.textureManager.whiteTexture, tint = ChatColors.BLUE, options = options.copy(alpha = 0.5f))
         }
     }
 }
