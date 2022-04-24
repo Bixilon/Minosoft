@@ -45,7 +45,7 @@ class FadingTextElement(
             if (hidden || !super.cacheEnabled) {
                 return false
             }
-            val time = TimeUtil.time
+            val time = TimeUtil.millis
             return (time >= fadeInEndTime) && (time < fadeOutStartTime)
         }
         set(value) {
@@ -79,7 +79,7 @@ class FadingTextElement(
     }
 
     fun show() {
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         if (time in (fadeInEndTime + 1) until fadeOutStartTime) {
             fadeOutStartTime = time + stayTime
         } else {
@@ -96,7 +96,7 @@ class FadingTextElement(
             return
         }
         // ToDo: Eventually fade out when fading in
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         fadeInStartTime = -1L
         fadeInEndTime = -1L
         fadeOutStartTime = time
@@ -111,7 +111,7 @@ class FadingTextElement(
         if (hidden) {
             return false
         }
-        val hidden = TimeUtil.time > fadeOutEndTime
+        val hidden = TimeUtil.millis > fadeOutEndTime
         if (this.hidden != hidden) {
             this.hidden = hidden
             return true
@@ -123,7 +123,7 @@ class FadingTextElement(
         if (hidden) {
             return
         }
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         if (time > fadeOutEndTime) {
             return
         }

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 
 interface ClickCounter {
 
-    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2i, time: Long = TimeUtil.time): Int
+    fun getClicks(buttons: MouseButtons, action: MouseActions, position: Vec2i, time: Long = TimeUtil.millis): Int
 
 
     companion object {

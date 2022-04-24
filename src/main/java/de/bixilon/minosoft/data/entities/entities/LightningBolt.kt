@@ -25,7 +25,7 @@ class LightningBolt(connection: PlayConnection, entityType: EntityType, position
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("lightning_bolt")
 
         override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): LightningBolt? {
-           return LightningBolt(connection, entityType, position)
+            return LightningBolt(connection, entityType, position)
         }
     }
 }

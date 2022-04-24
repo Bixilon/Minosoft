@@ -78,10 +78,10 @@ class SoundSource {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = !isPlaying || TimeUtil.time - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
+        get() = !isPlaying || TimeUtil.millis - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
 
     fun play() {
-        playTime = TimeUtil.time
+        playTime = TimeUtil.millis
         alSourcePlay(source)
     }
 

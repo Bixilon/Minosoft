@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -32,7 +32,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 
 object Log {
-    private val MINOSOFT_START_TIME = TimeUtil.time
+    private val MINOSOFT_START_TIME = TimeUtil.millis
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
@@ -56,7 +56,7 @@ object Log {
                     val message = BaseComponent()
                     val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
                     message += if (RunConfiguration.LOG_RELATIVE_TIME) {
-                        TextComponent("[${TimeUtil.time - MINOSOFT_START_TIME}] ")
+                        TextComponent("[${TimeUtil.millis - MINOSOFT_START_TIME}] ")
                     } else {
                         TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
                     }
@@ -152,7 +152,7 @@ object Log {
 
         LOG_QUEUE += MessageToSend(
             message = formattedMessage,
-            time = TimeUtil.time,
+            time = TimeUtil.millis,
             logMessageType = type,
             level = level,
             thread = Thread.currentThread(),

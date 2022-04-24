@@ -165,7 +165,7 @@ class RenderWindowInputHandler(
             KeyChangeTypes.REPEAT -> return
         }
 
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
 
         if (keyDown) {
             keysDown += keyCode
@@ -263,7 +263,7 @@ class RenderWindowInputHandler(
                 continue
             }
 
-            pair.lastChange = TimeUtil.time
+            pair.lastChange = TimeUtil.millis
             for (callback in pair.callback) {
                 callback(thisKeyBindingDown)
             }

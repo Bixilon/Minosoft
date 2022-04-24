@@ -78,7 +78,7 @@ class BreakInteractionHandler(
     }
 
     private fun swingArm() {
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
         if (currentTime - lastSwing <= ProtocolDefinition.TICK_TIME) {
             return
         }
@@ -87,7 +87,7 @@ class BreakInteractionHandler(
     }
 
     private fun checkBreaking(isKeyDown: Boolean, deltaTime: Double): Boolean {
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
 
         if (!isKeyDown) {
             creativeLastHoldBreakTime = 0L

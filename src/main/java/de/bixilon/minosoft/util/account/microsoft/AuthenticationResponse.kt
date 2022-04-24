@@ -24,7 +24,7 @@ class AuthenticationResponse(
     val idToken: String?,
     val refreshToken: String,
 ) {
-    val expires: Long = (TimeUtil.time / 1000L) + expiresIn
+    val expires: Long = (TimeUtil.millis / 1000L) + expiresIn
     val scope = scope.split(' ')
 
     fun saveTokens(): MicrosoftTokens {

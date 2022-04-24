@@ -232,7 +232,7 @@ class LocalPlayerEntity(
         if (connection.profiles.rendering.movement.disablePacketSending) {
             return
         }
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
         val isSprinting = isSprinting
         if (isSprinting != lastSprinting) {
             connection.sendPacket(EntityActionC2SP(this, connection, isSprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))

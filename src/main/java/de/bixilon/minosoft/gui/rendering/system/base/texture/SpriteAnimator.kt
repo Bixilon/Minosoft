@@ -38,7 +38,7 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
     }
 
     private fun recalculate() {
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
         val deltaLastDraw = currentTime - lastRun
         lastRun = currentTime
 

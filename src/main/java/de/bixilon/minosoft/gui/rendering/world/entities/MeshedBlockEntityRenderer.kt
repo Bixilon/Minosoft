@@ -21,6 +21,7 @@ interface MeshedBlockEntityRenderer<E : BlockEntity> : BlockEntityRenderer<E>, S
     override var light: Int
         get() = 0
         set(value) {}
+
     override fun draw(renderWindow: RenderWindow) = Unit
     override fun load() = Unit
     override fun unload() = Unit

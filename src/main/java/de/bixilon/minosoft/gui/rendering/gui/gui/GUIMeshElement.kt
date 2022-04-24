@@ -129,7 +129,7 @@ open class GUIMeshElement<T : Element>(
 
         val mouseAction = MouseActions[type] ?: return false
 
-        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.time))
+        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.millis))
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
@@ -152,7 +152,7 @@ open class GUIMeshElement<T : Element>(
 
         val mouseAction = MouseActions[type] ?: return null
 
-        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.time), dragged)
+        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.millis), dragged)
     }
 
     override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {

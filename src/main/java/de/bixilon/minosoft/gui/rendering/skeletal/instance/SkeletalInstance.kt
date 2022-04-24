@@ -66,7 +66,7 @@ class SkeletalInstance(
     fun calculateTransforms(): List<Mat4> {
         val animation = currentAnimation
         if (animation != null) {
-            val time = TimeUtil.time
+            val time = TimeUtil.millis
             if (this.animationLastFrame > 0L) {
                 val delta = time - this.animationLastFrame
                 animationTime += delta / 1000.0f

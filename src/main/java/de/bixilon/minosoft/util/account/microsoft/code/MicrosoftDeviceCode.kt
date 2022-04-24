@@ -25,7 +25,7 @@ data class MicrosoftDeviceCode(
     val interval: Int,
     val message: String,
 ) {
-    val expires = (TimeUtil.time / 1000) + expiresIn
+    val expires = (TimeUtil.millis / 1000) + expiresIn
 
     init {
         check(verificationURI.protocol == URLProtocols.HTTPS.protocol) { "Insecure url: $verificationURI" }

@@ -93,7 +93,7 @@ class RenderWindow(
     private val latch = CountUpAndDownLatch(1)
 
     var tickCount = 0L
-    var lastTickTimer = TimeUtil.time
+    var lastTickTimer = TimeUtil.millis
 
     private var slowRendering = profile.performance.slowRendering
 
@@ -246,7 +246,7 @@ class RenderWindow(
 
             lightMap.update()
 
-            val currentTickTime = TimeUtil.time
+            val currentTickTime = TimeUtil.millis
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
                 // inputHandler.currentKeyConsumer?.tick(tickCount)

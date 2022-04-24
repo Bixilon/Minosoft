@@ -46,7 +46,7 @@ class ScreenshotTaker(
             val height = renderWindow.window.size.y
             val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
-            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(TimeUtil.time)}"
+            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(TimeUtil.millis)}"
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {

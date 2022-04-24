@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -56,7 +56,7 @@ object NBTUtil {
                 is Map<*, *> -> NBTTagTypes.COMPOUND
                 is IntArray -> NBTTagTypes.INT_ARRAY
                 is LongArray -> NBTTagTypes.LONG_ARRAY
-                else -> throw  IllegalArgumentException("NBT does not support ${this::class.java.name}")
+                else -> throw IllegalArgumentException("NBT does not support ${this::class.java.name}")
             }
         }
 }

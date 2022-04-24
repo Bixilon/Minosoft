@@ -156,7 +156,7 @@ class ParticleRenderer(
 
             particlesLock.acquire()
             try {
-                val time = TimeUtil.time
+                val time = TimeUtil.millis
                 for (particle in particles) {
                     if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) { // ToDo: Check fog distance
                         particle.dead = true
@@ -204,7 +204,7 @@ class ParticleRenderer(
             particle.dead = true
             return
         }
-        particle.tryTick(TimeUtil.time)
+        particle.tryTick(TimeUtil.millis)
 
         particleQueueLock.lock()
         particleQueue += particle
@@ -225,7 +225,7 @@ class ParticleRenderer(
 
         particlesLock.acquire()
 
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         for (particle in particles) {
             particle.tryTick(time)
             if (particle.dead) {

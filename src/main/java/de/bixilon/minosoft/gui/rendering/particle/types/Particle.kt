@@ -60,7 +60,7 @@ abstract class Particle(
 
     // moving
     val cameraPosition: Vec3d
-        get() = getCameraPosition(TimeUtil.time)
+        get() = getCameraPosition(TimeUtil.millis)
 
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position

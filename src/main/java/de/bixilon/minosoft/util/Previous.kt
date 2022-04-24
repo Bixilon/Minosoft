@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,13 +18,13 @@ import de.bixilon.kutil.time.TimeUtil
 
 class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, delta: Long) -> T)? = null) {
     private val changeListeners: MutableSet<(value: T, previous: T) -> Unit> = synchronizedSetOf()
-    private var lastChangeTime = TimeUtil.time
+    private var lastChangeTime = TimeUtil.millis
     var value: T = value
         @Synchronized
         set(value) {
             previous = field
             field = value
-            lastChangeTime = TimeUtil.time
+            lastChangeTime = TimeUtil.millis
             for (listener in changeListeners) {
                 listener(value, previous)
             }
@@ -48,7 +48,7 @@ class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, d
     }
 
     fun interpolate(): T {
-        return interpolator!!(this, (TimeUtil.time - lastChangeTime))
+        return interpolator!!(this, (TimeUtil.millis - lastChangeTime))
     }
 
 }

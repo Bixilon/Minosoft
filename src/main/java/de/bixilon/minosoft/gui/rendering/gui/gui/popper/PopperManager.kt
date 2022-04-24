@@ -41,7 +41,7 @@ class PopperManager(
 
     fun draw() {
         val toRemove: MutableSet<LayoutedGUIElement<Popper>> = mutableSetOf()
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
             lastTickTime = time

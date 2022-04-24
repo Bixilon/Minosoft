@@ -72,7 +72,7 @@ class DraggedManager(
 
     fun draw() {
         val element = element ?: return
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
             lastTickTime = time
@@ -121,7 +121,7 @@ class DraggedManager(
 
         val mouseAction = MouseActions[type] ?: return false
 
-        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, TimeUtil.time), target)
+        element.element.onDragMouseAction(guiRenderer.currentMousePosition, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, guiRenderer.currentMousePosition, TimeUtil.millis), target)
         return true
     }
 

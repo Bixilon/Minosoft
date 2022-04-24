@@ -225,7 +225,7 @@ class InteractInteractionHandler(
     }
 
     fun draw(delta: Double) {
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         if (time - lastUse < ProtocolDefinition.TICK_TIME) {
             return
         }

@@ -31,7 +31,7 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private var lastSmoothFPSCalculationTime = 0L
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = TimeUtil.time
+            val time = TimeUtil.millis
             if (time - lastSmoothFPSCalculationTime > 100) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time

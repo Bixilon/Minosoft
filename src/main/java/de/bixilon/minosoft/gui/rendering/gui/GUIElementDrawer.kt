@@ -24,7 +24,7 @@ interface GUIElementDrawer {
     var lastTickTime: Long
 
     fun drawElements(elements: Collection<GUIElement>) {
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in elements) {
                 if (!element.enabled) {

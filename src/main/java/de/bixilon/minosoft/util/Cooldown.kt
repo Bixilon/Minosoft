@@ -33,7 +33,7 @@ class Cooldown {
             if (start < 0L) {
                 return 0L
             }
-            val time = TimeUtil.time
+            val time = TimeUtil.millis
             return time - end
         }
     val progress: Float
@@ -51,7 +51,7 @@ class Cooldown {
 
 
     fun set(millis: Long) {
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         start = time
         end = start + millis
     }

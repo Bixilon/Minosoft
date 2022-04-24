@@ -159,7 +159,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 val crashReportFolder = File(RunConfiguration.HOME_DIRECTORY + "crash-reports")
                 crashReportFolder.mkdirs()
 
-                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.time)}.txt"
+                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.millis)}.txt"
 
                 val stream = FileOutputStream(crashReportPath)
 
@@ -248,7 +248,7 @@ ${exception.toStackTrace()}"""
 // ${CRASH_REPORT_COMMENTS.random()}
 
 -- General Information --
-    Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.time)} (${TimeUtil.time / 1000L})
+    Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.millis)} (${TimeUtil.millis / 1000L})
     Crash thread: ${Thread.currentThread().name}
 $stackTraceText
 $connections

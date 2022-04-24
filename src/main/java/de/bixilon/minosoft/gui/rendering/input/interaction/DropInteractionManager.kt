@@ -46,7 +46,7 @@ class DropInteractionManager(
 
 
     fun dropItem(stack: Boolean) {
-        val time = TimeUtil.time
+        val time = TimeUtil.millis
         val type = if (stack) {
             connection.player.inventory.getHotbarSlot()?.item?.count = 0
             PlayerActionC2SP.Actions.DROP_ITEM_STACK

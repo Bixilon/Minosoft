@@ -76,7 +76,7 @@ class MicrosoftAccount(
             // already checking
             return
         }
-        if (minecraft.expires >= TimeUtil.time / 1000) {
+        if (minecraft.expires >= TimeUtil.millis / 1000) {
             return check(latch, "null")
         }
         if (state == AccountStates.WORKING) {
@@ -95,7 +95,7 @@ class MicrosoftAccount(
 
     private fun refreshMinecraftToken(latch: CountUpAndDownLatch?) {
         state = AccountStates.REFRESHING
-        val time = TimeUtil.time / 1000
+        val time = TimeUtil.millis / 1000
         if (time >= msa.expires) {
             // token expired
             refreshMicrosoftToken(latch)
@@ -119,7 +119,7 @@ class MicrosoftAccount(
 
     private fun checkMinecraftToken(latch: CountUpAndDownLatch?) {
         state = AccountStates.CHECKING
-        val time = TimeUtil.time / 1000
+        val time = TimeUtil.millis / 1000
         if (time >= minecraft.expires) {
             // token expired
             refreshMinecraftToken(latch)

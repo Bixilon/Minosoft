@@ -47,7 +47,7 @@ class ItemElement(
 
     var _stack: ItemStack? by raw::_stack
     var stack: ItemStack? by raw::stack
-   // override var cacheUpToDate: Boolean by raw::cacheUpToDate
+    // override var cacheUpToDate: Boolean by raw::cacheUpToDate
 
     init {
         this._parent = itemsElement

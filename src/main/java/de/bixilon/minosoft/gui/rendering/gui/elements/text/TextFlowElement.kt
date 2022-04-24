@@ -103,7 +103,7 @@ open class TextFlowElement(
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
         var textSize = Vec2i.EMPTY
         val active = this.active
 
@@ -172,7 +172,7 @@ open class TextFlowElement(
         if (active) {
             return
         }
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
@@ -205,7 +205,7 @@ open class TextFlowElement(
 
     private data class TextFlowTextElement(
         val text: ChatComponent,
-        val addTime: Long = TimeUtil.time,
+        val addTime: Long = TimeUtil.millis,
     )
 
     private data class TextFlowLineElement(

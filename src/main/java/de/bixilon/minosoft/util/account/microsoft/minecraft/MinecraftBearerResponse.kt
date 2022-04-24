@@ -25,7 +25,7 @@ data class MinecraftBearerResponse(
     val tokenType: AuthenticationResponse.TokenTypes,
     val expiresIn: Int,
 ) {
-    val expires = (TimeUtil.time / 1000) + expiresIn
+    val expires = (TimeUtil.millis / 1000) + expiresIn
 
 
     fun saveTokens(): MinecraftTokens {

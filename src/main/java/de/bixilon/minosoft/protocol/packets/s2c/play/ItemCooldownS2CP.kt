@@ -28,7 +28,7 @@ class ItemCooldownS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val time = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {
-        connection.player.itemCooldown[item] = ItemCooldown(TimeUtil.time, time)
+        connection.player.itemCooldown[item] = ItemCooldown(TimeUtil.millis, time)
     }
 
     override fun log(reducedLog: Boolean) {

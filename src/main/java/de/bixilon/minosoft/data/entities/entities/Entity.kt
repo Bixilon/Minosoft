@@ -348,7 +348,7 @@ abstract class Entity(
 
     @Synchronized
     fun tick() {
-        val currentTime = TimeUtil.time
+        val currentTime = TimeUtil.millis
         if (lastFakeTickTime == -1L) {
             lastFakeTickTime = currentTime
             return

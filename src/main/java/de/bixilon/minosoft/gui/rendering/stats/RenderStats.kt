@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -27,7 +27,7 @@ class RenderStats : AbstractRenderStats {
 
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = TimeUtil.time
+            val time = TimeUtil.millis
             if (time - lastSmoothFPSCalculationTime > 100) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time

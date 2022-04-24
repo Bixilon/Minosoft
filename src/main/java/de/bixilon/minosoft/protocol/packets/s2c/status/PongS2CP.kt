@@ -35,7 +35,7 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${pingQuery.pingId})" }
             // return ToDo: feather-rs is sending a wrong ping id back
         }
-        val latency = TimeUtil.time - pingQuery.time
+        val latency = TimeUtil.millis - pingQuery.time
         connection.network.disconnect()
         // ToDo: Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
         val pongEvent = StatusPongReceiveEvent(connection, EventInitiators.SERVER, pingId, latency)

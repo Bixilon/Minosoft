@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.primitive.BooleanUtil.toInt
+import de.bixilon.kutil.primitive.BooleanUtil.one
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -43,8 +43,8 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
 
     private fun drawLineQuad(start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean, lineWidth: Float, color: RGBColor) {
         val halfLineWidth = lineWidth / 2
-        val normal1Multiplier = invertNormal1.toInt()
-        val normal2Multiplier = invertNormal2.toInt()
+        val normal1Multiplier = invertNormal1.one
+        val normal2Multiplier = invertNormal2.one
         val positions = arrayOf(
             start + normal2 * normal2Multiplier * halfLineWidth - direction * halfLineWidth,
             start + normal1 * normal1Multiplier * halfLineWidth - direction * halfLineWidth,

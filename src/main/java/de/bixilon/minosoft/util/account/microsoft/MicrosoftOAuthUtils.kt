@@ -53,12 +53,12 @@ object MicrosoftOAuthUtils {
             val deviceCode = obtainDeviceCode()
             Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Obtained device code: ${deviceCode.userCode}" }
             deviceCodeCallback(deviceCode)
-            val start = TimeUtil.time / 1000
+            val start = TimeUtil.millis / 1000
 
             fun checkToken() {
                 try {
                     val response = checkDeviceCode(deviceCode)
-                    val time = TimeUtil.time / 1000
+                    val time = TimeUtil.millis / 1000
                     if (time > start + MAX_CHECK_TIME || time > deviceCode.expires) {
                         throw TimeoutException("Could not obtain access for device code: ${deviceCode.userCode}")
                     }
