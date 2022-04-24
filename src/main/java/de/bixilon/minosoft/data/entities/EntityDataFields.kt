@@ -17,7 +17,6 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
 import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStandArmRotation
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
@@ -195,7 +194,7 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
 
     ABSTRACT_ILLAGER_FLAGS(0.toByte()),
     ABSTRACT_VILLAGER_UNHAPPY_TIMER(0),
-    VILLAGER_VILLAGER_DATA(VillagerData(VillagerTypes.PLAINS, ResourceLocation("minecraft:none"), VillagerLevels.APPRENTICE)),
+    VILLAGER_VILLAGER_DATA(null),
 
     IRON_GOLEM_FLAGS(0.toByte()),
 

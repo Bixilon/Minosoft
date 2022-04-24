@@ -45,11 +45,10 @@ class EntityData(
 
     inner class EntityDataHashMap : Int2ObjectOpenHashMap<Any>() {
 
-        inline operator fun <reified K> get(field: EntityDataFields): K? {
+        inline operator fun <reified K> get(field: EntityDataFields): K {
             lock.acquire()
             try {
                 val index: Int = this@EntityData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue.unsafeCast() // Can not find field.
-                val data = get(index) ?: return null
                 get(index)?.let {
                     try {
                         return it as K

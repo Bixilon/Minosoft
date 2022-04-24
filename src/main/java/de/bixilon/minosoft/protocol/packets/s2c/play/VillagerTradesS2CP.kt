@@ -41,7 +41,7 @@ class VillagerTradesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand)
     }.toList()
-    val level = VillagerLevels[buffer.readVarInt()]
+    val level = buffer.readVarInt()
     val experience = buffer.readVarInt()
     val regularVillager = buffer.readBoolean()
     var canRestock = false

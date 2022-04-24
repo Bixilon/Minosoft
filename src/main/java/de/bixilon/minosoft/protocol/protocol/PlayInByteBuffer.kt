@@ -178,7 +178,7 @@ class PlayInByteBuffer : InByteBuffer {
             while (item != 0x7F) {
                 val index = item and 0x1F
                 val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
-                sets[index] = data.getData(type, this)!!
+                sets[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
         } else {
@@ -190,7 +190,7 @@ class PlayInByteBuffer : InByteBuffer {
                     readVarInt()
                 }
                 val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
-                sets[index] = data.getData(type, this)
+                sets[index] = type.type.read(this)!!
                 index = readUnsignedByte()
             }
         }
@@ -201,7 +201,7 @@ class PlayInByteBuffer : InByteBuffer {
         return Ingredient(readArray { readItemStack() })
     }
 
-    @Deprecated("Use readArray")
+    @Deprecated("Use readArray", ReplaceWith("readArray(length) { readIngredient() }"))
     fun readIngredientArray(length: Int = readVarInt()): Array<Ingredient> {
         return readArray(length) { readIngredient() }
     }
