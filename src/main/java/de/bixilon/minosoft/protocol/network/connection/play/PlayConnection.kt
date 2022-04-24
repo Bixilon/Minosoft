@@ -101,6 +101,7 @@ class PlayConnection(
         get() = super.error
         set(value) {
             super.error = value
+            ERRORED_CONNECTIONS += this
             value?.let { state = PlayConnectionStates.ERROR }
         }
 
@@ -110,6 +111,7 @@ class PlayConnection(
         network::connected.observe(this) {
             if (it) {
                 ACTIVE_CONNECTIONS += this
+                ERRORED_CONNECTIONS -= this
                 for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
                     var valid = false
                     for (serverAddress in validators) {
@@ -255,5 +257,6 @@ class PlayConnection(
 
     companion object {
         val ACTIVE_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
+        val ERRORED_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
     }
 }

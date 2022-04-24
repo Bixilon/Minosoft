@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -123,8 +123,7 @@ object GitInfo {
             return "${intend}Uninitialized :("
         }
 
-        return """
-${intend}Branch: $GIT_BRANCH
+        return """${intend}Branch: $GIT_BRANCH
 ${intend}Build version: $GIT_BUILD_VERSION
 ${intend}Commit: $GIT_COMMIT_ID_DESCRIBE_SHORT
 ${intend}Dirty: $GIT_DIRTY

@@ -209,12 +209,11 @@ class ErosCrashReport : JavaFXWindowController() {
         }
 
         private fun createCrashText(exception: Throwable?): String {
-            var activeConnections = """
+            var connections = """
+-- Connections --"""
 
--- Active Connections --"""
-
-            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                activeConnections += """
+            fun addConnection(connection: PlayConnection) {
+                connections += """
     #${connection.connectionId}:
         Version: ${connection.version}
         Account: ${connection.account.username}
@@ -232,8 +231,15 @@ class ErosCrashReport : JavaFXWindowController() {
 """
             }
 
-            val stackTraceText = if (exception == null) "" else """
+            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                addConnection(connection)
+            }
 
+            for (connection in PlayConnection.ERRORED_CONNECTIONS.toSynchronizedSet()) {
+                addConnection(connection)
+            }
+
+            val stackTraceText = if (exception == null) "" else """
 -- Stacktrace --
 ${exception.toStackTrace()}"""
 
@@ -245,7 +251,7 @@ ${exception.toStackTrace()}"""
     Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.time)} (${TimeUtil.time / 1000L})
     Crash thread: ${Thread.currentThread().name}
 $stackTraceText
-$activeConnections
+$connections
 
 -- Runtime Details --
     Start arguments: ${CommandLineArguments.ARGUMENTS}
