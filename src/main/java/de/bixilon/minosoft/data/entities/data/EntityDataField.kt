@@ -13,6 +13,4 @@
 
 package de.bixilon.minosoft.data.entities.data
 
-class EntityDataField(val names: List<String>) {
-    constructor(name: String) : this(listOf(name))
-}
+class EntityDataField(vararg val names: String)

@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.entities.entities
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.random.RandomUtil.chance
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -35,7 +35,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     private val ambientEntityEffectParticle = connection.registries.particleTypeRegistry[AmbientEntityEffectParticle]
 
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.LIVING_ENTITY_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
     @get:SynchronizedEntityData(name = "Is hand active")
@@ -52,34 +52,27 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
 
     @get:SynchronizedEntityData(name = "Health")
     open val health: Double
-        get() {
-            val meta = data.sets.getFloat(EntityDataFields.LIVING_ENTITY_HEALTH)
-            return if (meta == Float.MIN_VALUE) {
-                type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
-            } else {
-                meta.toDouble()
-            }
-        }
+        get() = data.get<Float?>(HEALTH_DATA, null)?.toDouble() ?: type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
 
     @get:SynchronizedEntityData(name = "Effect color")
-    val effectColor: RGBColor
-        get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_EFFECT_COLOR).asRGBColor()
+    val effectColor: RGBColor?
+        get() = data.get<Int?>(EFFECT_COLOR_DATA, null)?.asRGBColor()
 
     @get:SynchronizedEntityData(name = "Is effect ambient")
     val effectAmbient: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.LIVING_ENTITY_EFFECT_AMBIENCE)
+        get() = data.getBoolean(EFFECT_AMBIENT_DATA, false)
 
     @get:SynchronizedEntityData(name = "Arrows in entity")
     val arrowCount: Int
-        get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_ARROW_COUNT)
+        get() = data.get(ARROW_COUNT_DATA, 0)
 
     @get:SynchronizedEntityData(name = "Absorption hearts")
     val absorptionHearts: Int
-        get() = data.sets.getInt(EntityDataFields.LIVING_ENTITY_ABSORPTION_HEARTS)
+        get() = data.get(ABSORPTION_HEARTS_DATA, 0)
 
     @get:SynchronizedEntityData(name = "Bed location")
     val bedPosition: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.LIVING_ENTITY_BED_POSITION)
+        get() = data.get(BED_POSITION_DATA, null)
 
     open val isSleeping: Boolean
         get() = bedPosition != null
@@ -98,6 +91,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         if (entityEffectParticle == null && ambientEntityEffectParticle == null) {
             return
         }
+        val effectColor = effectColor ?: return
         if (effectColor == ChatColors.BLACK) {
             return
         }
@@ -135,5 +129,15 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         if (isSleeping) {
             rotation = rotation.copy(pitch = 0.0)
         }
+    }
+
+    companion object {
+        private val FLAGS_DATA = EntityDataField("LIVING_ENTITY_FLAGS")
+        private val HEALTH_DATA = EntityDataField("LIVING_ENTITY_HEALTH")
+        private val EFFECT_COLOR_DATA = EntityDataField("LIVING_ENTITY_EFFECT_COLOR")
+        private val EFFECT_AMBIENT_DATA = EntityDataField("LIVING_ENTITY_EFFECT_AMBIENCE")
+        private val ARROW_COUNT_DATA = EntityDataField("LIVING_ENTITY_ARROW_COUNT")
+        private val ABSORPTION_HEARTS_DATA = EntityDataField("LIVING_ENTITY_ABSORPTION_HEARTS")
+        private val BED_POSITION_DATA = EntityDataField("LIVING_ENTITY_BED_POSITION")
     }
 }

@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class Bee(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
     private fun getBeeFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.BEE_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
     @get:SynchronizedEntityData(name = "Is angry")
@@ -44,11 +44,13 @@ class Bee(connection: PlayConnection, entityType: EntityType, data: EntityData, 
 
     @get:SynchronizedEntityData(name = "Remaining anger time")
     val remainingAngerTimer: Int
-        get() = data.sets.getInt(EntityDataFields.BEE_REMAINING_ANGER_TIME)
+        get() = data.get(REMAINING_ANGER_DATA, 0)
 
 
     companion object : EntityFactory<Bee> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("bee")
+        private val FLAGS_DATA = EntityDataField("BEE_FLAGS")
+        private val REMAINING_ANGER_DATA = EntityDataField("BEE_REMAINING_ANGER_TIME")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Bee {
             return Bee(connection, entityType, data, position, rotation)

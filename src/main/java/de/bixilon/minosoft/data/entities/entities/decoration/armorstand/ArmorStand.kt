@@ -12,10 +12,11 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration.armorstand
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class ArmorStand(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
 
     private fun getArmorStandFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.ARMOR_STAND_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
     @get:SynchronizedEntityData(name = "Is small")
@@ -48,32 +49,39 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         get() = getArmorStandFlag(0x10)
 
     @get:SynchronizedEntityData(name = "Head rotation")
-    val headRotation: ArmorStandArmRotation
-        get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_HEAD_ROTATION)
+    val headRotation: Vec3
+        get() = data.get(HEAD_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
 
     @get:SynchronizedEntityData(name = "Body rotation")
-    val bodyRotation: ArmorStandArmRotation
-        get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_BODY_ROTATION)
+    val bodyRotation: Vec3
+        get() = data.get(BODY_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
 
     @get:SynchronizedEntityData(name = "Left arm rotation")
-    val leftArmRotation: ArmorStandArmRotation
-        get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_LEFT_ARM_ROTATION)
+    val leftArmRotation: Vec3
+        get() = data.get(LEFT_ARM_ROTATION_DATA, Vec3(-10.0f, 0.0f, -10.0f))
 
     @get:SynchronizedEntityData(name = "Right arm rotation")
-    val rightArmRotation: ArmorStandArmRotation
-        get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_RIGHT_ARM_ROTATION)
+    val rightArmRotation: Vec3
+        get() = data.get(RIGHT_ARM_ROTATION_DATA, Vec3(-15.0f, 0.0f, 10.0f))
 
     @get:SynchronizedEntityData(name = "Left leg rotation")
-    val leftLegRotation: ArmorStandArmRotation
-        get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_LEFT_LAG_ROTATION)
+    val leftLegRotation: Vec3
+        get() = data.get(LEFT_LEG_ROTATION_DATA, Vec3(-1.0f, 0.0f, -1.0f))
 
     @get:SynchronizedEntityData(name = "Right leg rotation")
-    val rightLegRotation: ArmorStandArmRotation
-        get() = data.sets.getRotation(EntityDataFields.ARMOR_STAND_RIGHT_LAG_ROTATION)
+    val rightLegRotation: Vec3
+        get() = data.get(RIGHT_LEG_ROTATION_DATA, Vec3(1.0f, 0.0f, 1.0f))
 
 
     companion object : EntityFactory<ArmorStand> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("armor_stand")
+        private val FLAGS_DATA = EntityDataField("ARMOR_STAND_FLAGS")
+        private val HEAD_ROTATION_DATA = EntityDataField("ARMOR_STAND_HEAD_ROTATION")
+        private val BODY_ROTATION_DATA = EntityDataField("ARMOR_STAND_BODY_ROTATION")
+        private val LEFT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_ARM_ROTATION")
+        private val RIGHT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_ARM_ROTATION")
+        private val LEFT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_LEFT_LAG_ROTATION")
+        private val RIGHT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_RIGHT_LAG_ROTATION")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
             return ArmorStand(connection, entityType, data, position, rotation)

@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -30,28 +30,33 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
 
     @get:SynchronizedEntityData(name = "Ignore radius")
     val ignoreRadius: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.AREA_EFFECT_CLOUD_IGNORE_RADIUS)
+        get() = data.getBoolean(IGNORE_RADIUS_DATA, false)
 
     @get:SynchronizedEntityData(name = "Radius")
     val radius: Float
-        get() = data.sets.getFloat(EntityDataFields.AREA_EFFECT_CLOUD_RADIUS)
+        get() = data.get(RADIUS_DATA, 0.5f)
 
     @get:SynchronizedEntityData(name = "Color")
     val color: Int
-        get() = data.sets.getInt(EntityDataFields.AREA_EFFECT_CLOUD_COLOR)
+        get() = data.get(COLOR_DATA, 0)
 
     // ignore radius???
     @get:SynchronizedEntityData(name = "Is waiting")
     val isWaiting: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.AREA_EFFECT_CLOUD_WAITING)
+        get() = data.getBoolean(WAITING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "ParticleType")
-    val particle: ParticleData
-        get() = data.sets.getParticle(EntityDataFields.AREA_EFFECT_CLOUD_PARTICLE)
+    @get:SynchronizedEntityData(name = "Particle")
+    val particle: ParticleData?
+        get() = data.get(PARTICLE_DATA, null)
 
 
     companion object : EntityFactory<AreaEffectCloud> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("area_effect_cloud")
+        private val IGNORE_RADIUS_DATA = EntityDataField("AREA_EFFECT_CLOUD_IGNORE_RADIUS")
+        private val RADIUS_DATA = EntityDataField("AREA_EFFECT_CLOUD_RADIUS")
+        private val COLOR_DATA = EntityDataField("AREA_EFFECT_CLOUD_COLOR")
+        private val WAITING_DATA = EntityDataField("AREA_EFFECT_CLOUD_WAITING")
+        private val PARTICLE_DATA = EntityDataField("AREA_EFFECT_CLOUD_PARTICLE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): AreaEffectCloud {
             return AreaEffectCloud(connection, entityType, data, position, rotation)

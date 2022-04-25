@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,11 +26,12 @@ class Arrow(connection: PlayConnection, entityType: EntityType, data: EntityData
 
     @get:SynchronizedEntityData(name = "Effect color")
     val effectColor: Int
-        get() = data.sets.getInt(EntityDataFields.ARROW_EFFECT_COLOR)
+        get() = data.get(EFFECT_COLOR_DATA, 0)
 
 
     companion object : EntityFactory<Arrow> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("arrow")
+        private val EFFECT_COLOR_DATA = EntityDataField("ARROW_EFFECT_COLOR")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Arrow {
             return Arrow(connection, entityType, data, position, rotation)

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
+@Deprecated("Use in ever class", level = DeprecationLevel.ERROR)
 object VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
     @JvmStatic

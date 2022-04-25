@@ -16,9 +16,11 @@ package de.bixilon.minosoft.gui.rendering.camera.target.targets
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
+import java.util.*
 
 class EntityTarget(
     position: Vec3d,
@@ -45,12 +47,12 @@ class EntityTarget(
         text += "UUID: ${entity.uuid}"
 
 
-        val metaData = entity.entityMetaDataFormatted
-        if (metaData.isNotEmpty()) {
+        val data = entity.entityDataFormatted
+        if (data.isNotEmpty()) {
             text += "\n"
         }
 
-        for ((property, value) in metaData) {
+        for ((property, value) in data) {
             text += "\n"
             text += property
             text += ": "
@@ -58,4 +60,33 @@ class EntityTarget(
         }
         return text
     }
+
+    val Entity.entityDataFormatted: TreeMap<String, Any>
+        get() {
+            // scan all methods of current class for SynchronizedEntityData annotation and write it into a list
+            val values = TreeMap<String, Any>()
+            var clazz: Class<*> = this.javaClass
+            while (clazz != Any::class.java) {
+                for (method in clazz.declaredMethods) {
+                    if (!method.isAnnotationPresent(SynchronizedEntityData::class.java)) {
+                        continue
+                    }
+                    if (method.parameterCount > 0) {
+                        continue
+                    }
+                    method.isAccessible = true
+                    try {
+                        val name: String = method.getAnnotation(SynchronizedEntityData::class.java).name
+                        if (values.containsKey(name)) {
+                            continue
+                        }
+                        values[name] = method(this) ?: continue
+                    } catch (exception: Throwable) {
+                        exception.printStackTrace()
+                    }
+                }
+                clazz = clazz.superclass
+            }
+            return values
+        }
 }

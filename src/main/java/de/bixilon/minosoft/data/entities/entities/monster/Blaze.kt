@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class Blaze(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
     private fun getBlazeFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.BLAZE_FLAGS, bitMask)
+        return data.getBitMask(BLAZE_DATA, bitMask, 0x00)
     }
 
     @get:SynchronizedEntityData(name = "Is Burning")
@@ -35,6 +35,7 @@ class Blaze(connection: PlayConnection, entityType: EntityType, data: EntityData
 
     companion object : EntityFactory<Blaze> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("blaze")
+        private val BLAZE_DATA = EntityDataField("BLAZE_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Blaze {
             return Blaze(connection, entityType, data, position, rotation)

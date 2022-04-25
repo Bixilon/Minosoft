@@ -16,31 +16,12 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
-import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStandArmRotation
-import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
 
 enum class EntityDataFields(val defaultValue: Any? = null) {
-    ENTITY_FLAGS(0.toByte()),
-    ENTITY_AIR_SUPPLY(300),
-    ENTITY_CUSTOM_NAME,
-    ENTITY_CUSTOM_NAME_VISIBLE(false),
-    ENTITY_SILENT(false),
-    ENTITY_NO_GRAVITY(false),
-    ENTITY_POSE(Poses.STANDING),
-    ENTITY_TICKS_FROZEN(0),
-
-    LIVING_ENTITY_FLAGS(0.toByte()),
-    LIVING_ENTITY_HEALTH(Float.MIN_VALUE),
-    LIVING_ENTITY_EFFECT_COLOR(0),
-    LIVING_ENTITY_EFFECT_AMBIENCE(false),
-    LIVING_ENTITY_ARROW_COUNT(0),
-    LIVING_ENTITY_ABSORPTION_HEARTS(0),
-    LIVING_ENTITY_BED_POSITION,
-
     MOB_FLAGS(0.toByte()),
 
     ZOMBIE_HANDS_HELD_UP(false),
@@ -71,13 +52,6 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
     THROWN_TRIDENT_LOYALTY_LEVEL(0),
     THROWN_TRIDENT_FOIL(false),
 
-    BOAT_HURT(0),
-    BOAT_HURT_DIRECTION(1),
-    BOAT_DAMAGE_TAKEN(0.0f),
-    BOAT_MATERIAL(Boat.BoatMaterials.OAK.ordinal),
-    BOAT_PADDLE_LEFT(false),
-    BOAT_PADDLE_RIGHT(false),
-    BOAT_BUBBLE_TIME(0),
 
     END_CRYSTAL_BEAM_TARGET,
     END_CRYSTAL_SHOW_BOTTOM(true),
@@ -102,14 +76,6 @@ enum class EntityDataFields(val defaultValue: Any? = null) {
     PLAYER_LEFT_SHOULDER_DATA,
     PLAYER_RIGHT_SHOULDER_DATA,
     PLAYER_LAST_DEATH_POSITION,
-
-    ARMOR_STAND_FLAGS(0.toByte()),
-    ARMOR_STAND_HEAD_ROTATION(ArmorStandArmRotation(0.0f, 0.0f, 0.0f)),
-    ARMOR_STAND_BODY_ROTATION(ArmorStandArmRotation(0.0f, 0.0f, 0.0f)),
-    ARMOR_STAND_LEFT_ARM_ROTATION(ArmorStandArmRotation(-10.0f, 0.0f, -10.0f)),
-    ARMOR_STAND_RIGHT_ARM_ROTATION(ArmorStandArmRotation(-15.0f, 0.0f, 10.0f)),
-    ARMOR_STAND_LEFT_LAG_ROTATION(ArmorStandArmRotation(-1.0f, 0.0f, -1.0f)),
-    ARMOR_STAND_RIGHT_LAG_ROTATION(ArmorStandArmRotation(1.0f, 0.0f, 1.0f)),
 
     BAT_FLAGS(0.toByte()),
 

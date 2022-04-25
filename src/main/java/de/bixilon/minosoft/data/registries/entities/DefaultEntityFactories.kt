@@ -194,6 +194,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
         "TameableEntity".toResourceLocation() to TamableAnimal::class,
         "FishEntity".toResourceLocation() to AbstractFish::class,
         "AbstractDonkeyEntity".toResourceLocation() to AbstractChestedHorse::class,
+        "AbstractHorseEntity".toResourceLocation() to AbstractHorse::class,
         "HorseBaseEntity".toResourceLocation() to AbstractHorse::class,
         "SpellcastingIllagerEntity".toResourceLocation() to SpellcasterIllager::class,
         "RaiderEntity".toResourceLocation() to Raider::class,

@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperti
 import de.bixilon.minosoft.data.entities.entities.Entity;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class CommandEntities extends Command {
 
@@ -59,9 +58,6 @@ public class CommandEntities extends Command {
                             tableData.add(new Object[]{"Effects", entity.getActiveStatusEffects()});
                             tableData.add(new Object[]{"Attached to", entity.getAttachedEntity() == -1 ? "" : entity.getAttachedEntity()});
 
-                            for (Map.Entry<String, Object> entry : entity.getEntityMetaDataFormatted().entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue()});
-                            }
 
                             print(AsciiTable.getTable(new String[]{"PROPERTY", "VALUE"}, tableData.toArray(new Object[0][0])));
                         }))));

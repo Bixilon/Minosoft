@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.entities.entities.decoration.armorstand.ArmorStandArmRotation
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
@@ -61,7 +60,7 @@ class EntityData(
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    inline fun <reified K> get(field: EntityDataField, default: K?): K? {
+    inline fun <reified K> get(field: EntityDataField, default: K): K {
         lock.acquire()
         try {
             val type = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
@@ -77,7 +76,7 @@ class EntityData(
     }
 
     fun getBoolean(field: EntityDataField, default: Boolean): Boolean {
-        val data: Any = this.get(field, default) ?: return default
+        val data: Any = this.get(field, default)
         if (data is Boolean) {
             return data
         }
@@ -89,7 +88,7 @@ class EntityData(
     }
 
     fun getBitMask(field: EntityDataField, bitMask: Int, default: Byte): Boolean {
-        val byte: Byte = get(field, default) ?: default
+        val byte: Byte = get(field, default)
         return BitByte.isBitMask(byte.toInt(), bitMask)
     }
 
@@ -144,14 +143,11 @@ class EntityData(
             return get(field)
         }
 
-        fun getRotation(field: EntityDataFields): ArmorStandArmRotation {
-            return get(field)
-        }
 
         fun getBoolean(field: EntityDataFields): Boolean {
             val ret: Any = get(field) ?: return false
             if (ret is Byte) {
-                return ret == 0x01
+                return ret == 0x01.toByte()
             }
             return ret as Boolean
         }

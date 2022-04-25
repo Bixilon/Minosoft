@@ -24,7 +24,6 @@ import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
@@ -64,7 +63,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import java.lang.reflect.InvocationTargetException
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
@@ -239,23 +237,23 @@ abstract class Entity(
 
     @get:SynchronizedEntityData(name = "Air supply")
     val airSupply: Int
-        get() = data.sets.getInt(EntityDataFields.ENTITY_AIR_SUPPLY)
+        get() = data.get(AIR_SUPPLY_DATA, 300)
 
     @get:SynchronizedEntityData(name = "Custom name")
     val customName: ChatComponent?
-        get() = data.sets.getChatComponent(EntityDataFields.ENTITY_CUSTOM_NAME)
+        get() = data.get(CUSTOM_NAME_DATA, null)
 
     @get:SynchronizedEntityData(name = "Is custom name visible")
     val isCustomNameVisible: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ENTITY_CUSTOM_NAME_VISIBLE)
+        get() = data.get(CUSTOM_NAME_VISIBLE_DATA, false)
 
     @get:SynchronizedEntityData(name = "Is silent")
     val isSilent: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ENTITY_SILENT)
+        get() = data.get(SILENT_DATA, false)
 
     @SynchronizedEntityData(name = "Has gravity")
     open val hasGravity: Boolean
-        get() = !data.sets.getBoolean(EntityDataFields.ENTITY_NO_GRAVITY)
+        get() = !data.get(NO_GRAVITY_DATA, false)
 
     @get:SynchronizedEntityData(name = "Pose")
     open val pose: Poses?
@@ -264,49 +262,13 @@ abstract class Entity(
                 isFlyingWithElytra -> Poses.ELYTRA_FLYING
                 isSwimming -> Poses.SWIMMING
                 isSneaking -> Poses.SNEAKING
-                else -> data.sets.getPose(EntityDataFields.ENTITY_POSE)
+                else -> data.get(POSE_DATA, Poses.STANDING)
             }
         }
 
     @get:SynchronizedEntityData(name = "Ticks frozen")
     val ticksFrozen: Int
-        get() = data.sets.getInt(EntityDataFields.ENTITY_TICKS_FROZEN)
-
-    val entityMetaDataAsString: String
-        get() = entityMetaDataFormatted.toString()
-
-    // scan all methods of current class for SynchronizedEntityData annotation and write it into a list
-    val entityMetaDataFormatted: TreeMap<String, Any>
-        get() {
-            // scan all methods of current class for SynchronizedEntityData annotation and write it into a list
-            val values = TreeMap<String, Any>()
-            var clazz: Class<*> = this.javaClass
-            while (clazz != Any::class.java) {
-                for (method in clazz.declaredMethods) {
-                    if (!method.isAnnotationPresent(SynchronizedEntityData::class.java)) {
-                        continue
-                    }
-                    if (method.parameterCount > 0) {
-                        continue
-                    }
-                    method.isAccessible = true
-                    try {
-                        val resourceLocation: String = method.getAnnotation(SynchronizedEntityData::class.java).name
-                        if (values.containsKey(resourceLocation)) {
-                            continue
-                        }
-                        val methodRetValue = method(this) ?: continue
-                        values[resourceLocation] = methodRetValue
-                    } catch (e: IllegalAccessException) {
-                        e.printStackTrace()
-                    } catch (e: InvocationTargetException) {
-                        e.printStackTrace()
-                    }
-                }
-                clazz = clazz.superclass
-            }
-            return values
-        }
+        get() = data.get(TICKS_FROZEN_DATA, 0)
 
     val canStep: Boolean
         get() = !isSneaking
