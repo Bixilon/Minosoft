@@ -16,8 +16,8 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.container.InventorySlots
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
 import de.bixilon.minosoft.data.registries.*
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -92,7 +92,7 @@ class Registries {
 
     val blockStateRegistry = BlockStateRegistry(false)
 
-    val entityMetaIndexMap: MutableMap<EntityDataFields, Int> = mutableMapOf()
+    val entityDataIndexMap: MutableMap<EntityDataField, Int> = mutableMapOf()
     val entityTypeRegistry: Registry<EntityType> = Registry()
 
     val blockEntityTypeRegistry = BlockEntityTypeRegistry()
@@ -117,8 +117,8 @@ class Registries {
             }
         }
 
-    fun getEntityMetaDataIndex(field: EntityDataFields): Int? {
-        return entityMetaIndexMap[field] ?: parentRegistries?.getEntityMetaDataIndex(field)
+    fun getEntityDataIndex(field: EntityDataField): Int? {
+        return entityDataIndexMap[field] ?: parentRegistries?.getEntityDataIndex(field)
     }
 
     private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: Any?, registry: EnumRegistry<T>, alternative: PerVersionEnumRegistry<T>) {

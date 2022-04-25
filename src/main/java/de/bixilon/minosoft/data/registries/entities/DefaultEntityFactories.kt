@@ -31,9 +31,11 @@ import de.bixilon.minosoft.data.entities.entities.item.FallingBlockEntity
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
 import de.bixilon.minosoft.data.entities.entities.monster.*
+import de.bixilon.minosoft.data.entities.entities.monster.piglin.AbstractPiglin
 import de.bixilon.minosoft.data.entities.entities.monster.piglin.Piglin
 import de.bixilon.minosoft.data.entities.entities.monster.piglin.PiglinBrute
 import de.bixilon.minosoft.data.entities.entities.monster.raid.*
+import de.bixilon.minosoft.data.entities.entities.npc.villager.AbstractVillager
 import de.bixilon.minosoft.data.entities.entities.npc.villager.Villager
 import de.bixilon.minosoft.data.entities.entities.npc.villager.WanderingTrader
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
@@ -44,6 +46,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.boat.ChestBoat
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 @SuppressWarnings("deprecation")
 object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
@@ -181,4 +184,23 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
         val tweakedEntityType = connection.registries.entityTypeRegistry[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
         return tweakedFactory.build(connection, tweakedEntityType, data ?: EntityData(connection), position, rotation)
     }
+
+    val ABSTRACT_ENTITY_META_CLASSES = mapOf(
+        "Entity".toResourceLocation() to Entity::class,
+        "LivingEntity".toResourceLocation() to LivingEntity::class,
+        "PersistentProjectileEntity".toResourceLocation() to Projectile::class,
+        "MobEntity".toResourceLocation() to Mob::class,
+        "PassiveEntity".toResourceLocation() to AgeableMob::class,
+        "TameableEntity".toResourceLocation() to TamableAnimal::class,
+        "FishEntity".toResourceLocation() to AbstractFish::class,
+        "AbstractDonkeyEntity".toResourceLocation() to AbstractChestedHorse::class,
+        "HorseBaseEntity".toResourceLocation() to AbstractHorse::class,
+        "SpellcastingIllagerEntity".toResourceLocation() to SpellcasterIllager::class,
+        "RaiderEntity".toResourceLocation() to Raider::class,
+        "AbstractFireballEntity".toResourceLocation() to Fireball::class,
+        "AbstractMinecartEntity".toResourceLocation() to AbstractMinecart::class,
+        "AbstractPiglinEntity".toResourceLocation() to AbstractPiglin::class,
+        "ThrownItemEntity".toResourceLocation() to ThrowableItemProjectile::class,
+        "MerchantEntity".toResourceLocation() to AbstractVillager::class,
+    )
 }

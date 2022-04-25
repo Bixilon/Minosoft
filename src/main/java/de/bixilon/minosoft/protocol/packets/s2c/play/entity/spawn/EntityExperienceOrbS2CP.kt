@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.ExperienceOrb
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -30,6 +31,7 @@ class EntityExperienceOrbS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entity: ExperienceOrb = ExperienceOrb(
         connection = buffer.connection,
         entityType = buffer.connection.registries.entityTypeRegistry[ExperienceOrb.RESOURCE_LOCATION]!!,
+        data = EntityData(buffer.connection),
         position = if (buffer.versionId < ProtocolVersions.V_16W06A) {
             Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {

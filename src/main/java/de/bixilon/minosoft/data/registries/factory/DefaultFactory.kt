@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 
-open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
+open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) : Iterable<T> {
     private val factories = factories
     private val factoryMap: Map<ResourceLocation, T>
 
@@ -45,5 +45,9 @@ open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
 
     operator fun get(index: Int): T {
         return factories[index]
+    }
+
+    override fun iterator(): Iterator<T> {
+        return factories.iterator()
     }
 }

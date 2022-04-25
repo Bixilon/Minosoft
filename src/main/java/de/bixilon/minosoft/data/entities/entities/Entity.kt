@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
@@ -207,7 +208,7 @@ abstract class Entity(
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.ENTITY_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
     @get:SynchronizedEntityData(name = "On fire")
@@ -634,6 +635,14 @@ abstract class Entity(
 
 
     companion object {
+        private val FLAGS_DATA = EntityDataField("ENTITY_FLAGS")
+        private val AIR_SUPPLY_DATA = EntityDataField("ENTITY_AIR_SUPPLY")
+        private val CUSTOM_NAME_DATA = EntityDataField("ENTITY_CUSTOM_NAME")
+        private val CUSTOM_NAME_VISIBLE_DATA = EntityDataField("ENTITY_CUSTOM_NAME_VISIBLE")
+        private val SILENT_DATA = EntityDataField("ENTITY_SILENT")
+        private val NO_GRAVITY_DATA = EntityDataField("ENTITY_NO_GRAVITY")
+        private val POSE_DATA = EntityDataField("ENTITY_POSE")
+        private val TICKS_FROZEN_DATA = EntityDataField("ENTITY_TICKS_FROZEN")
         private val BELOW_POSITION_MINUS = Vec3(0, 0.2f, 0)
     }
 }

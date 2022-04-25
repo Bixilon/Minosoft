@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -27,17 +28,17 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(threadSafe = false)
 class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readVarInt()
+    val type = buffer.readByte()
     val entity: LightningBolt
 
     init {
-        val type = buffer.readByte()
         val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
             Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {
             buffer.readVec3d()
         }
 
-        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityTypeRegistry[LightningBolt.RESOURCE_LOCATION]!!, position)
+        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityTypeRegistry[LightningBolt.RESOURCE_LOCATION]!!, EntityData(buffer.connection), position)
     }
 
     override fun handle(connection: PlayConnection) {
@@ -47,6 +48,6 @@ class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Global entity spawn (entityId=$entity, entity=$entity)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Global entity spawn (entityId=$entity, type=$type, entity=$entity)" }
     }
 }

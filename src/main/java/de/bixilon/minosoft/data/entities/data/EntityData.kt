@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.entities.data
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
@@ -61,23 +60,48 @@ class EntityData(
         return sets.toString()
     }
 
+    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+    inline fun <reified K> get(field: EntityDataField, default: K?): K? {
+        lock.acquire()
+        try {
+            val type = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
+            val data = this.data[type] ?: return default
+            if (data !is K) {
+                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity data $data can not be casted to ${K::class}" }
+                return default
+            }
+            return data
+        } finally {
+            lock.release()
+        }
+    }
+
+    fun getBoolean(field: EntityDataField, default: Boolean): Boolean {
+        val data: Any = this.get(field, default) ?: return default
+        if (data is Boolean) {
+            return data
+        }
+        if (data is Number) {
+            return data == 0x01
+        }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Invalid boolean $data" }
+        return default
+    }
+
+    fun getBitMask(field: EntityDataField, bitMask: Int, default: Byte): Boolean {
+        val byte: Byte = get(field, default) ?: default
+        return BitByte.isBitMask(byte.toInt(), bitMask)
+    }
+
+    fun getChatComponent(field: EntityDataField, default: Any?): ChatComponent {
+        return ChatComponent.of(get(field, default))
+    }
+
+    @Deprecated("refactor")
     inner class EntityDataHashMap : Int2ObjectOpenHashMap<Any>() {
 
         inline operator fun <reified K> get(field: EntityDataFields): K {
-            lock.acquire()
-            try {
-                val index: Int = this@EntityData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue.unsafeCast() // Can not find field.
-                get(index)?.let {
-                    try {
-                        return it as K
-                    } catch (exception: ClassCastException) {
-                        Log.log(LogMessageType.OTHER, level = LogLevels.WARN, message = exception)
-                    }
-                }
-                return field.defaultValue as K
-            } finally {
-                lock.release()
-            }
+            throw TODO()
         }
 
         fun getPose(field: EntityDataFields): Poses? {

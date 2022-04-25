@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.byId
+import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
 import de.bixilon.minosoft.data.registries.Motive
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
@@ -54,7 +55,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             position = buffer.readBlockPosition()
             direction = byId(buffer.readUnsignedByte())
         }
-        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.RESOURCE_LOCATION]!!, position, direction, motive!!)
+        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.RESOURCE_LOCATION]!!, EntityData(buffer.connection), position, direction, motive!!)
     }
 
     override fun handle(connection: PlayConnection) {

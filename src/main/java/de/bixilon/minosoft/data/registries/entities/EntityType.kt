@@ -18,9 +18,10 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -31,7 +32,10 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import java.util.*
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import java.lang.reflect.Modifier
 
 data class EntityType(
     override val resourceLocation: ResourceLocation,
@@ -45,7 +49,6 @@ data class EntityType(
     val spawnEgg: SpawnEggItem?,
 ) : RegistryItem(), Translatable {
 
-
     override fun toString(): String {
         return resourceLocation.toString()
     }
@@ -57,16 +60,44 @@ data class EntityType(
     companion object : ResourceLocationDeserializer<EntityType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityType? {
             check(registries != null) { "Registries is null!" }
+            val factory = DefaultEntityFactories[resourceLocation]
 
             data["meta"]?.toJsonObject()?.let {
-                for ((minosoftFieldName, index) in it) {
-                    val minosoftField = EntityDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
-                    registries.entityMetaIndexMap[minosoftField] = index.unsafeCast()
+                val fields: MutableMap<String, EntityDataField> = mutableMapOf()
+                val metaClass = factory?.javaClass ?: DefaultEntityFactories.ABSTRACT_ENTITY_META_CLASSES[resourceLocation]?.java
+                if (metaClass == null) {
+                    Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not find class for entity data ($resourceLocation)" }
+                    return@let
+                }
+                for (field in metaClass.declaredFields) {
+                    if (!Modifier.isStatic(field.modifiers)) {
+                        continue
+                    }
+                    if (field.type != EntityDataField::class.java) {
+                        continue
+                    }
+                    field.isAccessible = true
+                    val dataField = field.get(null) as EntityDataField
+                    for (name in dataField.names) {
+                        fields[name] = dataField
+                    }
+                }
+                for ((fieldName, index) in it) {
+                    val fieldType = fields[fieldName]
+                    if (fieldType == null) {
+                        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not find entity data $fieldName for $resourceLocation" }
+                        continue
+                    }
+                    registries.entityDataIndexMap[fieldType] = index.toInt()
                 }
             }
             if (data["width"] == null) {
                 // abstract entity
                 return null
+            }
+
+            if (factory == null) {
+                throw NullPointerException("Can not find entity factory for $resourceLocation")
             }
 
             val attributes: MutableMap<ResourceLocation, Double> = mutableMapOf()
@@ -85,7 +116,7 @@ data class EntityType(
                 fireImmune = data["fire_immune"]?.toBoolean() ?: false,
                 sizeFixed = data["size_fixed"]?.toBoolean() ?: false,
                 attributes = attributes.toMap(),
-                factory = DefaultEntityFactories[resourceLocation] ?: error("Can not find entity factory for $resourceLocation"),
+                factory = factory,
                 spawnEgg = registries.itemRegistry[data["spawn_egg_item"]]?.nullCast(), // ToDo: Not yet in PixLyzer
             )
         }
