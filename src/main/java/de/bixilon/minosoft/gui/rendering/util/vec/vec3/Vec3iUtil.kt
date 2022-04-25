@@ -42,6 +42,7 @@ object Vec3iUtil {
         return when (this) {
             is List<*> -> Vec3i(this[0].toInt(), this[1].toInt(), this[2].toInt())
             is Map<*, *> -> Vec3i(this["x"]?.toInt() ?: 0.0f, this["y"]?.toInt() ?: 0.0f, this["z"]?.toInt() ?: 0.0f)
+            is IntArray -> Vec3i(this[0], this[1], this[2])
             is Number -> Vec3i(this.toInt())
             else -> null
         }

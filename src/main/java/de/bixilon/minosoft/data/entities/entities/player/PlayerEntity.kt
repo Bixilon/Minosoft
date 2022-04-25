@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -76,6 +77,10 @@ abstract class PlayerEntity(
     val rightShoulderData: JsonObject?
         get() = data.get(RIGHT_SHOULDER_DATA_DATA, null)
 
+    @get:SynchronizedEntityData
+    val lastDeathPosition: GlobalPosition?
+        get() = data.get(LAST_DEATH_POSITION_DATA, null)
+
     override val spawnSprintingParticles: Boolean
         get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
 
@@ -108,5 +113,6 @@ abstract class PlayerEntity(
         private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
         private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
         private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
+        private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
     }
 }
