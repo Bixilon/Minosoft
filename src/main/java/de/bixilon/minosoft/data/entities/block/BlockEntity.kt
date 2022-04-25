@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
@@ -23,9 +24,9 @@ abstract class BlockEntity(
     val connection: PlayConnection,
 ) {
     protected open var renderer: BlockEntityRenderer<out BlockEntity>? = null
-    open val nbt: Map<String, Any> = mapOf()
+    open val nbt: JsonObject = mapOf()
 
-    open fun updateNBT(nbt: Map<String, Any>) = Unit
+    open fun updateNBT(nbt: JsonObject) = Unit
 
     open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
 
