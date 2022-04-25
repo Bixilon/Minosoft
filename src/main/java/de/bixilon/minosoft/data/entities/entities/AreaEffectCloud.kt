@@ -28,24 +28,24 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, data: 
     override val dimensions: Vec2
         get() = Vec2(radius * 2, super.dimensions.y)
 
-    @get:SynchronizedEntityData(name = "Ignore radius")
+    @get:SynchronizedEntityData
     val ignoreRadius: Boolean
         get() = data.getBoolean(IGNORE_RADIUS_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Radius")
+    @get:SynchronizedEntityData
     val radius: Float
         get() = data.get(RADIUS_DATA, 0.5f)
 
-    @get:SynchronizedEntityData(name = "Color")
+    @get:SynchronizedEntityData
     val color: Int
         get() = data.get(COLOR_DATA, 0)
 
     // ignore radius???
-    @get:SynchronizedEntityData(name = "Is waiting")
+    @get:SynchronizedEntityData
     val isWaiting: Boolean
         get() = data.getBoolean(WAITING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Particle")
+    @get:SynchronizedEntityData
     val particle: ParticleData?
         get() = data.get(PARTICLE_DATA, null)
 

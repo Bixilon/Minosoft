@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.item
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -28,9 +28,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ItemEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Item")
+    @get:SynchronizedEntityData
     val item: ItemStack?
-        get() = data.sets.getItemStack(EntityDataFields.ITEM_ITEM)
+        get() = data.get(ITEM_DATA, null)
 
 
     override fun realTick() {
@@ -59,6 +59,7 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
 
     companion object : EntityFactory<ItemEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item")
+        private val ITEM_DATA = EntityDataField("ITEM_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemEntity {
             return ItemEntity(connection, entityType, data, position, rotation)

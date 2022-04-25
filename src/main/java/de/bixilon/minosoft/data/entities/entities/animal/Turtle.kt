@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,33 +25,40 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Turtle(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Home Position")
+    @get:SynchronizedEntityData
     val homePosition: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.TURTLE_HOME_POSITION)
+        get() = data.get(HOME_POSITION_DATA, null)
 
-    @SynchronizedEntityData(name = "Has egg")
+    @get:SynchronizedEntityData
     val hasEgg: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.TURTLE_HAS_EGG)
+        get() = data.getBoolean(HAS_EGG_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is laying egg")
+    @get:SynchronizedEntityData
     val isLayingEgg: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_LAYING_EGG)
+        get() = data.getBoolean(IS_LAYING_EGG_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Travel position")
+    @get:SynchronizedEntityData
     val travelPosition: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.TURTLE_TRAVEL_POSITION)
+        get() = data.get(TRAVEL_POSITION_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Is going home")
+    @get:SynchronizedEntityData
     val isGoingHome: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_GOING_HOME)
+        get() = data.getBoolean(IS_GOING_HOME_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is traveling")
+    @get:SynchronizedEntityData
     val isTraveling: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.TURTLE_IS_TRAVELING)
+        get() = data.getBoolean(IS_TRAVELING_DATA, false)
 
 
     companion object : EntityFactory<Turtle> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("turtle")
+        private val HOME_POSITION_DATA = EntityDataField("TURTLE_HOME_POSITION")
+        private val HAS_EGG_DATA = EntityDataField("TURTLE_HAS_EGG")
+        private val IS_LAYING_EGG_DATA = EntityDataField("TURTLE_IS_LAYING_EGG")
+        private val TRAVEL_POSITION_DATA = EntityDataField("TURTLE_TRAVEL_POSITION")
+        private val IS_GOING_HOME_DATA = EntityDataField("TURTLE_IS_GOING_HOME")
+        private val IS_TRAVELING_DATA = EntityDataField("TURTLE_IS_TRAVELING")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Turtle {
             return Turtle(connection, entityType, data, position, rotation)

@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,21 +26,38 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class Llama(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Strength")
+    @get:SynchronizedEntityData
     val strength: Int
-        get() = data.sets.getInt(EntityDataFields.LLAMA_STRENGTH)
+        get() = data.get(STRENGTH_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "CarpetColor")
+    @get:SynchronizedEntityData
     val carpetColor: Int
-        get() = data.sets.getInt(EntityDataFields.LLAMA_CARPET_COLOR)
+        get() = data.get(CARPET_COLOR_DATA, -1)
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: Int
-        get() = data.sets.getInt(EntityDataFields.LLAMA_VARIANT)
+    @get:SynchronizedEntityData
+    val variant: LlamaVariant
+        get() = LlamaVariant.VALUES.getOrNull(data.get(VARIANT_DATA, LlamaVariant.CREAMY.ordinal)) ?: LlamaVariant.CREAMY
 
+
+    enum class LlamaVariant {
+        CREAMY,
+        WHITE,
+        BROWN,
+        GRAY,
+        ;
+
+        companion object : ValuesEnum<LlamaVariant> {
+            override val VALUES: Array<LlamaVariant> = values()
+            override val NAME_MAP: Map<String, LlamaVariant> = EnumUtil.getEnumValues(VALUES)
+        }
+    }
 
     companion object : EntityFactory<Llama> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("llama")
+        private val STRENGTH_DATA = EntityDataField("LLAMA_STRENGTH")
+        private val CARPET_COLOR_DATA = EntityDataField("LLAMA_CARPET_COLOR")
+        private val VARIANT_DATA = EntityDataField("LLAMA_VARIANT")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Llama {
             return Llama(connection, entityType, data, position, rotation)

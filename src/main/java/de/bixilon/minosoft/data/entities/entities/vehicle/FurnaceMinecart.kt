@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.vehicle
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,13 +24,13 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class FurnaceMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecartContainer(connection, entityType, data, position, rotation) {
 
-    @SynchronizedEntityData(name = "Has fuel")
-    fun hasFuel(): Boolean {
-        return data.sets.getBoolean(EntityDataFields.MINECART_FURNACE_HAS_FUEL)
-    }
+    @get:SynchronizedEntityData
+    val hasFuel: Boolean
+        get() = data.getBoolean(HAS_FUEL_DATA, false)
 
     companion object : EntityFactory<FurnaceMinecart> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("furnace_minecart")
+        private val HAS_FUEL_DATA = EntityDataField("MINECART_FURNACE_HAS_FUEL")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FurnaceMinecart {
             return FurnaceMinecart(connection, entityType, data, position, rotation)

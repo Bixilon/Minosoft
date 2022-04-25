@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,17 +26,19 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Sheep(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Color")
-    val color: RGBColor
-        get() = ChatColors[data.sets.getByte(EntityDataFields.SHEEP_FLAGS).toInt() and 0x0F]
 
-    @get:SynchronizedEntityData(name = "Is sheared")
+    @get:SynchronizedEntityData
+    val color: RGBColor
+        get() = ChatColors.VALUES.getOrNull(data.get(FLAGS_DATA, 0x0F) and 0x0F) ?: ChatColors.WHITE
+
+    @get:SynchronizedEntityData
     val isSheared: Boolean
-        get() = data.sets.getBitMask(EntityDataFields.SHEEP_FLAGS, 0x10)
+        get() = data.getBitMask(FLAGS_DATA, 0x10, 0x00)
 
 
     companion object : EntityFactory<Sheep> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("sheep")
+        private val FLAGS_DATA = EntityDataField("SHEEP_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Sheep {
             return Sheep(connection, entityType, data, position, rotation)

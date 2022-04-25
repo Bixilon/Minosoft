@@ -13,15 +13,20 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AgeableMob(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is baby")
-    val isBaby: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.AGEABLE_IS_BABY)
+    @get:SynchronizedEntityData
+    open val isBaby: Boolean
+        get() = data.getBoolean(AGEABLE_BABY_DATA, false)
+
+
+    private companion object {
+        private val AGEABLE_BABY_DATA = EntityDataField("AGEABLE_IS_BABY")
+    }
 }

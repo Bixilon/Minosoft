@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster.piglin
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.monster.Monster
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AbstractPiglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is immune to zombification")
+    @get:SynchronizedEntityData
     open val isImmuneToZombification: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION)
+        get() = data.getBoolean(IMMUNE_TO_ZOMBIFICATION_DATA, false)
+
+    companion object {
+        private val IMMUNE_TO_ZOMBIFICATION_DATA = EntityDataField("ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION")
+    }
 }

@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,21 +24,24 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Creeper(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "State")
-    val state: Int
-        get() = data.sets.getInt(EntityDataFields.CREEPER_STATE)
+    @get:SynchronizedEntityData
+    val fuseState: Int
+        get() = data.get(FUSE_STATE_DATA, -1)
 
-    @get:SynchronizedEntityData(name = "Is charged")
+    @get:SynchronizedEntityData
     val isCharged: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.CREEPER_IS_CHARGED)
+        get() = data.getBoolean(IS_CHARGED_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is ignited")
+    @get:SynchronizedEntityData
     val isIgnited: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.CREEPER_IS_IGNITED)
+        get() = data.getBoolean(IS_IGNITED_DATA, false)
 
 
     companion object : EntityFactory<Creeper> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("creeper")
+        private val FUSE_STATE_DATA = EntityDataField("CREEPER_STATE")
+        private val IS_CHARGED_DATA = EntityDataField("CREEPER_IS_CHARGED")
+        private val IS_IGNITED_DATA = EntityDataField("CREEPER_IS_IGNITED")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Creeper {
             return Creeper(connection, entityType, data, position, rotation)

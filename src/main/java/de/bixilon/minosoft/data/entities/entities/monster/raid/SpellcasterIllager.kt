@@ -13,33 +13,37 @@
 package de.bixilon.minosoft.data.entities.entities.monster.raid
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class SpellcasterIllager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractIllager(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Spell")
+    @get:SynchronizedEntityData
     val spell: Spells
-        get() = Spells.byId(data.sets.getInt(EntityDataFields.SPELLCASTER_ILLAGER_SPELL))
+        get() = Spells.VALUES.getOrNull(data.get(SPELL_DATA, Spells.NONE.ordinal)) ?: Spells.NONE
 
     enum class Spells {
         NONE,
         SUMMON_VEX,
-        ATTACK,
+        FANGS,
         WOLOLO,
         DISAPPEAR,
         BLINDNESS,
         ;
 
-        companion object {
-            private val SPELLS = values()
-            fun byId(id: Int): Spells {
-                return SPELLS[id]
-            }
+        companion object : ValuesEnum<Spells> {
+            override val VALUES: Array<Spells> = values()
+            override val NAME_MAP: Map<String, Spells> = EnumUtil.getEnumValues(VALUES)
         }
+    }
+
+    companion object {
+        private val SPELL_DATA = EntityDataField("SPELLCASTER_ILLAGER_SPELL")
     }
 }

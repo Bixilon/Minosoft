@@ -13,41 +13,29 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Frog(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: FrogVariants
-        get() = FrogVariants[data.sets.getInt(EntityDataFields.FROG_TYPE)]
+    @get:SynchronizedEntityData
+    val variant: FrogVariant?
+        get() = data.get(VARIANT_DATA, null)
 
-    val target: Int
-        get() = data.sets.getInt(EntityDataFields.FROG_TARGET)
-
-
-    enum class FrogVariants {
-        TEMPERATE,
-        WARM,
-        COLD,
-        ;
-
-        companion object : ValuesEnum<FrogVariants> {
-            override val VALUES: Array<FrogVariants> = values()
-            override val NAME_MAP: Map<String, FrogVariants> = EnumUtil.getEnumValues(VALUES)
-        }
-    }
+    val target: Int?
+        get() = data.get(TARGET_DATA, null)
 
     companion object : EntityFactory<Frog> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("frog")
+        private val VARIANT_DATA = EntityDataField("FROG_VARIANT", "FROG_TYPE")
+        private val TARGET_DATA = EntityDataField("FROG_TARGET")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Frog {
             return Frog(connection, entityType, data, position, rotation)

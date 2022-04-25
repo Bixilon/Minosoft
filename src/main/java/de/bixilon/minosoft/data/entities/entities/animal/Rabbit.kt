@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,13 +26,30 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Rabbit(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: Int
-        get() = data.sets.getInt(EntityDataFields.RABBIT_VARIANT)
+    @get:SynchronizedEntityData
+    val variant: RabbitVariants
+        get() = RabbitVariants.VALUES.getOrNull(data.get(VARIANT_DATA, RabbitVariants.BROWN.ordinal)) ?: RabbitVariants.BROWN
 
+    enum class RabbitVariants {
+        BROWN,
+        WHITE,
+        BLACK,
+        WHITE_SPOTTED,
+        GOLD,
+        SALT,
+        CAERBANNOG,
+        ;
+
+        companion object : ValuesEnum<RabbitVariants> {
+            override val VALUES: Array<RabbitVariants> = values()
+            override val NAME_MAP: Map<String, RabbitVariants> = EnumUtil.getEnumValues(VALUES)
+        }
+    }
 
     companion object : EntityFactory<Rabbit> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("rabbit")
+        private val VARIANT_DATA = EntityDataField("RABBIT_VARIANT")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Rabbit {
             return Rabbit(connection, entityType, data, position, rotation)

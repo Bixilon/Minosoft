@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster.raid
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,16 +24,18 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Witch(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is drinking Potion")
+    @get:SynchronizedEntityData
     val isDrinkingPotion: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.WITCH_IS_DRINKING_POTION)
+        get() = data.getBoolean(IS_DRINKING_POTION_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is aggressive")
+    @get:SynchronizedEntityData
     override val isAggressive: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.LEGACY_WITCH_IS_AGGRESSIVE)
+        get() = data.getBoolean(LEGACY_IS_AGGRESSIVE_DATA, false)
 
     companion object : EntityFactory<Witch> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("witch")
+        private val IS_DRINKING_POTION_DATA = EntityDataField("WITCH_IS_DRINKING_POTION")
+        private val LEGACY_IS_AGGRESSIVE_DATA = EntityDataField("LEGACY_WITCH_IS_AGGRESSIVE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Witch {
             return Witch(connection, entityType, data, position, rotation)

@@ -56,7 +56,7 @@ public class CommandEntities extends Command {
                             tableData.add(new Object[]{"Rotation", entity.getRotation()});
                             tableData.add(new Object[]{"Equipment", entity.getEquipment()});
                             tableData.add(new Object[]{"Effects", entity.getActiveStatusEffects()});
-                            tableData.add(new Object[]{"Attached to", entity.getAttachedEntity() == -1 ? "" : entity.getAttachedEntity()});
+                            tableData.add(new Object[]{"Attached to", entity.get_attachedEntity() == -1 ? "" : entity.get_attachedEntity()});
 
 
                             print(AsciiTable.getTable(new String[]{"PROPERTY", "VALUE"}, tableData.toArray(new Object[0][0])));

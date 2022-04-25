@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,17 +24,17 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class SnowGolem(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
 
-    private fun getPumpkinFlags(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.SNOW_GOLEM_FLAGS, bitMask)
+    private fun getSnowGolemFlags(bitMask: Int): Boolean {
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @SynchronizedEntityData(name = "Pumpkin hat")
-    fun hasPumpkinHat(): Boolean {
-        return getPumpkinFlags(0x10)
-    }
+    @get:SynchronizedEntityData
+    val hasPumpkinHat: Boolean
+        get() = getSnowGolemFlags(0x10)
 
     companion object : EntityFactory<SnowGolem> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("snow_golem")
+        private val FLAGS_DATA = EntityDataField("SNOW_GOLEM_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): SnowGolem {
             return SnowGolem(connection, entityType, data, position, rotation)

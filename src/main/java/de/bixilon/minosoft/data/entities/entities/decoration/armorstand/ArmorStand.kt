@@ -30,45 +30,43 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is small")
+    @get:SynchronizedEntityData
     val isSmall: Boolean
         get() = getArmorStandFlag(0x01)
 
-    @SynchronizedEntityData(name = "Has arms")
-    fun hasArms(): Boolean {
-        return getArmorStandFlag(0x04)
-    }
+    @get:SynchronizedEntityData
+    val hasArms: Boolean
+        get() = getArmorStandFlag(0x04)
 
-    @SynchronizedEntityData(name = "Has no base plate")
-    fun hasNoBasePlate(): Boolean {
-        return getArmorStandFlag(0x08)
-    }
+    @get:SynchronizedEntityData
+    val hasNoBasePlate: Boolean
+        get() = getArmorStandFlag(0x08)
 
-    @get:SynchronizedEntityData(name = "Is marker")
+    @get:SynchronizedEntityData
     val isMarker: Boolean
         get() = getArmorStandFlag(0x10)
 
-    @get:SynchronizedEntityData(name = "Head rotation")
+    @get:SynchronizedEntityData
     val headRotation: Vec3
         get() = data.get(HEAD_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
 
-    @get:SynchronizedEntityData(name = "Body rotation")
+    @get:SynchronizedEntityData
     val bodyRotation: Vec3
         get() = data.get(BODY_ROTATION_DATA, Vec3(0.0f, 0.0f, 0.0f))
 
-    @get:SynchronizedEntityData(name = "Left arm rotation")
+    @get:SynchronizedEntityData
     val leftArmRotation: Vec3
         get() = data.get(LEFT_ARM_ROTATION_DATA, Vec3(-10.0f, 0.0f, -10.0f))
 
-    @get:SynchronizedEntityData(name = "Right arm rotation")
+    @get:SynchronizedEntityData
     val rightArmRotation: Vec3
         get() = data.get(RIGHT_ARM_ROTATION_DATA, Vec3(-15.0f, 0.0f, 10.0f))
 
-    @get:SynchronizedEntityData(name = "Left leg rotation")
+    @get:SynchronizedEntityData
     val leftLegRotation: Vec3
         get() = data.get(LEFT_LEG_ROTATION_DATA, Vec3(-1.0f, 0.0f, -1.0f))
 
-    @get:SynchronizedEntityData(name = "Right leg rotation")
+    @get:SynchronizedEntityData
     val rightLegRotation: Vec3
         get() = data.get(RIGHT_LEG_ROTATION_DATA, Vec3(1.0f, 0.0f, 1.0f))
 

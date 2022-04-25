@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
+import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
@@ -58,6 +59,8 @@ object DefaultRegistries {
     val GAME_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
     val WORLD_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
 
+    val CAT_VARIANT_REGISTRY: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry() }
+
 
     fun load() {
         check(!initialized) { "Already initialized!" }
@@ -89,6 +92,9 @@ object DefaultRegistries {
 
         GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")].asJsonObject(), null)
         WORLD_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("world_events")].asJsonObject(), null)
+
+
+        CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation("variants/cat")].asJsonObject(), CatVariant)
 
         initialized = true
     }

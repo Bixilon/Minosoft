@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,13 +26,35 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class TropicalFish(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSchoolingFish(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: Int
-        get() = data.sets.getInt(EntityDataFields.TROPICAL_FISH_VARIANT)
+    @get:SynchronizedEntityData
+    val variant: TropicalFishVariants
+        get() = TropicalFishVariants.VALUES.getOrNull(data.get(VARIANT_DATA, TropicalFishVariants.KOB.ordinal)) ?: TropicalFishVariants.KOB
 
+
+    enum class TropicalFishVariants {
+        KOB,
+        SUN_STREAK,
+        SNOOPER,
+        DASHER,
+        BRINELY,
+        SPOTTY,
+        FLOPPER,
+        STRIPEY,
+        GLITTER,
+        BLOCKFISH,
+        BETTY,
+        CLAYFISH,
+        ;
+
+        companion object : ValuesEnum<TropicalFishVariants> {
+            override val VALUES: Array<TropicalFishVariants> = values()
+            override val NAME_MAP: Map<String, TropicalFishVariants> = EnumUtil.getEnumValues(VALUES)
+        }
+    }
 
     companion object : EntityFactory<TropicalFish> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("tropical_fish")
+        private val VARIANT_DATA = EntityDataField("TROPICAL_FISH_VARIANT")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): TropicalFish {
             return TropicalFish(connection, entityType, data, position, rotation)

@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal.hoglin
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,13 +25,18 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Hoglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Immune zo zombification")
+    @get:SynchronizedEntityData
     val isImmuneToZombification: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.HOGLIN_IMMUNE_TO_ZOMBIFICATION)
+        get() = data.getBoolean(IMMUNE_TO_ZOMBIFICATION_DATA, false)
 
+    override val isBaby: Boolean
+        get() = data.getBoolean(IS_BABY_DATA, super.isBaby)
 
     companion object : EntityFactory<Hoglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("hoglin")
+        private val IS_BABY_DATA = EntityDataField("AGEABLE_IS_BABY")
+        private val IMMUNE_TO_ZOMBIFICATION_DATA = EntityDataField("HOGLIN_IMMUNE_TO_ZOMBIFICATION")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Hoglin {
             return Hoglin(connection, entityType, data, position, rotation)

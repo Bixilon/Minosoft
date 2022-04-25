@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,22 +25,25 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Dolphin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : WaterAnimal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Treasure position")
+    @get:SynchronizedEntityData
     val treasurePosition: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.DOLPHIN_TREASURE_POSITION)
+        get() = data.get(TREASURE_POSITION_DATA, null)
 
-    @SynchronizedEntityData(name = "Has fish")
-    fun hasFish(): Boolean {
-        return data.sets.getBoolean(EntityDataFields.DOLPHIN_HAS_FISH)
-    }
+    @get:SynchronizedEntityData
+    val hasFish: Boolean
+        get() = data.getBoolean(HAS_FISH_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Moistness level")
+    @get:SynchronizedEntityData
     val moistnessLevel: Int
-        get() = data.sets.getInt(EntityDataFields.DOLPHIN_MOISTNESS_LEVEL)
+        get() = data.get(MOISTNESS_LEVEL_DATA, 2400)
 
 
     companion object : EntityFactory<Dolphin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("dolphin")
+        private val TREASURE_POSITION_DATA = EntityDataField("DOLPHIN_TREASURE_POSITION")
+        private val HAS_FISH_DATA = EntityDataField("DOLPHIN_HAS_FISH")
+        private val MOISTNESS_LEVEL_DATA = EntityDataField("DOLPHIN_MOISTNESS_LEVEL")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Dolphin {
             return Dolphin(connection, entityType, data, position, rotation)

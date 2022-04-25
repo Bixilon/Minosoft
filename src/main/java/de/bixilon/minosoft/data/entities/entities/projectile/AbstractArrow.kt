@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -24,22 +24,29 @@ import java.util.*
 abstract class AbstractArrow(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, data, position, rotation) {
 
     private fun getAbstractArrowFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.ABSTRACT_ARROW_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is critical")
+    @get:SynchronizedEntityData
     val isCritical: Boolean
         get() = getAbstractArrowFlag(0x01)
 
-    @get:SynchronizedEntityData(name = "Is no clip")
+    @get:SynchronizedEntityData
     val isNoClip: Boolean
         get() = getAbstractArrowFlag(0x02)
 
-    @get:SynchronizedEntityData(name = "Piercing level")
+    @get:SynchronizedEntityData
     val piercingLevel: Byte
-        get() = data.sets.getByte(EntityDataFields.ABSTRACT_ARROW_PIERCE_LEVEL)
+        get() = data.get(PIERCE_LEVEL_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Owner UUID")
+    @get:SynchronizedEntityData
     val ownerUUID: UUID?
-        get() = data.sets.getUUID(EntityDataFields.ABSTRACT_ARROW_OWNER_UUID)
+        get() = data.get(OWNER_DATA, null)
+
+
+    companion object {
+        private val FLAGS_DATA = EntityDataField("ABSTRACT_ARROW_FLAGS")
+        private val PIERCE_LEVEL_DATA = EntityDataField("ABSTRACT_ARROW_PIERCE_LEVEL")
+        private val OWNER_DATA = EntityDataField("ABSTRACT_ARROW_OWNER_UUID")
+    }
 }

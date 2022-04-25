@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.npc.villager
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -23,7 +23,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AbstractVillager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AgeableMob(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Unhappy timer")
+    @get:SynchronizedEntityData
     val unhappyTimer: Int
-        get() = data.sets.getInt(EntityDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER)
+        get() = data.get(UNHAPPY_TIMER_DATA, 0)
+
+    companion object {
+        private val UNHAPPY_TIMER_DATA = EntityDataField("ABSTRACT_VILLAGER_UNHAPPY_TIMER")
+    }
 }

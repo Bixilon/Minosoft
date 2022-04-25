@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,16 +24,17 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class Spider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
     private fun getSpiderFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.SPIDER_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is climbing")
+    @get:SynchronizedEntityData
     val isClimbing: Boolean
         get() = getSpiderFlag(0x01)
 
 
     companion object : EntityFactory<Spider> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("spider")
+        private val FLAGS_DATA = EntityDataField("SPIDER_FLAGS")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Spider {
             return Spider(connection, entityType, data, position, rotation)

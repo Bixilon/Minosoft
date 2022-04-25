@@ -54,7 +54,7 @@ class WorldEntities : Iterable<Entity> {
         }
     }
 
-    operator fun get(id: Int): Entity? {
+    operator fun get(id: Int?): Entity? {
         try {
             lock.acquire()
             return idEntityMap[id]

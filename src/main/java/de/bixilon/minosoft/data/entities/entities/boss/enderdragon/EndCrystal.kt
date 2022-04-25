@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.boss.enderdragon
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -26,17 +26,20 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class EndCrystal(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Beam target")
+    @get:SynchronizedEntityData
     val beamTarget: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.END_CRYSTAL_BEAM_TARGET)
+        get() = data.get(BEAM_TARGET_DATA, null)
 
-    @SynchronizedEntityData(name = "Show bottom")
+    @get:SynchronizedEntityData
     val showBottom: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.END_CRYSTAL_SHOW_BOTTOM)
+        get() = data.getBoolean(SHOW_BOTTOM_DATA, true)
 
 
     companion object : EntityFactory<EndCrystal> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("end_crystal")
+        private val BEAM_TARGET_DATA = EntityDataField("END_CRYSTAL_BEAM_TARGET")
+        private val SHOW_BOTTOM_DATA = EntityDataField("END_CRYSTAL_SHOW_BOTTOM")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): EndCrystal {
             return EndCrystal(connection, entityType, data, position, rotation)

@@ -88,7 +88,7 @@ abstract class Entity(
     @JvmField
     @Deprecated(message = "Use connection.version")
     protected val versionId: Int = connection.version.versionId
-    open var attachedEntity: Int? = null
+    open var _attachedEntity: Int? = null
 
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
@@ -194,7 +194,7 @@ abstract class Entity(
     }
 
     fun attachTo(vehicleId: Int?) {
-        attachedEntity = vehicleId
+        _attachedEntity = vehicleId
     }
 
     fun setRotation(yaw: Int, pitch: Int) {
@@ -209,53 +209,53 @@ abstract class Entity(
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "On fire")
+    @get:SynchronizedEntityData
     val isOnFire: Boolean
         get() = getEntityFlag(0x01)
 
-    @get:SynchronizedEntityData(name = "Is sneaking")
+    @get:SynchronizedEntityData
     open val isSneaking: Boolean
         get() = getEntityFlag(0x02)
 
-    @get:SynchronizedEntityData(name = "Is sprinting")
+    @get:SynchronizedEntityData
     open val isSprinting: Boolean
         get() = getEntityFlag(0x08)
 
     val isSwimming: Boolean
         get() = getEntityFlag(0x10)
 
-    @get:SynchronizedEntityData(name = "Is invisible")
+    @get:SynchronizedEntityData
     val isInvisible: Boolean
         get() = getEntityFlag(0x20)
 
-    @SynchronizedEntityData(name = "Has glowing effect")
+    @get:SynchronizedEntityData
     val hasGlowingEffect: Boolean
         get() = getEntityFlag(0x20)
 
     val isFlyingWithElytra: Boolean
         get() = getEntityFlag(0x80)
 
-    @get:SynchronizedEntityData(name = "Air supply")
+    @get:SynchronizedEntityData
     val airSupply: Int
         get() = data.get(AIR_SUPPLY_DATA, 300)
 
-    @get:SynchronizedEntityData(name = "Custom name")
+    @get:SynchronizedEntityData
     val customName: ChatComponent?
         get() = data.get(CUSTOM_NAME_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Is custom name visible")
+    @get:SynchronizedEntityData
     val isCustomNameVisible: Boolean
         get() = data.get(CUSTOM_NAME_VISIBLE_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is silent")
+    @get:SynchronizedEntityData
     val isSilent: Boolean
         get() = data.get(SILENT_DATA, false)
 
-    @SynchronizedEntityData(name = "Has gravity")
+    @get:SynchronizedEntityData
     open val hasGravity: Boolean
         get() = !data.get(NO_GRAVITY_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Pose")
+    @get:SynchronizedEntityData
     open val pose: Poses?
         get() {
             return when {
@@ -266,7 +266,7 @@ abstract class Entity(
             }
         }
 
-    @get:SynchronizedEntityData(name = "Ticks frozen")
+    @get:SynchronizedEntityData
     val ticksFrozen: Int
         get() = data.get(TICKS_FROZEN_DATA, 0)
 

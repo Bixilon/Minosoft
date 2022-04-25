@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,9 +26,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Parrot(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ShoulderRidingAnimal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
+    @get:SynchronizedEntityData
     val variant: ParrotVariants
-        get() = ParrotVariants.byId(data.sets.getInt(EntityDataFields.PARROT_VARIANT))
+        get() = ParrotVariants.VALUES.getOrNull(data.get(VARIANT_DATA, ParrotVariants.RED_BLUE.ordinal)) ?: ParrotVariants.RED_BLUE
 
     enum class ParrotVariants {
         RED_BLUE,
@@ -36,16 +38,15 @@ class Parrot(connection: PlayConnection, entityType: EntityType, data: EntityDat
         GREY,
         ;
 
-        companion object {
-            private val PARROT_VARIANTS = values()
-            fun byId(id: Int): ParrotVariants {
-                return PARROT_VARIANTS[id]
-            }
+        companion object : ValuesEnum<ParrotVariants> {
+            override val VALUES: Array<ParrotVariants> = values()
+            override val NAME_MAP: Map<String, ParrotVariants> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
     companion object : EntityFactory<Parrot> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("parrot")
+        private val VARIANT_DATA = EntityDataField("PARROT_VARIANT")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Parrot {
             return Parrot(connection, entityType, data, position, rotation)

@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,15 +25,17 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class IronGolem(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
 
     private fun getIronGolemFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.IRON_GOLEM_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is player created")
+    @get:SynchronizedEntityData
     val isPlayerCreated: Boolean
         get() = getIronGolemFlag(0x01)
 
     companion object : EntityFactory<IronGolem> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("iron_golem")
+        private val FLAGS_DATA = EntityDataField("IRON_GOLEM_FLAGS")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): IronGolem {
             return IronGolem(connection, entityType, data, position, rotation)

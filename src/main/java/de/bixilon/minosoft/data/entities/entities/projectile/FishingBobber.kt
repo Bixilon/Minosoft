@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,17 +24,20 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class FishingBobber(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Hooked entity id")
-    val hookedEntityId: Int
-        get() = data.sets.getInt(EntityDataFields.FISHING_HOOK_HOOKED_ENTITY)
+    @get:SynchronizedEntityData
+    val hookedEntityId: Int?
+        get() = data.get(HOOKED_ENTITY_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Is catchable")
+    @get:SynchronizedEntityData
     val isCatchable: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.FISHING_HOOK_CATCHABLE)
+        get() = data.getBoolean(CATCHABLE_DATA, false)
 
 
     companion object : EntityFactory<FishingBobber> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("fishing_bobber")
+        private val HOOKED_ENTITY_DATA = EntityDataField("FISHING_HOOK_HOOKED_ENTITY")
+        private val CATCHABLE_DATA = EntityDataField("FISHING_HOOK_CATCHABLE")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FishingBobber {
             return FishingBobber(connection, entityType, data, position, rotation)

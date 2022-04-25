@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ExperienceOrb : Entity {
 
-    @get:SynchronizedEntityData(name = "Count")
+    @get:SynchronizedEntityData
     val count: Int
 
     constructor(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : super(connection, entityType, data, position, rotation) {

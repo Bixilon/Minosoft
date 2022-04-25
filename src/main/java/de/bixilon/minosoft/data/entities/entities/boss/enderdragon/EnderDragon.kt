@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.boss.enderdragon
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,9 +27,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class EnderDragon(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Phase")
+    @get:SynchronizedEntityData
     val phase: DragonPhases
-        get() = DragonPhases.byId(data.sets.getInt(EntityDataFields.ENDER_DRAGON_PHASE))
+        get() = DragonPhases.VALUES.getOrNull(data.get(PHASE_DATA, DragonPhases.HOVER.ordinal)) ?: DragonPhases.HOVER
 
     enum class DragonPhases {
         HOLDING,
@@ -43,16 +45,16 @@ class EnderDragon(connection: PlayConnection, entityType: EntityType, data: Enti
         HOVER,
         ;
 
-        companion object {
-            private val DRAGON_PHASES = values()
-            fun byId(id: Int): DragonPhases {
-                return DRAGON_PHASES[id]
-            }
+        companion object : ValuesEnum<DragonPhases> {
+            override val VALUES: Array<DragonPhases> = values()
+            override val NAME_MAP: Map<String, DragonPhases> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
     companion object : EntityFactory<EnderDragon> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("ender_dragon")
+        private val PHASE_DATA = EntityDataField("ENDER_DRAGON_PHASE")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): EnderDragon {
             return EnderDragon(connection, entityType, data, position, rotation)

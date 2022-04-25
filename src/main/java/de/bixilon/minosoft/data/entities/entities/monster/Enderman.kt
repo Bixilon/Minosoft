@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -27,25 +27,30 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, data, position, rotation) {
 
     // ToDo: No clue here
-    @get:SynchronizedEntityData(name = "Carried block")
+    @get:SynchronizedEntityData
     val carriedBlock: BlockState?
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            connection.registries.blockStateRegistry[data.sets.getInt(EntityDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) shl 4 or data.sets.getInt(EntityDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA)]
+            connection.registries.blockStateRegistry[data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0)]
         } else {
-            data.sets.getBlock(EntityDataFields.ENDERMAN_CARRIED_BLOCK)
+            data.get<BlockState?>(CARRIED_BLOCK_DATA, null)
         }
 
-    @get:SynchronizedEntityData(name = "Is screaming")
+    @get:SynchronizedEntityData
     val isScreaming: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ENDERMAN_IS_SCREAMING)
+        get() = data.getBoolean(SCREAMING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is starring")
+    @get:SynchronizedEntityData
     val isStarring: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ENDERMAN_IS_STARRING)
+        get() = data.getBoolean(STARRING_DATA, false)
 
 
     companion object : EntityFactory<Enderman> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("enderman")
+        private val CARRIED_BLOCK_DATA = EntityDataField("ENDERMAN_CARRIED_BLOCK")
+        private val SCREAMING_DATA = EntityDataField("ENDERMAN_IS_SCREAMING")
+        private val STARRING_DATA = EntityDataField("ENDERMAN_IS_STARRING")
+        private val LEGACY_BLOCK_DATA = EntityDataField("LEGACY_ENDERMAN_CARRIED_BLOCK")
+        private val LEGACY_BLOCK_DATA_DATA = EntityDataField("LEGACY_ENDERMAN_CARRIED_BLOCK_DATA")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Enderman {
             return Enderman(connection, entityType, data, position, rotation)

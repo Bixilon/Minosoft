@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,17 +26,17 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Axolotl(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Axolotl variant")
+    @get:SynchronizedEntityData
     val variant: AxolotlVariants
-        get() = AxolotlVariants.byId(data.sets.getInt(EntityDataFields.AXOLOTL_VARIANT))
+        get() = AxolotlVariants.VALUES.getOrNull(data.get(VARIANT_DATA, AxolotlVariants.LUCY.ordinal)) ?: AxolotlVariants.LUCY
 
-    @get:SynchronizedEntityData(name = "Is playing dead")
+    @get:SynchronizedEntityData
     val isPlayingDead: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.AXOLOTL_PLAYING_DEAD)
+        get() = data.getBoolean(PLAYING_DEAD_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is from bucket")
+    @get:SynchronizedEntityData
     val isFromBucket: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.AXOLOTL_FROM_BUCKET)
+        get() = data.getBoolean(FROM_BUCKET_DATA, false)
 
     enum class AxolotlVariants {
         LUCY,
@@ -44,16 +46,18 @@ class Axolotl(connection: PlayConnection, entityType: EntityType, data: EntityDa
         BLUE,
         ;
 
-        companion object {
-            private val AXOLOTL_VARIANTS = values()
-            fun byId(id: Int): AxolotlVariants {
-                return AXOLOTL_VARIANTS[id]
-            }
+        companion object : ValuesEnum<AxolotlVariants> {
+            override val VALUES: Array<AxolotlVariants> = values()
+            override val NAME_MAP: Map<String, AxolotlVariants> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
     companion object : EntityFactory<Axolotl> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("axolotl")
+        private val VARIANT_DATA = EntityDataField("AXOLOTL_VARIANT")
+        private val PLAYING_DEAD_DATA = EntityDataField("AXOLOTL_PLAYING_DEAD")
+        private val FROM_BUCKET_DATA = EntityDataField("AXOLOTL_FROM_BUCKET")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Axolotl {
             return Axolotl(connection, entityType, data, position, rotation)

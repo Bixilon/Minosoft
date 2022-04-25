@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera.target.targets
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.string.StringUtil.toSnakeCase
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
@@ -75,15 +76,11 @@ class EntityTarget(
                         continue
                     }
                     method.isAccessible = true
-                    try {
-                        val name: String = method.getAnnotation(SynchronizedEntityData::class.java).name
-                        if (values.containsKey(name)) {
-                            continue
-                        }
-                        values[name] = method(this) ?: continue
-                    } catch (exception: Throwable) {
-                        exception.printStackTrace()
+                    val name = method.name.toSnakeCase()
+                    if (values.containsKey(name)) {
+                        continue
                     }
+                    values[name] = method(this) ?: continue
                 }
                 clazz = clazz.superclass
             }

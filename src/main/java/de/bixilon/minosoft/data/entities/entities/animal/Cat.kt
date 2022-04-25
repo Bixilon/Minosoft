@@ -13,59 +13,52 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Cat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: CatVariants
-        get() = CatVariants.byId(data.sets.getInt(EntityDataFields.CAT_VARIANT))
-
-    @get:SynchronizedEntityData(name = "Lying")
-    val isLying: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.CAT_IS_LYING)
-
-    @get:SynchronizedEntityData(name = "Relaxed")
-    val isRelaxed: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.CAT_IS_RELAXED)
-
-    @get:SynchronizedEntityData(name = "Collar color")
-    val collarColor: RGBColor
-        get() = ChatColors[data.sets.getInt(EntityDataFields.CAT_GET_COLLAR_COLOR)]
-
-    enum class CatVariants {
-        TABBY,
-        BLACK,
-        RED,
-        SIAMESE,
-        BRITISH_SHORT_HAIR,
-        CALICO,
-        PERSIAN,
-        RAGDOLL,
-        ALL_BLACK,
-        ;
-
-        companion object {
-            private val CAT_VARIANTS = values()
-
-            fun byId(id: Int): CatVariants {
-                return CAT_VARIANTS[id]
+    @get:SynchronizedEntityData
+    val variant: CatVariant?
+        get() {
+            val variant: Any? = data.get(VARIANT_DATA, null)
+            if (variant is CatVariant) {
+                return variant
             }
+            if (variant is Int) {
+                return connection.registries.catVariants[variant]
+            }
+            return null
         }
-    }
+
+    @get:SynchronizedEntityData
+    val isLying: Boolean
+        get() = data.getBoolean(IS_LYING_DATA, false)
+
+    @get:SynchronizedEntityData
+    val isRelaxed: Boolean
+        get() = data.getBoolean(IS_RELAXED_DATA, false)
+
+    @get:SynchronizedEntityData
+    val collarColor: RGBColor
+        get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0x0C)) ?: ChatColors.RED
 
     companion object : EntityFactory<Cat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("cat")
+        private val VARIANT_DATA = EntityDataField("CAT_VARIANT")
+        private val IS_LYING_DATA = EntityDataField("CAT_IS_LYING")
+        private val IS_RELAXED_DATA = EntityDataField("CAT_IS_RELAXED")
+        private val COLLAR_COLOR_DATA = EntityDataField("CAT_GET_COLLAR_COLOR")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Cat {
             return Cat(connection, entityType, data, position, rotation)

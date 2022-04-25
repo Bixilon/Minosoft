@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,53 +27,69 @@ import java.util.*
 
 class Fox(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: Int
-        get() = data.sets.getInt(EntityDataFields.FOX_VARIANT)
+    @get:SynchronizedEntityData
+    val variant: FoxVariants
+        get() = FoxVariants.VALUES.getOrNull(data.get(VARIANT_DATA, FoxVariants.RED.ordinal)) ?: FoxVariants.RED
 
     private fun getFoxFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.FOX_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is sitting")
+    @get:SynchronizedEntityData
     val isSitting: Boolean
         get() = getFoxFlag(0x01)
 
-    @get:SynchronizedEntityData(name = "Is crouching")
+    @get:SynchronizedEntityData
     override val isSneaking: Boolean
         get() = getFoxFlag(0x04)
 
-    @get:SynchronizedEntityData(name = "Is interested")
+    @get:SynchronizedEntityData
     val isInterested: Boolean
         get() = getFoxFlag(0x08)
 
-    @get:SynchronizedEntityData(name = "Is pouncing")
+    @get:SynchronizedEntityData
     val isPouncing: Boolean
         get() = getFoxFlag(0x10)
 
-    @get:SynchronizedEntityData(name = "Is sleeping")
+    @get:SynchronizedEntityData
     override val isSleeping: Boolean
         get() = getFoxFlag(0x20)
 
-    @get:SynchronizedEntityData(name = "Is faceplanted")
-    val isFaceplanted: Boolean
+    @get:SynchronizedEntityData
+    val isWalking: Boolean
         get() = getFoxFlag(0x40)
 
-    @get:SynchronizedEntityData(name = "Is defending")
+    @get:SynchronizedEntityData
     val isDefending: Boolean
         get() = getFoxFlag(0x80)
 
-    @get:SynchronizedEntityData(name = "Trusted 1")
-    val firstTrusted: UUID?
-        get() = data.sets.getUUID(EntityDataFields.FOX_TRUSTED_1)
+    @get:SynchronizedEntityData
+    val owner: UUID?
+        get() = data.get(OWNER_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Trusted 2")
-    val secondTrusted: UUID?
-        get() = data.sets.getUUID(EntityDataFields.FOX_TRUSTED_2)
+    @get:SynchronizedEntityData
+    val trusted: UUID?
+        get() = data.get(TRUSTED_DATA, null)
 
+
+    enum class FoxVariants {
+        RED,
+        SNOW,
+        ;
+
+        companion object : ValuesEnum<FoxVariants> {
+            override val VALUES: Array<FoxVariants> = values()
+            override val NAME_MAP: Map<String, FoxVariants> = EnumUtil.getEnumValues(VALUES)
+        }
+    }
 
     companion object : EntityFactory<Fox> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("fox")
+        private val VARIANT_DATA = EntityDataField("FOX_VARIANT")
+        private val FLAGS_DATA = EntityDataField("FOX_FLAGS")
+        private val OWNER_DATA = EntityDataField("FOX_TRUSTED_1")
+        private val TRUSTED_DATA = EntityDataField("FOX_TRUSTED_2")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Fox {
             return Fox(connection, entityType, data, position, rotation)

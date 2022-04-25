@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,16 +24,19 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ThrownTrident(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractArrow(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Loyalty level")
+    @get:SynchronizedEntityData
     val loyaltyLevel: Byte
-        get() = data.sets.getByte(EntityDataFields.THROWN_TRIDENT_LOYALTY_LEVEL)
+        get() = data.get(TRIDENT_LOYALTY_LEVEL_DATA, 0.toByte())
 
-    @get:SynchronizedEntityData(name = "Is enchanted")
+    @get:SynchronizedEntityData
     val isEnchanted: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.THROWN_TRIDENT_FOIL)
+        get() = data.getBoolean(ENCHANTED_DATA, false)
 
     companion object : EntityFactory<ThrownTrident> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("trident")
+        private val TRIDENT_LOYALTY_LEVEL_DATA = EntityDataField("THROWN_TRIDENT_LOYALTY_LEVEL")
+        private val ENCHANTED_DATA = EntityDataField("THROWN_TRIDENT_FOIL")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownTrident {
             return ThrownTrident(connection, entityType, data, position, rotation)

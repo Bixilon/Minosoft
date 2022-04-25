@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.npc.villager
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,12 +25,13 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Villager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractVillager(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Villager data")
-    val villagerDate: VillagerData
-        get() = data.sets.getVillagerData(EntityDataFields.VILLAGER_VILLAGER_DATA)
+    @get:SynchronizedEntityData
+    val villagerDate: VillagerData?
+        get() = data.get(VILLAGER_DATA_DATA, null) // ToDo: default villager data
 
     companion object : EntityFactory<Villager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("villager")
+        private val VILLAGER_DATA_DATA = EntityDataField("VILLAGER_VILLAGER_DATA")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Villager {
             return Villager(connection, entityType, data, position, rotation)

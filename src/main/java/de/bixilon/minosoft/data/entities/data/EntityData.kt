@@ -13,15 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.data
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.BitByte
@@ -29,7 +21,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import java.util.*
 
 class EntityData(
     val connection: PlayConnection,
@@ -37,7 +28,6 @@ class EntityData(
 ) {
     private val lock = SimpleLock()
     private val data: Int2ObjectOpenHashMap<Any> = Int2ObjectOpenHashMap<Any>()
-    @Deprecated("ABC") val sets: EntityDataHashMap = EntityDataHashMap()
 
     init {
         data?.let { merge(it) }
@@ -53,10 +43,6 @@ class EntityData(
             this.data[index] = value
         }
         lock.unlock()
-    }
-
-    override fun toString(): String {
-        return sets.toString()
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
@@ -94,95 +80,5 @@ class EntityData(
 
     fun getChatComponent(field: EntityDataField, default: Any?): ChatComponent {
         return ChatComponent.of(get(field, default))
-    }
-
-    @Deprecated("refactor")
-    inner class EntityDataHashMap : Int2ObjectOpenHashMap<Any>() {
-
-        inline operator fun <reified K> get(field: EntityDataFields): K {
-            throw TODO()
-        }
-
-        fun getPose(field: EntityDataFields): Poses? {
-            return get(field)
-        }
-
-        fun getByte(field: EntityDataFields): Byte {
-            return get(field) ?: 0
-        }
-
-        fun getVillagerData(field: EntityDataFields): VillagerData {
-            return get(field)
-        }
-
-        fun getParticle(field: EntityDataFields): ParticleData {
-            return get(field)
-        }
-
-        fun getNBT(field: EntityDataFields): Map<String, Any>? {
-            return get(field)
-        }
-
-        fun getBlock(field: EntityDataFields): BlockState? {
-            return get(field)
-        }
-
-        fun getUUID(field: EntityDataFields): UUID? {
-            return get(field)
-        }
-
-        fun getDirection(field: EntityDataFields): Directions {
-            return get(field)
-        }
-
-        fun getVec3i(field: EntityDataFields): Vec3i? {
-            return get(field)
-        }
-
-        fun getBlockPosition(field: EntityDataFields): Vec3i? {
-            return get(field)
-        }
-
-
-        fun getBoolean(field: EntityDataFields): Boolean {
-            val ret: Any = get(field) ?: return false
-            if (ret is Byte) {
-                return ret == 0x01.toByte()
-            }
-            return ret as Boolean
-        }
-
-        fun getBitMask(field: EntityDataFields, bitMask: Int): Boolean {
-            val byte: Byte = getByte(field)
-            return BitByte.isBitMask(byte.toInt(), bitMask)
-        }
-
-        fun getItemStack(field: EntityDataFields): ItemStack? {
-            return get(field)
-        }
-
-        fun getChatComponent(field: EntityDataFields): ChatComponent? {
-            return get<Any?>(field)?.let { ChatComponent.of(it, connection.language) }
-        }
-
-        fun getString(field: EntityDataFields): String? {
-            return get(field)
-        }
-
-        fun getFloat(field: EntityDataFields): Float {
-            return get(field) ?: 0.0f
-        }
-
-        fun getInt(field: EntityDataFields): Int {
-            val ret: Any = get(field) ?: 0
-            if (ret is Byte) {
-                return ret.toInt()
-            }
-            return ret as Int
-        }
-
-        fun getShort(field: EntityDataFields): Short {
-            return get(field) ?: 0
-        }
     }
 }

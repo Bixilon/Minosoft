@@ -13,26 +13,26 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import org.checkerframework.common.value.qual.IntRange
 
 open class Slime(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Size")
-    val size: @IntRange(from = 0.toLong()) Int
-        get() = data.sets.getInt(EntityDataFields.SLIME_SIZE)
+    @get:SynchronizedEntityData
+    val size: Int
+        get() = data.get(SIZE_DATA, 1)
 
 
     companion object : EntityFactory<Slime> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("slime")
+        private val SIZE_DATA = EntityDataField("SLIME_SIZE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Slime {
             return Slime(connection, entityType, data, position, rotation)

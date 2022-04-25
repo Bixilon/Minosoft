@@ -38,6 +38,7 @@ import de.bixilon.minosoft.data.entities.entities.monster.raid.*
 import de.bixilon.minosoft.data.entities.entities.npc.villager.AbstractVillager
 import de.bixilon.minosoft.data.entities.entities.npc.villager.Villager
 import de.bixilon.minosoft.data.entities.entities.npc.villager.WanderingTrader
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.projectile.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
@@ -185,10 +186,11 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
         return tweakedFactory.build(connection, tweakedEntityType, data ?: EntityData(connection), position, rotation)
     }
 
-    val ABSTRACT_ENTITY_META_CLASSES = mapOf(
+    val ABSTRACT_ENTITY_DATA_CLASSES = mapOf(
+        "minecraft:player".toResourceLocation() to PlayerEntity::class,
         "Entity".toResourceLocation() to Entity::class,
         "LivingEntity".toResourceLocation() to LivingEntity::class,
-        "PersistentProjectileEntity".toResourceLocation() to Projectile::class,
+        "PersistentProjectileEntity".toResourceLocation() to AbstractArrow::class,
         "MobEntity".toResourceLocation() to Mob::class,
         "PassiveEntity".toResourceLocation() to AgeableMob::class,
         "TameableEntity".toResourceLocation() to TamableAnimal::class,

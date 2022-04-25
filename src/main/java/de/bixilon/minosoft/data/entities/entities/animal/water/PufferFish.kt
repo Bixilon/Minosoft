@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -23,13 +23,15 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class PufferFish(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractFish(connection, entityType, data, position, rotation) {
-    @get:SynchronizedEntityData(name = "Puff state")
+
+    @get:SynchronizedEntityData
     val puffState: Int
-        get() = data.sets.getInt(EntityDataFields.PUFFERFISH_PUFF_STATE)
+        get() = data.get(PUFF_STATE_DATA, 0)
 
 
     companion object : EntityFactory<PufferFish> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pufferfish")
+        private val PUFF_STATE_DATA = EntityDataField("PUFFERFISH_PUFF_STATE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PufferFish {
             return PufferFish(connection, entityType, data, position, rotation)

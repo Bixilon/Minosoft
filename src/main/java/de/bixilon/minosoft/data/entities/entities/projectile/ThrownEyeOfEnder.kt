@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -27,9 +27,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Item")
+    @get:SynchronizedEntityData
     val item: ItemStack
-        get() = data.sets.getItemStack(EntityDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: defaultItem
+        get() = data.get(ITEM_DATA, defaultItem)
 
     val defaultItem: ItemStack
         get() = ItemStackUtil.of(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection = connection)
@@ -39,6 +39,8 @@ class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, data:
     companion object : EntityFactory<ThrownEyeOfEnder> {
         private val DEFAULT_ITEM = ResourceLocation("ender_eye")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("eye_of_ender")
+        private val ITEM_DATA = EntityDataField("THROWN_EYE_OF_ENDER_ITEM")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownEyeOfEnder {
             return ThrownEyeOfEnder(connection, entityType, data, position, rotation)

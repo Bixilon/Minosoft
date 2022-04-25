@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.decoration
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,15 +26,15 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Item")
+    @get:SynchronizedEntityData
     val item: ItemStack?
-        get() = data.sets.getItemStack(EntityDataFields.ITEM_FRAME_ITEM)
+        get() = data.get(ITEM_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Item rotation level")
+    @get:SynchronizedEntityData
     val itemRotation: Int
-        get() = data.sets.getInt(EntityDataFields.ITEM_FRAME_ROTATION)
+        get() = data.get(ROTATION_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Facing")
+    @get:SynchronizedEntityData
     var facing: Directions = Directions.NORTH
 
     override fun setObjectData(data: Int) {
@@ -43,6 +43,9 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, data: E
 
     companion object : EntityFactory<ItemFrame> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item_frame")
+        private val ITEM_DATA = EntityDataField("ITEM_FRAME_ITEM")
+        private val ROTATION_DATA = EntityDataField("ITEM_FRAME_ROTATION")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ItemFrame {
             return ItemFrame(connection, entityType, data, position, rotation)

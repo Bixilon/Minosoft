@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster.raid
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,12 +24,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Pillager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractIllager(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is charging crossbow")
+    @get:SynchronizedEntityData
     val isChargingCrossbow: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.PILLAGER_IS_CHARGING_CROSSBOW)
+        get() = data.getBoolean(IS_CHARGING_CROSSBOW_DATA, false)
 
     companion object : EntityFactory<Pillager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pillager")
+        private val IS_CHARGING_CROSSBOW_DATA = EntityDataField("PILLAGER_IS_CHARGING_CROSSBOW")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Pillager {
             return Pillager(connection, entityType, data, position, rotation)

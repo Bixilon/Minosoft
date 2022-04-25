@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,17 +25,20 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ZombieVillager(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is converting")
+    @get:SynchronizedEntityData
     val isConverting: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ZOMBIE_VILLAGER_IS_CONVERTING)
+        get() = data.getBoolean(IS_CONVERTING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Villager data")
-    val villagerData: VillagerData
-        get() = data.sets.getVillagerData(EntityDataFields.ZOMBIE_VILLAGER_DATA)
+    @get:SynchronizedEntityData
+    val villagerData: VillagerData?
+        get() = data.get(VILLAGER_DATA_DATA, null) // ToDo: Default villager data
 
 
     companion object : EntityFactory<ZombieVillager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_villager")
+        private val IS_CONVERTING_DATA = EntityDataField("ZOMBIE_VILLAGER_IS_CONVERTING")
+        private val VILLAGER_DATA_DATA = EntityDataField("ZOMBIE_VILLAGER_DATA")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ZombieVillager {
             return ZombieVillager(connection, entityType, data, position, rotation)

@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -29,25 +29,30 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Shulker(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Attachment face")
+    @get:SynchronizedEntityData
     val attachmentFace: Directions
-        get() = data.sets.getDirection(EntityDataFields.SHULKER_ATTACH_FACE)
+        get() = data.get(ATTACH_FACE_DATA, Directions.NORTH)
 
-    @get:SynchronizedEntityData(name = "Attachment position")
+    @get:SynchronizedEntityData
     val attachmentPosition: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.SHULKER_ATTACHMENT_POSITION)
+        get() = data.get(ATTACH_POSITION_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Peek")
+    @get:SynchronizedEntityData
     val peek: Byte
-        get() = data.sets.getByte(EntityDataFields.SHULKER_PEEK)
+        get() = data.get(PEEK_DATA, 0x00.toByte())
 
-    @get:SynchronizedEntityData(name = "Color")
+    @get:SynchronizedEntityData
     val color: RGBColor
-        get() = ChatColors[data.sets.getByte(EntityDataFields.SHULKER_COLOR).toInt()]
+        get() = ChatColors.VALUES.getOrNull(data.get(COLOR_DATA, 0x00)) ?: ChatColors.DARK_PURPLE
 
 
     companion object : EntityFactory<Shulker> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("shulker")
+        private val ATTACH_FACE_DATA = EntityDataField("SHULKER_ATTACH_FACE")
+        private val ATTACH_POSITION_DATA = EntityDataField("SHULKER_ATTACHMENT_POSITION")
+        private val PEEK_DATA = EntityDataField("SHULKER_PEEK")
+        private val COLOR_DATA = EntityDataField("SHULKER_COLOR")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Shulker {
             return Shulker(connection, entityType, data, position, rotation)

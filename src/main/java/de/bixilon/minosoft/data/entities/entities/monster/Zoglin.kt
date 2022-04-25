@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,13 +24,15 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Zoglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is baby")
+    @get:SynchronizedEntityData
     val isBaby: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.ZOGLIN_IS_BABY)
+        get() = data.getBoolean(ZOGLIN_DATA, false)
 
 
     companion object : EntityFactory<Zoglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zoglin")
+        private val ZOGLIN_DATA = EntityDataField("ZOGLIN_IS_BABY")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Zoglin {
             return Zoglin(connection, entityType, data, position, rotation)

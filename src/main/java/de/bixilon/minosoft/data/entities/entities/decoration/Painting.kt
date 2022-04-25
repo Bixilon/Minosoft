@@ -32,8 +32,8 @@ class Painting(
     entityType: EntityType,
     data: EntityData,
     position: Vec3i,
-    @get:SynchronizedEntityData(name = "Direction") val direction: Directions,
-    @get:SynchronizedEntityData(name = "Motive") val motive: Motive?,
+    @get:SynchronizedEntityData val direction: Directions,
+    @get:SynchronizedEntityData val motive: Motive?,
 ) : Entity(connection, entityType, data, position.entityPosition, EntityRotation(0.0f, 0.0f)) {
 
     companion object : EntityFactory<Painting> {

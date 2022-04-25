@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -27,12 +27,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 class ThrownPotion(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, data, position, rotation) {
     override val gravity: Float = 0.05f
 
-    @SynchronizedEntityData(name = "Item")
+    @get:SynchronizedEntityData
     override val item: ItemStack?
         get() = if (versionId > ProtocolVersions.V_20W09A) {
             super.item
         } else {
-            data.sets.getItemStack(EntityDataFields.THROWN_POTION_ITEM) ?: defaultItem
+            data.get<ItemStack?>(POTION_ITEM_DATA, null) ?: defaultItem
         }
     override val defaultItemType: ResourceLocation
         get() = throw NullPointerException()
@@ -41,6 +41,7 @@ class ThrownPotion(connection: PlayConnection, entityType: EntityType, data: Ent
 
     companion object : EntityFactory<ThrownPotion> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("potion")
+        private val POTION_ITEM_DATA = EntityDataField("THROWN_POTION_ITEM")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ThrownPotion {
             return ThrownPotion(connection, entityType, data, position, rotation)

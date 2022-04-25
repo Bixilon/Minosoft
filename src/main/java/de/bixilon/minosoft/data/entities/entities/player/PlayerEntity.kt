@@ -14,11 +14,12 @@ package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.player.Arms
@@ -43,37 +44,37 @@ abstract class PlayerEntity(
     override val dimensions: Vec2
         get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
 
-    @get:SynchronizedEntityData(name = "Gamemode")
+    @get:SynchronizedEntityData
     val gamemode: Gamemodes
         get() = tabListItem.gamemode
 
-    @get:SynchronizedEntityData(name = "name")
+    @get:SynchronizedEntityData
     val name: String
         get() = tabListItem.name
 
-    @get:SynchronizedEntityData(name = "Absorption hearts")
+    @get:SynchronizedEntityData
     val playerAbsorptionHearts: Float
-        get() = data.sets.getFloat(EntityDataFields.PLAYER_ABSORPTION_HEARTS)
+        get() = data.get(ABSORPTION_HEARTS_DATA, 0.0f)
 
-    @get:SynchronizedEntityData(name = "Score")
+    @get:SynchronizedEntityData
     val score: Int
-        get() = data.sets.getInt(EntityDataFields.PLAYER_SCORE)
+        get() = data.get(SCORE_DATA, 0)
 
     private fun getSkinPartsFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask)
+        return data.getBitMask(SKIN_PARTS_DATA, bitMask, 0x00.toByte())
     }
 
-    @get:SynchronizedEntityData(name = "Main arm")
+    @get:SynchronizedEntityData
     open val mainArm: Arms
-        get() = if (data.sets.getByte(EntityDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
+        get() = if (data.get(MAIN_ARM_DATA, 0x00.toByte()).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
 
-    @get:SynchronizedEntityData(name = "Left shoulder entity data")
-    val leftShoulderData: Map<String, Any>?
-        get() = data.sets.getNBT(EntityDataFields.PLAYER_LEFT_SHOULDER_DATA)
+    @get:SynchronizedEntityData
+    val leftShoulderData: JsonObject?
+        get() = data.get(LEFT_SHOULDER_DATA_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Right shoulder entity data")
-    val rightShoulderData: Map<String, Any>?
-        get() = data.sets.getNBT(EntityDataFields.PLAYER_RIGHT_SHOULDER_DATA)
+    @get:SynchronizedEntityData
+    val rightShoulderData: JsonObject?
+        get() = data.get(RIGHT_SHOULDER_DATA_DATA, null)
 
     override val spawnSprintingParticles: Boolean
         get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
@@ -101,5 +102,11 @@ abstract class PlayerEntity(
             Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
             Poses.DYING to Vec2(0.2f, 0.2f),
         )
+        private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
+        private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
+        private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
+        private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
+        private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
+        private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
     }
 }

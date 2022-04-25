@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.item
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -27,12 +27,13 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Block state")
+    @get:SynchronizedEntityData
     var blockState: BlockState? = null
+        private set
 
-    @get:SynchronizedEntityData(name = "Spawn position")
+    @get:SynchronizedEntityData
     val spawnPosition: Vec3i?
-        get() = data.sets.getBlockPosition(EntityDataFields.FALLING_BLOCK_SPAWN_POSITION)
+        get() = data.get(SPAWN_POSITION_DATA, null)
 
 
     override fun onAttack(attacker: Entity): Boolean = false
@@ -53,6 +54,8 @@ class FallingBlockEntity(connection: PlayConnection, entityType: EntityType, dat
 
     companion object : EntityFactory<FallingBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("falling_block")
+        private val SPAWN_POSITION_DATA = EntityDataField("FALLING_BLOCK_SPAWN_POSITION")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FallingBlockEntity {
             return FallingBlockEntity(connection, entityType, data, position, rotation)

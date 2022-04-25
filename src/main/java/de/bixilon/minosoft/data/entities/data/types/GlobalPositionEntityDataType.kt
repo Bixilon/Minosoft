@@ -16,16 +16,20 @@ package de.bixilon.minosoft.data.entities.data.types
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.GlobalPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 object GlobalPositionEntityDataType : EntityDataType<GlobalPosition> {
 
     override fun read(buffer: PlayInByteBuffer): GlobalPosition? {
-        return buffer.readNBT()?.toJsonObject()?.toGlobalPosition()
+        return buffer.readNBT()?.toJsonObject()?.toGlobalPosition(buffer.connection)
     }
 
 
-    fun JsonObject.toGlobalPosition(): GlobalPosition {
-        TODO("Not yet implemented")
+    fun JsonObject.toGlobalPosition(connection: PlayConnection): GlobalPosition {
+        val dimension = connection.registries.dimensionRegistry[this["dimension"]]
+        val position = this["pos"].toVec3i()
+        return GlobalPosition(dimension, position)
     }
 }

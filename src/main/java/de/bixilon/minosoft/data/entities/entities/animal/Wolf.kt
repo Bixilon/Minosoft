@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -28,33 +28,38 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is beging")
+    @get:SynchronizedEntityData
     val isBegging: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.WOLF_IS_BEGGING)
+        get() = data.getBoolean(IS_BEGGING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Collar color")
+    @get:SynchronizedEntityData
     val collarColor: RGBColor
-        get() = ChatColors[data.sets.getInt(EntityDataFields.WOLF_COLLAR_COLOR)]
+        get() = ChatColors.VALUES.getOrNull(data.get(COLLAR_COLOR_DATA, 0)) ?: ChatColors.WHITE
 
     // ToDo
-    @get:SynchronizedEntityData(name = "Anger time")
+    @get:SynchronizedEntityData
     val angerTime: Int
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
-            if (data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
+            // ToDo if (data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
+            0
         } else {
-            data.sets.getInt(EntityDataFields.WOLF_ANGER_TIME)
+            data.get(ANGER_TIME_DATA, 0)
         }
 
-    @SynchronizedEntityData(name = "Health")
+    @get:SynchronizedEntityData
     override val health: Double
         get() = if (versionId > ProtocolVersions.V_19W45B) {
             super.health
         } else {
-            data.sets.getFloat(EntityDataFields.WOLF_HEALTH).toDouble()
+            data.get<Number>(HEALTH_DATA, 0.0f).toDouble()
         }
 
     companion object : EntityFactory<Wolf> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wolf")
+        private val IS_BEGGING_DATA = EntityDataField("WOLF_IS_BEGGING")
+        private val COLLAR_COLOR_DATA = EntityDataField("WOLF_COLLAR_COLOR")
+        private val ANGER_TIME_DATA = EntityDataField("WOLF_ANGER_TIME")
+        private val HEALTH_DATA = EntityDataField("WOLF_HEALTH")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Wolf {
             return Wolf(connection, entityType, data, position, rotation)

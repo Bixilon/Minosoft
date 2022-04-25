@@ -28,7 +28,7 @@ class Bat(connection: PlayConnection, entityType: EntityType, data: EntityData, 
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Hanging")
+    @get:SynchronizedEntityData
     val isHanging: Boolean
         get() = getBatFlag(0x01)
 

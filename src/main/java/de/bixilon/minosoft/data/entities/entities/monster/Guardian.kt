@@ -13,31 +13,51 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 open class Guardian(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is moving")
+    @get:SynchronizedEntityData
     val isMoving: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.GUARDIAN_IS_MOVING)
+        get() = data.getBoolean(IS_MOVING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Attacked entity id")
-    val attackEntityId: Int
-        get() = data.sets.getInt(EntityDataFields.GUARDIAN_TARGET_ENTITY_ID)
+    @get:SynchronizedEntityData
+    val _target: Int?
+        get() = data.get(TARGET_DATA, null)
+
+    val target: Entity?
+        get() = connection.world.entities[_target]
 
 
     companion object : EntityFactory<Guardian> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("guardian")
+        private val IS_MOVING_DATA = EntityDataField("GUARDIAN_IS_MOVING")
+        private val TARGET_DATA = EntityDataField("GUARDIAN_TARGET_ENTITY_ID")
+        private val LEGACY_FLAGS_DATA = EntityDataField("LEGACY_GUARDIAN_FLAGS")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Guardian {
             return Guardian(connection, entityType, data, position, rotation)
+        }
+
+        override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
+            if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
+                return RESOURCE_LOCATION
+            }
+            val specialType = data.getBitMask(LEGACY_FLAGS_DATA, 0x02, 0)
+            if (specialType) {
+                return ElderGuardian.RESOURCE_LOCATION
+            }
+            return RESOURCE_LOCATION
         }
     }
 }

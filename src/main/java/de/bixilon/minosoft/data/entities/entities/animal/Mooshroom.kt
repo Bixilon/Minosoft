@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,13 +26,26 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Mooshroom(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Cow(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Variant")
-    val variant: String?
-        get() = data.sets.getString(EntityDataFields.MOOSHROOM_VARIANT)
+    @get:SynchronizedEntityData
+    val variant: MooshroomVariants?
+        get() = MooshroomVariants.NAME_MAP[data.get(VARIANT_DATA, MooshroomVariants.RED.name).lowercase()] ?: MooshroomVariants.RED
 
+
+    enum class MooshroomVariants {
+        RED,
+        BROWN,
+        ;
+
+        companion object : ValuesEnum<MooshroomVariants> {
+            override val VALUES: Array<MooshroomVariants> = values()
+            override val NAME_MAP: Map<String, MooshroomVariants> = EnumUtil.getEnumValues(VALUES)
+        }
+    }
 
     companion object : EntityFactory<Mooshroom> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("mooshroom")
+        private val VARIANT_DATA = EntityDataField("MOOSHROOM_VARIANT")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Mooshroom {
             return Mooshroom(connection, entityType, data, position, rotation)

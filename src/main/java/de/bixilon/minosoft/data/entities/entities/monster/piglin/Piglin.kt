@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster.piglin
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,30 +25,34 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 class Piglin(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractPiglin(connection, entityType, data, position, rotation) {
 
-    @SynchronizedEntityData(name = "Is immune to zombification")
+    @get:SynchronizedEntityData
     override val isImmuneToZombification: Boolean
         get() = if (versionId < ProtocolVersions.V_20W27A) {
             super.isImmuneToZombification
         } else {
-            data.sets.getBoolean(EntityDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION)
-
+            data.getBoolean(IMMUNE_TO_ZOMBIFICATION_DATA, false)
         }
 
-    @get:SynchronizedEntityData(name = "Is baby")
+    @get:SynchronizedEntityData
     val isBaby: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_BABY)
+        get() = data.getBoolean(IS_BABY_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is charging crossbow")
+    @get:SynchronizedEntityData
     val isChargingCrossbow: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_CHARGING_CROSSBOW)
+        get() = data.getBoolean(IS_CHARGING_CROSSBOW_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Is dancing")
+    @get:SynchronizedEntityData
     val isDancing: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.PIGLIN_IS_DANCING)
+        get() = data.getBoolean(IS_DANCING_DATA, false)
 
 
     companion object : EntityFactory<Piglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("piglin")
+        private val IMMUNE_TO_ZOMBIFICATION_DATA = EntityDataField("PIGLIN_IMMUNE_TO_ZOMBIFICATION")
+        private val IS_BABY_DATA = EntityDataField("PIGLIN_IS_BABY")
+        private val IS_CHARGING_CROSSBOW_DATA = EntityDataField("PIGLIN_IS_CHARGING_CROSSBOW")
+        private val IS_DANCING_DATA = EntityDataField("PIGLIN_IS_DANCING")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Piglin {
             return Piglin(connection, entityType, data, position, rotation)

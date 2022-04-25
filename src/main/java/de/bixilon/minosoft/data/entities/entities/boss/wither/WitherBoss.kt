@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.boss.wither
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.monster.Monster
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,25 +25,30 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class WitherBoss(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Center head target entity id")
-    val centerHeadTargetEntityId: Int
-        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID)
+    @get:SynchronizedEntityData
+    val centerHeadTargetEntityId: Int?
+        get() = data.get(CENTER_TARGET_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Left head target entity id")
-    val leftHeadTargetEntityId: Int
-        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID)
+    @get:SynchronizedEntityData
+    val leftHeadTargetEntityId: Int?
+        get() = data.get(LEFT_TARGET_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Right head target entity id")
-    val rightHeadTargetEntityId: Int
-        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID)
+    @get:SynchronizedEntityData
+    val rightHeadTargetEntityId: Int?
+        get() = data.get(RIGHT_TARGET_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Invulnerable time")
+    @get:SynchronizedEntityData
     val invulnerableTime: Int
-        get() = data.sets.getInt(EntityDataFields.WITHER_BOSS_INVULNERABLE_TIME)
+        get() = data.get(INVULNERABILITY_TIME_DATA, 0)
 
 
     companion object : EntityFactory<WitherBoss> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wither")
+        private val CENTER_TARGET_DATA = EntityDataField("WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID")
+        private val LEFT_TARGET_DATA = EntityDataField("WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID")
+        private val RIGHT_TARGET_DATA = EntityDataField("WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID")
+        private val INVULNERABILITY_TIME_DATA = EntityDataField("WITHER_BOSS_INVULNERABLE_TIME")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): WitherBoss {
             return WitherBoss(connection, entityType, data, position, rotation)

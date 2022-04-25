@@ -13,17 +13,20 @@
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class AbstractChestedHorse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
-    @SynchronizedEntityData(name = "Has chest")
-    fun hasChest(): Boolean {
-        return data.sets.getBoolean(EntityDataFields.ABSTRACT_CHESTED_HORSE_HAS_CHEST)
+    @get:SynchronizedEntityData
+    val hasChest: Boolean
+        get() = data.getBoolean(HAS_CHEST_DATA, false)
+
+    companion object {
+        private val HAS_CHEST_DATA = EntityDataField("ABSTRACT_CHESTED_HORSE_HAS_CHEST")
     }
 }

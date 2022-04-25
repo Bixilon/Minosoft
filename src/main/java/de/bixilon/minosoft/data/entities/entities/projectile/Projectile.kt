@@ -22,9 +22,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class Projectile(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Owner")
+    @get:SynchronizedEntityData
     var owner: Entity? = null
-
 
     override fun onAttack(attacker: Entity): Boolean = false
 

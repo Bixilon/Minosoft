@@ -28,21 +28,19 @@ class Bee(connection: PlayConnection, entityType: EntityType, data: EntityData, 
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is angry")
+    @get:SynchronizedEntityData
     val isAngry: Boolean
         get() = getBeeFlag(0x02)
 
-    @SynchronizedEntityData(name = "Has stung")
-    fun hasStung(): Boolean {
-        return getBeeFlag(0x04)
-    }
+    @get:SynchronizedEntityData
+    val hasStung: Boolean
+        get() = getBeeFlag(0x04)
 
-    @SynchronizedEntityData(name = "has Nectar")
-    fun hasNectar(): Boolean {
-        return getBeeFlag(0x08)
-    }
+    @get:SynchronizedEntityData
+    val hasNectar: Boolean
+        get() = getBeeFlag(0x08)
 
-    @get:SynchronizedEntityData(name = "Remaining anger time")
+    @get:SynchronizedEntityData
     val remainingAngerTimer: Int
         get() = data.get(REMAINING_ANGER_DATA, 0)
 

@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.item
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,13 +25,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class PrimedTNT(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Fuse time")
+    @get:SynchronizedEntityData
     val fuseTime: Int
-        get() = data.sets.getInt(EntityDataFields.PRIMED_TNT_FUSE_TIME)
+        get() = data.get(FUSE_TIME_DATA, 80)
 
 
     companion object : EntityFactory<PrimedTNT> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("tnt")
+        private val FUSE_TIME_DATA = EntityDataField("PRIMED_TNT_FUSE_TIME")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): PrimedTNT {
             return PrimedTNT(connection, entityType, data, position, rotation)

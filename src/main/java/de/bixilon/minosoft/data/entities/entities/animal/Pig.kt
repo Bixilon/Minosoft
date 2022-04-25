@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,18 +24,20 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Pig(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @SynchronizedEntityData(name = "Has saddle")
-    fun hasSaddle(): Boolean {
-        return data.sets.getBoolean(EntityDataFields.PIG_HAS_SADDLE)
-    }
+    @get:SynchronizedEntityData
+    val hasSaddle: Boolean
+        get() = data.getBoolean(HAS_SADDLE_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Boost time")
+    @get:SynchronizedEntityData
     val boostTime: Int
-        get() = data.sets.getInt(EntityDataFields.PIG_BOOST_TIME)
+        get() = data.get(BOOST_TIME_DATA, 0)
 
 
     companion object : EntityFactory<Pig> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pig")
+        private val HAS_SADDLE_DATA = EntityDataField("PIG_HAS_SADDLE")
+        private val BOOST_TIME_DATA = EntityDataField("PIG_BOOST_TIME")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Pig {
             return Pig(connection, entityType, data, position, rotation)

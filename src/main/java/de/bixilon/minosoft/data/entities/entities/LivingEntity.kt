@@ -38,39 +38,39 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is hand active")
+    @get:SynchronizedEntityData
     val isHandActive: Boolean
         get() = getLivingEntityFlag(0x01)
 
-    @get:SynchronizedEntityData(name = "Main hand")
+    @get:SynchronizedEntityData
     open val activeHand: Hands?
         get() = if (getLivingEntityFlag(0x02)) Hands.OFF else Hands.MAIN
 
-    @get:SynchronizedEntityData(name = "Is auto spin attack") // aka using riptide
+    @get:SynchronizedEntityData // aka using riptide
     val isSpinAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 
-    @get:SynchronizedEntityData(name = "Health")
+    @get:SynchronizedEntityData
     open val health: Double
         get() = data.get<Float?>(HEALTH_DATA, null)?.toDouble() ?: type.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
 
-    @get:SynchronizedEntityData(name = "Effect color")
+    @get:SynchronizedEntityData
     val effectColor: RGBColor?
         get() = data.get<Int?>(EFFECT_COLOR_DATA, null)?.asRGBColor()
 
-    @get:SynchronizedEntityData(name = "Is effect ambient")
+    @get:SynchronizedEntityData
     val effectAmbient: Boolean
         get() = data.getBoolean(EFFECT_AMBIENT_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Arrows in entity")
+    @get:SynchronizedEntityData
     val arrowCount: Int
         get() = data.get(ARROW_COUNT_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Absorption hearts")
+    @get:SynchronizedEntityData
     val absorptionHearts: Int
         get() = data.get(ABSORPTION_HEARTS_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Bed location")
+    @get:SynchronizedEntityData
     val bedPosition: Vec3i?
         get() = data.get(BED_POSITION_DATA, null)
 

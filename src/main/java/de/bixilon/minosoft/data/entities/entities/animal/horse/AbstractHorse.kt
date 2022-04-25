@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -25,35 +25,39 @@ import java.util.*
 abstract class AbstractHorse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is tame")
+    @get:SynchronizedEntityData
     val isTame: Boolean
         get() = getAbstractHorseFlag(0x02)
 
-    @get:SynchronizedEntityData(name = "Is saddled")
+    @get:SynchronizedEntityData
     val isSaddled: Boolean
         get() = getAbstractHorseFlag(0x04)
 
-    @SynchronizedEntityData(name = "Has bred")
-    fun hasBred(): Boolean {
-        return getAbstractHorseFlag(0x08)
-    }
+    @get:SynchronizedEntityData
+    val hasBred: Boolean
+        get() = getAbstractHorseFlag(0x08)
 
-    @get:SynchronizedEntityData(name = "Is eating")
+    @get:SynchronizedEntityData
     val isEating: Boolean
         get() = getAbstractHorseFlag(0x10)
 
-    @get:SynchronizedEntityData(name = "Is rearing")
+    @get:SynchronizedEntityData
     val isRearing: Boolean
         get() = getAbstractHorseFlag(0x20)
 
-    @get:SynchronizedEntityData(name = "Is mouth open")
+    @get:SynchronizedEntityData
     val isMouthOpen: Boolean
         get() = getAbstractHorseFlag(0x40)
 
-    @get:SynchronizedEntityData(name = "Owner UUID")
+    @get:SynchronizedEntityData
     val owner: UUID?
-        get() = data.sets.getUUID(EntityDataFields.ABSTRACT_HORSE_OWNER_UUID)
+        get() = data.get(OWNER_DATA, null)
+
+    companion object {
+        private val FLAGS_DATA = EntityDataField("ABSTRACT_HORSE_FLAGS")
+        private val OWNER_DATA = EntityDataField("ABSTRACT_HORSE_OWNER_UUID")
+    }
 }

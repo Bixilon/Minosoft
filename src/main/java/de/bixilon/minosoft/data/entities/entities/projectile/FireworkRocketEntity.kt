@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -26,25 +26,30 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class FireworkRocketEntity(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Item")
+    @get:SynchronizedEntityData
     val fireworkItem: ItemStack?
-        get() = data.sets.getItemStack(EntityDataFields.FIREWORK_ROCKET_ENTITY_ITEM)
+        get() = data.get(ITEM_DATA, null)
 
-    @get:SynchronizedEntityData(name = "Attached entity id")
-    override var attachedEntity: Int?
-        get() = data.sets.getInt(EntityDataFields.FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY)
-        set(attachedEntity) {
-            super.attachedEntity = attachedEntity
-        }
+    @get:SynchronizedEntityData
+    override var _attachedEntity: Int?
+        get() = data.get(ATTACHED_ENTITY_DATA, null)
+        set(attachedEntity) {}
 
-    @get:SynchronizedEntityData(name = "Shot at angle")
+    val attachedEntity: Entity?
+        get() = connection.world.entities[_attachedEntity]
+
+    @get:SynchronizedEntityData
     val isShotAtAngle: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE)
+        get() = data.getBoolean(SHOT_AT_ANGLE_DATA, false)
 
     override fun onAttack(attacker: Entity): Boolean = false
 
     companion object : EntityFactory<FireworkRocketEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("firework_rocket")
+        private val ITEM_DATA = EntityDataField("FIREWORK_ROCKET_ENTITY_ITEM")
+        private val ATTACHED_ENTITY_DATA = EntityDataField("FIREWORK_ROCKET_ENTITY_ATTACHED_ENTITY")
+        private val SHOT_AT_ANGLE_DATA = EntityDataField("FIREWORK_ROCKET_ENTITY_SHOT_AT_ANGLE")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): FireworkRocketEntity {
             return FireworkRocketEntity(connection, entityType, data, position, rotation)

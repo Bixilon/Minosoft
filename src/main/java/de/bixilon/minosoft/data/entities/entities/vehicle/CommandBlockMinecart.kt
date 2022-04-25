@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.vehicle
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -25,17 +25,20 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class CommandBlockMinecart(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Command")
-    val command: String?
-        get() = data.sets.getString(EntityDataFields.MINECART_COMMAND_BLOCK_COMMAND)
+    @get:SynchronizedEntityData
+    val command: String
+        get() = data.get(COMMAND_DATA, "")
 
-    @get:SynchronizedEntityData(name = "Last output")
+    @get:SynchronizedEntityData
     val lastOutput: ChatComponent?
-        get() = data.sets.getChatComponent(EntityDataFields.MINECART_COMMAND_BLOCK_LAST_OUTPUT)
+        get() = data.getChatComponent(LAST_OUTPUT_DATA, "")
 
 
     companion object : EntityFactory<CommandBlockMinecart> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("command_block_minecart")
+        private val COMMAND_DATA = EntityDataField("MINECART_COMMAND_BLOCK_COMMAND")
+        private val LAST_OUTPUT_DATA = EntityDataField("MINECART_COMMAND_BLOCK_LAST_OUTPUT")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): CommandBlockMinecart {
             return CommandBlockMinecart(connection, entityType, data, position, rotation)

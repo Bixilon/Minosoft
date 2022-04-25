@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Arrow(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractArrow(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Effect color")
+    @get:SynchronizedEntityData
     val effectColor: Int
         get() = data.get(EFFECT_COLOR_DATA, 0)
 

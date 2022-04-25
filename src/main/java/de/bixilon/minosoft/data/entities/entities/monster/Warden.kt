@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.monster
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,14 +25,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Warden(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Mob(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Anger")
+    @get:SynchronizedEntityData
     val anger: Int
-        get() = data.sets.getInt(EntityDataFields.WARDEN_ANGER)
+        get() = data.get(ANGER_DATA, 0)
 
 
     companion object : EntityFactory<Warden> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:warden")
-
+        private val ANGER_DATA = EntityDataField("WARDEN_ANGER")
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Warden {
             return Warden(connection, entityType, data, position, rotation)
         }

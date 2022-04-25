@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -24,18 +24,23 @@ import java.util.*
 abstract class TamableAnimal(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
     private fun getTameableFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is sitting")
+    @get:SynchronizedEntityData
     val isSitting: Boolean
         get() = getTameableFlag(0x01)
 
-    @get:SynchronizedEntityData(name = "Is tamed")
+    @get:SynchronizedEntityData
     val isTamed: Boolean
         get() = getTameableFlag(0x04)
 
-    @get:SynchronizedEntityData(name = "Owner UUID")
+    @get:SynchronizedEntityData
     val owner: UUID?
-        get() = data.sets.getUUID(EntityDataFields.TAMABLE_ENTITY_OWNER_UUID)
+        get() = data.get(OWNER_DATA, null)
+
+    companion object {
+        private val FLAGS_DATA = EntityDataField("TAMABLE_ENTITY_FLAGS")
+        private val OWNER_DATA = EntityDataField("TAMABLE_ENTITY_OWNER_UUID")
+    }
 }

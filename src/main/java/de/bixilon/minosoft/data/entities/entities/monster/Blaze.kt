@@ -28,7 +28,7 @@ class Blaze(connection: PlayConnection, entityType: EntityType, data: EntityData
         return data.getBitMask(BLAZE_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is Burning")
+    @get:SynchronizedEntityData
     val isBurning: Boolean
         get() = getBlazeFlag(0x01)
 

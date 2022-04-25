@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,21 +24,25 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Strider(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Boost stime")
+    @get:SynchronizedEntityData
     val boostTime: Int
-        get() = data.sets.getInt(EntityDataFields.STRIDER_TIME_TO_BOOST)
+        get() = data.get(TIME_TO_BOOST_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Is suffocating")
+    @get:SynchronizedEntityData
     val isSuffocating: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.STRIDER_IS_SUFFOCATING)
+        get() = data.get(IS_SUFFOCATING_DATA, false)
 
-    @SynchronizedEntityData(name = "Has saddle")
+    @get:SynchronizedEntityData
     val hasSaddle: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.STRIDER_HAS_SADDLE)
+        get() = data.get(HAS_SADDLE_DATA, false)
 
 
     companion object : EntityFactory<Strider> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("strider")
+        private val TIME_TO_BOOST_DATA = EntityDataField("STRIDER_TIME_TO_BOOST")
+        private val IS_SUFFOCATING_DATA = EntityDataField("STRIDER_IS_SUFFOCATING")
+        private val HAS_SADDLE_DATA = EntityDataField("STRIDER_HAS_SADDLE")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Strider {
             return Strider(connection, entityType, data, position, rotation)

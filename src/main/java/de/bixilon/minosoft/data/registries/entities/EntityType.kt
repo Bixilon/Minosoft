@@ -36,6 +36,9 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.lang.reflect.Modifier
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.companionObject
+import kotlin.reflect.jvm.javaField
 
 data class EntityType(
     override val resourceLocation: ResourceLocation,
@@ -64,19 +67,23 @@ data class EntityType(
 
             data["meta"]?.toJsonObject()?.let {
                 val fields: MutableMap<String, EntityDataField> = mutableMapOf()
-                val metaClass = factory?.javaClass ?: DefaultEntityFactories.ABSTRACT_ENTITY_META_CLASSES[resourceLocation]?.java
-                if (metaClass == null) {
+                val dataClass = DefaultEntityFactories.ABSTRACT_ENTITY_DATA_CLASSES[resourceLocation]?.companionObject ?: if (factory != null) factory::class else null
+                if (dataClass == null) {
                     Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Can not find class for entity data ($resourceLocation)" }
                     return@let
                 }
-                for (field in metaClass.declaredFields) {
+                for (member in dataClass.members) {
+                    if (member !is KProperty1<*, *>) {
+                        continue
+                    }
+                    val field = member.javaField ?: continue
                     if (!Modifier.isStatic(field.modifiers)) {
                         continue
                     }
+                    field.isAccessible = true
                     if (field.type != EntityDataField::class.java) {
                         continue
                     }
-                    field.isAccessible = true
                     val dataField = field.get(null) as EntityDataField
                     for (name in dataField.names) {
                         fields[name] = dataField

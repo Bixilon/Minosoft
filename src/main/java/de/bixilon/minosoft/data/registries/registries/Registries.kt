@@ -180,7 +180,7 @@ class Registries {
 
         blockDataDataDataTypeRegistry.rawInitialize(pixlyzerData["block_data_data_types"]?.toJsonObject(), this, BlockDataDataType, alternative = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version))
 
-        catVariants.rawInitialize(pixlyzerData["variant/cat"]?.toJsonObject(), this, CatVariant)
+        catVariants.rawInitialize(pixlyzerData["variant/cat"]?.toJsonObject(), this, CatVariant, alternative = DefaultRegistries.CAT_VARIANT_REGISTRY.forVersion(version))
         frogVariants.rawInitialize(pixlyzerData["variant/frog"]?.toJsonObject(), this, FrogVariant)
 
 

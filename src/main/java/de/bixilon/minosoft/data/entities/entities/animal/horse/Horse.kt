@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal.horse
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -26,34 +28,30 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, data, position, rotation) {
 
-    private fun getAbstractHorseFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
-    }
-
     private val variant: Int
-        get() = data.sets.getInt(EntityDataFields.HORSE_VARIANT)
+        get() = data.get(VARIANT_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Color")
+    @get:SynchronizedEntityData
     val color: HorseColors
-        get() = HorseColors.byId(variant and 0xFF)
+        get() = HorseColors.VALUES.getOrNull(variant and 0xFF) ?: HorseColors.WHITE
 
-    @get:SynchronizedEntityData(name = "Dots")
-    val dots: HorseDots
-        get() = HorseDots.byId(variant shr 8)
+    @get:SynchronizedEntityData
+    val markings: HorseMarkings
+        get() = HorseMarkings.VALUES.getOrNull((variant shr 8) and 0xFF) ?: HorseMarkings.NONE
 
     // ToDo
-    @get:SynchronizedEntityData(name = "Armor")
+    @get:SynchronizedEntityData
     val armor: Item?
         get() {
             if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
-                return null
+                return connection.registries.itemRegistry[when (this.data.get(LEGACY_ARMOR_DATA, 0)) {
+                    1 -> LEGACY_IRON_ARMOR
+                    2 -> LEGACY_GOLD_ARMOR
+                    3 -> LEGACY_DIAMOND_ARMOR
+                    else -> null
+                }]
             }
-            return connection.registries.itemRegistry[when (this.data.sets.getInt(EntityDataFields.LEGACY_HORSE_ARMOR)) {
-                1 -> LEGACY_IRON_ARMOR
-                2 -> LEGACY_GOLD_ARMOR
-                3 -> LEGACY_DIAMOND_ARMOR
-                else -> null
-            }]
+            return null
         }
 
     enum class HorseColors {
@@ -63,39 +61,57 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
         BROWN,
         BLACK,
         GRAY,
-        DARK_BROWN;
+        DARK_BROWN,
+        ;
 
-        companion object {
-            private val HORSE_COLORS = values()
-            fun byId(id: Int): HorseColors {
-                return HORSE_COLORS[id]
-            }
+        companion object : ValuesEnum<HorseColors> {
+            override val VALUES: Array<HorseColors> = values()
+            override val NAME_MAP: Map<String, HorseColors> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
-    enum class HorseDots {
+    enum class HorseMarkings {
         NONE,
         WHITE,
-        WHITEFIELD,
+        WHITE_FIELD,
         WHITE_DOTS,
-        BLACK_DOTS;
+        BLACK_DOTS,
+        ;
 
-        companion object {
-            private val HORSE_DOTS = values()
-            fun byId(id: Int): HorseDots {
-                return HORSE_DOTS[id]
-            }
+        companion object : ValuesEnum<HorseMarkings> {
+            override val VALUES: Array<HorseMarkings> = values()
+            override val NAME_MAP: Map<String, HorseMarkings> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
     companion object : EntityFactory<Horse> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("horse")
+        private val VARIANT_DATA = EntityDataField("HORSE_VARIANT")
+        private val LEGACY_ARMOR_DATA = EntityDataField("LEGACY_HORSE_ARMOR")
+
         private val LEGACY_IRON_ARMOR = ResourceLocation("iron_horse_armor")
         private val LEGACY_GOLD_ARMOR = ResourceLocation("golden_horse_armor")
         private val LEGACY_DIAMOND_ARMOR = ResourceLocation("diamond_horse_armor")
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("horse")
+
+        private val LEGACY_SPECIAL_TYPE_DATA = EntityDataField("LEGACY_HORSE_SPECIAL_TYPE")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Horse {
             return Horse(connection, entityType, data, position, rotation)
+        }
+
+        override fun tweak(connection: PlayConnection, data: EntityData?, versionId: Int): ResourceLocation {
+            if (data == null || versionId <= ProtocolVersions.V_1_8_9) {
+                return RESOURCE_LOCATION
+            }
+            val specialType = data.get(LEGACY_SPECIAL_TYPE_DATA, 0)
+            return when (specialType) {
+                1 -> Donkey
+                2 -> Mule
+                3 -> ZombieHorse
+                4 -> SkeletonHorse
+                else -> this
+            }.RESOURCE_LOCATION
         }
     }
 }

@@ -27,31 +27,31 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class Boat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Time since last hit")
+    @get:SynchronizedEntityData
     val timeSinceLastHit: Int
         get() = data.get(TIME_SINCE_LAST_HIT_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Forward direction")
+    @get:SynchronizedEntityData
     val hitDirection: Int
         get() = data.get(HIT_DIRECTION_DATA, 1)
 
-    @get:SynchronizedEntityData(name = "Damage taken")
+    @get:SynchronizedEntityData
     val damageTaken: Float
         get() = data.get(DAMAGE_TAKEN_DATA, 0.0f)
 
-    @get:SynchronizedEntityData(name = "Material")
+    @get:SynchronizedEntityData
     val material: BoatMaterials
         get() = BoatMaterials.VALUES.getOrNull(data.get(MATERIAL_DATA, BoatMaterials.OAK.ordinal)) ?: BoatMaterials.OAK
 
-    @get:SynchronizedEntityData(name = "Left paddle turning")
+    @get:SynchronizedEntityData
     val isLeftPaddleTurning: Boolean
         get() = data.get(PADDLE_LEFT_TURNING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Right paddle turning")
+    @get:SynchronizedEntityData
     val isRightPaddleTurning: Boolean
         get() = data.get(PADDLE_RIGHT_TURNING_DATA, false)
 
-    @get:SynchronizedEntityData(name = "Splash timer")
+    @get:SynchronizedEntityData
     val splashTimer: Int
         get() = data.get(SPLASH_TIMER_DATA, 0)
 

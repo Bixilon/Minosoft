@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,43 +26,43 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Panda(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Unhappy timer")
-    val unhappyTimer: Int
-        get() = data.sets.getInt(EntityDataFields.PANDA_UNHAPPY_TIMER)
+    @get:SynchronizedEntityData
+    val askForBambooTimer: Int
+        get() = data.get(BAMBOO_ASK_TIMER_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Sneeze timer")
+    @get:SynchronizedEntityData
     val sneezeTimer: Int
-        get() = data.sets.getInt(EntityDataFields.PANDA_SNEEZE_TIMER)
+        get() = data.get(SNEEZE_TIMER_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Eat timer")
+    @get:SynchronizedEntityData
     val eatTimer: Int
-        get() = data.sets.getInt(EntityDataFields.PANDA_EAT_TIMER)
+        get() = data.get(EATING_TICKS_DATA, 0)
 
-    @get:SynchronizedEntityData(name = "Main gene")
+    @get:SynchronizedEntityData
     val mainGene: Genes
-        get() = Genes.byId(data.sets.getInt(EntityDataFields.PANDA_MAIN_GENE))
+        get() = Genes.VALUES.getOrNull(data.get(MAIN_GENE_DATA, Genes.NORMAL.ordinal)) ?: Genes.NORMAL
 
-    @get:SynchronizedEntityData(name = "Hidden gene")
+    @get:SynchronizedEntityData
     val hiddenGene: Genes
-        get() = Genes.byId(data.sets.getInt(EntityDataFields.PANDA_HIDDEN_GAME))
+        get() = Genes.VALUES.getOrNull(data.get(HIDDEN_GENE_DATA, Genes.NORMAL.ordinal)) ?: Genes.NORMAL
 
     private fun getPandaFlag(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.PANDA_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is sneezing")
+    @get:SynchronizedEntityData
     val isSneezing: Boolean
         get() = getPandaFlag(0x02)
 
-    @get:SynchronizedEntityData(name = "Is rolling")
+    @get:SynchronizedEntityData
     val isRolling: Boolean
         get() = getPandaFlag(0x04)
 
-    @get:SynchronizedEntityData(name = "Is sitting")
+    @get:SynchronizedEntityData
     val isSitting: Boolean
         get() = getPandaFlag(0x08)
 
-    @get:SynchronizedEntityData(name = "Is on back")
+    @get:SynchronizedEntityData
     val isOnBack: Boolean
         get() = getPandaFlag(0x10)
 
@@ -74,16 +76,21 @@ class Panda(connection: PlayConnection, entityType: EntityType, data: EntityData
         AGGRESSIVE,
         ;
 
-        companion object {
-            private val GENES = values()
-            fun byId(id: Int): Genes {
-                return GENES[id]
-            }
+        companion object : ValuesEnum<Genes> {
+            override val VALUES: Array<Genes> = values()
+            override val NAME_MAP: Map<String, Genes> = EnumUtil.getEnumValues(VALUES)
         }
     }
 
     companion object : EntityFactory<Panda> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("panda")
+        private val BAMBOO_ASK_TIMER_DATA = EntityDataField("PANDA_UNHAPPY_TIMER")
+        private val SNEEZE_TIMER_DATA = EntityDataField("PANDA_SNEEZE_TIMER")
+        private val EATING_TICKS_DATA = EntityDataField("PANDA_EAT_TIMER")
+        private val MAIN_GENE_DATA = EntityDataField("PANDA_MAIN_GENE")
+        private val HIDDEN_GENE_DATA = EntityDataField("PANDA_HIDDEN_GENE", "PANDA_HIDDEN_GAME")
+        private val FLAGS_DATA = EntityDataField("PANDA_FLAGS")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Panda {
             return Panda(connection, entityType, data, position, rotation)

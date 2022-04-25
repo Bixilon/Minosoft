@@ -14,4 +14,4 @@ package de.bixilon.minosoft.data.entities.entities
 
 
 @Retention(AnnotationRetention.RUNTIME)
-annotation class SynchronizedEntityData(val name: String)
+annotation class SynchronizedEntityData

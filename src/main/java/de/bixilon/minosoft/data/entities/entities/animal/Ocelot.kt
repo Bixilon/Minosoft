@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,13 +24,14 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Ocelot(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Trusting")
+    @get:SynchronizedEntityData
     val isTrusting: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.OCELOT_IS_TRUSTING)
+        get() = data.getBoolean(IS_TRUSTED_DATA, false)
 
 
     companion object : EntityFactory<Ocelot> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("ocelot")
+        private val IS_TRUSTED_DATA = EntityDataField("OCELOT_IS_TRUSTING")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Ocelot {
             return Ocelot(connection, entityType, data, position, rotation)

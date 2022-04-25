@@ -594,5 +594,53 @@
         "id": 2001
       }
     }
+  },
+  "minecraft:variants/cat": {
+    "0": {
+      "minecraft:tabby": {
+        "id": 0,
+        "texture": "minecraft:textures/entity/cat/tabby.png"
+      },
+      "minecraft:black": {
+        "id": 1,
+        "texture": "minecraft:textures/entity/cat/black.png"
+      },
+      "minecraft:red": {
+        "id": 2,
+        "texture": "minecraft:textures/entity/cat/red.png"
+      },
+      "minecraft:siamese": {
+        "id": 3,
+        "texture": "minecraft:textures/entity/cat/siamese.png"
+      },
+      "minecraft:british": {
+        "id": 4,
+        "texture": "minecraft:textures/entity/cat/british_shorthair.png"
+      },
+      "minecraft:calico": {
+        "id": 5,
+        "texture": "minecraft:textures/entity/cat/calico.png"
+      },
+      "minecraft:persian": {
+        "id": 6,
+        "texture": "minecraft:textures/entity/cat/persian.png"
+      },
+      "minecraft:ragdoll": {
+        "id": 7,
+        "texture": "minecraft:textures/entity/cat/ragdoll.png"
+      },
+      "minecraft:white": {
+        "id": 8,
+        "texture": "minecraft:textures/entity/cat/white.png"
+      },
+      "minecraft:jellie": {
+        "id": 9,
+        "texture": "minecraft:textures/entity/cat/jellie.png"
+      },
+      "minecraft:all_black": {
+        "id": 10,
+        "texture": "minecraft:textures/entity/cat/all_black.png"
+      }
+    }
   }
 }

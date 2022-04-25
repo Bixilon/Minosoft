@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
@@ -24,12 +24,13 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, data, position, rotation) {
 
-    @get:SynchronizedEntityData(name = "Is screaming")
+    @get:SynchronizedEntityData
     val isScreaming: Boolean
-        get() = data.sets.getBoolean(EntityDataFields.GOAT_IS_SCREAMING)
+        get() = data.getBoolean(SCREAMING_DATA, false)
 
     companion object : EntityFactory<Goat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("goat")
+        private val SCREAMING_DATA = EntityDataField("GOAT_IS_SCREAMING")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Goat {
             return Goat(connection, entityType, data, position, rotation)

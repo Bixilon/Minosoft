@@ -12,56 +12,12 @@
  */
 package de.bixilon.minosoft.data.registries.tweaker
 
-import de.bixilon.minosoft.data.entities.EntityDataFields
-import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.animal.horse.*
-import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 @Deprecated("Use in ever class", level = DeprecationLevel.ERROR)
 object VersionTweaker {
-    // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
-    @JvmStatic
-    fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityData?, versionId: Int): Class<out Entity> {
-        if (versionId > ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            return fakeClass
-        }
-        if (metaData == null) {
-            return fakeClass
-        }
-        when (fakeClass) {
-            ZombiePigman::class.java -> {
-                return ZombifiedPiglin::class.java
-            }
-            Zombie::class.java -> {
-                if (metaData.sets.getInt(EntityDataFields.ZOMBIE_SPECIAL_TYPE) == 1) {
-                    return ZombieVillager::class.java
-                }
-            }
-            Skeleton::class.java -> {
-                if (metaData.sets.getInt(EntityDataFields.LEGACY_SKELETON_TYPE) == 1) {
-                    return WitherSkeleton::class.java
-                }
-            }
-            Guardian::class.java -> {
-                if (metaData.sets.getBitMask(EntityDataFields.LEGACY_GUARDIAN_FLAGS, 0x02)) {
-                    return ElderGuardian::class.java
-                }
-            }
-            Horse::class.java -> {
-                return when (metaData.sets.getByte(EntityDataFields.LEGACY_HORSE_SPECIAL_TYPE).toInt()) {
-                    1 -> Donkey::class.java
-                    2 -> Mule::class.java
-                    3 -> ZombieHorse::class.java
-                    4 -> SkeletonHorse::class.java
-                    else -> fakeClass
-                }
-            }
-        }
-        return fakeClass
-    }
 
     @JvmStatic
     fun getRealEntityObjectClass(fakeClass: Class<out Entity>, data: Int, versionId: Int): Class<out Entity> {

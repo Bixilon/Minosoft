@@ -13,4 +13,10 @@
 
 package de.bixilon.minosoft.data.entities
 
-class GlobalPosition
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.registries.dimension.Dimension
+
+class GlobalPosition(
+    val dimension: Dimension?,
+    val position: Vec3i,
+)

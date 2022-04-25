@@ -13,27 +13,31 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.EntityDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class Mob(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, data, position, rotation) {
 
     private fun getMobFlags(bitMask: Int): Boolean {
-        return data.sets.getBitMask(EntityDataFields.MOB_FLAGS, bitMask)
+        return data.getBitMask(FLAGS_DATA, bitMask, 0x00)
     }
 
-    @get:SynchronizedEntityData(name = "Is no ai")
+    @get:SynchronizedEntityData
     val isNoAi: Boolean
         get() = getMobFlags(0x01)
 
-    @get:SynchronizedEntityData(name = "Is left handed")
+    @get:SynchronizedEntityData
     val isLeftHanded: Boolean
         get() = getMobFlags(0x02)
 
-    @get:SynchronizedEntityData(name = "Is aggressive")
+    @get:SynchronizedEntityData
     open val isAggressive: Boolean
         get() = getMobFlags(0x04)
+
+    companion object {
+        private val FLAGS_DATA = EntityDataField("MOB_FLAGS")
+    }
 }

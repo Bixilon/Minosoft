@@ -25,6 +25,7 @@ class Minecart(connection: PlayConnection, entityType: EntityType, data: EntityD
     companion object : EntityFactory<Minecart> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecart")
 
+
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Minecart {
             return Minecart(connection, entityType, data, position, rotation)
         }
