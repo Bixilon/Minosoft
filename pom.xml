@@ -188,7 +188,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>macos</lwjgl.natives>
-                <zstd.natives>darwin_x64_64</zstd.natives>
+                <zstd.natives>darwin_x86_64</zstd.natives>
             </properties>
         </profile>
         <profile>
