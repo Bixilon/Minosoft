@@ -22,6 +22,7 @@ import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
+import kotlin.math.abs
 
 class WorldBorder {
     var center = Vec2d.EMPTY
@@ -33,8 +34,8 @@ class WorldBorder {
     var state = WorldBorderState.STATIC
         private set
 
-    private var lerpStart = -1L
-    private var lerpEnd = -1L
+    private var interpolationStart = -1L
+    private var interpolationEnd = -1L
     private var oldDiameter = DEFAULT_DIAMETER
     private var newDiameter = DEFAULT_DIAMETER
 
@@ -60,9 +61,25 @@ class WorldBorder {
         return !inside
     }
 
+    fun getDistanceTo(position: Vec3d): Double {
+        return getDistanceTo(position.x, position.z)
+    }
+
+    fun getDistanceTo(x: Double, z: Double): Double {
+        lock.acquire()
+        val radius = diameter / 2
+
+        val closestDistance = minOf(
+            radius - abs(x) - abs(center.x),
+            radius - abs(z) - abs(center.y),
+        )
+        lock.release()
+        return closestDistance
+    }
+
     fun stopInterpolating() {
         lock.lock()
-        lerpStart = -1L
+        interpolationStart = -1L
         lock.unlock()
     }
 
@@ -73,8 +90,8 @@ class WorldBorder {
         }
         lock.lock()
         val time = TimeUtil.millis
-        lerpStart = time
-        lerpEnd = time + millis
+        interpolationStart = time
+        interpolationEnd = time + millis
         this.oldDiameter = oldDiameter
         this.newDiameter = newDiameter
         lock.unlock()
@@ -82,21 +99,21 @@ class WorldBorder {
 
     fun tick() {
         lock.lock()
-        if (lerpStart < 0L) {
+        if (interpolationStart < 0L) {
             lock.unlock()
             return
         }
         val time = TimeUtil.millis
-        if (lerpEnd <= time) {
+        if (interpolationEnd <= time) {
             state = WorldBorderState.STATIC
-            lerpStart = -1L
+            interpolationStart = -1L
             lock.unlock()
             return
         }
         val oldDiameter = diameter
 
-        val remaining = lerpEnd - time
-        val totalTime = (lerpEnd - lerpStart)
+        val remaining = interpolationEnd - time
+        val totalTime = (interpolationEnd - interpolationStart)
         val diameter = interpolateLinear(remaining.toDouble() / totalTime.toDouble(), this.newDiameter, this.oldDiameter)
         this.diameter = diameter
 
@@ -105,7 +122,7 @@ class WorldBorder {
         } else if (oldDiameter < diameter) {
             WorldBorderState.GROWING
         } else {
-            lerpStart = -1L
+            interpolationStart = -1L
             WorldBorderState.STATIC
         }
         lock.unlock()
@@ -114,7 +131,7 @@ class WorldBorder {
     fun reset() {
         lock.lock()
         diameter = DEFAULT_DIAMETER
-        lerpStart = -1L
+        interpolationStart = -1L
         lock.unlock()
     }
 

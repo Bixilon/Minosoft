@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.border
 
+import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
@@ -74,11 +75,14 @@ class WorldBorderRenderer(
         shader.setFloat("uTextureOffset", 1.0f - textureOffset)
         shader.setFloat("uCameraHeight", renderWindow.camera.matrixHandler.eyePosition.y)
 
-        val color = when (border.state) {
+        val distance = border.getDistanceTo(renderWindow.connection.player.position)
+        val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)
+        var color = when (border.state) {
             WorldBorderState.GROWING -> GROWING_COLOR
             WorldBorderState.SHRINKING -> SHRINKING_COLOR
             WorldBorderState.STATIC -> STATIC_COLOR
         }
+        color = color.with(alpha = (strength * strength))
         shader.setRGBColor("uTintColor", color)
         shader.setFloat("uRadius", border.diameter.toFloat() / 2.0f)
         shader.setVec2("uCenter", Vec2(border.center))
