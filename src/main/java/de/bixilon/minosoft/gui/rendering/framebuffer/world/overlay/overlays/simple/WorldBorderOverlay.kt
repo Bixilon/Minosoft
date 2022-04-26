@@ -13,38 +13,33 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.minosoft.data.container.InventorySlots
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PumpkinOverlay(renderWindow: RenderWindow, z: Float) : FirstPersonOverlay(renderWindow, z) {
+class WorldBorderOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
     private val config = renderWindow.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
-        get() {
-            if (!config.pumpkin) {
-                return false
-            }
-            if (!super.render) {
-                return false
-            }
-            val head = player.equipment[InventorySlots.EquipmentSlots.HEAD] ?: return false
-            if (head.item.item.resourceLocation != MinecraftBlocks.CARVED_PUMPKIN) {
-                return false
-            }
-            return true
-        }
+        get() = config.worldBorder && renderWindow.connection.world.border.isOutside(renderWindow.connection.player.position)
+
+    override fun update() {
+        tintColor = RGBColor(1.0f, 0.0f, 0.0f, 0.5f) // ToDo: Correct
+    }
 
 
-    companion object : OverlayFactory<PumpkinOverlay> {
-        private val OVERLAY_TEXTURE = "misc/pumpkinblur".toResourceLocation().texture()
+    companion object : OverlayFactory<WorldBorderOverlay> {
+        private val OVERLAY_TEXTURE = "misc/vignette".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow, z: Float): PumpkinOverlay {
-            return PumpkinOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow, z: Float): WorldBorderOverlay? {
+            if (renderWindow.connection.assetsManager.nullGet(OVERLAY_TEXTURE) == null) { // ToDo: Don't get twice
+                // overlay not yet available (< 1.17)
+                return null
+            }
+            return WorldBorderOverlay(renderWindow, z)
         }
     }
 }

@@ -27,5 +27,10 @@ class OverlayC {
      */
     var pumpkin by delegate(true)
 
+    /**
+     * Enables the world boreder overlay
+     */
+    var worldBorder by delegate(true)
+
     val fire = FireC()
 }

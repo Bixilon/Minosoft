@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PowderSnowOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
     private val config = renderWindow.connection.profiles.rendering.overlay
-    override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture("misc/powder_snow_outline".toResourceLocation().texture())
+    override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     private var ticksFrozen: Int = 0
     override val render: Boolean
         get() = config.powderSnow && ticksFrozen > 0
