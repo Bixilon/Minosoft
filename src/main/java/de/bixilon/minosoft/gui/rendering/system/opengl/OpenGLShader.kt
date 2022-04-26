@@ -110,7 +110,7 @@ class OpenGLShader(
         val location = uniformLocations.getOrPut(uniformName) {
             val location = glGetUniformLocation(shader, uniformName)
             if (location < 0) {
-                throw IllegalArgumentException("No uniform named $uniformName!")
+                throw IllegalArgumentException("No uniform named $uniformName in $this")
             }
             return@getOrPut location
         }

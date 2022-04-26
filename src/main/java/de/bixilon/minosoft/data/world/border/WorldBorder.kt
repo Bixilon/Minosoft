@@ -27,6 +27,8 @@ class WorldBorder {
     var warningBlocks = 0
     var portalBound = 0
 
+    val state = WorldBorderState.STATIC
+
     fun isOutside(blockPosition: Vec3i): Boolean {
         return isOutside(blockPosition.x.toDouble(), blockPosition.z.toDouble())
     }

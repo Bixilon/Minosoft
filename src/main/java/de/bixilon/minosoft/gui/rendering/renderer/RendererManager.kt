@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.world.border.WorldBorderRenderer
 import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -149,6 +150,7 @@ class RendererManager(
             }
             register(EntityHitboxRenderer)
             register(ChunkBorderRenderer)
+            register(WorldBorderRenderer)
             register(GUIRenderer)
         }
     }
