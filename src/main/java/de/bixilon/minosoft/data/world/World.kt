@@ -184,6 +184,7 @@ class World(
             chunk.tick(connection, chunkPosition)
         }
         chunks.lock.release()
+        border.tick()
     }
 
     fun randomTick() {

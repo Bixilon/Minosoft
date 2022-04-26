@@ -17,6 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 
@@ -27,7 +29,13 @@ class WorldBorder {
     var warningBlocks = 0
     var portalBound = 0
 
-    val state = WorldBorderState.STATIC
+    var state = WorldBorderState.STATIC
+        private set
+
+    private var lerpStart = -1L
+    private var lerpEnd = -1L
+    private var oldRadius = World.MAX_SIZE.toDouble()
+    private var newRadius = World.MAX_SIZE.toDouble()
 
     fun isOutside(blockPosition: Vec3i): Boolean {
         return isOutside(blockPosition.x.toDouble(), blockPosition.z.toDouble())
@@ -51,7 +59,41 @@ class WorldBorder {
         return true
     }
 
-    fun lerp(oldRadius: Double, newRadius: Double, speed: Long) {
+    fun stopLerp() {
+        lerpStart = -1L
+    }
 
+    fun lerp(oldRadius: Double, newRadius: Double, speed: Long) {
+        val time = TimeUtil.millis
+        lerpStart = time
+        lerpEnd = time + speed
+        this.oldRadius = oldRadius
+        this.newRadius = newRadius
+    }
+
+    fun tick() {
+        if (lerpStart < 0L) {
+            return
+        }
+        val time = TimeUtil.millis
+        if (lerpEnd > time) {
+            state = WorldBorderState.STATIC
+            lerpStart = -1
+            return
+        }
+        val remaining = lerpEnd - time
+        val delta = (lerpEnd - lerpStart)
+        val oldRadius = radius
+        val radius = interpolateLinear(remaining.toDouble() / delta.toDouble(), this.oldRadius, this.newRadius)
+        this.radius = radius
+        state = if (oldRadius > radius) {
+            WorldBorderState.SHRINKING
+        } else {
+            WorldBorderState.GROWING
+        }
+        if (oldRadius == radius) {
+            lerpStart = -1
+            state = WorldBorderState.STATIC
+        }
     }
 }

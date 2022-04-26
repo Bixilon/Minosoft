@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.world.border
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
@@ -50,7 +51,6 @@ class WorldBorderRenderer(
     override fun postInit(latch: CountUpAndDownLatch) {
         renderWindow.textureManager.staticTextures.use(shader)
         shader.setUInt("uIndexLayer", texture.renderData.shaderTextureId)
-        shader.setFloat("uRadius", 200.0f)
     }
 
     override fun setupTranslucent() {
@@ -79,6 +79,8 @@ class WorldBorderRenderer(
             WorldBorderState.STATIC -> STATIC_COLOR
         }
         shader.setRGBColor("uTintColor", color)
+        shader.setFloat("uRadius", border.radius.toFloat())
+        shader.setVec2("uCenter", Vec2(border.center))
     }
 
     override fun drawTranslucent() {

@@ -25,6 +25,7 @@ class SizeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     val radius = buffer.readDouble()
 
     override fun handle(connection: PlayConnection) {
+        connection.world.border.stopLerp()
         connection.world.border.radius = radius
     }
 
