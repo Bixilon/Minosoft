@@ -396,6 +396,8 @@ abstract class Entity(
     }
 
     fun move(delta: Vec3d = velocity) {
+        val positionBefore = position
+        val wasInBorder = !connection.world.border.isOutside(positionBefore)
         if (!hasCollisions) {
             forceMove(delta)
             return
@@ -415,9 +417,21 @@ abstract class Entity(
             movement = connection.collisionDetector.sneak(this, movement)
         }
 
-        val collisionMovement = connection.collisionDetector.collide(null, movement, aabb, true)
+        var collisionMovement = connection.collisionDetector.collide(null, movement, aabb, true)
 
 
+        val targetPosition = positionBefore + collisionMovement
+        val inBorder = !connection.world.border.isOutside(targetPosition)
+        if (wasInBorder && !inBorder) {
+            val border = connection.world.border
+            val xDirection = if (collisionMovement.x < 0) -1 else 1
+            val zDirection = if (collisionMovement.z < 0) -1 else 1
+            collisionMovement = Vec3d(
+                xDirection * minOf(abs(collisionMovement.x), border.diameter / 2 - abs(targetPosition.x) - abs(border.center.x), 0.0),
+                collisionMovement.y,
+                zDirection * minOf(abs(collisionMovement.z), border.diameter / 2 - abs(targetPosition.z) - abs(border.center.y), 0.0)
+            )
+        }
         forceMove(collisionMovement)
 
 
