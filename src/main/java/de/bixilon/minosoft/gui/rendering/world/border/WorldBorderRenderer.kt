@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.border
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.world.border.WorldBorderState
@@ -31,15 +32,14 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
-    private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, TranslucentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world/border"))
     private val borderMesh = WorldBorderMesh(renderWindow)
-    private val border = connection.world.border
+    private val border = renderWindow.connection.world.border
     private lateinit var texture: AbstractTexture
-    private var textureOffset = 0.0f
+    private var offsetReset = TimeUtil.millis
 
     override fun init(latch: CountUpAndDownLatch) {
         shader.load()
@@ -66,10 +66,11 @@ class WorldBorderRenderer(
             polygonOffsetUnit = -3.0f,
         )
         shader.use()
-        textureOffset += 0.01f
-        if (textureOffset >= 1.0f) {
-            textureOffset = 0.0f
+        val time = TimeUtil.millis
+        if (offsetReset - time > ANIMATION_SPEED) {
+            offsetReset = time
         }
+        val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
         shader.setFloat("uTextureOffset", textureOffset)
         shader.setFloat("uCameraHeight", renderWindow.camera.matrixHandler.eyePosition.y)
 
@@ -79,7 +80,7 @@ class WorldBorderRenderer(
             WorldBorderState.STATIC -> STATIC_COLOR
         }
         shader.setRGBColor("uTintColor", color)
-        shader.setFloat("uRadius", border.radius.toFloat())
+        shader.setFloat("uRadius", border.diameter.toFloat() / 2.0f)
         shader.setVec2("uCenter", Vec2(border.center))
     }
 
@@ -92,11 +93,12 @@ class WorldBorderRenderer(
         val GROWING_COLOR = "#40FF80".asColor()
         val SHRINKING_COLOR = "#FF3030".asColor()
         val STATIC_COLOR = "#20A0FF".asColor()
+        const val ANIMATION_SPEED = 2000
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldBorderRenderer {
-            return WorldBorderRenderer(connection, renderWindow)
+            return WorldBorderRenderer(renderWindow)
         }
     }
 }

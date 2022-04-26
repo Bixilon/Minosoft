@@ -169,6 +169,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (connection.version.versionId >= ProtocolVersions.V_19W36A && !connection.profiles.rendering.performance.fastBiomeNoise) {
             connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection)
         }
+        connection.world.border.reset()
 
         connection.settingsManager.sendClientSettings()
 

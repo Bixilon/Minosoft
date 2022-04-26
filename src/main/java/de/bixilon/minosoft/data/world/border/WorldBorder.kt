@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.world.World
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 
 class WorldBorder {
     var center = Vec2d.EMPTY
-    var radius = World.MAX_SIZE.toDouble()
+    var diameter = DEFAULT_DIAMETER
     var warningTime = 0
     var warningBlocks = 0
     var portalBound = 0
@@ -34,8 +35,10 @@ class WorldBorder {
 
     private var lerpStart = -1L
     private var lerpEnd = -1L
-    private var oldRadius = World.MAX_SIZE.toDouble()
-    private var newRadius = World.MAX_SIZE.toDouble()
+    private var oldDiameter = DEFAULT_DIAMETER
+    private var newDiameter = DEFAULT_DIAMETER
+
+    val lock = SimpleLock()
 
     fun isOutside(blockPosition: Vec3i): Boolean {
         return isOutside(blockPosition.x.toDouble(), blockPosition.z.toDouble())
@@ -50,50 +53,80 @@ class WorldBorder {
     }
 
     fun isOutside(x: Double, z: Double): Boolean {
+        lock.acquire()
+        val radius = diameter / 2
         if (x !in radius - center.x..radius + center.x) {
+            lock.release()
             return false
         }
         if (z !in radius - center.y..radius + center.y) {
+            lock.release()
             return false
         }
+        lock.release()
         return true
     }
 
     fun stopLerp() {
+        lock.lock()
         lerpStart = -1L
+        lock.unlock()
     }
 
-    fun lerp(oldRadius: Double, newRadius: Double, speed: Long) {
+    fun interpolate(oldDiameter: Double, newDiameter: Double, millis: Long) {
+        if (millis == 0L) {
+            stopLerp()
+            diameter = newDiameter
+        }
+        lock.lock()
         val time = TimeUtil.millis
         lerpStart = time
-        lerpEnd = time + speed
-        this.oldRadius = oldRadius
-        this.newRadius = newRadius
+        lerpEnd = time + millis
+        this.oldDiameter = oldDiameter
+        this.newDiameter = newDiameter
+        lock.unlock()
     }
 
     fun tick() {
+        lock.lock()
         if (lerpStart < 0L) {
+            lock.unlock()
             return
         }
         val time = TimeUtil.millis
-        if (lerpEnd > time) {
+        if (lerpEnd <= time) {
             state = WorldBorderState.STATIC
-            lerpStart = -1
+            lerpStart = -1L
+            lock.unlock()
             return
         }
+        val oldDiameter = diameter
+
         val remaining = lerpEnd - time
-        val delta = (lerpEnd - lerpStart)
-        val oldRadius = radius
-        val radius = interpolateLinear(remaining.toDouble() / delta.toDouble(), this.oldRadius, this.newRadius)
-        this.radius = radius
-        state = if (oldRadius > radius) {
+        val totalTime = (lerpEnd - lerpStart)
+        val diameter = interpolateLinear(remaining.toDouble() / totalTime.toDouble(), this.newDiameter, this.oldDiameter)
+        this.diameter = diameter
+
+        state = if (oldDiameter > diameter) {
             WorldBorderState.SHRINKING
-        } else {
+        } else if (oldDiameter < diameter) {
             WorldBorderState.GROWING
+        } else {
+            lerpStart = -1L
+            WorldBorderState.STATIC
         }
-        if (oldRadius == radius) {
-            lerpStart = -1
-            state = WorldBorderState.STATIC
-        }
+        lock.unlock()
+    }
+
+    fun reset() {
+        lock.lock()
+        diameter = DEFAULT_DIAMETER
+        lerpStart = -1L
+        lock.unlock()
+    }
+
+
+    companion object {
+        const val DEFAULT_DIAMETER = World.MAX_SIZE.toDouble() * 2
     }
 }

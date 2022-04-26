@@ -23,22 +23,22 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(parent = true)
 class InitializeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     val center = buffer.readVec2d()
-    val oldRadius = buffer.readDouble()
-    val newRadius = buffer.readDouble()
-    val speed = buffer.readVarLong()
+    val oldDiameter = buffer.readDouble()
+    val newDiameter = buffer.readDouble()
+    val millis = buffer.readVarLong()
     val portalBound = buffer.readVarInt()
     val warningTime = buffer.readVarInt()
     val warningBlocks = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {
         connection.world.border.center = center
-        connection.world.border.lerp(oldRadius, newRadius, speed)
+        connection.world.border.interpolate(oldDiameter, newDiameter, millis)
         connection.world.border.portalBound = portalBound
         connection.world.border.warningTime = warningTime
         connection.world.border.warningBlocks = warningBlocks
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Initialize world border (center=$center, oldDiameter=$oldDiameter, newDiameter=$newDiameter, speed=$millis, portalBound=$portalBound, warningTime=$warningTime, warningBlocks=$warningBlocks)" }
     }
 }

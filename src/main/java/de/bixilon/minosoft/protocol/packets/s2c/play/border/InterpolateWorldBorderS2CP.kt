@@ -21,16 +21,16 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(parent = true)
-class LerpWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
-    val oldRadius = buffer.readDouble()
-    val newRadius = buffer.readDouble()
-    val speed = buffer.readVarLong()
+class InterpolateWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
+    val oldDiameter = buffer.readDouble()
+    val newDiameter = buffer.readDouble()
+    val millis = buffer.readVarLong()
 
     override fun handle(connection: PlayConnection) {
-        connection.world.border.lerp(oldRadius, newRadius, speed)
+        connection.world.border.interpolate(oldDiameter, newDiameter, millis)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Lerp size world border (oldRadius=$oldRadius, newRadius=$newRadius, speed=$speed)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Interpolate size world border (oldDiameter=$oldDiameter, newDiameter=$newDiameter, millis=$millis)" }
     }
 }

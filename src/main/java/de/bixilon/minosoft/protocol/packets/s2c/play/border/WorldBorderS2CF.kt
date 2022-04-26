@@ -29,7 +29,7 @@ object WorldBorderS2CF : PlayPacketFactory {
     override fun createPacket(buffer: PlayInByteBuffer): WorldBorderS2CP {
         return when (WorldBorderActions[buffer.readVarInt()]) {
             WorldBorderActions.SET_SIZE -> SizeWorldBorderS2CP(buffer)
-            WorldBorderActions.LERP_SIZE -> LerpWorldBorderS2CP(buffer)
+            WorldBorderActions.INTERPOLATE_SIZE -> InterpolateWorldBorderS2CP(buffer)
             WorldBorderActions.SET_CENTER -> CenterWorldBorderS2CP(buffer)
             WorldBorderActions.INITIALIZE -> InitializeWorldBorderS2CP(buffer)
             WorldBorderActions.SET_WARNING_TIME -> WarnTimeWorldBorderS2CP(buffer)
@@ -39,7 +39,7 @@ object WorldBorderS2CF : PlayPacketFactory {
 
     enum class WorldBorderActions {
         SET_SIZE,
-        LERP_SIZE,
+        INTERPOLATE_SIZE,
         SET_CENTER,
         INITIALIZE,
         SET_WARNING_TIME,
