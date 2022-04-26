@@ -289,6 +289,16 @@ class OpenGLRenderSystem(
         return errors
     }
 
+    private var polygonOffsetFactor: Float = 0.0f
+    private var polygonOffsetUnit: Float = 0.0f
+    override fun polygonOffset(factor: Float, unit: Float) {
+        if (this.polygonOffsetFactor != factor || this.polygonOffsetUnit != unit) {
+            glPolygonOffset(factor, unit)
+            this.polygonOffsetFactor = factor
+            this.polygonOffsetUnit = unit
+        }
+    }
+
     companion object {
         private val RenderingCapabilities.gl: Int
             get() {
@@ -296,6 +306,7 @@ class OpenGLRenderSystem(
                     RenderingCapabilities.BLENDING -> GL_BLEND
                     RenderingCapabilities.DEPTH_TEST -> GL_DEPTH_TEST
                     RenderingCapabilities.FACE_CULLING -> GL_CULL_FACE
+                    RenderingCapabilities.POLYGON_OFFSET -> GL_POLYGON_OFFSET_FILL
                     else -> throw IllegalArgumentException("OpenGL does not support capability: $this")
                 }
             }

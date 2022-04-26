@@ -57,10 +57,13 @@ class WorldBorderRenderer(
         renderSystem.reset(
             blending = true,
             sourceRGB = BlendingFunctions.SOURCE_ALPHA,
-            destinationRGB = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
+            destinationRGB = BlendingFunctions.ONE,
             sourceAlpha = BlendingFunctions.SOURCE_ALPHA,
             destinationAlpha = BlendingFunctions.DESTINATION_ALPHA,
             faceCulling = false,
+            polygonOffset = true,
+            polygonOffsetFactor = -3.0f,
+            polygonOffsetUnit = -3.0f,
         )
         shader.use()
         textureOffset += 0.01f

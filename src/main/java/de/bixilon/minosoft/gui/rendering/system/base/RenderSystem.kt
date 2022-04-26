@@ -41,6 +41,7 @@ interface RenderSystem {
         depthTest: Boolean = true,
         blending: Boolean = false,
         faceCulling: Boolean = true,
+        polygonOffset: Boolean = false,
         depthMask: Boolean = true,
         sourceRGB: BlendingFunctions = BlendingFunctions.ONE,
         destinationRGB: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
@@ -48,15 +49,19 @@ interface RenderSystem {
         destinationAlpha: BlendingFunctions = BlendingFunctions.ZERO,
         depth: DepthFunctions = DepthFunctions.LESS,
         clearColor: RGBColor = Colors.TRANSPARENT,
+        polygonOffsetFactor: Float = 0.0f,
+        polygonOffsetUnit: Float = 0.0f,
     ) {
         setBlendFunction(sourceRGB, destinationRGB, sourceAlpha, destinationAlpha)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending
         this[RenderingCapabilities.FACE_CULLING] = faceCulling
+        this[RenderingCapabilities.POLYGON_OFFSET] = polygonOffset
         this.depth = depth
         this.depthMask = depthMask
         this.clearColor = clearColor
         shader = null
+        polygonOffset(polygonOffsetFactor, polygonOffsetUnit)
     }
 
     fun enable(capability: RenderingCapabilities)
@@ -110,4 +115,7 @@ interface RenderSystem {
     fun clear(vararg buffers: IntegratedBufferTypes)
 
     fun getErrors(): List<RenderSystemError>
+
+
+    fun polygonOffset(factor: Float, unit: Float)
 }

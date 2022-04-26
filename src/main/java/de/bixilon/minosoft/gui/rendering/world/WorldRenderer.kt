@@ -46,6 +46,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
@@ -693,6 +694,8 @@ class WorldRenderer(
         }
 
         renderWindow.renderSystem.depth = DepthFunctions.LESS_OR_EQUAL
+        renderWindow.renderSystem[RenderingCapabilities.POLYGON_OFFSET] = true
+        renderWindow.renderSystem.polygonOffset(-2.5f, -2.5f)
         textShader.use()
         for (mesh in visible.text) {
             mesh.draw()
