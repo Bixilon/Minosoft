@@ -58,7 +58,7 @@ class SignEditorScreen(
     private val headerElement = TextElement(guiRenderer, "Edit sign message", background = false, scale = 3.0f, parent = this)
     private val positionElement = TextElement(guiRenderer, "at $blockPosition", background = false, parent = this)
     private val backgroundElement = ImageElement(guiRenderer, getTexture(), uvStart = SIGN_UV_START, uvEnd = SIGN_UV_END, size = BACKGROUND_SIZE)
-    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", 256, scale = TEXT_SCALE, background = false, cutAtSize = true, parent = this) }
+    private val lines = Array(SignBlockEntity.LINES) { TextInputElement(guiRenderer, blockEntity?.lines?.get(it)?.message ?: "", SIGN_MAX_CHARS, scale = TEXT_SCALE, background = false, cutAtSize = true, parent = this) }
     private val doneButton = ButtonElement(guiRenderer, "Done") { guiRenderer.gui.pop() }.apply { size = Vec2i(BACKGROUND_SIZE.x, size.y);parent = this@SignEditorScreen }
     private val lengthLimitSwitch = SwitchElement(guiRenderer, "Limit length", guiRenderer.connection.profiles.gui.sign.limitLength, parent = this) { guiRenderer.connection.profiles.gui.sign.limitLength = it; forceSilentApply() }
     override var activeElement: Element? = null
@@ -70,6 +70,7 @@ class SignEditorScreen(
             line.prefMaxSize = Vec2i(SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE)
             line.hideCursor()
         }
+        forceSilentApply()
     }
 
     private fun getTexture(): AbstractTexture? {
@@ -124,7 +125,7 @@ class SignEditorScreen(
         super.forceSilentApply()
 
         for (line in lines) {
-            line.prefMaxSize = Vec2i(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE else -1, line.prefMaxSize.y)
+            line.prefMaxSize = Vec2i(if (lengthLimitSwitch.state) SignBlockEntityRenderer.SIGN_MAX_WIDTH * TEXT_SCALE else SIGN_MAX_CHARS, line.prefMaxSize.y)
         }
     }
 
@@ -213,6 +214,7 @@ class SignEditorScreen(
         private val SIGN_UV_START = Vec2(0.5 / 16.0f, 1.0f / 32.0f)
         private val SIGN_UV_END = Vec2(6.5 / 16.0f, 7.0f / 32.0f)
         private const val TEXT_SCALE = 2.0f
+        private const val SIGN_MAX_CHARS = 384
 
         private const val BACKGROUND_SCALE = 9
         private val BACKGROUND_SIZE = Vec2i(24, 12) * BACKGROUND_SCALE
