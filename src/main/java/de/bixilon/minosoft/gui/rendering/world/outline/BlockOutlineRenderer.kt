@@ -88,7 +88,7 @@ class BlockOutlineRenderer(
 
         var currentMesh = currentMesh
 
-        if (target == null) {
+        if (target == null || connection.world.border.isOutside(target.blockPosition)) {
             unload()
             return
         }

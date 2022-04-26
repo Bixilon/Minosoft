@@ -41,7 +41,7 @@ class WorldBorder {
     val lock = SimpleLock()
 
     fun isOutside(blockPosition: Vec3i): Boolean {
-        return isOutside(blockPosition.x.toDouble(), blockPosition.z.toDouble())
+        return isOutside(blockPosition.x.toDouble(), blockPosition.z.toDouble()) && isOutside(blockPosition.x + 1.0, blockPosition.z + 1.0)
     }
 
     fun isOutside(position: Vec3): Boolean {
@@ -55,19 +55,12 @@ class WorldBorder {
     fun isOutside(x: Double, z: Double): Boolean {
         lock.acquire()
         val radius = diameter / 2
-        if (x !in radius - center.x..radius + center.x) {
-            lock.release()
-            return false
-        }
-        if (z !in radius - center.y..radius + center.y) {
-            lock.release()
-            return false
-        }
+        val inside = x in (center.x - radius)..(radius + center.x) && z in (center.y - radius)..(radius + center.y)
         lock.release()
-        return true
+        return !inside
     }
 
-    fun stopLerp() {
+    fun stopInterpolating() {
         lock.lock()
         lerpStart = -1L
         lock.unlock()
@@ -75,7 +68,7 @@ class WorldBorder {
 
     fun interpolate(oldDiameter: Double, newDiameter: Double, millis: Long) {
         if (millis == 0L) {
-            stopLerp()
+            stopInterpolating()
             diameter = newDiameter
         }
         lock.lock()

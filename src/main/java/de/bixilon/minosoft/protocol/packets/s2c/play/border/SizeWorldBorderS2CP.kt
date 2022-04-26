@@ -25,7 +25,7 @@ class SizeWorldBorderS2CP(buffer: PlayInByteBuffer) : WorldBorderS2CP {
     val diameter = buffer.readDouble()
 
     override fun handle(connection: PlayConnection) {
-        connection.world.border.stopLerp()
+        connection.world.border.stopInterpolating()
         connection.world.border.diameter = diameter
     }
 
