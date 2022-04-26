@@ -54,7 +54,7 @@ void main() {
     finTextureIndex = uIndexLayer >> 28u;
     vec2 uv = CONST_UV[uvIndex];
     uv.x *= (uRadius / 5.0f);
-    uv.y *= (600 / 5.0f);
+    uv.y *= (300 / 5.0f);
 
     finTextureCoordinates = vec3(uv, ((uIndexLayer >> 12) & 0xFFFFu));
     finTextureCoordinates.x += uTextureOffset;

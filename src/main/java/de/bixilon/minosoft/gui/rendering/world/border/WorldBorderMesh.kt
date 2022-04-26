@@ -23,26 +23,26 @@ class WorldBorderMesh(renderWindow: RenderWindow) : Mesh(renderWindow, WorldBord
 
     init {
         data.addAll(floatArrayOf(
-            -1.0f, +1.0f, -1.0f, Float.fromBits(0),
-            +1.0f, -1.0f, -1.0f, Float.fromBits(1),
-            -1.0f, -1.0f, -1.0f, Float.fromBits(2),
-            +1.0f, -1.0f, -1.0f, Float.fromBits(1),
-            -1.0f, +1.0f, -1.0f, Float.fromBits(0),
-            +1.0f, +1.0f, -1.0f, Float.fromBits(3),
-
-            -1.0f, -1.0f, +1.0f, Float.fromBits(0),
             -1.0f, +1.0f, -1.0f, Float.fromBits(1),
-            -1.0f, -1.0f, -1.0f, Float.fromBits(2),
+            +1.0f, -1.0f, -1.0f, Float.fromBits(0),
+            -1.0f, -1.0f, -1.0f, Float.fromBits(3),
+            +1.0f, -1.0f, -1.0f, Float.fromBits(0),
             -1.0f, +1.0f, -1.0f, Float.fromBits(1),
-            -1.0f, -1.0f, +1.0f, Float.fromBits(0),
-            -1.0f, +1.0f, +1.0f, Float.fromBits(3),
+            +1.0f, +1.0f, -1.0f, Float.fromBits(2),
 
-            +1.0f, -1.0f, -1.0f, Float.fromBits(0),
-            +1.0f, +1.0f, +1.0f, Float.fromBits(1),
-            +1.0f, -1.0f, +1.0f, Float.fromBits(2),
-            +1.0f, +1.0f, +1.0f, Float.fromBits(1),
-            +1.0f, -1.0f, -1.0f, Float.fromBits(0),
-            +1.0f, +1.0f, -1.0f, Float.fromBits(3),
+            -1.0f, -1.0f, +1.0f, Float.fromBits(3),
+            -1.0f, +1.0f, -1.0f, Float.fromBits(2),
+            -1.0f, -1.0f, -1.0f, Float.fromBits(0),
+            -1.0f, +1.0f, -1.0f, Float.fromBits(2),
+            -1.0f, -1.0f, +1.0f, Float.fromBits(3),
+            -1.0f, +1.0f, +1.0f, Float.fromBits(1),
+
+            +1.0f, -1.0f, -1.0f, Float.fromBits(3),
+            +1.0f, +1.0f, +1.0f, Float.fromBits(2),
+            +1.0f, -1.0f, +1.0f, Float.fromBits(0),
+            +1.0f, +1.0f, +1.0f, Float.fromBits(2),
+            +1.0f, -1.0f, -1.0f, Float.fromBits(3),
+            +1.0f, +1.0f, -1.0f, Float.fromBits(1),
 
             -1.0f, -1.0f, +1.0f, Float.fromBits(0),
             +1.0f, +1.0f, +1.0f, Float.fromBits(1),
