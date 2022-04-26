@@ -81,7 +81,7 @@ class SignBlockEntityRenderer(
     }
 
     private fun renderWallText(position: Vec3i, mesh: WorldMesh, light: Int) {
-        val yRotation = when (val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH) {
+        val yRotation = -when (val rotation = this.blockState.properties[BlockProperties.FACING].nullCast<Directions>() ?: Directions.NORTH) {
             Directions.SOUTH -> 0.0f
             Directions.EAST -> 90.0f
             Directions.NORTH -> 180.0f
@@ -90,7 +90,7 @@ class SignBlockEntityRenderer(
         }
 
         val rotationVector = Vec3(X_OFFSET, 12.5f / UnbakedElement.BLOCK_RESOLUTION - Y_OFFSET, 2.0f / UnbakedElement.BLOCK_RESOLUTION + Z_OFFSET)
-        rotationVector.signRotate(-yRotation.rad)
+        rotationVector.signRotate(yRotation.rad)
         renderText(position, rotationVector, yRotation, mesh, light)
     }
 
