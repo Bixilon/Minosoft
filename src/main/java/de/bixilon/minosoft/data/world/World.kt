@@ -18,6 +18,8 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -176,15 +178,18 @@ class World(
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.positionInfo.chunkPosition
         chunks.lock.acquire()
+        val latch = CountUpAndDownLatch(chunks.size)
         for ((chunkPosition, chunk) in chunks) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
+                latch.dec()
                 continue
             }
-            chunk.tick(connection, chunkPosition)
+            DefaultThreadPool += { chunk.tick(connection, chunkPosition); latch.dec() }
         }
         chunks.lock.release()
         border.tick()
+        latch.await()
     }
 
     fun randomTick() {
