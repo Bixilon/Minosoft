@@ -1,4 +1,5 @@
 {
+  "parent": "block/template_bed",
   "elements": [
     {
       "__comment": "Base",
