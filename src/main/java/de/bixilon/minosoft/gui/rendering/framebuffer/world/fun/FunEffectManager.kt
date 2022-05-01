@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`
 
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -36,8 +36,8 @@ class FunEffectManager(
         renderWindow.inputHandler.registerKeyCallback("minosoft:switch_fun_settings".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_J),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_J),
                 ),
             )) {
             effectUsed++

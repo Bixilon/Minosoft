@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import de.bixilon.minosoft.util.KUtil.synchronizedDeepCopy
 
 class KeyBinding(
-    val action: Map<KeyAction, Set<KeyCodes>>,
+    val action: Map<KeyActions, Set<KeyCodes>>,
     @JsonInclude(JsonInclude.Include.NON_DEFAULT) var ignoreConsumer: Boolean = false,
 ) {
     constructor(keyBinding: KeyBinding) : this(keyBinding.action.synchronizedDeepCopy()) // ToDo: Deep copy

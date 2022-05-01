@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.container.InventorySlots
@@ -38,7 +38,7 @@ class ItemPickInteractionHandler(
     fun init() {
         renderWindow.inputHandler.registerKeyCallback("minosoft:pick_item".toResourceLocation(), KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
+                KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_MIDDLE),
             ),
         )) {
             pickItem(true) // ToDo: Combination for not copying nbt

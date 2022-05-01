@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftTokens
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.code.MicrosoftDeviceCode
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException
@@ -39,9 +38,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.concurrent.TimeoutException
 
 object MicrosoftOAuthUtils {
+    const val CLIENT_ID = "feb3836f-0333-4185-8eb9-4cbf0498f947" // Minosoft 2 (microsoft-bixilon2)
     const val TENANT = "consumers"
+
     const val DEVICE_CODE_URL = "https://login.microsoftonline.com/$TENANT/oauth2/v2.0/devicecode"
     const val TOKEN_CHECK_URL = "https://login.microsoftonline.com/$TENANT/oauth2/v2.0/token"
+    const val XBOX_LIVE_AUTH_URL = "https://user.auth.xboxlive.com/user/authenticate"
+    const val XSTS_URL = "https://xsts.auth.xboxlive.com/xsts/authorize"
+    const val LOGIN_WITH_XBOX_URL = "https://api.minecraftservices.com/authentication/login_with_xbox"
     const val MAX_CHECK_TIME = 900
 
     fun obtainDeviceCodeAsync(
@@ -80,7 +84,7 @@ object MicrosoftOAuthUtils {
 
     fun obtainDeviceCode(): MicrosoftDeviceCode {
         val response = mapOf(
-            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
+            "client_id" to CLIENT_ID,
             "scope" to "XboxLive.signin offline_access",
         ).postData(DEVICE_CODE_URL)
 
@@ -94,7 +98,7 @@ object MicrosoftOAuthUtils {
     fun checkDeviceCode(deviceCode: MicrosoftDeviceCode): AuthenticationResponse? {
         val response = mapOf(
             "grant_type" to "urn:ietf:params:oauth:grant-type:device_code",
-            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
+            "client_id" to CLIENT_ID,
             "device_code" to deviceCode.deviceCode,
         ).postData(TOKEN_CHECK_URL)
 
@@ -111,7 +115,7 @@ object MicrosoftOAuthUtils {
 
     fun refreshToken(token: MicrosoftTokens): AuthenticationResponse {
         val response = mapOf(
-            "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
+            "client_id" to CLIENT_ID,
             "grant_type" to "refresh_token",
             "scope" to "XboxLive.signin offline_access",
             "refresh_token" to token.refreshToken,
@@ -165,7 +169,7 @@ object MicrosoftOAuthUtils {
             ),
             "RelyingParty" to "http://auth.xboxlive.com",
             "TokenType" to "JWT",
-        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL)
+        ).postJson(XBOX_LIVE_AUTH_URL)
 
 
         if (response.statusCode != 200 || response.body == null) {
@@ -183,7 +187,7 @@ object MicrosoftOAuthUtils {
             ),
             "RelyingParty" to "rp://api.minecraftservices.com/",
             "TokenType" to "JWT",
-        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XSTS_URL)
+        ).postJson(XSTS_URL)
 
         if (response.statusCode != 200) {
             val error = Jackson.MAPPER.convertValue(response.body, XboxAPIError::class.java)
@@ -204,7 +208,7 @@ object MicrosoftOAuthUtils {
         val response = mapOf(
             "identityToken" to "XBL3.0 x=${xBoxLiveToken.userHash};${xstsToken.token}",
             "ensureLegacyEnabled" to true,
-        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL)
+        ).postJson(LOGIN_WITH_XBOX_URL)
 
         if (response.statusCode != 200) {
             throw MinecraftAPIException(response)

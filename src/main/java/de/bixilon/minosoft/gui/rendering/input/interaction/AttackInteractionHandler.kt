@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -45,7 +45,7 @@ class AttackInteractionHandler(
     fun init() {
         renderWindow.inputHandler.registerKeyCallback(ATTACK_ENTITY_KEYBINDING, KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
+                KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
             ),
         ), false) { tryAttack() }
     }

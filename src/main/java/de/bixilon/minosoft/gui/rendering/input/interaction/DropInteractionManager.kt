@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -33,13 +33,13 @@ class DropInteractionManager(
         // ToDo: Does this swing the arm?
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_STACK_KEYBINDING, KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
-                KeyAction.MODIFIER to setOf(KeyCodes.KEY_LEFT_CONTROL)
+                KeyActions.PRESS to setOf(KeyCodes.KEY_Q),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_LEFT_CONTROL)
             ),
         )) { dropItem(true) }
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_KEYBINDING, KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_Q),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_Q),
             ),
         )) { dropItem(false) }
     }

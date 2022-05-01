@@ -127,7 +127,6 @@ class PlayConnection(
                 network.state = ProtocolStates.LOGIN
             } else {
                 wasConnected = true
-                //ToDo: Minosoft.CONNECTIONS.remove(connectionId)
                 if (CLI.getCurrentConnection() == this) {
                     CLI.setCurrentConnection(null)
                     Command.print("Disconnected from current connection!")

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -91,7 +91,7 @@ class HUDManager(
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:enable_hud".toResourceLocation(), KeyBinding(
             mapOf(
-                KeyAction.STICKY to setOf(KeyCodes.KEY_F1),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
             ),
         ), defaultPressed = enabled) { enabled = it }
     }

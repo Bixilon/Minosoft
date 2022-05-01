@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container
 
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.container.Container
@@ -30,7 +30,7 @@ object ContainerGUIManager {
     private fun registerLocalContainerEvent(guiRenderer: GUIRenderer) {
         guiRenderer.renderWindow.inputHandler.registerKeyCallback("minosoft:local_inventory".toResourceLocation(), KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_E),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_E),
             ),
         )) { guiRenderer.gui.open(LocalInventoryScreen) }
     }

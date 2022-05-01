@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.rate.RateLimiter
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -78,7 +78,7 @@ class HotbarInteractionHandler(
         for (i in 1..PlayerInventory.HOTBAR_SLOTS) {
             renderWindow.inputHandler.registerKeyCallback("minosoft:hotbar_slot_$i".toResourceLocation(), KeyBinding(
                 mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
                 ),
             )) { selectSlot(i - 1) }
         }
@@ -108,7 +108,7 @@ class HotbarInteractionHandler(
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:swap_items".toResourceLocation(), KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_F),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_F),
             ),
         )) { swapItems() }
     }

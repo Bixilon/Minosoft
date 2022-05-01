@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
@@ -66,7 +66,7 @@ class GUIManager(
         renderWindow.inputHandler.registerKeyCallback("minosoft:back".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
+                    KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
                 ),
                 ignoreConsumer = true,
             )) { popOrPause() }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -52,7 +52,7 @@ class InteractInteractionHandler(
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(USE_ITEM_KEYBINDING to KeyBinding(
             mapOf(
-                KeyAction.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
+                KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
             ),
         ))
     }

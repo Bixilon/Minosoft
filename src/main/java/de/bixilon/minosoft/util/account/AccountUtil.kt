@@ -15,7 +15,6 @@ package de.bixilon.minosoft.util.account
 
 import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.data.accounts.types.microsoft.MinecraftTokens
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftProfile
 import de.bixilon.minosoft.util.http.HTTP2.getJson
@@ -27,10 +26,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 object AccountUtil {
+    private const val GET_PROFILE_URL = "https://api.minecraftservices.com/minecraft/profile"
     private const val MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join"
 
     fun fetchMinecraftProfile(token: MinecraftTokens): MinecraftProfile {
-        val response = ProtocolDefinition.MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL.getJson(mapOf(
+        val response = GET_PROFILE_URL.getJson(mapOf(
             "Authorization" to "Bearer ${token.accessToken}",
         ))
 

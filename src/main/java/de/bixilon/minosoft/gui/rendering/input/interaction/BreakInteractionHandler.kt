@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.pow
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -250,7 +250,7 @@ class BreakInteractionHandler(
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(DESTROY_BLOCK_KEYBINDING to KeyBinding(
             mapOf(
-                KeyAction.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
+                KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
             ),
         ))
 

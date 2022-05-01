@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMap
@@ -78,8 +78,8 @@ class RenderWindowInputHandler(
         registerKeyCallback("minosoft:debug_change_cursor_mode".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_M),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_M),
                 ),
                 ignoreConsumer = true,
             ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
@@ -139,10 +139,10 @@ class RenderWindowInputHandler(
             }
 
             // ToDo
-            if (pair.keyBinding.action[KeyAction.DOUBLE_PRESS] != null) {
+            if (pair.keyBinding.action[KeyActions.DOUBLE_PRESS] != null) {
                 continue
             }
-            if (pair.keyBinding.action[KeyAction.STICKY] != null) {
+            if (pair.keyBinding.action[KeyActions.STICKY] != null) {
                 continue
             }
 
@@ -182,7 +182,7 @@ class RenderWindowInputHandler(
             var thisIsChange = true
             var saveDown = true
 
-            pair.keyBinding.action[KeyAction.PRESS]?.let {
+            pair.keyBinding.action[KeyActions.PRESS]?.let {
                 if (!keyDown) {
                     thisIsChange = false
                 }
@@ -194,7 +194,7 @@ class RenderWindowInputHandler(
                 checksRun++
             }
 
-            pair.keyBinding.action[KeyAction.RELEASE]?.let {
+            pair.keyBinding.action[KeyActions.RELEASE]?.let {
                 if (keyDown) {
                     thisIsChange = false
                 }
@@ -206,21 +206,21 @@ class RenderWindowInputHandler(
                 checksRun++
             }
 
-            pair.keyBinding.action[KeyAction.CHANGE]?.let {
+            pair.keyBinding.action[KeyActions.CHANGE]?.let {
                 if (!it.contains(keyCode)) {
                     thisIsChange = false
                 }
                 checksRun++
             }
 
-            pair.keyBinding.action[KeyAction.MODIFIER]?.let {
+            pair.keyBinding.action[KeyActions.MODIFIER]?.let {
                 if (!keysDown.containsAll(it)) {
                     thisIsChange = false
                 }
                 checksRun++
             }
 
-            pair.keyBinding.action[KeyAction.STICKY]?.let {
+            pair.keyBinding.action[KeyActions.STICKY]?.let {
                 checksRun++
                 if (!it.contains(keyCode)) {
                     thisIsChange = false
@@ -233,7 +233,7 @@ class RenderWindowInputHandler(
                 thisKeyBindingDown = !keyBindingsDown.contains(resourceLocation)
             }
 
-            pair.keyBinding.action[KeyAction.DOUBLE_PRESS]?.let {
+            pair.keyBinding.action[KeyActions.DOUBLE_PRESS]?.let {
                 checksRun++
                 if (!keyDown) {
                     thisIsChange = false
@@ -310,7 +310,7 @@ class RenderWindowInputHandler(
         val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding, defaultKeyBinding, defaultPressed) }
         callbackPair.callback += callback
 
-        if (keyBinding.action.containsKey(KeyAction.STICKY) && defaultPressed) {
+        if (keyBinding.action.containsKey(KeyActions.STICKY) && defaultPressed) {
             keyBindingsDown += resourceLocation
         }
     }

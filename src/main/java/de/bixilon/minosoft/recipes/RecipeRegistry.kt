@@ -41,7 +41,7 @@ class RecipeRegistry(
             is ResourceLocation -> resourceLocationRecipeMap[any]
             is String -> get(any.toResourceLocation())
             is ResourceLocationAble -> get(any.resourceLocation)
-            else -> TODO()
+            else -> throw IllegalArgumentException("Can not get recipe from $any")
         } ?: parent?.get(any)
     }
 

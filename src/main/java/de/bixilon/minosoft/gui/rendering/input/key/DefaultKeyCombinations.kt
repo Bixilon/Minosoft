@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -32,8 +32,8 @@ object DefaultKeyCombinations {
         inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_P),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_P),
                 ),
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
@@ -44,7 +44,7 @@ object DefaultKeyCombinations {
         inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_F2),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_F2),
                 ),
                 ignoreConsumer = true,
             )) { renderWindow.screenshotTaker.takeScreenshot() }
@@ -52,8 +52,8 @@ object DefaultKeyCombinations {
         inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_I),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_I),
                 ),
                 ignoreConsumer = true,
             )) {
@@ -64,8 +64,8 @@ object DefaultKeyCombinations {
         inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_O),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_O),
                 ),
                 ignoreConsumer = true,
             )) {
@@ -76,7 +76,7 @@ object DefaultKeyCombinations {
         inputHandler.registerKeyCallback("minosoft:toggle_fullscreen".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_F11),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_F11),
                 ),
                 ignoreConsumer = true,
             )) {

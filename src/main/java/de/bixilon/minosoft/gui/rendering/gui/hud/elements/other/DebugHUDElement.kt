@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.direction.Directions
@@ -311,7 +311,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             mapOf(
-                KeyAction.STICKY to setOf(KeyCodes.KEY_F3),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
             ),
         )
 

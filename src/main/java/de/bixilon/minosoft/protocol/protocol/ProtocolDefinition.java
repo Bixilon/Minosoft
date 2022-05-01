@@ -63,16 +63,6 @@ public final class ProtocolDefinition {
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
     public static final int ITEM_STACK_MAX_SIZE = 64;
 
-
-    // public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "00000000402b5328"; // ToDo: Should we use our own application id?
-    public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "feb3836f-0333-4185-8eb9-4cbf0498f947"; // Minosoft 2 (microsoft-bixilon2)
-    public static final String MICROSOFT_ACCOUNT_OAUTH_FLOW_URL = "https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize?client_id=" + MICROSOFT_ACCOUNT_APPLICATION_ID + "&scope=XboxLive.signin%20offline_access&response_type=code";
-    public static final String MICROSOFT_ACCOUNT_AUTH_TOKEN_URL = "https://login.live.com/oauth20_token.srf";
-    public static final String MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL = "https://user.auth.xboxlive.com/user/authenticate";
-    public static final String MICROSOFT_ACCOUNT_XSTS_URL = "https://xsts.auth.xboxlive.com/xsts/authorize";
-    public static final String MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL = "https://api.minecraftservices.com/authentication/login_with_xbox";
-    public static final String MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL = "https://api.minecraftservices.com/minecraft/profile";
-
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
 
 
@@ -82,9 +72,6 @@ public final class ProtocolDefinition {
     public static final double TICK_TIMEd = TICK_TIME;
 
     public static final float VELOCITY_NETWORK_DIVIDER = 8000.0f;
-
-    public static final float GRAVITY = 32;
-    public static final boolean FAST_MOVEMENT = true;
 
     public static final int SEA_LEVEL_HEIGHT = 62;
 

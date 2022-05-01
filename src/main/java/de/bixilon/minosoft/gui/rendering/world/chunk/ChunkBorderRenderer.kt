@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.chunk
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -49,8 +49,8 @@ class ChunkBorderRenderer(
         renderWindow.inputHandler.registerKeyCallback(CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_G),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_G),
                 ),
             ), defaultPressed = profile.chunkBorder.enabled) {
             profile.chunkBorder.enabled = it

@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -256,7 +256,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             mapOf(
-                KeyAction.CHANGE to setOf(KeyCodes.KEY_TAB),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_TAB),
             ),
         )
 

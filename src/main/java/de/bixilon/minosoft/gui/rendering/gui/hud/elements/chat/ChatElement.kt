@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
@@ -90,7 +90,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(), KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_T),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_T),
             ),
         )) { guiRenderer.gui.open(ChatElement) }
     }

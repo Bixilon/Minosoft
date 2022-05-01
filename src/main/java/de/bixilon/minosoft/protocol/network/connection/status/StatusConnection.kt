@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.status
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -56,6 +57,8 @@ class StatusConnection(
     var serverVersion: Version? = null
 
     var state by watched(StatusConnectionStates.WAITING)
+
+    private var timeoutTask: TimeWorkerTask? = null
 
 
     override var error: Throwable?
@@ -105,6 +108,14 @@ class StatusConnection(
                 }
             }
         }
+        this::state.observe(this) {
+            if (it == StatusConnectionStates.PING_DONE) {
+                val timeoutTask = timeoutTask ?: return@observe
+                timeoutTask.interrupt()
+                TimeWorker.removeTask(timeoutTask)
+                this.timeoutTask = null
+            }
+        }
     }
 
 
@@ -135,8 +146,7 @@ class StatusConnection(
         state = StatusConnectionStates.RESOLVING
 
         // timeout task
-        // ToDo: Cancel on success
-        TimeWorker.runIn(30000) {
+        timeoutTask = TimeWorker.runIn(30000) {
             if (state == StatusConnectionStates.ERROR) {
                 return@runIn
             }

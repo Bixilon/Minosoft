@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -34,7 +34,7 @@ class SpectateInteractionManager(
     fun init() {
         renderWindow.inputHandler.registerKeyCallback(STOP_SPECTATING, KeyBinding(
             mapOf(
-                KeyAction.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
             ),
         )) { spectate(null) }
 

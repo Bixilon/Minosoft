@@ -27,7 +27,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
@@ -251,8 +251,8 @@ class WorldRenderer(
         renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(),
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyAction.PRESS to setOf(KeyCodes.KEY_A),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_A),
                 ),
             )) { clearChunkCache() }
 

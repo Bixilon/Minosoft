@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
@@ -96,8 +96,8 @@ class EntityHitboxRenderer(
         renderWindow.inputHandler.registerKeyCallback(HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 mapOf(
-                    KeyAction.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyAction.STICKY to setOf(KeyCodes.KEY_B),
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_B),
                 ),
             ), defaultPressed = profile.enabled) {
             profile.enabled = it

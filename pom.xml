@@ -474,7 +474,7 @@
         <dependency>
             <groupId>de.bixilon</groupId>
             <artifactId>kutil</artifactId>
-            <version>1.10.4</version>
+            <version>1.10.5</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
