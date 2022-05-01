@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.container.InventorySlots
@@ -30,6 +31,9 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 object DefaultRegistries {
     private val ENUM_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/enums.json")
@@ -62,8 +66,9 @@ object DefaultRegistries {
     val CAT_VARIANT_REGISTRY: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry() }
 
 
-    fun load() {
+    fun load(latch: CountUpAndDownLatch) {
         check(!initialized) { "Already initialized!" }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
 
         val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER[ENUM_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
@@ -97,6 +102,7 @@ object DefaultRegistries {
         CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation("variants/cat")].asJsonObject(), CatVariant)
 
         initialized = true
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loaded default registries!" }
     }
 
 }

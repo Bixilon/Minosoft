@@ -40,6 +40,9 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 
 object GlobalProfileManager {
@@ -115,18 +118,19 @@ object GlobalProfileManager {
     }
 
     @Synchronized
-    fun initialize() {
+    fun initialize(latch: CountUpAndDownLatch) {
         if (initialized) {
             throw IllegalStateException("Already initialized!")
         }
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
         loadSelectedProfiles()
-        val latch = CountUpAndDownLatch(1)
+        val innerLatch = CountUpAndDownLatch(1, latch)
         for ((namespace, manager) in DEFAULT_MANAGERS) {
-            latch.inc()
-            DefaultThreadPool += { manager.load(selectedProfiles[namespace]);latch.dec() }
+            innerLatch.inc()
+            DefaultThreadPool += { manager.load(selectedProfiles[namespace]);innerLatch.dec() }
         }
-        latch.dec()
-        latch.await()
+        innerLatch.dec()
+        innerLatch.await()
 
         loading = false
         if (selectedProfilesChanges) {
@@ -145,6 +149,7 @@ object GlobalProfileManager {
             }
         }
         initialized = true
+        Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Profiles loaded!" }
     }
 
     fun <T : Profile> selectProfile(profileManager: ProfileManager<T>, profile: T?) {

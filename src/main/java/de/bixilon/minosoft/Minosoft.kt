@@ -36,6 +36,7 @@ import de.bixilon.minosoft.gui.eros.XStartOnFirstThreadWarning
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
+import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
@@ -52,15 +53,14 @@ import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.task.worker.StartupTasks
 
 
 object Minosoft {
     val MAIN_THREAD: Thread = Thread.currentThread()
     val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
-    val OVERWRITE_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false, prefix = "assets_overwrite")
+    val OVERRIDE_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false, prefix = "assets_override")
     val LANGUAGE_MANAGER = MultiLanguageManager()
-    val START_UP_LATCH = CountUpAndDownLatch(1)
+    val BOOT_LATCH = CountUpAndDownLatch(1)
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -68,89 +68,72 @@ object Minosoft {
         CommandLineArguments.parse(args)
         KUtil.initUtilClasses()
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
-        OVERWRITE_ASSETS_MANAGER.load(CountUpAndDownLatch(0)) // ToDo: async
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
-        if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
-            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you have to add the jvm argument §9-XstartOnFirstThread§r. Please ensure it is set!" }
-        }
+        warnMacOS()
         GitInfo.load()
 
         val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
 
+        taskWorker += Task(identifier = BootTasks.PACKETS, priority = ThreadPool.HIGH, executor = PacketTypeRegistry::init)
+        taskWorker += Task(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.PACKETS), executor = Versions::load)
+        taskWorker += Task(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.VERSIONS), executor = GlobalProfileManager::initialize)
+        taskWorker += Task(identifier = BootTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = this::startFileWatcherService)
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_PACKETS, priority = ThreadPool.HIGH, executor = {
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Initializing packets..." }
-            PacketTypeRegistry.init()
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Packets initialized!" }
-        })
-
-        taskWorker += Task(identifier = StartupTasks.LOAD_VERSIONS, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_PACKETS), executor = {
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
-            Versions.load()
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Versions loaded!" }
-        })
-
-        taskWorker += Task(identifier = StartupTasks.LOAD_PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
-            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
-            GlobalProfileManager.initialize()
-            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Profiles loaded!" }
-        })
-
-        taskWorker += Task(identifier = StartupTasks.FILE_WATCHER, priority = ThreadPool.HIGH, optional = true, executor = {
-            Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
-            FileWatcherService.start()
-            Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "File watcher service started!" }
-        })
+        taskWorker += Task(identifier = BootTasks.LANGUAGE_FILES, dependencies = arrayOf(BootTasks.PROFILES), executor = this::loadLanguageFiles)
+        taskWorker += Task(identifier = BootTasks.ASSETS_PROPERTIES, dependencies = arrayOf(BootTasks.PROFILES), executor = AssetsVersionProperties::load)
+        taskWorker += Task(identifier = BootTasks.DEFAULT_REGISTRIES, dependencies = arrayOf(BootTasks.PROFILES), executor = DefaultRegistries::load)
 
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
-            val language = ErosProfileManager.selected.general.language
-            ErosProfileManager.selected.general::language.profileWatch(this, true) {
-                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-                LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, MINOSOFT_ASSETS_MANAGER, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
-                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
-            }
-        })
+        taskWorker += Task(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_DEFAULT_REGISTRIES, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
-
-            AssetsVersionProperties.load()
-            DefaultRegistries.load()
-
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Default registries loaded!" }
-        })
-
-
-        taskWorker += Task(identifier = StartupTasks.LISTEN_LAN_SERVERS, dependencies = arrayOf(StartupTasks.LOAD_PROFILES), executor = {
-            LANServerListener.listen()
-        })
-
-        taskWorker += Task(identifier = StartupTasks.INITIALIZE_CLI, executor = { CLI.initialize() })
+        taskWorker += Task(identifier = BootTasks.CLI, executor = { CLI.initialize() })
 
         if (!RunConfiguration.DISABLE_EROS) {
-            taskWorker += Task(identifier = StartupTasks.INITIALIZE_JAVAFX, executor = { JavaFXInitializer.start() })
+            taskWorker += Task(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start() })
             DefaultThreadPool += { javafx.scene.text.Font::class.java.forceInit() }
-            taskWorker += Task(identifier = StartupTasks.X_START_ON_FIRST_THREAD_WARNING, executor = { XStartOnFirstThreadWarning.show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
+            taskWorker += Task(identifier = BootTasks.X_START_ON_FIRST_THREAD_WARNING, executor = { XStartOnFirstThreadWarning.show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
-            taskWorker += Task(identifier = StartupTasks.STARTUP_PROGRESS, executor = { StartingDialog(START_UP_LATCH).show() }, dependencies = arrayOf(StartupTasks.LOAD_LANGUAGE_FILES, StartupTasks.INITIALIZE_JAVAFX))
+            taskWorker += Task(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
             Eros::class.java.forceInit()
         }
-        taskWorker += Task(identifier = StartupTasks.LOAD_YGGDRASIL, executor = { YggdrasilUtil.load() })
+        taskWorker += Task(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
+
+        taskWorker += Task(identifier = BootTasks.ASSETS_OVERRIDE, executor = { OVERRIDE_ASSETS_MANAGER.load(it) })
 
 
-        taskWorker.work(START_UP_LATCH)
+        taskWorker.work(BOOT_LATCH)
 
-        START_UP_LATCH.dec() // remove initial count
-        START_UP_LATCH.await()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Loaded everything!" }
+        BOOT_LATCH.dec() // remove initial count
+        BOOT_LATCH.await()
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished!" }
         GlobalEventMaster.fireEvent(FinishInitializingEvent())
 
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
 
         RenderPolling.pollRendering()
+    }
+
+    private fun startFileWatcherService(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "Starting file watcher service..." }
+        FileWatcherService.start()
+        Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { "File watcher service started!" }
+    }
+
+    private fun loadLanguageFiles(latch: CountUpAndDownLatch) {
+        val language = ErosProfileManager.selected.general.language
+        ErosProfileManager.selected.general::language.profileWatch(this, true) {
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
+            LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, MINOSOFT_ASSETS_MANAGER, ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
+        }
+    }
+
+    private fun warnMacOS() {
+        if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
+            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you have to add the jvm argument §9-XstartOnFirstThread§r. Please ensure it is set!" }
+        }
     }
 }

@@ -11,20 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.task.worker
+package de.bixilon.minosoft.main
 
-enum class StartupTasks {
-    LOAD_PROFILES,
-    LOAD_LANGUAGE_FILES,
-    LOAD_PACKETS,
-    LOAD_VERSIONS,
-    LOAD_DEFAULT_REGISTRIES,
-    LISTEN_LAN_SERVERS,
-    INITIALIZE_CLI,
-    INITIALIZE_JAVAFX,
+enum class BootTasks {
+    PROFILES,
+    LANGUAGE_FILES,
+    PACKETS,
+    VERSIONS,
+    ASSETS_PROPERTIES,
+    DEFAULT_REGISTRIES,
+    LAN_SERVERS,
+    CLI,
+    JAVAFX,
     X_START_ON_FIRST_THREAD_WARNING,
     FILE_WATCHER,
-    LOAD_YGGDRASIL,
+    YGGDRASIL,
     STARTUP_PROGRESS,
+    ASSETS_OVERRIDE,
     ;
 }

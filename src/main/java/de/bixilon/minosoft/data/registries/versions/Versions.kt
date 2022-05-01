@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.collections.map.bi.MutableBiMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
@@ -44,7 +45,8 @@ object Versions : Iterable<Version> {
     }
 
     @Synchronized
-    fun load() {
+    fun load(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
         val index: Map<String, Map<String, Any>> = Minosoft.MINOSOFT_ASSETS_MANAGER[VERSIONS_INDEX].readJson()
 
         fun loadVersion(versionId: Int, data: Map<String, Any> = index[versionId.toString()]!!): Version {
@@ -110,9 +112,12 @@ object Versions : Iterable<Version> {
             return version
         }
 
+        latch.count += index.size
         for ((versionId, data) in index) {
             loadVersion(versionId.toInt(), data)
+            latch.dec()
         }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Versions loaded!" }
     }
 
     private fun <T> readPacketMapping(versionId: Int, list: List<String>, typeGetter: (name: String) -> T): MutableBiMap<T, Int> {

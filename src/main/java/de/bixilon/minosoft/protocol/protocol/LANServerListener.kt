@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,7 +42,7 @@ object LANServerListener {
     val listening: Boolean
         get() = listeningThread != null
 
-    fun listen() {
+    fun listen(latch: CountUpAndDownLatch?) {
         OtherProfileManager.selected::listenLAN.profileWatch(this) {
             if (it && listeningThread == null) {
                 startListener()
@@ -51,9 +51,9 @@ object LANServerListener {
             }
         }
         if (OtherProfileManager.selected.listenLAN) {
-            val latch = CountUpAndDownLatch(1)
-            startListener(latch)
-            latch.await()
+            val innerLatch = CountUpAndDownLatch(1, latch)
+            startListener(innerLatch)
+            innerLatch.await()
         }
     }
 

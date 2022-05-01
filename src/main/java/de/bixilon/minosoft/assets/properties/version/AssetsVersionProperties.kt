@@ -13,24 +13,30 @@
 
 package de.bixilon.minosoft.assets.properties.version
 
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 object AssetsVersionProperties {
     private val ASSETS_PROPERTIES_FILE = "minosoft:mapping/assets_properties.json".toResourceLocation()
     private val PROPERTIES: MutableMap<Version, AssetsVersionProperty> = mutableMapOf()
 
-    fun load() {
+    fun load(latch: CountUpAndDownLatch) {
         if (PROPERTIES.isNotEmpty()) {
             throw IllegalStateException("Already loaded!")
         }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading assets properties..." }
         val assetsProperties: Map<String, AssetsVersionProperty> = Minosoft.MINOSOFT_ASSETS_MANAGER[ASSETS_PROPERTIES_FILE].readJson()
         for ((versionName, property) in assetsProperties) {
             PROPERTIES[Versions[versionName] ?: continue] = property
         }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loaded assets properties!" }
     }
 
     operator fun get(version: Version): AssetsVersionProperty? {

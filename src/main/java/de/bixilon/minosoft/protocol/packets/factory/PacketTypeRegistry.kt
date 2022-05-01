@@ -31,6 +31,9 @@ import de.bixilon.minosoft.protocol.packets.factory.factories.PacketFactory
 import de.bixilon.minosoft.protocol.packets.factory.factories.ReflectionFactory
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import kotlin.reflect.full.companionObjectInstance
 
 object PacketTypeRegistry {
@@ -75,7 +78,8 @@ object PacketTypeRegistry {
 
 
     @Suppress("UnstableApiUsage")
-    fun init() {
+    fun init(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Initializing packets..." }
         val classLoader = Thread.currentThread().contextClassLoader
 
         val s2cClassMap: SynchronizedMap<Class<out S2CPacket>, S2CPacketType> = synchronizedMapOf()
@@ -83,19 +87,20 @@ object PacketTypeRegistry {
         val c2sClassMap: SynchronizedMap<Class<out C2SPacket>, C2SPacketType> = synchronizedMapOf()
         val c2sStateMap: SynchronizedMap<ProtocolStates, MutableMap<String, C2SPacketType>> = synchronizedMapOf()
 
-        val latch = CountUpAndDownLatch(1)
+        val innerLatch = CountUpAndDownLatch(1, latch)
         for (info in ClassPath.from(classLoader).getTopLevelClassesRecursive(PacketsRoot::class.java.packageName)) {
-            latch.inc()
-            DefaultThreadPool += { loadClass(s2cClassMap, s2cStateMap, c2sClassMap, c2sStateMap, info);latch.dec() }
+            innerLatch.inc()
+            DefaultThreadPool += { loadClass(s2cClassMap, s2cStateMap, c2sClassMap, c2sStateMap, info);innerLatch.dec() }
         }
-        latch.dec()
-        latch.await()
+        innerLatch.dec()
+        innerLatch.await()
         this.S2C_CLASS_MAP = s2cClassMap
         this.S2C_STATE_MAP = s2cStateMap
         this.C2S_CLASS_MAP = c2sClassMap
         this.C2S_STATE_MAP = c2sStateMap
 
         initialized = true
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Packets initialized!" }
     }
 
     @Suppress("UnstableApiUsage")
