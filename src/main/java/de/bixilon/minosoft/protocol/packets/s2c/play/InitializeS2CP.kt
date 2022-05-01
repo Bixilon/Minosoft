@@ -150,6 +150,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
+        connection.util.prepareSpawn()
         val playerEntity = connection.player
         val previousGamemode = playerEntity.tabListItem.gamemode
 

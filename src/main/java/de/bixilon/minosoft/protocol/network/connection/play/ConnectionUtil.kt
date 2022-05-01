@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
@@ -51,5 +53,12 @@ class ConnectionUtil(
         }
         Log.log(LogMessageType.CHAT_OUT) { toSend }
         connection.sendPacket(ChatMessageC2SP(toSend))
+    }
+
+    fun prepareSpawn() {
+        connection.world.chunks.clear()
+        connection.player.velocity = Vec3d.EMPTY
+        connection.world.audioPlayer?.stopAllSounds()
+        connection.world.particleRenderer?.removeAllParticles()
     }
 }

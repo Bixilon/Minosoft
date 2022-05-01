@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
@@ -147,7 +148,7 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
+            if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled || connection.state != PlayConnectionStates.PLAYING) {
                 return@TimeWorkerTask
             }
             val cameraPosition = connection.player.positionInfo.chunkPosition
@@ -257,7 +258,7 @@ class ParticleRenderer(
         translucentMesh.draw()
     }
 
-    override fun removeAll() {
+    override fun removeAllParticles() {
         particlesLock.lock()
         particles.clear()
         particlesLock.unlock()

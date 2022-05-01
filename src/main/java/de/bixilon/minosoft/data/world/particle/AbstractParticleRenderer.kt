@@ -23,5 +23,5 @@ interface AbstractParticleRenderer {
         addParticle(particle ?: return)
     }
 
-    fun removeAll()
+    fun removeAllParticles()
 }

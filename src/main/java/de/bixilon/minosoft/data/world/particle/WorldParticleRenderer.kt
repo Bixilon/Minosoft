@@ -22,7 +22,7 @@ interface WorldParticleRenderer : AbstractParticleRenderer {
         particleRenderer?.addParticle(particle)
     }
 
-    override fun removeAll() {
-        particleRenderer?.removeAll()
+    override fun removeAllParticles() {
+        particleRenderer?.removeAllParticles()
     }
 }
