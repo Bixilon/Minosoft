@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.audio
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -21,16 +21,17 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.centerf
 interface AbstractAudioPlayer {
 
     fun playSoundEvent(sound: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        playSoundEvent(sound, position?.centerf, volume, pitch)
+        playSound(sound, position?.centerf, volume, pitch)
     }
 
-    fun playSoundEvent(sound: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
+    fun playSound(sound: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f)
 
     fun play2DSound(sound: ResourceLocation, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        playSoundEvent(sound, null as Vec3?, volume, pitch)
+        playSound(sound, null as Vec3?, volume, pitch)
     }
 
-    fun stopSound(sound: ResourceLocation)
+    fun stopAllSounds()
 
     // ToDo: Stop category
+    fun stopSound(sound: ResourceLocation)
 }

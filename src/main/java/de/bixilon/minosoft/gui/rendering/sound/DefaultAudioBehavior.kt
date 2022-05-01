@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -26,8 +26,8 @@ object DefaultAudioBehavior {
     fun register(connection: PlayConnection) {
         val world = connection.world
         val invokers = listOf(
-            CallbackEventInvoker.of<PlaySoundEvent> { world.playSoundEvent(it.soundEvent, it.position, it.volume, it.pitch) },
-            CallbackEventInvoker.of<ExplosionEvent> { world.playSoundEvent(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
+            CallbackEventInvoker.of<PlaySoundEvent> { world.playSound(it.soundEvent, it.position, it.volume, it.pitch) },
+            CallbackEventInvoker.of<ExplosionEvent> { world.playSound(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
         )
 
         connection.registerEvents(*invokers.toTypedArray())

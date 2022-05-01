@@ -23,6 +23,7 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
@@ -46,7 +47,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 class ParticleRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, TransparentDrawable, TranslucentDrawable, SkipAll {
+) : Renderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val profile = connection.profiles.particle
     private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
@@ -191,7 +192,7 @@ class ParticleRenderer(
         }
     }
 
-    fun add(particle: Particle) {
+    override fun addParticle(particle: Particle) {
         if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
             return
         }
@@ -210,8 +211,6 @@ class ParticleRenderer(
         particleQueue += particle
         particleQueueLock.unlock()
     }
-
-    operator fun plusAssign(particle: Particle) = add(particle)
 
     override fun prepareDraw() {
         transparentMesh.unload()
@@ -256,6 +255,15 @@ class ParticleRenderer(
 
     override fun drawTranslucent() {
         translucentMesh.draw()
+    }
+
+    override fun removeAll() {
+        particlesLock.lock()
+        particles.clear()
+        particlesLock.unlock()
+        particleQueueLock.lock()
+        particleQueue.clear()
+        particleQueueLock.unlock()
     }
 
 

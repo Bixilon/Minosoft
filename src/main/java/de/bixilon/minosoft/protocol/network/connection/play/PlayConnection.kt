@@ -15,8 +15,6 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.time.TimeWorker
-import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -48,9 +46,9 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
+import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicker
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -74,6 +72,7 @@ class PlayConnection(
     val scoreboardManager = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
+    val ticker = ConnectionTicker(this)
 
     val serverInfo = ServerInfo()
     lateinit var assetsManager: AssetsManager
@@ -89,9 +88,6 @@ class PlayConnection(
     lateinit var player: LocalPlayerEntity
         private set
 
-    private lateinit var entityTickTask: TimeWorkerTask
-    private lateinit var worldTickTask: TimeWorkerTask
-    private lateinit var randomTickTask: TimeWorkerTask
     val collisionDetector = CollisionDetector(this)
     var retry = true
 
@@ -136,15 +132,6 @@ class PlayConnection(
                     CLI.setCurrentConnection(null)
                     Command.print("Disconnected from current connection!")
                 }
-                if (this::entityTickTask.isInitialized) {
-                    TimeWorker.removeTask(entityTickTask)
-                }
-                if (this::worldTickTask.isInitialized) {
-                    TimeWorker.removeTask(worldTickTask)
-                }
-                if (this::randomTickTask.isInitialized) {
-                    TimeWorker.removeTask(randomTickTask)
-                }
                 assetsManager.unload()
                 state = PlayConnectionStates.DISCONNECTED
                 ACTIVE_CONNECTIONS -= this
@@ -164,20 +151,6 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
-                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-                        world.entities.tick()
-                    }
-                    TimeWorker += entityTickTask
-
-                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-                        world.tick()
-                    }
-                    TimeWorker += worldTickTask
-
-                    randomTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-                        world.randomTick()
-                    }
-                    TimeWorker += randomTickTask
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.position) {
@@ -190,6 +163,7 @@ class PlayConnection(
                 }
             }
         }
+        ticker.init()
     }
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(0)) {

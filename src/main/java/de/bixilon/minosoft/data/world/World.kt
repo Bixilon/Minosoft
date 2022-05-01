@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
@@ -24,19 +23,20 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
+import de.bixilon.minosoft.data.world.audio.WorldAudioPlayer
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
+import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
+import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
@@ -58,7 +58,7 @@ import kotlin.random.Random
  */
 class World(
     val connection: PlayConnection,
-) : BiomeAccessor, AbstractAudioPlayer {
+) : BiomeAccessor, WorldAudioPlayer, WorldParticleRenderer {
     val lock = SimpleLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
@@ -74,8 +74,8 @@ class World(
     val border = WorldBorder()
     private val random = Random
 
-    var audioPlayer: AbstractAudioPlayer? = null
-    var particleRenderer: ParticleRenderer? = null
+    override var audioPlayer: AbstractAudioPlayer? = null
+    override var particleRenderer: AbstractParticleRenderer? = null
 
     operator fun get(blockPosition: Vec3i): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
@@ -213,23 +213,6 @@ class World(
             this[position]?.let { ret[position] = it }
         }
         return ret.toMap()
-    }
-
-
-    override fun playSoundEvent(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
-        audioPlayer?.playSoundEvent(sound, position, volume, pitch)
-    }
-
-    override fun stopSound(sound: ResourceLocation) {
-        audioPlayer?.stopSound(sound)
-    }
-
-    fun addParticle(particle: Particle) {
-        particleRenderer?.add(particle)
-    }
-
-    operator fun plusAssign(particle: Particle?) {
-        addParticle(particle ?: return)
     }
 
     fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {
