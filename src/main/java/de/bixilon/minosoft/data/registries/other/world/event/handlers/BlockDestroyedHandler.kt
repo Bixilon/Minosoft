@@ -57,7 +57,7 @@ object BlockDestroyedHandler : WorldEventHandler {
                     for (z in 0 until max.z) {
                         val center = (Vec3d(x, y, z) + 0.5) / max
                         val particlePosition = center * delta + aabb.min
-                        particleRenderer.add(BlockDustParticle(connection, particlePosition + position, particlePosition - 0.5, particleData))
+                        particleRenderer += BlockDustParticle(connection, particlePosition + position, particlePosition - 0.5, particleData)
                     }
                 }
             }

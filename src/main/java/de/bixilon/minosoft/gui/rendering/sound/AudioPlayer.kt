@@ -21,7 +21,7 @@ import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.world.AbstractAudioPlayer
+import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
@@ -122,7 +122,7 @@ class AudioPlayer(
         latch.dec()
     }
 
-    override fun playSoundEvent(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
+    override fun playSound(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
         if (!initialized) {
             return
         }
@@ -146,6 +146,17 @@ class AudioPlayer(
                     continue
                 }
                 if (source.sound?.soundEvent != sound) {
+                    continue
+                }
+                source.stop()
+            }
+        }
+    }
+
+    override fun stopAllSounds() {
+        queue += {
+            for (source in sources) {
+                if (!source.isPlaying) {
                     continue
                 }
                 source.stop()
