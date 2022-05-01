@@ -150,6 +150,7 @@
             <properties>
                 <lwjgl.natives>linux</lwjgl.natives>
                 <zstd.natives>linux_amd64</zstd.natives>
+                <javafx.natives>linux</javafx.natives>
             </properties>
         </profile>
         <profile>
@@ -163,6 +164,7 @@
             <properties>
                 <lwjgl.natives>linux-arm64</lwjgl.natives>
                 <zstd.natives>linux_aarch64</zstd.natives>
+                <javafx.natives>linux-aarch64</javafx.natives>
             </properties>
         </profile>
         <profile>
@@ -176,6 +178,7 @@
             <properties>
                 <lwjgl.natives>macos</lwjgl.natives>
                 <zstd.natives>darwin_x86_64</zstd.natives>
+                <javafx.natives>mac</javafx.natives>
             </properties>
         </profile>
         <profile>
@@ -189,6 +192,7 @@
             <properties>
                 <lwjgl.natives>macos</lwjgl.natives>
                 <zstd.natives>darwin_x86_64</zstd.natives>
+                <javafx.natives>mac</javafx.natives>
             </properties>
         </profile>
         <profile>
@@ -202,6 +206,7 @@
             <properties>
                 <lwjgl.natives>macos-arm64</lwjgl.natives>
                 <zstd.natives>darwin_aarch64</zstd.natives>
+                <javafx.natives>mac-aarch64</javafx.natives>
             </properties>
         </profile>
         <profile>
@@ -215,6 +220,7 @@
             <properties>
                 <lwjgl.natives>windows</lwjgl.natives>
                 <zstd.natives>win_win64</zstd.natives>
+                <javafx.natives>win</javafx.natives>
             </properties>
         </profile>
         <profile>
@@ -228,6 +234,7 @@
             <properties>
                 <lwjgl.natives>windows-x86</lwjgl.natives>
                 <zstd.natives>win_x86</zstd.natives>
+                <javafx.natives>win-x86</javafx.natives>
             </properties>
         </profile>
     </profiles>
@@ -303,13 +310,13 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-            <type>pom</type>
+            <classifier>${javafx.natives}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
-            <type>pom</type>
+            <classifier>${javafx.natives}</classifier>
         </dependency>
         <dependency>
             <groupId>org.xeustechnologies</groupId>
