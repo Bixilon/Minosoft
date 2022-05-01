@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_bed_head",
+  "textures": {
+    "particle": "minecraft:block/oak_planks",
+    "bed": "minecraft:entity/bed/orange"
+  }
+}

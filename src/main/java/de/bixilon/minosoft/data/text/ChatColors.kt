@@ -81,10 +81,6 @@ object ChatColors {
             nameMap[field.name.lowercase()] = color
         }
 
-
-
-
-
         this.VALUES = values.toTypedArray()
         this.NAME_MAP = nameMap.toMap()
     }

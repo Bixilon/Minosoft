@@ -39,15 +39,25 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-data class UnbakedBlockStateModel(
+class UnbakedBlockStateModel(
     val model: UnbakedBlockModel,
     val rotation: Vec2i?,
     val uvLock: Boolean,
     val weight: Int,
+    textures: Map<String, String>?,
 ) : AbstractUnbakedBlockModel {
     var baked: BakedBlockModel? = null
-    override val textures: Map<String, String>
-        get() = model.textures
+    override var textures: Map<String, String> = model.textures
+        private set
+
+
+    init {
+        if (textures != null && textures.isNotEmpty()) {
+            val textureCopy = model.textures.toMutableMap()
+            textureCopy.putAll(textures)
+            this.textures = textureCopy
+        }
+    }
 
     @Synchronized
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {
@@ -167,6 +177,7 @@ data class UnbakedBlockStateModel(
                 rotation = data.toVec2iN(),
                 uvLock = data["uvlock"]?.toBoolean() ?: false,
                 weight = data["weight"]?.toInt() ?: 1,
+                textures = data["textures"]?.unsafeCast(),
             )
         }
 

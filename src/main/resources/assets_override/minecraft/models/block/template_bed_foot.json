@@ -1,0 +1,98 @@
+{
+  "elements": [
+    {
+      "__comment": "Base",
+      "from": [0, 3, 0],
+      "to": [16, 9, 16],
+      "faces": {
+        "up": {
+          "uv": [1.5, 7, 5.5, 11],
+          "texture": "#bed"
+        },
+        "down": {
+          "uv": [7, 7, 11, 11],
+          "texture": "#bed"
+        },
+        "east": {
+          "uv": [5.5, 7, 7, 11],
+          "texture": "#bed",
+          "rotation": 90,
+          "cullface": "east"
+        },
+        "south": {
+          "uv": [5.5, 5.5, 9.5, 7],
+          "texture": "#bed",
+          "rotation": 180,
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [0.0, 7, 1.5, 11],
+          "texture": "#bed",
+          "rotation": 270,
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "__comment": "left",
+      "from": [0, 0, 13],
+      "to": [3, 3, 16],
+      "faces": {
+        "down": {
+          "uv": [14, 3.0, 14.75, 3.75],
+          "texture": "#bed",
+          "cullface": "down"
+        },
+        "north": {
+          "uv": [14.75, 3.75, 15.5, 4.5],
+          "texture": "#bed",
+          "cullface": "north"
+        },
+        "west": {
+          "uv": [12.5, 3.75, 13.25, 4.5],
+          "texture": "#bed",
+          "cullface": "west"
+        },
+        "south": {
+          "uv": [13.25, 3.75, 14, 4.5],
+          "texture": "#bed"
+        },
+        "east": {
+          "uv": [14, 3.75, 14.75, 4.5],
+          "texture": "#bed"
+        }
+      }
+    },
+    {
+      "__comment": "right",
+      "from": [13, 0, 13],
+      "to": [16, 3, 16],
+      "faces": {
+        "down": {
+          "uv": [14, 4.5, 14.75, 5.25],
+          "texture": "#bed",
+          "rotation": 90,
+          "cullface": "down"
+        },
+        "north": {
+          "uv": [14, 5.25, 14.75, 6],
+          "texture": "#bed",
+          "cullface": "north"
+        },
+        "west": {
+          "uv": [14.75, 5.25, 15.5, 6],
+          "texture": "#bed"
+        },
+        "south": {
+          "uv": [12.5, 5.25, 13.25, 6],
+          "texture": "#bed"
+        },
+        "east": {
+          "uv": [13.25, 5.25, 14, 6],
+          "texture": "#bed",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

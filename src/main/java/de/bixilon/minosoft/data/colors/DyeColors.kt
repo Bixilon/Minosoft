@@ -11,26 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.colors
 
-import de.bixilon.minosoft.data.colors.DyeColors
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-    var color = DyeColors.RED
-        private set
+enum class DyeColors {
+    WHITE,
+    ORANGE,
+    MAGENTA,
+    LIGHT_BLUE,
+    YELLOW,
+    LIME,
+    PINK,
+    GRAY,
+    LIGHT_GRAY,
+    CYAN,
+    PURPLE,
+    BLUE,
+    BROWN,
+    GREEN,
+    RED,
+    BLACK,
+    ;
 
-
-    override fun updateNBT(nbt: Map<String, Any>) {
-        color = DyeColors.RED // ToDo
-    }
-
-    companion object : BlockEntityFactory<BedBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:bed")
-
-        override fun build(connection: PlayConnection): BedBlockEntity {
-            return BedBlockEntity(connection)
-        }
+    companion object : ValuesEnum<DyeColors> {
+        override val VALUES: Array<DyeColors> = values()
+        override val NAME_MAP: Map<String, DyeColors> = EnumUtil.getEnumValues(VALUES)
     }
 }
