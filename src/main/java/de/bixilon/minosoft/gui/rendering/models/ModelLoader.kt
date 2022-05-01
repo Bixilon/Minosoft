@@ -122,15 +122,12 @@ class ModelLoader(
 
     private fun loadEntityModels(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loading entity models..." }
-        val itemLatch = CountUpAndDownLatch(1, latch)
-
+        val innerLatch = CountUpAndDownLatch(DefaultEntityModels.MODELS.size, latch)
 
         for (register in DefaultEntityModels.MODELS) {
-            itemLatch.inc()
-            DefaultThreadPool += { register.register(renderWindow, this); itemLatch.dec() }
+            DefaultThreadPool += { register.register(renderWindow, this); innerLatch.dec() }
         }
-        itemLatch.dec()
-        itemLatch.await()
+        innerLatch.await()
     }
 
     fun load(latch: CountUpAndDownLatch) {

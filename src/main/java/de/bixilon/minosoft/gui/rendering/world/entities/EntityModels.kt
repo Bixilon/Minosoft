@@ -29,6 +29,7 @@ class EntityModels(val renderWindow: RenderWindow) {
         return unbakedModels.getOrPut(path) { renderWindow.connection.assetsManager[path].readJson() }
     }
 
+    @Synchronized
     fun loadModel(name: ResourceLocation, path: ResourceLocation, textureOverride: MutableMap<Int, AbstractTexture> = mutableMapOf()): BakedSkeletalModel {
         return skeletal.getOrPut(name) { loadUnbakedModel(path).bake(renderWindow, textureOverride) }
     }
