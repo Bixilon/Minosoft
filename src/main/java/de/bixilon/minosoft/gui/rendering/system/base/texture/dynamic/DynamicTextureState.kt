@@ -11,14 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-
-interface TextureArray {
-    fun load(latch: CountUpAndDownLatch)
-
-    fun activate()
-    fun use(shader: Shader, name: String = "uTextures")
+enum class DynamicTextureState {
+    WAITING,
+    LOADING,
+    LOADED,
+    UNLOADED,
+    ;
 }

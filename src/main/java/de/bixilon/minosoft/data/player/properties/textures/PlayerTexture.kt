@@ -17,6 +17,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.net.URL
 import java.util.*
 
@@ -33,7 +36,9 @@ open class PlayerTexture(
         check(urlMatches(url, ALLOWED_DOMAINS) && !urlMatches(url, BLOCKED_DOMAINS)) { "URL hostname is not allowed!" }
     }
 
+    @Synchronized
     fun read(): ByteArray {
+        this.data?.let { return it }
         val sha256 = when (url.host) {
             "textures.minecraft.net" -> url.file.split("/").last()
             else -> TODO("Can not get texture identifier!")
@@ -50,6 +55,7 @@ open class PlayerTexture(
             throw IllegalStateException("Texture is too big!")
         }
         val data = FileAssetsUtil.saveAndGet(input)
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloaded skin ($url)" }
         return data.second
     }
 

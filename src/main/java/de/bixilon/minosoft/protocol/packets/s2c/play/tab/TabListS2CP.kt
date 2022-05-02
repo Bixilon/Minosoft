@@ -102,7 +102,11 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     // item not yet created
                     return@run null
                 }
-                val item = TabListItem(name = data.name)
+                val item = if (entity === connection.player) {
+                    connection.player.tabListItem
+                } else {
+                    TabListItem(name = data.name)
+                }
                 connection.tabList.tabListItemsByUUID[uuid] = item
                 connection.tabList.tabListItemsByName[data.name] = item
 

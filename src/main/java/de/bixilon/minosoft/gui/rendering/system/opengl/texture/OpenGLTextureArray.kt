@@ -191,15 +191,25 @@ class OpenGLTextureArray(
         state = TextureArrayStates.LOADED
     }
 
-
-    override fun use(shader: Shader, name: String) {
-        shader.use()
-
+    override fun activate() {
         for ((index, textureId) in textureIds.withIndex()) {
             if (textureId == -1) {
                 continue
             }
             glActiveTexture(GL_TEXTURE0 + index)
+            glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+        }
+    }
+
+    override fun use(shader: Shader, name: String) {
+        shader.use()
+        activate()
+
+        for ((index, textureId) in textureIds.withIndex()) {
+            if (textureId == -1) {
+                continue
+            }
+
             glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
             shader.setTexture("$name[$index]", index)
         }

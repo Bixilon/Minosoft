@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(
@@ -42,6 +43,7 @@ abstract class Account(
     abstract val properties: PlayerProperties?
     @get:JsonIgnore @set:JsonIgnore open var state: AccountStates by watched(AccountStates.UNCHECKED)
     @get:JsonIgnore open var error: Throwable? by watched(null)
+    abstract val uuid: UUID
 
     @Transient
     @JsonIgnore

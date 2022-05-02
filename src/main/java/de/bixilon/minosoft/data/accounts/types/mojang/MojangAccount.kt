@@ -38,7 +38,7 @@ import java.util.*
 class MojangAccount(
     override val id: String,
     username: String,
-    val uuid: UUID,
+    override val uuid: UUID,
     val email: String,
     @field:JsonProperty private var accessToken: String,
     override val properties: PlayerProperties?,

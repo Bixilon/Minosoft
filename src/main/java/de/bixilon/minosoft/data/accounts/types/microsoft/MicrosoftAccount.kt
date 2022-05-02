@@ -32,7 +32,7 @@ import java.net.ConnectException
 import java.util.*
 
 class MicrosoftAccount(
-    val uuid: UUID,
+    override val uuid: UUID,
     username: String,
     @field:JsonProperty private var msa: MicrosoftTokens,
     @field:JsonProperty private var minecraft: MinecraftTokens,

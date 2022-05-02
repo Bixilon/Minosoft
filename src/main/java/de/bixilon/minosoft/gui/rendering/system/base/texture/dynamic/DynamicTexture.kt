@@ -20,4 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger
 interface DynamicTexture : ShaderIdentifiable {
     val uuid: UUID
     val usages: AtomicInteger
+
+    val state: DynamicTextureState
+
+    var onStateChange: (() -> Unit)?
 }

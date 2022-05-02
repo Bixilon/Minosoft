@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.uuid.UUIDUtil.toUUID
+import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
-import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
@@ -56,14 +56,25 @@ abstract class TextureManager {
 
     fun loadDefaultSkins(connection: PlayConnection) {
         // ToDo: For testing purposes only, they will be moved to static textures
-        steveTexture = dynamicTextures.pushBuffer("3780a46b-a725-4b22-8366-01056c698386".toUUID()) { connection.assetsManager["minecraft:entity/steve".toResourceLocation().texture()].readTexture().second }
-        alexTexture = dynamicTextures.pushBuffer("3780a46b-a725-4b22-8366-01056c698386".toUUID()) { connection.assetsManager["minecraft:entity/alex".toResourceLocation().texture()].readTexture().second }
-        skin = getSkin(connection.player.uuid ?: UUID.randomUUID(), connection.account.properties?.textures)
+        steveTexture = dynamicTextures.pushBuffer(UUID(0L, 0L)) { connection.assetsManager["minecraft:entity/steve".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
+        alexTexture = dynamicTextures.pushBuffer(UUID(1L, 0L)) { connection.assetsManager["minecraft:entity/alex".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
+        skin = getSkin(connection.account.uuid, connection.account.properties).apply { usages.incrementAndGet() }
     }
 
 
-    fun getSkin(uuid: UUID, properties: PlayerTextures?): DynamicTexture {
-        properties?.skin?.let { return dynamicTextures.pushRawArray(uuid) { it.read() } }
+    fun getSkin(uuid: UUID, properties: PlayerProperties?): DynamicTexture {
+        var properties = properties
+        if (properties == null) {
+            for (account in AccountProfileManager.selected.entries.values) {
+                if (account.uuid == uuid) {
+                    properties = account.properties
+                }
+            }
+            if (properties == null) {
+                properties = PlayerProperties.fetch(uuid) // ToDo: async
+            }
+        }
+        properties.textures?.skin?.let { return dynamicTextures.pushRawArray(uuid) { it.read() } }
         if (uuid.isSteve()) {
             return steveTexture
         }

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.json.Jackson
 import java.util.*
 
-class PlayerTextures(
+data class PlayerTextures(
     @JsonInclude(JsonInclude.Include.NON_EMPTY) val name: String?,
     @JsonInclude(JsonInclude.Include.NON_EMPTY) val uuid: UUID?,
     @JsonInclude(JsonInclude.Include.NON_EMPTY) val date: Date?,

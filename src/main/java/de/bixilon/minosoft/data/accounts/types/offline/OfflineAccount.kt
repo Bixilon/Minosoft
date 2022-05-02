@@ -21,9 +21,11 @@ import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.util.*
 
 class OfflineAccount(username: String) : Account(username) {
     override val id: String = username
+    override val uuid: UUID = UUID("OfflinePlayer:$username".hashCode().toLong(), 0L) // ToDo
     override val type: ResourceLocation = RESOURCE_LOCATION
     override var state: AccountStates
         get() = AccountStates.WORKING

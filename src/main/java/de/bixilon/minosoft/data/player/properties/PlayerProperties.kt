@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
 import java.net.URL
 import java.util.*
 
-class PlayerProperties(
+data class PlayerProperties(
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     val textures: PlayerTextures? = null,
 ) {

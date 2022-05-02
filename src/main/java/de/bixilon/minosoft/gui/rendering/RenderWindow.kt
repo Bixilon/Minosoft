@@ -211,6 +211,9 @@ class RenderWindow(
 
         connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
 
+        textureManager.dynamicTextures.activate()
+        textureManager.staticTextures.activate()
+
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
         initialized = true
         latch.dec()

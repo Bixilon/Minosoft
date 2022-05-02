@@ -22,7 +22,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
@@ -33,12 +35,15 @@ open class DynamicImageElement(
     uvEnd: Vec2 = Vec2(1.0f, 1.0f),
     size: Vec2i = Vec2i.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
+    parent: Element? = null,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
 
-    var texture: DynamicTexture? = texture
+    var texture: DynamicTexture? = null
         set(value) {
             field?.usages?.decrementAndGet()
+            field?.onStateChange = null
             value?.usages?.incrementAndGet()
+            value?.onStateChange = { forceApply() }
             field = value
             cacheUpToDate = false
         }
@@ -74,11 +79,20 @@ open class DynamicImageElement(
 
     init {
         this.size = size
-        texture?.usages?.incrementAndGet()
+        this.texture = texture
+        this.parent = parent
+    }
+
+    private fun getAvailableTexture(): ShaderIdentifiable {
+        val texture = texture ?: return renderWindow.textureManager.whiteTexture.texture
+        if (texture.state != DynamicTextureState.LOADED) {
+            return renderWindow.textureManager.whiteTexture.texture
+        }
+        return texture
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        consumer.addQuad(offset, offset + size, texture ?: return, uvStart, uvEnd, tint, options)
+        consumer.addQuad(offset, offset + size, getAvailableTexture(), uvStart, uvEnd, tint, options)
     }
 
     override fun forceSilentApply() = Unit

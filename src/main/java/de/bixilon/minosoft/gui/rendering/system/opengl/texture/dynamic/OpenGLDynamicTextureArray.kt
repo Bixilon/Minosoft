@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.glTexImage3D
@@ -54,6 +56,18 @@ class OpenGLDynamicTextureArray(
         return pushBuffer(identifier) { ByteBuffer.wrap(data()) }
     }
 
+    private fun load(texture: OpenGLDynamicTexture, index: Int, mipmaps: Array<ByteBuffer>) {
+        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+
+        for ((level, mipmap) in mipmaps.withIndex()) {
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, mipmap)
+        }
+
+        texture.state = DynamicTextureState.LOADED
+        renderWindow.textureManager.staticTextures.activate()
+    }
+
+    @Synchronized
     override fun pushBuffer(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
         check(textureId >= 0) { "Dynamic texture array not yet initialized!" }
         cleanup()
@@ -62,20 +76,19 @@ class OpenGLDynamicTextureArray(
                 return texture
             }
         }
-        val bytes = data()
-
-        check(bytes.limit() == resolution * resolution * 4) { "Texture must have a size of ${resolution}x${resolution}" }
-
-        val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, resolution))
         val index = getNextIndex()
+        val texture = OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
+        textures[index] = texture
+        texture.state = DynamicTextureState.LOADING
+        DefaultThreadPool += {
+            val bytes = data()
 
-        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+            check(bytes.limit() == resolution * resolution * 4) { "Texture must have a size of ${resolution}x${resolution}" }
 
-        for ((level, mipmap) in mipmaps.withIndex()) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, mipmap)
+            val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, resolution))
+            renderWindow.queue += { load(texture, index, mipmaps) }
         }
-
-        return OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
+        return texture
     }
 
     private fun createShaderIdentifier(array: Int = this.index, index: Int): Int {
@@ -96,11 +109,16 @@ class OpenGLDynamicTextureArray(
         this.textureId = textureId
     }
 
+    override fun activate() {
+        glActiveTexture(GL_TEXTURE0 + index)
+        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+    }
+
     override fun use(shader: Shader, name: String) {
         shader.use()
 
-        glActiveTexture(GL_TEXTURE0 + index)
-        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+        activate()
+
         shader.setTexture("$name[$index]", index)
     }
 

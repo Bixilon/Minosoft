@@ -648,6 +648,7 @@ class WorldRenderer(
     }
 
     override fun prepareDraw() {
+        renderWindow.textureManager.staticTextures.use(shader)
         if (clearVisibleNextFrame) {
             visible.clear()
             clearVisibleNextFrame = false

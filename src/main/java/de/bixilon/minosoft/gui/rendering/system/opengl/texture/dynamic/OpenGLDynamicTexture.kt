@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -21,13 +22,23 @@ class OpenGLDynamicTexture(
     override val uuid: UUID,
     shaderId: Int,
 ) : DynamicTexture {
+    override var onStateChange: (() -> Unit)? = null
     override val usages = AtomicInteger()
+    override var state: DynamicTextureState = DynamicTextureState.WAITING
+        set(value) {
+            field = value
+            onStateChange?.invoke()
+        }
 
-    override val shaderId: Int = shaderId
+    override var shaderId: Int = shaderId
         get() {
-            if (usages.get() == 0) {
+            if (usages.get() == 0 || state == DynamicTextureState.UNLOADED) {
                 throw IllegalStateException("Texture was eventually garbage collected")
             }
             return field
         }
+
+    override fun toString(): String {
+        return uuid.toString()
+    }
 }

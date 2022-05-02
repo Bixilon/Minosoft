@@ -49,7 +49,7 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, renderWindow.textureManager.getSkin(uuid, item.properties.textures), uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8))
+    private val skinElement = DynamicImageElement(guiRenderer, renderWindow.textureManager.getSkin(uuid, item.properties), uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
@@ -86,7 +86,7 @@ class TabListEntryElement(
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         background.render(offset, consumer, options)
         skinElement.render(offset + Vec2i(PADDING, PADDING), consumer, options)
-        nameElement.render(offset + Vec2i(skinElement.size.x + PADDING, PADDING), consumer, options)
+        nameElement.render(offset + Vec2i(skinElement.size.x + PADDING * 3, PADDING), consumer, options)
         pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }
 
@@ -104,7 +104,7 @@ class TabListEntryElement(
 
         nameElement.text = displayName
 
-        this.prefSize = Vec2i((PADDING * 3) + skinElement.prefSize.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
+        this.prefSize = Vec2i((PADDING * 6) + skinElement.prefSize.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
         cacheUpToDate = false
     }
