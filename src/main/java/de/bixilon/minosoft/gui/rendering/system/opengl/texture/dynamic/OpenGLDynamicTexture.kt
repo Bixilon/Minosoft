@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -22,6 +23,7 @@ class OpenGLDynamicTexture(
     override val uuid: UUID,
     shaderId: Int,
 ) : DynamicTexture {
+    var data: Array<ByteBuffer>? = null
     override var onStateChange: (() -> Unit)? = null
     override val usages = AtomicInteger()
     override var state: DynamicTextureState = DynamicTextureState.WAITING

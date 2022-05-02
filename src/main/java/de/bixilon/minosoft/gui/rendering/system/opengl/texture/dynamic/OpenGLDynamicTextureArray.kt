@@ -22,6 +22,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
@@ -35,11 +38,12 @@ import java.util.*
 class OpenGLDynamicTextureArray(
     val renderWindow: RenderWindow,
     val index: Int = 7,
-    initialSize: Int = 32,
+    val initialSize: Int = 32,
     val resolution: Int,
 ) : DynamicTextureArray {
-    private val textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(initialSize)
+    private var textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(initialSize)
     private var textureId = -1
+    var shaders: MutableSet<Shader> = mutableSetOf()
 
     override val size: Int
         get() {
@@ -82,12 +86,18 @@ class OpenGLDynamicTextureArray(
         val texture = OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
         textures[index] = WeakReference(texture)
         texture.state = DynamicTextureState.LOADING
-        DefaultThreadPool += {
+        DefaultThreadPool += add@{
             val bytes = data()
 
-            check(bytes.limit() == resolution * resolution * 4) { "Texture must have a size of ${resolution}x${resolution}" }
+            if (bytes.limit() > resolution * resolution * 4 || bytes.limit() < resolution * 4) { // allow anything in 1..resolution for y size
+                Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Dynamic texture $texture, has not a size of ${resolution}x${resolution}!" }
+                textures[index] = null
+                texture.state = DynamicTextureState.UNLOADED
+                return@add
+            }
 
-            val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, resolution))
+            val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, bytes.limit() / 4 / resolution))
+            texture.data = mipmaps
             renderWindow.queue += { load(texture, index, mipmaps) }
         }
         return texture
@@ -117,6 +127,11 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun use(shader: Shader, name: String) {
+        shaders += shader
+        _use(shader, name)
+    }
+
+    private fun _use(shader: Shader, name: String = "uTextures") {
         shader.use()
 
         activate()
@@ -135,8 +150,27 @@ class OpenGLDynamicTextureArray(
         return nextIndex
     }
 
+    private fun reload() {
+        glDeleteTextures(textureId)
+        load(CountUpAndDownLatch(0))
+
+        for ((index, textureReference) in textures.withIndex()) {
+            val texture = textureReference?.get() ?: continue
+            load(texture, index, texture.data ?: continue)
+        }
+
+        for (shader in shaders) {
+            _use(shader)
+        }
+    }
+
     private fun grow() {
-        TODO()
+        val textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(textures.size + initialSize)
+        for ((index, texture) in this.textures.withIndex()) {
+            textures[index] = texture
+        }
+        this.textures = textures
+        renderWindow.queue += { reload() }
     }
 
     private fun cleanup() {

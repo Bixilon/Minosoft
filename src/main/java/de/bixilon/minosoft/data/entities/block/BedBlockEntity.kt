@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.colors.DyeColors
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -23,7 +24,7 @@ class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
-        color = DyeColors.RED // ToDo
+        color = DyeColors.getOrNull(nbt["color"]?.toInt()) ?: DyeColors.RED
     }
 
     companion object : BlockEntityFactory<BedBlockEntity> {
