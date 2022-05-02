@@ -150,7 +150,8 @@ class RenderWindow(
         val initLatch = CountUpAndDownLatch(1, latch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textureManager.dynamicTextures.load(initLatch)
-        textureManager.loadDefaultTextures(connection.assetsManager)
+        textureManager.loadDefaultSkins(connection)
+        textureManager.loadDefaultTextures()
         font = FontLoader.load(this, initLatch)
 
 

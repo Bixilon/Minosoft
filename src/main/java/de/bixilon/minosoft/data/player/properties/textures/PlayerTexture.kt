@@ -18,6 +18,7 @@ import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
 import java.net.URL
+import java.util.*
 
 open class PlayerTexture(
     val url: URL,
@@ -64,6 +65,10 @@ open class PlayerTexture(
                 }
             }
             return false
+        }
+
+        fun UUID.isSteve(): Boolean {
+            return hashCode() % 2 == 0
         }
     }
 }

@@ -202,7 +202,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     fun update(uuid: UUID) {
         val item = guiRenderer.renderWindow.connection.tabList.tabListItemsByUUID[uuid] ?: return
-        val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, item, 0) }
+        val entry = entries.getOrPut(uuid) { TabListEntryElement(guiRenderer, this, uuid, item, 0) }
         lock.lock()
         entry.silentApply()
         lock.unlock()

@@ -32,33 +32,42 @@ import java.util.*
 class OpenGLDynamicTextureArray(
     val renderWindow: RenderWindow,
     val index: Int = 7,
+    initialSize: Int = 32,
     val resolution: Int,
 ) : DynamicTextureArray {
-    private val textures: Array<OpenGLDynamicTexture?> = arrayOfNulls(2)
+    private val textures: Array<OpenGLDynamicTexture?> = arrayOfNulls(initialSize)
     private var textureId = -1
 
-    @Deprecated("temp")
-    private var lastTextureId = 0
-
     override val size: Int
-        get() = 2
+        get() {
+            var size = 0
+            for (texture in textures) {
+                if (texture == null) {
+                    continue
+                }
+                size++
+            }
+            return size
+        }
 
-    override fun remove(uuid: UUID) {
-        TODO("Not yet implemented")
+    override fun pushArray(identifier: UUID, data: () -> ByteArray): DynamicTexture {
+        return pushBuffer(identifier) { ByteBuffer.wrap(data()) }
     }
 
-    override fun remove(texture: DynamicTexture) {
-        TODO("Not yet implemented")
-    }
-
-    override fun push(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
+    override fun pushBuffer(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
         check(textureId >= 0) { "Dynamic texture array not yet initialized!" }
+        cleanup()
+        for (texture in textures) {
+            if (texture?.uuid == identifier) {
+                return texture
+            }
+        }
         val bytes = data()
 
         check(bytes.limit() == resolution * resolution * 4) { "Texture must have a size of ${resolution}x${resolution}" }
 
         val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, resolution))
-        val index = lastTextureId++
+        val index = getNextIndex()
 
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
 
@@ -93,5 +102,32 @@ class OpenGLDynamicTextureArray(
         glActiveTexture(GL_TEXTURE0 + index)
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         shader.setTexture("$name[$index]", index)
+    }
+
+    private fun getNextIndex(): Int {
+        for ((index, texture) in textures.withIndex()) {
+            if (texture == null) {
+                return index
+            }
+        }
+        val nextIndex = textures.size
+        grow()
+        return nextIndex
+    }
+
+    private fun grow() {
+        TODO()
+    }
+
+    private fun cleanup() {
+        for ((index, texture) in textures.withIndex()) {
+            if (texture == null) {
+                continue
+            }
+            if (texture.usages.get() > 0) {
+                continue
+            }
+            textures[index] = null
+        }
     }
 }

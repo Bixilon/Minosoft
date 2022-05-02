@@ -33,10 +33,12 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil.nullCompare
 import java.lang.Integer.max
+import java.util.*
 
 class TabListEntryElement(
     guiRenderer: GUIRenderer,
     val tabList: TabListElement,
+    uuid: UUID,
     val item: TabListItem,
     width: Int,
 ) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
@@ -47,7 +49,7 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.alexTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
+    private val skinElement = DynamicImageElement(guiRenderer, renderWindow.textureManager.getSkin(uuid, item.properties.textures), uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8))
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
@@ -82,9 +84,8 @@ class TabListEntryElement(
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        skinElement
         background.render(offset, consumer, options)
-        skinElement.render(offset, consumer, options)
+        skinElement.render(offset + Vec2i(PADDING, PADDING), consumer, options)
         nameElement.render(offset + Vec2i(skinElement.size.x + PADDING, PADDING), consumer, options)
         pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }

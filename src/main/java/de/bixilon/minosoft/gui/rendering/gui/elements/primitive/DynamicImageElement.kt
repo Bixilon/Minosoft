@@ -34,8 +34,11 @@ open class DynamicImageElement(
     size: Vec2i = Vec2i.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
+
     var texture: DynamicTexture? = texture
         set(value) {
+            field?.usages?.decrementAndGet()
+            value?.usages?.incrementAndGet()
             field = value
             cacheUpToDate = false
         }
@@ -71,6 +74,7 @@ open class DynamicImageElement(
 
     init {
         this.size = size
+        texture?.usages?.incrementAndGet()
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {

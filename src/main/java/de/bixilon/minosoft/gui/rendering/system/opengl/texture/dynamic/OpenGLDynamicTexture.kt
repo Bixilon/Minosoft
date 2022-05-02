@@ -19,7 +19,15 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class OpenGLDynamicTexture(
     override val uuid: UUID,
-    override val shaderId: Int,
+    shaderId: Int,
 ) : DynamicTexture {
     override val usages = AtomicInteger()
+
+    override val shaderId: Int = shaderId
+        get() {
+            if (usages.get() == 0) {
+                throw IllegalStateException("Texture was eventually garbage collected")
+            }
+            return field
+        }
 }
