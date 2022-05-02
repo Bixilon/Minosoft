@@ -43,6 +43,7 @@ class MemoryTexture(
 
     init {
         val data = BufferUtils.createByteBuffer(size.x * size.y * PNGDecoder.Format.RGBA.numComponents)
+        this.data = data
 
         generator?.let {
             var index = 0

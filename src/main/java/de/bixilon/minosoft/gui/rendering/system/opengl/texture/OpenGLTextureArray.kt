@@ -151,16 +151,9 @@ class OpenGLTextureArray(
 
     @Synchronized
     private fun loadSingleArray(resolution: Int, textures: List<AbstractTexture>): Int {
-        val textureId = glGenTextures()
-        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT)
-        // glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, MAX_MIPMAP_LEVELS - 1)
+        val textureId = OpenGLTextureUtil.createTextureArray()
 
-        for (level in 0 until MAX_MIPMAP_LEVELS) {
+        for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
             glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
 
@@ -199,7 +192,7 @@ class OpenGLTextureArray(
     }
 
 
-    override fun use(shader: Shader, arrayName: String) {
+    override fun use(shader: Shader, name: String) {
         shader.use()
 
         for ((index, textureId) in textureIds.withIndex()) {
@@ -208,7 +201,7 @@ class OpenGLTextureArray(
             }
             glActiveTexture(GL_TEXTURE0 + index)
             glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
-            shader.setTexture("$arrayName[$index]", index)
+            shader.setTexture("$name[$index]", index)
         }
     }
 
@@ -216,6 +209,5 @@ class OpenGLTextureArray(
     companion object {
         const val TEXTURE_MAX_RESOLUTION = 1024
         val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, TEXTURE_MAX_RESOLUTION) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
-        const val MAX_MIPMAP_LEVELS = 5
     }
 }

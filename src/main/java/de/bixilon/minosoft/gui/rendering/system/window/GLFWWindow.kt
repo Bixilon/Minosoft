@@ -45,7 +45,7 @@ import java.nio.ByteBuffer
 
 class GLFWWindow(
     private val renderWindow: RenderWindow,
-    private val eventMaster: AbstractEventMaster,
+    private val eventMaster: AbstractEventMaster = renderWindow.connection,
 ) : BaseWindow {
     private var mousePosition = Vec2d.EMPTY
     private var skipNextMouseEvent = true

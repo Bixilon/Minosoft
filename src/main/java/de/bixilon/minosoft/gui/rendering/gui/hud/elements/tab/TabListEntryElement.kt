@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.tab.TabListItem
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.AtlasImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.DynamicImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -38,6 +40,7 @@ class TabListEntryElement(
     val item: TabListItem,
     width: Int,
 ) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
+
     init {
         _parent = tabList
     }
@@ -45,6 +48,7 @@ class TabListEntryElement(
     // ToDo: Skin
     private val background: ColorElement
 
+    private val skinElement = DynamicImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.alexTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
     private lateinit var pingElement: AtlasImageElement
 
@@ -77,8 +81,10 @@ class TabListEntryElement(
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        skinElement
         background.render(offset, consumer, options)
-        nameElement.render(offset, consumer, options)
+        skinElement.render(offset, consumer, options)
+        nameElement.render(offset + Vec2i(skinElement.size.x + PADDING, PADDING), consumer, options)
         pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), consumer, options)
     }
 
@@ -96,7 +102,7 @@ class TabListEntryElement(
 
         nameElement.text = displayName
 
-        this.prefSize = Vec2i((PADDING * 2) + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
+        this.prefSize = Vec2i((PADDING * 3) + skinElement.prefSize.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
         cacheUpToDate = false
     }

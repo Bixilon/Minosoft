@@ -17,15 +17,14 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureArray
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-import example.jonathan2520.SRGBAverager
-import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
-interface AbstractTexture {
+interface AbstractTexture : ShaderIdentifiable {
     val resourceLocation: ResourceLocation
 
     var textureArrayUV: Vec2
@@ -45,61 +44,15 @@ interface AbstractTexture {
 
     fun load(assetsManager: AssetsManager)
 
+    override val shaderId: Int
+        get() = renderData.shaderTextureId
+
 
     fun generateMipMaps(data: ByteBuffer = this.data!!): Array<ByteBuffer> {
-        val images: MutableList<ByteBuffer> = mutableListOf()
-
-        images += data
         if (!generateMipMaps) {
-            return images.toTypedArray()
+            return arrayOf(data)
         }
 
-        var currentData = data
-        for (i in 1 until OpenGLTextureArray.MAX_MIPMAP_LEVELS) {
-            val mipMapSize = Vec2i(size.x shr i, size.y shr i)
-            if (mipMapSize.x <= 0 || mipMapSize.y <= 0) {
-                break
-            }
-            currentData = generateMipmap(currentData, Vec2i(size.x shr (i - 1), size.y shr (i - 1)))
-            images += currentData
-        }
-
-        return images.toTypedArray()
-    }
-
-    private fun generateMipmap(origin: ByteBuffer, oldSize: Vec2i): ByteBuffer {
-        // No Vec2i: performance reasons
-        val oldSizeX = oldSize.x
-        val newSizeX = oldSizeX shr 1
-
-        val buffer = BufferUtils.createByteBuffer(origin.capacity() shr 1)
-        buffer.limit(buffer.capacity())
-
-        fun getRGB(x: Int, y: Int): Int {
-            return origin.getInt((y * oldSizeX + x) * 4)
-        }
-
-        fun setRGB(x: Int, y: Int, color: Int) {
-            buffer.putInt((y * newSizeX + x) * 4, color)
-        }
-
-        for (y in 0 until (oldSize.y shr 1)) {
-            for (x in 0 until newSizeX) {
-                val xOffset = x * 2
-                val yOffset = y * 2
-
-                val output = SRGBAverager.average(
-                    getRGB(xOffset + 0, yOffset + 0),
-                    getRGB(xOffset + 1, yOffset + 0),
-                    getRGB(xOffset + 0, yOffset + 1),
-                    getRGB(xOffset + 1, yOffset + 1),
-                )
-
-                setRGB(x, y, output)
-            }
-        }
-
-        buffer.rewind()
-        return buffer
+        return OpenGLTextureUtil.generateMipMaps(data, size)
     }
 }

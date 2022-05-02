@@ -38,9 +38,7 @@ import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.RenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
-import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.gui.rendering.world.LightMap
@@ -60,8 +58,8 @@ class RenderWindow(
     private val profile = connection.profiles.rendering
     val preferQuads = profile.advanced.preferQuads
 
-    val window: BaseWindow = GLFWWindow(this, connection)
-    val renderSystem: RenderSystem = OpenGLRenderSystem(this)
+    val window = BaseWindow.createWindow(this)
+    val renderSystem = RenderSystem.createRenderSystem(this)
     val camera = Camera(this)
 
     val inputHandler = RenderWindowInputHandler(this)
@@ -151,7 +149,7 @@ class RenderWindow(
         // Init stage
         val initLatch = CountUpAndDownLatch(1, latch)
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
-        textureManager.loadDefaultTextures()
+        textureManager.loadDefaultTextures(connection.assetsManager)
         font = FontLoader.load(this, initLatch)
 
 

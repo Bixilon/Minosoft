@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.orthoTimes
@@ -31,7 +31,7 @@ class GUIMesh(
     data: DirectArrayFloatList,
 ) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
-    override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+    override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         addVertex(data, matrix, position, texture, uv, tint, options)
     }
 
@@ -50,7 +50,7 @@ class GUIMesh(
 
     companion object {
 
-        fun addVertex(data: AbstractFloatList, matrix: Mat4, position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        fun addVertex(data: AbstractFloatList, matrix: Mat4, position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
             val outPosition = matrix orthoTimes position
             var color = tint.rgba
 
@@ -69,7 +69,7 @@ class GUIMesh(
             data.add(outPosition.y)
             data.add(uv.x)
             data.add(uv.y)
-            data.add(Float.fromBits(texture.renderData.shaderTextureId))
+            data.add(Float.fromBits(texture.shaderId))
             data.add(Float.fromBits(color))
         }
     }

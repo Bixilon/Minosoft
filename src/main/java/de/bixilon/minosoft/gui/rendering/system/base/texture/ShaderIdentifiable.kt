@@ -11,15 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl.texture
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic.OpenGLDynamicTextureArray
-
-class OpenGLTextureManager(val renderWindow: RenderWindow) : TextureManager() {
-    override val staticTextures: StaticTextureArray = OpenGLTextureArray(renderWindow)
-    override val dynamicTextures: DynamicTextureArray = OpenGLDynamicTextureArray(renderWindow, resolution = 64)
+interface ShaderIdentifiable {
+    val shaderId: Int
 }
