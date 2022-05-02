@@ -28,6 +28,7 @@ import org.lwjgl.opengl.GL12.glTexSubImage3D
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL13.glActiveTexture
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
+import java.lang.ref.WeakReference
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -37,7 +38,7 @@ class OpenGLDynamicTextureArray(
     initialSize: Int = 32,
     val resolution: Int,
 ) : DynamicTextureArray {
-    private val textures: Array<OpenGLDynamicTexture?> = arrayOfNulls(initialSize)
+    private val textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(initialSize)
     private var textureId = -1
 
     override val size: Int
@@ -71,14 +72,15 @@ class OpenGLDynamicTextureArray(
     override fun pushBuffer(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
         check(textureId >= 0) { "Dynamic texture array not yet initialized!" }
         cleanup()
-        for (texture in textures) {
+        for (textureReference in textures) {
+            val texture = textureReference?.get()
             if (texture?.uuid == identifier) {
                 return texture
             }
         }
         val index = getNextIndex()
         val texture = OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
-        textures[index] = texture
+        textures[index] = WeakReference(texture)
         texture.state = DynamicTextureState.LOADING
         DefaultThreadPool += {
             val bytes = data()
@@ -138,11 +140,12 @@ class OpenGLDynamicTextureArray(
     }
 
     private fun cleanup() {
-        for ((index, texture) in textures.withIndex()) {
-            if (texture == null) {
+        for ((index, textureReference) in textures.withIndex()) {
+            if (textureReference == null) {
                 continue
             }
-            if (texture.usages.get() > 0) {
+            val texture = textureReference.get()
+            if (texture != null && texture.usages.get() > 0) {
                 continue
             }
             textures[index] = null

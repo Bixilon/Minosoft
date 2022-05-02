@@ -97,4 +97,8 @@ open class DynamicImageElement(
 
     override fun forceSilentApply() = Unit
     override fun silentApply(): Boolean = false
+
+    protected fun finalize() {
+        texture?.usages?.decrementAndGet()
+    }
 }

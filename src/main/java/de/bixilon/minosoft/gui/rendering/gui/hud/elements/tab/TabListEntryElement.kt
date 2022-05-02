@@ -104,7 +104,7 @@ class TabListEntryElement(
 
         nameElement.text = displayName
 
-        this.prefSize = Vec2i((PADDING * 6) + skinElement.prefSize.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
+        this.prefSize = Vec2i((PADDING * 6) + skinElement.size.x + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
         cacheUpToDate = false
     }
