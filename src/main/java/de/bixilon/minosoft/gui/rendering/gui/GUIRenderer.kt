@@ -79,6 +79,7 @@ class GUIRenderer(
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
         renderWindow.textureManager.staticTextures.animator.use(shader)
+        renderWindow.textureManager.dynamicTextures.use(shader)
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }

@@ -45,6 +45,7 @@ abstract class TextureManager {
             throw IllegalStateException("Already initialized!")
         }
         debugTexture = staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
+        // steveTexture = staticTextures.createTexture("minecraft:entity/steve".toResourceLocation().texture())
         whiteTexture = TextureLikeTexture(texture = staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")), uvStart = Vec2(0.0f, 0.0f), uvEnd = Vec2(0.001f, 0.001f), size = Vec2i(16, 16))
 
         loadDefaultSkins(assetsManager)

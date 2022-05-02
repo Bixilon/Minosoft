@@ -95,7 +95,8 @@ object OpenGLTextureUtil {
             }
         }
 
-        buffer.rewind()
+        origin.position(0)
+        buffer.position(0)
         return buffer
     }
 

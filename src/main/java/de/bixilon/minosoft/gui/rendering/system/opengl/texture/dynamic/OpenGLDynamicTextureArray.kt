@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
@@ -32,11 +31,14 @@ import java.util.*
 
 class OpenGLDynamicTextureArray(
     val renderWindow: RenderWindow,
-    val index: Int = 6,
+    val index: Int = 7,
     val resolution: Int,
 ) : DynamicTextureArray {
-    private val textures: Array<OpenGLDynamicTexture?> = arrayOfNulls(32)
+    private val textures: Array<OpenGLDynamicTexture?> = arrayOfNulls(2)
     private var textureId = -1
+
+    @Deprecated("temp")
+    private var lastTextureId = 0
 
     override val size: Int
         get() = 2
@@ -50,21 +52,25 @@ class OpenGLDynamicTextureArray(
     }
 
     override fun push(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
+        check(textureId >= 0) { "Dynamic texture array not yet initialized!" }
         val bytes = data()
 
         check(bytes.limit() == resolution * resolution * 4) { "Texture must have a size of ${resolution}x${resolution}" }
 
         val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, resolution))
+        val index = lastTextureId++
 
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+
         for ((level, mipmap) in mipmaps.withIndex()) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, level, resolution, resolution, 1, GL_RGBA, GL_UNSIGNED_BYTE, mipmap)
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, index, resolution shr level, resolution shr level, 1, GL_RGBA, GL_UNSIGNED_BYTE, mipmap)
         }
 
-        return OpenGLDynamicTexture(identifier, createShaderIdentifier(index = 0))
+        return OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
     }
 
     private fun createShaderIdentifier(array: Int = this.index, index: Int): Int {
+        check(array >= 0 && index >= 0) { "Array not initialized or index < 0" }
         return (array shl 28) or (index shl 12) or 0
     }
 
@@ -75,16 +81,8 @@ class OpenGLDynamicTextureArray(
 
 
         for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL12.GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
-
-
-        for (i in textures.indices) {
-            for (level in 0 until OpenGLTextureUtil.MAX_MIPMAP_LEVELS) {
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, i, resolution, resolution, 1, GL_RGBA, GL_UNSIGNED_BYTE, ByteBuffer.wrap(ByteArray(resolution * resolution * 4)))
-            }
-        }
-
 
         this.textureId = textureId
     }

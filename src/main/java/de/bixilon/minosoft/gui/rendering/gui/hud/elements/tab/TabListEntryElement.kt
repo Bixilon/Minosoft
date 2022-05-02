@@ -45,10 +45,11 @@ class TabListEntryElement(
         _parent = tabList
     }
 
-    // ToDo: Skin
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.alexTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8))
+    private val skinElement = DynamicImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.alexTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
+
+    // private val skinElement = ImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
     private lateinit var pingElement: AtlasImageElement
 
