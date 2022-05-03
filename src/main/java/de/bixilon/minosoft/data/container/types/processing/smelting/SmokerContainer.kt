@@ -11,14 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.containers
+package de.bixilon.minosoft.data.container.types.processing.smelting
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.container.types.CraftingContainer
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
+import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-interface ContainerFactory<T : Container> : CompanionResourceLocation {
+class SmokerContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : SmeltingContainer(connection, type, title) {
 
-    fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent? = null): T
+    companion object : ContainerFactory<CraftingContainer> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:smoker".toResourceLocation()
+
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): CraftingContainer {
+            return CraftingContainer(connection, type, title)
+        }
+    }
 }

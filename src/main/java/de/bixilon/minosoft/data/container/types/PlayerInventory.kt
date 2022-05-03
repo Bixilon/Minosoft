@@ -150,9 +150,13 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             resourceLocation = RESOURCE_LOCATION,
             factory = this,
         )
-        const val HOTBAR_OFFSET = 36
+        const val MAIN_SLOTS_PER_ROW = 9
+        const val MAIN_ROWS = 4
+        const val MAIN_SLOTS = MAIN_SLOTS_PER_ROW * MAIN_ROWS
+
+        const val HOTBAR_OFFSET = (MAIN_ROWS - 1) * MAIN_SLOTS_PER_ROW
         const val ARMOR_OFFSET = 5
-        const val HOTBAR_SLOTS = 9
+        const val HOTBAR_SLOTS = MAIN_SLOTS_PER_ROW
         const val OFFHAND_SLOT = 45
 
         private val SECTIONS = arrayOf(

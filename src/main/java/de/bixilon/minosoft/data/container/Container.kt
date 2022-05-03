@@ -220,6 +220,8 @@ open class Container(
         revision++
     }
 
+    open fun readProperty(property: Int, value: Int) = Unit
+
     companion object : ContainerFactory<Container> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:container".toResourceLocation()
 

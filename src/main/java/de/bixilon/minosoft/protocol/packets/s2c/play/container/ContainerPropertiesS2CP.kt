@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -21,9 +22,13 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class ContainerPropertiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val containerId: Byte = buffer.readByte()
+    val containerId = buffer.readUnsignedByte()
     val property = buffer.readUnsignedShort()
     val value = buffer.readUnsignedShort()
+
+    override fun handle(connection: PlayConnection) {
+        connection.player.containers[containerId]?.readProperty(property, value)
+    }
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container properties (containerId=$containerId, property=$property, value=$value)" }

@@ -16,6 +16,9 @@ package de.bixilon.minosoft.data.registries.other.containers
 import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.container.types.generic.*
+import de.bixilon.minosoft.data.container.types.processing.smelting.BlastFurnaceContainer
+import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
+import de.bixilon.minosoft.data.container.types.processing.smelting.SmokerContainer
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
 object DefaultContainerFactories : DefaultFactory<ContainerFactory<*>>(
@@ -29,4 +32,8 @@ object DefaultContainerFactories : DefaultFactory<ContainerFactory<*>>(
     Generic9x6Container,
 
     CraftingContainer,
+
+    BlastFurnaceContainer,
+    FurnaceContainer,
+    SmokerContainer,
 )

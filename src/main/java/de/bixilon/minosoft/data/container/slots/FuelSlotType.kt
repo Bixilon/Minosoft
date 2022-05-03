@@ -11,14 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.containers
+package de.bixilon.minosoft.data.container.slots
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-
-interface ContainerFactory<T : Container> : CompanionResourceLocation {
-
-    fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent? = null): T
-}
+@Deprecated("ToDo")
+object FuelSlotType : SlotType

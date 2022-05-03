@@ -11,41 +11,58 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types
+package de.bixilon.minosoft.data.container.types.processing.smelting
 
-import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
+import de.bixilon.minosoft.data.container.slots.FuelSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
+import de.bixilon.minosoft.data.container.types.CraftingContainer
+import de.bixilon.minosoft.data.container.types.PlayerInventory
+import de.bixilon.minosoft.data.container.types.processing.ProcessingContainer
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class CraftingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : Container(connection, type, title) {
-    override val sections: Array<IntRange> = arrayOf(0..0, 1 until 1 + CRAFTING_SLOTS, 1 + CRAFTING_SLOTS until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS)
+abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : ProcessingContainer(connection, type, title) {
+    var processTime: Int = 0
+        private set
+        get() = minOf(field, maxProcessTime)
+    var maxProcessTime: Int = 200
+        private set
+
+    var fuel: Int = 0
+        private set
+        get() = minOf(field, maxFuel)
+    var maxFuel: Int = 0
+        private set
+
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId == 0) {
+            return DefaultSlotType // ToDo: only smeltable items
+        }
+        if (slotId == 1) {
+            return FuelSlotType
+        }
+        if (slotId == 2) {
             return RemoveOnlySlotType
         }
-        if (slotId in 1 until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
+        if (slotId in SMELTING_SLOTS until +SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
             return DefaultSlotType
         }
         return null
     }
 
     override fun getSection(slotId: Int): Int? {
-        if (slotId == 0) {
+        if (slotId == 2) {
             return 0
         }
-        if (slotId in 1 until 1 + CRAFTING_SLOTS) {
+        if (slotId == 0 || slotId == 1) {
             return 1
         }
-        if (slotId in 1 + CRAFTING_SLOTS until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
+        if (slotId in SMELTING_SLOTS until SMELTING_SLOTS + CraftingContainer.CRAFTING_SLOTS) {
             return 2
         }
         return null
@@ -55,16 +72,20 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
         if (slot == SlotSwapContainerAction.SwapTargets.OFFHAND) {
             return null // ToDo: It is possible to press F in vanilla, but there is no slot for it
         }
-        return 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS_PER_ROW * 3 + slot.ordinal
+        return SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS_PER_ROW * 3 + slot.ordinal
     }
 
-
-    companion object : ContainerFactory<CraftingContainer> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crafting".toResourceLocation()
-        const val CRAFTING_SLOTS = 3 * 3
-
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): CraftingContainer {
-            return CraftingContainer(connection, type, title)
+    override fun readProperty(property: Int, value: Int) {
+        when (property) {
+            0 -> this.fuel = maxOf(value, 0)
+            1 -> this.maxFuel = maxOf(value, 0)
+            2 -> this.processTime = maxOf(value, 0)
+            3 -> this.maxProcessTime = maxOf(value, 0)
+            else -> super.readProperty(property, value)
         }
+    }
+
+    companion object {
+        const val SMELTING_SLOTS = 3
     }
 }
