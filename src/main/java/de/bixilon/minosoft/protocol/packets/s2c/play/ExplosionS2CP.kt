@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position = buffer.readVec3f()
     val power = buffer.readFloat()
-    val explodedBlocks: List<Vec3i> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3i(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList() // ToDo: Find out version
+    val explodedBlocks: Array<Vec3i> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3i(buffer.readByte(), buffer.readByte(), buffer.readByte()) } // ToDo: Find out version
     val velocity = buffer.readVec3f()
 
     override fun check(connection: PlayConnection) {
@@ -40,8 +41,9 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        for (record in explodedBlocks) {
-            val blockPosition = Vec3i(position) + record
+        val offsetPosition = Vec3i(position.floor)
+        for (blockDelta in explodedBlocks) {
+            val blockPosition = offsetPosition + blockDelta
             connection.world[blockPosition] = null
             // ToDo: Mass set blocks
         }

@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import de.bixilon.kotlinglm.func.common.ceil
 import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kotlinglm.func.common.floor
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.Vec3t
+import de.bixilon.kutil.math.simple.DoubleMath.ceil
+import de.bixilon.kutil.math.simple.DoubleMath.floor
+import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
@@ -261,9 +262,9 @@ object VecUtil {
     fun getDistanceToNextIntegerAxisInDirection(position: Vec3d, direction: Vec3d): Double {
         fun getTarget(direction: Vec3d, position: Vec3d, axis: Axes): Int {
             return if (direction[axis] > 0) {
-                position[axis].floor.toInt() + 1
+                position[axis].floor + 1
             } else {
-                position[axis].ceil.toInt() - 1
+                position[axis].ceil - 1
             }
         }
 

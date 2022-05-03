@@ -24,7 +24,7 @@ class ExplosionEvent(
     initiator: EventInitiators,
     val position: Vec3,
     val power: Float,
-    val explodedBlocks: List<Vec3i>,
+    val explodedBlocks: Array<Vec3i>,
     val velocity: Vec3,
 ) : PlayConnectionEvent(connection) {
 
