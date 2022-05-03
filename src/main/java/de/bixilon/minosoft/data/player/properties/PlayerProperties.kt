@@ -48,7 +48,6 @@ data class PlayerProperties(
                         else -> Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Unknown player property $name: ${property["value"].toString()}" }
                     }
                 }
-
             }
 
             return PlayerProperties(

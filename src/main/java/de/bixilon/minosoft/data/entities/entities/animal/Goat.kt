@@ -33,7 +33,6 @@ class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData,
         get() = data.getBoolean(LEFT_HORN_DATA, false)
 
     @get:SynchronizedEntityData
-
     val hasRightHorn: Boolean
         get() = data.getBoolean(RIGHT_HORN_DATA, false)
 
