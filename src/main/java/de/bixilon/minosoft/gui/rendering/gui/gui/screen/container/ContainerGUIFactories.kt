@@ -18,10 +18,13 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.registries.factory.clazz.mapping.DefaultClassMappingFactory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic.GenericContainerScreen
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting.FurnaceContainerScreen
 
 object ContainerGUIFactories : DefaultClassMappingFactory<ContainerGUIFactory<*, *>>(
     GenericContainerScreen,
     CraftingContainerScreen,
+
+    FurnaceContainerScreen,
 ) {
 
     fun build(guiRenderer: GUIRenderer, container: Container): ContainerScreen<*>? {
