@@ -252,7 +252,12 @@ abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int =
     /**
      * Called every tick to execute time based actions
      */
-    open fun tick() = Unit
+    open fun tick() {
+        if (this is Pollable && poll()) {
+            forceSilentApply()
+            parent?.onChildChange(this)
+        }
+    }
 
     open fun onOpen() = Unit
     open fun onHide() = Unit

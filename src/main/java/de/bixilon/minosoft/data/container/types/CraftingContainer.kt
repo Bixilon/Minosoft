@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
+import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
@@ -59,8 +60,9 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
     }
 
 
-    companion object : ContainerFactory<CraftingContainer> {
+    companion object : ContainerFactory<CraftingContainer>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crafting".toResourceLocation()
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:crafting_table".toResourceLocation())
         const val CRAFTING_SLOTS = 3 * 3
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): CraftingContainer {

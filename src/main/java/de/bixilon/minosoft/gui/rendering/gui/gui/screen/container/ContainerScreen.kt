@@ -44,7 +44,7 @@ abstract class ContainerScreen<C : Container>(
         forceRenderContainerScreen(offset, consumer, options)
     }
 
-    protected fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    protected open fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         containerElement.render(offset, consumer, options)
     }
 

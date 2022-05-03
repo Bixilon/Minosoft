@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.container.types.processing.smelting
 
-import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
@@ -23,11 +22,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FurnaceContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : SmeltingContainer(connection, type, title) {
 
-    companion object : ContainerFactory<CraftingContainer> {
+    companion object : ContainerFactory<FurnaceContainer> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:furnace".toResourceLocation()
 
-        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): CraftingContainer {
-            return CraftingContainer(connection, type, title)
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): FurnaceContainer {
+            return FurnaceContainer(connection, type, title)
         }
     }
 }
