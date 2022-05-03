@@ -1315,7 +1315,7 @@
         }
       },
       "areas": {
-        "crafting_text": {
+        "title": {
           "start": [29, 3],
           "end": [172, 16]
         },
@@ -1540,6 +1540,14 @@
         "process": {
           "start": [79, 35],
           "end": [103, 50]
+        },
+        "title": {
+          "start": [29, 3],
+          "end": [172, 16]
+        },
+        "inventory_text": {
+          "start": [3, 70],
+          "end": [172, 83]
         }
       }
     }

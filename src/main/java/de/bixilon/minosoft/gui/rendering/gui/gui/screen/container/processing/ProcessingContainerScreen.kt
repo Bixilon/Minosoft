@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing
 import de.bixilon.minosoft.data.container.types.processing.ProcessingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.BackgroundedContainerScreen
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.LabeledContainerScreen
 
 abstract class ProcessingContainerScreen<C : ProcessingContainer>(
     guiRenderer: GUIRenderer,
     container: C,
     atlasElement: AtlasElement?,
-) : BackgroundedContainerScreen<C>(guiRenderer, container, atlasElement)
+) : LabeledContainerScreen<C>(guiRenderer, container, atlasElement)
