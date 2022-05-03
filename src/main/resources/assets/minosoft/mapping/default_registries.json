@@ -527,7 +527,7 @@
       "minecraft:gamemode_change": {
         "id": 3
       },
-      "minecraft:show_credits": {
+      "minecraft:win_game": {
         "id": 4
       },
       "minecraft:hide_demo_messages": {
@@ -562,7 +562,7 @@
       "minecraft:gamemode_change": {
         "id": 3
       },
-      "minecraft:show_credits": {
+      "minecraft:win_game": {
         "id": 4
       },
       "minecraft:hide_demo_messages": {

@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.CreditsScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.SignEditorScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.ContainerGUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause.PauseMenu
@@ -60,6 +61,7 @@ class GUIManager(
         ContainerGUIManager.register(guiRenderer)
         SignEditorScreen.register(guiRenderer)
         RespawnMenu.register(guiRenderer)
+        CreditsScreen.register(guiRenderer)
     }
 
     override fun postInit() {
