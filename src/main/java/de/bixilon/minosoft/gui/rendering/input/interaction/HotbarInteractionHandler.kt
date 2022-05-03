@@ -32,6 +32,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HotbarInteractionHandler(
     val renderWindow: RenderWindow,
+    val interactionManager: InteractionManager,
 ) {
     private val connection = renderWindow.connection
     val slotLimiter = RateLimiter()
@@ -48,6 +49,7 @@ class HotbarInteractionHandler(
             return
         }
         connection.player.selectedHotbarSlot = slot
+        interactionManager.use.stopUsingItem()
         slotLimiter += { connection.sendPacket(HotbarSlotC2SP(slot)) }
         connection.fireEvent(SelectHotbarSlotEvent(connection, EventInitiators.CLIENT, slot))
     }

@@ -23,7 +23,7 @@ class InteractionManager(
     val renderWindow: RenderWindow,
 ) {
     private val connection = renderWindow.connection
-    val hotbar = HotbarInteractionHandler(renderWindow)
+    val hotbar = HotbarInteractionHandler(renderWindow, this)
     val pick = ItemPickInteractionHandler(renderWindow, this)
     val attack = AttackInteractionHandler(renderWindow, this)
     val `break` = BreakInteractionHandler(renderWindow)
