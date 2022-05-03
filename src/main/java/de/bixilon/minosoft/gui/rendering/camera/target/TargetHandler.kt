@@ -70,7 +70,7 @@ class TargetHandler(
             if (!target.hit) {
                 continue
             }
-            if ((currentHit?.distance ?: Double.MAX_VALUE) < target.distance) {
+            if (currentHit != null && currentHit.distance < target.distance) {
                 continue
             }
             currentHit = EntityTarget(origin + direction * target.distance, target.distance, target.direction, entity)
@@ -138,7 +138,9 @@ class TargetHandler(
 
         if (entities) {
             val entityTarget = raycastEntity(origin, direction) ?: return target
-            target ?: return null
+            if (target == null) {
+                return entityTarget
+            }
             return (entityTarget.distance < target.distance).decide(entityTarget, target)
         }
 
@@ -147,6 +149,6 @@ class TargetHandler(
 
     companion object {
         private const val RAYCAST_MAX_STEPS = 100
-        private const val MAX_ENTITY_DISTANCE = 20.0f * 20.0f // length2 does not get the square root
+        private const val MAX_ENTITY_DISTANCE = 30.0f * 30.0f // length2 does not get the square root
     }
 }
