@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.minosoft.data.container.types.processing.smelting.SmeltingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
@@ -38,15 +40,18 @@ abstract class SmeltingContainerScreen<C : SmeltingContainer>(
     override fun forceRenderContainerScreen(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRenderContainerScreen(offset, consumer, options)
 
-        // ToDo: show process
         if (fuelArea != null) {
             val fuelImage = AtlasImageElement(guiRenderer, fuelAtlasElement, size = fuelArea.size)
-
-            fuelImage.render(offset + fuelArea.start, consumer, options)
+            val fuel = fuel
+            fuelImage.prefMaxSize.y = (fuelImage.size.y * fuel).toInt()
+            fuelImage.uvStart = Vec2(fuelAtlasElement?.uvStart?.x ?: 0.0f, interpolateLinear(1.0f - fuel, fuelAtlasElement?.uvStart?.y ?: 0.0f, fuelAtlasElement?.uvEnd?.y ?: 0.0f))
+            fuelImage.render(offset + fuelArea.start + Vec2i(0, fuelArea.size.y - fuelImage.size.y), consumer, options)
         }
         if (processArea != null) {
+            val process = process
             val processImage = AtlasImageElement(guiRenderer, processAtlasElement, size = processArea.size)
             processImage.prefMaxSize.x = (processImage.size.x * process).toInt()
+            processImage.uvEnd = Vec2(interpolateLinear(process, processAtlasElement?.uvStart?.x ?: 0.0f, processAtlasElement?.uvEnd?.x ?: 0.0f), processAtlasElement?.uvEnd?.y ?: 0.0f)
             processImage.render(offset + processArea.start, consumer, options)
         }
     }
