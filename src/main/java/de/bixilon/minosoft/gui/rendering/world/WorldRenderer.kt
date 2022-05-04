@@ -496,7 +496,7 @@ class WorldRenderer(
         culledQueue[item.chunkPosition]?.let {
             it.remove(item.sectionHeight)
             if (it.isEmpty()) {
-                loadedMeshes -= item.chunkPosition
+                culledQueue -= item.chunkPosition
             }
         }
 
