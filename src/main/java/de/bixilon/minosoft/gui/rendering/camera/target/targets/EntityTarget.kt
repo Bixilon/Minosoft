@@ -76,7 +76,7 @@ class EntityTarget(
                         continue
                     }
                     method.isAccessible = true
-                    val name = method.name.toSnakeCase().removePrefix("get_").removePrefix("is_").removePrefix("is_")
+                    val name = method.name.toSnakeCase().removePrefix("get_").removePrefix("is_").removePrefix("has_")
                     if (values.containsKey(name)) {
                         continue
                     }
