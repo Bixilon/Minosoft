@@ -48,6 +48,9 @@ class BakedBlockStateModel(
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]
+            if (blockState.isSolid && neighbour?.isSolid == true) {
+                continue
+            }
             val neighboursModel = neighbour?.blockModel
             var neighbourProperties: Array<AbstractFaceProperties>? = null
             if (neighboursModel != null) {
@@ -55,8 +58,13 @@ class BakedBlockStateModel(
                 neighbourProperties = neighboursModel.getTouchingFaceProperties(random, direction.inverted)
             }
             for (face in faces) {
-                if (face.touching && neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, neighbour != null && blockState.block.canCull(blockState, neighbour))) {
-                    continue
+                if (face.touching) {
+                    if (neighbour?.isSolid == true) {
+                        continue
+                    }
+                    if (neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, neighbour != null && blockState.block.canCull(blockState, neighbour))) {
+                        continue
+                    }
                 }
                 tint = tints?.getOrNull(face.tintIndex) ?: -1
                 currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[SolidCullSectionPreparer.SELF_LIGHT_INDEX]).toInt()

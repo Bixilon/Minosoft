@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -42,6 +42,7 @@ data class BlockState(
     val fallSoundEvent: ResourceLocation?,
     val soundEventVolume: Float = 1.0f,
     val soundEventPitch: Float = 1.0f,
+    val isSolid: Boolean,
 ) {
     var blockModel: BakedBlockModel? = null
 
@@ -146,6 +147,7 @@ data class BlockState(
                 fallSoundEvent = data["fall_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 soundEventVolume = data["sound_type_volume"]?.toFloat() ?: 1.0f,
                 soundEventPitch = data["sound_type_pitch"]?.toFloat() ?: 1.0f,
+                isSolid = data["solid_render"]?.toBoolean() ?: true, // ToDo: This should normally be false, but pixlyzers default value is true. Might break if the data is missing
             )
         }
 
