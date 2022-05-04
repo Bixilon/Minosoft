@@ -217,7 +217,6 @@ class PlayInByteBuffer : InByteBuffer {
         return readArray(length) { readEntityId() }
     }
 
-
     fun readPlayerProperties(): PlayerProperties {
         var textures: PlayerTextures? = null
         for (i in 0 until readVarInt()) {

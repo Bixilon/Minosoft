@@ -37,6 +37,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
@@ -128,10 +130,10 @@ class FluidCullSectionPreparer(
                     }
 
                     val cornerHeights = floatArrayOf(
-                        getCornerHeight(position, fluid),
-                        getCornerHeight(position + Directions.EAST, fluid),
-                        getCornerHeight(position + Directions.EAST + Directions.SOUTH, fluid),
-                        getCornerHeight(position + Directions.SOUTH, fluid),
+                        getCornerHeight(chunk, chunkPosition, position, fluid),
+                        getCornerHeight(chunk, chunkPosition, position + Directions.EAST, fluid),
+                        getCornerHeight(chunk, chunkPosition, position + Directions.EAST + Directions.SOUTH, fluid),
+                        getCornerHeight(chunk, chunkPosition, position + Directions.SOUTH, fluid),
                     )
 
                     if (!skip[Directions.O_UP]) {
@@ -262,21 +264,38 @@ class FluidCullSectionPreparer(
         neighbours.release()
     }
 
-    private fun getCornerHeight(position: Vec3i, fluid: Fluid): Float {
-        // ToDo: Optimize
+    private fun getCornerHeight(providedChunk: Chunk, providedChunkPosition: Vec2i, position: Vec3i, fluid: Fluid): Float {
+        // ToDo: Optimize more
         var totalHeight = 0.0f
         var count = 0
 
+        var lastChunkPosition = providedChunkPosition
+        var lastChunk: Chunk? = providedChunk
+
         for (side in 0 until 4) {
             val blockPosition = position + Vec3i(-(side and 0x01), 0, -(side shr 1 and 0x01))
-            if (fluid.matches(world[blockPosition + Directions.UP])) {
+            val chunkPosition = blockPosition.chunkPosition
+            if (chunkPosition != lastChunkPosition) {
+                lastChunkPosition = chunkPosition
+                lastChunk = world[chunkPosition]
+            }
+            if (lastChunk == null) {
+                count++
+                continue
+            }
+            val inChunkPosition = blockPosition.inChunkPosition
+            if (fluid.matches(lastChunk[inChunkPosition + Directions.UP])) {
                 return 1.0f
             }
 
-            val blockState = world[blockPosition]
+            val blockState = lastChunk[inChunkPosition]
+            if (blockState == null) {
+                count++
+                continue
+            }
 
-            if (blockState == null || !fluid.matches(blockState)) {
-                if (blockState?.material?.solid != true) {
+            if (!fluid.matches(blockState)) {
+                if (!blockState.material.solid) {
                     count++
                 }
                 continue

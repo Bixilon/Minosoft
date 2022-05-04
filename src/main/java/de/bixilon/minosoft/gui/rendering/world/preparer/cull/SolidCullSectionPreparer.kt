@@ -49,7 +49,6 @@ class SolidCullSectionPreparer(
     private val bedrock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.BEDROCK]?.defaultState
     private val someFullBlock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
     private val tintColorCalculator = renderWindow.tintManager
-    private val ambientLight = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
     private var fastBedrock = false
 
     init {
@@ -167,10 +166,10 @@ class SolidCullSectionPreparer(
                         random.setSeed(0L)
                     }
                     tints = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
-                    rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
+                    rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, tints)
 
                     if (blockEntityModel is MeshedBlockEntityRenderer<*>) {
-                        rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints) || rendered
+                        rendered = blockEntityModel.singleRender(position, mesh, random, blockState, neighbourBlocks, light, tints) || rendered
                     }
 
                     if (rendered) {

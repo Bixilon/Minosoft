@@ -38,7 +38,7 @@ class BakedFace(
     override val transparency: TextureTransparencies
         get() = texture.transparency // ToDo
 
-    fun singleRender(position: FloatArray, mesh: WorldMesh, light: Int, ambientLight: FloatArray, tint: Int) {
+    fun singleRender(position: FloatArray, mesh: WorldMesh, light: Int, tint: Int) {
         val meshToUse = transparency.getMesh(mesh)
         // ToDo: Ambient light
         val color = Vec3(shade)

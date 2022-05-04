@@ -73,7 +73,7 @@ class Chunk(
     operator fun get(position: Vec3i): BlockState? = get(position.x, position.y, position.z)
 
     fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
-        val section = getOrPut(y.sectionHeight)
+        val section = getOrPut(y.sectionHeight) ?: return
         section.blocks[x, y.inSectionHeight, z] = blockState
         section.blockEntities[x, y.inSectionHeight, z] = blockEntity // ToDo
     }
@@ -103,7 +103,7 @@ class Chunk(
             return null
         }
         blockEntity = block.block.factory?.build(connection) ?: return null
-        this.getOrPut(sectionHeight).blockEntities[x, inSectionHeight, z] = blockEntity
+        (this.getOrPut(sectionHeight) ?: return null).blockEntities[x, inSectionHeight, z] = blockEntity
 
         return blockEntity
     }
@@ -112,7 +112,7 @@ class Chunk(
     fun getOrPutBlockEntity(position: Vec3i): BlockEntity? = getOrPutBlockEntity(position.x, position.y, position.z)
 
     fun setBlockEntity(x: Int, y: Int, z: Int, blockEntity: BlockEntity?) {
-        getOrPut(y.sectionHeight).blockEntities[x, y.inSectionHeight, z] = blockEntity
+        (getOrPut(y.sectionHeight) ?: return).blockEntities[x, y.inSectionHeight, z] = blockEntity
     }
 
     fun setBlockEntity(position: Vec3i, blockEntity: BlockEntity?) = setBlockEntity(position.x, position.y, position.z, blockEntity)
@@ -133,7 +133,7 @@ class Chunk(
         data.blocks?.let {
             for ((index, blocks) in it.withIndex()) {
                 blocks ?: continue
-                val section = getOrPut(index + lowestSection)
+                val section = getOrPut(index + lowestSection) ?: return@let
                 section.blocks = blocks
             }
             blocksInitialized = true
@@ -146,7 +146,7 @@ class Chunk(
         data.light?.let {
             for ((index, light) in it.withIndex()) {
                 light ?: continue
-                val section = getOrPut(index + lowestSection)
+                val section = getOrPut(index + lowestSection) ?: return@let
                 section.light = light
             }
             lightInitialized = true
@@ -170,9 +170,12 @@ class Chunk(
     }
 
     @Synchronized
-    private fun getOrPut(sectionHeight: Int): ChunkSection {
+    private fun getOrPut(sectionHeight: Int): ChunkSection? {
         val sections = sections ?: throw NullPointerException("Sections not initialized yet!")
         val sectionIndex = sectionHeight - lowestSection
+        if (sectionIndex < 0 || sectionIndex > sections.size) {
+            return null
+        }
 
         var section = sections[sectionIndex]
         if (section == null) {

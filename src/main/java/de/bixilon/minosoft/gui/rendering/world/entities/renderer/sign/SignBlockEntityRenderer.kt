@@ -45,7 +45,7 @@ class SignBlockEntityRenderer(
     override val blockState: BlockState,
 ) : OnlyMeshedBlockEntityRenderer<SignBlockEntity> {
 
-    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val block = this.blockState.block
         if (block is StandingSignBlock) {
             renderStandingText(position, mesh, light[SolidCullSectionPreparer.SELF_LIGHT_INDEX].toInt())

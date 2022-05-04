@@ -58,8 +58,8 @@ class WeightedBakedModel(
         throw IllegalStateException("Could not find a model: This should never happen!")
     }
 
-    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
-        return getModel(random)?.singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints) ?: false
+    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
+        return getModel(random)?.singleRender(position, mesh, random, blockState, neighbours, light, tints) ?: false
     }
 
     override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {

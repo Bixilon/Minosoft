@@ -36,7 +36,7 @@ class BakedBlockStateModel(
         return touchingFaceProperties[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {
         val floatPosition = position.toVec3()
         blockState.block.randomOffsetType?.let {
             floatPosition += position.getWorldOffset(blockState.block)
@@ -68,7 +68,7 @@ class BakedBlockStateModel(
                 }
                 tint = tints?.getOrNull(face.tintIndex) ?: -1
                 currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[SolidCullSectionPreparer.SELF_LIGHT_INDEX]).toInt()
-                face.singleRender(positionArray, mesh, currentLight, ambientLight, tint)
+                face.singleRender(positionArray, mesh, currentLight, tint)
                 if (!rendered) {
                     rendered = true
                 }

@@ -147,7 +147,7 @@ data class BlockState(
                 fallSoundEvent = data["fall_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 soundEventVolume = data["sound_type_volume"]?.toFloat() ?: 1.0f,
                 soundEventPitch = data["sound_type_pitch"]?.toFloat() ?: 1.0f,
-                isSolid = data["solid_render"]?.toBoolean() ?: true, // ToDo: This should normally be false, but pixlyzers default value is true. Might break if the data is missing
+                isSolid = data["solid_render"]?.toBoolean() ?: false,
             )
         }
 
