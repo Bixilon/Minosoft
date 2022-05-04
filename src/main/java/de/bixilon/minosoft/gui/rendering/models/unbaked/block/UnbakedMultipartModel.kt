@@ -50,11 +50,15 @@ class UnbakedMultipartModel(
         }
         val finalFaces: Array<Array<AbstractFaceProperties>?> = arrayOfNulls(Directions.SIZE)
         for (index in 0 until Directions.SIZE) {
-            finalFaces[index] = sizes[index].toTypedArray()
+            val faces = sizes[index]
+            if (faces.isEmpty()) {
+                continue
+            }
+            finalFaces[index] = faces.toTypedArray()
         }
 
 
-        return MultipartBakedModel(baked.unsafeCast(), finalFaces.unsafeCast(), particleTexture)
+        return MultipartBakedModel(baked.unsafeCast(), finalFaces, particleTexture)
     }
 
     private companion object {

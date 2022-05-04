@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFacePropertie
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.util.Broken
 import java.util.*
 import kotlin.math.abs
 
@@ -38,8 +39,8 @@ class WeightedBakedModel(
         this.totalWeight = totalWeight
     }
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
-        return getModel(random)?.getTouchingFaceProperties(random, direction) ?: arrayOf()
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>? {
+        return getModel(random)?.getTouchingFaceProperties(random, direction)
     }
 
     private fun getModel(random: Random): BakedBlockModel? {
@@ -55,7 +56,7 @@ class WeightedBakedModel(
             }
         }
 
-        throw IllegalStateException("Could not find a model: This should never happen!")
+        Broken("Could not find a model: This should never happen!")
     }
 
     override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, tints: IntArray?): Boolean {

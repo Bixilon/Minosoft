@@ -24,11 +24,11 @@ import java.util.*
 
 class MultipartBakedModel(
     val models: Array<BakedBlockModel>,
-    val sizes: Array<Array<AbstractFaceProperties>>,
+    val sizes: Array<Array<AbstractFaceProperties>?>,
     val particleTexture: AbstractTexture?,
 ) : BakedBlockModel {
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>? {
         return sizes[direction.ordinal]
     }
 
