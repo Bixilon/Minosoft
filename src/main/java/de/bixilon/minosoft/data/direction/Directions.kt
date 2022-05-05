@@ -87,6 +87,16 @@ enum class Directions(
         }
     }
 
+    fun rotateYCC(): Directions {
+        return when (this) {
+            NORTH -> WEST
+            SOUTH -> EAST
+            WEST -> SOUTH
+            EAST -> NORTH
+            else -> Broken("Rotation: $this")
+        }
+    }
+
     fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
         return when (this) {
             DOWN -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.z), from)

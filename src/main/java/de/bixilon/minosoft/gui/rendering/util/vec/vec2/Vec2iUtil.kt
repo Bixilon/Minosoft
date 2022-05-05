@@ -20,6 +20,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 
 object Vec2iUtil {
 
@@ -117,5 +118,12 @@ object Vec2iUtil {
             array[0] * vec[0].toFloat() + array[4] * vec[1].toFloat() - 1.0f,
             array[1] * vec[0].toFloat() + array[5] * vec[1].toFloat() + 1.0f,
         )
+    }
+
+    operator fun Vec2i.plus(direction: Directions): Vec2i {
+        val ret = Vec2i(this)
+        ret.x += direction.vector.x
+        ret.y += direction.vector.z
+        return ret
     }
 }
