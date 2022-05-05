@@ -71,10 +71,13 @@ abstract class TextureManager {
                 }
             }
             if (properties == null) {
-                properties = PlayerProperties.fetch(uuid) // ToDo: async
+                try {
+                    properties = PlayerProperties.fetch(uuid) // ToDo: async
+                } catch (ignored: Throwable) {
+                }
             }
         }
-        properties.textures?.skin?.let { return dynamicTextures.pushRawArray(uuid) { it.read() } }
+        properties?.textures?.skin?.let { return dynamicTextures.pushRawArray(uuid) { it.read() } }
         if (uuid.isSteve()) {
             return steveTexture
         }
