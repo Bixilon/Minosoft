@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.world.container
 
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.Broken
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class BlockSectionDataProvider(
@@ -28,7 +28,7 @@ class BlockSectionDataProvider(
 ) : SectionDataProvider<BlockState?>(data, true, false) {
     var fluidCount = 0
         private set
-    private val occlusion = BooleanArray(15)
+    private var occlusion = BooleanArray(15)
 
     init {
         recalculate()
@@ -45,6 +45,10 @@ class BlockSectionDataProvider(
                 fluidCount++
             }
         }
+        recalculateOcclusion()
+    }
+
+    fun recalculateOcclusion() {
         val regions = floodFill()
         calculateOcclusion(regions)
     }
@@ -58,6 +62,12 @@ class BlockSectionDataProvider(
             fluidCount++
         } else if (previousFluid && !valueFluid) {
             fluidCount--
+        }
+
+        if (previous.isSolid() != value.isSolid()) {
+            lock.acquire()
+            recalculateOcclusion()
+            lock.release()
         }
 
         return previous
@@ -86,7 +96,6 @@ class BlockSectionDataProvider(
 
 
     private fun floodFill(): ShortArray {
-        val start = TimeUtil.nanos
         // mark regions and check direct neighbours
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
         var nextFloodFillId: Short = 1
@@ -142,19 +151,19 @@ class BlockSectionDataProvider(
 
                     if (y < ProtocolDefinition.SECTION_MAX_Y) {
                         val neighbourRegion = regions[(y + 1) shl 8 or (z shl 4) or x]
-                        if (neighbourRegion > 0 && override != regionOverride[regionInt]) {
+                        if (neighbourRegion > 0) {
                             regionOverride[regionInt] = neighbourRegion
                         }
                     }
                     if (z < ProtocolDefinition.SECTION_MAX_Z) {
                         val neighbourRegion = regions[y shl 8 or ((z + 1) shl 4) or x]
-                        if (neighbourRegion > 0 && override != regionOverride[regionInt]) {
+                        if (neighbourRegion > 0) {
                             regionOverride[regionInt] = neighbourRegion
                         }
                     }
                     if (x < ProtocolDefinition.SECTION_MAX_X) {
                         val neighbourRegion = regions[y shl 8 or (z shl 4) or (x + 1)]
-                        if (neighbourRegion > 0 && override != regionOverride[regionInt]) {
+                        if (neighbourRegion > 0) {
                             regionOverride[regionInt] = neighbourRegion
                         }
                     }
@@ -192,8 +201,6 @@ class BlockSectionDataProvider(
 
         // generate in/out occlusion result
 
-
-        println("Flood ${TimeUtil.nanos - start}")
         return regions
     }
 
@@ -236,7 +243,7 @@ class BlockSectionDataProvider(
             }
         }
 
-
+        val occlusion = BooleanArray(15)
         occlusion[0] = sideRegions.canOcclude(Directions.DOWN, Directions.UP)
         occlusion[1] = sideRegions.canOcclude(Directions.DOWN, Directions.NORTH)
         occlusion[2] = sideRegions.canOcclude(Directions.DOWN, Directions.SOUTH)
@@ -256,6 +263,11 @@ class BlockSectionDataProvider(
         occlusion[13] = sideRegions.canOcclude(Directions.SOUTH, Directions.EAST)
 
         occlusion[14] = sideRegions.canOcclude(Directions.WEST, Directions.EAST)
+
+        if (!this.occlusion.contentEquals(occlusion)) {
+            this.occlusion = occlusion
+            // ToDo: Recalculate visibility graph
+        }
     }
 
     private fun Array<IntOpenHashSet>.canOcclude(`in`: Directions, out: Directions): Boolean {
@@ -289,43 +301,38 @@ class BlockSectionDataProvider(
         val first = if (preferIn) `in` else out
         val second = if (preferIn) out else `in`
 
-        var index = -1
-        if (first == Directions.DOWN) {
-            when (second) {
-                Directions.UP -> index = 0
-                Directions.NORTH -> index = 1
-                Directions.SOUTH -> index = 2
-                Directions.WEST -> index = 3
-                Directions.EAST -> index = 4
+        when (first) {
+            Directions.DOWN -> when (second) {
+                Directions.UP -> return occlusion[0]
+                Directions.NORTH -> return occlusion[1]
+                Directions.SOUTH -> return occlusion[2]
+                Directions.WEST -> return occlusion[3]
+                Directions.EAST -> return occlusion[4]
             }
-        }
-        if (index == -1 && first == Directions.UP) {
-            when (second) {
-                Directions.NORTH -> index = 5
-                Directions.SOUTH -> index = 6
-                Directions.WEST -> index = 7
-                Directions.EAST -> index = 8
+            Directions.UP -> when (second) {
+                Directions.NORTH -> return occlusion[5]
+                Directions.SOUTH -> return occlusion[6]
+                Directions.WEST -> return occlusion[7]
+                Directions.EAST -> return occlusion[8]
             }
-        }
-        if (index == -1 && first == Directions.NORTH) {
-            when (second) {
-                Directions.SOUTH -> index = 9
-                Directions.WEST -> index = 10
-                Directions.EAST -> index = 11
-            }
-        }
-        if (index == -1 && first == Directions.SOUTH) {
-            when (second) {
-                Directions.WEST -> index = 12
-                Directions.EAST -> index = 13
-            }
-        }
-        if (index == -1 && first == Directions.WEST) {
-            if (second == Directions.EAST) {
-                index = 15
+            Directions.NORTH ->
+                when (second) {
+                    Directions.SOUTH -> return occlusion[9]
+                    Directions.WEST -> return occlusion[10]
+                    Directions.EAST -> return occlusion[11]
+                }
+            Directions.SOUTH ->
+                when (second) {
+                    Directions.WEST -> return occlusion[12]
+                    Directions.EAST -> return occlusion[13]
+                }
+            Directions.WEST -> {
+                if (second == Directions.EAST) {
+                    return occlusion[14]
+                }
             }
         }
 
-        return occlusion[index]
+        Broken("Can not get index for occlusion culling!")
     }
 }

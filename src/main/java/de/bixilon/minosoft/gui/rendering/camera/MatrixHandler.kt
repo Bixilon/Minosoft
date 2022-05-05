@@ -32,6 +32,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 class MatrixHandler(
     private val renderWindow: RenderWindow,
     private val fogManager: FogManager,
+    private val camera: Camera,
 ) {
     private val connection = renderWindow.connection
     private val profile = renderWindow.connection.profiles.rendering.camera
@@ -111,6 +112,7 @@ class MatrixHandler(
         }
         this.eyePosition = eyePosition
         this.rotation = rotation
+        camera.visibilityGraph.updateCamera(entity.positionInfo.chunkPosition, entity.positionInfo.sectionHeight)
         if (fov != previousFOV || fogEnd != this.fogEnd) {
             this.fogEnd = fogEnd
             calculateProjectionMatrix()

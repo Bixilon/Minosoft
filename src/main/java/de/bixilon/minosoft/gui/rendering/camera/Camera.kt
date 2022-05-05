@@ -15,13 +15,15 @@ package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
+import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
 class Camera(
     renderWindow: RenderWindow,
 ) {
     val fogManager = FogManager(renderWindow)
-    val matrixHandler = MatrixHandler(renderWindow, fogManager)
+    val matrixHandler = MatrixHandler(renderWindow, fogManager, this)
     val targetHandler = TargetHandler(renderWindow, this)
+    val visibilityGraph = WorldVisibilityGraph(renderWindow, this)
 
     val firstPerson: Boolean = true // ToDo
 

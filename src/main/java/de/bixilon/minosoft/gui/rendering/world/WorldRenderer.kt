@@ -76,7 +76,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -88,8 +87,8 @@ class WorldRenderer(
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val frustum = renderWindow.camera.matrixHandler.frustum
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
+    private val visibilityGraph = renderWindow.camera.visibilityGraph
     private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val textShader = renderSystem.createShader("minosoft:world/text".toResourceLocation())
     private val world: World = connection.world
@@ -272,7 +271,7 @@ class WorldRenderer(
 
                 val loadedMeshesToRemove: MutableSet<Vec2i> = mutableSetOf()
                 for ((chunkPosition, sections) in loadedMeshes) {
-                    if (isChunkVisible(chunkPosition)) {
+                    if (visibilityGraph.isChunkVisible(chunkPosition)) {
                         continue
                     }
                     loadedMeshesToRemove += chunkPosition
@@ -287,20 +286,20 @@ class WorldRenderer(
 
                 val toRemove: MutableSet<Vec2i> = mutableSetOf()
                 for ((chunkPosition, _) in culledQueue) {
-                    if (isChunkVisible(chunkPosition)) {
+                    if (visibilityGraph.isChunkVisible(chunkPosition)) {
                         continue
                     }
                     toRemove += chunkPosition
                 }
                 culledQueue -= toRemove
 
-                queue.removeAll { !isChunkVisible(it.chunkPosition) }
+                queue.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
 
-                meshesToLoad.removeAll { !isChunkVisible(it.chunkPosition) }
+                meshesToLoad.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
 
                 preparingTasksLock.acquire()
                 for (task in preparingTasks.toMutableSet()) {
-                    if (!isChunkVisible(task.chunkPosition)) {
+                    if (!visibilityGraph.isChunkVisible(task.chunkPosition)) {
                         task.runnable.interrupt()
                     }
                 }
@@ -402,9 +401,9 @@ class WorldRenderer(
     }
 
     private fun sortQueue() {
-        queueLock.lock()
+        //  queueLock.lock()
         queue.sortBy { (it.center - cameraPosition).length2() }
-        queueLock.unlock()
+        // queueLock.unlock()
     }
 
     private fun workQueue() {
@@ -535,7 +534,7 @@ class WorldRenderer(
             return false
         }
 
-        val visible = ignoreFrustum || isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
+        val visible = ignoreFrustum || visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
             item.neighbours = ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight)
             queueLock.lock()
@@ -617,7 +616,7 @@ class WorldRenderer(
             }
             loadedMeshesLock.unlock()
 
-            val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
+            val visible = visibilityGraph.isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
             if (visible) {
                 addedMeshes++
                 this.visible.addMesh(mesh)
@@ -704,18 +703,6 @@ class WorldRenderer(
         }
     }
 
-    private fun isChunkVisible(chunkPosition: Vec2i): Boolean {
-        return chunkPosition.isInViewDistance(connection.world.view.viewDistance, cameraChunkPosition)
-    }
-
-    private fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i, checkChunk: Boolean): Boolean {
-        if (checkChunk && !isChunkVisible(chunkPosition)) {
-            return false
-        }
-        // ToDo: Cave culling, frustum clipping, improve performance
-        return frustum.containsChunk(chunkPosition, sectionHeight, minPosition, maxPosition)
-    }
-
     private fun onFrustumChange() {
         var sortQueue = false
         val cameraPosition = connection.player.cameraPosition
@@ -734,33 +721,13 @@ class WorldRenderer(
 
         loadedMeshesLock.acquire()
         for ((chunkPosition, meshes) in this.loadedMeshes) {
-            if (!isChunkVisible(chunkPosition)) {
+            if (!visibilityGraph.isChunkVisible(chunkPosition)) {
                 continue
             }
 
-            val chunk = connection.world[chunkPosition] ?: continue
-            for (sectionHeight in cameraSectionHeight downTo minSectionHeight) {
-                val section = chunk[sectionHeight] ?: continue
-                val mesh = meshes[sectionHeight] ?: continue
-
-
-                if (isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
+            for ((sectionHeight, mesh) in meshes) {
+                if (visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
                     visible.addMesh(mesh)
-                }
-                if (section.blocks.isOccluded(Directions.UP, Directions.DOWN)) {
-                    break // occluded
-                }
-            }
-            for (sectionHeight in cameraSectionHeight + 1 until maxSectionHeight) {
-                val section = chunk[sectionHeight] ?: continue
-                val mesh = meshes[sectionHeight] ?: continue
-
-
-                if (isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
-                    visible.addMesh(mesh)
-                }
-                if (section.blocks.isOccluded(Directions.DOWN, Directions.UP)) {
-                    break // occluded
                 }
             }
         }
@@ -769,12 +736,12 @@ class WorldRenderer(
         culledQueueLock.acquire()
         val queue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // The queue method needs the full lock of the culledQueue
         for ((chunkPosition, sectionHeights) in this.culledQueue) {
-            if (!isChunkVisible(chunkPosition)) {
+            if (!visibilityGraph.isChunkVisible(chunkPosition)) {
                 continue
             }
             var chunkQueue: IntOpenHashSet? = null
             for (sectionHeight in sectionHeights) {
-                if (!isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, CHUNK_SIZE, false)) {
+                if (!visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, CHUNK_SIZE, false)) {
                     continue
                 }
                 if (chunkQueue == null) {
