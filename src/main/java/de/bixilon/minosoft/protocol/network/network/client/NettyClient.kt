@@ -150,7 +150,7 @@ class NettyClient(
     }
 
     fun send(packet: C2SPacket) {
-        val channel = requireChannel()
+        val channel = getChannel() ?: return
         if (sendingPaused) {
             packetQueue += packet
             return
@@ -201,6 +201,14 @@ class NettyClient(
         val channel = this.channel
         if (!connected || channel == null) {
             throw IllegalStateException("Not connected!")
+        }
+        return channel
+    }
+
+    private fun getChannel(): Channel? {
+        val channel = this.channel
+        if (!connected || channel == null) {
+            return null
         }
         return channel
     }
