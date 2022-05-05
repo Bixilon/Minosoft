@@ -19,6 +19,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
@@ -55,6 +56,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var heightMap: Map<String, Any>? = null
         private set
     private var isFullChunk = false
+    private lateinit var readingData: ChunkReadingData
 
     init {
         val dimension = buffer.connection.world.dimension!!
@@ -95,22 +97,9 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (!isFullChunk && buffer.versionId < V_21W37A) {
                 this.chunkData.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
-            val size = buffer.readVarInt()
-            val lastBufferPosition = buffer.pointer
-
-            if (buffer.versionId < V_21W37A) {
-                val chunkData = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, !isFullChunk, dimension.hasSkyLight)
-                if (chunkData == null) {
-                    unloadChunk = true
-                } else {
-                    this.chunkData.replace(chunkData)
-                }
-            } else {
-                this.chunkData.replace(ChunkUtil.readPaletteChunk(buffer, dimension, null, isFullChunk = true, containsSkyLight = false))
-            }
+            readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.connection), dimension, sectionBitMask)
 
             // set position to expected read positions; the server sometimes sends a bunch of useless zeros (~ 190k), thanks @pokechu22
-            buffer.pointer = size + lastBufferPosition
 
             // block entities
             when {
@@ -157,7 +146,21 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
+    private fun ChunkReadingData.readChunkData() {
+        if (readingData.buffer.versionId < V_21W37A) {
+            val chunkData = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, !isFullChunk, dimension.hasSkyLight)
+            if (chunkData == null) {
+                unloadChunk = true
+            } else {
+                this@ChunkS2CP.chunkData.replace(chunkData)
+            }
+        } else {
+            this@ChunkS2CP.chunkData.replace(ChunkUtil.readPaletteChunk(buffer, dimension, null, isFullChunk = true, containsSkyLight = false))
+        }
+    }
+
     override fun handle(connection: PlayConnection) {
+        readingData.readChunkData()
         if (unloadChunk) {
             connection.world.unloadChunk(chunkPosition)
             return
@@ -172,4 +175,10 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk (chunkPosition=$chunkPosition)" }
     }
+
+    private data class ChunkReadingData(
+        val buffer: PlayInByteBuffer,
+        val dimension: DimensionProperties,
+        val sectionBitMask: BitSet?,
+    )
 }
