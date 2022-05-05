@@ -22,6 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 open class SectionDataProvider<T>(
     data: Array<T>? = null,
     val checkSize: Boolean = false,
+    calculateInitial: Boolean = true,
 ) : Iterable<T> {
     protected var data: Array<Any?>? = data?.unsafeCast()
         private set
@@ -36,7 +37,7 @@ open class SectionDataProvider<T>(
         private set
 
     init {
-        if (data != null) {
+        if (data != null && calculateInitial) {
             recalculate()
         } else {
             minPosition = Vec3i.EMPTY

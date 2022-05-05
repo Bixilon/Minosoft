@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -20,9 +21,13 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 
 class BlockSectionDataProvider(
     data: Array<BlockState?>? = null,
-) : SectionDataProvider<BlockState?>(data, true) {
+) : SectionDataProvider<BlockState?>(data, true, false) {
     var fluidCount = 0
         private set
+
+    init {
+        recalculate()
+    }
 
     override fun recalculate() {
         super.recalculate()
@@ -35,6 +40,7 @@ class BlockSectionDataProvider(
                 fluidCount++
             }
         }
+        floodFill()
     }
 
     override fun set(index: Int, value: BlockState?): BlockState? {
@@ -62,6 +68,66 @@ class BlockSectionDataProvider(
         if (this.block is FluidFillable) {
             return true
         }
+        return false
+    }
+
+    private fun BlockState?.isSolid(): Boolean {
+        if (this == null) {
+            return false
+        }
+        return this.isSolid
+    }
+
+
+    private fun floodFill() {
+        val floods = ShortArray(4096)
+        var nextFloodFillId: Short = 1
+
+        for (y in 0 until 16) {
+            for (z in 0 until 16) {
+                for (x in 0 until 16) {
+                    val index = y shl 8 or (z shl 4) or x
+                    val blockState = unsafeGet(index)
+                    if (blockState.isSolid()) {
+                        continue
+                    }
+
+                    fun checkNeighbour(index: Int, neighbourIndex: Int): Boolean {
+                        if (!unsafeGet(index).isSolid() && floods[neighbourIndex] != 0.toShort()) {
+                            floods[index] = floods[neighbourIndex]
+                            return true
+                        }
+                        return false
+                    }
+                    if (x > 0 && checkNeighbour(index, y shl 8 or (z shl 4) or (x - 1))) {
+                        continue
+                    }
+                    if (z > 0 && checkNeighbour(index, y shl 8 or ((z - 1) shl 4) or x)) {
+                        continue
+                    }
+                    if (y > 0 && checkNeighbour(index, (y - 1) shl 8 or (z shl 4) or x)) {
+                        continue
+                    }
+
+                    /*
+                    if (x < 15 && checkNeighbour(y shl 8 or (z shl 4) or (x + 1))) {
+                        continue
+                    }
+                    if (y < 15 && checkNeighbour((y + 1) shl 8 or (z shl 4) or x)) {
+                        continue
+                    }
+                    if (z < 15 && checkNeighbour(y shl 8 or ((z + 1) shl 4) or x)) {
+                        continue
+                    }
+                     */
+                    floods[index] = nextFloodFillId++
+                }
+            }
+        }
+        println()
+    }
+
+    fun isOccluded(`in`: Directions, out: Directions): Boolean {
         return false
     }
 }
