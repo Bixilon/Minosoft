@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -27,7 +28,7 @@ class BlockSectionDataProvider(
 ) : SectionDataProvider<BlockState?>(data, true, false) {
     var fluidCount = 0
         private set
-    private var yAxis = false
+    private val occlusion = BooleanArray(15)
 
     init {
         recalculate()
@@ -197,32 +198,83 @@ class BlockSectionDataProvider(
     }
 
     private fun calculateOcclusion(regions: ShortArray) {
-        val topRegions = IntOpenHashSet()
-        val bottomRegions = IntOpenHashSet()
-        var yAxis = false
-        outer@ for (x in 0 until 16) {
-            for (z in 0 until 16) {
-                val region = regions[15 shl 8 or (z shl 4) or x].toInt()
-                if (region > 0) {
-                    topRegions += region
-                    if (region in bottomRegions) {
-                        yAxis = true
-                        break@outer
+        val sideRegions: Array<IntOpenHashSet> = Array(Directions.SIZE) { IntOpenHashSet() }
+
+        for (axis in Axes.VALUES) {
+            for (a in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+                for (b in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+                    val indexPrefix = when (axis) {
+                        Axes.X -> a shl 8 or (b shl 4)
+                        Axes.Y -> (a shl 4) or b
+                        Axes.Z -> (a shl 8) or b
                     }
-                }
+                    val direction1 = when (axis) {
+                        Axes.X -> Directions.WEST
+                        Axes.Y -> Directions.DOWN
+                        Axes.Z -> Directions.NORTH
+                    }
+                    val region1 = regions[indexPrefix].toInt()
+                    if (region1 > 0) {
+                        sideRegions[direction1.ordinal] += region1
+                    }
 
-
-                val region2 = regions[0 shl 8 or (z shl 4) or x].toInt()
-                if (region2 > 0) {
-                    bottomRegions += region
-                    if (region2 in topRegions) {
-                        yAxis = true
-                        break@outer
+                    val direction2 = when (axis) {
+                        Axes.X -> Directions.EAST
+                        Axes.Y -> Directions.UP
+                        Axes.Z -> Directions.SOUTH
+                    }
+                    val index2 = indexPrefix or when (axis) {
+                        Axes.X -> ProtocolDefinition.SECTION_MAX_X
+                        Axes.Y -> ProtocolDefinition.SECTION_MAX_Y shl 8
+                        Axes.Z -> ProtocolDefinition.SECTION_MAX_Z shl 4
+                    }
+                    val region2 = regions[index2].toInt()
+                    if (region2 > 0) {
+                        sideRegions[direction2.ordinal] += region2
                     }
                 }
             }
         }
-        this.yAxis = yAxis
+
+
+        occlusion[0] = sideRegions.canOcclude(Directions.DOWN, Directions.UP)
+        occlusion[1] = sideRegions.canOcclude(Directions.DOWN, Directions.NORTH)
+        occlusion[2] = sideRegions.canOcclude(Directions.DOWN, Directions.SOUTH)
+        occlusion[3] = sideRegions.canOcclude(Directions.DOWN, Directions.WEST)
+        occlusion[4] = sideRegions.canOcclude(Directions.DOWN, Directions.EAST)
+
+        occlusion[5] = sideRegions.canOcclude(Directions.UP, Directions.NORTH)
+        occlusion[6] = sideRegions.canOcclude(Directions.UP, Directions.SOUTH)
+        occlusion[7] = sideRegions.canOcclude(Directions.UP, Directions.WEST)
+        occlusion[8] = sideRegions.canOcclude(Directions.UP, Directions.EAST)
+
+        occlusion[9] = sideRegions.canOcclude(Directions.NORTH, Directions.SOUTH)
+        occlusion[10] = sideRegions.canOcclude(Directions.NORTH, Directions.WEST)
+        occlusion[11] = sideRegions.canOcclude(Directions.NORTH, Directions.EAST)
+
+        occlusion[12] = sideRegions.canOcclude(Directions.SOUTH, Directions.WEST)
+        occlusion[13] = sideRegions.canOcclude(Directions.SOUTH, Directions.EAST)
+
+        occlusion[14] = sideRegions.canOcclude(Directions.WEST, Directions.EAST)
+    }
+
+    private fun Array<IntOpenHashSet>.canOcclude(`in`: Directions, out: Directions): Boolean {
+        val inSides = this[`in`.ordinal]
+        val outSides = this[`out`.ordinal]
+        if (inSides.isEmpty() || outSides.isEmpty()) {
+            return true
+        }
+
+        val preferIn = inSides.size < outSides.size
+        val first = if (preferIn) inSides else outSides
+        val second = if (preferIn) outSides else inSides
+
+        for (region in first.intIterator()) {
+            if (region in second) {
+                return false
+            }
+        }
+        return true
     }
 
     /**
@@ -232,9 +284,48 @@ class BlockSectionDataProvider(
         if (`in` == out) {
             return false
         }
-        if ((`in` == Directions.UP && out == Directions.DOWN) || (`in` == Directions.DOWN && out == Directions.UP)) {
-            return !yAxis
+        val preferIn = `in`.ordinal < out.ordinal
+
+        val first = if (preferIn) `in` else out
+        val second = if (preferIn) out else `in`
+
+        var index = -1
+        if (first == Directions.DOWN) {
+            when (second) {
+                Directions.UP -> index = 0
+                Directions.NORTH -> index = 1
+                Directions.SOUTH -> index = 2
+                Directions.WEST -> index = 3
+                Directions.EAST -> index = 4
+            }
         }
-        return false
+        if (index == -1 && first == Directions.UP) {
+            when (second) {
+                Directions.NORTH -> index = 5
+                Directions.SOUTH -> index = 6
+                Directions.WEST -> index = 7
+                Directions.EAST -> index = 8
+            }
+        }
+        if (index == -1 && first == Directions.NORTH) {
+            when (second) {
+                Directions.SOUTH -> index = 9
+                Directions.WEST -> index = 10
+                Directions.EAST -> index = 11
+            }
+        }
+        if (index == -1 && first == Directions.SOUTH) {
+            when (second) {
+                Directions.WEST -> index = 12
+                Directions.EAST -> index = 13
+            }
+        }
+        if (index == -1 && first == Directions.WEST) {
+            if (second == Directions.EAST) {
+                index = 15
+            }
+        }
+
+        return occlusion[index]
     }
 }
