@@ -70,12 +70,13 @@ open class Fluid(
             return false
         }
 
-
-
         return matches(other.block.fluid)
     }
 
     fun getHeight(blockState: BlockState): Float {
+        if (blockState.block is FluidFillable && blockState.block.fluid == this) {
+            return 0.9f
+        }
         val level = blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>() ?: 8
         if (level < 0 || level >= 8) {
             return 0.9f
