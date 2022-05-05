@@ -52,6 +52,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
@@ -450,7 +451,7 @@ class WorldRenderer(
                     item.mesh = mesh
                     meshesToLoadLock.lock()
                     locked = true
-                    meshesToLoad.removeAll { it == item } // Remove duplicates
+                    meshesToLoad.removeIf { it == item } // Remove duplicates
                     if (item.chunkPosition == cameraChunkPosition) {
                         // still higher priority
                         meshesToLoad.add(0, item)
@@ -538,7 +539,7 @@ class WorldRenderer(
         if (visible) {
             item.neighbours = ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight)
             queueLock.lock()
-            queue.removeAll { it == item } // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
+            queue.removeIf { it == item } // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
             if (chunkPosition == cameraChunkPosition) {
                 queue.add(0, item)
             } else {
@@ -724,6 +725,11 @@ class WorldRenderer(
             sortQueue = true
         }
 
+        val cameraSectionHeight = cameraPosition.blockPosition.sectionHeight
+        val minSectionHeight = connection.world.dimension?.minY?.sectionHeight ?: 0
+        val maxSectionHeight = connection.world.dimension?.height?.sectionHeight ?: 16
+
+
         val visible = VisibleMeshes(cameraPosition)
 
         loadedMeshesLock.acquire()
@@ -731,9 +737,30 @@ class WorldRenderer(
             if (!isChunkVisible(chunkPosition)) {
                 continue
             }
-            for ((sectionHeight, mesh) in meshes) {
+
+            val chunk = connection.world[chunkPosition] ?: continue
+            for (sectionHeight in cameraSectionHeight downTo minSectionHeight) {
+                val section = chunk[sectionHeight] ?: continue
+                val mesh = meshes[sectionHeight] ?: continue
+
+
                 if (isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
                     visible.addMesh(mesh)
+                }
+                if (section.blocks.isOccluded(Directions.UP, Directions.DOWN)) {
+                    break // occluded
+                }
+            }
+            for (sectionHeight in cameraSectionHeight + 1 until maxSectionHeight) {
+                val section = chunk[sectionHeight] ?: continue
+                val mesh = meshes[sectionHeight] ?: continue
+
+
+                if (isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
+                    visible.addMesh(mesh)
+                }
+                if (section.blocks.isOccluded(Directions.DOWN, Directions.UP)) {
+                    break // occluded
                 }
             }
         }

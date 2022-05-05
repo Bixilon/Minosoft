@@ -39,6 +39,9 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
             connection.player.tabListItem.gamemode = next
             connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previous, next))
         })
+        add(ButtonElement(guiRenderer, "Toggle collisions") {
+            connection.player.hasCollisions = !connection.player.hasCollisions
+        })
         add(ButtonElement(guiRenderer, "Fake y=100") {
             val entity = connection.player
             val position = Vec3d(entity.position.x, 100.0, entity.position.z)

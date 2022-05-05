@@ -104,7 +104,7 @@ abstract class Entity(
         protected set
     var fallDistance = 0.0
 
-    protected open val hasCollisions = true
+    open var hasCollisions = true
 
     override var onGround = false
 

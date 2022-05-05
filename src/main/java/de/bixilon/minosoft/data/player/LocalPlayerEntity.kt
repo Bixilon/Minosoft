@@ -137,8 +137,11 @@ class LocalPlayerEntity(
     private val slowMovement: Boolean
         get() = isSneaking // ToDo: Or should leave swimming pose
 
-    override val hasCollisions: Boolean
-        get() = gamemode != Gamemodes.SPECTATOR
+    override var hasCollisions: Boolean
+        get() = super.hasCollisions && gamemode != Gamemodes.SPECTATOR
+        set(value) {
+            super.hasCollisions = value
+        }
 
     var isUsingItem = false
     override var activeHand: Hands? = null

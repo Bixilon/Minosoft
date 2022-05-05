@@ -199,14 +199,14 @@ class BlockSectionDataProvider(
     private fun calculateOcclusion(regions: ShortArray) {
         val topRegions = IntOpenHashSet()
         val bottomRegions = IntOpenHashSet()
-        var topToBottom = false
+        var yAxis = false
         outer@ for (x in 0 until 16) {
             for (z in 0 until 16) {
                 val region = regions[15 shl 8 or (z shl 4) or x].toInt()
                 if (region > 0) {
                     topRegions += region
                     if (region in bottomRegions) {
-                        topToBottom = true
+                        yAxis = true
                         break@outer
                     }
                 }
@@ -216,21 +216,24 @@ class BlockSectionDataProvider(
                 if (region2 > 0) {
                     bottomRegions += region
                     if (region2 in topRegions) {
-                        topToBottom = true
+                        yAxis = true
                         break@outer
                     }
                 }
             }
         }
-        yAxis = topToBottom
+        this.yAxis = yAxis
     }
 
+    /**
+     * If we can **not** look from `in` to `out`
+     */
     fun isOccluded(`in`: Directions, out: Directions): Boolean {
         if (`in` == out) {
             return false
         }
         if ((`in` == Directions.UP && out == Directions.DOWN) || (`in` == Directions.DOWN && out == Directions.UP)) {
-            return yAxis
+            return !yAxis
         }
         return false
     }
