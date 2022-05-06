@@ -118,36 +118,19 @@ class Frustum(
             }
         }
 
-        fun checkPoint(check: (Vec3) -> Boolean): Boolean {
-            var successFullChecks = 0
-            for (i in 0 until 8) {
-                if (check(normals[i])) {
-                    successFullChecks++
-                    continue
-                }
-                return false
-            }
-            return true
+        for (i in 0 until 8) {
+            val normal = normals[i].array
+            if (normal[0] >= min.x) return true
+            if (normal[0] <= max.x) return true
+
+            if (normal[1] >= min.y) return true
+            if (normal[1] <= max.y) return true
+
+            if (normal[2] >= min.z) return true
+            if (normal[2] <= max.z) return true
         }
 
-        val checks: Array<(Vec3) -> Boolean> = arrayOf(
-            { it.x > max.x },
-            { it.x < min.x },
-
-            { it.y > max.y },
-            { it.y < min.y },
-
-            { it.z > max.z },
-            { it.z < min.z },
-        )
-
-        for (check in checks) {
-            if (checkPoint(check)) {
-                return false
-            }
-        }
-
-        return true
+        return false
     }
 
     fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
