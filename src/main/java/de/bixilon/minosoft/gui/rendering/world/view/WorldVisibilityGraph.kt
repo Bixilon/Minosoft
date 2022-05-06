@@ -106,6 +106,9 @@ class WorldVisibilityGraph(
             Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Potential stack overflow: $chunkPosition:$sectionIndex $direction $directionVector" }
             return
         }
+        if ((direction == Directions.UP && sectionIndex >= maxIndex) || (direction == Directions.DOWN && sectionIndex < 0)) {
+            return
+        }
         val inverted = direction.inverted
         val nextStep = steps + 1
 
@@ -113,7 +116,7 @@ class WorldVisibilityGraph(
             visibilities += createVisibilityStatus(sectionIndex, Directions.DOWN, Directions.DOWN)
         }
 
-        if (sectionIndex > 0 && directionVector.y <= 0 && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.DOWN) != true)) {
+        if (sectionIndex > 0 && directionVector.y <= 0 && (ignoreVisibility || chunk.sections?.getOrNull(sectionIndex)?.blocks?.isOccluded(inverted, Directions.DOWN) != true)) {
             val visibility = createVisibilityStatus(sectionIndex - 1, inverted, Directions.DOWN)
             if (visibilities.add(visibility)) {
                 val nextDirection = Vec3i(directionVector)
@@ -121,7 +124,7 @@ class WorldVisibilityGraph(
                 checkSection(graph, chunkPosition, sectionIndex - 1, chunk, visibilities, Directions.DOWN, nextDirection, nextStep, false)
             }
         }
-        if (sectionIndex < maxIndex && directionVector.y >= 0 && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.UP) != true)) {
+        if (sectionIndex < maxIndex && directionVector.y >= 0 && (ignoreVisibility || chunk.sections?.getOrNull(sectionIndex)?.blocks?.isOccluded(inverted, Directions.UP) != true)) {
             val visibility = createVisibilityStatus(sectionIndex + 1, inverted, Directions.UP)
             if (visibilities.add(visibility)) {
                 val nextDirection = Vec3i(directionVector)
@@ -131,7 +134,7 @@ class WorldVisibilityGraph(
         }
 
 
-        if (directionVector.x <= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true)) {
+        if (directionVector.x <= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.getOrNull(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true)) {
             val nextPosition = chunkPosition + direction
             val nextChunk = connection.world.chunks.original[nextPosition]
             if (nextChunk != null) {
@@ -144,7 +147,7 @@ class WorldVisibilityGraph(
                 }
             }
         }
-        if (directionVector.x >= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true)) {
+        if (directionVector.x >= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.getOrNull(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true)) {
             val nextPosition = chunkPosition + direction
             val nextChunk = connection.world.chunks.original[nextPosition]
             if (nextChunk != null) {
@@ -158,7 +161,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionVector.z <= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true)) {
+        if (directionVector.z <= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.getOrNull(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true)) {
             val nextPosition = chunkPosition + direction
             val nextChunk = connection.world.chunks.original[nextPosition]
             if (nextChunk != null) {
@@ -171,7 +174,7 @@ class WorldVisibilityGraph(
                 }
             }
         }
-        if (directionVector.z >= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true)) {
+        if (directionVector.z >= 0 && isChunkVisible(chunkPosition) && (ignoreVisibility || chunk.sections?.getOrNull(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true)) {
             val nextPosition = chunkPosition + direction
             val nextChunk = connection.world.chunks.original[nextPosition]
             if (nextChunk != null) {
@@ -229,6 +232,9 @@ class WorldVisibilityGraph(
             val singleVisibility = this.visibilities.getOrPut(position) { BooleanArray(maxIndex + 1) }
             for (status in statuses.intIterator()) {
                 val sectionHeight = (status shr 6) + minSection
+                if (sectionHeight < 0 || sectionHeight > maxIndex) {
+                    continue
+                }
                 if (singleVisibility[sectionHeight]) {
                     continue
                 }
