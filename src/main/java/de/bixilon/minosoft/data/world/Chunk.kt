@@ -35,7 +35,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class Chunk(
     private val connection: PlayConnection,
     private val chunkPosition: Vec2i,
-    private var sections: Array<ChunkSection?>? = null,
+    var sections: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     private val world = connection.world

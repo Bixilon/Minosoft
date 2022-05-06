@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.SingularPalette
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.absAssign
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -37,6 +36,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
+import java.lang.StrictMath.abs
 import java.util.*
 
 
@@ -299,8 +299,6 @@ object ChunkUtil {
     }
 
     fun Vec2i.isInViewDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
-        val delta = (this - cameraPosition).absAssign()
-
-        return delta.x <= viewDistance && delta.y <= viewDistance
+        return abs(this.x - cameraPosition.x) <= viewDistance && abs(this.y - cameraPosition.y) <= viewDistance
     }
 }
