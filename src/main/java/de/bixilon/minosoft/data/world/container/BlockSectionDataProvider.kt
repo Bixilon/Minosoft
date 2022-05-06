@@ -298,8 +298,16 @@ class BlockSectionDataProvider(
         }
         val preferIn = `in`.ordinal < out.ordinal
 
-        val first = if (preferIn) `in` else out
-        val second = if (preferIn) out else `in`
+        val first: Directions
+        val second: Directions
+
+        if (preferIn) {
+            first = `in`
+            second = out
+        } else {
+            first = out
+            second = `in`
+        }
 
         when (first) {
             Directions.DOWN -> when (second) {
@@ -333,6 +341,6 @@ class BlockSectionDataProvider(
             }
         }
 
-        Broken("Can not get index for occlusion culling!")
+        Broken("Can not get index for occlusion culling $`in` -> $out!")
     }
 }

@@ -401,6 +401,7 @@ class WorldRenderer(
     }
 
     private fun sortQueue() {
+        // ToDo: This dirty sorts the queue without locking. Check for crashes...
         //  queueLock.lock()
         queue.sortBy { (it.center - cameraPosition).length2() }
         // queueLock.unlock()
