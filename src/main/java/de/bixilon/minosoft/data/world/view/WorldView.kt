@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class WorldView(
     private val connection: PlayConnection,
 ) {
-    var serverViewDistance = Int.MAX_VALUE // ToDo: Calculate view distance by chunks sent from the server
+    var serverViewDistance = Int.MAX_VALUE
         set(value) {
             field = value
             viewDistance = minOf(value, connection.profiles.block.viewDistance)
@@ -58,4 +58,9 @@ class WorldView(
             field = realValue
             connection.fireEvent(ParticleViewDistanceChangeEvent(connection, realValue))
         }
+
+    fun updateServerDistance() {
+        val size = connection.world.chunkMax - connection.world.chunkMin
+        serverViewDistance = maxOf(3, maxOf(size.x, size.y) / 2 - 1)
+    }
 }

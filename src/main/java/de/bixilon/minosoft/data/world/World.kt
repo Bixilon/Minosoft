@@ -78,6 +78,9 @@ class World(
     override var particleRenderer: AbstractParticleRenderer? = null
     var occlusionUpdateCallback: OcclusionUpdateCallback? = null
 
+    var chunkMin = Vec2i(Int.MAX_VALUE)
+    var chunkMax = Vec2i(Int.MIN_VALUE)
+
     operator fun get(blockPosition: Vec3i): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
     }
@@ -86,7 +89,45 @@ class World(
         return chunks[chunkPosition]
     }
 
+    private fun updateChunkExtreme(chunkPosition: Vec2i, mass: Boolean = false) {
+        var changes = 0
+        if (chunkPosition.x < chunkMin.x) {
+            chunkMin.x = chunkPosition.x
+            changes++
+        }
+        if (chunkPosition.y < chunkMin.y) {
+            chunkMin.y = chunkPosition.y
+            changes++
+        }
+        if (chunkPosition.x > chunkMax.x) {
+            chunkMax.x = chunkPosition.x
+            changes++
+        }
+        if (chunkPosition.y > chunkMax.y) {
+            chunkMax.y = chunkPosition.y
+            changes++
+        }
+        if (!mass && changes > 0) {
+            view.updateServerDistance()
+        }
+    }
+
+    private fun recalculateChunkExtreme() {
+        chunks.lock.acquire()
+
+        chunkMin = Vec2i(Int.MAX_VALUE)
+        chunkMax = Vec2i(Int.MIN_VALUE)
+
+        for (chunkPosition in chunks.keys) {
+            updateChunkExtreme(chunkPosition, true)
+        }
+        view.updateServerDistance()
+
+        chunks.lock.release()
+    }
+
     fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
+        updateChunkExtreme(chunkPosition)
         return chunks.synchronizedGetOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
     }
 
@@ -146,6 +187,10 @@ class World(
         }
         // connection.world.view.updateServerViewDistance(chunkPosition, false)
         connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
+        if (chunkPosition.x == chunkMin.x || chunkPosition.y == chunkMin.y || chunkPosition.x == chunkMax.x || chunkPosition.y == chunkMax.y) {
+            recalculateChunkExtreme()
+        }
+        occlusionUpdateCallback?.onOcclusionChange()
     }
 
     fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
