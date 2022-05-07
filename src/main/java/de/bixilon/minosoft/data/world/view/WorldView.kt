@@ -60,7 +60,7 @@ class WorldView(
         }
 
     fun updateServerDistance() {
-        val size = connection.world.chunkMax - connection.world.chunkMin
+        val size = connection.world.chunkSize
         serverViewDistance = maxOf(3, maxOf(size.x, size.y) / 2 - 1)
     }
 }

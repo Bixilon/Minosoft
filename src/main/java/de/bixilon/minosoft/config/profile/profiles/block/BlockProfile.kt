@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.del
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.block.outline.OutlineC
 import de.bixilon.minosoft.config.profile.profiles.block.rendering.RenderingC
+import de.bixilon.minosoft.data.world.World
 
 /**
  * Profile for block rendering
@@ -45,7 +46,7 @@ class BlockProfile(
      * Other profiles (like entities, ...) also have view distance, but this value is the only one that gets sent to the server.
      * The server may limit the other view distances according to this value
      */
-    var viewDistance by delegate(10) { check(it in 0..128) { "Invalid view distance $it" } }
+    var viewDistance by delegate(10) { check(it in 0..World.MAX_RENDER_DISTANCE) { "View distance must not be negative or exceed ${World.MAX_RENDER_DISTANCE}" } }
 
     /**
      * Ticking (entity, block, particle) is just applied in this distance.
@@ -55,7 +56,7 @@ class BlockProfile(
      * For calculation see viewDistance
      * @see viewDistance
      */
-    var simulationDistance by delegate(8) { check(it in 0..viewDistance) { "Simulation distance must not be negative or exceed the view distance" } }
+    var simulationDistance by delegate(8) { check(it in 0..World.MAX_RENDER_DISTANCE) { "Simulation distance must not be negative or exceed ${World.MAX_RENDER_DISTANCE}" } }
 
     val outline = OutlineC()
     val rendering = RenderingC()

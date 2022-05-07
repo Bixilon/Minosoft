@@ -42,6 +42,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
@@ -80,6 +81,7 @@ class World(
 
     var chunkMin = Vec2i(Int.MAX_VALUE)
     var chunkMax = Vec2i(Int.MIN_VALUE)
+    var chunkSize = Vec2i.EMPTY
 
     operator fun get(blockPosition: Vec3i): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
@@ -108,8 +110,29 @@ class World(
             changes++
         }
         if (!mass && changes > 0) {
+            updateWorldSize()
             view.updateServerDistance()
         }
+    }
+
+    private fun updateWorldSize() {
+        val nextSize = (chunkMax - chunkMin)
+        if (chunks.original.isNotEmpty()) {
+            nextSize += 1 // own chunk
+        }
+        if (nextSize.x > MAX_CHUNKS_SIZE) {
+            nextSize.x = MAX_CHUNKS_SIZE
+        }
+        if (nextSize.x < 0) {
+            nextSize.x = 0
+        }
+        if (nextSize.y > MAX_CHUNKS_SIZE) {
+            nextSize.y = MAX_CHUNKS_SIZE
+        }
+        if (nextSize.y < 0) {
+            nextSize.y = 0
+        }
+        this.chunkSize = nextSize
     }
 
     private fun recalculateChunkExtreme() {
@@ -121,9 +144,20 @@ class World(
         for (chunkPosition in chunks.keys) {
             updateChunkExtreme(chunkPosition, true)
         }
+        updateWorldSize()
         view.updateServerDistance()
 
         chunks.lock.release()
+    }
+
+    fun clear() {
+        chunks.lock.lock()
+        chunks.original.clear()
+        chunkMin = Vec2i(Int.MAX_VALUE)
+        chunkMax = Vec2i(Int.MIN_VALUE)
+        updateWorldSize()
+        view.updateServerDistance()
+        chunks.lock.unlock()
     }
 
     fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
@@ -344,5 +378,7 @@ class World(
         const val MAX_SIZE = 29999999
         const val MAX_SIZEf = MAX_SIZE.toFloat()
         const val MAX_SIZEd = MAX_SIZE.toDouble()
+        const val MAX_RENDER_DISTANCE = 64
+        const val MAX_CHUNKS_SIZE = MAX_RENDER_DISTANCE * 2 + 1
     }
 }
