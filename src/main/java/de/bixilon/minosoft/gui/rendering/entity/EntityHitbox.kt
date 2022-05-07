@@ -20,16 +20,16 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
 class EntityHitbox(
     val renderer: EntityHitboxRenderer,
     val entity: Entity,
-    val frustum: Frustum,
+    val visibility: WorldVisibilityGraph,
 ) {
     private lateinit var mesh: LineMesh
     private var visible = false
@@ -56,7 +56,7 @@ class EntityHitbox(
 
         this.checkVisibility = false
 
-        val visible = ((entity.isInvisible && renderer.profile.showInvisible) || !entity.isInvisible) && frustum.containsAABB(aabb)
+        val visible = ((entity.isInvisible && renderer.profile.showInvisible) || !entity.isInvisible) && visibility.isAABBVisible(aabb)
         if (checkVisibility && equals && this::mesh.isInitialized) {
             // only visibility changed
             this.visible = visible

@@ -46,7 +46,7 @@ class EntityHitboxRenderer(
 ) : Renderer, OpaqueDrawable, SkipAll {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val profile = connection.profiles.entity.hitbox
-    private val frustum = renderWindow.camera.matrixHandler.frustum
+    private val visibilityGraph = renderWindow.camera.visibilityGraph
     private val meshes: LockMap<Entity, EntityHitbox> = lockMapOf()
     private val toUnload: MutableSet<EntityHitbox> = synchronizedSetOf()
 
@@ -63,7 +63,7 @@ class EntityHitboxRenderer(
             if (!enabled) {
                 return@of
             }
-            meshes.synchronizedGetOrPut(it.entity) { EntityHitbox(this, it.entity, frustum) }
+            meshes.synchronizedGetOrPut(it.entity) { EntityHitbox(this, it.entity, visibilityGraph) }
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
             if (!enabled) {
@@ -84,7 +84,7 @@ class EntityHitboxRenderer(
 
         profile::enabled.profileWatch(this, profile = connection.profiles.entity) { this.setAvailable = it }
 
-        this.localHitbox = EntityHitbox(this, connection.player, frustum)
+        this.localHitbox = EntityHitbox(this, connection.player, visibilityGraph)
         profile::showLocal.profileWatch(this, true, connection.profiles.entity) {
             if (it) {
                 meshes[connection.player] = localHitbox
@@ -112,7 +112,7 @@ class EntityHitboxRenderer(
                 if (entity is LocalPlayerEntity && !profile.showLocal) {
                     continue
                 }
-                meshes[entity] = EntityHitbox(this, entity, frustum)
+                meshes[entity] = EntityHitbox(this, entity, visibilityGraph)
             }
 
             connection.world.entities.lock.release()

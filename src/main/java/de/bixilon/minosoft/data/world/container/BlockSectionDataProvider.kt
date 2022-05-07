@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Broken
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class BlockSectionDataProvider(
@@ -243,7 +242,7 @@ class BlockSectionDataProvider(
             }
         }
 
-        val occlusion = BooleanArray(15)
+        val occlusion = BooleanArray(CUBE_DIRECTION_COMBINATIONS)
         occlusion[0] = sideRegions.canOcclude(Directions.DOWN, Directions.UP)
         occlusion[1] = sideRegions.canOcclude(Directions.DOWN, Directions.NORTH)
         occlusion[2] = sideRegions.canOcclude(Directions.DOWN, Directions.SOUTH)
@@ -296,51 +295,59 @@ class BlockSectionDataProvider(
         if (`in` == out) {
             return false
         }
-        val preferIn = `in`.ordinal < out.ordinal
+        return occlusion[getIndex(`in`, out)]
+    }
 
-        val first: Directions
-        val second: Directions
+    fun isOccluded(index: Int): Boolean {
+        return occlusion[index]
+    }
 
-        if (preferIn) {
-            first = `in`
-            second = out
-        } else {
-            first = out
-            second = `in`
+
+    companion object {
+        const val CUBE_DIRECTION_COMBINATIONS = 15 // 5+4+3+2+1
+
+        fun getIndex(`in`: Directions, out: Directions): Int {
+            // ToDo: Calculate this far better
+            val preferIn = `in`.ordinal < out.ordinal
+
+            val first: Directions
+            val second: Directions
+
+            if (preferIn) {
+                first = `in`
+                second = out
+            } else {
+                first = out
+                second = `in`
+            }
+
+            when (first) {
+                Directions.DOWN -> when (second) {
+                    Directions.UP -> return 0
+                    Directions.NORTH -> return 1
+                    Directions.SOUTH -> return 2
+                    Directions.WEST -> return 3
+                    Directions.EAST -> return 4
+                }
+                Directions.UP -> when (second) {
+                    Directions.NORTH -> return 5
+                    Directions.SOUTH -> return 6
+                    Directions.WEST -> return 7
+                    Directions.EAST -> return 8
+                }
+                Directions.NORTH -> when (second) {
+                    Directions.SOUTH -> return 9
+                    Directions.WEST -> return 10
+                    Directions.EAST -> return 11
+                }
+                Directions.SOUTH -> when (second) {
+                    Directions.WEST -> return 12
+                    Directions.EAST -> return 13
+                }
+                else -> return 14 // WEST->EAST
+            }
+
+            return -1 // Broken("Can not get index for occlusion culling $`in` -> $out!")
         }
-
-        when (first) {
-            Directions.DOWN -> when (second) {
-                Directions.UP -> return occlusion[0]
-                Directions.NORTH -> return occlusion[1]
-                Directions.SOUTH -> return occlusion[2]
-                Directions.WEST -> return occlusion[3]
-                Directions.EAST -> return occlusion[4]
-            }
-            Directions.UP -> when (second) {
-                Directions.NORTH -> return occlusion[5]
-                Directions.SOUTH -> return occlusion[6]
-                Directions.WEST -> return occlusion[7]
-                Directions.EAST -> return occlusion[8]
-            }
-            Directions.NORTH ->
-                when (second) {
-                    Directions.SOUTH -> return occlusion[9]
-                    Directions.WEST -> return occlusion[10]
-                    Directions.EAST -> return occlusion[11]
-                }
-            Directions.SOUTH ->
-                when (second) {
-                    Directions.WEST -> return occlusion[12]
-                    Directions.EAST -> return occlusion[13]
-                }
-            Directions.WEST -> {
-                if (second == Directions.EAST) {
-                    return occlusion[14]
-                }
-            }
-        }
-
-        Broken("Can not get index for occlusion culling $`in` -> $out!")
     }
 }

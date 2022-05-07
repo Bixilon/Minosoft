@@ -134,9 +134,13 @@ class Frustum(
     }
 
     fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
-        val from = Vec3i.of(chunkPosition, sectionHeight, minPosition)
-        val to = Vec3i.of(chunkPosition, sectionHeight, maxPosition + 1)
-        return containsRegion(Vec3(from), Vec3(to))
+        val min = Vec3i.of(chunkPosition, sectionHeight, minPosition)
+        val max = Vec3i.of(chunkPosition, sectionHeight, maxPosition + 1)
+        return containsRegion(Vec3(min), Vec3(max))
+    }
+
+    fun containsRegion(min: Vec3i, max: Vec3i): Boolean {
+        return containsRegion(Vec3(min), Vec3(max))
     }
 
     fun containsAABB(aabb: AABB): Boolean {

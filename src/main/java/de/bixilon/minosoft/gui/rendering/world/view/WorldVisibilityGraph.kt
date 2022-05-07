@@ -19,10 +19,13 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -77,6 +80,37 @@ class WorldVisibilityGraph(
 
         // ToDo: basic frustum culling
         return visible?.isNotEmpty() ?: false
+    }
+
+    fun isAABBVisible(aabb: AABB): Boolean {
+        val chunkPositions: MutableSet<Vec2i> = HashSet()
+        val sectionIndices = IntOpenHashSet()
+        for (position in aabb.blockPositions) {
+            chunkPositions += position.chunkPosition
+            sectionIndices += position.sectionHeight - minSection
+        }
+        var visible = false
+        visibilityLock.acquire()
+        chunkPositions@ for (chunkPosition in chunkPositions) {
+            val visibility = this.visibilities[chunkPosition] ?: continue
+            for (index in sectionIndices.intIterator()) {
+                if (index < 0 || index > maxIndex) {
+                    visible = true // ToDo: Not 100% correct, image looking from >maxIndex to < 0
+                    break@chunkPositions
+                }
+                if (visibility[index]) {
+                    visible = true
+                    break@chunkPositions
+                }
+            }
+        }
+        visibilityLock.release()
+
+        if (!visible) {
+            return false
+        }
+
+        return frustum.containsAABB(aabb)
     }
 
     fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = DEFAULT_MIN_POSITION, maxPosition: Vec3i = DEFAULT_MAX_POSITION, checkChunk: Boolean = true): Boolean {
