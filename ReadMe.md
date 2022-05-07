@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(To be clear: This is not clone of minecraft, you can see it more like a fork or even better as a reimplementation)
+(To be clear: This is not clone of minecraft, it is a reimplementation)
 
 <h2><span style="color:red">Notice: I am **not** responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
 (Also this software is not affiliated with Mojang AB)
@@ -106,17 +106,13 @@ If you want to get notified when cool new features arrive or other interesting s
 
 ## Downloads / Installation
 
-### Linux
+### Linux, Windows
 
 The latest x64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions)
 
 #### Arch
 
 Thanks to @jugendhacker you can get minosoft directly from the arch user repository (AUR): https://aur.archlinux.org/packages/minosoft-git/
-
-### Windows
-
-Build it from source and run it :)
 
 ### macOS
 
