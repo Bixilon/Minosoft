@@ -58,11 +58,11 @@ abstract class TextureManager {
         // ToDo: For testing purposes only, they will be moved to static textures
         steveTexture = dynamicTextures.pushBuffer(UUID(0L, 0L)) { connection.assetsManager["minecraft:entity/steve".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
         alexTexture = dynamicTextures.pushBuffer(UUID(1L, 0L)) { connection.assetsManager["minecraft:entity/alex".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
-        skin = getSkin(connection.account.uuid, connection.account.properties).apply { usages.incrementAndGet() }
+        skin = getSkin(connection.account.supportsSkins, connection.account.uuid, connection.account.properties).apply { usages.incrementAndGet() }
     }
 
 
-    fun getSkin(uuid: UUID, properties: PlayerProperties?): DynamicTexture {
+    fun getSkin(fetchSkin: Boolean, uuid: UUID, properties: PlayerProperties?): DynamicTexture {
         var properties = properties
         if (properties == null) {
             for (account in AccountProfileManager.selected.entries.values) {
@@ -70,7 +70,7 @@ abstract class TextureManager {
                     properties = account.properties
                 }
             }
-            if (properties == null) {
+            if (properties == null && fetchSkin) {
                 try {
                     properties = PlayerProperties.fetch(uuid) // ToDo: async
                 } catch (ignored: Throwable) {

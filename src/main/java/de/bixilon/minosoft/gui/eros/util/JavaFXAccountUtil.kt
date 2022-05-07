@@ -22,8 +22,13 @@ import java.io.ByteArrayInputStream
 object JavaFXAccountUtil {
 
     val Account.avatar: Image
-        get() = this.properties?.textures?.skin?.read()?.let {
-            val image = Image(ByteArrayInputStream(it), 0.0, 0.0, true, false)
-            return@let WritableImage(image.pixelReader, 8, 8, 8, 8)
-        } ?: JavaFXUtil.MINOSOFT_LOGO
+        get() {
+            if (!this.supportsSkins) {
+                return JavaFXUtil.MINOSOFT_LOGO
+            }
+            return this.properties?.textures?.skin?.read()?.let {
+                val image = Image(ByteArrayInputStream(it), 0.0, 0.0, true, false)
+                return@let WritableImage(image.pixelReader, 8, 8, 8, 8)
+            } ?: JavaFXUtil.MINOSOFT_LOGO
+        }
 }

@@ -45,6 +45,9 @@ abstract class Account(
     @get:JsonIgnore open var error: Throwable? by watched(null)
     abstract val uuid: UUID
 
+
+    open val supportsSkins: Boolean get() = true
+
     @Transient
     @JsonIgnore
     val connections: MutableMap<Server, PlayConnection> = synchronizedMapOf()

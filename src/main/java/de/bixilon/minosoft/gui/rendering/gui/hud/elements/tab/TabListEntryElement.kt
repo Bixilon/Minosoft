@@ -49,7 +49,7 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, renderWindow.textureManager.getSkin(uuid, item.properties), uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
+    private val skinElement = DynamicImageElement(guiRenderer, renderWindow.textureManager.getSkin(guiRenderer.connection.network.encrypted, uuid, item.properties), uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
