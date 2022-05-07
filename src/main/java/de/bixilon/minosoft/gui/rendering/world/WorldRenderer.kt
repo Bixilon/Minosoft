@@ -269,7 +269,7 @@ class WorldRenderer(
                 meshesToUnloadLock.lock()
                 loadedMeshesLock.lock()
 
-                val loadedMeshesToRemove: MutableSet<Vec2i> = mutableSetOf()
+                val loadedMeshesToRemove: MutableSet<Vec2i> = HashSet()
                 for ((chunkPosition, sections) in loadedMeshes) {
                     if (visibilityGraph.isChunkVisible(chunkPosition)) {
                         continue
@@ -284,8 +284,8 @@ class WorldRenderer(
                 }
                 loadedMeshes -= loadedMeshesToRemove
 
-                val toRemove: MutableSet<Vec2i> = mutableSetOf()
-                for ((chunkPosition, _) in culledQueue) {
+                val toRemove: MutableSet<Vec2i> = HashSet()
+                for (chunkPosition in culledQueue.keys) {
                     if (visibilityGraph.isChunkVisible(chunkPosition)) {
                         continue
                     }

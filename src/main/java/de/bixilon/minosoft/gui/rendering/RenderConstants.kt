@@ -34,6 +34,7 @@ object RenderConstants {
 
 
     const val FRUSTUM_CULLING_ENABLED = true
+    const val OCCLUSION_CULLING_ENABLED = true
     const val SHOW_FPS_IN_WINDOW_TITLE = true
 
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
