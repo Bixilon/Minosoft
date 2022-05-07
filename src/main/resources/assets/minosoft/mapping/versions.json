@@ -2133,14 +2133,10 @@
   "0": {
     "name": "13w41b",
     "packets": {
-      "c2s": {
-        "play": ["heartbeat", "chat_message", "entity_interact", "ground_change", "position", "rotation", "position_rotation", "player_action", "block_interact", "hotbar_slot", "swing_arm", "entity_action", "steer_vehicle", "close_container", "container_click", "container_action", "item_stack_create", "container_button", "sign_text", "toggle_fly", "chat_suggestions", "settings", "client_action", "plugin"]
-      },
-      "s2c": {
-        "play": [
-          "heartbeat", "initialize", "chat_message", "time", "entity_equipment", "compass_position", "health", "respawn", "position_rotation", "hotbar_slot", "entity_sleep", "entity_animation", "entity_player", "entity_collect", "entity_object_spawn", "entity_mob_spawn", "entity_painting", "entity_experience_orb", "velocity", "entity_destroy", "empty_move", "relative_move", "rotation", "movement_rotation", "teleport", "head_rotation", "entity_status", "entity_attach", "entity_data", "entity_effect", "entity_remove_effect", "experience", "entity_attributes", "chunk", "blocks", "block", "block_action", "block_break_animation", "chunks", "explosion", "world_event", "named_sound", "particle", "game_event", "global_entity_spawn", "open_container", "close_container", "container_item", "container_items", "container_properties", "container_action", "sign_text", "legacy_map", "block_data", "sign_editor", "statistics", "legacy_tab_list", "player_abilities", "chat_suggestions", "objective", "scoreboard_score", "objective_position", "teams", "plugin", "kick"
-        ]
-      }
+      "c2s": ["heartbeat", "chat_message", "entity_interact", "ground_change", "position", "rotation", "position_rotation", "player_action", "block_interact", "hotbar_slot", "swing_arm", "entity_action", "steer_vehicle", "close_container", "container_click", "container_action", "item_stack_create", "container_button", "sign_text", "toggle_fly", "chat_suggestions", "settings", "client_action", "plugin"],
+      "s2c": [
+        "heartbeat", "initialize", "chat_message", "time", "entity_equipment", "compass_position", "health", "respawn", "position_rotation", "hotbar_slot", "entity_sleep", "entity_animation", "entity_player", "entity_collect", "entity_object_spawn", "entity_mob_spawn", "entity_painting", "entity_experience_orb", "velocity", "entity_destroy", "empty_move", "relative_move", "rotation", "movement_rotation", "teleport", "head_rotation", "entity_status", "entity_attach", "entity_data", "entity_effect", "entity_remove_effect", "experience", "entity_attributes", "chunk", "blocks", "block", "block_action", "block_break_animation", "chunks", "explosion", "world_event", "named_sound", "particle", "game_event", "global_entity_spawn", "open_container", "close_container", "container_item", "container_items", "container_properties", "container_action", "sign_text", "legacy_map", "block_data", "sign_editor", "statistics", "legacy_tab_list", "player_abilities", "chat_suggestions", "objective", "scoreboard_score", "objective_position", "teams", "plugin", "kick"
+      ]
     }
   }
 }
