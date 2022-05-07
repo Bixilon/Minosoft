@@ -63,13 +63,20 @@ class WorldVisibilityGraph(
         calculateGraph()
     }
 
+    fun isInViewDistance(chunkPosition: Vec2i): Boolean {
+        return chunkPosition.isInViewDistance(connection.world.view.viewDistance, cameraChunkPosition)
+    }
+
     fun isChunkVisible(chunkPosition: Vec2i): Boolean {
-        if (!chunkPosition.isInViewDistance(connection.world.view.viewDistance, cameraChunkPosition)) {
+        if (!isInViewDistance(chunkPosition)) {
             return false
         }
+        visibilityLock.acquire()
+        val visible = visibilities[chunkPosition]
+        visibilityLock.release()
 
         // ToDo: basic frustum culling
-        return true
+        return visible?.isNotEmpty() ?: false
     }
 
     fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = DEFAULT_MIN_POSITION, maxPosition: Vec3i = DEFAULT_MAX_POSITION, checkChunk: Boolean = true): Boolean {
@@ -110,7 +117,7 @@ class WorldVisibilityGraph(
         if ((direction == Directions.UP && sectionIndex >= maxIndex) || (direction == Directions.DOWN && sectionIndex < 0)) {
             return
         }
-        if (!isChunkVisible(chunkPosition)) {
+        if (!isInViewDistance(chunkPosition)) {
             return
         }
         val inverted = direction.inverted
