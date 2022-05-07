@@ -26,6 +26,9 @@ import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 
@@ -112,7 +115,8 @@ class MatrixHandler(
         }
         this.eyePosition = eyePosition
         this.rotation = rotation
-        camera.visibilityGraph.updateCamera(entity.positionInfo.chunkPosition, entity.positionInfo.sectionHeight)
+        val cameraBlockPosition = eyePosition.blockPosition
+        camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         if (fov != previousFOV || fogEnd != this.fogEnd) {
             this.fogEnd = fogEnd
             calculateProjectionMatrix()

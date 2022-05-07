@@ -196,7 +196,7 @@ class WorldVisibilityGraph(
             }
         }
         val southIndex = BlockSectionDataProvider.getIndex(inverted, Directions.SOUTH)
-        if (directionVector.z >= 0 && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(sectionIndex) != true)) {
+        if (directionVector.z >= 0 && (ignoreVisibility || chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(southIndex) != true)) {
             val nextPosition = chunkPosition + Directions.SOUTH
             val nextChunk = chunks[nextPosition]
             if (nextChunk != null) {
@@ -267,9 +267,6 @@ class WorldVisibilityGraph(
         val graph: MutableMap<Vec2i, Array<BooleanArray>> = HashMap()
 
         for (direction in Directions.VALUES) {
-            if (direction != Directions.DOWN) {
-                continue
-            }
             val nextPosition = chunkPosition + direction
             val nextChunk = chunks[nextPosition] ?: continue
             val nextVisibility = graph.getOrPut(nextPosition) { createVisibilityArray() }
