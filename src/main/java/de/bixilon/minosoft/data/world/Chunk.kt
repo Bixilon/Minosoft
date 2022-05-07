@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -41,8 +42,8 @@ class Chunk(
     private val world = connection.world
     var bottomLight: ByteArray? = null
     var topLight: ByteArray? = null
-    val lowestSection = world.dimension!!.lowestSection
-    val highestSection = world.dimension!!.highestSection
+    val lowestSection = world.dimension!!.minSection
+    val highestSection = world.dimension!!.maxSection
     val cacheBiomes = world.cacheBiomeAccessor != null
 
     var blocksInitialized = false // All block data was received
@@ -179,7 +180,7 @@ class Chunk(
 
         var section = sections[sectionIndex]
         if (section == null) {
-            section = ChunkSection()
+            section = ChunkSection(BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback))
             val neighbours: Array<Chunk> = world.getChunkNeighbours(chunkPosition).unsafeCast()
             val cacheBiomeAccessor = world.cacheBiomeAccessor
             if (cacheBiomeAccessor != null && biomesInitialized && neighboursLoaded) {

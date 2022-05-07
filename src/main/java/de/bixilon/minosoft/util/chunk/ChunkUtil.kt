@@ -72,7 +72,7 @@ object ChunkUtil {
         // parse data
         var arrayPosition = 0
         val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
-        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
+        for ((sectionIndex, sectionHeight) in (dimension.minSection until dimension.maxSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
@@ -103,7 +103,7 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
-            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks)
+            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks, buffer.connection.world.occlusionUpdateCallback)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -138,7 +138,7 @@ object ChunkUtil {
 
         var arrayPos = 0
         val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
-        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
+        for ((sectionIndex, sectionHeight) in (dimension.minSection until dimension.maxSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
@@ -148,7 +148,7 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
-            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks)
+            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks, buffer.connection.world.occlusionUpdateCallback)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -161,7 +161,7 @@ object ChunkUtil {
         var lightReceived = 0
         val biomes: Array<Array<Biome>?> = arrayOfNulls(dimension.sections)
 
-        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until (sectionBitMask?.length() ?: dimension.highestSection)).withIndex()) { // max sections per chunks in chunk column
+        for ((sectionIndex, sectionHeight) in (dimension.minSection until (sectionBitMask?.length() ?: dimension.maxSection)).withIndex()) { // max sections per chunks in chunk column
             if (sectionBitMask?.get(sectionIndex) == false) {
                 continue
             }
@@ -173,11 +173,11 @@ object ChunkUtil {
             val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockStateRegistry, paletteFactory = BlockStatePaletteFactory)
 
             if (blockContainer.palette !is SingularPalette<*> || blockContainer.palette.item != null) {
-                sectionBlocks[sectionHeight - dimension.lowestSection] = BlockSectionDataProvider(blockContainer.unpack())
+                sectionBlocks[sectionHeight - dimension.minSection] = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
             }
             if (buffer.versionId >= V_21W37A) {
                 val biomeContainer: PalettedContainer<Biome> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry, paletteFactory = BiomePaletteFactory)
-                biomes[sectionHeight - dimension.lowestSection] = biomeContainer.unpack()
+                biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
             }
 
 
@@ -187,7 +187,7 @@ object ChunkUtil {
                 if (containsSkyLight) {
                     skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
-                light[sectionHeight - dimension.lowestSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
+                light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
                 lightReceived++
             }
         }
@@ -197,7 +197,7 @@ object ChunkUtil {
             chunkData.light = light
         }
         if (buffer.versionId >= V_21W37A) {
-            chunkData.biomeSource = PalettedBiomeArray(biomes, dimension.lowestSection, BiomePaletteFactory.edgeBits)
+            chunkData.biomeSource = PalettedBiomeArray(biomes, dimension.minSection, BiomePaletteFactory.edgeBits)
         } else if (buffer.versionId < V_19W36A && isFullChunk) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }

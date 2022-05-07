@@ -19,11 +19,13 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class BlockSectionDataProvider(
     data: Array<BlockState?>? = null,
+    val occlusionUpdateCallback: OcclusionUpdateCallback?,
 ) : SectionDataProvider<BlockState?>(data, true, false) {
     var fluidCount = 0
         private set
@@ -264,7 +266,7 @@ class BlockSectionDataProvider(
 
         if (!this.occlusion.contentEquals(occlusion)) {
             this.occlusion = occlusion
-            // ToDo: Recalculate visibility graph
+            occlusionUpdateCallback?.onOcclusionChange()
         }
     }
 

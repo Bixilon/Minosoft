@@ -21,9 +21,11 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -38,14 +40,16 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
 class WorldVisibilityGraph(
     private val renderWindow: RenderWindow,
-    private val camera: Camera,
-) {
+    camera: Camera,
+) : OcclusionUpdateCallback {
     private val connection = renderWindow.connection
     private val frustum = camera.matrixHandler.frustum
     private var cameraChunkPosition = Vec2i.EMPTY
     private var cameraSectionHeight = 0
     private var viewDistance = connection.world.view.viewDistance
     private val chunks = connection.world.chunks.original
+
+    private var recalculateNextFrame = false
 
     var minSection = 0
     var maxSection = 16
@@ -67,6 +71,7 @@ class WorldVisibilityGraph(
 
     init {
         calculateGraph()
+        connection.world.occlusionUpdateCallback = this
     }
 
     fun isInViewDistance(chunkPosition: Vec2i): Boolean {
@@ -140,8 +145,8 @@ class WorldVisibilityGraph(
         }
         this.cameraChunkPosition = chunkPosition
         this.cameraSectionHeight = sectionHeight
-        this.minSection = connection.world.dimension?.lowestSection ?: 0
-        this.maxSection = connection.world.dimension?.highestSection ?: 16
+        this.minSection = connection.world.dimension?.minSection ?: 0
+        this.maxSection = connection.world.dimension?.maxSection ?: 16
         this.sections = maxSection - minSection
         this.maxIndex = sections - 1
         calculateGraph()
@@ -250,6 +255,7 @@ class WorldVisibilityGraph(
 
     private fun calculateGraph() {
         connection.world.chunks.lock.acquire()
+        recalculateNextFrame = false
         val start = TimeUtil.nanos
         println("Calculating graph...")
 
@@ -276,10 +282,11 @@ class WorldVisibilityGraph(
         updateVisibilityGraph(graph)
 
 
-
         println("Done in ${(TimeUtil.nanos - start) / 1000}")
 
         connection.world.chunks.lock.release()
+
+        connection.fireEvent(VisibilityGraphChangeEvent(renderWindow))
     }
 
     private fun createVisibilityArray(): Array<BooleanArray> {
@@ -314,10 +321,14 @@ class WorldVisibilityGraph(
         visibilityLock.unlock()
     }
 
-    private fun createVisibilityStatus(sectionIndex: Int, `in`: Directions, out: Directions): Int {
-        val preferIn = `in`.ordinal < out.ordinal
+    override fun onOcclusionChange() {
+        recalculateNextFrame = true
+    }
 
-        return (sectionIndex and 0xFFFF shl 6) or ((if (preferIn) `in` else `out`).ordinal shl 3) or (if (preferIn) out else `in`).ordinal
+    fun draw() {
+        if (recalculateNextFrame) {
+            calculateGraph()
+        }
     }
 
     companion object {

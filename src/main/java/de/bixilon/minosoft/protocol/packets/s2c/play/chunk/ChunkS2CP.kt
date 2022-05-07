@@ -107,7 +107,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
                 buffer.versionId < V_21W37A -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
-                    val positionOffset = Vec3i.of(chunkPosition, dimension.lowestSection, Vec3i.EMPTY)
+                    val positionOffset = Vec3i.of(chunkPosition, dimension.minSection, Vec3i.EMPTY)
                     for (i in 0 until buffer.readVarInt()) {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset

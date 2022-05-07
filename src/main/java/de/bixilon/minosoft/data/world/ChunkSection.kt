@@ -28,7 +28,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    var blocks: BlockSectionDataProvider = BlockSectionDataProvider(),
+    var blocks: BlockSectionDataProvider,
     var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
     var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
     var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)

@@ -83,8 +83,8 @@ class ChunkBorderRenderer(
                 else -> ChatColors.YELLOW
             }
 
-            mesh.drawLine(Vec3(basePosition.x + x, dimension.minY, basePosition.y), Vec3(basePosition.x + x, dimension.height, basePosition.y), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
-            mesh.drawLine(Vec3(basePosition.x + x, dimension.minY, basePosition.y + ProtocolDefinition.SECTION_WIDTH_Z), Vec3(basePosition.x + x, dimension.height, basePosition.y + ProtocolDefinition.SECTION_WIDTH_Z), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
+            mesh.drawLine(Vec3(basePosition.x + x, dimension.minY, basePosition.y), Vec3(basePosition.x + x, dimension.maxY, basePosition.y), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
+            mesh.drawLine(Vec3(basePosition.x + x, dimension.minY, basePosition.y + ProtocolDefinition.SECTION_WIDTH_Z), Vec3(basePosition.x + x, dimension.maxY, basePosition.y + ProtocolDefinition.SECTION_WIDTH_Z), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
         }
 
         for (z in 0..ProtocolDefinition.SECTION_WIDTH_Z) {
@@ -94,12 +94,12 @@ class ChunkBorderRenderer(
                 else -> ChatColors.YELLOW
             }
 
-            mesh.drawLine(Vec3(basePosition.x, dimension.minY, basePosition.y + z), Vec3(basePosition.x, dimension.height, basePosition.y + z), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
-            mesh.drawLine(Vec3(basePosition.x + ProtocolDefinition.SECTION_WIDTH_X, dimension.minY, basePosition.y + z), Vec3(basePosition.x + ProtocolDefinition.SECTION_WIDTH_X, dimension.height, basePosition.y + z), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
+            mesh.drawLine(Vec3(basePosition.x, dimension.minY, basePosition.y + z), Vec3(basePosition.x, dimension.maxY, basePosition.y + z), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
+            mesh.drawLine(Vec3(basePosition.x + ProtocolDefinition.SECTION_WIDTH_X, dimension.minY, basePosition.y + z), Vec3(basePosition.x + ProtocolDefinition.SECTION_WIDTH_X, dimension.maxY, basePosition.y + z), RenderConstants.DEFAULT_LINE_WIDTH * 5, color)
         }
 
         // horizontal lines
-        for (y in dimension.minY..dimension.height) {
+        for (y in dimension.minY..dimension.maxY) {
             val borderColor = when {
                 y % ProtocolDefinition.SECTION_HEIGHT_Y == 0 -> ChatColors.BLUE
                 y % 2 == 0 -> ChatColors.GREEN

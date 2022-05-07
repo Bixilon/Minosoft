@@ -32,29 +32,29 @@ data class DimensionProperties(
     val bedWorks: Boolean = true,
     val skyProperties: ResourceLocation = ResourceLocation("overworld"),
     val hasRaids: Boolean = true,
-    val logicalHeight: Int = 256,
+    val logicalHeight: Int = DEFAULT_MAX_Y,
     val coordinateScale: Double = 0.0,
     val minY: Int = 0,
     val hasCeiling: Boolean = false,
     val ultraWarm: Boolean = false,
     @Deprecated("Height does not differ from logical height in 1.18")
-    val dataHeight: Int = 256,
+    val dataHeight: Int = DEFAULT_MAX_Y,
     val supports3DBiomes: Boolean = true,
 ) {
-    val height = logicalHeight + minY
-    val lowestSection = if (minY < 0) {
+    val maxY = logicalHeight + minY
+    val minSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
         minY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-    val highestSection = if (height < 0) {
-        (height + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+    val maxSection = if (maxY < 0) {
+        (maxY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
-        height / ProtocolDefinition.SECTION_HEIGHT_Y
+        maxY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
 
     val lightLevels = FloatArray(16)
-    val sections = highestSection - lowestSection
+    val sections = maxSection - minSection
 
     init {
         val ambientLight = 0.0f // ToDo: 0.1 in nether
@@ -68,6 +68,8 @@ data class DimensionProperties(
 
 
     companion object {
+        const val DEFAULT_MAX_Y = 256
+
         fun deserialize(data: Map<String, Any>): DimensionProperties {
             return DimensionProperties(
                 piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,

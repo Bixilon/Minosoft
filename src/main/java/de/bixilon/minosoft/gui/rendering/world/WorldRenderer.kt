@@ -40,8 +40,8 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
-import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
@@ -160,7 +160,7 @@ class WorldRenderer(
         loadWorldShader(this.textShader, false)
 
 
-        connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange() })
+        connection.registerEvent(CallbackEventInvoker.of<VisibilityGraphChangeEvent> { onFrustumChange() })
 
         connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> { unloadWorld() })
         connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { queueChunk(it.chunkPosition, it.chunk) })
@@ -715,7 +715,7 @@ class WorldRenderer(
 
         val cameraSectionHeight = cameraPosition.blockPosition.sectionHeight
         val minSectionHeight = connection.world.dimension?.minY?.sectionHeight ?: 0
-        val maxSectionHeight = connection.world.dimension?.height?.sectionHeight ?: 16
+        val maxSectionHeight = connection.world.dimension?.maxY?.sectionHeight ?: 16
 
 
         val visible = VisibleMeshes(cameraPosition)

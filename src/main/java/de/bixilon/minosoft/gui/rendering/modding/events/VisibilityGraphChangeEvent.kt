@@ -11,31 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.camera
+package de.bixilon.minosoft.gui.rendering.modding.events
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
-import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
+import de.bixilon.minosoft.gui.rendering.Rendering
 
-class Camera(
-    renderWindow: RenderWindow,
-) {
-    val fogManager = FogManager(renderWindow)
-    val matrixHandler = MatrixHandler(renderWindow, fogManager, this)
-    val targetHandler = TargetHandler(renderWindow, this)
-    val visibilityGraph = WorldVisibilityGraph(renderWindow, this)
-
-    val firstPerson: Boolean = true // ToDo
-
-    fun init() {
-        matrixHandler.init()
-    }
-
-    fun draw() {
-        matrixHandler.entity.tick()
-        matrixHandler.draw()
-        visibilityGraph.draw()
-        targetHandler.raycast()
-        fogManager.draw()
-    }
-}
+class VisibilityGraphChangeEvent(
+    renderWindow: RenderWindow = Rendering.currentContext!!,
+) : RenderEvent(renderWindow)

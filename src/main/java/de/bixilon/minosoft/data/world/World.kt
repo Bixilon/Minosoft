@@ -76,6 +76,7 @@ class World(
 
     override var audioPlayer: AbstractAudioPlayer? = null
     override var particleRenderer: AbstractParticleRenderer? = null
+    var occlusionUpdateCallback: OcclusionUpdateCallback? = null
 
     operator fun get(blockPosition: Vec3i): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
@@ -125,7 +126,7 @@ class World(
             return false
         }
         val dimension = connection.world.dimension!!
-        return (blockPosition.y >= dimension.minY || blockPosition.y < dimension.height)
+        return (blockPosition.y >= dimension.minY || blockPosition.y < dimension.maxY)
     }
 
     fun forceSetBlockState(blockPosition: Vec3i, blockState: BlockState?, check: Boolean = false) {
@@ -167,7 +168,16 @@ class World(
     }
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
-        return this[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
+        val inChunkPosition = blockPosition.inChunkPosition
+        val minY = dimension?.minY ?: 0
+        if (inChunkPosition.y < minY) {
+            inChunkPosition.y = minY
+        }
+        val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
+        if (inChunkPosition.y > maxY) {
+            inChunkPosition.y = maxY
+        }
+        return this[blockPosition.chunkPosition]?.getBiome(inChunkPosition)
     }
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
