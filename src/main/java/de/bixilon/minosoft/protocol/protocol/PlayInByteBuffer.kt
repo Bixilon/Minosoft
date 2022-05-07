@@ -37,6 +37,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.recipes.Ingredient
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 
@@ -232,7 +235,7 @@ class PlayInByteBuffer : InByteBuffer {
                     check(textures == null) { "Textures duplicated" }
                     textures = PlayerTextures.of(value, signature ?: throw IllegalArgumentException("Texture data needs to be signed!"))
                 }
-                else -> throw IllegalArgumentException("Unknown player property $name")
+                else -> Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown player property $name: $value" }
             }
         }
         return PlayerProperties(
