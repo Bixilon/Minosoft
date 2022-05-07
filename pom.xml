@@ -219,7 +219,7 @@
             </activation>
             <properties>
                 <lwjgl.natives>windows</lwjgl.natives>
-                <zstd.natives>win_x86</zstd.natives>
+                <zstd.natives>win_am64</zstd.natives>
                 <javafx.natives>win</javafx.natives>
             </properties>
         </profile>
