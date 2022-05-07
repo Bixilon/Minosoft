@@ -43,7 +43,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 TabListItemActions.ADD -> {
                     val name = buffer.readString()
                     val properties = buffer.readPlayerProperties()
-                    val gamemode = Gamemodes[buffer.readVarInt()]
+                    val gamemode = Gamemodes.getOrNull(buffer.readVarInt()) ?: Gamemodes.SURVIVAL
                     val ping = buffer.readVarInt()
                     val hasDisplayName = buffer.readBoolean()
                     val displayName = if (hasDisplayName) {
