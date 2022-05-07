@@ -79,7 +79,7 @@ class ServerModifyDialog(
             if (version.type == VersionTypes.RELEASE && !showReleasesFX.isSelected) {
                 continue
             }
-            if (version.type == VersionTypes.SNAPSHOT && !showSnapshotsFX.isSelected) {
+            if ((version.type == VersionTypes.SNAPSHOT || version.type == VersionTypes.APRIL_FOOL) && !showSnapshotsFX.isSelected) {
                 continue
             }
             forcedVersionFX.items += version
