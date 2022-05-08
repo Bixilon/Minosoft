@@ -233,7 +233,11 @@ class PlayInByteBuffer : InByteBuffer {
             when (name) {
                 PlayerProperties.TEXTURE_PROPERTIES -> {
                     check(textures == null) { "Textures duplicated" }
-                    textures = PlayerTextures.of(value, signature ?: throw IllegalArgumentException("Texture data needs to be signed!"))
+                    if (signature == null) {
+                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Server tried to send unsigned texture data, ignoring." }
+                        continue
+                    }
+                    textures = PlayerTextures.of(value, signature)
                 }
                 else -> Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown player property $name: $value" }
             }

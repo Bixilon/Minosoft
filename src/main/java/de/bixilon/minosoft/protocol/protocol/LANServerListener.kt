@@ -93,7 +93,7 @@ object LANServerListener {
                         if (GlobalEventMaster.fireEvent(LANServerDiscoverEvent(packet.address, server))) {
                             continue
                         }
-                        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Discovered LAN servers: $server" }
+                        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Discovered LAN servers: ${server.address}" }
                         SERVERS[sender] = server
                         LANServerType.servers += server
                     } catch (ignored: Throwable) {
