@@ -25,6 +25,8 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Multiple profiles (i.e. settings for servers or minosoft in general)
 - Way more stuff
 
+(some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md))
+
 ## System requirements
 
 - CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
