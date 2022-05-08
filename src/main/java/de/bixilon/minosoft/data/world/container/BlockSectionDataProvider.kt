@@ -157,19 +157,25 @@ class BlockSectionDataProvider(
                     if (y < ProtocolDefinition.SECTION_MAX_Y) {
                         val neighbourRegion = regions[(y + 1) shl 8 or (z shl 4) or x]
                         if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
-                            regionOverride[minOf(regionInt, neighbourRegion.toInt())] = maxOf(neighbourRegion, region)
+                            val maxRegion = maxOf(neighbourRegion, region, regionOverride[regionInt], regionOverride[neighbourRegion.toInt()])
+                            regionOverride[regionInt] = maxRegion
+                            regionOverride[neighbourRegion.toInt()] = maxRegion
                         }
                     }
                     if (z < ProtocolDefinition.SECTION_MAX_Z) {
                         val neighbourRegion = regions[y shl 8 or ((z + 1) shl 4) or x]
                         if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
-                            regionOverride[minOf(regionInt, neighbourRegion.toInt())] = maxOf(neighbourRegion, region)
+                            val maxRegion = maxOf(neighbourRegion, region, regionOverride[regionInt], regionOverride[neighbourRegion.toInt()])
+                            regionOverride[regionInt] = maxRegion
+                            regionOverride[neighbourRegion.toInt()] = maxRegion
                         }
                     }
                     if (x < ProtocolDefinition.SECTION_MAX_X) {
                         val neighbourRegion = regions[y shl 8 or (z shl 4) or (x + 1)]
                         if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
-                            regionOverride[minOf(regionInt, neighbourRegion.toInt())] = maxOf(neighbourRegion, region)
+                            val maxRegion = maxOf(neighbourRegion, region, regionOverride[regionInt], regionOverride[neighbourRegion.toInt()])
+                            regionOverride[regionInt] = maxRegion
+                            regionOverride[neighbourRegion.toInt()] = maxRegion
                         }
                     }
                 }

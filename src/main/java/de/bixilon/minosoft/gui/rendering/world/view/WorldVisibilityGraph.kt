@@ -322,7 +322,7 @@ class WorldVisibilityGraph(
         }
         val worldSize = connection.world.chunkSize
         worldSize += 3 // add 3 for forced neighbours and the camera chunk
-        val chunkMin = cameraChunkPosition - (worldSize / 2)
+        val chunkMin = chunkPosition - (worldSize / 2)
         chunkMin.x -= 1 // remove 1 for proper index calculation
 
         if (this.chunkMin != chunkMin || this.worldSize != worldSize) {
@@ -332,12 +332,13 @@ class WorldVisibilityGraph(
         }
 
         val graph: Array<Array<BooleanArray?>?> = arrayOfNulls(worldSize.x)
+        graph.getVisibility(chunkPosition)[cameraSectionIndex] = true
 
         for (direction in Directions.VALUES) {
             val nextPosition = chunkPosition + direction
             val nextChunk = getChunk(nextPosition) ?: continue
             val nextVisibility = graph.getVisibility(nextPosition)
-            checkSection(graph, nextPosition, cameraSectionIndex, nextChunk, nextVisibility, direction, direction.vector, 0, true)
+            checkSection(graph, nextPosition, cameraSectionIndex + direction.vector.y, nextChunk, nextVisibility, direction, direction.vector, 0, true)
         }
 
         updateVisibilityGraph(graph)
