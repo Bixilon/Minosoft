@@ -301,6 +301,7 @@ class WorldVisibilityGraph(
         return ret
     }
 
+    @Synchronized
     private fun calculateGraph() {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
             return
@@ -335,7 +336,7 @@ class WorldVisibilityGraph(
         for (direction in Directions.VALUES) {
             val nextPosition = chunkPosition + direction
             val nextChunk = getChunk(nextPosition) ?: continue
-            val nextVisibility = graph.getVisibility(chunkPosition)
+            val nextVisibility = graph.getVisibility(nextPosition)
             checkSection(graph, nextPosition, cameraSectionIndex, nextChunk, nextVisibility, direction, direction.vector, 0, true)
         }
 
@@ -361,17 +362,12 @@ class WorldVisibilityGraph(
                 if (sections == null) {
                     continue
                 }
-                val visibility = BooleanArray(maxIndex + 1)
-                var chunkVisible = false
-                for ((sectionIndex, visible) in sections.withIndex()) {
-                    if (!visible) {
+                for (section in sections) {
+                    if (!section) {
                         continue
                     }
-                    visibility[sectionIndex] = true
-                    chunkVisible = true
-                }
-                if (chunkVisible) {
-                    this.visibilities[Vec2i(chunkX + chunkMin.x, chunkY + chunkMin.y)] = visibility
+                    this.visibilities[Vec2i(chunkX + chunkMin.x, chunkY + chunkMin.y)] = sections
+                    break
                 }
             }
         }

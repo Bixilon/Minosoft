@@ -362,5 +362,4 @@ class BlockSectionDataProvider(
             return -1 // Broken("Can not get index for occlusion culling $`in` -> $out!")
         }
     }
-
 }
