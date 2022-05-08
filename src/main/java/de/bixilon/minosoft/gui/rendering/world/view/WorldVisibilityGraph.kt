@@ -250,7 +250,7 @@ class WorldVisibilityGraph(
             val nextPosition = chunkPosition + Directions.NORTH
             val nextChunk = getChunk(nextPosition)
             if (nextChunk != null) {
-                val nextVisibilities = graph.getVisibility(chunkPosition)
+                val nextVisibilities = graph.getVisibility(nextPosition)
                 val visibility = nextVisibilities[sectionIndex]
                 if (!visibility[northIndex]) {
                     visibility[northIndex] = true
@@ -263,7 +263,7 @@ class WorldVisibilityGraph(
             val nextPosition = chunkPosition + Directions.SOUTH
             val nextChunk = getChunk(nextPosition)
             if (nextChunk != null) {
-                val nextVisibilities = graph.getVisibility(chunkPosition)
+                val nextVisibilities = graph.getVisibility(nextPosition)
                 val visibility = nextVisibilities[sectionIndex]
                 if (!visibility[southIndex]) {
                     visibility[southIndex] = true
@@ -277,7 +277,7 @@ class WorldVisibilityGraph(
             val nextPosition = chunkPosition + Directions.WEST
             val nextChunk = getChunk(nextPosition)
             if (nextChunk != null) {
-                val nextVisibilities = graph.getVisibility(chunkPosition)
+                val nextVisibilities = graph.getVisibility(nextPosition)
                 val visibility = nextVisibilities[sectionIndex]
                 if (!visibility[westIndex]) {
                     visibility[westIndex] = true
@@ -291,7 +291,7 @@ class WorldVisibilityGraph(
             val nextPosition = chunkPosition + Directions.EAST
             val nextChunk = getChunk(nextPosition)
             if (nextChunk != null) {
-                val nextVisibilities = graph.getVisibility(chunkPosition)
+                val nextVisibilities = graph.getVisibility(nextPosition)
                 val visibility = nextVisibilities[sectionIndex]
                 if (!visibility[eastIndex]) {
                     visibility[eastIndex] = true
