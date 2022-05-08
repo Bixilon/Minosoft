@@ -26,13 +26,17 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(
     private val matrixHandler: MatrixHandler,
 ) {
     private lateinit var data: FrustumData
+    var revision = 0
+        private set
 
     fun recalculate() {
         val matrix = matrixHandler.viewProjectionMatrix.transpose()
@@ -92,6 +96,7 @@ class Frustum(
         )
 
         this.data = FrustumData(normals, planes)
+        revision++
     }
 
 
@@ -133,7 +138,7 @@ class Frustum(
         return false
     }
 
-    fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
+    fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
         val min = Vec3i.of(chunkPosition, sectionHeight, minPosition)
         val max = Vec3i.of(chunkPosition, sectionHeight, maxPosition + 1)
         return containsRegion(Vec3(min), Vec3(max))
@@ -163,5 +168,9 @@ class Frustum(
             override val VALUES: Array<Planes> = values()
             override val NAME_MAP: Map<String, Planes> = EnumUtil.getEnumValues(VALUES)
         }
+    }
+
+    private companion object {
+        val CHUNK_NIN_POSITION = Vec3i.EMPTY
     }
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.kotlinglm.vec3.Vec3i;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 
@@ -61,6 +62,7 @@ public final class ProtocolDefinition {
     public static final int SECTION_HEIGHT_Y = 16;
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
+    public static final Vec3i CHUNK_SECTION_SIZE = new Vec3i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_HEIGHT_Y, ProtocolDefinition.SECTION_WIDTH_Z);
     public static final int ITEM_STACK_MAX_SIZE = 64;
 
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();

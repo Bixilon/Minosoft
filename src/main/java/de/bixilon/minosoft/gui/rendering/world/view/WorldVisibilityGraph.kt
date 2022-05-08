@@ -49,6 +49,7 @@ class WorldVisibilityGraph(
     private var cameraSectionHeight = 0
     private var viewDistance = connection.world.view.viewDistance
     private val chunks = connection.world.chunks.original
+    private var lastFrustumRevision = -1
 
 
     private var recalculateNextFrame = false
@@ -135,7 +136,7 @@ class WorldVisibilityGraph(
         return frustum.containsAABB(aabb)
     }
 
-    fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = DEFAULT_MIN_POSITION, maxPosition: Vec3i = DEFAULT_MAX_POSITION, checkChunk: Boolean = true): Boolean {
+    fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = DEFAULT_MIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE, checkChunk: Boolean = true): Boolean {
         if (checkChunk && !isChunkVisible(chunkPosition)) {
             return false
         }
@@ -219,6 +220,9 @@ class WorldVisibilityGraph(
             return
         }
         if (!isInViewDistance(chunkPosition)) {
+            return
+        }
+        if (!frustum.containsChunk(chunkPosition, sectionIndex + minSection)) {
             return
         }
         val inverted = direction.inverted
@@ -312,6 +316,7 @@ class WorldVisibilityGraph(
         }
         connection.world.chunks.lock.acquire()
         recalculateNextFrame = false
+        this.lastFrustumRevision = frustum.revision
         val start = TimeUtil.nanos
         println("Calculating graph...")
 
@@ -393,13 +398,12 @@ class WorldVisibilityGraph(
     }
 
     fun draw() {
-        if (recalculateNextFrame) {
+        if (recalculateNextFrame || frustum.revision != lastFrustumRevision) {
             calculateGraph()
         }
     }
 
     companion object {
         private val DEFAULT_MIN_POSITION = Vec3i.EMPTY
-        private val DEFAULT_MAX_POSITION = Vec3i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_HEIGHT_Y, ProtocolDefinition.SECTION_WIDTH_Z)
     }
 }
