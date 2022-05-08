@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.world.view
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.world.Chunk
@@ -60,8 +59,7 @@ class WorldVisibilityGraph(
     private var chunkMin = Vec2i.EMPTY
     private var worldSize = Vec2i.EMPTY
 
-    private var visibilityLock = SimpleLock()
-    private var visibilities: HashMap<Vec2i, BooleanArray> = HashMap()
+    private var graph: Array<Array<BooleanArray?>?> = arrayOfNulls(0)
 
     private lateinit var chunkCache: Array<Array<Chunk?>?>
 
@@ -92,12 +90,15 @@ class WorldVisibilityGraph(
             return true
         }
 
-        visibilityLock.acquire()
-        val visible = visibilities[chunkPosition]
-        visibilityLock.release()
-
         // ToDo: basic frustum culling
-        return visible?.isNotEmpty() ?: false
+        return getChunkVisibility(chunkPosition) != null // ToDo: check if all values are false
+    }
+
+    private fun getChunkVisibility(chunkPosition: Vec2i): BooleanArray? {
+        val x = chunkPosition.x - chunkMin.x
+        val y = chunkPosition.y - chunkMin.y
+
+        return this.graph.getOrNull(x)?.getOrNull(y)
     }
 
     fun isAABBVisible(aabb: AABB): Boolean {
@@ -111,9 +112,8 @@ class WorldVisibilityGraph(
             sectionIndices += position.sectionHeight - minSection
         }
         var visible = false
-        visibilityLock.acquire()
         chunkPositions@ for (chunkPosition in chunkPositions) {
-            val visibility = this.visibilities[chunkPosition] ?: continue
+            val visibility = getChunkVisibility(chunkPosition) ?: continue
             for (index in sectionIndices.intIterator()) {
                 if (index < 0 || index > maxIndex) {
                     visible = true // ToDo: Not 100% correct, image looking from > maxIndex to < 0
@@ -125,7 +125,6 @@ class WorldVisibilityGraph(
                 }
             }
         }
-        visibilityLock.release()
 
         if (!visible) {
             return false
@@ -148,9 +147,7 @@ class WorldVisibilityGraph(
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
             return true
         }
-        visibilityLock.acquire()
-        val visible = this.visibilities[chunkPosition]?.get(sectionHeight - minSection)
-        visibilityLock.release()
+        val visible = getChunkVisibility(chunkPosition)?.getOrNull(sectionHeight - minSection)
 
         return visible == true
     }
@@ -341,39 +338,12 @@ class WorldVisibilityGraph(
             checkSection(graph, nextPosition, cameraSectionIndex + direction.vector.y, nextChunk, nextVisibility, direction, direction.vector, 0, true)
         }
 
-        updateVisibilityGraph(graph)
+        this.graph = graph
 
 
         connection.world.chunks.lock.release()
 
         connection.fireEvent(VisibilityGraphChangeEvent(renderWindow))
-    }
-
-    private fun updateVisibilityGraph(graph: Array<Array<BooleanArray?>?>) {
-        visibilityLock.lock()
-        this.visibilities.clear()
-
-
-        for ((chunkX, array) in graph.withIndex()) {
-            if (array == null) {
-                continue
-            }
-
-            for ((chunkY, sections) in array.withIndex()) {
-                if (sections == null) {
-                    continue
-                }
-                for (section in sections) {
-                    if (!section) {
-                        continue
-                    }
-                    this.visibilities[Vec2i(chunkX + chunkMin.x, chunkY + chunkMin.y)] = sections
-                    break
-                }
-            }
-        }
-
-        visibilityLock.unlock()
     }
 
     override fun onOcclusionChange() {

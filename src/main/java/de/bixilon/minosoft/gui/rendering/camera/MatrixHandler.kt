@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -126,7 +125,7 @@ class MatrixHandler(
         updateRotation(rotation)
         updateViewMatrix(eyePosition)
         updateViewProjectionMatrix()
-        updateFrustum()
+        frustum.recalculate()
 
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
 
@@ -147,11 +146,6 @@ class MatrixHandler(
 
     private fun updateViewProjectionMatrix() {
         viewProjectionMatrix = projectionMatrix * viewMatrix
-    }
-
-    private fun updateFrustum() {
-        frustum.recalculate()
-        connection.fireEvent(VisibilityGraphChangeEvent(renderWindow))
     }
 
     private fun updateRotation(rotation: EntityRotation = entity.rotation) {

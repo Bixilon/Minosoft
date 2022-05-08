@@ -52,7 +52,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
@@ -713,11 +712,6 @@ class WorldRenderer(
             sortQueue = true
         }
 
-        val cameraSectionHeight = cameraPosition.blockPosition.sectionHeight
-        val minSectionHeight = connection.world.dimension?.minY?.sectionHeight ?: 0
-        val maxSectionHeight = connection.world.dimension?.maxY?.sectionHeight ?: 16
-
-
         val visible = VisibleMeshes(cameraPosition)
 
         loadedMeshesLock.acquire()
@@ -741,7 +735,7 @@ class WorldRenderer(
                 continue
             }
             var chunkQueue: IntOpenHashSet? = null
-            for (sectionHeight in sectionHeights) {
+            for (sectionHeight in sectionHeights.intIterator()) {
                 if (!visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, CHUNK_SIZE, false)) {
                     continue
                 }
@@ -756,13 +750,14 @@ class WorldRenderer(
 
 
         for ((chunkPosition, sectionHeights) in queue) {
-            for (sectionHeight in sectionHeights) {
+            for (sectionHeight in sectionHeights.intIterator()) {
                 queueSection(chunkPosition, sectionHeight, ignoreFrustum = true)
             }
         }
         if (queue.isNotEmpty()) {
             sortQueue()
             workQueue()
+            sortQueue = false
         }
 
         culledQueueLock.acquire()
