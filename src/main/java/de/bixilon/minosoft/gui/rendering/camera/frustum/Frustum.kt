@@ -36,7 +36,7 @@ class Frustum(
 ) {
     private lateinit var data: FrustumData
     var revision = 0
-        private set
+    private set
 
     fun recalculate() {
         val matrix = matrixHandler.viewProjectionMatrix.transpose()

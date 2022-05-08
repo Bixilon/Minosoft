@@ -29,7 +29,7 @@ class BlockSectionDataProvider(
 ) : SectionDataProvider<BlockState?>(data, true, false) {
     var fluidCount = 0
         private set
-    private var occlusion = BooleanArray(15)
+    private var occlusion = NO_OCCLUSION
 
     init {
         recalculate()
@@ -38,6 +38,11 @@ class BlockSectionDataProvider(
     override fun recalculate() {
         super.recalculate()
         val data: Array<Any?> = data ?: return
+        if (isEmpty) {
+            fluidCount = 0
+            updateOcclusionState(NO_OCCLUSION)
+            return
+        }
 
         fluidCount = 0
         for (blockState in data) {
@@ -151,20 +156,20 @@ class BlockSectionDataProvider(
 
                     if (y < ProtocolDefinition.SECTION_MAX_Y) {
                         val neighbourRegion = regions[(y + 1) shl 8 or (z shl 4) or x]
-                        if (neighbourRegion > 0 && region != neighbourRegion) {
-                            regionOverride[regionInt] = maxOf(neighbourRegion, region)
+                        if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
+                            regionOverride[minOf(regionInt, neighbourRegion.toInt())] = maxOf(neighbourRegion, region)
                         }
                     }
                     if (z < ProtocolDefinition.SECTION_MAX_Z) {
                         val neighbourRegion = regions[y shl 8 or ((z + 1) shl 4) or x]
-                        if (neighbourRegion > 0 && region != neighbourRegion) {
-                            regionOverride[regionInt] = maxOf(neighbourRegion, region)
+                        if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
+                            regionOverride[minOf(regionInt, neighbourRegion.toInt())] = maxOf(neighbourRegion, region)
                         }
                     }
                     if (x < ProtocolDefinition.SECTION_MAX_X) {
                         val neighbourRegion = regions[y shl 8 or (z shl 4) or (x + 1)]
-                        if (neighbourRegion > 0 && region != neighbourRegion) {
-                            regionOverride[regionInt] = maxOf(neighbourRegion, region)
+                        if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
+                            regionOverride[minOf(regionInt, neighbourRegion.toInt())] = maxOf(neighbourRegion, region)
                         }
                     }
                 }
@@ -264,6 +269,11 @@ class BlockSectionDataProvider(
 
         occlusion[14] = sideRegions.canOcclude(Directions.WEST, Directions.EAST)
 
+
+        updateOcclusionState(occlusion)
+    }
+
+    private fun updateOcclusionState(occlusion: BooleanArray) {
         if (!this.occlusion.contentEquals(occlusion)) {
             this.occlusion = occlusion
             occlusionUpdateCallback?.onOcclusionChange()
@@ -306,6 +316,7 @@ class BlockSectionDataProvider(
 
     companion object {
         const val CUBE_DIRECTION_COMBINATIONS = 15 // 5+4+3+2+1
+        private val NO_OCCLUSION = BooleanArray(CUBE_DIRECTION_COMBINATIONS)
 
         fun getIndex(`in`: Directions, out: Directions): Int {
             // ToDo: Calculate this far better
@@ -351,4 +362,5 @@ class BlockSectionDataProvider(
             return -1 // Broken("Can not get index for occlusion culling $`in` -> $out!")
         }
     }
+
 }
