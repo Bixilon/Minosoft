@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -55,14 +55,11 @@ object LightUtil {
     }
 
     private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, dimension: DimensionProperties): Triple<Array<ByteArray?>, ByteArray?, ByteArray?> {
-        var highestSectionIndex = dimension.highestSection + 1
-        val lowesSectionIndex = dimension.lowestSection
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
             buffer.readVarInt() // section count
-            highestSectionIndex = lightMask.length()
         }
 
-        val light: Array<ByteArray?> = arrayOfNulls(highestSectionIndex - lowesSectionIndex)
+        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
 
         val bottomLight = if (lightMask[0]) {
             buffer.readByteArray(buffer.readVarInt())
@@ -70,8 +67,8 @@ object LightUtil {
             null
         }
 
-        for (sectionIndex in 0 until highestSectionIndex - 1) { // light sections
-            if (!lightMask[sectionIndex + 1]) {
+        for (sectionIndex in light.indices) {
+            if (!lightMask[sectionIndex + 1]) { // 1 offset for the bottom section (-1. section)
                 continue
             }
 
@@ -79,7 +76,7 @@ object LightUtil {
         }
 
 
-        val topLight = if (lightMask[highestSectionIndex]) {
+        val topLight = if (lightMask[dimension.sections]) {
             buffer.readByteArray(buffer.readVarInt())
         } else {
             null
