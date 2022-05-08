@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -45,6 +46,7 @@ class GUIManager(
     override val guiRenderer: GUIRenderer,
 ) : Initializable, InputHandler, GUIElementDrawer, DraggableHandler {
     private val elementCache: MutableMap<GUIBuilder<*>, GUIElement> = mutableMapOf()
+    private var orderLock = SimpleLock()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val renderWindow = guiRenderer.renderWindow
     internal var paused = false
@@ -90,16 +92,20 @@ class GUIManager(
             }
             element.apply()
         }
+        orderLock.acquire()
         for (element in elementOrder) {
             if (element is LayoutedGUIElement<*>) {
                 element.element.forceSilentApply()
             }
             element.apply()
         }
+        orderLock.release()
     }
 
     fun draw() {
+        orderLock.acquire()
         val order = elementOrder.reversed()
+        orderLock.release()
         val time = TimeUtil.millis
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
@@ -155,7 +161,10 @@ class GUIManager(
     }
 
     private fun runForEach(run: (element: GUIElement) -> Boolean): Boolean {
-        for ((index, element) in elementOrder.toList().withIndex()) {
+        orderLock.acquire()
+        val copy = elementOrder.toList()
+        orderLock.release()
+        for ((index, element) in copy.withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
@@ -183,7 +192,10 @@ class GUIManager(
     }
 
     private fun runForEachDrag(run: (element: GUIElement) -> Element?): Element? {
-        for ((index, element) in elementOrder.toList().withIndex()) {
+        orderLock.acquire()
+        val copy = elementOrder.toList()
+        orderLock.release()
+        for ((index, element) in copy.withIndex()) {
             if (index != 0 && !element.activeWhenHidden) {
                 continue
             }
@@ -229,13 +241,18 @@ class GUIManager(
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = guiRenderer
         }
-        for ((index, elementEntry) in elementOrder.toList().withIndex()) {
+        orderLock.acquire()
+        val copy = elementOrder.toList()
+        orderLock.release()
+        for ((index, elementEntry) in copy.withIndex()) {
             if (index != 0 && !elementEntry.activeWhenHidden) {
                 continue
             }
             elementEntry.onHide()
         }
+        orderLock.lock()
         elementOrder.add(0, element)
+        orderLock.unlock()
         element.onOpen()
         onMouseMove(guiRenderer.currentMousePosition)
     }
@@ -252,12 +269,16 @@ class GUIManager(
             return
         }
 
+        orderLock.acquire()
         val index = elementOrder.indexOf(element)
+        orderLock.release()
         if (index < 0) {
             return
         }
         element.onClose()
+        orderLock.lock()
         elementOrder.removeAt(index)
+        orderLock.unlock()
         if (index == 0) {
             elementOrder.firstOrNull()?.onOpen()
         }
@@ -277,7 +298,12 @@ class GUIManager(
         if (elementOrder.firstOrNull()?.canPop == false) {
             return
         }
-        val previous = elementOrder.removeFirstOrNull() ?: return
+        orderLock.lock()
+        val previous = elementOrder.removeFirstOrNull()
+        orderLock.unlock()
+        if (previous == null) {
+            return
+        }
         previous.onClose()
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
@@ -290,6 +316,7 @@ class GUIManager(
 
     fun clear() {
         val remaining: MutableList<GUIElement> = mutableListOf()
+        orderLock.acquire()
         for (element in elementOrder) {
             if (!element.canPop) {
                 remaining += element
@@ -297,8 +324,11 @@ class GUIManager(
             }
             element.onClose()
         }
+        orderLock.release()
+        orderLock.lock()
         elementOrder.clear()
         elementOrder += remaining
+        orderLock.unlock()
         guiRenderer.popper.clear()
         guiRenderer.dragged.element = null
         renderWindow.inputHandler.inputHandler = null
