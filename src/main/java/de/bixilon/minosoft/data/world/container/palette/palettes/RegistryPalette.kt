@@ -17,13 +17,13 @@ import de.bixilon.kutil.math.simple.IntMath.binaryBase
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-class RegistryPalette<T>(private val registry: AbstractRegistry<T>) : Palette<T> {
+class RegistryPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T> {
     override val bits = registry.size.binaryBase
 
     override fun read(buffer: PlayInByteBuffer) {}
 
     @Suppress("UNCHECKED_CAST")
-    override fun get(index: Int): T {
-        return registry[index] as T
+    override fun getOrNull(id: Int): T? {
+        return registry.getOrNull(id)
     }
 }

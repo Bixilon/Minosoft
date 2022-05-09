@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 object BlockStatePaletteFactory : PaletteFactory {
     override val edgeBits = 4
 
-    override fun <T : Any?> createPalette(registry: AbstractRegistry<T>, bits: Int): Palette<T> {
+    override fun <T : Any?> createPalette(registry: AbstractRegistry<T?>, bits: Int): Palette<T> {
         return when (bits) {
             0 -> SingularPalette(registry)
             1, 2, 3, 4 -> ArrayPalette(registry, 4)

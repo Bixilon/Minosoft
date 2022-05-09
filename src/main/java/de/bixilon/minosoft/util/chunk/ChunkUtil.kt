@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -101,7 +102,7 @@ object ChunkUtil {
 
                 blockId = blockId or blockMeta
 
-                blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
+                blocks[blockNumber] = buffer.connection.registries.blockStateRegistry.getOrNull(blockId) ?: continue
             }
             sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks, buffer.connection.world.occlusionUpdateCallback)
         }
@@ -145,7 +146,7 @@ object ChunkUtil {
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
             for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 val blockId = blockData[arrayPos++]
-                val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
+                val block = buffer.connection.registries.blockStateRegistry.getOrNull(blockId) ?: continue
                 blocks[blockNumber] = block
             }
             sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks, buffer.connection.world.occlusionUpdateCallback)
@@ -159,7 +160,7 @@ object ChunkUtil {
         val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0
-        val biomes: Array<Array<Biome>?> = arrayOfNulls(dimension.sections)
+        val biomes: Array<Array<Biome?>?> = arrayOfNulls(dimension.sections)
 
         for ((sectionIndex, sectionHeight) in (dimension.minSection until (sectionBitMask?.length() ?: dimension.maxSection)).withIndex()) { // max sections per chunks in chunk column
             if (sectionBitMask?.get(sectionIndex) == false) {
@@ -176,7 +177,7 @@ object ChunkUtil {
                 sectionBlocks[sectionHeight - dimension.minSection] = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
             }
             if (buffer.versionId >= V_21W37A) {
-                val biomeContainer: PalettedContainer<Biome> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry, paletteFactory = BiomePaletteFactory)
+                val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry.unsafeCast(), paletteFactory = BiomePaletteFactory)
                 biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
             }
 
@@ -207,7 +208,7 @@ object ChunkUtil {
 
 
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
-        val biomes: MutableList<Biome> = mutableListOf()
+        val biomes: MutableList<Biome?> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
             biomes.add(i, buffer.connection.registries.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
                 buffer.readUnsignedByte()

@@ -23,7 +23,11 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
 
     operator fun get(any: Any?): T?
 
-    operator fun get(id: Int): T?
+    operator fun get(id: Int): T {
+        return getOrNull(id) ?: throw NullPointerException("Can not get entry with id $id!")
+    }
+
+    fun getOrNull(id: Int): T?
 
     fun getId(value: T): Int
 

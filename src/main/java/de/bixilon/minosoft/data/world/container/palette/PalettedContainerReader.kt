@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 object PalettedContainerReader {
 
-    fun <T> read(buffer: PlayInByteBuffer, registry: AbstractRegistry<T>, paletteFactory: PaletteFactory): PalettedContainer<T> {
+    fun <T> read(buffer: PlayInByteBuffer, registry: AbstractRegistry<T?>, paletteFactory: PaletteFactory): PalettedContainer<T> {
         val bits = buffer.readUnsignedByte()
 
         val palette = paletteFactory.createPalette(registry, bits)

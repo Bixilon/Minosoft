@@ -48,7 +48,7 @@ class ResourceLocationRegistry(
         return this[any]
     }
 
-    override operator fun get(id: Int): ResourceLocation? {
+    override fun getOrNull(id: Int): ResourceLocation? {
         return idValueMap[id] ?: parent?.get(id)
     }
 

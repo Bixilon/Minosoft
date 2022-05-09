@@ -29,7 +29,7 @@ class ArrayPaletteData(
 
     override fun read(buffer: PlayInByteBuffer) {
         buffer.readVarInt() // minecraft ignores the length prefix
-        val longs: Int = if (versionId < V_1_16) { // ToDo: When did this changed? is just a guess
+        val longs: Int = if (versionId < LONG_BIT_SPLITTING_VERSION) {
             val bits = size * elementBits
 
             (bits + (Long.SIZE_BITS - 1)) / Long.SIZE_BITS // divide up
@@ -43,7 +43,7 @@ class ArrayPaletteData(
     override operator fun get(index: Int): Int {
         val individualValueMask = (1 shl elementBits) - 1
 
-        var blockId: Long = if (versionId < V_1_16) { // ToDo: When did this changed? is just a guess
+        var blockId: Long = if (versionId < LONG_BIT_SPLITTING_VERSION) {
             val startLong = index * elementBits / Long.SIZE_BITS
             val startOffset = index * elementBits % Long.SIZE_BITS
             val endLong = ((index + 1) * elementBits - 1) / Long.SIZE_BITS
@@ -63,5 +63,9 @@ class ArrayPaletteData(
         blockId = blockId and individualValueMask.toLong()
 
         return blockId.toInt()
+    }
+
+    companion object {
+        const val LONG_BIT_SPLITTING_VERSION = V_1_16 // ToDo: When did this changed? is just a guess
     }
 }

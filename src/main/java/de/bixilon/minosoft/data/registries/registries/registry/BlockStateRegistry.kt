@@ -42,7 +42,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
 
     override fun get(any: Any?): BlockState? {
         return when (any) {
-            is Int -> get(any)
+            is Int -> getOrNull(any)
             else -> TODO("Not yet implemented")
         }
     }
@@ -52,7 +52,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
     }
 
     fun forceGet(id: Int): BlockState? {
-        return idMap[id] ?: parent?.get(id) ?: let {
+        return idMap[id] ?: parent?.getOrNull(id) ?: let {
             if (flattened) {
                 null
             } else {
@@ -61,7 +61,12 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         }
     }
 
+    @Deprecated("Use getOrNull", ReplaceWith("getOrNull(id)"))
     override fun get(id: Int): BlockState? {
+        return getOrNull(id)
+    }
+
+    override fun getOrNull(id: Int): BlockState? {
         if (id == ProtocolDefinition.AIR_BLOCK_ID) {
             return null
         }

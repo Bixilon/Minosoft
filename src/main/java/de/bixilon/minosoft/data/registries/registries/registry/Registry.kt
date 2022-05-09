@@ -47,8 +47,8 @@ open class Registry<T : RegistryItem>(
             null -> return null
             is JsonPrimitive -> {
                 when {
-                    json.isString -> get(json.asString.toResourceLocation())!!
-                    json.isNumber -> get(json.asInt)
+                    json.isString -> get(json.asString.toResourceLocation())
+                    json.isNumber -> getOrNull(json.asInt)
                     else -> TODO()
                 }
             }
@@ -59,7 +59,7 @@ open class Registry<T : RegistryItem>(
     override operator fun get(any: Any?): T? {
         return when (any) {
             null -> null
-            is Number -> get(any.toInt())
+            is Number -> getOrNull(any.toInt())
             is JsonElement -> get(any)
             is ResourceLocation -> get(any)
             is String -> get(any)
@@ -97,8 +97,8 @@ open class Registry<T : RegistryItem>(
         return get(resourceLocation.resourceLocation)
     }
 
-    override operator fun get(id: Int): T {
-        return idValueMap[id] ?: parent?.get(id) ?: throw NullPointerException("Can not find item with id $id")
+    override fun getOrNull(id: Int): T? {
+        return idValueMap[id] ?: parent?.getOrNull(id)
     }
 
     override fun getId(value: T): Int {

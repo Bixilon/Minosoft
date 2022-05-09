@@ -45,7 +45,7 @@ class RecipeRegistry(
         } ?: parent?.get(any)
     }
 
-    override fun get(id: Int): Recipe? {
+    override fun getOrNull(id: Int): Recipe? {
         return idValueMap[id] ?: parent?.get(id)
     }
 

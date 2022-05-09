@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
@@ -60,5 +61,9 @@ class ConnectionUtil(
         connection.player.velocity = Vec3d.EMPTY
         connection.world.audioPlayer?.stopAllSounds()
         connection.world.particleRenderer?.removeAllParticles()
+        connection.player.openedContainer?.let {
+            connection.player.openedContainer = null
+            connection.fireEvent(ContainerCloseEvent(connection, it.id ?: -1, it))
+        }
     }
 }

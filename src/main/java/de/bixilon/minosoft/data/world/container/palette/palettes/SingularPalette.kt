@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.world.container.palette.palettes
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-class SingularPalette<T>(private val registry: AbstractRegistry<T>) : Palette<T> {
+class SingularPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T> {
     override val bits: Int = 0
     var item: T? = null
         private set
 
     override fun read(buffer: PlayInByteBuffer) {
-        item = registry[buffer.readVarInt()]
+        item = registry.getOrNull(buffer.readVarInt())
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun get(index: Int): T {
-        return item as T
+    override fun getOrNull(id: Int): T? {
+        return item
     }
 }

@@ -24,7 +24,7 @@ class ItemRegistry(
 ) : Registry<Item>(parent = parent) {
     private var flattened = false
 
-    override fun get(id: Int): Item {
+    override fun getOrNull(id: Int): Item? {
         return if (!flattened) {
             val itemId = id ushr 16
             val itemMeta = id and 0xFFFF
@@ -33,13 +33,9 @@ class ItemRegistry(
             if (itemMeta > 0 && itemMeta < Short.MAX_VALUE) {
                 versionItemId = versionItemId or itemMeta
             }
-            return try {
-                super.get(versionItemId)
-            } catch (exception: NullPointerException) {
-                super.get(itemId shl 16) // ignore meta data ?
-            }
+            return super.getOrNull(versionItemId) ?: super.getOrNull(itemId shl 16) // ignore meta data ?
         } else {
-            super.get(id)
+            super.getOrNull(id)
         }
     }
 

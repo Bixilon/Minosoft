@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -30,7 +30,7 @@ class PalettedContainer<T>(
     inline fun <reified V : T> unpack(): Array<V> {
         val array: Array<V?> = arrayOfNulls(data.size)
         for (i in array.indices) {
-            array[i] = palette.get(data.get(i)) as V
+            array[i] = palette.getOrNull(data.get(i)) as V
         }
         return array.unsafeCast()
     }
