@@ -24,13 +24,13 @@ import java.util.*
 object LightUtil {
     val EMPTY_LIGHT_ARRAY = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
 
-    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: DimensionProperties): ChunkData {
+    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, emptySkyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, dimension: DimensionProperties): ChunkData {
         val skyLight = if (dimension.hasSkyLight || buffer.versionId > V_1_16) { // ToDo: find out version
-            readLightArray(buffer, skyLightMask, dimension)
+            readLightArray(buffer, skyLightMask, emptySkyLightMask, dimension)
         } else {
             null
         }
-        val blockLight = readLightArray(buffer, blockLightMask, dimension)
+        val blockLight = readLightArray(buffer, blockLightMask, emptyBlockLightMask, dimension)
 
         val chunkData = ChunkData()
         val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
@@ -54,14 +54,16 @@ object LightUtil {
         return chunkData
     }
 
-    private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, dimension: DimensionProperties): Triple<Array<ByteArray?>, ByteArray?, ByteArray?> {
+    private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, emptyMask: BitSet, dimension: DimensionProperties): Triple<Array<ByteArray?>, ByteArray?, ByteArray?> {
+        val sections = dimension.sections
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
             buffer.readVarInt() // section count
         }
+        check(sections in 0..ProtocolDefinition.CHUNK_MAX_SECTIONS) { "Sections out of bounds: $sections" }
 
-        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
+        val light: Array<ByteArray?> = arrayOfNulls(sections)
 
-        val bottomLight = if (lightMask[0]) {
+        val bottomLight = if (lightMask[0] && !emptyMask[0]) {
             buffer.readByteArray(buffer.readVarInt())
         } else {
             null
@@ -71,12 +73,15 @@ object LightUtil {
             if (!lightMask[sectionIndex + 1]) { // 1 offset for the bottom section (-1. section)
                 continue
             }
+            if (emptyMask[sectionIndex + 1]) { // 1 offset for the bottom section (-1. section)
+                continue
+            }
 
             light[sectionIndex] = buffer.readByteArray(buffer.readVarInt())
         }
 
 
-        val topLight = if (lightMask[dimension.sections]) {
+        val topLight = if (lightMask[sections + 1] && !emptyMask[sections + 1]) {
             buffer.readByteArray(buffer.readVarInt())
         } else {
             null
@@ -86,7 +91,7 @@ object LightUtil {
     }
 
     fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray): ByteArray {
-        check(blockLightArray.size == skyLightArray.size)
+        check(blockLightArray.size == skyLightArray.size) { "Size difference: ${blockLightArray.size}, ${skyLightArray.size}" }
         val light = ByteArray(blockLightArray.size * 2)
 
         var skyLight: Int

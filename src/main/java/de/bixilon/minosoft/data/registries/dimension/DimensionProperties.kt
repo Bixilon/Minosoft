@@ -57,6 +57,10 @@ data class DimensionProperties(
     val sections = maxSection - minSection
 
     init {
+        check(maxSection > minSection) { "Upper section can not be lower that the lower section ($minSection > $maxSection)" }
+        check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
+        check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
+
         val ambientLight = 0.0f // ToDo: 0.1 in nether
 
         for (i in lightLevels.indices) {

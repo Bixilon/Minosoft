@@ -63,6 +63,13 @@ public final class ProtocolDefinition {
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
     public static final Vec3i CHUNK_SECTION_SIZE = new Vec3i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_HEIGHT_Y, ProtocolDefinition.SECTION_WIDTH_Z);
+
+    public static final int CHUNK_MIN_Y = -2048;
+    public static final int CHUNK_MIN_SECTION = CHUNK_MIN_Y / SECTION_HEIGHT_Y;
+    public static final int CHUNK_MAX_Y = 2048;
+    public static final int CHUNK_MAX_SECTION = CHUNK_MAX_Y / SECTION_HEIGHT_Y;
+    public static final int CHUNK_MAX_HEIGHT = CHUNK_MAX_Y - CHUNK_MIN_Y;
+    public static final int CHUNK_MAX_SECTIONS = CHUNK_MAX_HEIGHT / SECTION_HEIGHT_Y;
     public static final int ITEM_STACK_MAX_SIZE = 64;
 
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();

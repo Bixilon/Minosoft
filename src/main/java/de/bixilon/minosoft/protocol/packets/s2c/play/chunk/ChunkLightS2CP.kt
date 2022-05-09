@@ -41,20 +41,22 @@ class ChunkLightS2CP @JvmOverloads constructor(buffer: PlayInByteBuffer, chunkPo
 
         val skyLightMask: BitSet
         val blockLightMask: BitSet
+        val emptySkyLightMask: BitSet
+        val emptyBlockLightMask: BitSet
 
         if (buffer.versionId < ProtocolVersions.V_20W49A) {
             skyLightMask = KUtil.bitSetOf(buffer.readVarLong())
             blockLightMask = KUtil.bitSetOf(buffer.readVarLong())
-            buffer.readVarLong() // emptyBlockLightMask
-            buffer.readVarLong() // emptySkyLightMask
+            emptySkyLightMask = KUtil.bitSetOf(buffer.readVarLong())
+            emptyBlockLightMask = KUtil.bitSetOf(buffer.readVarLong())
         } else {
             skyLightMask = BitSet.valueOf(buffer.readLongArray())
             blockLightMask = BitSet.valueOf(buffer.readLongArray())
-            buffer.readLongArray() // emptySkyLightMask
-            buffer.readLongArray() // emptyBlockLightMask
+            emptySkyLightMask = BitSet.valueOf(buffer.readLongArray())
+            emptyBlockLightMask = BitSet.valueOf(buffer.readLongArray())
         }
 
-        chunkData = readLightPacket(buffer, skyLightMask, blockLightMask, buffer.connection.world.dimension!!)
+        chunkData = readLightPacket(buffer, skyLightMask, emptySkyLightMask, blockLightMask, emptyBlockLightMask, buffer.connection.world.dimension!!)
     }
 
     override fun log(reducedLog: Boolean) {
