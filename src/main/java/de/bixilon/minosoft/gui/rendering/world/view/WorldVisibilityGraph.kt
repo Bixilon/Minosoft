@@ -36,6 +36,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
+/**
+ * Handles visibility of objects
+ *
+ * Credit for occlusion culling:
+ *  - https://github.com/stackotter/delta-client (with big thanks to @stackotter for ideas and explanation!)
+ *  - https://tomcc.github.io/2014/08/31/visibility-1.html
+ */
 class WorldVisibilityGraph(
     private val renderWindow: RenderWindow,
     camera: Camera,
