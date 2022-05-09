@@ -195,7 +195,7 @@ class WorldVisibilityGraph(
             chunkCache[x] = array
         }
         val y = chunkPosition.y - chunkMin.y
-        if (y >= chunkCache.size || y < 0) {
+        if (y >= array.size || y < 0) {
             return null
         }
         var chunk = array[y]
