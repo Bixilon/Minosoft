@@ -125,7 +125,7 @@ class ItemElement(
         return true
     }
 
-    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element? {
+    override fun onDragMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int, draggable: Dragged): Element {
         if (action != MouseActions.PRESS) {
             return this
         }

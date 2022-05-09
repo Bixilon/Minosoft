@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,15 +21,23 @@ class ArrayPaletteData(
     val elementBits: Int,
     override val size: Int,
 ) : PaletteData {
+    private lateinit var data: LongArray
+
     init {
         check(elementBits in 0..32)
     }
 
-    private lateinit var data: LongArray
-
-
     override fun read(buffer: PlayInByteBuffer) {
-        data = buffer.readLongArray()
+        buffer.readVarInt() // minecraft ignores the length prefix
+        val longs: Int = if (versionId < V_1_16) { // ToDo: When did this changed? is just a guess
+            val bits = size * elementBits
+
+            (bits + (Long.SIZE_BITS - 1)) / Long.SIZE_BITS // divide up
+        } else {
+            val elementsPerLong = Long.SIZE_BITS / elementBits
+            (size + elementsPerLong - 1) / elementsPerLong
+        }
+        data = buffer.readLongArray(longs)
     }
 
     override operator fun get(index: Int): Int {

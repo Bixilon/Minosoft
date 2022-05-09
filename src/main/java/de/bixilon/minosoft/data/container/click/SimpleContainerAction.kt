@@ -51,6 +51,8 @@ class SimpleContainerAction(
         val target = container.slots[slot]
         try {
             if (slot == null) {
+                // slot id is null, we are not targeting anything
+                // -> drop item into the void
                 if (count == ContainerCounts.ALL) {
                     floatingItem.item._count = 0
                 } else {
@@ -62,6 +64,7 @@ class SimpleContainerAction(
             val matches = floatingItem.matches(target)
 
             if (target != null && matches) {
+                // we can remove or merge the item
                 if (slotType?.canPut(container, slot, floatingItem) == true) {
                     // merge
                     val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
@@ -85,9 +88,12 @@ class SimpleContainerAction(
                 return
             }
             if (target != null && slotType?.canRemove(container, slot, target) != true) {
+                // we can not remove the item from the slot, cancelling
                 return
             }
+
             if (slotType?.canPut(container, slot, floatingItem) != true) {
+                // when can not put any item in there, cancel
                 return
             }
             // swap
