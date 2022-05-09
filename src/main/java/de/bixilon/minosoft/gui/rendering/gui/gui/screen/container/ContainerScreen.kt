@@ -60,6 +60,10 @@ abstract class ContainerScreen<C : Container>(
         return Pair(containerElement, position)
     }
 
+    override fun onOpen() {
+        guiRenderer.connection.player.openedContainer = container
+    }
+
     override fun onClose() {
         super.onClose()
         container.onClose()

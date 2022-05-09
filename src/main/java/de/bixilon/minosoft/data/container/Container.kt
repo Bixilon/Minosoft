@@ -208,7 +208,10 @@ open class Container(
             connection.player.containers -= id
         }
         // minecraft behavior, when opening the inventory an open packet is never sent, but a close is
-        connection.sendPacket(CloseContainerC2SP(id))
+
+        if (connection.player.openedContainer == this) {
+            connection.sendPacket(CloseContainerC2SP(id))
+        }
     }
 
     override fun iterator(): Iterator<Map.Entry<Int, ItemStack>> {

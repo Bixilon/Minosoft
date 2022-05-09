@@ -100,6 +100,7 @@ class LocalPlayerEntity(
             equipment.remove(InventorySlots.EquipmentSlots.MAIN_HAND)
             equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(value) ?: return
         }
+    var openedContainer: Container? = null
 
     val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()
 
