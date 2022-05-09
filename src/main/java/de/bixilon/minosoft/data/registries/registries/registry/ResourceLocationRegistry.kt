@@ -49,7 +49,7 @@ class ResourceLocationRegistry(
     }
 
     override fun getOrNull(id: Int): ResourceLocation? {
-        return idValueMap[id] ?: parent?.get(id)
+        return idValueMap[id] ?: parent?.getOrNull(id)
     }
 
     override fun getId(value: ResourceLocation): Int {
