@@ -29,7 +29,6 @@ import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
@@ -45,7 +44,6 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
-import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -289,23 +287,10 @@ abstract class Entity(
     val cameraAABB: AABB
         get() = defaultAABB + cameraPosition
 
-    val hitBoxColor: RGBColor
-        get() {
-            return when {
-                isInvisible -> ChatColors.GREEN
-                this is PlayerEntity -> {
-                    val chestPlate = equipment[EquipmentSlots.CHEST]
-                    if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
-                        chestPlate._display?.dyeColor?.let { return it }
-                    }
-                    val formattingCode = tabListItem.team?.formattingCode
-                    if (formattingCode is RGBColor) {
-                        return formattingCode
-                    }
-                    return ChatColors.RED
-                }
-                else -> ChatColors.WHITE
-            }
+    open val hitBoxColor: RGBColor
+        get() = when {
+            isInvisible -> ChatColors.GREEN
+            else -> ChatColors.WHITE
         }
 
 

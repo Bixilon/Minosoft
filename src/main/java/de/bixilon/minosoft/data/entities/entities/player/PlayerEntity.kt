@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.Poses
@@ -27,6 +28,9 @@ import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -96,6 +100,22 @@ abstract class PlayerEntity(
             position = clampedPosition
         }
     }
+
+    override val hitBoxColor: RGBColor
+        get() {
+            if (this.isInvisible) {
+                return ChatColors.GREEN
+            }
+            val chestPlate = equipment[InventorySlots.EquipmentSlots.CHEST]
+            if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
+                chestPlate._display?.dyeColor?.let { return it }
+            }
+            val formattingCode = tabListItem.team?.formattingCode
+            if (formattingCode is RGBColor) {
+                return formattingCode
+            }
+            return ChatColors.RED
+        }
 
     companion object {
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
