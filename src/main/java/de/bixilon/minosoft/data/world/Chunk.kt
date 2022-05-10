@@ -174,7 +174,7 @@ class Chunk(
     private fun getOrPut(sectionHeight: Int): ChunkSection? {
         val sections = sections ?: return null
         val sectionIndex = sectionHeight - lowestSection
-        if (sectionIndex < 0 || sectionIndex > sections.size) {
+        if (sectionIndex < 0 || sectionIndex >= sections.size) {
             return null
         }
 
