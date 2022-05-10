@@ -16,16 +16,21 @@ package de.bixilon.minosoft.util
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.terminal.RunConfiguration
 
 object RenderPolling {
     val RENDERING_LATCH = CountUpAndDownLatch(Int.MAX_VALUE shr 1)
     var rendering: Rendering? = null
+    val ENABLED = RunConfiguration.OPEN_Gl_ON_FIRST_THREAD
 
 
     /**
-     * Polls rendering (if opengl context is forced on the main thread)
+     * Eventually polls rendering (if opengl context is forced on the main thread)
      */
     internal fun pollRendering() {
+        if (!ENABLED) {
+            return
+        }
         check(Thread.currentThread() == Minosoft.MAIN_THREAD) { "Current thread is not the main thread!" }
         while (true) {
             RENDERING_LATCH.waitForChange()

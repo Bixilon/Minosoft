@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.RenderPolling
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -34,7 +33,7 @@ class Rendering(private val connection: PlayConnection) {
         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
         latch.inc()
         this.latch = latch
-        if (RunConfiguration.OPEN_Gl_ON_FIRST_THREAD) {
+        if (RenderPolling.ENABLED) {
             RenderPolling.rendering = this
             RenderPolling.RENDERING_LATCH.dec()
             return
@@ -45,7 +44,7 @@ class Rendering(private val connection: PlayConnection) {
     fun start() {
         val latch = this.latch ?: throw IllegalStateException("Rendering not initialized yet!")
         startAudioPlayerThread(latch)
-        if (RunConfiguration.OPEN_Gl_ON_FIRST_THREAD) {
+        if (RenderPolling.ENABLED) {
             startRenderWindow(latch)
         } else {
             startRenderWindowThread(latch)
