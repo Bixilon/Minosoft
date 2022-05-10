@@ -98,8 +98,8 @@ object LightUtil {
         var blockLight: Int
 
         for (index in blockLightArray.indices) {
-            blockLight = blockLightArray[index].toInt()
-            skyLight = skyLightArray[index].toInt()
+            blockLight = minOf(blockLightArray[index].toInt(), 0x44)
+            skyLight = minOf(skyLightArray[index].toInt(), 0x44)
             light[index * 2] = ((blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)).toByte()
             light[index * 2 + 1] = (((blockLight and 0xF0) shr 4) or (skyLight and 0xF0)).toByte()
         }
