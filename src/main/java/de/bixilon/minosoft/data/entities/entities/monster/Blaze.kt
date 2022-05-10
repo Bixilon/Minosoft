@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Blaze(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
@@ -32,6 +33,8 @@ class Blaze(connection: PlayConnection, entityType: EntityType, data: EntityData
     val isBurning: Boolean
         get() = getBlazeFlag(0x01)
 
+    override val hitBoxColor: RGBColor
+        get() = RGBColor(0xFFA500FF.toInt())
 
     companion object : EntityFactory<Blaze> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("blaze")

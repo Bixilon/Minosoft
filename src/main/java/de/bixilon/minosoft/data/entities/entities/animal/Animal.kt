@@ -17,6 +17,11 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class Animal(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AgeableMob(connection, entityType, data, position, rotation)
+abstract class Animal(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AgeableMob(connection, entityType, data, position, rotation) {
+
+    override val hitBoxColor: RGBColor
+        get() = RGBColor(0xFFC0CBFF.toInt())
+}

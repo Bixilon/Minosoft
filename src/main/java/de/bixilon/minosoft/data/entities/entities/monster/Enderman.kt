@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
@@ -30,7 +32,7 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
     @get:SynchronizedEntityData
     val carriedBlock: BlockState?
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            connection.registries.blockStateRegistry[data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0)]
+            connection.registries.blockStateRegistry.getOrNull(data.get(CARRIED_BLOCK_DATA, 0) shl 4 or data.get(LEGACY_BLOCK_DATA_DATA, 0))
         } else {
             data.get<BlockState?>(CARRIED_BLOCK_DATA, null)
         }
@@ -42,6 +44,9 @@ class Enderman(connection: PlayConnection, entityType: EntityType, data: EntityD
     @get:SynchronizedEntityData
     val isStarring: Boolean
         get() = data.getBoolean(STARRING_DATA, false)
+
+    override val hitBoxColor: RGBColor
+        get() = ChatColors.DARK_GREEN
 
 
     companion object : EntityFactory<Enderman> {
