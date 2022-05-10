@@ -75,7 +75,7 @@ class DirectoryAssetsManager(
         return FileUtil.readFile(path.filePath, false)
     }
 
-    override fun nullGet(path: ResourceLocation): InputStream? {
+    override fun getOrNull(path: ResourceLocation): InputStream? {
         if (path !in assets) {
             return null
         }

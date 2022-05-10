@@ -49,7 +49,7 @@ interface AssetsManager {
     /**
      * Returns the input stream of an asset or null
      */
-    fun nullGet(path: ResourceLocation): InputStream?
+    fun getOrNull(path: ResourceLocation): InputStream?
 
     /**
      * Loads all assets

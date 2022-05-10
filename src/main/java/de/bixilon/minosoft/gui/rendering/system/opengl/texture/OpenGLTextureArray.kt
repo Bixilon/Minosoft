@@ -81,7 +81,7 @@ class OpenGLTextureArray(
 
     private fun readImageProperties(texture: ResourceLocation): ImageProperties? {
         try {
-            val data = renderWindow.connection.assetsManager.nullGet("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
+            val data = renderWindow.connection.assetsManager.getOrNull("$texture.mcmeta".toResourceLocation())?.readAsString() ?: return null
             return Jackson.MAPPER.readValue(data, ImageProperties::class.java)
         } catch (error: Throwable) {
             error.printStackTrace()

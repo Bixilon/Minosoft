@@ -35,7 +35,7 @@ class WorldBorderOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(r
         private val OVERLAY_TEXTURE = "misc/vignette".toResourceLocation().texture()
 
         override fun build(renderWindow: RenderWindow, z: Float): WorldBorderOverlay? {
-            if (renderWindow.connection.assetsManager.nullGet(OVERLAY_TEXTURE) == null) { // ToDo: Don't get twice
+            if (renderWindow.connection.assetsManager.getOrNull(OVERLAY_TEXTURE) == null) { // ToDo: Don't get twice
                 // overlay not yet available (< 1.17)
                 return null
             }
