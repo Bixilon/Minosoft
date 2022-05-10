@@ -19,7 +19,7 @@ import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.file.watcher.FileWatcherService
-import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.kutil.unsafe.UnsafeUtil
@@ -262,7 +262,8 @@ $connections
 
 -- System Details --
     Operating system: ${SystemInformation.OS_TEXT}
-    Detected operating system: ${OSUtil.OS}
+    Detected operating system: ${PlatformInfo.OS}
+    Detected architecture: ${PlatformInfo.ARCHITECTURE}
     Java version: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
     Memory: ${SystemInformation.SYSTEM_MEMORY.formatBytes()}
     CPU: ${SystemInformation.PROCESSOR_TEXT}

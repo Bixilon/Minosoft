@@ -15,7 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.os.OSTypes
+import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -228,7 +229,7 @@ class GLFWWindow(
     override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor)
-        if (OSUtil.OS == OSUtil.OSs.MAC) {
+        if (PlatformInfo.OS == OSTypes.MAC) {
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true.glfw)
         }
         glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
@@ -327,7 +328,7 @@ class GLFWWindow(
     }
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
-        if (OSUtil.OS == OSUtil.OSs.MAC) {
+        if (PlatformInfo.OS == OSTypes.MAC) {
             Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not set window icon on mac os!" } // ToDo
             return
         }

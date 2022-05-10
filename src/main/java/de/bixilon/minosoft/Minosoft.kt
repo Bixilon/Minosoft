@@ -19,7 +19,8 @@ import de.bixilon.kutil.concurrent.worker.TaskWorker
 import de.bixilon.kutil.concurrent.worker.tasks.Task
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.os.OSTypes
+import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
@@ -132,7 +133,7 @@ object Minosoft {
     }
 
     private fun warnMacOS() {
-        if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
+        if (PlatformInfo.OS == OSTypes.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you have to add the jvm argument §9-XstartOnFirstThread§r. Please ensure it is set!" }
         }
     }

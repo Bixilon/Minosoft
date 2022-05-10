@@ -15,7 +15,8 @@ package de.bixilon.minosoft.terminal
 
 import com.google.common.base.StandardSystemProperty
 import de.bixilon.kutil.file.FileUtil.slashPath
-import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.os.OSTypes
+import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.io.File
@@ -43,11 +44,11 @@ object RunConfiguration {
         if (!homeDir.endsWith(File.separator)) {
             homeDir += "/"
         }
-        homeDir += when (OSUtil.OS) {
-            OSUtil.OSs.LINUX -> ".local/share/minosoft/"
-            OSUtil.OSs.WINDOWS -> "AppData/Roaming/Minosoft/"
-            OSUtil.OSs.MAC -> "Library/Application Support/Minosoft/"
-            OSUtil.OSs.OTHER -> ".minosoft/"
+        homeDir += when (PlatformInfo.OS) {
+            OSTypes.LINUX -> ".local/share/minosoft/"
+            OSTypes.WINDOWS -> "AppData/Roaming/Minosoft/"
+            OSTypes.MAC -> "Library/Application Support/Minosoft/"
+            else -> ".minosoft/"
         }
         val folder = File(homeDir)
         if (!folder.exists() && !folder.mkdirs()) {
@@ -65,7 +66,7 @@ object RunConfiguration {
     var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
 
     var SKIP_RENDERERS: List<ResourceLocation> = listOf()
-    var OPEN_Gl_ON_FIRST_THREAD = OSUtil.OS == OSUtil.OSs.MAC
+    var OPEN_Gl_ON_FIRST_THREAD = PlatformInfo.OS == OSTypes.MAC
 
     var VERBOSE_LOGGING = false
 }

@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.eros
 
-import de.bixilon.kutil.os.OSUtil
+import de.bixilon.kutil.os.OSTypes
+import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosWarningDialog
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -36,7 +37,7 @@ object XStartOnFirstThreadWarning {
 
     @Synchronized
     fun show() {
-        if (OSUtil.OS != OSUtil.OSs.MAC || RunConfiguration.DISABLE_RENDERING) {
+        if (PlatformInfo.OS != OSTypes.MAC || RunConfiguration.DISABLE_RENDERING) {
             return
         }
         if (OtherProfileManager.selected.ignoreXStartOnFirstThreadWarning) {
