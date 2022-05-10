@@ -16,15 +16,10 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
-import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
     private val chatProfile = profile.chat.internal
@@ -42,9 +37,6 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
         }
     override val activeWhenHidden: Boolean
         get() = true
-
-    override val layoutOffset: Vec2i
-        get() = messages.size.let { Vec2i(guiRenderer.scaledSize.x - it.x, guiRenderer.scaledSize.y - it.y - ChatElement.CHAT_INPUT_HEIGHT - ChatElement.CHAT_INPUT_MARGIN * 2) }
 
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
@@ -65,7 +57,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     override fun forceSilentApply() {
         messages.silentApply()
-        _size = Vec2i(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_HEIGHT + ChatElement.CHAT_INPUT_MARGIN * 2)
+        _size = Vec2i(messages.prefMaxSize.x, messages.size.y + ChatElement.CHAT_INPUT_MARGIN * 2)
         cacheUpToDate = false
     }
 
@@ -77,7 +69,6 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
     override fun onClose() {
         active = false
         messages.onClose()
-        guiRenderer.gui.pop() // pop normal chat
     }
 
     override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
@@ -100,13 +91,5 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
-    }
-
-    companion object : HUDBuilder<LayoutedGUIElement<InternalChatElement>>, GUIBuilder<LayoutedGUIElement<InternalChatElement>> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:internal_chat_hud".toResourceLocation()
-
-        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<InternalChatElement> {
-            return LayoutedGUIElement(InternalChatElement(guiRenderer))
-        }
     }
 }

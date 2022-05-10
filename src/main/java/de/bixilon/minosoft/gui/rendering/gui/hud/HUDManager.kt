@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalChatElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.BreakProgressHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
@@ -64,7 +63,6 @@ class HUDManager(
         registerElement(BossbarLayout)
         registerElement(ChatElement)
 
-        registerElement(InternalChatElement)
         registerElement(BreakProgressHUDElement)
         registerElement(TabListElement)
         registerElement(HotbarElement)

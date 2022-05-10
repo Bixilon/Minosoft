@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
@@ -36,9 +37,10 @@ import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
+class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
     private val chatProfile = profile.chat
     private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
+    private val internal = InternalChatElement(guiRenderer).apply { parent = this@ChatElement }
     private val history: MutableList<String> = mutableListOf()
     private var historyIndex = -1
     private var active = false
@@ -58,7 +60,8 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
         get() = true
 
     override val layoutOffset: Vec2i
-        get() = Vec2i(0, guiRenderer.scaledSize.y - messages.size.y - CHAT_INPUT_HEIGHT - CHAT_INPUT_MARGIN * 2)
+        get() = Vec2i(0, guiRenderer.scaledSize.y - maxOf(messages.size.y, internal.size.y) - CHAT_INPUT_HEIGHT - CHAT_INPUT_MARGIN * 2)
+
 
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
@@ -93,10 +96,27 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
                 KeyActions.PRESS to setOf(KeyCodes.KEY_T),
             ),
         )) { guiRenderer.gui.open(ChatElement) }
+
+        internal.init()
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        super.forceRender(offset, consumer, options)
+        var messagesYStart = 0
+        val messagesSize = messages.size
+        val size = size
+        if (!chatProfile.internal.hidden) {
+            val internalSize = internal.size
+            val internalStart = if (internalSize.y > messagesSize.y) {
+                messagesYStart = internalSize.y - messagesSize.y
+                0
+            } else {
+                messagesSize.y - internalSize.y
+            }
+
+            internal.render(offset + Vec2i(size.x - internal.size.x, internalStart), consumer, options)
+        }
+        super.forceRender(offset + Vec2i(0, messagesYStart), consumer, options)
+
         if (active) {
             input.render(offset + Vec2i(CHAT_INPUT_MARGIN, size.y - (CHAT_INPUT_MARGIN + CHAT_INPUT_HEIGHT)), consumer, options)
         }
@@ -104,14 +124,12 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
 
     override fun forceSilentApply() {
         messages.silentApply()
-        _size = Vec2i(0, messages.size.y + CHAT_INPUT_HEIGHT + CHAT_INPUT_MARGIN * 2)
+        _size = Vec2i(guiRenderer.scaledSize.x, maxOf(messages.size.y, internal.size.y) + CHAT_INPUT_HEIGHT + CHAT_INPUT_MARGIN * 2)
         if (active) {
-            _size.x = guiRenderer.scaledSize.x
             input.prefMaxSize = Vec2i(size.x - CHAT_INPUT_MARGIN * 2, CHAT_INPUT_HEIGHT)
             input.forceSilentApply()
-        } else {
-            _size.x = messages.prefMaxSize.x
         }
+        internal.forceSilentApply()
         cacheUpToDate = false
     }
 
@@ -120,7 +138,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
         input.onOpen()
         messages.onOpen()
         if (!chatProfile.internal.hidden) {
-            guiRenderer.gui.push(InternalChatElement) // also open internal chat paralell
+            internal.onOpen()
         }
     }
 
@@ -129,6 +147,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
         input.value = ""
         input.onClose()
         messages.onClose()
+        internal.onClose()
     }
 
     override fun onCharPress(char: Int): Boolean {
@@ -201,13 +220,29 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
     }
 
     override fun getAt(position: Vec2i): Pair<Element, Vec2i>? {
+        var messagesYStart = 0
+        val messagesSize = messages.size
+        if (!chatProfile.internal.hidden) {
+            val internalSize = internal.size
+            val internalStart = if (internalSize.y > messagesSize.y) {
+                messagesYStart = internalSize.y - messagesSize.y
+                0
+            } else {
+                messagesSize.y - internalSize.y
+            }
+            val internalPosition = position - Vec2i(size.x - internalSize.x, internalStart)
+            if (internalPosition.x in 0..internalSize.x && internalPosition.y in 0..internalSize.y) {
+                return Pair(internal, internalPosition)
+            }
+        }
+
         if (position.x < CHAT_INPUT_MARGIN) {
             return null
         }
         val offset = Vec2i(position)
+        offset.y -= messagesYStart
         offset.x -= CHAT_INPUT_MARGIN
 
-        val messagesSize = messages.size
         if (offset.y < messagesSize.y) {
             if (offset.x > messagesSize.x) {
                 return null
