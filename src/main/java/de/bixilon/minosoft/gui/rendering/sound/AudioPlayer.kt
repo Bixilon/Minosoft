@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.sound
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
@@ -126,7 +125,7 @@ class AudioPlayer(
         if (!initialized) {
             return
         }
-        DefaultThreadPool += add@{ playSound(soundManager[sound] ?: return@add, position, volume, pitch) }
+        queue += add@{ playSound(soundManager[sound] ?: return@add, position, volume, pitch) }
     }
 
     override fun play2DSound(sound: ResourceLocation, volume: Float, pitch: Float) {
