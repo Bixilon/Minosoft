@@ -52,6 +52,12 @@ class EntityData(
             val type = connection.registries.getEntityDataIndex(field) ?: return default // field is not present (in this version)
             val data = this.data[type] ?: return default
             if (data !is K) {
+                if (data is Number) {
+                    when (K::class) {
+                        Byte::class -> return data.toByte() as K
+                        Int::class -> return data.toInt() as K
+                    }
+                }
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity data $data can not be casted to ${K::class}" }
                 return default
             }
