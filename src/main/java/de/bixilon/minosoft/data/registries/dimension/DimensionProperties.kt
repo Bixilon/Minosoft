@@ -37,7 +37,6 @@ data class DimensionProperties(
     val minY: Int = 0,
     val hasCeiling: Boolean = false,
     val ultraWarm: Boolean = false,
-    @Deprecated("Height does not differ from logical height in 1.18")
     val dataHeight: Int = DEFAULT_MAX_Y,
     val supports3DBiomes: Boolean = true,
 ) {
@@ -47,10 +46,10 @@ data class DimensionProperties(
     } else {
         minY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-    val maxSection = if (maxY < 0) {
-        (maxY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+    val maxSection = if (dataHeight < 0) {
+        (dataHeight + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
-        maxY / ProtocolDefinition.SECTION_HEIGHT_Y
+        dataHeight / ProtocolDefinition.SECTION_HEIGHT_Y
     }
 
     val lightLevels = FloatArray(16)
