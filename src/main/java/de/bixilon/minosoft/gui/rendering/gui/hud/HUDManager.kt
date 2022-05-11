@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -41,7 +42,7 @@ class HUDManager(
 ) : GUIElementDrawer, Initializable {
     val renderWindow = guiRenderer.renderWindow
 
-    private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
+    private val hudElements: LockMap<ResourceLocation, HUDElement> = lockMapOf()
 
     override var lastTickTime = 0L
 
@@ -72,12 +73,14 @@ class HUDManager(
     }
 
     fun onMatrixChange() {
-        for (element in hudElements.toSynchronizedMap().values) {
+        hudElements.lock.acquire()
+        for (element in hudElements.values) {
             if (element is LayoutedGUIElement<*>) {
                 element.element.forceApply()
             }
             element.apply()
         }
+        hudElements.lock.release()
     }
 
     override fun init() {
@@ -104,7 +107,9 @@ class HUDManager(
     }
 
     fun draw() {
-        drawElements(hudElements.toSynchronizedMap().values)
+        hudElements.lock.acquire()
+        drawElements(hudElements.values)
+        hudElements.lock.release()
     }
 
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {

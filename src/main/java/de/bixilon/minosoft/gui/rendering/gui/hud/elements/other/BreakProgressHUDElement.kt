@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -41,7 +42,7 @@ class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
     override fun draw() {
         val breakProgress = breakInteractionHandler.breakProgress
         if (breakProgress <= 0 || breakProgress >= 1.0) {
-            textElement.text = ""
+            textElement.text = ChatComponent.EMPTY
             this.percent = -1
             return
         }

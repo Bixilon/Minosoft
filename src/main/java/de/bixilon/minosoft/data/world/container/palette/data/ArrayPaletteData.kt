@@ -21,6 +21,8 @@ class ArrayPaletteData(
     val elementBits: Int,
     override val size: Int,
 ) : PaletteData {
+    private val singleValueMask = (1 shl elementBits) - 1
+    private val valuesPerLong = Long.SIZE_BITS / elementBits
     private lateinit var data: LongArray
 
     init {
@@ -34,17 +36,14 @@ class ArrayPaletteData(
 
             (bits + (Long.SIZE_BITS - 1)) / Long.SIZE_BITS // divide up
         } else {
-            val elementsPerLong = Long.SIZE_BITS / elementBits
-            (size + elementsPerLong - 1) / elementsPerLong
+            (size + valuesPerLong - 1) / valuesPerLong
         }
         data = buffer.readLongArray(longs)
     }
 
     override operator fun get(index: Int): Int {
-        val individualValueMask = (1 shl elementBits) - 1
-
-        var blockId: Long = if (versionId < LONG_BIT_SPLITTING_VERSION) {
-            val startLong = index * elementBits / Long.SIZE_BITS
+        val blockId: Long = if (versionId < LONG_BIT_SPLITTING_VERSION) {
+            val startLong = index * valuesPerLong
             val startOffset = index * elementBits % Long.SIZE_BITS
             val endLong = ((index + 1) * elementBits - 1) / Long.SIZE_BITS
 
@@ -55,14 +54,12 @@ class ArrayPaletteData(
                 data[startLong] ushr startOffset or (data[endLong] shl endOffset)
             }
         } else {
-            val startLong = index / (Long.SIZE_BITS / elementBits)
-            val startOffset = index % (Long.SIZE_BITS / elementBits) * elementBits
+            val startLong = index / valuesPerLong
+            val startOffset = index % valuesPerLong * elementBits
             data[startLong] ushr startOffset
         }
 
-        blockId = blockId and individualValueMask.toLong()
-
-        return blockId.toInt()
+        return blockId.toInt() and singleValueMask
     }
 
     companion object {
