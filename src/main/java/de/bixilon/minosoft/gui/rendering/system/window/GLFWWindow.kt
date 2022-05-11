@@ -133,6 +133,15 @@ class GLFWWindow(
             if (field == value) {
                 return
             }
+            //  ******************* WAIT *******************
+            // So you found that option...
+            // Good search, maybe I should hide it a bit more
+            // about v*s*y*n*c: Why the hell would you want to disable it?
+            // it makes no sense, you are always 50ms behind, because of position interpolating
+            // same applied to minecraft
+            // more fps? flexing? enable exper*imental f|p|s.
+            // to benchmark, yes. understandable. search in the config and set it to 0
+            // to compare with minecraft? not needed.
             glfwSwapInterval(value)
             field = value
         }

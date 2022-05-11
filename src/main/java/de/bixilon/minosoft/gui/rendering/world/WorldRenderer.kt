@@ -17,8 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
@@ -98,19 +96,21 @@ class WorldRenderer(
     private val loadedMeshesLock = SimpleLock()
 
     val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
-    private val preparingTasks: MutableSet<SectionPrepareTask> = synchronizedSetOf() // current running section preparing tasks
+    private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
-    private val queue: MutableList<WorldQueueItem> = synchronizedListOf() // queue, that is visible, and should be rendered
+    private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
+    private val queueSet: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
     private val queueLock = SimpleLock()
     private val culledQueue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val culledQueueLock = SimpleLock()
 
     // ToDo: Sometimes if you clear the chunk cache a ton of times, the workers are maxed out and nothing happens anymore
     val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
-    private val meshesToLoad: MutableList<WorldQueueItem> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshesToLoad: MutableList<WorldQueueItem> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshesToLoadSet: MutableSet<WorldQueueItem> = HashSet()
     private val meshesToLoadLock = SimpleLock()
-    private val meshesToUnload: MutableList<WorldMesh> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshesToUnload: MutableList<WorldMesh> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
     private val meshesToUnloadLock = SimpleLock()
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
@@ -348,7 +348,9 @@ class WorldRenderer(
         culledQueue.clear()
         loadedMeshes.clear()
         queue.clear()
+        queueSet.clear()
         meshesToLoad.clear()
+        meshesToLoadSet.clear()
 
         clearVisibleNextFrame = true
 
@@ -375,8 +377,10 @@ class WorldRenderer(
         culledQueue.remove(chunkPosition)
 
         queue.removeAll { it.chunkPosition == chunkPosition }
+        queueSet.removeAll { it.chunkPosition == chunkPosition }
 
         meshesToLoad.removeAll { it.chunkPosition == chunkPosition }
+        meshesToLoadSet.removeAll { it.chunkPosition == chunkPosition }
 
         preparingTasksLock.acquire()
         for (task in preparingTasks) {
@@ -393,17 +397,17 @@ class WorldRenderer(
         }
 
         loadedMeshesLock.unlock()
-        queueLock.unlock()
         culledQueueLock.unlock()
         meshesToLoadLock.unlock()
         meshesToUnloadLock.unlock()
+        queueLock.unlock()
     }
 
     private fun sortQueue() {
-        // ToDo: This dirty sorts the queue without locking. Check for crashes...
-        //  queueLock.lock()
+        // ToDo: This dirty sorts the queue without really locking it. Check for crashes...
+        queueLock.lock()
         queue.sortBy { (it.center - cameraPosition).length2() }
-        // queueLock.unlock()
+        queueLock.unlock()
     }
 
     private fun workQueue() {
@@ -418,7 +422,9 @@ class WorldRenderer(
             if (queue.size == 0) {
                 break
             }
-            items += queue.removeAt(0)
+            val item = queue.removeAt(0)
+            queueSet.remove(item)
+            items += item
         }
         queueLock.unlock()
         for (item in items) {
@@ -450,13 +456,16 @@ class WorldRenderer(
                     item.mesh = mesh
                     meshesToLoadLock.lock()
                     locked = true
-                    meshesToLoad.removeIf { it == item } // Remove duplicates
+                    if (meshesToLoadSet.remove(item)) {
+                        meshesToLoad.remove(item) // Remove duplicates
+                    }
                     if (item.chunkPosition == cameraChunkPosition) {
                         // still higher priority
                         meshesToLoad.add(0, item)
                     } else {
                         meshesToLoad += item
                     }
+                    meshesToLoadSet += item
                     meshesToLoadLock.unlock()
                 } catch (exception: Throwable) {
                     if (locked) {
@@ -500,9 +509,13 @@ class WorldRenderer(
             }
         }
 
-        queue.removeAll { it.chunkPosition == item.chunkPosition && it.sectionHeight == item.sectionHeight }
+        if (queueSet.remove(item)) {
+            queueSet.remove(item)
+        }
 
-        meshesToLoad.removeAll { it.chunkPosition == item.chunkPosition && it.sectionHeight == item.sectionHeight }
+        if (meshesToLoadSet.remove(item)) {
+            meshesToLoad.remove(item)
+        }
 
         preparingTasksLock.acquire()
         for (task in preparingTasks) {
@@ -538,12 +551,15 @@ class WorldRenderer(
         if (visible) {
             item.neighbours = ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight)
             queueLock.lock()
-            queue.removeIf { it == item } // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
+            if (queueSet.remove(item)) {
+                queue.remove(item) // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
+            }
             if (chunkPosition == cameraChunkPosition) {
                 queue.add(0, item)
             } else {
                 queue += item
             }
+            queueSet += item
             queueLock.unlock()
             return true
         } else {
@@ -591,9 +607,9 @@ class WorldRenderer(
     }
 
     private fun loadMeshes() {
-        meshesToLoadLock.acquire()
+        meshesToLoadLock.lock()
         if (meshesToLoad.isEmpty()) {
-            meshesToLoadLock.release()
+            meshesToLoadLock.unlock()
             return
         }
 
@@ -603,6 +619,7 @@ class WorldRenderer(
 
         while ((TimeUtil.millis - time < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
+            meshesToLoadSet.remove(item)
             val mesh = item.mesh ?: continue
 
             mesh.load()
@@ -622,7 +639,7 @@ class WorldRenderer(
                 this.visible.addMesh(mesh)
             }
         }
-        meshesToLoadLock.release()
+        meshesToLoadLock.unlock()
 
         if (addedMeshes > 0) {
             visible.sort()
