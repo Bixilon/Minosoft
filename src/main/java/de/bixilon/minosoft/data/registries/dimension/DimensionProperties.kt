@@ -40,16 +40,16 @@ data class DimensionProperties(
     val dataHeight: Int = DEFAULT_MAX_Y,
     val supports3DBiomes: Boolean = true,
 ) {
-    val maxY = logicalHeight + minY
+    val maxY = dataHeight + minY
     val minSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
         minY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-    val maxSection = if (dataHeight < 0) {
-        (dataHeight + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+    val maxSection = if (maxY < 0) {
+        (maxY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
-        dataHeight / ProtocolDefinition.SECTION_HEIGHT_Y
+        maxY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
 
     val lightLevels = FloatArray(16)
@@ -84,12 +84,12 @@ data class DimensionProperties(
                 bedWorks = data["bed_works"]?.toBoolean() ?: false,
                 skyProperties = ResourceLocation(data["effects"].nullCast<String>() ?: "overworld"),
                 hasRaids = data["has_raids"]?.toBoolean() ?: false,
-                logicalHeight = data["logical_height"]?.toInt() ?: 256,
+                logicalHeight = data["logical_height"]?.toInt() ?: DEFAULT_MAX_Y,
                 coordinateScale = data["coordinate_scale"].nullCast() ?: 0.0,
                 minY = data["min_y"]?.toInt() ?: 0,
                 hasCeiling = data["has_ceiling"]?.toBoolean() ?: false,
                 ultraWarm = data["ultrawarm"]?.toBoolean() ?: false,
-                dataHeight = data["height"]?.toInt() ?: 256,
+                dataHeight = data["height"]?.toInt() ?: DEFAULT_MAX_Y,
                 supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: true,
             )
         }
