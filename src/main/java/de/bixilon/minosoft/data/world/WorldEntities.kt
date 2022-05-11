@@ -16,6 +16,8 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -185,7 +187,7 @@ class WorldEntities : Iterable<Entity> {
         lock.acquire()
         val latch = CountUpAndDownLatch(entities.size)
         for (entity in entities) {
-            DefaultThreadPool += { entity.tick(); latch.dec() }
+            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGH) { entity.tick(); latch.dec() }
         }
         lock.release()
         latch.await()

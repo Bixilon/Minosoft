@@ -18,6 +18,8 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
@@ -274,7 +276,7 @@ class World(
                 latch.dec()
                 continue
             }
-            DefaultThreadPool += { chunk.tick(connection, chunkPosition); latch.dec() }
+            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition); latch.dec() }
         }
         chunks.lock.release()
         border.tick()
