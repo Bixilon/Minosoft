@@ -28,7 +28,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var dimension: DimensionProperties
         private set

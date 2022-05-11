@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val position: Vec3d
     val rotation: EntityRotation

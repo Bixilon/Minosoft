@@ -65,5 +65,6 @@ class ConnectionUtil(
             connection.player.openedContainer = null
             connection.fireEvent(ContainerCloseEvent(connection, it.id ?: -1, it))
         }
+        connection.player.healthCondition.hp = 20.0f
     }
 }

@@ -28,6 +28,7 @@ enum class PlayConnectionStates : Translatable {
 
     LOGGING_IN,
     JOINING,
+    DEAD,
 
     SPAWNING,
 

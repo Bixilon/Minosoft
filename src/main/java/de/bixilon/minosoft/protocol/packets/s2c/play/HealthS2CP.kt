@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -42,8 +43,14 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         connection.fireEvent(UpdateHealthEvent(connection, this))
 
-        if (hp == 0.0f && connection.profiles.connection.autoRespawn) {
-            connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+        if (hp == 0.0f) {
+            if (connection.state == PlayConnectionStates.PLAYING) {
+                connection.state = PlayConnectionStates.DEAD
+            }
+
+            if (connection.profiles.connection.autoRespawn) {
+                connection.network.send(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
+            }
         }
     }
 

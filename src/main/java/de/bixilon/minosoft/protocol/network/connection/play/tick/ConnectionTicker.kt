@@ -22,8 +22,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ConnectionTicker(private val connection: PlayConnection) {
-    private val lock = SimpleLock()
     private val tasks: MutableSet<TimeWorkerTask> = mutableSetOf()
+    private val lock = SimpleLock()
+    private var registered = false
 
 
     fun init() {
@@ -38,8 +39,10 @@ class ConnectionTicker(private val connection: PlayConnection) {
 
 
     private fun register() {
+        if (registered) {
+            return
+        }
         lock.lock()
-        _unregister()
         tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
             connection.world.entities.tick()
         }
@@ -52,19 +55,21 @@ class ConnectionTicker(private val connection: PlayConnection) {
         for (task in tasks) {
             TimeWorker += task
         }
+        registered = true
         lock.unlock()
     }
 
-    private fun _unregister() {
+    private fun unregister() {
+        if (!registered) {
+            return
+        }
+        lock.lock()
+
         for (task in tasks) {
             TimeWorker -= task
         }
         tasks.clear()
-    }
-
-    private fun unregister() {
-        lock.lock()
-        _unregister()
+        registered = false
         lock.unlock()
     }
 
