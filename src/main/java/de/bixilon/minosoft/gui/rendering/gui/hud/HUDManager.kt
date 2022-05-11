@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.BreakProgressHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.DebugHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.WorldInfoHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.PerformanceHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardSideElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement
@@ -66,7 +66,7 @@ class HUDManager(
         registerElement(BreakProgressHUDElement)
         registerElement(TabListElement)
         registerElement(HotbarElement)
-        registerElement(WorldInfoHUDElement)
+        registerElement(PerformanceHUDElement)
         registerElement(TitleElement)
         registerElement(ScoreboardSideElement)
     }

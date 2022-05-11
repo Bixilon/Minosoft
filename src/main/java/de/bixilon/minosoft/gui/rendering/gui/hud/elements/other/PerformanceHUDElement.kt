@@ -16,27 +16,37 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WorldInfoHUDElement(guiRenderer: GUIRenderer) : TextElement(guiRenderer, ""), LayoutedElement, Pollable {
+class PerformanceHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Pollable {
+    private val text = TextElement(guiRenderer, "", parent = this)
     override val layoutOffset: Vec2i = Vec2i(2, 2)
     private var fps = -1.0
     private var hide: Boolean = false
 
-    override fun tick() {
+
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         if (hide) {
             return
         }
+        text.render(offset, consumer, options)
+    }
+
+    override fun tick() {
         if (!poll()) {
             return
         }
-        apply()
+        forceApply()
     }
 
     override fun poll(): Boolean {
@@ -51,19 +61,17 @@ class WorldInfoHUDElement(guiRenderer: GUIRenderer) : TextElement(guiRenderer, "
         return true
     }
 
-    override fun apply() {
-        text = if (hide) {
-            ""
-        } else {
-            "§aFPS $fps"
-        }
+    override fun forceSilentApply() {
+        text._chatComponent = if (hide) ChatComponent.EMPTY else ChatComponent.of("§aFPS $fps")
+        text.forceSilentApply()
+        cacheUpToDate = false
     }
 
-    companion object : HUDBuilder<LayoutedGUIElement<WorldInfoHUDElement>> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:world_info".toResourceLocation()
+    companion object : HUDBuilder<LayoutedGUIElement<PerformanceHUDElement>> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:performance".toResourceLocation()
 
-        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<WorldInfoHUDElement> {
-            return LayoutedGUIElement(WorldInfoHUDElement(guiRenderer))
+        override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<PerformanceHUDElement> {
+            return LayoutedGUIElement(PerformanceHUDElement(guiRenderer))
         }
     }
 }
