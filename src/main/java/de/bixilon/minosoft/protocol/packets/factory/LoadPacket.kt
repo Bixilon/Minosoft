@@ -22,4 +22,5 @@ annotation class LoadPacket(
     val name: String = "",
     val threadSafe: Boolean = true,
     val parent: Boolean = false,
+    val lowPriority: Boolean = false,
 )

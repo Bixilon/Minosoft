@@ -19,13 +19,14 @@ import de.bixilon.minosoft.protocol.packets.factory.factories.PacketFactory
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 
-class S2CPacketType(
+class S2CPacketType constructor(
     val state: ProtocolStates,
     val clazz: Class<out S2CPacket>,
     private val packetErrorHandler: PacketErrorHandler?,
     val annotation: LoadPacket?,
     val factory: PacketFactory? = null,
     override val threadSafe: Boolean = annotation!!.threadSafe,
+    override val lowPriority: Boolean = annotation!!.lowPriority,
 ) : AbstractPacketType, PacketErrorHandler {
     override val direction = PacketDirection.SERVER_TO_CLIENT
 
@@ -40,6 +41,6 @@ class S2CPacketType(
 
 
     companion object {
-        val EMPTY = { S2CPacketType(ProtocolStates.HANDSHAKING, S2CPacket::class.java, null, null, null, false) }
+        val EMPTY = { S2CPacketType(ProtocolStates.HANDSHAKING, S2CPacket::class.java, null, null, null, threadSafe = false, lowPriority = false) }
     }
 }

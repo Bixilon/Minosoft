@@ -47,7 +47,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket
+@LoadPacket(lowPriority = true)
 class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val chunkPosition: Vec2i
     val chunkData: ChunkData = ChunkData()

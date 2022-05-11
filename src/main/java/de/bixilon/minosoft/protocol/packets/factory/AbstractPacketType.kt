@@ -16,4 +16,5 @@ package de.bixilon.minosoft.protocol.packets.factory
 interface AbstractPacketType {
     val direction: PacketDirection
     val threadSafe: Boolean
+    val lowPriority: Boolean
 }

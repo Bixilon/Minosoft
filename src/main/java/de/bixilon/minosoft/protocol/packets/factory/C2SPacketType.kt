@@ -21,6 +21,7 @@ class C2SPacketType(
     val clazz: Class<out C2SPacket>,
     val annotation: LoadPacket?,
     override val threadSafe: Boolean = annotation!!.threadSafe,
+    override val lowPriority: Boolean = annotation!!.lowPriority,
 ) : AbstractPacketType {
     override val direction = PacketDirection.CLIENT_TO_SERVER
 
@@ -29,6 +30,6 @@ class C2SPacketType(
     }
 
     companion object {
-        val EMPTY = { C2SPacketType(ProtocolStates.HANDSHAKING, C2SPacket::class.java, null, false) }
+        val EMPTY = { C2SPacketType(ProtocolStates.HANDSHAKING, C2SPacket::class.java, null, threadSafe = false, lowPriority = false) }
     }
 }
