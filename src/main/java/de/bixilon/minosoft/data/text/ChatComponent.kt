@@ -81,7 +81,7 @@ interface ChatComponent {
     fun cut(length: Int)
 
     companion object {
-        val EMPTY = TextComponent("")
+        val EMPTY = EmptyComponent
 
         @JvmOverloads
         fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restrictedMode: Boolean = false): ChatComponent {

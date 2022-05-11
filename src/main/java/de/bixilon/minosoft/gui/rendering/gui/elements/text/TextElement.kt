@@ -18,6 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -111,7 +112,7 @@ open class TextElement(
                 return
             }
             field = value
-            emptyMessage = value.message.isEmpty()
+            emptyMessage = value is EmptyComponent || value.message.isEmpty()
             val prefSize = Vec2i.EMPTY
             if (!emptyMessage) {
                 val renderInfo = TextRenderInfo(
