@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
-import de.bixilon.minosoft.gui.rendering.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -37,7 +36,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
     private var reapply = true
-    private var target: GenericTarget? = null
+    private var previousNeedsDraw = needsDraw
 
     override fun init() {
         crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]
@@ -47,14 +46,11 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
     override fun draw() {
         val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
 
-        if (debugHUDElement?.enabled != previousDebugEnabled || reapply) {
+        val needsDraw = needsDraw
+        if (this.needsDraw != needsDraw || debugHUDElement?.enabled != previousDebugEnabled || reapply) {
             apply()
             previousDebugEnabled = debugHUDElement?.enabled
-        }
-        val target = renderWindow.camera.targetHandler.target
-        if (target != this.target) {
-            this.target = target
-            apply()
+            this.previousNeedsDraw = needsDraw
         }
 
         val mesh = mesh ?: return
@@ -69,31 +65,33 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
         mesh.draw()
     }
 
+    private val needsDraw: Boolean
+        get() {
+            // Custom draw to make the crosshair inverted
+            if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
+                val target = renderWindow.camera.targetHandler.target
+                if (target !is EntityTarget && (target !is BlockTarget || target.blockState.block !is BlockWithEntity<*>)) {
+                    return false
+                }
+            }
+
+            val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
+
+            if (debugHUDElement?.enabled == true) {
+                // ToDo: Debug crosshair
+                // return
+            }
+            return true
+        }
+
     override fun apply() {
-        mesh?.unload()
-        this.mesh = null
         val crosshairAtlasElement = crosshairAtlasElement ?: return
 
+        mesh?.unload()
+        this.mesh = null
 
         val mesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(42))
-
-        // Custom draw to make the crosshair inverted
-        if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {
-            val target = target
-            if (target !is EntityTarget && (target !is BlockTarget || target.blockState.block !is BlockWithEntity<*>)) {
-                return
-            }
-        }
-
-        val debugHUDElement: LayoutedGUIElement<DebugHUDElement>? = guiRenderer.hud[DebugHUDElement]
-
-        if (debugHUDElement?.enabled == true) {
-            // ToDo: Debug crosshair
-            // return
-        }
-
         val start = (guiRenderer.scaledSize - CROSSHAIR_SIZE) / 2
-
         mesh.addQuad(start, start + CROSSHAIR_SIZE, crosshairAtlasElement, crosshairProfile.color, null)
 
 

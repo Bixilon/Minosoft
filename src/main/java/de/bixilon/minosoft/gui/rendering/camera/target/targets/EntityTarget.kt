@@ -86,4 +86,14 @@ class EntityTarget(
             }
             return values
         }
+
+
+    override fun hashCode(): Int {
+        return Objects.hash(position, entity, distance)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is EntityTarget) return false
+        return distance == other.distance && position == other.position && entity === other.entity
+    }
 }

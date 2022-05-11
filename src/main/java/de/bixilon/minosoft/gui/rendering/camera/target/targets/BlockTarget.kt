@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
+import java.util.*
 
 open class BlockTarget(
     position: Vec3d,
@@ -52,4 +53,12 @@ open class BlockTarget(
         return text
     }
 
+    override fun hashCode(): Int {
+        return Objects.hash(blockPosition, blockState, distance)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is BlockTarget) return false
+        return distance == other.distance && blockPosition == other.blockPosition && blockState == other.blockState
+    }
 }

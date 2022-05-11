@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
+import java.util.*
 
 class FluidTarget(
     position: Vec3d,
@@ -51,5 +52,14 @@ class FluidTarget(
         }
 
         return text
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(blockPosition, blockState, distance, fluid)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is FluidTarget) return false
+        return distance == other.distance && blockPosition == other.blockPosition && blockState == other.blockState && fluid == other.fluid
     }
 }
