@@ -265,8 +265,8 @@ class WorldRenderer(
         connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
             if (event.viewDistance < this.previousViewDistance) {
                 // Unload all chunks(-sections) that are out of view distance
-                queueLock.lock()
                 culledQueueLock.lock()
+                queueLock.lock()
                 meshesToLoadLock.lock()
                 meshesToUnloadLock.lock()
                 loadedMeshesLock.lock()
@@ -335,8 +335,8 @@ class WorldRenderer(
     }
 
     private fun unloadWorld() {
-        queueLock.lock()
         culledQueueLock.lock()
+        queueLock.lock()
         meshesToLoadLock.lock()
         loadedMeshesLock.lock()
 
@@ -370,8 +370,8 @@ class WorldRenderer(
     }
 
     private fun unloadChunk(chunkPosition: Vec2i) {
-        queueLock.lock()
         culledQueueLock.lock()
+        queueLock.lock()
         meshesToLoadLock.lock()
         meshesToUnloadLock.lock()
         loadedMeshesLock.lock()
@@ -498,8 +498,8 @@ class WorldRenderer(
     }
 
     private fun queueItemUnload(item: WorldQueueItem) {
-        queueLock.lock()
         culledQueueLock.lock()
+        queueLock.lock()
         meshesToLoadLock.lock()
         meshesToUnloadLock.lock()
         loadedMeshesLock.lock()
