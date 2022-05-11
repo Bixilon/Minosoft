@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.data.container.types.generic
 
-import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
+import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -26,11 +27,11 @@ abstract class GenericContainer(
     connection: PlayConnection,
     type: ContainerType,
     title: ChatComponent?,
-) : Container(connection, type, title) {
-    override val sections: Array<IntRange> = arrayOf(0 until rows * SLOTS_PER_ROW, rows * SLOTS_PER_ROW until rows * SLOTS_PER_ROW + INVENTORY_SLOTS)
+) : InventorySynchronizedContainer(connection, type, title, (rows * SLOTS_PER_ROW) until (rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<IntRange> = arrayOf(0 until rows * SLOTS_PER_ROW, rows * SLOTS_PER_ROW + 1 until rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS)
 
     override fun getSlotType(slotId: Int): SlotType? {
-        if (slotId in 0 until rows * SLOTS_PER_ROW + INVENTORY_SLOTS) {
+        if (slotId in 0 until rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS) {
             return DefaultSlotType
         }
         return null
@@ -40,7 +41,7 @@ abstract class GenericContainer(
         if (slotId in 0 until rows * SLOTS_PER_ROW) {
             return 0
         }
-        if (slotId in rows * SLOTS_PER_ROW until rows * SLOTS_PER_ROW + INVENTORY_SLOTS) {
+        if (slotId in rows * SLOTS_PER_ROW until rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS) {
             return 1
         }
         return null
@@ -56,6 +57,5 @@ abstract class GenericContainer(
 
     companion object {
         const val SLOTS_PER_ROW = 9
-        const val INVENTORY_SLOTS = 4 * SLOTS_PER_ROW
     }
 }

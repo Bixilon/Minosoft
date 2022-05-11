@@ -99,7 +99,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             ARMOR_OFFSET + 1 -> ChestSlotType
             ARMOR_OFFSET + 2 -> LegsSlotType
             ARMOR_OFFSET + 3 -> FeetSlotType
-            in ARMOR_OFFSET + 3..HOTBAR_OFFSET + HOTBAR_SLOTS + 1 -> DefaultSlotType // all slots, including offhand
+            in MAIN_SLOTS_START..HOTBAR_OFFSET + HOTBAR_SLOTS + 1 -> DefaultSlotType // all slots, including offhand
             else -> null
         }
     }
@@ -115,7 +115,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         return when (slotId) {
             in 0..4 -> null // crafting
             in ARMOR_OFFSET..ARMOR_OFFSET + 4 -> 0 // armor
-            in ARMOR_OFFSET + 5 until HOTBAR_OFFSET -> 1 // inventory
+            in MAIN_SLOTS_START until HOTBAR_OFFSET -> 1 // inventory
             in HOTBAR_OFFSET..HOTBAR_OFFSET + HOTBAR_SLOTS -> 2 // hotbar
             else -> null // offhand, else
         }
@@ -150,12 +150,14 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
             resourceLocation = RESOURCE_LOCATION,
             factory = this,
         )
+        const val HOTBAR_OFFSET = 36
+        const val ARMOR_OFFSET = 5
+
         const val MAIN_SLOTS_PER_ROW = 9
         const val MAIN_ROWS = 4
         const val MAIN_SLOTS = MAIN_SLOTS_PER_ROW * MAIN_ROWS
+        const val MAIN_SLOTS_START = ARMOR_OFFSET + 4
 
-        const val HOTBAR_OFFSET = 36
-        const val ARMOR_OFFSET = 5
         const val HOTBAR_SLOTS = MAIN_SLOTS_PER_ROW
         const val OFFHAND_SLOT = 45
 

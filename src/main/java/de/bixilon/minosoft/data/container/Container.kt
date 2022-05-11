@@ -96,13 +96,13 @@ open class Container(
         }
     }
 
-    fun _remove(slotId: Int): ItemStack? {
+    open fun _remove(slotId: Int): ItemStack? {
         val stack = slots.remove(slotId) ?: return null
         stack.holder?.container = null
         return stack
     }
 
-    fun remove(slotId: Int): ItemStack? {
+    open fun remove(slotId: Int): ItemStack? {
         lock.lock()
         val remove = _remove(slotId)
         lock.unlock()
@@ -112,7 +112,7 @@ open class Container(
         return remove
     }
 
-    operator fun set(slotId: Int, itemStack: ItemStack?) {
+    open operator fun set(slotId: Int, itemStack: ItemStack?) {
         try {
             lock.lock()
             if (!_set(slotId, itemStack)) {
@@ -125,7 +125,7 @@ open class Container(
         revision++
     }
 
-    fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
+    open fun _set(slotId: Int, itemStack: ItemStack?): Boolean {
         val previous = slots[slotId]
         if (itemStack == null) {
             if (previous == null) {

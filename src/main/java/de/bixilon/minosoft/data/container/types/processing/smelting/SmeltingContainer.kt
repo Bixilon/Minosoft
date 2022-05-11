@@ -18,14 +18,13 @@ import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.FuelSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
-import de.bixilon.minosoft.data.container.types.CraftingContainer
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.container.types.processing.ProcessingContainer
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : ProcessingContainer(connection, type, title) {
+abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : ProcessingContainer(connection, type, title, (SMELTING_SLOTS) until (SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS)) {
     var processTime: Int = 0
         private set
         get() = minOf(field, maxProcessTime)
@@ -62,7 +61,7 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
         if (slotId == 0 || slotId == 1) {
             return 1
         }
-        if (slotId in SMELTING_SLOTS until SMELTING_SLOTS + CraftingContainer.CRAFTING_SLOTS) {
+        if (slotId in SMELTING_SLOTS until SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
             return 2
         }
         return null

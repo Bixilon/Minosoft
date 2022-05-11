@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.container.types
 
-import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
@@ -26,8 +26,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class CraftingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : Container(connection, type, title) {
-    override val sections: Array<IntRange> = arrayOf(0..0, 1 until 1 + CRAFTING_SLOTS, 1 + CRAFTING_SLOTS until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS)
+class CraftingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, (CRAFTING_SLOTS + 1)..(CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<IntRange> = arrayOf(0 until 1, 1 until 1 + CRAFTING_SLOTS, 1 + CRAFTING_SLOTS until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS)
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId == 0) {

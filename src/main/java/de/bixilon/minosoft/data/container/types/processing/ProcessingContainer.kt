@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.container.types.processing
 
-import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : Container(connection, type, title)
+abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: IntRange) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
