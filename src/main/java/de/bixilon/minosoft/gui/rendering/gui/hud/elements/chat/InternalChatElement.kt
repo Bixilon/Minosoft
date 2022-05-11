@@ -30,7 +30,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
             messages.forceSilentApply()
             forceApply()
         }
-    override var skipDraw: Boolean
+    override var skipDraw: Boolean // skips hud draw and draws it in gui stage
         get() = chatProfile.hidden || active
         set(value) {
             chatProfile.hidden = !value

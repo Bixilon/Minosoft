@@ -52,6 +52,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             forceApply()
         }
     override var skipDraw: Boolean
+        // skips hud draw and draws it in gui stage
         get() = chatProfile.hidden || active
         set(value) {
             chatProfile.hidden = !value
@@ -270,6 +271,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun tick() {
         super.tick()
+        internal.tick()
         input.tick()
     }
 
