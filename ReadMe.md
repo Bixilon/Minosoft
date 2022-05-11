@@ -21,8 +21,8 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Multithreading and asynchronous loading
 - Debugging on protocol layer
 - LAN servers
-- Independent, I will probably accept almost all patches
 - Multiple profiles (i.e. settings for servers or minosoft in general)
+- Independent, I will probably accept almost all patches
 - Way more stuff
 
 (some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md))
