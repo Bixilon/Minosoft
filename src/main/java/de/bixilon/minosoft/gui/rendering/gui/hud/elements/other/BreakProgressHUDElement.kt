@@ -32,7 +32,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Drawable {
     private val textElement = TextElement(guiRenderer, "").apply { parent = this@BreakProgressHUDElement }
     private val breakInteractionHandler = guiRenderer.renderWindow.inputHandler.interactionManager.`break`
-    private val previousProgress = -1.0
+    private var previousProgress = -1.0
 
     override val layoutOffset: Vec2i
         get() = Vec2i((guiRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (guiRenderer.scaledSize.y - textElement.size.y) / 2)
@@ -45,6 +45,7 @@ class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
         if (this.previousProgress == breakProgress) {
             return
         }
+        this.previousProgress = breakProgress
         if (breakProgress <= 0 || breakProgress >= 1.0) {
             textElement.text = ChatComponent.EMPTY
             this.percent = -1
