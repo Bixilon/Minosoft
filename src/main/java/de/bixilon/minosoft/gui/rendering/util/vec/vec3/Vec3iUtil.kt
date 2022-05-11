@@ -51,4 +51,8 @@ object Vec3iUtil {
     fun Vec3i.max(value: Int): Vec3i {
         return Vec3i(maxOf(value, x), maxOf(value, y), maxOf(value, z))
     }
+
+    fun Vec3i.length2(): Int {
+        return x * x + y * y + z * z
+    }
 }

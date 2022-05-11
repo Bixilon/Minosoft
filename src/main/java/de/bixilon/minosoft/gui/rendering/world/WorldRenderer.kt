@@ -50,6 +50,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
@@ -59,6 +60,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.length2
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -121,6 +123,7 @@ class WorldRenderer(
 
     private var cameraPosition = Vec3.EMPTY
     private var cameraChunkPosition = Vec2i.EMPTY
+    private var cameraSectionHeight = 0
 
     val visibleSize: String
         get() = visible.sizeString
@@ -404,9 +407,14 @@ class WorldRenderer(
     }
 
     private fun sortQueue() {
-        // ToDo: This dirty sorts the queue without really locking it. Check for crashes...
         queueLock.lock()
-        queue.sortBy { (it.center - cameraPosition).length2() }
+        val cameraSectionPosition = Vec3i(cameraChunkPosition.x, cameraSectionHeight, cameraChunkPosition.y)
+        queue.sortBy {
+            if (it.chunkPosition == cameraChunkPosition) {
+                return@sortBy Int.MAX_VALUE
+            }
+            (it.sectionPosition - cameraSectionPosition).length2()
+        }
         queueLock.unlock()
     }
 
@@ -723,10 +731,18 @@ class WorldRenderer(
     private fun onFrustumChange() {
         var sortQueue = false
         val cameraPosition = connection.player.cameraPosition
+        val cameraChunkPosition = cameraPosition.blockPosition.chunkPosition
+        val cameraSectionHeight = this.cameraSectionHeight
         if (this.cameraPosition != cameraPosition) {
+            if (this.cameraChunkPosition != cameraChunkPosition) {
+                this.cameraChunkPosition = cameraChunkPosition
+                sortQueue = true
+            }
+            if (this.cameraSectionHeight != cameraSectionHeight) {
+                this.cameraSectionHeight = cameraSectionHeight
+                sortQueue = true
+            }
             this.cameraPosition = cameraPosition
-            this.cameraChunkPosition = connection.player.positionInfo.chunkPosition
-            sortQueue = true
         }
 
         val visible = VisibleMeshes(cameraPosition)
@@ -771,13 +787,15 @@ class WorldRenderer(
                 queueSection(chunkPosition, sectionHeight, ignoreFrustum = true)
             }
         }
-        if (queue.isNotEmpty()) {
+        if (sortQueue && queue.isNotEmpty()) {
             sortQueue()
+        }
+        if (queue.isNotEmpty()) {
             workQueue()
-            sortQueue = false
         }
 
         culledQueueLock.acquire()
+        queueLock.acquire()
         for ((chunkPosition, sectionHeights) in queue) {
             val originalSectionHeight = this.culledQueue[chunkPosition] ?: continue
             originalSectionHeight -= sectionHeights
@@ -785,16 +803,12 @@ class WorldRenderer(
                 this.culledQueue -= chunkPosition
             }
         }
+        queueLock.release()
         culledQueueLock.release()
 
         visible.sort()
 
         this.visible = visible
-
-
-        if (sortQueue) {
-            sortQueue()
-        }
     }
 
 
