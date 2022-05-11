@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val eventId: Int = buffer.readInt()
-    val event = buffer.connection.registries.worldEventRegistry[eventId]
+    val event = buffer.connection.registries.worldEventRegistry.getOrNull(eventId)
     var position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readByteBlockPosition()
     } else {
