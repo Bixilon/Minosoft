@@ -111,9 +111,10 @@ class InteractInteractionHandler(
     }
 
     fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
+        val entityId = connection.world.entities.getId(target.entity) ?: return InteractionResults.PASS
         // used in armor stands
         val player = connection.player
-        connection.sendPacket(EntityInteractPositionC2SP(connection, target.entity, Vec3(target.position), hand, player.isSneaking))
+        connection.sendPacket(EntityInteractPositionC2SP(entityId, Vec3(target.position), hand, player.isSneaking))
 
         if (player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.PASS
@@ -133,7 +134,7 @@ class InteractInteractionHandler(
             // ToDo: return hit.entity.interact(hand) (e.g. equipping saddle)
             return InteractionResults.PASS
         } finally {
-            connection.sendPacket(EntityEmptyInteractC2SP(connection, target.entity, hand, player.isSneaking))
+            connection.world.entities.getId(target.entity)?.let { connection.sendPacket(EntityEmptyInteractC2SP(it, hand, player.isSneaking)) }
         }
     }
 
