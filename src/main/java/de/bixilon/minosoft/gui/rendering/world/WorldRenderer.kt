@@ -297,7 +297,7 @@ class WorldRenderer(
                 meshesToLoad.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
 
                 preparingTasksLock.acquire()
-                for (task in preparingTasks.toMutableSet()) {
+                for (task in preparingTasks) {
                     if (!visibilityGraph.isChunkVisible(task.chunkPosition)) {
                         task.runnable.interrupt()
                     }
@@ -353,7 +353,7 @@ class WorldRenderer(
         clearVisibleNextFrame = true
 
         preparingTasksLock.acquire()
-        for (task in preparingTasks.toMutableSet()) {
+        for (task in preparingTasks) {
             task.runnable.interrupt()
         }
         preparingTasksLock.release()
@@ -379,7 +379,7 @@ class WorldRenderer(
         meshesToLoad.removeAll { it.chunkPosition == chunkPosition }
 
         preparingTasksLock.acquire()
-        for (task in preparingTasks.toMutableSet()) {
+        for (task in preparingTasks) {
             if (task.chunkPosition == chunkPosition) {
                 task.runnable.interrupt()
             }
@@ -505,7 +505,7 @@ class WorldRenderer(
         meshesToLoad.removeAll { it.chunkPosition == item.chunkPosition && it.sectionHeight == item.sectionHeight }
 
         preparingTasksLock.acquire()
-        for (task in preparingTasks.toMutableSet()) {
+        for (task in preparingTasks) {
             if (task.chunkPosition == item.chunkPosition && task.sectionHeight == item.sectionHeight) {
                 task.runnable.interrupt()
             }
