@@ -17,10 +17,15 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.FileNotFoundException
 import java.nio.ByteBuffer
 
 
@@ -52,7 +57,16 @@ class PNGTexture(
             return
         }
 
-        val (size, data) = assetsManager[resourceLocation].readTexture()
+        val (size, data) = try {
+            assetsManager[resourceLocation].readTexture()
+        } catch (error: Throwable) {
+            state = TextureStates.ERRORED
+            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Can not load texture $resourceLocation: $error" }
+            if (error !is FileNotFoundException) {
+                Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { error }
+            }
+            assetsManager[RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION].readTexture()
+        }
 
         this.size = size
         transparency = TextureTransparencies.OPAQUE

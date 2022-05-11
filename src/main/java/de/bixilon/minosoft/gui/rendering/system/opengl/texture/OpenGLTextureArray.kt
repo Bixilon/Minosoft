@@ -96,7 +96,7 @@ class OpenGLTextureArray(
         }
         var lastAnimationIndex = 0
         for (texture in textures.values) {
-            if (texture.state != TextureStates.LOADED) {
+            if (texture.state == TextureStates.DECLARED) {
                 texture.load(renderWindow.connection.assetsManager)
             }
 
