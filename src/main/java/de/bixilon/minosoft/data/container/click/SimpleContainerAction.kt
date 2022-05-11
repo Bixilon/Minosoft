@@ -64,6 +64,7 @@ class SimpleContainerAction(
             val matches = floatingItem.matches(target)
 
             if (target != null && matches) {
+                val previous = target.copy()
                 // we can remove or merge the item
                 if (slotType?.canPut(container, slot, floatingItem) == true) {
                     // merge
@@ -84,7 +85,7 @@ class SimpleContainerAction(
                     floatingItem.item._count += subtract
                 }
 
-                connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), target))
+                connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), previous))
                 return
             }
             if (target != null && slotType?.canRemove(container, slot, target) != true) {

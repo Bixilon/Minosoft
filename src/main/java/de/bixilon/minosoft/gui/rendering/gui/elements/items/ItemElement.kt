@@ -136,7 +136,10 @@ class ItemElement(
         if (draggable !is FloatingItem) {
             return this
         }
-        if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
+        val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
+        if (shiftDown && button == MouseButtons.LEFT) {
+            itemsElement.container.invokeAction(FastMoveContainerAction(slotId))
+        } else if (button == MouseButtons.LEFT || button == MouseButtons.RIGHT) {
             itemsElement.container.invokeAction(SimpleContainerAction(slotId, if (button == MouseButtons.LEFT) SimpleContainerAction.ContainerCounts.ALL else SimpleContainerAction.ContainerCounts.PART))
             return this
         }
