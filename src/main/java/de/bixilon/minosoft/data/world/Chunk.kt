@@ -73,6 +73,8 @@ class Chunk(
 
     operator fun get(position: Vec3i): BlockState? = get(position.x, position.y, position.z)
 
+    fun unsafeGet(position: Vec3i): BlockState? = unsafeGet(position.x, position.y, position.z)
+
     fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
         val section = getOrPut(y.sectionHeight) ?: return
         section.blocks[x, y.inSectionHeight, z] = blockState

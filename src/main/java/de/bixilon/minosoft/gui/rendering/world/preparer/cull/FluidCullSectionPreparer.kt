@@ -61,11 +61,7 @@ class FluidCullSectionPreparer(
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
     override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
-
-        val isLowestSection = sectionHeight == chunk.lowestSection
-        val isHighestSection = sectionHeight == chunk.highestSection
         val blocks = section.blocks
-        val sectionLight = section.light
         section.acquire()
         neighbours.acquire()
 
@@ -284,11 +280,11 @@ class FluidCullSectionPreparer(
                 continue
             }
             val inChunkPosition = blockPosition.inChunkPosition
-            if (fluid.matches(lastChunk[inChunkPosition + Directions.UP])) {
+            if (fluid.matches(lastChunk.unsafeGet(inChunkPosition + Directions.UP))) {
                 return 1.0f
             }
 
-            val blockState = lastChunk[inChunkPosition]
+            val blockState = lastChunk.unsafeGet(inChunkPosition)
             if (blockState == null) {
                 count++
                 continue
