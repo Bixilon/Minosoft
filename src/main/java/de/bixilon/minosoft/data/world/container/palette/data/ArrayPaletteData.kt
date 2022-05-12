@@ -43,7 +43,7 @@ class ArrayPaletteData(
 
     override operator fun get(index: Int): Int {
         val blockId: Long = if (versionId < LONG_BIT_SPLITTING_VERSION) {
-            val startLong = index * valuesPerLong
+            val startLong = index * elementBits / Long.SIZE_BITS
             val startOffset = index * elementBits % Long.SIZE_BITS
             val endLong = ((index + 1) * elementBits - 1) / Long.SIZE_BITS
 
