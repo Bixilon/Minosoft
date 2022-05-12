@@ -101,6 +101,7 @@ class WorldRenderer(
     private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
+    private var workingOnQueue = false
     private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
     private val queueSet: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
     private val queueLock = SimpleLock()
@@ -424,6 +425,12 @@ class WorldRenderer(
         if (size >= maxPreparingTasks && queue.isNotEmpty() || meshesToLoad.size >= maxMeshesToLoad) {
             return
         }
+        if (workingOnQueue) {
+            // already working on the queue
+            return
+        }
+        workingOnQueue = true
+
         val items: MutableList<WorldQueueItem> = mutableListOf()
         queueLock.lock()
         for (i in 0 until maxPreparingTasks - size) {
@@ -495,6 +502,7 @@ class WorldRenderer(
             preparingTasksLock.unlock()
             DefaultThreadPool += task.runnable
         }
+        workingOnQueue = false
     }
 
     private fun queueItemUnload(item: WorldQueueItem) {
