@@ -11,17 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol
+package de.bixilon.minosoft.protocol.protocol
 
-import de.bixilon.kutil.json.JsonObject
+import de.bixilon.minosoft.data.text.ChatComponent
+import java.util.*
 
-class MessagePublicKey(
-    val expiresAt: Long,
-    val keyString: String,
-    val signate: String,
-) {
-
-    fun toNbt(): JsonObject {
-        TODO()
-    }
-}
+class ChatMessageSender(
+    val uuid: UUID,
+    val name: ChatComponent,
+)

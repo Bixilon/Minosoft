@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.login
 
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
-import de.bixilon.minosoft.protocol.MessagePublicKey
+import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(state = ProtocolStates.LOGIN)
 class StartC2SP(
     val username: String,
-    val publicKey: MessagePublicKey? = null,
+    val publicKey: PlayerPublicKey? = null,
 ) : PlayC2SPacket {
 
     constructor(player: LocalPlayerEntity) : this(player.name)
@@ -34,7 +34,7 @@ class StartC2SP(
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(username)
         if (buffer.versionId >= ProtocolVersions.V_22W17A) {
-            buffer.writeOptional(publicKey) { buffer.writeNBT(it.toNbt()) }
+            buffer.writeOptional(publicKey) { buffer.writePublicKey(it) }
         }
     }
 
