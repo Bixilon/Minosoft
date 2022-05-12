@@ -518,7 +518,7 @@ class WorldRenderer(
         }
 
         if (queueSet.remove(item)) {
-            queueSet.remove(item)
+            queue.remove(item)
         }
 
         if (meshesToLoadSet.remove(item)) {

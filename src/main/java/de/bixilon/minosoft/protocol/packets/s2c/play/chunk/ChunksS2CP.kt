@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket
+@LoadPacket(lowPriority = true)
 class ChunksS2CP : PlayS2CPacket {
     val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
 
