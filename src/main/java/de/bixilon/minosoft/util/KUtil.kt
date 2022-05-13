@@ -188,10 +188,9 @@ object KUtil {
         if (this == null || other == null) {
             return null
         }
-        this.compareTo(other).let {
-            if (it != 0) {
-                return it
-            }
+        val compared = this.compareTo(other)
+        if (compared != 0) {
+            return compared
         }
         return null
     }

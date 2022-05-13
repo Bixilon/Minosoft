@@ -109,7 +109,7 @@ class EntityHitboxRenderer(
         if (setAvailable) {
             connection.world.entities.lock.acquire()
             for (entity in connection.world.entities) {
-                if (entity is LocalPlayerEntity && !profile.showLocal) {
+                if (entity is LocalPlayerEntity && (renderWindow.camera.firstPerson && !profile.showLocal) && !renderWindow.camera.debugView) {
                     continue
                 }
                 meshes[entity] = EntityHitbox(this, entity, visibilityGraph)

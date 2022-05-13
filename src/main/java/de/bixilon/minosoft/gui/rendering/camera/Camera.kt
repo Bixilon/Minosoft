@@ -13,22 +13,48 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
+import de.bixilon.minosoft.config.key.KeyActions
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
+import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class Camera(
-    renderWindow: RenderWindow,
+    private val renderWindow: RenderWindow,
 ) {
     val fogManager = FogManager(renderWindow)
     val matrixHandler = MatrixHandler(renderWindow, fogManager, this)
     val targetHandler = TargetHandler(renderWindow, this)
     val visibilityGraph = WorldVisibilityGraph(renderWindow, this)
 
+    @Deprecated("ToDo: Not yet implemented!")
     val firstPerson: Boolean = true // ToDo
+    var debugView: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                matrixHandler.debugRotation = matrixHandler.entity.rotation
+                matrixHandler.debugPosition = matrixHandler.entity.cameraPosition
+            }
+        }
 
     fun init() {
         matrixHandler.init()
+
+
+        renderWindow.inputHandler.registerKeyCallback("minosoft:camera_debug_view".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_V),
+                ),
+            )) {
+            debugView = it
+            renderWindow.connection.util.sendDebugMessage("Camera debug view: ${it.format()}")
+        }
     }
 
     fun draw() {

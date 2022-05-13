@@ -76,6 +76,11 @@ class MatrixHandler(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
+    private var previousDebugPosition = Vec3.EMPTY
+    private var previousDebugRotation = EntityRotation(0.0, 0.0)
+    var debugPosition = Vec3.EMPTY
+    var debugRotation = EntityRotation(0.0, 0.0)
+
 
     private val fov: Double
         get() {
@@ -105,13 +110,18 @@ class MatrixHandler(
     }
 
     fun draw() {
+        val debugView = camera.debugView
         val fov = fov
         val eyePosition = entity.eyePosition
         val rotation = entity.rotation
         val fogEnd = fogManager.fogEnd
-        if (upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) {
+        val debugPosition = debugPosition
+        val debugRotation = debugRotation
+        if ((upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) && (!debugView || (previousDebugPosition == debugPosition && previousDebugRotation == debugRotation))) {
             return
         }
+        this.previousDebugPosition = debugPosition
+        this.previousDebugRotation = debugRotation
         this.eyePosition = eyePosition
         this.rotation = rotation
         val cameraBlockPosition = eyePosition.blockPosition
@@ -122,10 +132,12 @@ class MatrixHandler(
         }
         previousFOV = fov
 
-        updateRotation(rotation)
-        updateViewMatrix(eyePosition)
+        updateRotation(if (debugView) debugRotation else rotation)
+        updateViewMatrix(if (debugView) debugPosition else eyePosition)
         updateViewProjectionMatrix()
-        frustum.recalculate()
+        if (!debugView) {
+            frustum.recalculate()
+        }
 
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
 
@@ -136,7 +148,7 @@ class MatrixHandler(
             viewProjectionMatrix = viewProjectionMatrix,
         ))
 
-        updateShaders()
+        updateShaders(if (debugView) debugPosition else eyePosition)
         upToDate = true
     }
 
@@ -155,13 +167,13 @@ class MatrixHandler(
         cameraUp = (cameraRight cross cameraFront).normalize()
     }
 
-    private fun updateShaders() {
+    private fun updateShaders(cameraPosition: Vec3) {
         for (shader in renderWindow.renderSystem.shaders) {
             if ("uViewProjectionMatrix" in shader.uniforms) {
                 shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
             }
             if ("uCameraPosition" in shader.uniforms) {
-                shader.use().setVec3("uCameraPosition", connection.player.cameraPosition)
+                shader.use().setVec3("uCameraPosition", cameraPosition)
             }
         }
     }

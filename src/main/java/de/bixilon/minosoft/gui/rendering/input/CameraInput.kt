@@ -38,6 +38,9 @@ class CameraInput(
             if (entity != player) {
                 return true
             }
+            if (renderWindow.camera.debugView) {
+                return true
+            }
 
             return false
         }
@@ -108,7 +111,16 @@ class CameraInput(
         registerKeyBindings()
     }
 
-    fun update() {
+    fun update(delta: Double) {
+        if (renderWindow.camera.debugView) {
+            val cameraFront = renderWindow.camera.matrixHandler.debugRotation.front
+            val speedMultiplier = if (renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING)) 25 else 10
+            if (renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING)) {
+                renderWindow.camera.matrixHandler.debugPosition = renderWindow.camera.matrixHandler.debugPosition + (cameraFront * delta * speedMultiplier)
+            }
+            connection.player.input = MovementInput()
+            return
+        }
         val input = if (ignoreInput) {
             MovementInput()
         } else {
@@ -129,17 +141,24 @@ class CameraInput(
     }
 
     fun mouseCallback(delta: Vec2d) {
+        if (renderWindow.camera.debugView) {
+            matrixHandler.debugRotation = mouseCallback(delta, matrixHandler.debugRotation)
+        } else if (!ignoreInput) {
+            player.rotation = mouseCallback(delta, player.rotation)
+        }
+    }
+
+    private fun mouseCallback(delta: Vec2d, rotation: EntityRotation): EntityRotation {
         delta *= 0.1f * controlsProfile.mouse.sensitivity
-        var yaw = delta.x + player.rotation.yaw
+        var yaw = delta.x + rotation.yaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = GLM.clamp(delta.y + player.rotation.pitch, -89.9, 89.9)
-        val rotation = EntityRotation(yaw, pitch)
-        player.rotation = rotation
+        val pitch = GLM.clamp(delta.y + rotation.pitch, -89.9, 89.9)
+        return EntityRotation(yaw, pitch)
     }
 
     private companion object {
