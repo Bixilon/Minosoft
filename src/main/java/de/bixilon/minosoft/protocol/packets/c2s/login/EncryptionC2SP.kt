@@ -13,11 +13,14 @@
 package de.bixilon.minosoft.protocol.packets.c2s.login
 
 import de.bixilon.kutil.base64.Base64Util.toBase64
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
+import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -25,19 +28,32 @@ import java.security.PublicKey
 import javax.crypto.SecretKey
 
 @LoadPacket(state = ProtocolStates.LOGIN)
-class EncryptionC2SP(
+class EncryptionC2SP private constructor(
     val secret: ByteArray,
-    val token: ByteArray,
+    val nonce: Any,
 ) : PlayC2SPacket {
 
-    constructor(secretKey: SecretKey, token: ByteArray, key: PublicKey) : this(CryptManager.encryptData(key, secretKey.encoded), CryptManager.encryptData(key, token))
+    constructor(secretKey: SecretKey, nonce: ByteArray, key: PublicKey) : this(CryptManager.encryptData(key, secretKey.encoded), CryptManager.encryptData(key, nonce))
+
+    constructor(secret: ByteArray, nonce: ByteArray) : this(secret, nonce as Any)
+    constructor(secret: ByteArray, nonce: SignatureData) : this(secret, nonce as Any)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByteArray(secret)
-        buffer.writeByteArray(token)
+        if (buffer.versionId < ProtocolVersions.V_22W17A) {
+            buffer.writeByteArray(nonce.nullCast<ByteArray>() ?: throw IllegalArgumentException("In < 22w17a the nonce must be a bytearray!"))
+        } else {
+            if (nonce is ByteArray) {
+                buffer.writeBoolean(true)
+                buffer.writeByteArray(nonce)
+            } else {
+                buffer.writeBoolean(false)
+                buffer.writeSignatureData(nonce as SignatureData)
+            }
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Encryption response (secret=${secret.toBase64()}, token=${token.toBase64()})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Encryption response (secret=${secret.toBase64()}, nonce=$nonce)" }
     }
 }
