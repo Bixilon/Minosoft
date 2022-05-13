@@ -40,6 +40,7 @@ import java.util.concurrent.TimeoutException
 
 class StatusConnection(
     address: String,
+    var forcedVersion: Version? = null,
 ) : Connection() {
     var address = address
         set(value) {
@@ -78,7 +79,7 @@ class StatusConnection(
         network::connected.observe(this) {
             if (it) {
                 state = StatusConnectionStates.HANDSHAKING
-                network.send(HandshakeC2SP(tryAddress!!, ProtocolStates.STATUS, Versions.AUTOMATIC.protocolId))
+                network.send(HandshakeC2SP(tryAddress!!, ProtocolStates.STATUS, forcedVersion?.protocolId ?: Versions.AUTOMATIC.protocolId))
                 network.state = ProtocolStates.STATUS
                 return@observe
             }

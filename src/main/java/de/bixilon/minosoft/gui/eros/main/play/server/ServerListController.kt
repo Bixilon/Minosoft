@@ -287,10 +287,13 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 it.add(Button("Edit").apply {
                     setOnAction {
                         val server = serverCard.server
-                        ServerModifyDialog(server = server, onUpdate = { name, address, forcedVersion, profiles ->
+                        ServerModifyDialog(server = server, onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
                             server.name = ChatComponent.of(name)
                             server.forcedVersion = forcedVersion
                             server.profiles = profiles.toMutableMap()
+                            server.queryVersion = queryVersion
+                            val ping = serverCard.ping
+                            ping.forcedVersion = if (queryVersion) null else forcedVersion
                             if (server.address != address) {
                                 server.faviconHash?.let { hash -> server.saveFavicon(null, hash) }
 
@@ -299,7 +302,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                 // disconnect all ping connections, re ping
                                 // ToDo: server.connections.clear()
 
-                                val ping = serverCard.ping
                                 ping.network.disconnect()
                                 ping.address = server.address
                                 ping.ping()
@@ -385,8 +387,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun addServer() {
-        ServerModifyDialog(onUpdate = { name, address, forcedVersion, profiles ->
-            serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap())
+        ServerModifyDialog(onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
+            serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap(), queryVersion = queryVersion)
         }).show()
     }
 

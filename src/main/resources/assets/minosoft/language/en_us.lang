@@ -66,6 +66,7 @@ minosoft:modify_server.forced_version.releases=Releases
 minosoft:modify_server.forced_version.snapshots=Snapshots
 minosoft:modify_server.profiles.label=Profiles
 minosoft:modify_server.profiles.open_select_dialog=Open profile selector
+minosoft:modify_server.profiles.option_query_version=Query version
 minosoft:modify_server.add.title=Add server - Minosoft
 minosoft:modify_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
 minosoft:modify_server.add.update_button=Add server

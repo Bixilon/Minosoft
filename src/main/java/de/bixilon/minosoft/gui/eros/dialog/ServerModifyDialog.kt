@@ -41,7 +41,7 @@ import javafx.scene.text.TextFlow
  */
 class ServerModifyDialog(
     private val server: Server? = null,
-    val onUpdate: (name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>) -> Unit,
+    val onUpdate: (name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>, queryVersion: Boolean) -> Unit,
 ) : DialogController() {
     @FXML private lateinit var descriptionFX: TextFlow
     @FXML private lateinit var serverNameLabelFX: TextFlow
@@ -59,6 +59,8 @@ class ServerModifyDialog(
 
     @FXML private lateinit var modifyServerButtonFX: Button
     @FXML private lateinit var cancelButtonFX: Button
+
+    @FXML private lateinit var optionQueryVersionFX: CheckBox
 
 
     private var profileSelectDialog: ProfileSelectDialog? = null
@@ -104,6 +106,7 @@ class ServerModifyDialog(
         forcedVersionLabelFX.text = FORCED_VERSION_LABEL
         profilesLabelFX.text = PROFILES_LABEL
         openProfileSelectDialogButtonFX.ctext = PROFILES_OPEN_PROFILE_SELECT
+        optionQueryVersionFX.ctext = OPTION_QUERY_VERSION
 
         cancelButtonFX.ctext = TranslatableComponents.GENERAL_CANCEL
 
@@ -166,6 +169,7 @@ class ServerModifyDialog(
 
             modifyServerButtonFX.isDisable = serverAddressFX.text.isBlank()
         }
+        optionQueryVersionFX.isSelected = server?.queryVersion ?: true
     }
 
     @FXML
@@ -174,7 +178,7 @@ class ServerModifyDialog(
             return
         }
         val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC).decide(null) { forcedVersionFX.selectionModel.selectedItem }
-        DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion, profiles) }
+        DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion, profiles, optionQueryVersionFX.isSelected) }
         stage.close()
     }
 
@@ -214,6 +218,7 @@ class ServerModifyDialog(
         private val SHOW_SNAPSHOTS = "minosoft:modify_server.forced_version.snapshots".toResourceLocation()
         private val PROFILES_LABEL = "minosoft:modify_server.profiles.label".toResourceLocation()
         private val PROFILES_OPEN_PROFILE_SELECT = "minosoft:modify_server.profiles.open_select_dialog".toResourceLocation()
+        private val OPTION_QUERY_VERSION = "minosoft:modify_server.profiles.option_query_version".toResourceLocation()
 
         private val ADD_TITLE = "minosoft:modify_server.add.title".toResourceLocation()
         private val ADD_DESCRIPTION = "minosoft:modify_server.add.description".toResourceLocation()

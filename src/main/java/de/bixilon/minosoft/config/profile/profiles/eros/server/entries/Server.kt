@@ -31,6 +31,7 @@ class Server(
     name: ChatComponent = ChatComponent.of(address),
     forcedVersion: Any? = null, // must be version
     profiles: MutableMap<ResourceLocation, String> = mutableMapOf(),
+    queryVersion: Boolean = true,
 ) {
     init {
         check(forcedVersion == null || forcedVersion is Version)
@@ -45,6 +46,11 @@ class Server(
      * Server name (showed in eros)
      */
     var name by delegate(name) { check(it.message.isNotBlank()) { "Server name must not be blank!" } }
+
+    /**
+     * Sends version -1 in the handshake to query the servers version
+     */
+    var queryVersion by delegate(queryVersion)
 
     /**
      * Profiles to use for the connection to the server.
