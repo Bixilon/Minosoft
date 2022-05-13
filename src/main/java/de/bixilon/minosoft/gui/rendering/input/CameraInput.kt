@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec2.Vec2d
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class CameraInput(
@@ -111,33 +113,37 @@ class CameraInput(
         registerKeyBindings()
     }
 
+    private fun updateDebugPosition(input: MovementInput, delta: Double) {
+        val cameraFront = renderWindow.camera.matrixHandler.debugRotation.front
+        val speedMultiplier = if (input.sprinting) 25 else 10
+        val movement = Vec3.EMPTY
+        if (input.movementForward != 0.0f) {
+            movement += cameraFront * input.movementForward
+        }
+        if (input.movementSideways != 0.0f) {
+            val cameraRight = (MatrixHandler.CAMERA_UP_VEC3 cross cameraFront).normalize()
+            movement += cameraRight * input.movementSideways
+        }
+        renderWindow.camera.matrixHandler.debugPosition = renderWindow.camera.matrixHandler.debugPosition + (if (movement.length2() != 0.0f) movement.normalize() else return) * delta * speedMultiplier
+    }
+
     fun update(delta: Double) {
+        val input = MovementInput(
+            pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
+            pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
+            pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
+            pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
+            jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
+            sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
+            sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
+            flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
+            flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
+            toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
+        )
         if (renderWindow.camera.debugView) {
-            val cameraFront = renderWindow.camera.matrixHandler.debugRotation.front
-            val speedMultiplier = if (renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING)) 25 else 10
-            if (renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING)) {
-                renderWindow.camera.matrixHandler.debugPosition = renderWindow.camera.matrixHandler.debugPosition + (cameraFront * delta * speedMultiplier)
-            }
-            connection.player.input = MovementInput()
-            return
+            updateDebugPosition(input, delta)
         }
-        val input = if (ignoreInput) {
-            MovementInput()
-        } else {
-            MovementInput(
-                pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
-                pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
-                pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
-                pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
-                jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
-                sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
-                sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
-                flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
-                flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
-                toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
-            )
-        }
-        connection.player.input = input
+        connection.player.input = if (ignoreInput || renderWindow.camera.debugView) MovementInput() else input
     }
 
     fun mouseCallback(delta: Vec2d) {

@@ -37,7 +37,7 @@ class Camera(
             field = value
             if (value) {
                 matrixHandler.debugRotation = matrixHandler.entity.rotation
-                matrixHandler.debugPosition = matrixHandler.entity.cameraPosition
+                matrixHandler.debugPosition = matrixHandler.entity.eyePosition
             }
         }
 

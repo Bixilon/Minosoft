@@ -76,6 +76,7 @@ class MatrixHandler(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
+    private var previousDebugView = false
     private var previousDebugPosition = Vec3.EMPTY
     private var previousDebugRotation = EntityRotation(0.0, 0.0)
     var debugPosition = Vec3.EMPTY
@@ -117,9 +118,10 @@ class MatrixHandler(
         val fogEnd = fogManager.fogEnd
         val debugPosition = debugPosition
         val debugRotation = debugRotation
-        if ((upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) && (!debugView || (previousDebugPosition == debugPosition && previousDebugRotation == debugRotation))) {
+        if ((upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) && previousDebugView == debugView && (!debugView || (previousDebugPosition == debugPosition && previousDebugRotation == debugRotation))) {
             return
         }
+        this.previousDebugView = debugView
         this.previousDebugPosition = debugPosition
         this.previousDebugRotation = debugRotation
         this.eyePosition = eyePosition
