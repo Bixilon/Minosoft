@@ -18,6 +18,7 @@ import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.chat.ChatMessageS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.chat.SignedChatMessageS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.HotbarTextS2CP
 import java.util.*
 
@@ -33,4 +34,6 @@ class ChatMessageReceiveEvent(
     constructor(connection: PlayConnection, packet: ChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message, packet.position, packet.sender)
 
     constructor(connection: PlayConnection, packet: HotbarTextS2CP) : this(connection, EventInitiators.SERVER, packet.text, ChatTextPositions.ABOVE_HOTBAR, null)
+
+    constructor(connection: PlayConnection, packet: SignedChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message, packet.position, packet.sender.uuid)
 }

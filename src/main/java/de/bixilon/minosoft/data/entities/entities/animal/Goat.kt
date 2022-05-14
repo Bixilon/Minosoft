@@ -28,9 +28,19 @@ class Goat(connection: PlayConnection, entityType: EntityType, data: EntityData,
     val isScreaming: Boolean
         get() = data.getBoolean(SCREAMING_DATA, false)
 
+    @get:SynchronizedEntityData
+    val hasLeftHorn: Boolean
+        get() = data.getBoolean(LEFT_HORN_DATA, false)
+
+    @get:SynchronizedEntityData
+    val hasRightHorn: Boolean
+        get() = data.getBoolean(RIGHT_HORN_DATA, false)
+
     companion object : EntityFactory<Goat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("goat")
         private val SCREAMING_DATA = EntityDataField("GOAT_IS_SCREAMING")
+        private val LEFT_HORN_DATA = EntityDataField("LEFT_HORN")
+        private val RIGHT_HORN_DATA = EntityDataField("RIGHT_HORN")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Goat {
             return Goat(connection, entityType, data, position, rotation)

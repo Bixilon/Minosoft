@@ -312,4 +312,9 @@ open class OutByteBuffer() {
             writer(entry)
         }
     }
+
+    fun <T> writeOptional(value: T?, writer: (T) -> Unit) {
+        writeBoolean(value != null)
+        value?.let(writer)
+    }
 }

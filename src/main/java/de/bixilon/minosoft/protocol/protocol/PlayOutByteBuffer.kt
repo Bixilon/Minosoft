@@ -14,8 +14,10 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
+import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 
 class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     val versionId = connection.version.versionId
@@ -71,5 +73,14 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
 
     fun writeNBT(nbt: Any?) {
         return writeNBT(nbt, versionId < ProtocolVersions.V_14W28B)
+    }
+
+    fun writePublicKey(key: PlayerPublicKey) {
+        writeNBT(key.toNbt())
+    }
+
+    fun writeSignatureData(signature: SignatureData) {
+        writeLong(signature.salt)
+        writeByteArray(signature.signature)
     }
 }

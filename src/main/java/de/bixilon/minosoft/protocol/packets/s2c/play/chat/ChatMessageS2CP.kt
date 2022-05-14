@@ -37,7 +37,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     init {
         if (buffer.versionId >= ProtocolVersions.V_14W04A) {
             position = ChatTextPositions[buffer.readUnsignedByte()]
-            if (buffer.versionId >= ProtocolVersions.V_20W21A) {
+            if (buffer.versionId >= ProtocolVersions.V_20W21A && buffer.versionId < ProtocolVersions.V_22W17A) {
                 sender = buffer.readUUID()
             }
         }

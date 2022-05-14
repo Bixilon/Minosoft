@@ -36,6 +36,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
+import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -253,5 +254,13 @@ class PlayInByteBuffer : InByteBuffer {
         } else {
             null
         }
+    }
+
+    fun readChatMessageSender(): ChatMessageSender {
+        return ChatMessageSender(readUUID(), readChatComponent())
+    }
+
+    fun readSignatureData(): SignatureData {
+        return SignatureData(readLong(), readByteArray())
     }
 }

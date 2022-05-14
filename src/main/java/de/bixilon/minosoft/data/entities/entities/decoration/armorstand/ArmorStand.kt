@@ -79,7 +79,7 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, data: Entit
         private val LEFT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_ARM_ROTATION")
         private val RIGHT_ARM_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_ARM_ROTATION")
         private val LEFT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_LEFT_LAG_ROTATION")
-        private val RIGHT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_LEFT_LEG_ROTATION", "ARMOR_STAND_RIGHT_LAG_ROTATION")
+        private val RIGHT_LEG_ROTATION_DATA = EntityDataField("ARMOR_STAND_RIGHT_LEG_ROTATION", "ARMOR_STAND_RIGHT_LAG_ROTATION")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): ArmorStand {
             return ArmorStand(connection, entityType, data, position, rotation)

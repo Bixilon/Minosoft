@@ -61,4 +61,5 @@ class Version(
     val maxPacketLength get() = (versionId < ProtocolVersions.V_1_17_1_RC2).decide(1 shl 21, 1 shl 23)
     val maxChatMessageSize get() = (versionId < ProtocolVersions.V_16W38A).decide(100, 256)
     val hasAttackCooldown get() = versionId >= ProtocolVersions.V_15W34A
+    val requiresSignedChat get() = versionId >= ProtocolVersions.V_22W17A
 }
