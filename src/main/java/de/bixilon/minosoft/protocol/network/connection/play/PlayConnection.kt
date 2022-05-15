@@ -21,9 +21,9 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
-import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
+import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
@@ -152,9 +152,9 @@ class PlayConnection(
                     }
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
-                        val additionalPrefix = when (it.position) {
-                            ChatTextPositions.SYSTEM_MESSAGE -> "[SYSTEM] "
-                            ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "
+                        val additionalPrefix = when (it.type.position) {
+                            ChatTextPositions.SYSTEM -> "[SYSTEM] "
+                            ChatTextPositions.HOTBAR -> "[HOTBAR] "
                             else -> ""
                         }
                         Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message }

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
-import de.bixilon.minosoft.data.ChatTextPositions
+import de.bixilon.minosoft.data.chat.ChatMessageTypes
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(threadSafe = false)
 class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val message = buffer.readChatComponent()
-    var position = ChatTextPositions[buffer.readUnsignedByte()]
+    var type = ChatMessageTypes[buffer.readVarInt()]
     val sender = buffer.readChatMessageSender()
     val sendingTime = buffer.readLong()
     val signatureData = buffer.readSignatureData()
@@ -38,6 +38,6 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat message (message=\"$message\", position=$position, sender=$sender, sendingTime=$sendingTime, signateDate=$signatureData)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat message (message=\"$message\", type=$type, sender=$sender, sendingTime=$sendingTime, signateDate=$signatureData)" }
     }
 }

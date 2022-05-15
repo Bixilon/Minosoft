@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -51,13 +52,14 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     } else {
                         null
                     }
+                    val publicKey = if (buffer.versionId >= ProtocolVersions.V_22W18A) buffer.readPlayerPublicKey() else null
                     data = TabListItemData(
                         name = name,
                         properties = properties,
                         gamemode = gamemode,
                         ping = ping,
-                        hasDisplayName = hasDisplayName,
                         displayName = displayName,
+                        publicKey = publicKey,
                     )
                 }
                 TabListItemActions.UPDATE_GAMEMODE -> {
@@ -122,7 +124,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             } ?: continue
 
             if (entity === connection.player) {
-                entity.tabListItem.specialMerge(data)
+                entity.tabListItem.genericMerge(data)
             } else {
                 tabListItem.merge(data)
                 if (entity == null || entity !is PlayerEntity) {

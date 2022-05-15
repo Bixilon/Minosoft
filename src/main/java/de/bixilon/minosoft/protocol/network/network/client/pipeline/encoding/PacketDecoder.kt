@@ -75,7 +75,7 @@ class PacketDecoder(
         }
         val packet = type.factory?.createPacket(buffer) ?: throw IllegalStateException("Packet factory is null?")
         if (buffer.pointer < buffer.size) {
-            throw PacketBufferUnderflowException(type, buffer.size, buffer.pointer)
+            throw PacketBufferUnderflowException(type, buffer.size, buffer.size - buffer.pointer)
         }
         return packet.unsafeCast()
     }

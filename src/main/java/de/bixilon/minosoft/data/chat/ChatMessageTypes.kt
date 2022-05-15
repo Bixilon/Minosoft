@@ -11,22 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.tab
+package de.bixilon.minosoft.data.chat
 
-import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.scoreboard.Team
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.PlayerPublicKey
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-data class TabListItemData(
-    val name: String? = null,
-    var ping: Int? = null,
-    var gamemode: Gamemodes? = null,
-    var hasDisplayName: Boolean? = null,
-    var displayName: ChatComponent? = null,
-    val properties: PlayerProperties? = null,
-    var team: Team? = null,
-    var removeFromTeam: Boolean = false,
-    var publicKey: PlayerPublicKey? = null,
-)
+enum class ChatMessageTypes(val position: ChatTextPositions = ChatTextPositions.CHAT) {
+    CHAT_MESSAGE,
+    SYSTEM_MESSAGE,
+    GAME_MESSAGE,
+
+    COMMAND_SAY,
+    COMMAND_MSG,
+    COMMAND_TEAM_MSG,
+    COMMAND_EMOTE,
+    COMMAND_TELLRAW,
+    ;
+
+    companion object : ValuesEnum<ChatMessageTypes> {
+        override val VALUES: Array<ChatMessageTypes> = values()
+        override val NAME_MAP: Map<String, ChatMessageTypes> = EnumUtil.getEnumValues(VALUES)
+    }
+}

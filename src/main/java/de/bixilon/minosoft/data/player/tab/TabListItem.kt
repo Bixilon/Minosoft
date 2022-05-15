@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.util.KUtil.nullCompare
 
 data class TabListItem(
@@ -26,16 +27,18 @@ data class TabListItem(
     var displayName: ChatComponent = ChatComponent.of(name),
     var properties: PlayerProperties = PlayerProperties(),
     var team: Team? = null,
+    var publicKey: PlayerPublicKey? = null,
 ) : Comparable<TabListItem> {
     val tabDisplayName: ChatComponent
         get() = team?.decorateName(displayName) ?: displayName
 
     fun merge(data: TabListItemData) {
-        specialMerge(data)
+        genericMerge(data)
         data.gamemode?.let { gamemode = it }
+        data.publicKey?.let { publicKey = it }
     }
 
-    fun specialMerge(data: TabListItemData) {
+    fun genericMerge(data: TabListItemData) {
         data.name?.let { name = it }
         data.ping?.let { ping = it }
 

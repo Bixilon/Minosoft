@@ -19,4 +19,5 @@ import java.util.*
 class ChatMessageSender(
     val uuid: UUID,
     val name: ChatComponent,
+    val team: ChatComponent?,
 )

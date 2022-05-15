@@ -16,33 +16,35 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(threadSafe = false)
-class ChatMessageC2SP(
-    val message: String,
+class CommandC2SP(
+    val command: String,
     val time: Long = TimeUtil.seconds,
-    val signature: SignatureData? = null,
+    val signature: CommandArgumentSignature,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        if (buffer.versionId == ProtocolVersions.V_22W17A) {
-            buffer.writeLong(time)
-        }
-        buffer.writeString(message)
-        if (buffer.versionId >= ProtocolVersions.V_22W18A) {
-            buffer.writeLong(time)
-        }
-        if (buffer.versionId >= ProtocolVersions.V_22W17A) {
-            buffer.writeSignatureData(signature ?: SignatureData.EMPTY)
+        buffer.writeString(command)
+        buffer.writeLong(time)
+        buffer.writeLong(signature.salt)
+        buffer.writeVarInt(signature.signatures.size)
+        for ((argument, signature) in signature.signatures) {
+            buffer.writeString(argument)
+            buffer.writeByteArray(signature)
         }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat message (message=$message, time=$time, signature=$signature)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat message (message=$command, time=$time, signature=$signature)" }
     }
+
+
+    data class CommandArgumentSignature(
+        val salt: Long,
+        val signatures: Map<String, ByteArray>,
+    )
 }

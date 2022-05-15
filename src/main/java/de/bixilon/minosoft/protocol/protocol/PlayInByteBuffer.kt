@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -25,6 +26,7 @@ import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W21A
@@ -257,10 +259,14 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readChatMessageSender(): ChatMessageSender {
-        return ChatMessageSender(readUUID(), readChatComponent())
+        return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
     }
 
     fun readSignatureData(): SignatureData {
         return SignatureData(readLong(), readByteArray())
+    }
+
+    fun readPlayerPublicKey(): PlayerPublicKey? {
+        return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
     }
 }

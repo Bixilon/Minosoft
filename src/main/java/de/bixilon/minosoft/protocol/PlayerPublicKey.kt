@@ -14,12 +14,15 @@
 package de.bixilon.minosoft.protocol
 
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.primitive.LongUtil.toLong
 
 class PlayerPublicKey(
     val expiresAt: Long,
     val keyString: String,
-    val signate: String,
+    val signature: String,
 ) {
+
+    constructor(nbt: JsonObject) : this(nbt["expires_at"].toLong(), nbt["key"].toString(), nbt["signature"].toString())
 
     fun toNbt(): JsonObject {
         TODO()

@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.Arms
@@ -179,7 +179,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
 
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
-            if (it.position != ChatTextPositions.ABOVE_HOTBAR) {
+            if (it.type.position != ChatTextPositions.HOTBAR) {
                 return@of
             }
             hoverText.text = it.message

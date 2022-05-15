@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
-import de.bixilon.minosoft.data.ChatTextPositions
+import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -80,7 +80,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
-            if (it.position == ChatTextPositions.ABOVE_HOTBAR) {
+            if (it.type.position == ChatTextPositions.HOTBAR) {
                 return@of
             }
             DefaultThreadPool += { messages += it.message }
