@@ -146,6 +146,14 @@ class ServerModifyDialog(
                 }
             }
         }
+        forcedVersionFX.selectionModel.selectedItemProperty().addListener { _, _, next ->
+            if (next == Versions.AUTOMATIC) {
+                optionQueryVersionFX.isSelected = true
+                optionQueryVersionFX.isDisable = true
+            } else {
+                optionQueryVersionFX.isDisable = false
+            }
+        }
         refreshVersions()
 
         if (server == null) {
@@ -153,6 +161,7 @@ class ServerModifyDialog(
             // add
             descriptionFX.text = ADD_DESCRIPTION
             modifyServerButtonFX.ctext = ADD_UPDATE_BUTTON
+            optionQueryVersionFX.isSelected = true
         } else {
             forcedVersionFX.selectionModel.select(server.forcedVersion ?: Versions.AUTOMATIC)
             descriptionFX.text = EDIT_DESCRIPTION
@@ -162,6 +171,7 @@ class ServerModifyDialog(
             serverAddressFX.text = server.address
 
             modifyServerButtonFX.isDisable = serverAddressFX.text.isBlank()
+            optionQueryVersionFX.isSelected = server.queryVersion || server.forcedVersion == null
         }
 
         serverAddressFX.textProperty().addListener { _, _, new ->
@@ -169,7 +179,6 @@ class ServerModifyDialog(
 
             modifyServerButtonFX.isDisable = serverAddressFX.text.isBlank()
         }
-        optionQueryVersionFX.isSelected = server?.queryVersion ?: true
     }
 
     @FXML
