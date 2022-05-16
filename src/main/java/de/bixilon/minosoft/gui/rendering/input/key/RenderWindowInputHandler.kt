@@ -275,6 +275,7 @@ class RenderWindowInputHandler(
                     keyBindingsDown -= resourceLocation
                 }
             }
+            skipCharPress = true
         }
         if (keyDown) {
             keysLastDownTime[keyCode] = currentTime
