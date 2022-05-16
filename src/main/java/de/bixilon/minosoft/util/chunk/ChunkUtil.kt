@@ -242,7 +242,7 @@ object ChunkUtil {
     val Array<Chunk?>.received: Boolean
         get() {
             for (neighbour in this) {
-                if (neighbour?.blocksInitialized != true && neighbour?.lightInitialized != true) {
+                if (neighbour?.blocksInitialized != true) {
                     return false
                 }
             }

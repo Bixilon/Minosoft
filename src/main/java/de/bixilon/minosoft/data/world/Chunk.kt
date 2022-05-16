@@ -48,11 +48,10 @@ class Chunk(
 
     var blocksInitialized = false // All block data was received
     var biomesInitialized = false // All biome data is initialized (aka. cache built, or similar)
-    var lightInitialized = false
     var neighboursLoaded = false
 
     val isLoaded: Boolean
-        get() = blocksInitialized && biomesInitialized && lightInitialized
+        get() = blocksInitialized && biomesInitialized
 
     val isFullyLoaded: Boolean
         get() = isLoaded && neighboursLoaded
@@ -152,15 +151,12 @@ class Chunk(
                 val section = getOrPut(index + lowestSection) ?: return@let
                 section.light = light
             }
-            lightInitialized = true
         }
         data.bottomLight?.let {
             bottomLight = it
-            lightInitialized = true
         }
         data.topLight?.let {
             topLight = it
-            lightInitialized = true
         }
         data.biomeSource?.let {
             this.biomeSource = it

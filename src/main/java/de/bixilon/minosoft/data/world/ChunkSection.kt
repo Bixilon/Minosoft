@@ -31,7 +31,7 @@ class ChunkSection(
     var blocks: BlockSectionDataProvider,
     var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
     var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
-    var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
+    var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION) { 0xFF.toByte() }, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
