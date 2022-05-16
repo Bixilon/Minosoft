@@ -1,0 +1,77 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.data.container.types
+
+import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
+import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.slots.DefaultSlotType
+import de.bixilon.minosoft.data.container.slots.EnchantableSlotType
+import de.bixilon.minosoft.data.container.slots.SlotType
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.items.DefaultItems
+import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
+import de.bixilon.minosoft.data.registries.other.containers.ContainerType
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+
+class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, (ENCHANTING_SLOTS + 1)..(ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<IntRange> = arrayOf(0 until ENCHANTING_SLOTS, ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS)
+
+    override fun getSlotType(slotId: Int): SlotType? {
+        return when (slotId) {
+            0 -> EnchantableSlotType
+            1 -> LapislazuliSlot
+            in ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS -> DefaultSlotType
+            else -> null
+        }
+    }
+
+    override fun getSection(slotId: Int): Int? {
+        if (slotId in 0..1) {
+            return 0
+        }
+        if (slotId in ENCHANTING_SLOTS..ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
+            return 1
+        }
+        return null
+    }
+
+    override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? {
+        if (slot == SlotSwapContainerAction.SwapTargets.OFFHAND) {
+            return null // ToDo: It is possible to press F in vanilla, but there is no slot for it
+        }
+        return 1 + ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS_PER_ROW * 3 + slot.ordinal
+    }
+
+    private object LapislazuliSlot : SlotType {
+        override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
+            return stack.item.item.resourceLocation == DefaultItems.LAPISLAZULI
+        }
+    }
+
+
+    companion object : ContainerFactory<EnchantingContainer>, MultiResourceLocationAble {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:enchantment".toResourceLocation()
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:enchanting_table".toResourceLocation(), "EnchantTable".toResourceLocation())
+        const val ENCHANTING_SLOTS = 2
+
+        override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): EnchantingContainer {
+            return EnchantingContainer(connection, type, title)
+        }
+    }
+}

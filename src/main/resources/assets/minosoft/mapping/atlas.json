@@ -1565,5 +1565,255 @@
       "end": [199, 30],
       "texture": "minecraft:textures/gui/container/furnace.png"
     }
+  },
+  "minecraft:enchanting_container": {
+    "0": {
+      "start": [0, 0],
+      "end": [176, 166],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png",
+      "slots": {
+        "0": {
+          "start": [15, 47],
+          "end": [32, 64]
+        },
+        "1": {
+          "start": [35, 47],
+          "end": [52, 64]
+        },
+        "2": {
+          "start": [8, 84],
+          "end": [25, 101]
+        },
+        "3": {
+          "start": [26, 84],
+          "end": [43, 101]
+        },
+        "4": {
+          "start": [44, 84],
+          "end": [61, 101]
+        },
+        "5": {
+          "start": [62, 84],
+          "end": [79, 101]
+        },
+        "6": {
+          "start": [80, 84],
+          "end": [97, 101]
+        },
+        "7": {
+          "start": [98, 84],
+          "end": [115, 101]
+        },
+        "8": {
+          "start": [116, 84],
+          "end": [133, 101]
+        },
+        "9": {
+          "start": [134, 84],
+          "end": [151, 101]
+        },
+        "10": {
+          "start": [152, 84],
+          "end": [169, 101]
+        },
+        "11": {
+          "start": [8, 102],
+          "end": [25, 119]
+        },
+        "12": {
+          "start": [26, 102],
+          "end": [43, 119]
+        },
+        "13": {
+          "start": [44, 102],
+          "end": [61, 119]
+        },
+        "14": {
+          "start": [62, 102],
+          "end": [79, 119]
+        },
+        "15": {
+          "start": [80, 102],
+          "end": [97, 119]
+        },
+        "16": {
+          "start": [98, 102],
+          "end": [115, 119]
+        },
+        "17": {
+          "start": [116, 102],
+          "end": [133, 119]
+        },
+        "18": {
+          "start": [134, 102],
+          "end": [151, 119]
+        },
+        "19": {
+          "start": [152, 102],
+          "end": [169, 119]
+        },
+        "20": {
+          "start": [8, 120],
+          "end": [25, 137]
+        },
+        "21": {
+          "start": [26, 120],
+          "end": [43, 137]
+        },
+        "22": {
+          "start": [44, 120],
+          "end": [61, 137]
+        },
+        "23": {
+          "start": [62, 120],
+          "end": [79, 137]
+        },
+        "24": {
+          "start": [80, 120],
+          "end": [97, 137]
+        },
+        "25": {
+          "start": [98, 120],
+          "end": [115, 137]
+        },
+        "26": {
+          "start": [116, 120],
+          "end": [133, 137]
+        },
+        "27": {
+          "start": [134, 120],
+          "end": [151, 137]
+        },
+        "28": {
+          "start": [152, 120],
+          "end": [169, 137]
+        },
+        "29": {
+          "start": [8, 142],
+          "end": [25, 159]
+        },
+        "30": {
+          "start": [26, 142],
+          "end": [43, 159]
+        },
+        "31": {
+          "start": [44, 142],
+          "end": [61, 159]
+        },
+        "32": {
+          "start": [62, 142],
+          "end": [79, 159]
+        },
+        "33": {
+          "start": [80, 142],
+          "end": [97, 159]
+        },
+        "34": {
+          "start": [98, 142],
+          "end": [115, 159]
+        },
+        "35": {
+          "start": [116, 142],
+          "end": [133, 159]
+        },
+        "36": {
+          "start": [134, 142],
+          "end": [151, 159]
+        },
+        "37": {
+          "start": [152, 142],
+          "end": [169, 159]
+        }
+      },
+      "areas": {
+        "title": {
+          "start": [12, 3],
+          "end": [172, 16]
+        },
+        "inventory_text": {
+          "start": [3, 70],
+          "end": [172, 83]
+        },
+        "book": {
+          "start": [12, 16],
+          "end": [55, 44]
+        },
+        "card_1": {
+          "start": [60, 14],
+          "end": [167, 32]
+        },
+        "card_2": {
+          "start": [60, 32],
+          "end": [167, 50]
+        },
+        "card_3": {
+          "start": [60, 50],
+          "end": [167, 68]
+        }
+      }
+    }
+  },
+  "minecraft:enchanting_table_card_normal": {
+    "0": {
+      "start": [0, 166],
+      "end": [108, 185],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:enchanting_table_card_disabled": {
+    "0": {
+      "start": [0, 185],
+      "end": [108, 204],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:enchanting_table_card_hovered": {
+    "0": {
+      "start": [0, 204],
+      "end": [108, 223],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:level_requirement_1": {
+    "0": {
+      "start": [2, 225],
+      "end": [16, 236],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:level_requirement_2": {
+    "0": {
+      "start": [18, 225],
+      "end": [32, 236],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:level_requirement_3": {
+    "0": {
+      "start": [33, 225],
+      "end": [47, 236],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:level_requirement_1_disabled": {
+    "0": {
+      "start": [2, 241],
+      "end": [16, 252],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:level_requirement_2_disabled": {
+    "0": {
+      "start": [18, 241],
+      "end": [32, 252],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
+  },
+  "minecraft:level_requirement_3_disabled": {
+    "0": {
+      "start": [33, 241],
+      "end": [47, 252],
+      "texture": "minecraft:textures/gui/container/enchanting_table.png"
+    }
   }
 }

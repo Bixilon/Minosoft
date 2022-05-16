@@ -29,6 +29,7 @@ object ContainerGUIFactories : DefaultClassMappingFactory<ContainerGUIFactory<*,
     BlastFurnaceContainerScreen,
     FurnaceContainerScreen,
     SmokerContainerScreen,
+    EnchantingContainerScreen,
 ) {
 
     fun build(guiRenderer: GUIRenderer, container: Container): ContainerScreen<*>? {
