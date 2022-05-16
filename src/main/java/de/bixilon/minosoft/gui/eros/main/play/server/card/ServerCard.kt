@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 
 class ServerCard(
     val server: Server,
@@ -68,9 +67,13 @@ class ServerCard(
 
 
     fun canConnect(account: Account): Boolean {
-        return (ping.state === StatusConnectionStates.PING_DONE
-                && ((server.forcedVersion ?: ping.serverVersion) != null))
-                && server !in account.connections
+        if (server in account.connections) {
+            return false
+        }
+        if (server.forcedVersion == null && ping.serverVersion == null) {
+            return false
+        }
+        return true
     }
 
 

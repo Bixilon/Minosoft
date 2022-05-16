@@ -123,12 +123,12 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     fun connect(serverCard: ServerCard) {
         val server = serverCard.server
         val ping = serverCard.ping
-        val pingVersion = serverCard.ping.serverVersion ?: return
+        val version = serverCard.server.forcedVersion ?: serverCard.ping.serverVersion ?: return
         Eros.mainErosController.verifyAccount { account ->
             val connection = PlayConnection(
                 address = ping.tryAddress ?: DNSUtil.getServerAddress(server.address),
                 account = account,
-                version = serverCard.server.forcedVersion ?: pingVersion,
+                version = version,
                 profiles = ConnectionProfiles(ErosProfileManager.selected.general.profileOverrides.toMutableMap().apply { putAll(server.profiles) })
             )
             account.connections[server] = connection
