@@ -24,5 +24,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 abstract class Monster(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, data, position, rotation) {
 
     override val hitBoxColor: RGBColor
-        get() = ChatColors.DARK_GRAY
+        get() = ChatColors.LIGHT_PURPLE
 }

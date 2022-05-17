@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class Creeper(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : Monster(connection, entityType, data, position, rotation) {
@@ -36,6 +38,8 @@ class Creeper(connection: PlayConnection, entityType: EntityType, data: EntityDa
     val isIgnited: Boolean
         get() = data.getBoolean(IS_IGNITED_DATA, false)
 
+    override val hitBoxColor: RGBColor
+        get() = ChatColors.GREEN
 
     companion object : EntityFactory<Creeper> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("creeper")

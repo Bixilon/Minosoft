@@ -54,6 +54,9 @@ class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData,
             data.get<Number>(HEALTH_DATA, 0.0f).toDouble()
         }
 
+    override val hitBoxColor: RGBColor
+        get() = ChatColors.WHITE
+
     companion object : EntityFactory<Wolf> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wolf")
         private val IS_BEGGING_DATA = EntityDataField("WOLF_IS_BEGGING")

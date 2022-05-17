@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
@@ -70,6 +72,10 @@ class Fox(connection: PlayConnection, entityType: EntityType, data: EntityData, 
     @get:SynchronizedEntityData
     val trusted: UUID?
         get() = data.get(TRUSTED_DATA, null)
+
+
+    override val hitBoxColor: RGBColor
+        get() = ChatColors.WHITE
 
 
     enum class FoxVariants {

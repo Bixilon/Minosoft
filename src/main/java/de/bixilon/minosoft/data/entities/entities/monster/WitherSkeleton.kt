@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class WitherSkeleton(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, data, position, rotation) {
 
     override val hitBoxColor: RGBColor
-        get() = ChatColors.BLACK
+        get() = ChatColors.AQUA
 
     companion object : EntityFactory<WitherSkeleton> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wither_skeleton")
