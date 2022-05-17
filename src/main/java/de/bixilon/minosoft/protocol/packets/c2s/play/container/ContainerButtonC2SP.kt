@@ -21,8 +21,8 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class ContainerButtonC2SP(
-    private val containerId: Byte,
-    private val buttonId: Byte, // up, middle, bottom (0, 1, 2); in later versions: lectern page, etc
+    private val containerId: Int,
+    private val buttonId: Int,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {

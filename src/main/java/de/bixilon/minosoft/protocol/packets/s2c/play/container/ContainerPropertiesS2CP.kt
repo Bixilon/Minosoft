@@ -20,14 +20,16 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class ContainerPropertiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
     val property = buffer.readUnsignedShort()
     val value = buffer.readUnsignedShort()
 
     override fun handle(connection: PlayConnection) {
-        connection.player.containers[containerId]?.readProperty(property, value)
+        val container = connection.player.containers[containerId] ?: return
+        container.readProperty(property, value)
+        container.propertiesRevision++
     }
 
     override fun log(reducedLog: Boolean) {

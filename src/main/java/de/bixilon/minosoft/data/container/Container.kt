@@ -43,6 +43,7 @@ open class Container(
     @Deprecated("Should not be accessed directly")
     val slots: MutableMap<Int, ItemStack> by watchedMap(mutableMapOf())
     val lock = SimpleLock()
+    var propertiesRevision by watched(0L)
     var revision by watched(0L)
     var serverRevision = 0
     private var lastActionId = 0
