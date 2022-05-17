@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -43,6 +44,10 @@ abstract class AbstractArrow(connection: PlayConnection, entityType: EntityType,
     val ownerUUID: UUID?
         get() = data.get(OWNER_DATA, null)
 
+
+    override fun onAttack(attacker: Entity): Boolean {
+        return false
+    }
 
     companion object {
         private val FLAGS_DATA = EntityDataField("ABSTRACT_ARROW_FLAGS")
