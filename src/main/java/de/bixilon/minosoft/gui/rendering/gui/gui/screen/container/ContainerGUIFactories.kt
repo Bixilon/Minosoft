@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.registries.factory.clazz.mapping.DefaultClassMappingFactory
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
+import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting.EnchantingContainerScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.generic.GenericContainerScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting.BlastFurnaceContainerScreen
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.processing.smelting.FurnaceContainerScreen

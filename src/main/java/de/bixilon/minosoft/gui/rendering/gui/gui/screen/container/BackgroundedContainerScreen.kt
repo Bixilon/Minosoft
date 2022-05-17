@@ -46,6 +46,10 @@ abstract class BackgroundedContainerScreen<C : Container>(
         if (position isSmaller centerOffset) {
             return null
         }
-        return super.getAt(position - centerOffset)
+        val start = position - centerOffset
+
+        return getContainerAt(start) ?: super.getAt(position - centerOffset)
     }
+
+    protected open fun getContainerAt(position: Vec2i): Pair<Element, Vec2i>? = null
 }

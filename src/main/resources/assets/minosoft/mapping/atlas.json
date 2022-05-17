@@ -1738,17 +1738,17 @@
           "start": [12, 16],
           "end": [55, 44]
         },
-        "card_1": {
+        "card_0": {
           "start": [60, 14],
-          "end": [167, 32]
+          "end": [167, 33]
+        },
+        "card_1": {
+          "start": [60, 33],
+          "end": [167, 52]
         },
         "card_2": {
-          "start": [60, 32],
-          "end": [167, 50]
-        },
-        "card_3": {
-          "start": [60, 50],
-          "end": [167, 68]
+          "start": [60, 52],
+          "end": [167, 71]
         }
       }
     }
@@ -1774,42 +1774,42 @@
       "texture": "minecraft:textures/gui/container/enchanting_table.png"
     }
   },
-  "minecraft:level_requirement_1": {
+  "minecraft:level_requirement_0": {
     "0": {
       "start": [2, 225],
       "end": [16, 236],
       "texture": "minecraft:textures/gui/container/enchanting_table.png"
     }
   },
-  "minecraft:level_requirement_2": {
+  "minecraft:level_requirement_1": {
     "0": {
       "start": [18, 225],
       "end": [32, 236],
       "texture": "minecraft:textures/gui/container/enchanting_table.png"
     }
   },
-  "minecraft:level_requirement_3": {
+  "minecraft:level_requirement_2": {
     "0": {
       "start": [33, 225],
       "end": [47, 236],
       "texture": "minecraft:textures/gui/container/enchanting_table.png"
     }
   },
-  "minecraft:level_requirement_1_disabled": {
+  "minecraft:level_requirement_0_disabled": {
     "0": {
       "start": [2, 241],
       "end": [16, 252],
       "texture": "minecraft:textures/gui/container/enchanting_table.png"
     }
   },
-  "minecraft:level_requirement_2_disabled": {
+  "minecraft:level_requirement_1_disabled": {
     "0": {
       "start": [18, 241],
       "end": [32, 252],
       "texture": "minecraft:textures/gui/container/enchanting_table.png"
     }
   },
-  "minecraft:level_requirement_3_disabled": {
+  "minecraft:level_requirement_2_disabled": {
     "0": {
       "start": [33, 241],
       "end": [47, 252],
