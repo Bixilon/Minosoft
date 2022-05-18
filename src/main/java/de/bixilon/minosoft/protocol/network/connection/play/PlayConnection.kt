@@ -20,6 +20,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
@@ -89,6 +90,8 @@ class PlayConnection(
     var retry = true
 
     var state by watched(PlayConnectionStates.WAITING)
+
+    var rootNode: RootNode? = null
 
     override var error: Throwable?
         get() = super.error

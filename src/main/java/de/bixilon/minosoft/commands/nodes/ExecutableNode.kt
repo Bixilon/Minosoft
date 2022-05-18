@@ -20,14 +20,14 @@ import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.commands.util.CommandReader
 
 abstract class ExecutableNode(
-    val name: String,
-    val aliases: Set<String> = setOf(),
+    name: String,
+    aliases: Set<String> = setOf(),
     val suggestion: SuggestionType<*>? = null,
     var onlyDirectExecution: Boolean = true,
     var executor: CommandExecutor? = null,
     executable: Boolean = executor != null,
     redirect: CommandNode? = null,
-) : CommandNode(executable, redirect) {
+) : NamedNode(name, aliases, executable, redirect) {
 
     protected fun execute(stack: CommandStack) {
         try {

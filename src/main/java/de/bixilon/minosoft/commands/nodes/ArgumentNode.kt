@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
@@ -37,6 +38,8 @@ class ArgumentNode : ExecutableNode {
         this.executor = executor
         this.parser = parser
     }
+
+    constructor(builder: CommandNodeBuilder) : this(builder.name ?: throw NullPointerException("No name in builder!"), builder.parser ?: throw NullPointerException("No parser in builder!"), builder.suggestionType, builder.executable)
 
     override fun addChild(node: CommandNode): ArgumentNode {
         super.addChild(node)

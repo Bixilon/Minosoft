@@ -15,6 +15,7 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.errors.literal.ExpectedLiteralArgument
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
+import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
@@ -32,6 +33,8 @@ class LiteralNode : ExecutableNode {
 
 
     constructor(name: String, aliases: Set<String> = setOf(), onlyDirectExecution: Boolean = true, executor: CommandExecutor) : super(name, aliases, onlyDirectExecution = onlyDirectExecution, executor = executor, executable = true)
+
+    constructor(builder: CommandNodeBuilder) : this(builder.name ?: throw NullPointerException("No name in builder!"), setOf(), builder.suggestionType, builder.executable)
 
     override fun addChild(node: CommandNode): LiteralNode {
         super.addChild(node)

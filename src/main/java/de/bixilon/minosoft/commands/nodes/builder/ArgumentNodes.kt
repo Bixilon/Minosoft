@@ -11,13 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.factory
+package de.bixilon.minosoft.commands.nodes.builder
 
-import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.minosoft.commands.nodes.CommandNode
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.nodes.RootNode
+import kotlin.reflect.KClass
 
-object ArgumentFactories : DefaultFactory<ArgumentParserFactory<*>>(
-    BooleanParser,
-    StringParser,
-)
+enum class ArgumentNodes(
+    val klass: KClass<out CommandNode>,
+) {
+    ROOT(RootNode::class),
+    LITERAL(LiteralNode::class),
+    ARGUMENT(ArgumentNode::class),
+    ;
+
+    companion object : ValuesEnum<ArgumentNodes> {
+        override val VALUES: Array<ArgumentNodes> = values()
+        override val NAME_MAP: Map<String, ArgumentNodes> = EnumUtil.getEnumValues(VALUES)
+    }
+}

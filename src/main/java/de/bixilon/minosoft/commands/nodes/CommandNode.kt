@@ -18,7 +18,7 @@ import de.bixilon.minosoft.commands.util.CommandReader
 
 abstract class CommandNode(
     val executable: Boolean,
-    val redirect: CommandNode?,
+    var redirect: CommandNode?,
 ) {
     protected val children: MutableList<CommandNode> = mutableListOf()
 

@@ -13,12 +13,18 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 
-class RootNode : CommandNode(false, null) {
+class RootNode : CommandNode {
+
+    constructor() : super(false, null)
+    constructor(builder: CommandNodeBuilder) : super(builder.executable, null)
 
     fun execute(command: String) {
         execute(CommandReader(command), CommandStack())
     }
+
+    companion object
 }

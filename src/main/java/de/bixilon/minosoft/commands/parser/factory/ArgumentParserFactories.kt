@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.nodes
+package de.bixilon.minosoft.commands.parser.factory
 
-abstract class NamedNode(
-    val name: String,
-    val aliases: Set<String>,
-    executable: Boolean,
-    redirect: CommandNode?,
-) : CommandNode(executable, redirect)
+import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
+import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+
+object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
+    BooleanParser,
+    StringParser,
+)
