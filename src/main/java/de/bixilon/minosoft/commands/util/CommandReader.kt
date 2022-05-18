@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.commands.util
 
 import de.bixilon.minosoft.commands.errors.reader.*
+import de.bixilon.minosoft.commands.errors.reader.number.NegativeNumberError
 
 open class CommandReader(val string: String) {
     var pointer = 0
@@ -203,6 +204,54 @@ open class CommandReader(val string: String) {
         val string = string.substring(pointer, string.length)
         pointer = string.length
         return string
+    }
+
+    fun readUntil(vararg chars: Int, required: Boolean = false): String? {
+        if (!canPeekNext()) {
+            return null
+        }
+        val builder = StringBuilder()
+        while (true) {
+            val peek = peek()
+            if (peek == null) {
+                if (required) {
+                    throw OutOfBoundsError(this, length - 1)
+                }
+                return builder.toString()
+            }
+            if (peek in chars) {
+                return builder.toString()
+            }
+            builder.appendCodePoint(peek)
+            pointer++
+        }
+    }
+
+    fun readNumeric(decimal: Boolean = true, negative: Boolean = true): String? {
+        if (!canPeekNext()) {
+            return null
+        }
+        val builder = StringBuilder()
+        while (true) {
+            val peek = peek() ?: break
+            if (peek in '0'.code..'9'.code) {
+                builder.appendCodePoint(peek)
+                pointer++
+                continue
+            } else if (peek == '-'.code && builder.isEmpty()) {
+                if (!negative) {
+                    throw NegativeNumberError(this, pointer)
+                }
+                builder.appendCodePoint(peek)
+                pointer++
+            } else if (decimal && peek == '.'.code && '.' !in builder) {
+                builder.appendCodePoint(peek)
+                pointer++
+            } else {
+                break
+            }
+        }
+        return builder.toString()
     }
 
     fun <T> readResult(reader: CommandReader.() -> T): ReadResult<T> {

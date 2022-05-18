@@ -60,12 +60,7 @@ class LongParser(
         }
 
         fun CommandReader.readLong(): Long? {
-            val string = readUnquotedString() ?: return null
-            return try {
-                string.toLong()
-            } catch (exception: NumberFormatException) {
-                null
-            }
+            return readNumeric(decimal = false)?.toLongOrNull()
         }
     }
 }

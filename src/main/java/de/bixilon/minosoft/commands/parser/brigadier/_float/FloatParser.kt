@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FloatParser(
-    val min: Float = Float.MIN_VALUE,
+    val min: Float = -Float.MAX_VALUE,
     val max: Float = Float.MAX_VALUE,
 ) : BrigadierParser<Float> {
     override val examples: List<Float> = listOf(1.0f, -1.0f, 1000.0f)
@@ -54,18 +54,13 @@ class FloatParser(
 
         override fun read(buffer: PlayInByteBuffer): FloatParser {
             val flags = buffer.readUnsignedByte()
-            val min = if (flags.isBitMask(0x01)) buffer.readFloat() else Float.MIN_VALUE
+            val min = if (flags.isBitMask(0x01)) buffer.readFloat() else -Float.MAX_VALUE
             val max = if (flags.isBitMask(0x03)) buffer.readFloat() else Float.MAX_VALUE
             return FloatParser(min = min, max = max)
         }
 
         fun CommandReader.readFloat(): Float? {
-            val string = readUnquotedString() ?: return null
-            return try {
-                string.toFloat()
-            } catch (exception: NumberFormatException) {
-                null
-            }
+            return readNumeric()?.toFloatOrNull()
         }
     }
 }

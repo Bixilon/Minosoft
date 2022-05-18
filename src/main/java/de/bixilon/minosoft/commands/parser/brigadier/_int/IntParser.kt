@@ -60,12 +60,7 @@ class IntParser(
         }
 
         fun CommandReader.readInt(): Int? {
-            val string = readUnquotedString() ?: return null
-            return try {
-                string.toInt()
-            } catch (exception: NumberFormatException) {
-                null
-            }
+            return readNumeric(decimal = false)?.toIntOrNull()
         }
     }
 }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class DoubleParser(
-    val min: Double = Double.MIN_VALUE,
+    val min: Double = -Double.MAX_VALUE,
     val max: Double = Double.MAX_VALUE,
 ) : BrigadierParser<Double> {
     override val examples: List<Double> = listOf(1.0, -1.0, 1000.0)
@@ -54,18 +54,13 @@ class DoubleParser(
 
         override fun read(buffer: PlayInByteBuffer): DoubleParser {
             val flags = buffer.readUnsignedByte()
-            val min = if (flags.isBitMask(0x01)) buffer.readDouble() else Double.MIN_VALUE
+            val min = if (flags.isBitMask(0x01)) buffer.readDouble() else -Double.MAX_VALUE
             val max = if (flags.isBitMask(0x03)) buffer.readDouble() else Double.MAX_VALUE
             return DoubleParser(min = min, max = max)
         }
 
         fun CommandReader.readDouble(): Double? {
-            val string = readUnquotedString() ?: return null
-            return try {
-                string.toDouble()
-            } catch (exception: NumberFormatException) {
-                null
-            }
+            return readNumeric()?.toDoubleOrNull()
         }
     }
 }
