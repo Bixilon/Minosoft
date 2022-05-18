@@ -13,7 +13,37 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.util.CommandReader
+
 abstract class CommandNode(
     val executable: Boolean,
     val redirect: CommandNode?,
-)
+) {
+    protected val children: MutableList<CommandNode> = mutableListOf()
+
+    open fun addChild(node: CommandNode): CommandNode {
+        children += node
+        return this
+    }
+
+    protected open fun executeChild(child: CommandNode, reader: CommandReader, stack: CommandStack) {
+        child.execute(reader, stack)
+    }
+
+    open fun execute(reader: CommandReader, stack: CommandStack) {
+        val pointer = reader.pointer
+        val stackSize = stack.size
+        var lastError: Throwable? = null
+        for (child in children) {
+            try {
+                return executeChild(child, reader, stack)
+            } catch (error: Throwable) {
+                lastError = error
+            }
+            reader.pointer = pointer
+            stack.reset(stackSize)
+        }
+        throw lastError ?: return
+    }
+}

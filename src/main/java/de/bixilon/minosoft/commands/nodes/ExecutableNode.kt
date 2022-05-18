@@ -13,14 +13,47 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.stack.CommandExecutor
+import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
+import de.bixilon.minosoft.commands.util.CommandReader
 
 abstract class ExecutableNode(
     val name: String,
+    val aliases: Set<String> = setOf(),
     val suggestion: SuggestionType<*>? = null,
     var onlyDirectExecution: Boolean = true,
     var executor: CommandExecutor? = null,
     executable: Boolean = executor != null,
     redirect: CommandNode? = null,
-) : CommandNode(executable, redirect)
+) : CommandNode(executable, redirect) {
+
+    private fun execute(stack: CommandStack) {
+        try {
+            executor?.invoke(stack)
+        } catch (exception: Throwable) {
+            exception.printStackTrace()
+        }
+    }
+
+    override fun execute(reader: CommandReader, stack: CommandStack) {
+        reader.skipWhitespaces()
+        if (!reader.canPeekNext()) {
+            // empty string
+            if (executable) {
+                return execute(stack)
+            } else {
+                throw ExpectedArgumentError(reader)
+            }
+        }
+        super.execute(reader, stack)
+    }
+
+    override fun executeChild(child: CommandNode, reader: CommandReader, stack: CommandStack) {
+        super.executeChild(child, reader, stack)
+        if (!onlyDirectExecution) {
+            execute(stack)
+        }
+    }
+}

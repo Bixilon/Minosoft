@@ -26,7 +26,7 @@ class ArgumentNode : ExecutableNode {
         suggestion: SuggestionType<*>? = null,
         executable: Boolean = false,
         redirect: CommandNode? = null,
-    ) : super(name, suggestion, false, null, executable, redirect) {
+    ) : super(name, setOf(), suggestion, false, null, executable, redirect) {
         this.parser = parser
     }
 
@@ -34,5 +34,10 @@ class ArgumentNode : ExecutableNode {
     constructor(name: String, parser: ArgumentParser<*>, onlyDirectExecution: Boolean = true, executor: CommandExecutor) : super(name, executable = true, onlyDirectExecution = onlyDirectExecution, executor = executor) {
         this.executor = executor
         this.parser = parser
+    }
+
+    override fun addChild(node: CommandNode): ArgumentNode {
+        super.addChild(node)
+        return this
     }
 }

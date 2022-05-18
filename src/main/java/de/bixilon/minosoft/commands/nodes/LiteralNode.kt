@@ -13,18 +13,38 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.literal.ExpectedLiteralArgument
+import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.stack.CommandExecutor
+import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
+import de.bixilon.minosoft.commands.util.CommandReader
 
 class LiteralNode : ExecutableNode {
 
     constructor(
         name: String,
+        aliases: Set<String> = setOf(),
         suggestion: SuggestionType<*>? = null,
         executable: Boolean = false,
         redirect: CommandNode? = null,
-    ) : super(name, suggestion, false, null, executable, redirect)
+    ) : super(name, aliases, suggestion, false, null, executable, redirect)
 
 
-    constructor(name: String, onlyDirectExecution: Boolean = true, executor: CommandExecutor) : super(name, onlyDirectExecution = onlyDirectExecution, executor = executor, executable = true)
+    constructor(name: String, aliases: Set<String> = setOf(), onlyDirectExecution: Boolean = true, executor: CommandExecutor) : super(name, aliases, onlyDirectExecution = onlyDirectExecution, executor = executor, executable = true)
+
+    override fun addChild(node: CommandNode): LiteralNode {
+        super.addChild(node)
+        return this
+    }
+
+
+    override fun execute(reader: CommandReader, stack: CommandStack) {
+        val literalName = reader.readUnquotedString() ?: throw ExpectedLiteralArgument(reader)
+        if (literalName != name && literalName !in aliases) {
+            throw InvalidLiteralArgumentError(reader, literalName)
+        }
+        stack.push(name, name)
+        return super.execute(reader, stack)
+    }
 }

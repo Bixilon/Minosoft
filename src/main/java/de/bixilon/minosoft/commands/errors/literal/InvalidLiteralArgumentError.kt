@@ -11,21 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.commands.errors.literal
 
-import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.errors.ReaderError
+import de.bixilon.minosoft.commands.util.CommandReader
 
-object HelpCommand : Command {
-
-    override fun build(): LiteralNode {
-        return LiteralNode("help", setOf("?"), onlyDirectExecution = false, executor = {
-            printHelp(it["general"])
-        })
-            .addChild(LiteralNode("general", executable = true))
-    }
-
-    fun printHelp(subcommand: String?) {
-        println("-------------- Minosoft help --------------")
-        println("Subcommand: $subcommand")
-    }
-}
+class InvalidLiteralArgumentError(
+    reader: CommandReader,
+    val argument: String,
+) : ReaderError(reader, reader.pointer - argument.length, reader.pointer)

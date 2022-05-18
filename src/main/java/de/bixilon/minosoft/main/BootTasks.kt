@@ -27,5 +27,6 @@ enum class BootTasks {
     YGGDRASIL,
     STARTUP_PROGRESS,
     ASSETS_OVERRIDE,
+    CLI,
     ;
 }

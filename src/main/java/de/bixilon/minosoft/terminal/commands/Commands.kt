@@ -13,19 +13,14 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.nodes.RootNode
 
-object HelpCommand : Command {
+object Commands {
+    val ROOT_NODE = RootNode()
+        .register(HelpCommand)
 
-    override fun build(): LiteralNode {
-        return LiteralNode("help", setOf("?"), onlyDirectExecution = false, executor = {
-            printHelp(it["general"])
-        })
-            .addChild(LiteralNode("general", executable = true))
-    }
-
-    fun printHelp(subcommand: String?) {
-        println("-------------- Minosoft help --------------")
-        println("Subcommand: $subcommand")
+    fun RootNode.register(command: Command): RootNode {
+        this.addChild(command.build())
+        return this
     }
 }
