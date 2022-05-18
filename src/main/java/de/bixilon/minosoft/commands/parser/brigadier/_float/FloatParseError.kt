@@ -11,21 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.factory
+package de.bixilon.minosoft.commands.parser.brigadier._float
 
-import de.bixilon.minosoft.commands.parser.brigadier._double.DoubleParser
-import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser
-import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
-import de.bixilon.minosoft.commands.parser.brigadier._long.LongParser
-import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
-    BooleanParser,
-    DoubleParser,
-    FloatParser,
-    IntParser,
-    LongParser,
-    StringParser,
-)
+class FloatParseError(
+    reader: CommandReader,
+    result: ReadResult<Float?>,
+) : ParserError(reader, result)

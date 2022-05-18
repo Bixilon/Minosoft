@@ -34,14 +34,6 @@ class StringParser(
         reader.readResult { reader.readString(mode) }.let { return it.result ?: throw StringParseError(reader, it) }
     }
 
-    fun CommandReader.readString(mode: StringModes): String? {
-        return when (mode) {
-            StringModes.SINGLE -> readUnquotedString()
-            StringModes.QUOTED -> readString()
-            StringModes.GREEDY -> readRest()
-        }
-    }
-
     override fun getSuggestions(reader: CommandReader): List<String> {
         reader.readString(mode)
         return examples
@@ -66,6 +58,15 @@ class StringParser(
 
         override fun read(buffer: PlayInByteBuffer): StringParser {
             return StringParser(StringModes[buffer.readVarInt()])
+        }
+
+
+        fun CommandReader.readString(mode: StringModes): String? {
+            return when (mode) {
+                StringModes.SINGLE -> readUnquotedString()
+                StringModes.QUOTED -> readString()
+                StringModes.GREEDY -> readRest()
+            }
         }
     }
 }
