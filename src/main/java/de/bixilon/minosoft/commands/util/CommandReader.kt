@@ -159,7 +159,7 @@ open class CommandReader(val string: String) {
         if (!canPeekNext()) {
             return null
         }
-        unsafeRead(STRING_QUOTE)
+        val quoteStart = unsafeRead(STRING_QUOTE, STRING_SINGLE_QUOTE)
         val string = StringBuilder()
         var skipNextChar = false
         while (true) {
@@ -174,14 +174,14 @@ open class CommandReader(val string: String) {
                 continue
             }
             if (skipNextChar) {
-                if (read != STRING_QUOTE) {
+                if (read != quoteStart) {
                     throw UnexpectedBackslashError(this, start, pointer, read)
                 }
                 string.append('"')
                 skipNextChar = false
                 continue
             }
-            if (read == STRING_QUOTE) {
+            if (read == quoteStart) {
                 return string.toString()
             }
             string.appendCodePoint(read)
@@ -191,7 +191,7 @@ open class CommandReader(val string: String) {
     fun readString(): String? {
         skipWhitespaces()
         val start = peekNext() ?: return null
-        if (start == STRING_QUOTE) {
+        if (start == STRING_QUOTE || start == STRING_SINGLE_QUOTE) {
             return readQuotedString()
         }
         return readUnquotedString()
@@ -265,5 +265,6 @@ open class CommandReader(val string: String) {
 
     companion object {
         const val STRING_QUOTE = '"'.code
+        const val STRING_SINGLE_QUOTE = '\''.code
     }
 }
