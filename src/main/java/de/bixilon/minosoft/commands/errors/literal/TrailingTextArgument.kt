@@ -11,22 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.nodes
+package de.bixilon.minosoft.commands.errors.literal
 
-import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
-import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.util.CommandReader
 
-class RootNode : CommandNode {
-
-    constructor() : super(false, null)
-    constructor(builder: CommandNodeBuilder) : super(builder.executable, null)
-
-    fun execute(command: String) {
-        execute(CommandReader(command), CommandStack())
-    }
-
-    fun getSuggestions(command: String): List<Any?> {
-        return getSuggestions(CommandReader(command), CommandStack())
-    }
-}
+class TrailingTextArgument(
+    reader: CommandReader,
+) : ReaderError(reader, reader.pointer, reader.length)

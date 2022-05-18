@@ -18,9 +18,7 @@ import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
 import de.bixilon.minosoft.util.ShutdownManager
-import org.jline.reader.LineReader
-import org.jline.reader.LineReaderBuilder
-import org.jline.reader.UserInterruptException
+import org.jline.reader.*
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 
@@ -38,8 +36,9 @@ object CLI {
 
         val terminal: Terminal = builder.build()
         val reader: LineReader = LineReaderBuilder.builder()
+            .appName("Minosoft")
             .terminal(terminal)
-            // .completer() // ToDo
+            .completer(NodeCompleter)
             .build()
 
         while (true) {
@@ -60,5 +59,15 @@ object CLI {
 
     fun String.removeDuplicatedWhitespaces(): String {
         return this.replace("\\s{2,}".toRegex(), "")
+    }
+
+    object NodeCompleter : Completer {
+
+        override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
+            val suggestions = Commands.ROOT_NODE.getSuggestions(line.line())
+            for (suggestion in suggestions) {
+                candidates += Candidate(suggestion.toString())
+            }
+        }
     }
 }

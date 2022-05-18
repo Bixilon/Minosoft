@@ -18,10 +18,12 @@ import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 import de.bixilon.minosoft.commands.util.CommandReader
 
 class LiteralNode : ExecutableNode {
+    private val suggester: ArraySuggestion<String> = ArraySuggestion(listOf(name, *aliases.toTypedArray()))
 
     constructor(
         name: String,
@@ -41,13 +43,28 @@ class LiteralNode : ExecutableNode {
         return this
     }
 
-
-    override fun execute(reader: CommandReader, stack: CommandStack) {
+    private fun pushLiteralName(reader: CommandReader, stack: CommandStack): String {
         val literalName = reader.readUnquotedString() ?: throw ExpectedLiteralArgument(reader)
         if (literalName != name && literalName !in aliases) {
             throw InvalidLiteralArgumentError(reader, literalName)
         }
         stack.push(name, name)
+        return name
+    }
+
+
+    override fun execute(reader: CommandReader, stack: CommandStack) {
+        pushLiteralName(reader, stack)
         return super.execute(reader, stack)
+    }
+
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+        val literalName = reader.readUnquotedString()
+
+        if (literalName == name || literalName in aliases) {
+            stack.push(name, name)
+            return super.getSuggestions(reader, stack)
+        }
+        return suggester.suggest(literalName) ?: listOf()
     }
 }

@@ -17,8 +17,8 @@ import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 
 class ArraySuggestion<T>(val values: List<T>) : SuggestionType<T> {
 
-    override fun suggest(input: String): List<T>? {
-        if (input.isBlank()) {
+    override fun suggest(input: String?): List<T>? {
+        if (input == null || input.isBlank()) {
             return values
         }
         val list: MutableList<T> = mutableListOf()

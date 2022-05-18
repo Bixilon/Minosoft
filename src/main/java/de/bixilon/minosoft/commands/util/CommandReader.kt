@@ -152,9 +152,12 @@ open class CommandReader(val string: String) {
         }
     }
 
-    fun readQuotedString(): String {
+    fun readQuotedString(): String? {
         skipWhitespaces()
         val start = pointer
+        if (!canPeekNext()) {
+            return null
+        }
         unsafeRead(STRING_QUOTE)
         val string = StringBuilder()
         var skipNextChar = false
@@ -186,7 +189,7 @@ open class CommandReader(val string: String) {
 
     fun readString(): String? {
         skipWhitespaces()
-        val start = unsafePeek()
+        val start = peekNext() ?: return null
         if (start == STRING_QUOTE) {
             return readQuotedString()
         }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 
@@ -38,7 +39,11 @@ abstract class CommandNode(
         var highestStack = 0
         for (child in children) {
             try {
-                return executeChild(child, reader, stack)
+                executeChild(child, reader, stack)
+                if (reader.canPeek()) {
+                    throw TrailingTextArgument(reader)
+                }
+                return
             } catch (error: Throwable) {
                 val size = stack.size
                 if (size >= highestStack) {
@@ -50,6 +55,32 @@ abstract class CommandNode(
 
             stack.reset(stackSize)
         }
-        throw lastError ?: return
+
+        throw lastError ?: if (reader.canPeek()) throw TrailingTextArgument(reader) else return
+    }
+
+
+    open fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+        val pointer = reader.pointer
+        val stackSize = stack.size
+        val suggestions: MutableList<Any?> = mutableListOf()
+        for (child in children) {
+            try {
+                val childSuggestions = child.getSuggestions(reader, stack)
+                if (reader.canPeek()) {
+                    continue
+                }
+                if (stack.size == stackSize + 1) {
+                    suggestions.addAll(childSuggestions)
+                    continue
+                }
+                return childSuggestions
+            } catch (ignored: Throwable) {
+            }
+            reader.pointer = pointer
+
+            stack.reset(stackSize)
+        }
+        return suggestions
     }
 }
