@@ -35,13 +35,19 @@ abstract class CommandNode(
         val pointer = reader.pointer
         val stackSize = stack.size
         var lastError: Throwable? = null
+        var highestStack = 0
         for (child in children) {
             try {
                 return executeChild(child, reader, stack)
             } catch (error: Throwable) {
-                lastError = error
+                val size = stack.size
+                if (size >= highestStack) {
+                    highestStack = size
+                    lastError = error
+                }
             }
             reader.pointer = pointer
+
             stack.reset(stackSize)
         }
         throw lastError ?: return
