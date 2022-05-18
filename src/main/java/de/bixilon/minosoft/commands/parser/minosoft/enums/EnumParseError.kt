@@ -11,34 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.stack
+package de.bixilon.minosoft.commands.parser.minosoft.enums
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-class CommandStack {
-    private val stack: MutableList<StackEntry> = mutableListOf()
-    val size: Int get() = stack.size
-
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    inline operator fun <reified T> get(name: String): T? {
-        return getAny(name).nullCast()
-    }
-
-    fun getAny(name: String): Any? {
-        return stack.find { it.name == name }?.data
-    }
-
-    fun reset(size: Int) {
-        var index = 0
-        stack.removeAll { index++ >= size }
-    }
-
-    fun push(name: String, data: Any?) {
-        stack.add(StackEntry(name, data))
-    }
-
-    private data class StackEntry(
-        val name: String,
-        val data: Any?,
-    )
-}
+class EnumParseError(
+    reader: CommandReader,
+    result: ReadResult<*>,
+) : ParserError(reader, result)

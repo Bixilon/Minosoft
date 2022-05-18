@@ -15,7 +15,9 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.stack.CommandExecutor
+import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
+import de.bixilon.minosoft.commands.util.CommandReader
 
 class ArgumentNode : ExecutableNode {
     private val parser: ArgumentParser<*>
@@ -39,5 +41,12 @@ class ArgumentNode : ExecutableNode {
     override fun addChild(node: CommandNode): ArgumentNode {
         super.addChild(node)
         return this
+    }
+
+    override fun execute(reader: CommandReader, stack: CommandStack) {
+        reader.skipWhitespaces()
+        val parsed = parser.parse(reader)
+        stack.push(name, parsed)
+        super.execute(reader, stack)
     }
 }

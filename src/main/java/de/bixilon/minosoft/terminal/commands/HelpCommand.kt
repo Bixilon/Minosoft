@@ -13,19 +13,35 @@
 
 package de.bixilon.minosoft.terminal.commands
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 
 object HelpCommand : Command {
 
     override fun build(): LiteralNode {
-        return LiteralNode("help", setOf("?"), onlyDirectExecution = false, executor = {
-            printHelp(it["general"])
-        })
-            .addChild(LiteralNode("general", executable = true))
+        return LiteralNode("help", setOf("?"), executor = { printHelp() })
+            .addChild(ArgumentNode("subcommand", parser = EnumParser(HelpCommands), executor = { printHelp(it["subcommand"]!!) }))
     }
 
-    fun printHelp(subcommand: String?) {
+    fun printHelp() {
+        println("-------------- Minosoft help --------------")
+    }
+
+    fun printHelp(subcommand: HelpCommands) {
         println("-------------- Minosoft help --------------")
         println("Subcommand: $subcommand")
+    }
+
+    enum class HelpCommands {
+        GENERAL,
+        ;
+
+        companion object : ValuesEnum<HelpCommands> {
+            override val VALUES: Array<HelpCommands> = values()
+            override val NAME_MAP: Map<String, HelpCommands> = EnumUtil.getEnumValues(VALUES)
+        }
     }
 }

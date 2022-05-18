@@ -29,7 +29,7 @@ abstract class ExecutableNode(
     redirect: CommandNode? = null,
 ) : CommandNode(executable, redirect) {
 
-    private fun execute(stack: CommandStack) {
+    protected fun execute(stack: CommandStack) {
         try {
             executor?.invoke(stack)
         } catch (exception: Throwable) {

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.commands.util
 
 import de.bixilon.minosoft.commands.errors.reader.OutOfBoundsError
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 internal class CommandReaderTest {
     @Test
@@ -52,7 +52,7 @@ internal class CommandReaderTest {
         assertEquals(reader.read(), 'e'.code)
         assertEquals(reader.read(), 's'.code)
         assertEquals(reader.read(), 't'.code)
-        assertThrows(OutOfBoundsError::class.java) { reader.unsafeRead() }
+        assertThrows<OutOfBoundsError> { reader.unsafeRead() }
     }
 
     @Test

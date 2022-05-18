@@ -15,8 +15,11 @@ package de.bixilon.minosoft.commands.parser.brigadier.bool
 
 import de.bixilon.minosoft.commands.errors.suggestion.NoSuggestionError
 import de.bixilon.minosoft.commands.util.CommandReader
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class BooleanParserTest {
 
@@ -35,19 +38,19 @@ internal class BooleanParserTest {
     @Test
     fun testCaseSensitivity() {
         val reader = CommandReader("True")
-        assertThrows(BooleanParseError::class.java) { (BooleanParser.parse(reader)) }
+        assertThrows<BooleanParseError> { (BooleanParser.parse(reader)) }
     }
 
     @Test
     fun testEmpty() {
         val reader = CommandReader("")
-        assertThrows(BooleanParseError::class.java) { (BooleanParser.parse(reader)) }
+        assertThrows<BooleanParseError> { (BooleanParser.parse(reader)) }
     }
 
     @Test
     fun testTrash() {
         val reader = CommandReader("this is trash")
-        assertThrows(BooleanParseError::class.java) { (BooleanParser.parse(reader)) }
+        assertThrows<BooleanParseError> { (BooleanParser.parse(reader)) }
     }
 
     @Test
@@ -83,6 +86,6 @@ internal class BooleanParserTest {
     @Test
     fun testNoSuggestion() {
         val reader = CommandReader("a")
-        assertThrows(NoSuggestionError::class.java) { BooleanParser.getSuggestions(reader).size }
+        assertThrows<NoSuggestionError> { BooleanParser.getSuggestions(reader).size }
     }
 }
