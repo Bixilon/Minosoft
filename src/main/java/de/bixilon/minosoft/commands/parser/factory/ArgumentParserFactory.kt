@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.commands.parser.factory
 
-import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
-import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.commands.parser.ArgumentParser
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object ArgumentFactories : DefaultFactory<ArgumentParserFactory<*>>(
-    BooleanParser,
-    StringParser,
-)
+interface ArgumentParserFactory<T : ArgumentParser<*>> : CompanionResourceLocation {
+
+    fun build(connection: PlayConnection?): T
+
+    fun read(buffer: PlayInByteBuffer): T
+}

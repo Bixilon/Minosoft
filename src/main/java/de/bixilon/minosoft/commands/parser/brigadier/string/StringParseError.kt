@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.factory
+package de.bixilon.minosoft.commands.parser.brigadier.string
 
-import de.bixilon.minosoft.commands.parser.ArgumentParser
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-interface ArgumentFactory<T : ArgumentParser<*>> : CompanionResourceLocation {
-
-    fun build(connection: PlayConnection?): T
-}
+class StringParseError(
+    reader: CommandReader,
+    result: ReadResult<String?>,
+) : ParserError(reader, result)

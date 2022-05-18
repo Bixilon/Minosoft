@@ -15,15 +15,16 @@ package de.bixilon.minosoft.commands.parser.brigadier.bool
 
 import de.bixilon.minosoft.commands.errors.suggestion.NoSuggestionError
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
-import de.bixilon.minosoft.commands.parser.factory.ArgumentFactory
+import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-object BooleanParser : BrigadierParser<Boolean>, ArgumentFactory<BooleanParser> {
+object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanParser> {
     override val RESOURCE_LOCATION: ResourceLocation = "brigadier:bool".toResourceLocation()
     override val examples: List<Boolean> = listOf(true, false)
     private val suggestion = ArraySuggestion(examples)
@@ -50,4 +51,5 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentFactory<BooleanParser> 
     }
 
     override fun build(connection: PlayConnection?) = this
+    override fun read(buffer: PlayInByteBuffer) = this
 }

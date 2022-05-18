@@ -193,6 +193,15 @@ open class CommandReader(val string: String) {
         return readUnquotedString()
     }
 
+    fun readRest(): String? {
+        if (!canPeekNext()) {
+            return null
+        }
+        val string = string.substring(pointer, string.length)
+        pointer = string.length
+        return string
+    }
+
     fun <T> readResult(reader: CommandReader.() -> T): ReadResult<T> {
         val start = pointer
         val result = reader(this)

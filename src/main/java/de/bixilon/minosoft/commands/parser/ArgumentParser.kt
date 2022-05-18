@@ -15,7 +15,6 @@ package de.bixilon.minosoft.commands.parser
 
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 interface ArgumentParser<T> {
     val examples: List<T>
@@ -23,6 +22,4 @@ interface ArgumentParser<T> {
 
     fun parse(reader: CommandReader): T
     fun getSuggestions(reader: CommandReader): List<T>
-
-    fun read(buffer: PlayInByteBuffer) = Unit
 }
