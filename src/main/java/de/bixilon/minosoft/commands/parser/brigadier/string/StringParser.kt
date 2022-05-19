@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class StringParser(
     val mode: StringModes = StringModes.SINGLE,
 ) : BrigadierParser<String> {
-    override val examples: List<String> = listOf()
+    override val examples: List<String> = emptyList()
     override val placeholder = ChatComponent.of("<string>")
 
     override fun parse(reader: CommandReader): String {

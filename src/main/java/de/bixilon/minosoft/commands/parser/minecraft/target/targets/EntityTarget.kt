@@ -13,4 +13,10 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets
 
-interface EntityTarget
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.world.WorldEntities
+
+interface EntityTarget {
+
+    fun getEntities(entities: WorldEntities): List<Entity>
+}

@@ -11,25 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties.rotation
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
-import de.bixilon.minosoft.commands.parser.minecraft.target.properties.TargetProperty
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.commands.util.CommandReader
 
-interface RotationProperty : TargetProperty {
-    val min: Float
-    val max: Float
+interface TargetPropertyFactory<T : TargetProperty> {
+    val name: String
 
 
-    fun getValue(rotation: EntityRotation): Double
-
-
-    override fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean {
-        val rotation = getValue(entity.rotation)
-
-        return rotation in min..max
-    }
+    fun read(reader: CommandReader): T
 }

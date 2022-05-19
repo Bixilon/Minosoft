@@ -11,34 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.world.WorldEntities
-import java.util.*
 
-class UUIDEntityTarget(
-    val uuid: UUID,
-) : EntityTarget {
+interface TargetProperty {
 
-    override fun getEntities(entities: WorldEntities): List<Entity> {
-        val entity = entities[uuid] ?: return emptyList()
-        return listOf(entity)
-    }
-
-    override fun toString(): String {
-        return "{$uuid}"
-    }
-
-    override fun hashCode(): Int {
-        return uuid.hashCode()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is UUIDEntityTarget) {
-            return false
-        }
-        return uuid == other.uuid
-    }
+    fun passes(selected: List<Entity>, entity: Entity): Boolean
 }

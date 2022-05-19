@@ -35,7 +35,7 @@ open class TextFlowElement(
     var messageExpireTime: Long,
 ) : Element(guiRenderer), AbstractLayout<TextElement> {
     private val messages: MutableList<TextFlowTextElement> = synchronizedListOf() // all messages **from newest to oldest**
-    private var visibleLines: List<TextFlowLineElement> = listOf() // all visible lines **from bottom to top**
+    private var visibleLines: List<TextFlowLineElement> = emptyList() // all visible lines **from bottom to top**
     override var activeElement: TextElement? = null
     override var activeDragElement: TextElement? = null
 

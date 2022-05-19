@@ -11,16 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties.rotation
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation
 
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minosoft.range._float.FloatRange
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.Entity
 
-class PitchRotation(
-    override val min: Float = -90.0f,
-    override val max: Float = 90.0f,
-) : RotationProperty {
+interface RotationProperty : TargetProperty {
+    val range: FloatRange
 
-    override fun getValue(rotation: EntityRotation): Double {
-        return rotation.pitch
+    fun getValue(rotation: EntityRotation): Double
+
+
+    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+        val rotation = getValue(entity.rotation)
+
+        return rotation.toFloat() in range
     }
 }

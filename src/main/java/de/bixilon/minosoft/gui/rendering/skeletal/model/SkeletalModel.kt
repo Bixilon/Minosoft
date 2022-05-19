@@ -32,10 +32,10 @@ data class SkeletalModel(
     val geometryName: String = name,
     val visibleBox: Vec3 = Vec3.EMPTY,
     val resolution: SkeletalResolution = SkeletalResolution(),
-    val elements: List<SkeletalElement> = listOf(),
-    val outliner: List<SkeletalOutliner> = listOf(),
-    val textures: List<SkeletalTexture> = listOf(),
-    val animations: List<SkeletalAnimation> = listOf(),
+    val elements: List<SkeletalElement> = emptyList(),
+    val outliner: List<SkeletalOutliner> = emptyList(),
+    val textures: List<SkeletalTexture> = emptyList(),
+    val animations: List<SkeletalAnimation> = emptyList(),
 ) {
 
     fun bake(renderWindow: RenderWindow, textureOverride: MutableMap<Int, AbstractTexture>): BakedSkeletalModel {

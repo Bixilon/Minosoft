@@ -52,7 +52,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     private var entriesSize = Vec2i.EMPTY
     private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
-    private var toRender: List<TabListEntryElement> = listOf()
+    private var toRender: List<TabListEntryElement> = emptyList()
     private val lock = ReentrantLock()
     var needsApply = false
         private set

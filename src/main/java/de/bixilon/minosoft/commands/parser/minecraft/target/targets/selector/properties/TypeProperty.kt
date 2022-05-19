@@ -11,26 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
-import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
-class GamemodeProperty(
-    val gamemode: Gamemodes,
+class TypeProperty(
+    val type: ResourceLocation,
     val negated: Boolean,
 ) : TargetProperty {
 
-    override fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean {
-        if (entity !is PlayerEntity) {
-            return false
-        }
+    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
         if (negated) {
-            return entity.gamemode != gamemode
+            return entity.type.resourceLocation != type
         }
-        return entity.gamemode == gamemode
+        return entity.type.resourceLocation == type
+    }
+
+
+    companion object : TargetPropertyFactory<TypeProperty> {
+        override val name: String = "type"
+
+        override fun read(reader: CommandReader): TypeProperty {
+            val (resourceLocation, negated) = reader.readNegateable { readResourceLocation() ?: throw ExpectedArgumentError(reader) } ?: throw ExpectedArgumentError(reader)
+            return TypeProperty(resourceLocation, negated)
+        }
     }
 }

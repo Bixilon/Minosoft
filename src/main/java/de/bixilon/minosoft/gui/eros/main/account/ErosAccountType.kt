@@ -23,7 +23,7 @@ data class ErosAccountType<T : Account>(
     override val resourceLocation: ResourceLocation,
     override val translationKey: ResourceLocation? = null,
     val icon: Ikon,
-    val additionalDetails: List<Pair<ResourceLocation, (account: T) -> Any?>> = listOf(),
+    val additionalDetails: List<Pair<ResourceLocation, (account: T) -> Any?>> = emptyList(),
     val addHandler: ((accountController: AccountController) -> Unit)? = null,
     val refreshHandler: ((accountController: AccountController, account: T) -> Unit)? = null,
 ) : ResourceLocationAble, Translatable

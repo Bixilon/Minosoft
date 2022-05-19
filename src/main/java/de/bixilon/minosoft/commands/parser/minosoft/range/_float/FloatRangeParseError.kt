@@ -11,23 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target
+package de.bixilon.minosoft.commands.parser.minosoft.range._float
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.Sorting
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-enum class TargetSelectors(
-    val char: Char,
-    val sorting: Sorting,
-) {
-    NEAREST('p', Sorting.NEAREST),
-    RANDOM('r', Sorting.RANDOM),
-    ALL_PLAYERS('a', Sorting.ARBITRARY),
-    ALL_ENTITIES('e', Sorting.ARBITRARY),
-    ;
-
-
-    fun sort(selected: MutableList<Entity>) {
-        sorting.sort(selected)
-    }
-}
+class FloatRangeParseError(
+    reader: CommandReader,
+    result: ReadResult<FloatRange?>,
+) : ParserError(reader, result)

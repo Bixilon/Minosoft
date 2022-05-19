@@ -11,12 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties
+package de.bixilon.minosoft.commands.parser.minosoft.range
 
-enum class Sorting {
-    NEAREST,
-    FURTHEST,
-    RANDOM,
-    ARBITRARY,
-    ;
+interface Range<T : Number> {
+    val min: T
+    val max: T
+
+    fun contains(number: T): Boolean
 }

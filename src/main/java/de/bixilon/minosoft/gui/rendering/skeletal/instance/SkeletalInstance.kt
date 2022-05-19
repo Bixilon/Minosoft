@@ -33,7 +33,7 @@ class SkeletalInstance(
     private var currentAnimation: SkeletalAnimation? = null
     private var animationTime = 0.0f
     private var animationLastFrame = -1L
-    private var transforms: List<Mat4> = listOf()
+    private var transforms: List<Mat4> = emptyList()
 
     var light: Int = 0xFF
 

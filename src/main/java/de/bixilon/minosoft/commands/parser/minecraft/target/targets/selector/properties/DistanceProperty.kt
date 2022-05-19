@@ -11,13 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
+import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface TargetProperty {
+class DistanceProperty(
+    val min: Double = 0.0,
+    val max: Double = Double.MAX_VALUE,
+) : TargetProperty {
 
-    fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean
+    init {
+        check(min >= 0.0) { "Minimum distance can not be below 0" }
+        check(max >= min) { "Maximum distance can not be smaller than minimum distance" }
+    }
+
+    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+        TODO()
+    }
+
+    companion object : TargetPropertyFactory<DistanceProperty> {
+        override val name: String = "distance"
+
+        override fun read(reader: CommandReader): DistanceProperty {
+            TODO("Not yet implemented")
+        }
+    }
 }

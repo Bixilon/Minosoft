@@ -11,45 +11,41 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.commands.parser.minecraft.target.TargetSelectors
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.world.WorldEntities
 
-class NameEntityTarget(
-    val name: String,
+class SelectorEntityTarget(
+    val selector: TargetSelectors,
+    val properties: Map<String, TargetProperty>,
 ) : EntityTarget {
 
     override fun getEntities(entities: WorldEntities): List<Entity> {
-        var entity: Entity? = null
+        val selected: MutableList<Entity> = mutableListOf()
         entities.lock.acquire()
-        for (entry in entities) {
-            if (entry.customName?.message == name) {
-                entity = entry
-                break
-            }
+        for (entity in entities) {
+            selected += entity
         }
         entities.lock.release()
 
-        if (entity == null) {
-            return emptyList()
+        properties[SortProperty.name]?.nullCast<SortProperty>()?.sort(selected) ?: selector.sort(selected)
+
+        val output: MutableList<Entity> = mutableListOf()
+        entityLoop@ for (entity in selected) {
+            for (property in properties.values) {
+                if (!property.passes(output, entity)) {
+                    continue@entityLoop
+                }
+            }
+            output += entity
         }
-        return listOf(entity)
-    }
 
-    override fun toString(): String {
-        return "{Bixilon}"
-    }
-
-    override fun hashCode(): Int {
-        return name.hashCode()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is NameEntityTarget) {
-            return false
-        }
-        return name == other.name
+        return output
     }
 }

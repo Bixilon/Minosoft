@@ -11,16 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties.rotation
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation
 
-import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.parser.minosoft.range._float.FloatRange
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-class YawRotation(
-    override val min: Float = -180.0f,
-    override val max: Float = 180.0f,
-) : RotationProperty {
-
-    override fun getValue(rotation: EntityRotation): Double {
-        return rotation.yaw
-    }
-}
+class RotationOutOfRangeError(
+    reader: CommandReader,
+    result: ReadResult<FloatRange>,
+) : ParserError(reader, result)

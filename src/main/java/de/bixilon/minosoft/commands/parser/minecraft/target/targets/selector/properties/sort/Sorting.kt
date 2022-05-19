@@ -11,22 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class NameProperty(
-    val name: String,
-    val negated: Boolean,
-) : TargetProperty {
+enum class Sorting {
+    NEAREST,
+    FURTHEST,
+    RANDOM,
+    ARBITRARY,
+    ;
 
-    override fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean {
-        // ToDo: Check player name?
-        if (negated) {
-            return entity.customName?.message != name
-        }
-        return entity.customName?.message == name
+
+    fun sort(selected: MutableList<Entity>) {
+        sort(selected)
+    }
+
+    companion object : ValuesEnum<Sorting> {
+        override val VALUES: Array<Sorting> = values()
+        override val NAME_MAP: Map<String, Sorting> = EnumUtil.getEnumValues(VALUES)
     }
 }

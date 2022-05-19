@@ -15,6 +15,8 @@ package de.bixilon.minosoft.commands.util
 
 import de.bixilon.minosoft.commands.errors.reader.*
 import de.bixilon.minosoft.commands.errors.reader.number.NegativeNumberError
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class CommandReader(val string: String) {
     var pointer = 0
@@ -228,7 +230,7 @@ open class CommandReader(val string: String) {
     }
 
     fun readNumeric(decimal: Boolean = true, negative: Boolean = true): String? {
-        if (!canPeekNext()) {
+        if (!canPeek()) {
             return null
         }
         val builder = StringBuilder()
@@ -252,6 +254,49 @@ open class CommandReader(val string: String) {
             }
         }
         return builder.toString()
+    }
+
+    fun readWord(): String? {
+        if (!canPeek()) {
+            return null
+        }
+        val builder = StringBuilder()
+        while (true) {
+            val peek = peek() ?: break
+            if (peek in '0'.code..'9'.code || peek in 'a'.code..'z'.code || peek in 'A'.code..'Z'.code || peek == '_'.code || peek == '-'.code || peek == '/'.code) {
+                builder.appendCodePoint(peek)
+                pointer++
+                continue
+            } else {
+                break
+            }
+        }
+        return builder.toString()
+    }
+
+    fun readResourceLocation(): ResourceLocation? {
+        val namespace = readWord() ?: return null
+        if (peek() != ':'.code) {
+            return namespace.toResourceLocation()
+        }
+        read()
+        val path = readWord() ?: return null
+
+        return ResourceLocation(namespace, path)
+    }
+
+    fun <T> readNegateable(reader: CommandReader.() -> T): Pair<T, Boolean>? {
+        if (!canPeek()) {
+            return null
+        }
+        var negated = false
+        if (peek() == '!'.code) {
+            read()
+            negated = true
+        }
+        val it = reader(this) ?: return null
+
+        return Pair(it, negated)
     }
 
     fun <T> readResult(reader: CommandReader.() -> T): ReadResult<T> {

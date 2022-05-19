@@ -65,6 +65,6 @@ class LiteralNode : ExecutableNode {
             stack.push(name, name)
             return super.getSuggestions(reader, stack)
         }
-        return suggester.suggest(literalName) ?: listOf()
+        return suggester.suggest(literalName) ?: emptyList()
     }
 }

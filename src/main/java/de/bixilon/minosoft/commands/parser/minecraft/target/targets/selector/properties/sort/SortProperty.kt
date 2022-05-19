@@ -11,23 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.Sorting
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
+import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
+import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 
-enum class TargetSelectors(
-    val char: Char,
+class SortProperty(
     val sorting: Sorting,
-) {
-    NEAREST('p', Sorting.NEAREST),
-    RANDOM('r', Sorting.RANDOM),
-    ALL_PLAYERS('a', Sorting.ARBITRARY),
-    ALL_ENTITIES('e', Sorting.ARBITRARY),
-    ;
+) : TargetProperty {
 
+    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+        return true
+    }
 
     fun sort(selected: MutableList<Entity>) {
         sorting.sort(selected)
+    }
+
+    companion object : TargetPropertyFactory<SortProperty> {
+        override val name: String = "sort"
+        private val parser = EnumParser(Sorting)
+
+        override fun read(reader: CommandReader): SortProperty {
+            return SortProperty(parser.parse(reader))
+        }
     }
 }

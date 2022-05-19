@@ -13,9 +13,13 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.properties.*
-import de.bixilon.minosoft.commands.parser.minecraft.target.properties.rotation.PitchRotation
-import de.bixilon.minosoft.commands.parser.minecraft.target.properties.rotation.YawRotation
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.DistanceProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.GamemodeProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.NameProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TypeProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation.PitchRotation
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation.YawRotation
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.Sorting
 
 data class TargetProperties(
     val selector: TargetSelectors,

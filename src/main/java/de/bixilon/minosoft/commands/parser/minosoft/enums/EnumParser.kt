@@ -41,7 +41,7 @@ class EnumParser<E : Enum<*>>(
     }
 
     override fun getSuggestions(reader: CommandReader): List<E> {
-        val text = reader.readResult { reader.readString() }
+        val text = reader.readResult { reader.readWord() }
         if (text.result == null) {
             return examples
         }

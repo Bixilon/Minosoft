@@ -11,22 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
+import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class TypeProperty(
-    val type: EntityType,
+class NameProperty(
+    val name: String,
     val negated: Boolean,
 ) : TargetProperty {
 
-    override fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean {
+    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+        // ToDo: Check player name?
         if (negated) {
-            return entity.type != type
+            return entity.customName?.message != name
         }
-        return entity.type == type
+        return entity.customName?.message == name
+    }
+
+    companion object : TargetPropertyFactory<NameProperty> {
+        override val name: String = "name"
+
+        override fun read(reader: CommandReader): NameProperty {
+            val (word, negated) = reader.readNegateable { readWord() ?: throw ExpectedArgumentError(reader) } ?: throw ExpectedArgumentError(reader)
+            return NameProperty(word, negated)
+        }
     }
 }

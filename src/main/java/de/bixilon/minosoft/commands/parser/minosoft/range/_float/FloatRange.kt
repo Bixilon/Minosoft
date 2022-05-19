@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.properties
+package de.bixilon.minosoft.commands.parser.minosoft.range._float
 
-class DistanceProperty(
-    val min: Double = 0.0,
-    val max: Double = Double.MAX_VALUE,
-) {
+import de.bixilon.minosoft.commands.parser.minosoft.range.Range
 
-    init {
-        check(min >= 0.0) { "Minimum distance can not be below 0" }
-        check(max >= min) { "Maximum distance can not be smaller than minimum distance" }
+class FloatRange(
+    override val min: Float = -Float.MAX_VALUE,
+    override val max: Float = Float.MAX_VALUE,
+) : Range<Float> {
+
+    override operator fun contains(number: Float): Boolean {
+        return number in min..max
     }
 }

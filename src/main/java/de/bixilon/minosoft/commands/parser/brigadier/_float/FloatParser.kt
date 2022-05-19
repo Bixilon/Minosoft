@@ -44,7 +44,7 @@ class FloatParser(
         if (reader.readString()?.isBlank() != false) {
             return examples
         }
-        return listOf()
+        return emptyList()
     }
 
     companion object : ArgumentParserFactory<FloatParser> {
