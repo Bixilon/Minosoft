@@ -13,9 +13,13 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-    )
+import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+
+object SayCommand : ConnectionCommand {
+    override var node = LiteralNode("say", setOf("chat", "send", "write"))
+        .addChild(ArgumentNode("message", StringParser(StringParser.StringModes.GREEDY), executor = {
+            it.connection.util.sendChatMessage(it.get<String>("message")!!)
+        }))
 }

@@ -14,16 +14,38 @@
 package de.bixilon.minosoft.terminal.cli
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.ShutdownReasons
+import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
+import de.bixilon.minosoft.terminal.commands.ConnectionCommand
 import de.bixilon.minosoft.util.ShutdownManager
 import org.jline.reader.*
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 
 object CLI {
-    var connection: PlayConnection? = null
+    var connection: PlayConnection? by watched(null)
+    private val ROOT_NODE = RootNode()
+
+    init {
+        register()
+    }
+
+    @Synchronized
+    private fun register() {
+        ROOT_NODE.clear()
+        val connection = this.connection
+
+        for (command in Commands.COMMANDS) {
+            if (command is ConnectionCommand && connection == null) {
+                continue
+            }
+            ROOT_NODE.addChild(command.node)
+        }
+    }
 
 
     fun startThread(latch: CountUpAndDownLatch) {
@@ -41,6 +63,9 @@ object CLI {
             .completer(NodeCompleter)
             .build()
 
+        this::connection.observe(this) { register() }
+
+
         while (true) {
             try {
                 val line: String = reader.readLine().removeDuplicatedWhitespaces()
@@ -48,7 +73,7 @@ object CLI {
                     continue
                 }
                 terminal.flush()
-                Commands.ROOT_NODE.execute(line)
+                ROOT_NODE.execute(line, connection)
             } catch (exception: UserInterruptException) {
                 ShutdownManager.shutdown(reason = ShutdownReasons.ALL_FINE)
             } catch (exception: Throwable) {
@@ -64,7 +89,7 @@ object CLI {
     object NodeCompleter : Completer {
 
         override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
-            val suggestions = Commands.ROOT_NODE.getSuggestions(line.line())
+            val suggestions = ROOT_NODE.getSuggestions(line.line())
             for (suggestion in suggestions) {
                 candidates += Candidate(suggestion.toString())
             }

@@ -83,4 +83,8 @@ abstract class CommandNode(
         }
         return suggestions
     }
+
+    fun clear() {
+        children.clear()
+    }
 }

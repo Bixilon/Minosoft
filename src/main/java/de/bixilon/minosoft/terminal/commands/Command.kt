@@ -16,6 +16,5 @@ package de.bixilon.minosoft.terminal.commands
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 
 interface Command {
-
-    fun build(): LiteralNode
+    var node: LiteralNode
 }

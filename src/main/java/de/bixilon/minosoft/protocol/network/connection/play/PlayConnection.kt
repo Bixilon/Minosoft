@@ -52,6 +52,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -119,6 +120,9 @@ class PlayConnection(
                 assetsManager.unload()
                 state = PlayConnectionStates.DISCONNECTED
                 ACTIVE_CONNECTIONS -= this
+                if (CLI.connection === this) {
+                    CLI.connection = null
+                }
             }
         }
         network::state.observe(this) {
@@ -130,6 +134,10 @@ class PlayConnection(
                 }
                 ProtocolStates.PLAY -> {
                     state = PlayConnectionStates.JOINING
+
+                    if (CLI.connection == null) {
+                        CLI.connection = this
+                    }
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.type.position) {

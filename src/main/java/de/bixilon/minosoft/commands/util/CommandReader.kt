@@ -209,7 +209,7 @@ open class CommandReader(val string: String) {
             return null
         }
         val string = string.substring(pointer, string.length)
-        pointer = string.length
+        pointer = this.string.length
         return string
     }
 

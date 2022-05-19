@@ -21,6 +21,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pro
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation.YawRotation
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 
+// See https://minecraft.fandom.com/wiki/Target_selectors
 object TargetProperties {
     val properties: MutableMap<String, TargetPropertyFactory<*>> = mutableMapOf()
 

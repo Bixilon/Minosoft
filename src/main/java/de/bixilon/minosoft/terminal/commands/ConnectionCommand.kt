@@ -13,9 +13,4 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-    )
-}
+interface ConnectionCommand : Command

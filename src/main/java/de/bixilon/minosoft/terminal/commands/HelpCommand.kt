@@ -20,11 +20,8 @@ import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 
 object HelpCommand : Command {
-
-    override fun build(): LiteralNode {
-        return LiteralNode("help", setOf("?"), executor = { printHelp() })
-            .addChild(ArgumentNode("subcommand", parser = EnumParser(HelpCommands), executor = { printHelp(it["subcommand"]!!) }))
-    }
+    override var node: LiteralNode = LiteralNode("help", setOf("?"), executor = { printHelp() })
+        .addChild(ArgumentNode("subcommand", parser = EnumParser(HelpCommands), executor = { printHelp(it["subcommand"]!!) }))
 
     fun printHelp() {
         println("-------------- Minosoft help --------------")

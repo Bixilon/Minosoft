@@ -16,14 +16,19 @@ package de.bixilon.minosoft.commands.nodes
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class RootNode : CommandNode {
 
     constructor() : super(false, null)
     constructor(builder: CommandNodeBuilder) : super(builder.executable, null)
 
-    fun execute(command: String) {
-        execute(CommandReader(command), CommandStack())
+    fun execute(command: String, connection: PlayConnection? = null) {
+        val stack = CommandStack()
+        if (connection != null) {
+            stack.connection = connection
+        }
+        execute(CommandReader(command), stack)
     }
 
     fun getSuggestions(command: String): List<Any?> {
