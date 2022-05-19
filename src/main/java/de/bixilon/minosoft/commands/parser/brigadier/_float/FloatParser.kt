@@ -59,5 +59,9 @@ class FloatParser(
         fun CommandReader.readFloat(): Float? {
             return readNumeric()?.toFloatOrNull()
         }
+
+        fun CommandReader.readRequiredFloat(): Float {
+            readResult { readFloat() }.let { return it.result ?: throw FloatParseError(this, it) }
+        }
     }
 }

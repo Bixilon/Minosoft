@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.data.entities.entities.Entity
 
 interface TargetProperty {
 
-    fun passes(selected: List<Entity>, entity: Entity): Boolean
+    fun passes(properties: SelectorProperties, entity: Entity): Boolean
+
+    fun updateProperties(properties: SelectorProperties) = Unit
 }

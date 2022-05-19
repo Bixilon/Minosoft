@@ -13,30 +13,25 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
-import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser.Companion.readRequiredInt
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 
-class NameProperty(
-    val name: String,
-    val negated: Boolean,
+class LimitProperty(
+    val limit: Int,
 ) : TargetProperty {
 
     override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
-        // ToDo: Check player name?
-        if (negated) {
-            return entity.customName?.message != name
-        }
-        return entity.customName?.message == name
+        return properties.entities.size < limit
     }
 
-    companion object : TargetPropertyFactory<NameProperty> {
-        override val name: String = "name"
 
-        override fun read(reader: CommandReader): NameProperty {
-            val (word, negated) = reader.readNegateable { readWord() ?: throw ExpectedArgumentError(reader) } ?: throw ExpectedArgumentError(reader)
-            return NameProperty(word, negated)
+    companion object : TargetPropertyFactory<LimitProperty> {
+        override val name: String = "limit"
+
+        override fun read(reader: CommandReader): LimitProperty {
+            return LimitProperty(reader.readRequiredInt())
         }
     }
 }

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FloatRangeParser(
-    val defaultMin: Boolean = true,
+    val defaultMin: Float? = -Float.MAX_VALUE,
 ) : ArgumentParser<FloatRange> {
     override val examples: List<Any> = listOf(1.0f, "1.0..10")
     override val placeholder = ChatComponent.of("<float..float>")
@@ -45,13 +45,13 @@ class FloatRangeParser(
 
         override fun read(buffer: PlayInByteBuffer) = FloatRangeParser()
 
-        fun CommandReader.readFloatRange(defaultMin: Boolean = true): FloatRange? {
+        fun CommandReader.readFloatRange(defaultMin: Float?): FloatRange? {
             val (first, second) = readRange { readFloat() } ?: return null
             if (first == null) {
                 return null
             }
             if (second == null) {
-                return FloatRange(min = if (defaultMin) -Float.MAX_VALUE else first, max = first)
+                return FloatRange(min = defaultMin ?: first, max = first)
             }
             return FloatRange(min = first, max = second)
         }

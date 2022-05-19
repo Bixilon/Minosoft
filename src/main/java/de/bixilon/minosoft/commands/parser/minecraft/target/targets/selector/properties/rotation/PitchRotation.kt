@@ -32,7 +32,7 @@ class PitchRotation(
         const val MIN = -90.0f
         const val MAX = 90.0f
         override val name: String = "x_rotation"
-        private val parser = FloatRangeParser(false)
+        private val parser = FloatRangeParser(null)
 
         override fun read(reader: CommandReader): YawRotation {
             val range = reader.readResult { parser.parse(reader) }

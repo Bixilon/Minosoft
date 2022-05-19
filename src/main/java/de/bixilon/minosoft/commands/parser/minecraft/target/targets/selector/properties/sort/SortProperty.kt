@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort
 
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
 import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
@@ -23,13 +24,14 @@ class SortProperty(
     val sorting: Sorting,
 ) : TargetProperty {
 
-    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
         return true
     }
 
-    fun sort(selected: MutableList<Entity>) {
-        sorting.sort(selected)
+    override fun updateProperties(properties: SelectorProperties) {
+        sorting.sort(properties.center, properties.entities)
     }
+
 
     companion object : TargetPropertyFactory<SortProperty> {
         override val name: String = "sort"

@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.XCenterProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.YCenterProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.ZCenterProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.distance.DistanceProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation.PitchRotation
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation.YawRotation
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
@@ -22,6 +26,10 @@ object TargetProperties {
 
 
     init {
+        register(XCenterProperty)
+        register(YCenterProperty)
+        register(ZCenterProperty)
+
         register(SortProperty)
         register(PitchRotation)
         register(YawRotation)
@@ -29,6 +37,21 @@ object TargetProperties {
         register(GamemodeProperty)
         register(NameProperty)
         register(TypeProperty)
+        register(LimitProperty)
+        register(LevelProperty)
+
+        // ToDo
+        /*
+        var volumeX: Double?,
+        var volumeY: Double?,
+        var volumeZ: Double?,
+        var scores: Any?,
+        var tag: Any?,
+        var team: Any?,
+        var nbt: Any? = null,
+        var advancements: Any? = null,
+        var predicate: Any? = null,
+         */
     }
 
     fun register(factory: TargetPropertyFactory<*>) {

@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.commands.stack
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.data.entities.entities.Entity
 
 class CommandStack {
     private val stack: MutableList<StackEntry> = mutableListOf()
     val size: Int get() = stack.size
+
+    var executor: Entity? = null
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     inline operator fun <reified T> get(name: String): T? {

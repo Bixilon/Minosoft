@@ -59,5 +59,9 @@ class LongParser(
         fun CommandReader.readLong(): Long? {
             return readNumeric(decimal = false)?.toLongOrNull()
         }
+
+        fun CommandReader.readRequiredLong(): Long {
+            readResult { readLong() }.let { return it.result ?: throw LongParseError(this, it) }
+        }
     }
 }

@@ -11,12 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.distance
 
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRange
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-interface TargetPropertyFactory<T : TargetProperty> {
-    val name: String
-
-    fun read(reader: CommandReader): T
-}
+class InvalidMinDistanceError(
+    reader: CommandReader,
+    result: ReadResult<FloatRange>,
+) : ParserError(reader, result)

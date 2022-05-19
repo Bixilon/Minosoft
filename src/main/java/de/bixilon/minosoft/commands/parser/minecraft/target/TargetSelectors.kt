@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.Sorting
@@ -29,8 +30,8 @@ enum class TargetSelectors(
     ;
 
 
-    fun sort(selected: MutableList<Entity>) {
-        sorting.sort(selected)
+    fun sort(center: Vec3d, selected: MutableList<Entity>) {
+        sorting.sort(center, selected)
     }
 
     companion object : ValuesEnum<TargetSelectors> {

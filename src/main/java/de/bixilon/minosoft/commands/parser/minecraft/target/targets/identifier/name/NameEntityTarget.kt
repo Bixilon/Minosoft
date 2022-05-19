@@ -21,7 +21,7 @@ class NameEntityTarget(
     val name: String,
 ) : EntityTarget {
 
-    override fun getEntities(entities: WorldEntities): List<Entity> {
+    override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
         var entity: Entity? = null
         entities.lock.acquire()
         for (entry in entities) {

@@ -30,7 +30,7 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanPa
     override val placeholder = ChatComponent.of("<boolean>")
 
     override fun parse(reader: CommandReader): Boolean {
-        reader.readResult { reader.readBoolean() }.let { return it.result ?: throw BooleanParseError(reader, it) }
+        return reader.readRequiredBoolean()
     }
 
     fun CommandReader.readBoolean(): Boolean? {
@@ -39,6 +39,11 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanPa
             "false" -> false
             else -> null
         }
+    }
+
+
+    fun CommandReader.readRequiredBoolean(): Boolean {
+        readResult { readBoolean() }.let { return it.result ?: throw BooleanParseError(this, it) }
     }
 
     override fun getSuggestions(reader: CommandReader): List<Boolean> {

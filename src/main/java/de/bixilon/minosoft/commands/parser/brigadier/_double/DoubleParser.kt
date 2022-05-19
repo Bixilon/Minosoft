@@ -59,5 +59,9 @@ class DoubleParser(
         fun CommandReader.readDouble(): Double? {
             return readNumeric()?.toDoubleOrNull()
         }
+
+        fun CommandReader.readRequiredDouble(): Double {
+            readResult { readDouble() }.let { return it.result ?: throw DoubleParseError(this, it) }
+        }
     }
 }

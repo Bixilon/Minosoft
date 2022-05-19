@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort
 
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -25,8 +26,13 @@ enum class Sorting {
     ;
 
 
-    fun sort(selected: MutableList<Entity>) {
-        sort(selected)
+    fun sort(center: Vec3d, selected: MutableList<Entity>) {
+        when (this) {
+            NEAREST -> selected.sortBy { (center - it.position).length2() }
+            FURTHEST -> selected.sortBy { -(center - it.position).length2() }
+            RANDOM -> selected.shuffle()
+            ARBITRARY -> selected.sortBy { it.id ?: 0 }
+        }
     }
 
     companion object : ValuesEnum<Sorting> {

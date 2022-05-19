@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation
 
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRange
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
@@ -24,7 +25,7 @@ interface RotationProperty : TargetProperty {
     fun getValue(rotation: EntityRotation): Double
 
 
-    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
         val rotation = getValue(entity.rotation)
 
         return rotation.toFloat() in range

@@ -18,5 +18,5 @@ import de.bixilon.minosoft.data.world.WorldEntities
 
 interface EntityTarget {
 
-    fun getEntities(entities: WorldEntities): List<Entity>
+    fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity>
 }

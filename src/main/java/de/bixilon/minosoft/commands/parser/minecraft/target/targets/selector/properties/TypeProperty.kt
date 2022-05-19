@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -23,7 +24,7 @@ class TypeProperty(
     val negated: Boolean,
 ) : TargetProperty {
 
-    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
         if (negated) {
             return entity.type.resourceLocation != type
         }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -25,7 +26,7 @@ class GamemodeProperty(
     val negated: Boolean,
 ) : TargetProperty {
 
-    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
         if (entity !is PlayerEntity) {
             return false
         }

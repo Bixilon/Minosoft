@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class IntRangeParser(
-    val defaultMin: Boolean = true,
+    val defaultMin: Int? = Int.MIN_VALUE,
 ) : ArgumentParser<IntRange> {
     override val examples: List<Any> = listOf(1, "1..10")
     override val placeholder = ChatComponent.of("<int..int>")
@@ -45,17 +45,13 @@ class IntRangeParser(
 
         override fun read(buffer: PlayInByteBuffer) = IntRangeParser()
 
-        fun CommandReader.readIntRange(defaultMin: Boolean = true): IntRange? {
+        fun CommandReader.readIntRange(defaultMin: Int?): IntRange? {
             val (first, second) = readRange { readInt() } ?: return null
             if (first == null) {
                 return null
             }
             if (second == null) {
-                return if (defaultMin) {
-                    Int.MIN_VALUE..first
-                } else {
-                    first..first
-                }
+                return (defaultMin ?: first)..first
             }
             return first..second
         }

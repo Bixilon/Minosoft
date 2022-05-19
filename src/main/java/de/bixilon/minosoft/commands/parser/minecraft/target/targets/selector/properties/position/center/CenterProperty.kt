@@ -11,32 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center
 
-import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
 
-class NameProperty(
-    val name: String,
-    val negated: Boolean,
+abstract class CenterProperty(
+    val axis: Axes,
+    val value: Double,
 ) : TargetProperty {
 
     override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
-        // ToDo: Check player name?
-        if (negated) {
-            return entity.customName?.message != name
-        }
-        return entity.customName?.message == name
+        return true
     }
 
-    companion object : TargetPropertyFactory<NameProperty> {
-        override val name: String = "name"
-
-        override fun read(reader: CommandReader): NameProperty {
-            val (word, negated) = reader.readNegateable { readWord() ?: throw ExpectedArgumentError(reader) } ?: throw ExpectedArgumentError(reader)
-            return NameProperty(word, negated)
-        }
+    override fun updateProperties(properties: SelectorProperties) {
+        properties.center[axis] = value
     }
 }

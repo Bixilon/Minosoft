@@ -13,28 +13,25 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
+import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 
-class DistanceProperty(
-    val min: Double = 0.0,
-    val max: Double = Double.MAX_VALUE,
+class LevelProperty(
+    val range: IntRange,
 ) : TargetProperty {
 
-    init {
-        check(min >= 0.0) { "Minimum distance can not be below 0" }
-        check(max >= min) { "Maximum distance can not be smaller than minimum distance" }
-    }
-
-    override fun passes(selected: List<Entity>, entity: Entity): Boolean {
+    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
         TODO()
     }
 
-    companion object : TargetPropertyFactory<DistanceProperty> {
-        override val name: String = "distance"
+    companion object : TargetPropertyFactory<LevelProperty> {
+        override val name: String = "level"
+        private val parser = IntRangeParser()
 
-        override fun read(reader: CommandReader): DistanceProperty {
-            TODO("Not yet implemented")
+        override fun read(reader: CommandReader): LevelProperty {
+            return LevelProperty(parser.parse(reader))
         }
     }
 }

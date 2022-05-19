@@ -22,7 +22,7 @@ class UUIDEntityTarget(
     val uuid: UUID,
 ) : EntityTarget {
 
-    override fun getEntities(entities: WorldEntities): List<Entity> {
+    override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
         val entity = entities[uuid] ?: return emptyList()
         return listOf(entity)
     }

@@ -13,10 +13,13 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetSelectors
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.XCenterProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.YCenterProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.ZCenterProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.world.WorldEntities
@@ -26,7 +29,7 @@ class SelectorEntityTarget(
     val properties: Map<String, TargetProperty>,
 ) : EntityTarget {
 
-    override fun getEntities(entities: WorldEntities): List<Entity> {
+    override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
         val selected: MutableList<Entity> = mutableListOf()
         entities.lock.acquire()
         for (entity in entities) {
@@ -34,12 +37,22 @@ class SelectorEntityTarget(
         }
         entities.lock.release()
 
-        properties[SortProperty.name]?.nullCast<SortProperty>()?.sort(selected) ?: selector.sort(selected)
+        val selectorProperties = SelectorProperties(
+            entities = selected,
+            center = executor?.position ?: Vec3d(),
+            executor = executor,
+        )
+
+        properties[XCenterProperty.name]?.updateProperties(selectorProperties)
+        properties[YCenterProperty.name]?.updateProperties(selectorProperties)
+        properties[ZCenterProperty.name]?.updateProperties(selectorProperties)
+        properties[SortProperty.name]?.updateProperties(selectorProperties) ?: selector.sort(selectorProperties.center, selectorProperties.entities)
+
 
         val output: MutableList<Entity> = mutableListOf()
-        entityLoop@ for (entity in selected) {
+        entityLoop@ for (entity in selectorProperties.entities) {
             for (property in properties.values) {
-                if (!property.passes(output, entity)) {
+                if (!property.passes(selectorProperties, entity)) {
                     continue@entityLoop
                 }
             }

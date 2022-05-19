@@ -59,5 +59,9 @@ class IntParser(
         fun CommandReader.readInt(): Int? {
             return readNumeric(decimal = false)?.toIntOrNull()
         }
+
+        fun CommandReader.readRequiredInt(): Int {
+            readResult { readInt() }.let { return it.result ?: throw IntParseError(this, it) }
+        }
     }
 }

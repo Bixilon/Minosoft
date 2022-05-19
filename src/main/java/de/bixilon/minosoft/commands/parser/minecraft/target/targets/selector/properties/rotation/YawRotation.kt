@@ -31,7 +31,7 @@ class YawRotation(
         const val MIN = -180.0f
         const val MAX = 180.0f
         override val name: String = "y_rotation"
-        private val parser = FloatRangeParser(false)
+        private val parser = FloatRangeParser(null)
 
         override fun read(reader: CommandReader): YawRotation {
             val range = reader.readResult { parser.parse(reader) }
