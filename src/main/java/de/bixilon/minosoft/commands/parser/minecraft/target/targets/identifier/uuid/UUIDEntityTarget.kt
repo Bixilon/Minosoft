@@ -11,15 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid
 
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
+import java.util.*
 
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-    val placeholder: ChatComponent
+class UUIDEntityTarget(
+    val uuid: UUID,
+) : EntityTarget {
 
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+    override fun toString(): String {
+        return "{$uuid}"
+    }
+
+    override fun hashCode(): Int {
+        return uuid.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is UUIDEntityTarget) {
+            return false
+        }
+        return uuid == other.uuid
+    }
 }

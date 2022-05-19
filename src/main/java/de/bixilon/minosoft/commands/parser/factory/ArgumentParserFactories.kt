@@ -19,6 +19,7 @@ import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
 import de.bixilon.minosoft.commands.parser.brigadier._long.LongParser
 import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.commands.parser.minecraft.target.TargetParser
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
 object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
@@ -28,4 +29,6 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     IntParser,
     LongParser,
     StringParser,
+
+    TargetParser,
 )

@@ -11,15 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.parser.minecraft.target
 
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatComponent
-
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-    val placeholder: ChatComponent
-
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+enum class TargetSelectors(val char: Char) {
+    NEAREST('p'),
+    RANDOM('r'),
+    ALL_PLAYERS('a'),
+    ALL_ENTITIES('e'),
+    ;
 }

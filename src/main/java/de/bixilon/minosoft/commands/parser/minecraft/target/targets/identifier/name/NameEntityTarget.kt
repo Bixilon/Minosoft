@@ -11,15 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name
 
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
 
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-    val placeholder: ChatComponent
+class NameEntityTarget(
+    val name: String,
+) : EntityTarget {
 
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+    override fun toString(): String {
+        return "{Bixilon}"
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is NameEntityTarget) {
+            return false
+        }
+        return name == other.name
+    }
 }

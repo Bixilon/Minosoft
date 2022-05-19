@@ -11,15 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.parser.minecraft.target.properties
 
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-    val placeholder: ChatComponent
+class NameProperty(
+    val name: String,
+    val negated: Boolean,
+) : TargetProperty {
 
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+    override fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean {
+        // ToDo: Check player name?
+        if (negated) {
+            return entity.customName?.message != name
+        }
+        return entity.customName?.message == name
+    }
 }

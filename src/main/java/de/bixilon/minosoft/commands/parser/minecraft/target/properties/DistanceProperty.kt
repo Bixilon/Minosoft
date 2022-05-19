@@ -11,15 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.parser.minecraft.target.properties
 
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatComponent
+class DistanceProperty(
+    val min: Double = 0.0,
+    val max: Double = Double.MAX_VALUE,
+) {
 
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-    val placeholder: ChatComponent
-
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+    init {
+        check(min >= 0.0) { "Minimum distance can not be below 0" }
+        check(max >= min) { "Maximum distance can not be smaller than minimum distance" }
+    }
 }

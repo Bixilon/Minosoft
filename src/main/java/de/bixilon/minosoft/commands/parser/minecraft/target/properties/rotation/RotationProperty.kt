@@ -11,15 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser
+package de.bixilon.minosoft.commands.parser.minecraft.target.properties.rotation
 
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.commands.parser.minecraft.target.TargetProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.properties.TargetProperty
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-interface ArgumentParser<T> {
-    val examples: List<Any?>
-    val placeholder: ChatComponent
+interface RotationProperty : TargetProperty {
+    val min: Float
+    val max: Float
 
-    fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+
+    fun getValue(rotation: EntityRotation): Double
+
+
+    override fun passes(properties: TargetProperties, connection: PlayConnection, entity: Entity): Boolean {
+        val rotation = getValue(entity.rotation)
+
+        return rotation in min..max
+    }
 }
