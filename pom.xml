@@ -268,11 +268,6 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-
-        <repository>
             <id>sonatype-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <releases>
@@ -340,9 +335,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Bixilon</groupId>
-            <artifactId>ascii-table</artifactId>
-            <version>5375a4f</version>
+            <groupId>de.bixilon</groupId>
+            <artifactId>jiibles</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
@@ -426,9 +421,9 @@
             <classifier>${zstd.natives}</classifier>
         </dependency>
         <dependency>
-            <groupId>de.bixilon.bixilon</groupId>
+            <groupId>de.bixilon</groupId>
             <artifactId>mbf-kotlin</artifactId>
-            <version>1.0</version>
+            <version>0.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.luben</groupId>

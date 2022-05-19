@@ -20,7 +20,7 @@ import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
-import de.bixilon.minosoft.terminal.commands.ConnectionCommand
+import de.bixilon.minosoft.terminal.commands.connection.ConnectionCommand
 import de.bixilon.minosoft.util.ShutdownManager
 import org.jline.reader.*
 import org.jline.terminal.Terminal

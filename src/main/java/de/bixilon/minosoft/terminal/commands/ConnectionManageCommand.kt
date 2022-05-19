@@ -13,13 +13,18 @@
 
 package de.bixilon.minosoft.terminal.commands
 
-import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.jiibles.Table
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.commands.nodes.LiteralNode
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-object SayCommand : ConnectionCommand {
-    override var node = LiteralNode("say", setOf("chat", "send", "write"))
-        .addChild(ArgumentNode("message", StringParser(StringParser.StringModes.GREEDY), executor = {
-            it.connection.util.sendChatMessage(it.get<String>("message")!!)
+object ConnectionManageCommand : Command {
+    override var node = LiteralNode("connection")
+        .addChild(LiteralNode("list", executor = {
+            val table = Table(arrayOf("Id", "State", "Address"))
+            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedList()) {
+                table += arrayOf(connection.connectionId, connection.state, connection.address)
+            }
+            println(table)
         }))
 }

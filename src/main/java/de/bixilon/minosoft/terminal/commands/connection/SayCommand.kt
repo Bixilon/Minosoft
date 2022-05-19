@@ -11,6 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.terminal.commands.connection
 
-interface ConnectionCommand : Command
+import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.minosoft.commands.nodes.LiteralNode
+import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+
+object SayCommand : ConnectionCommand {
+    override var node = LiteralNode("say", setOf("chat", "send", "write"))
+        .addChild(ArgumentNode("message", StringParser(StringParser.StringModes.GREEDY), executor = {
+            it.connection.util.sendChatMessage(it.get<String>("message")!!)
+        }))
+}

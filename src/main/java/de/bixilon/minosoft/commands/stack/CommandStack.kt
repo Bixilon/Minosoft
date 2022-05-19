@@ -24,7 +24,6 @@ class CommandStack {
     var executor: Entity? = null
     lateinit var connection: PlayConnection
 
-    @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
     inline operator fun <reified T> get(name: String): T? {
         return getAny(name).nullCast()
     }

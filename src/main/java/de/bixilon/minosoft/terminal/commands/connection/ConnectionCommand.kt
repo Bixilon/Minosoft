@@ -11,14 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.terminal.commands.connection
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
+import de.bixilon.minosoft.terminal.commands.Command
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-    )
-}
+interface ConnectionCommand : Command
