@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range
+package de.bixilon.minosoft.commands.parser.minecraft.score.holder
 
-interface Range<T : Number> {
-    val min: T
-    val max: T
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-    fun contains(number: T): Boolean
-}
+class ScoreHolderParseError(
+    reader: CommandReader,
+    result: ReadResult<IntRange?>,
+) : ParserError(reader, result)

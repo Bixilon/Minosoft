@@ -31,7 +31,6 @@ import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.BitByte.isBitMask
@@ -105,8 +104,6 @@ class TargetParser(
     companion object : ArgumentParserFactory<TargetParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:entity".toResourceLocation()
         const val DEFAULT_PLAYER_NAME = "Bixilon"
-
-        override fun build(connection: PlayConnection?) = TargetParser(playerName = connection?.player?.name ?: DEFAULT_PLAYER_NAME)
 
         override fun read(buffer: PlayInByteBuffer): TargetParser {
             val flags = buffer.readUnsignedByte()

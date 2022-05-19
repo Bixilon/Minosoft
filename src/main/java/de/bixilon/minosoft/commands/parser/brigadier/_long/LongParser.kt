@@ -18,7 +18,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -49,8 +48,6 @@ class LongParser(
 
     companion object : ArgumentParserFactory<LongParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:long".toResourceLocation()
-
-        override fun build(connection: PlayConnection?) = LongParser()
 
         override fun read(buffer: PlayInByteBuffer): LongParser {
             val flags = buffer.readUnsignedByte()

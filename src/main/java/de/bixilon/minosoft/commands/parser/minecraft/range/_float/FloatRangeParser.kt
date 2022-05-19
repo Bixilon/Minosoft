@@ -11,16 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range._float
+package de.bixilon.minosoft.commands.parser.minecraft.range._float
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser.Companion.readFloat
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.parser.minosoft.range.RangeParserFactory.readRange
+import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory.readRange
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -43,8 +42,6 @@ class FloatRangeParser(
 
     companion object : ArgumentParserFactory<FloatRangeParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:float_range".toResourceLocation()
-
-        override fun build(connection: PlayConnection?) = FloatRangeParser()
 
         override fun read(buffer: PlayInByteBuffer) = FloatRangeParser()
 

@@ -11,23 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range
+package de.bixilon.minosoft.commands.parser.minecraft.range
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.parser.minosoft.range._float.FloatRangeParser
-import de.bixilon.minosoft.commands.parser.minosoft.range._int.IntRangeParser
+import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
+import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 
 object RangeParserFactory : ArgumentParserFactory<ArgumentParser<*>> {
     override val RESOURCE_LOCATION: ResourceLocation = "minosoft:range".toResourceLocation()
-
-    override fun build(connection: PlayConnection?) = TODO("Can not construct range parser!")
 
     override fun read(buffer: PlayInByteBuffer): ArgumentParser<*> {
         val decimals = buffer.readBoolean()

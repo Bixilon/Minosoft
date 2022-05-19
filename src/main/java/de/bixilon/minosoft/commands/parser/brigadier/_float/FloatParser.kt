@@ -18,7 +18,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -49,8 +48,6 @@ class FloatParser(
 
     companion object : ArgumentParserFactory<FloatParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:float".toResourceLocation()
-
-        override fun build(connection: PlayConnection?) = FloatParser()
 
         override fun read(buffer: PlayInByteBuffer): FloatParser {
             val flags = buffer.readUnsignedByte()

@@ -19,10 +19,13 @@ import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
 import de.bixilon.minosoft.commands.parser.brigadier._long.LongParser
 import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory
+import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
+import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
+import de.bixilon.minosoft.commands.parser.minecraft.resource.ResourceParser
+import de.bixilon.minosoft.commands.parser.minecraft.resource.tag.ResourceOrTagParser
+import de.bixilon.minosoft.commands.parser.minecraft.score.holder.ScoreHolderParser
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetParser
-import de.bixilon.minosoft.commands.parser.minosoft.range.RangeParserFactory
-import de.bixilon.minosoft.commands.parser.minosoft.range._float.FloatRangeParser
-import de.bixilon.minosoft.commands.parser.minosoft.range._int.IntRangeParser
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
 object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
@@ -38,4 +41,49 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     RangeParserFactory,
     FloatRangeParser,
     IntRangeParser,
+
+    ScoreHolderParser,
+    ResourceParser,
+    ResourceOrTagParser,
+
+/* TODO:
+minecraft:game_profile
+minecraft:block_pos
+minecraft:column_pos
+minecraft:vec3
+minecraft:vec2
+minecraft:block_state
+minecraft:block_predicate
+minecraft:item_stack
+minecraft:item_predicate
+minecraft:color
+minecraft:component
+minecraft:message
+minecraft:nbt
+minecraft:nbt_path
+minecraft:objective
+minecraft:objective_criteria
+minecraft:operation
+minecraft:particle
+minecraft:rotation
+minecraft:angle
+minecraft:scoreboard_slot
+minecraft:score_holder
+minecraft:swizzle
+minecraft:team
+minecraft:item_slot
+minecraft:resource_location
+minecraft:mob_effect
+minecraft:function
+minecraft:entity_anchor
+minecraft:item_enchantment
+minecraft:entity_summon
+minecraft:dimension
+minecraft:uuid
+minecraft:nbt_tag
+minecraft:nbt_compound_tag
+minecraft:time
+minecraft:resource_or_tag
+minecraft:resource
+ */
 )

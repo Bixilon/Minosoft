@@ -20,7 +20,6 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -53,8 +52,6 @@ class StringParser(
 
     companion object : ArgumentParserFactory<StringParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:string".toResourceLocation()
-
-        override fun build(connection: PlayConnection?) = StringParser()
 
         override fun read(buffer: PlayInByteBuffer): StringParser {
             return StringParser(StringModes[buffer.readVarInt()])

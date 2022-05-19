@@ -11,13 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range._int
+package de.bixilon.minosoft.commands.parser.minecraft.range._float
 
-import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.parser.minecraft.range.Range
 
-class IntRangeParseError(
-    reader: CommandReader,
-    result: ReadResult<IntRange?>,
-) : ParserError(reader, result)
+class FloatRange(
+    override val min: Float = -Float.MAX_VALUE,
+    override val max: Float = Float.MAX_VALUE,
+) : Range<Float> {
+
+    override operator fun contains(number: Float): Boolean {
+        return number in min..max
+    }
+}

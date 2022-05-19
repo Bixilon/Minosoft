@@ -11,16 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range._float
+package de.bixilon.minosoft.commands.parser.minecraft.range
 
-import de.bixilon.minosoft.commands.parser.minosoft.range.Range
+interface Range<T : Number> {
+    val min: T
+    val max: T
 
-class FloatRange(
-    override val min: Float = -Float.MAX_VALUE,
-    override val max: Float = Float.MAX_VALUE,
-) : Range<Float> {
-
-    override operator fun contains(number: Float): Boolean {
-        return number in min..max
-    }
+    fun contains(number: T): Boolean
 }

@@ -11,27 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range._int
+package de.bixilon.minosoft.commands.parser.minecraft.score.holder
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
-import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser.Companion.readInt
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
-import de.bixilon.minosoft.commands.parser.minosoft.range.RangeParserFactory.readRange
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class IntRangeParser(
-    val defaultMin: Boolean = true,
+@Deprecated("TODO")
+class ScoreHolderParser(
+    val allowMultiple: Boolean = false,
 ) : ArgumentParser<IntRange> {
-    override val examples: List<Any> = listOf(1, "1..10")
-    override val placeholder = ChatComponent.of("<int..int>")
+    override val examples: List<Any> = listOf("TODO")
+    override val placeholder = ChatComponent.of("<TODO>")
 
     override fun parse(reader: CommandReader): IntRange {
-        return reader.readResult { reader.readIntRange(defaultMin) }.let { return@let it.result ?: throw IntRangeParseError(reader, it) }
+        TODO()
     }
 
     override fun getSuggestions(reader: CommandReader): List<Any> {
@@ -41,26 +40,13 @@ class IntRangeParser(
         return emptyList()
     }
 
-    companion object : ArgumentParserFactory<IntRangeParser> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:float_range".toResourceLocation()
+    companion object : ArgumentParserFactory<ScoreHolderParser> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:score_holder".toResourceLocation()
 
-        override fun build(connection: PlayConnection?) = IntRangeParser()
-
-        override fun read(buffer: PlayInByteBuffer) = IntRangeParser()
-
-        fun CommandReader.readIntRange(defaultMin: Boolean = true): IntRange? {
-            val (first, second) = readRange { readInt() } ?: return null
-            if (first == null) {
-                return null
-            }
-            if (second == null) {
-                return if (defaultMin) {
-                    Int.MIN_VALUE..first
-                } else {
-                    first..first
-                }
-            }
-            return first..second
+        override fun read(buffer: PlayInByteBuffer): ScoreHolderParser {
+            val flags = buffer.readUnsignedByte()
+            val allowMultiple = flags.isBitMask(0x01)
+            return ScoreHolderParser(allowMultiple)
         }
     }
 }

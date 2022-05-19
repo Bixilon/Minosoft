@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minosoft.range._float
+package de.bixilon.minosoft.commands.parser.minecraft.range._float
 
 import de.bixilon.minosoft.commands.errors.parser.ParserError
 import de.bixilon.minosoft.commands.util.CommandReader

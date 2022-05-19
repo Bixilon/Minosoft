@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation
 
+import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRange
+import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
-import de.bixilon.minosoft.commands.parser.minosoft.range._float.FloatRange
-import de.bixilon.minosoft.commands.parser.minosoft.range._float.FloatRangeParser
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.EntityRotation
 
