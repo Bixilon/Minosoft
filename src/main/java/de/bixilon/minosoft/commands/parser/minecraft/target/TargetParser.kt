@@ -22,7 +22,13 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.n
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.UUIDEntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorEntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error.InvalidSelectorKeyError
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error.InvalidTargetSelector
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -40,7 +46,7 @@ class TargetParser(
     override val placeholder = ChatComponent.of("<target>")
 
     override fun parse(reader: CommandReader): EntityTarget {
-        if (!reader.canPeekNext()) {
+        if (!reader.canPeek()) {
             throw ExpectedArgumentError(reader)
         }
         return if (reader.peek() == '@'.code) {
@@ -50,8 +56,26 @@ class TargetParser(
         }
     }
 
-    fun CommandReader.parseSelector(): EntityTarget {
-        TODO()
+    fun CommandReader.parseSelector(): SelectorEntityTarget {
+        unsafeRead('@'.code)
+        val selectorChar = readNext() ?: throw ExpectedArgumentError(this)
+        val selector = TargetSelectors.BY_CHAR[selectorChar.toChar()] ?: throw InvalidTargetSelector(this)
+
+        val properties: Map<String, TargetProperty> = readMap({ readKey() }, { readValue(it) }) ?: emptyMap()
+
+        return SelectorEntityTarget(selector, properties)
+    }
+
+    private fun CommandReader.readKey(): String? {
+        if (peek() == '"'.code) {
+            return readUnquotedString()
+        }
+        return readUntil('='.code)
+    }
+
+    private fun CommandReader.readValue(key: ReadResult<String>): TargetProperty {
+        val target = TargetProperties[key.result] ?: throw InvalidSelectorKeyError(this, key)
+        return target.read(this)
     }
 
     fun parseEntityIdentifier(reader: CommandReader): EntityTarget {

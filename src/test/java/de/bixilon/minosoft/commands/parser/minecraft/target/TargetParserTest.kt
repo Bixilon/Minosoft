@@ -13,15 +13,21 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target
 
+import de.bixilon.minosoft.commands.errors.reader.map.DuplicatedKeyMapError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.InvalidNameError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.UUIDEntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorEntityTarget
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.GamemodeProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.NameProperty
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 
 internal class TargetParserTest {
@@ -74,5 +80,62 @@ internal class TargetParserTest {
         val reader = CommandReader("9e6ce7c540d3483e8e5ab6350987d65f123")
         val parser = TargetParser()
         assertThrows<InvalidUUIDError> { parser.parse(reader) }
+    }
+
+    @Test
+    fun testSelectorDetection() {
+        val reader = CommandReader("@a")
+        val parser = TargetParser()
+        val parsed = parser.parse(reader)
+        assert(parsed is SelectorEntityTarget)
+        parsed as SelectorEntityTarget
+    }
+
+    private fun getSelector(command: String): SelectorEntityTarget {
+        val reader = CommandReader(command)
+        val parser = TargetParser()
+        val parsed = parser.parse(reader)
+        return parsed as SelectorEntityTarget
+    }
+
+    @Test
+    fun testSimpleSelector() {
+        val parsed = getSelector("@a")
+        assertEquals(parsed.selector, TargetSelectors.ALL_PLAYERS)
+    }
+
+    @Test
+    fun testPropertiesEmpty() {
+        val parsed = getSelector("@a")
+        assertTrue(parsed.properties.isEmpty())
+    }
+
+    @Test
+    fun testEmptyPropertiesEmpty() {
+        val parsed = getSelector("@a[]")
+        assertTrue(parsed.properties.isEmpty())
+    }
+
+    @Test
+    fun testSingleProperties() {
+        val parsed = getSelector("@a[name=Test]")
+        assertEquals(parsed.properties.size, 1)
+        assertTrue(parsed.properties["name"] is NameProperty)
+        assertTrue((parsed.properties["name"] as NameProperty).name == "Test")
+    }
+
+    @Test
+    fun testMultipleProperties() {
+        val parsed = getSelector("@a[name=Test,gamemode=creative]")
+        assertEquals(parsed.properties.size, 2)
+        assertTrue(parsed.properties["name"] is NameProperty)
+        assertEquals((parsed.properties["name"] as NameProperty).name, "Test")
+        assertTrue(parsed.properties["gamemode"] is GamemodeProperty)
+        assertEquals((parsed.properties["gamemode"] as GamemodeProperty).gamemode, Gamemodes.CREATIVE)
+    }
+
+    @Test
+    fun testDuplicatedProperties() {
+        assertThrows<DuplicatedKeyMapError> { getSelector("@a[name=Test,name=Test2]") }
     }
 }

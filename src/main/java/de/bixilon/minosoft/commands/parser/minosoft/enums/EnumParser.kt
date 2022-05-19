@@ -37,7 +37,7 @@ class EnumParser<E : Enum<*>>(
     }
 
     fun CommandReader.readEnum(): E? {
-        return values.getOrNull(readString()?.lowercase()) // ToDo: Allow ordinals
+        return values.getOrNull(readWord()?.lowercase()) // ToDo: Allow ordinals
     }
 
     override fun getSuggestions(reader: CommandReader): List<E> {

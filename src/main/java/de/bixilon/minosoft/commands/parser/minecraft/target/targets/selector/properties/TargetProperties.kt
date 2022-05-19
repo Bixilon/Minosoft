@@ -34,4 +34,8 @@ object TargetProperties {
     fun register(factory: TargetPropertyFactory<*>) {
         properties[factory.name] = factory
     }
+
+    operator fun get(key: String): TargetPropertyFactory<*>? {
+        return properties[key]
+    }
 }

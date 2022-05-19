@@ -11,25 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.Sorting
+import de.bixilon.minosoft.commands.errors.ReaderError
+import de.bixilon.minosoft.commands.util.CommandReader
 
-@Deprecated("")
-data class TargetPropertiesLEGACY(
-    var x: Double?,
-    var y: Double?,
-    var z: Double?,
-    var volumeX: Double?,
-    var volumeY: Double?,
-    var volumeZ: Double?,
-    var scores: Any?, // ToDo
-    var tag: Any?, // ToDo
-    var team: Any?, // ToDo,
-    var sort: Sorting?,
-    var limit: Int? = null,
-    var level: IntRange? = null,
-    var nbt: Any? = null, // ToDo
-    var advancements: Any? = null, // ToDo
-    var predicate: Any? = null, // ToDo
-)
+class InvalidTargetSelector(
+    reader: CommandReader,
+) : ReaderError(reader, reader.pointer - 1, reader.pointer)

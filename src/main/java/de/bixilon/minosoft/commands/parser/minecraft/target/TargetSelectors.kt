@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.Sorting
 import de.bixilon.minosoft.data.entities.entities.Entity
 
@@ -29,5 +31,17 @@ enum class TargetSelectors(
 
     fun sort(selected: MutableList<Entity>) {
         sorting.sort(selected)
+    }
+
+    companion object : ValuesEnum<TargetSelectors> {
+        override val VALUES: Array<TargetSelectors> = values()
+        override val NAME_MAP: Map<String, TargetSelectors> = EnumUtil.getEnumValues(VALUES)
+        val BY_CHAR: MutableMap<Char, TargetSelectors> = mutableMapOf()
+
+        init {
+            for (value in VALUES) {
+                BY_CHAR[value.char] = value
+            }
+        }
     }
 }

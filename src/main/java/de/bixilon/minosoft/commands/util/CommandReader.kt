@@ -13,7 +13,12 @@
 
 package de.bixilon.minosoft.commands.util
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.commands.errors.reader.*
+import de.bixilon.minosoft.commands.errors.reader.map.DuplicatedKeyMapError
+import de.bixilon.minosoft.commands.errors.reader.map.ExpectedKeyMapError
+import de.bixilon.minosoft.commands.errors.reader.map.InvalidAssignCharMapError
+import de.bixilon.minosoft.commands.errors.reader.map.InvalidMapSeparatorError
 import de.bixilon.minosoft.commands.errors.reader.number.NegativeNumberError
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -214,7 +219,7 @@ open class CommandReader(val string: String) {
         }
         val builder = StringBuilder()
         while (true) {
-            val peek = peek()
+            val peek = peekNext()
             if (peek == null) {
                 if (required) {
                     throw OutOfBoundsError(this, length - 1)
@@ -306,6 +311,51 @@ open class CommandReader(val string: String) {
         val read = string.substring(start, end)
 
         return ReadResult(start, end, read, result)
+    }
+
+    fun <K, V> readMap(keyReader: CommandReader.() -> K?, valueReader: CommandReader.(key: ReadResult<K>) -> V): Map<K, V>? {
+        if (!canPeekNext()) {
+            return null
+        }
+        if (peekNext() != '['.code) {
+            return null
+        }
+        readNext() // [
+        val map: MutableMap<K, V> = mutableMapOf()
+        while (true) {
+            if (peek() == ']'.code) {
+                break
+            }
+            skipWhitespaces()
+            val key = readResult { keyReader(this) }
+            if (key.result == null) {
+                throw ExpectedKeyMapError(this, key)
+            }
+            val existing: V? = map[key.result]
+            if (existing != null) {
+                throw DuplicatedKeyMapError(this, key, existing)
+            }
+            val assign = read()
+            if (assign != '='.code) {
+                throw InvalidAssignCharMapError(this, pointer - 1, assign)
+            }
+            skipWhitespaces()
+            val value = valueReader(this, key.unsafeCast())
+            map[key.result] = value
+            val end = read()
+            if (end == ']'.code) {
+                break
+            }
+            if (end != ','.code) {
+                throw InvalidMapSeparatorError(this, pointer - 1, end)
+            }
+        }
+
+        return map
+    }
+
+    override fun toString(): String {
+        return string.substring(pointer, string.length)
     }
 
     companion object {
