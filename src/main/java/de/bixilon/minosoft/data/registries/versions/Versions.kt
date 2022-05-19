@@ -36,7 +36,7 @@ object Versions : Iterable<Version> {
     private val VERSIONS_BY_NAME: MutableMap<String, Version> = mutableMapOf()
     private val VERSIONS_BY_ID: Int2ObjectOpenHashMap<Version> = Int2ObjectOpenHashMap()
     private val VERSIONS_BY_PROTOCOL: Int2ObjectOpenHashMap<Version> = Int2ObjectOpenHashMap()
-    val AUTOMATIC = Version("Automatic", -1, -1, VersionTypes.RELEASE, mapOf(), mapOf())
+    val AUTOMATIC = Version("Automatic", -1, -1, VersionTypes.RELEASE, emptyMap(), emptyMap())
 
     private fun addVersion(version: Version) {
         VERSIONS_BY_NAME.put(version.name, version)?.let { throw IllegalStateException("Duplicated version name: ${version.name}") }

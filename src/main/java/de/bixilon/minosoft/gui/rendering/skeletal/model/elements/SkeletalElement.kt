@@ -33,6 +33,6 @@ data class SkeletalElement(
     val rotation: Vec3 = Vec3.EMPTY,
     val origin: Vec3 = Vec3.EMPTY,
     val uvOffset: Vec2 = Vec2.EMPTY,
-    val faces: Map<Directions, SkeletalFace> = mapOf(),
+    val faces: Map<Directions, SkeletalFace> = emptyMap(),
     val uuid: UUID,
 )

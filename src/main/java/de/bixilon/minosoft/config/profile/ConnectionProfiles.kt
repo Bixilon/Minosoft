@@ -38,7 +38,7 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileMan
 import de.bixilon.minosoft.data.registries.ResourceLocation
 
 class ConnectionProfiles(
-    overrides: Map<ResourceLocation, String> = mapOf(),
+    overrides: Map<ResourceLocation, String> = emptyMap(),
     val eros: ErosProfile = ErosProfileManager.selected,
     val particle: ParticleProfile = overrides[ParticleProfileManager.namespace]?.let { return@let ParticleProfileManager.profiles[it] } ?: ParticleProfileManager.selected,
     val audio: AudioProfile = overrides[AudioProfileManager.namespace]?.let { return@let AudioProfileManager.profiles[it] } ?: AudioProfileManager.selected,

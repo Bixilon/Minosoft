@@ -24,7 +24,7 @@ abstract class BlockEntity(
     val connection: PlayConnection,
 ) {
     protected open var renderer: BlockEntityRenderer<out BlockEntity>? = null
-    open val nbt: JsonObject = mapOf()
+    open val nbt: JsonObject = emptyMap()
 
     open fun updateNBT(nbt: JsonObject) = Unit
 

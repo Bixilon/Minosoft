@@ -27,7 +27,7 @@ import java.util.*
 
 data class BlockState(
     val block: Block,
-    val properties: Map<BlockProperties, Any> = mapOf(),
+    val properties: Map<BlockProperties, Any> = emptyMap(),
     val material: Material,
     val collisionShape: VoxelShape,
     val outlineShape: VoxelShape,

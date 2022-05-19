@@ -34,7 +34,7 @@ object HTTP2 {
         return headers.toTypedArray()
     }
 
-    fun <Payload, Response> post(url: String, data: Payload, bodyPublisher: (Payload) -> String, bodyBuilder: (String) -> Response, headers: Map<String, Any> = mapOf()): HTTPResponse<Response> {
+    fun <Payload, Response> post(url: String, data: Payload, bodyPublisher: (Payload) -> String, bodyBuilder: (String) -> Response, headers: Map<String, Any> = emptyMap()): HTTPResponse<Response> {
         val client = HttpClient.newHttpClient()
         val request = HttpRequest.newBuilder()
             .uri(URI.create(url))
@@ -47,7 +47,7 @@ object HTTP2 {
     }
 
 
-    fun Map<String, Any>.postJson(url: String, headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
+    fun Map<String, Any>.postJson(url: String, headers: Map<String, Any> = emptyMap()): HTTPResponse<Map<String, Any>?> {
         return post(
             url = url,
             data = this,
@@ -60,7 +60,7 @@ object HTTP2 {
         )
     }
 
-    fun Map<String, Any>.postData(url: String, headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
+    fun Map<String, Any>.postData(url: String, headers: Map<String, Any> = emptyMap()): HTTPResponse<Map<String, Any>?> {
         return post(
             url = url,
             data = this,
@@ -72,7 +72,7 @@ object HTTP2 {
         )
     }
 
-    fun <Response> String.get(bodyBuilder: (String) -> Response, headers: Map<String, Any> = mapOf()): HTTPResponse<Response> {
+    fun <Response> String.get(bodyBuilder: (String) -> Response, headers: Map<String, Any> = emptyMap()): HTTPResponse<Response> {
         val client = HttpClient.newHttpClient()
         val request = HttpRequest.newBuilder()
             .uri(URI.create(this))
@@ -84,7 +84,7 @@ object HTTP2 {
         return HTTPResponse(response.statusCode(), bodyBuilder(response.body()))
     }
 
-    fun String.getJson(headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
+    fun String.getJson(headers: Map<String, Any> = emptyMap()): HTTPResponse<Map<String, Any>?> {
         return this.get(
             bodyBuilder = { it.isBlank().decide(null) { Jackson.MAPPER.readValue(it, Jackson.JSON_MAP_TYPE) as Map<String, Any> } },
             headers = headers.extend(
