@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.jiibles.Table
+import de.bixilon.jiibles.TableStyles
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
@@ -49,6 +51,10 @@ import java.util.*
 
 object KUtil {
     val RANDOM = Random()
+
+    init {
+        Table.DEFAULT_STYLE = TableStyles.FANCY
+    }
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
