@@ -28,7 +28,7 @@ import org.jline.terminal.TerminalBuilder
 
 object CLI {
     var connection: PlayConnection? by watched(null)
-    private val ROOT_NODE = RootNode()
+    val ROOT_NODE = RootNode()
 
     init {
         register()

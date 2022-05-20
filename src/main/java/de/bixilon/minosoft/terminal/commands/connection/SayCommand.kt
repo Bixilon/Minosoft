@@ -13,13 +13,10 @@
 
 package de.bixilon.minosoft.terminal.commands.connection
 
-import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 
 object SayCommand : ConnectionCommand {
     override var node = LiteralNode("say", setOf("chat", "send", "write"))
-        .addChild(ArgumentNode("message", StringParser(StringParser.StringModes.GREEDY), executor = {
-            it.connection.util.sendChatMessage(it.get<String>("message")!!)
-        }))
+        .addChild(ChatNode("message", allowCLI = false))
 }
