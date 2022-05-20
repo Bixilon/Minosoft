@@ -19,6 +19,7 @@ import de.bixilon.minosoft.commands.nodes.NamedNode
 import de.bixilon.minosoft.commands.nodes.builder.ArgumentNodes
 import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
+import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -301,6 +302,7 @@ class PlayInByteBuffer : InByteBuffer {
             val parser = ArgumentParserFactories[parserName]
             if (parser == null) {
                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
+                builder.parser = DummyParser
             } else {
                 builder.parser = parser.read(this)
             }

@@ -51,8 +51,8 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 for ((childIndex, child) in it.withIndex()) {
                     children[childIndex] = nodes[child] ?: throw IllegalArgumentException("Invalid child: $child for $childIndex")
                 }
-                node.redirect = children.unsafeCast()
             }
+            builder.redirectNode?.let { node.redirect = nodes[it] }
         }
 
         return nodes.unsafeCast()

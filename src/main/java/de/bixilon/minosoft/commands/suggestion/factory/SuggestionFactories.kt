@@ -15,5 +15,4 @@ package de.bixilon.minosoft.commands.suggestion.factory
 
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
-object SuggestionFactories : DefaultFactory<SuggestionFactory<*>>(
-)
+object SuggestionFactories : DefaultFactory<SuggestionFactory<*>>()

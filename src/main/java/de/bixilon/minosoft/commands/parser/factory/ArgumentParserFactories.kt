@@ -26,6 +26,7 @@ import de.bixilon.minosoft.commands.parser.minecraft.resource.ResourceParser
 import de.bixilon.minosoft.commands.parser.minecraft.resource.tag.ResourceOrTagParser
 import de.bixilon.minosoft.commands.parser.minecraft.score.holder.ScoreHolderParser
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetParser
+import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
 object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
@@ -41,6 +42,8 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     RangeParserFactory,
     FloatRangeParser,
     IntRangeParser,
+
+    DummyParser,
 
     ScoreHolderParser,
     ResourceParser,
