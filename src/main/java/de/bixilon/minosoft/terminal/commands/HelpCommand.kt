@@ -18,18 +18,19 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
+import de.bixilon.minosoft.commands.stack.print.PrintTarget
 
 object HelpCommand : Command {
-    override var node: LiteralNode = LiteralNode("help", setOf("?"), executor = { printHelp() })
-        .addChild(ArgumentNode("subcommand", parser = EnumParser(HelpCommands), executor = { printHelp(it["subcommand"]!!) }))
+    override var node: LiteralNode = LiteralNode("help", setOf("?"), executor = { it.print.printHelp() })
+        .addChild(ArgumentNode("subcommand", parser = EnumParser(HelpCommands), executor = { it.print.printHelp(it["subcommand"]!!) }))
 
-    fun printHelp() {
-        println("-------------- Minosoft help --------------")
+    fun PrintTarget.printHelp() {
+        print("-------------- Minosoft help --------------")
     }
 
-    fun printHelp(subcommand: HelpCommands) {
-        println("-------------- Minosoft help --------------")
-        println("Subcommand: $subcommand")
+    fun PrintTarget.printHelp(subcommand: HelpCommands) {
+        print("-------------- Minosoft help --------------")
+        print("Subcommand: $subcommand")
     }
 
     enum class HelpCommands {

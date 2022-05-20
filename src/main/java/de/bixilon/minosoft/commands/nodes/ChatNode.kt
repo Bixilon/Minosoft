@@ -28,23 +28,45 @@ class ChatNode(
 
     override fun execute(reader: CommandReader, stack: CommandStack) {
         reader.skipWhitespaces()
-        val peek = reader.unsafePeek()
+        val node = getNode(reader, stack)
         val string = parser.parse(reader)
-        val node = getNode(peek, stack)
-        if (node != CLI.ROOT_NODE) {
-            stack.connection.util.sendChatMessage(string)
+        if (node != CLI.ROOT_NODE && string.isNotBlank()) {
+            if (node == stack.connection.rootNode) {
+                stack.connection.util.sendChatMessage("/$string")
+            } else {
+                stack.connection.util.sendChatMessage(string)
+            }
         }
         node?.execute(CommandReader(string), stack)
     }
 
-    private fun getNode(peek: Int, stack: CommandStack): RootNode? {
-        return if (peek == '.'.code && allowCLI) CLI.ROOT_NODE else if (peek == '/'.code) stack.connection.rootNode else null
+    private fun getNode(reader: CommandReader, stack: CommandStack): RootNode? {
+        val peek = reader.unsafePeek()
+        if (peek == '.'.code) {
+            reader.read()
+            if (allowCLI) {
+                return CLI.ROOT_NODE
+            }
+            return null
+        }
+
+        if (peek == '/'.code) {
+            reader.read()
+            return stack.connection.rootNode
+        }
+        return null
     }
 
     override fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+        if (reader.string.isEmpty()) {
+            return emptyList()
+        }
         reader.skipWhitespaces()
-        val peek = reader.unsafePeek()
+        val node = getNode(reader, stack)
+        if (!reader.canPeek()) {
+            return emptyList()
+        }
         val string = parser.parse(reader)
-        return getNode(peek, stack)?.getSuggestions(CommandReader(string), stack) ?: emptyList()
+        return node?.getSuggestions(CommandReader(string), stack) ?: emptyList()
     }
 }

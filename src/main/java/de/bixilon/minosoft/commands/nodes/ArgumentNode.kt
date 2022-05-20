@@ -66,7 +66,7 @@ class ArgumentNode : ExecutableNode {
         }
 
         val suggestions = parser.getSuggestions(reader)
-        if (reader.canPeekNext()) {
+        if (reader.canPeekNext() || suggestions.isEmpty()) {
             throw parseError
         }
         return suggestions

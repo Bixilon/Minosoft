@@ -14,15 +14,26 @@
 package de.bixilon.minosoft.commands.stack
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.minosoft.commands.stack.print.PrintTarget
+import de.bixilon.minosoft.commands.stack.print.SystemPrintTarget
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class CommandStack {
+class CommandStack(
+    connection: PlayConnection? = null,
+    val print: PrintTarget = SystemPrintTarget,
+) {
     private val stack: MutableList<StackEntry> = mutableListOf()
     val size: Int get() = stack.size
 
     var executor: Entity? = null
     lateinit var connection: PlayConnection
+
+    init {
+        if (connection != null) {
+            this.connection = connection
+        }
+    }
 
     inline operator fun <reified T> get(name: String): T? {
         return getAny(name).nullCast()

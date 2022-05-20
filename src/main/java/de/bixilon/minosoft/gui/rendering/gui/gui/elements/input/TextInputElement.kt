@@ -34,13 +34,13 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 
-class TextInputElement(
+open class TextInputElement(
     guiRenderer: GUIRenderer,
     value: String = "",
     val maxLength: Int = Int.MAX_VALUE,
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
-    var onChange: () -> Unit = {},
+    var onChangeCallback: () -> Unit = {},
     val background: Boolean = true,
     shadow: Boolean = true,
     scale: Float = 1.0f,
@@ -99,9 +99,12 @@ class TextInputElement(
     }
 
     private fun _set(value: String) {
-        _value.replace(0, _value.length, value)
+        val previous = _value.toString()
+        val next = _value.replace(0, _value.length, value)
         _pointer = value.length
-        onChange()
+        if (previous != next.toString()) {
+            onChange()
+        }
         textUpToDate = false
     }
 
@@ -373,6 +376,10 @@ class TextInputElement(
 
     override fun onOpen() {
         cursorTick = 19 // make cursor visible
+    }
+
+    open fun onChange() {
+        onChangeCallback()
     }
 
     companion object {
