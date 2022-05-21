@@ -18,6 +18,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class PlayerPrintTarget(val connection: PlayConnection) : PrintTarget {
 
     override fun print(message: Any) {
-        connection.util.sendDebugMessage(message)
+        connection.util.sendInternal(message)
     }
 }

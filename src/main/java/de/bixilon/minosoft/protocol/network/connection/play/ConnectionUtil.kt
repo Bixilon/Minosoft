@@ -33,8 +33,16 @@ class ConnectionUtil(
 ) {
 
     fun sendDebugMessage(message: Any) {
-        connection.fireEvent(InternalMessageReceiveEvent(connection, BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })))
-        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { message }
+        val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })
+        connection.fireEvent(InternalMessageReceiveEvent(connection, component))
+        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
+    }
+
+    fun sendInternal(message: Any) {
+        val component = ChatComponent.of(message)
+        val prefixed = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, component)
+        connection.fireEvent(InternalMessageReceiveEvent(connection, if (connection.profiles.gui.chat.internal.hidden) prefixed else component))
+        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
     }
 
     fun sendChatMessage(message: String) {

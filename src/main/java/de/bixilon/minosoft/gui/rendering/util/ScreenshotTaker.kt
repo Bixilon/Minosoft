@@ -76,17 +76,18 @@ class ScreenshotTaker(
                     ImageIO.write(bufferedImage, "png", file)
                     var deleted = false
 
-                    renderWindow.connection.util.sendDebugMessage(BaseComponent(
-                        "§aScreenshot saved: ",
-                        TextComponent(file.name).apply {
-                            color = ChatColors.WHITE
-                            underline()
-                            clickEvent = OpenFileClickEvent(file.slashPath)
-                            hoverEvent = TextHoverEvent("Click to open")
-                        },
-                        " ",
-                        TextComponent("[DELETE]").apply {
-                            color = ChatColors.RED
+                    renderWindow.connection.util.sendInternal(
+                        BaseComponent(
+                            "§aScreenshot saved: ",
+                            TextComponent(file.name).apply {
+                                color = ChatColors.WHITE
+                                underline()
+                                clickEvent = OpenFileClickEvent(file.slashPath)
+                                hoverEvent = TextHoverEvent("Click to open")
+                            },
+                            " ",
+                            TextComponent("[DELETE]").apply {
+                                color = ChatColors.RED
                             bold()
                             clickEvent = ClickCallbackClickEvent {
                                 if (deleted) {
@@ -113,7 +114,7 @@ class ScreenshotTaker(
 
     private fun Throwable?.fail() {
         this?.printStackTrace()
-        renderWindow.connection.util.sendDebugMessage("§cFailed to make a screenshot: ${this?.message}")
+        renderWindow.connection.util.sendInternal("§cFailed to make a screenshot: ${this?.message}")
     }
 
     companion object {
