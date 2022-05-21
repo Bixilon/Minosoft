@@ -228,7 +228,7 @@ class ErosCrashReport : JavaFXWindowController() {
         Was connected: ${connection.wasConnected}
         Rendering: ${connection.rendering != null}
         Error: ${connection.error}
-"""
+""".removeSuffix("\n")
             }
 
             for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
@@ -270,7 +270,7 @@ $connections
  
 -- Git Info --
 ${GitInfo.formatForCrashReport()}
-"""
+""".removeSuffix("\n")
         }
     }
 }
