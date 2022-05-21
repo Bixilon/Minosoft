@@ -68,6 +68,7 @@ abstract class CommandNode(
         val stackSize = stack.size
         val suggestions: MutableList<Any?> = mutableListOf()
         var error: Throwable? = null
+        var errorStack = 0
         for (child in children) {
             try {
                 val childSuggestions = child.getSuggestions(reader, stack)
@@ -80,8 +81,9 @@ abstract class CommandNode(
                 }
                 return childSuggestions
             } catch (exception: Throwable) {
-                if (stack.size >= stackSize || error == null) {
+                if (stack.size >= errorStack || error == null) {
                     error = exception
+                    errorStack = stack.size
                 }
             }
             reader.pointer = pointer

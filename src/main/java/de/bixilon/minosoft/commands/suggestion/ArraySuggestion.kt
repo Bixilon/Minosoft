@@ -23,7 +23,7 @@ class ArraySuggestion<T>(val values: List<T>) : SuggestionType<T> {
         }
         val list: MutableList<T> = mutableListOf()
         for (entry in values) {
-            if (entry.toString().startsWith(input)) {
+            if (entry.toString().lowercase().startsWith(input)) {
                 list += entry
             }
         }

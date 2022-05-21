@@ -18,4 +18,9 @@ abstract class NamedNode(
     val aliases: Set<String>,
     executable: Boolean,
     redirect: CommandNode?,
-) : CommandNode(executable, redirect)
+) : CommandNode(executable, redirect) {
+
+    override fun toString(): String {
+        return name
+    }
+}
