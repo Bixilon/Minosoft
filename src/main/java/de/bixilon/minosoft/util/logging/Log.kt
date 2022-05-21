@@ -19,7 +19,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -78,7 +77,7 @@ object Log {
                         message += it
                     }
                     if (RunConfiguration.LOG_COLOR_MESSAGE) {
-                        messageToSend.message.applyDefaultColor(messageColor)
+                        messageToSend.message.setFallbackColor(messageColor)
                     }
 
                     val stream = if (messageToSend.logMessageType.error) {

@@ -63,11 +63,6 @@ interface ChatComponent {
         }
 
     /**
-     * Sets a default color for all elements that don't have a color yet
-     */
-    fun applyDefaultColor(color: RGBColor)
-
-    /**
      * @return The current text component at a specific pointer (char offset)
      */
     fun getTextAt(pointer: Int): TextComponent
@@ -79,6 +74,14 @@ interface ChatComponent {
 
 
     fun cut(length: Int)
+
+
+    fun strikethrough(): ChatComponent
+    fun obfuscate(): ChatComponent
+    fun bold(): ChatComponent
+    fun underline(): ChatComponent
+    fun italic(): ChatComponent
+    fun setFallbackColor(color: RGBColor): ChatComponent
 
     companion object {
         val EMPTY = EmptyComponent

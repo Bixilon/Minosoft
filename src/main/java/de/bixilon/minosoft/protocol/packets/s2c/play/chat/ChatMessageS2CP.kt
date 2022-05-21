@@ -41,7 +41,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 sender = buffer.readUUID()
             }
         }
-        message.applyDefaultColor(ProtocolDefinition.DEFAULT_COLOR)
+        message.setFallbackColor(ProtocolDefinition.DEFAULT_COLOR)
     }
 
     override fun handle(connection: PlayConnection) {

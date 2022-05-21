@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.text
 
 import javafx.collections.ObservableList
 import javafx.scene.Node
-
 object EmptyComponent : ChatComponent {
     override val ansiColoredMessage: String = ""
     override val legacyText: String = ""
@@ -23,11 +22,17 @@ object EmptyComponent : ChatComponent {
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> = nodes
 
-    override fun applyDefaultColor(color: RGBColor) = Unit
+    override fun setFallbackColor(color: RGBColor) = this
 
     override fun getTextAt(pointer: Int): TextComponent = throw IllegalArgumentException()
 
     override val length: Int get() = 0
 
     override fun cut(length: Int) = Unit
+
+    override fun strikethrough() = this
+    override fun obfuscate() = this
+    override fun bold() = this
+    override fun underline() = this
+    override fun italic() = this
 }

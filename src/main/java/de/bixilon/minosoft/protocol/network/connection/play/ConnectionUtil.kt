@@ -33,7 +33,7 @@ class ConnectionUtil(
 ) {
 
     fun sendDebugMessage(message: Any) {
-        val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })
+        val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
         connection.fireEvent(InternalMessageReceiveEvent(connection, component))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
     }
