@@ -11,21 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.container.palette.palettes
+package de.bixilon.minosoft.commands.parser.minecraft.coordinate
 
-import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.commands.errors.parser.ParserError
+import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 
-class SingularPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T> {
-    override val bits: Int = 0
-    var item: T? = null
-        private set
-
-    override fun read(buffer: PlayInByteBuffer) {
-        item = registry.getOrNull(buffer.readVarInt())
-    }
-
-    override fun getOrNull(id: Int): T? {
-        return item
-    }
-}
+class InvalidCoordinateError(
+    reader: CommandReader,
+    result: ReadResult<Coordinate?>,
+) : ParserError(reader, result)

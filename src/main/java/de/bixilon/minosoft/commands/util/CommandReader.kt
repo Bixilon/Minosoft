@@ -240,7 +240,7 @@ open class CommandReader(val string: String) {
         }
         val builder = StringBuilder()
         while (true) {
-            val peek = peek() ?: break
+            val peek = peekNext() ?: break
             if (peek in '0'.code..'9'.code) {
                 builder.appendCodePoint(peek)
                 pointer++

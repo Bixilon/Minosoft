@@ -19,6 +19,8 @@ import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
 import de.bixilon.minosoft.commands.parser.brigadier._long.LongParser
 import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec2.Vec2Parser
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec3.Vec3Parser
 import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
 import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
@@ -50,6 +52,9 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     ResourceLocationParser,
     TimeParser,
 
+    Vec2Parser,
+    Vec3Parser,
+
     DummyParser,
 
     ScoreHolderParser,
@@ -60,8 +65,6 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
 minecraft:game_profile
 minecraft:block_pos
 minecraft:column_pos
-minecraft:vec3
-minecraft:vec2
 minecraft:block_state
 minecraft:block_predicate
 minecraft:item_stack
