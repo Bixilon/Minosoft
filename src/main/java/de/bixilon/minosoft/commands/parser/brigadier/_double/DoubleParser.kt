@@ -48,6 +48,7 @@ class DoubleParser(
 
     companion object : ArgumentParserFactory<DoubleParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:double".toResourceLocation()
+        val DEFAULT = DoubleParser()
 
         override fun read(buffer: PlayInByteBuffer): DoubleParser {
             val flags = buffer.readUnsignedByte()

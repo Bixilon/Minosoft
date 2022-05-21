@@ -11,13 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid
+package de.bixilon.minosoft.commands.parser.minecraft.time
 
-import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class InvalidUUIDError(
-    reader: CommandReader,
-    result: ReadResult<String?>,
-) : ParserError(reader, result)
+enum class TimeUnit(val multiplier: Int) {
+    TICKS(1),
+    SECONDS(ProtocolDefinition.TICKS_PER_SECOND),
+    DAYS(ProtocolDefinition.TICKS_PER_DAY),
+    ;
+
+    companion object {
+        val UNITS = listOf("t", "s", "d")
+
+        fun fromUnit(char: Int?): TimeUnit {
+            return when (char) {
+                null, 't'.code -> TICKS
+                's'.code -> SECONDS
+                'd'.code -> DAYS
+                else -> throw IllegalArgumentException("Invalid unit: ${char.toChar()}")
+            }
+        }
+    }
+}

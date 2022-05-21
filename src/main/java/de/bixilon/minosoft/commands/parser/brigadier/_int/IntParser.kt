@@ -48,6 +48,7 @@ class IntParser(
 
     companion object : ArgumentParserFactory<IntParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:integer".toResourceLocation()
+        val DEFAULT = IntParser()
 
         override fun read(buffer: PlayInByteBuffer): IntParser {
             val flags = buffer.readUnsignedByte()

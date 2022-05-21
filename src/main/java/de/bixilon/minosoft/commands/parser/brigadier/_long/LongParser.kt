@@ -48,6 +48,7 @@ class LongParser(
 
     companion object : ArgumentParserFactory<LongParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:long".toResourceLocation()
+        val DEFAULT = LongParser()
 
         override fun read(buffer: PlayInByteBuffer): LongParser {
             val flags = buffer.readUnsignedByte()

@@ -23,9 +23,12 @@ import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
 import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
 import de.bixilon.minosoft.commands.parser.minecraft.resource.ResourceParser
+import de.bixilon.minosoft.commands.parser.minecraft.resource.location.ResourceLocationParser
 import de.bixilon.minosoft.commands.parser.minecraft.resource.tag.ResourceOrTagParser
 import de.bixilon.minosoft.commands.parser.minecraft.score.holder.ScoreHolderParser
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetParser
+import de.bixilon.minosoft.commands.parser.minecraft.time.TimeParser
+import de.bixilon.minosoft.commands.parser.minecraft.uuid.UUIDParser
 import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 
@@ -42,6 +45,10 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     RangeParserFactory,
     FloatRangeParser,
     IntRangeParser,
+
+    UUIDParser,
+    ResourceLocationParser,
+    TimeParser,
 
     DummyParser,
 
@@ -75,17 +82,14 @@ minecraft:score_holder
 minecraft:swizzle
 minecraft:team
 minecraft:item_slot
-minecraft:resource_location
 minecraft:mob_effect
 minecraft:function
 minecraft:entity_anchor
 minecraft:item_enchantment
 minecraft:entity_summon
 minecraft:dimension
-minecraft:uuid
 minecraft:nbt_tag
 minecraft:nbt_compound_tag
-minecraft:time
 minecraft:resource_or_tag
 minecraft:resource
  */

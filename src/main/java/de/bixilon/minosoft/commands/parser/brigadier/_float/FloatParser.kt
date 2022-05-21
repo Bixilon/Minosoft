@@ -48,6 +48,7 @@ class FloatParser(
 
     companion object : ArgumentParserFactory<FloatParser> {
         override val RESOURCE_LOCATION: ResourceLocation = "brigadier:float".toResourceLocation()
+        val DEFAULT = FloatParser()
 
         override fun read(buffer: PlayInByteBuffer): FloatParser {
             val flags = buffer.readUnsignedByte()

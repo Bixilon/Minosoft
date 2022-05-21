@@ -20,13 +20,13 @@ import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.InvalidNameError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.UUIDEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error.InvalidSelectorKeyError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error.InvalidTargetSelector
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperties
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.ResourceLocation

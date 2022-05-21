@@ -16,11 +16,11 @@ package de.bixilon.minosoft.commands.parser.minecraft.target
 import de.bixilon.minosoft.commands.errors.reader.map.DuplicatedKeyMapError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.InvalidNameError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name.NameEntityTarget
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.uuid.UUIDEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorEntityTarget
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.GamemodeProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.NameProperty
+import de.bixilon.minosoft.commands.parser.minecraft.uuid.InvalidUUIDError
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import org.junit.jupiter.api.Test
