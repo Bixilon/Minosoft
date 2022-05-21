@@ -256,6 +256,7 @@ open class TextInputElement(
                     _value.delete(_pointer + delete, _pointer)
                     _pointer += delete
                     textUpToDate = false
+                    onChange()
                 }
             }
             KeyCodes.KEY_DELETE -> {
@@ -270,6 +271,7 @@ open class TextInputElement(
                     val delete = if (controlDown) calculateWordPointer(true) else 1
                     _value.delete(_pointer, _pointer + delete)
                     textUpToDate = false
+                    onChange()
                 }
             }
             KeyCodes.KEY_LEFT -> {

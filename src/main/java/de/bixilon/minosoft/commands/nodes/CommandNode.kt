@@ -88,8 +88,8 @@ abstract class CommandNode(
 
             stack.reset(stackSize)
         }
-        if (suggestions.isEmpty() && error != null) {
-            throw error
+        if (suggestions.isEmpty()) {
+            throw error ?: throw TrailingTextArgument(reader)
         }
         return suggestions
     }

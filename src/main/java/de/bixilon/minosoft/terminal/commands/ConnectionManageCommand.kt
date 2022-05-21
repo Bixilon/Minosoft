@@ -25,6 +25,6 @@ object ConnectionManageCommand : Command {
             for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedList()) {
                 table += arrayOf(connection.connectionId, connection.state, connection.address)
             }
-            println(table)
+            it.print.print(table)
         }))
 }

@@ -13,13 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
 class NodeTextInputElement(
     guiRenderer: GUIRenderer,
@@ -35,6 +41,17 @@ class NodeTextInputElement(
     cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, shadow, scale, cutAtSize, parent) {
+    private var showError = false
+    private val errorElement = TextElement(guiRenderer, "")
+
+
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        super.forceRender(offset, consumer, options)
+
+        if (showError) {
+            errorElement.render(offset, consumer, options)
+        }
+    }
 
 
     private fun createStack(): CommandStack {
@@ -49,19 +66,30 @@ class NodeTextInputElement(
         if (value.isBlank()) {
             return super.onChange()
         }
+        val stack = createStack()
         try {
-            node.getSuggestions(CommandReader(value), createStack())
+            node.getSuggestions(CommandReader(value), stack)
+            updateError(null)
         } catch (exception: Throwable) {
-            exception.printStackTrace()
+            updateError(exception)
         }
         super.onChange()
     }
 
     fun submit() {
+        val stack = createStack()
         try {
             node.execute(CommandReader(value), createStack())
         } catch (exception: Throwable) {
-            exception.printStackTrace()
+            exception.message?.let { stack.print.print(it) }
         }
+        updateError(null)
+    }
+
+
+    private fun updateError(error: Throwable?) {
+        error?.message?.let { errorElement.text = TextComponent(it).color(ChatColors.RED) }
+        showError = error != null
+        cacheUpToDate = false
     }
 }

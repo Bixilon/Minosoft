@@ -46,13 +46,12 @@ class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         for ((index, builder) in this.withIndex()) {
             val node = nodes[index] ?: Broken()
             builder.redirectNode?.let { node.redirect = nodes[it] }
+
             builder.children?.let {
-                val children: Array<CommandNode?> = arrayOfNulls(it.size)
                 for ((childIndex, child) in it.withIndex()) {
-                    children[childIndex] = nodes[child] ?: throw IllegalArgumentException("Invalid child: $child for $childIndex")
+                    node.addChild(nodes.getOrNull(child) ?: throw IllegalArgumentException("Invalid child: $child for $childIndex"))
                 }
             }
-            builder.redirectNode?.let { node.redirect = nodes[it] }
         }
 
         return nodes.unsafeCast()
