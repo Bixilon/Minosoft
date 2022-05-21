@@ -238,6 +238,7 @@ open class CommandReader(val string: String) {
         if (!canPeek()) {
             return null
         }
+        skipWhitespaces()
         val builder = StringBuilder()
         while (true) {
             val peek = peekNext() ?: break
@@ -266,8 +267,9 @@ open class CommandReader(val string: String) {
             return null
         }
         val builder = StringBuilder()
+        skipWhitespaces()
         while (true) {
-            val peek = peek() ?: break
+            val peek = peekNext() ?: break
             if (peek in '0'.code..'9'.code || peek in 'a'.code..'z'.code || peek in 'A'.code..'Z'.code || peek == '_'.code || peek == '-'.code || peek == '/'.code) {
                 builder.appendCodePoint(peek)
                 pointer++
@@ -275,6 +277,9 @@ open class CommandReader(val string: String) {
             } else {
                 break
             }
+        }
+        if (builder.isEmpty()) {
+            return null
         }
         return builder.toString()
     }

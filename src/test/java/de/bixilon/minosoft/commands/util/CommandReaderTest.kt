@@ -14,9 +14,12 @@
 package de.bixilon.minosoft.commands.util
 
 import de.bixilon.minosoft.commands.errors.reader.OutOfBoundsError
-import org.junit.jupiter.api.Assertions.assertEquals
+import de.bixilon.minosoft.commands.errors.reader.number.NegativeNumberError
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class CommandReaderTest {
     @Test
@@ -84,5 +87,99 @@ internal class CommandReaderTest {
     fun `Read escaped quoted string`() {
         val reader = CommandReader("\"test \\\"test\"")
         assertEquals(reader.readString(), "test \"test")
+    }
+
+    @Test
+    fun readNumeric() {
+        val reader = CommandReader("123")
+        assertEquals(reader.readNumeric(), "123")
+    }
+
+    @Test
+    fun read2Numeric() {
+        val reader = CommandReader("123 456")
+        assertEquals(reader.readNumeric(), "123")
+        assertEquals(reader.readNumeric(), "456")
+    }
+
+    @Test
+    fun readNegative() {
+        val reader = CommandReader("-7813")
+        assertEquals(reader.readNumeric(), "-7813")
+    }
+
+    @Test
+    fun readNoNegative() {
+        val reader = CommandReader("-7813")
+        assertThrows<NegativeNumberError> { reader.readNumeric(negative = false) }
+    }
+
+    @Test
+    fun readDecimal() {
+        val reader = CommandReader("98.76")
+        assertEquals(reader.readNumeric(), "98.76")
+    }
+
+    @Test
+    fun readNoDecimal() {
+        val reader = CommandReader("98.76")
+        assertEquals(reader.readNumeric(decimal = false), "98")
+    }
+
+    @Test
+    fun readWord() {
+        val reader = CommandReader("word")
+        assertEquals(reader.readWord(), "word")
+    }
+
+    @Test
+    fun readWhitespacedWord() {
+        val reader = CommandReader("    word")
+        assertEquals(reader.readWord(), "word")
+    }
+
+    @Test
+    fun read2Words() {
+        val reader = CommandReader("first second")
+        assertEquals(reader.readWord(), "first")
+        assertEquals(reader.readWord(), "second")
+    }
+
+    @Test
+    fun read2Words2() {
+        val reader = CommandReader("first!second")
+        assertEquals(reader.readWord(), "first")
+        assertEquals(reader.read(), '!'.code)
+        assertEquals(reader.readWord(), "second")
+    }
+
+    @Test
+    fun read2Words3() {
+        val reader = CommandReader("first=second")
+        assertEquals(reader.readWord(), "first")
+        assertEquals(reader.read(), '='.code)
+        assertEquals(reader.readWord(), "second")
+    }
+
+    @Test
+    fun readInvalidWord() {
+        val reader = CommandReader("=")
+        assertEquals(reader.readWord(), null)
+    }
+
+    @Test
+    fun readNegateable() {
+        val reader = CommandReader("!not")
+        val (read, negated) = reader.readNegateable { readWord() }!!
+        assertEquals(read, "not")
+        assertTrue(negated)
+    }
+
+    @Test
+    fun readNotNegateable() {
+        val reader = CommandReader("not")
+        val (read, negated) = reader.readNegateable { readWord() }!!
+        assertEquals(read, "not")
+        assertFalse(negated)
     }
 }
