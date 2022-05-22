@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdCodec
 import de.bixilon.minosoft.util.collections.Clearable
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     override var parent: FakeEnumRegistry<T>? = null,
+    val codec: IdCodec<T>,
 ) : Clearable, Parentable<FakeEnumRegistry<T>> {
-    private var initialized = false
     private val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
     private val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
     private val nameValueMap: MutableMap<String, T> = mutableMapOf()
@@ -40,27 +41,22 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    fun initialize(data: Map<Any, Any>?, registries: Registries, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {
-        check(!initialized) { "Already initialized" }
-
+    fun update(data: Map<Any, Any>?, registries: Registries) {
         if (data == null) {
-            return this
+            return
         }
 
         for ((id, value) in data) {
-            check(value is Map<*, *>)
+            value as JsonObject
             var itemId = id.toInt()
 
-            val item = deserializer.deserialize(registries, value.asJsonObject())
-            value["id"]?.toInt()?.let { providedItemId ->
-                itemId = providedItemId
-            }
+            val item = codec.deserialize(registries, value)
+            value["id"]?.toInt()?.let { itemId = it }
+
             idValueMap[itemId] = item
             valueIdMap[item] = itemId
             nameValueMap[item.name] = item
         }
-        initialized = true
-        return this
     }
 
     override fun clear() {

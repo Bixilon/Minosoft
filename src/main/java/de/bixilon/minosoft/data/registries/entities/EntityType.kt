@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -60,7 +60,7 @@ data class EntityType(
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityData, versionId)
     }
 
-    companion object : ResourceLocationDeserializer<EntityType> {
+    companion object : ResourceLocationCodec<EntityType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityType? {
             check(registries != null) { "Registries is null!" }
             val factory = DefaultEntityFactories[resourceLocation]

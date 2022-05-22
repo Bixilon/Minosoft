@@ -34,7 +34,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
@@ -102,7 +102,7 @@ open class Block(
 
     open fun canCull(blockState: BlockState, other: BlockState): Boolean = true
 
-    companion object : ResourceLocationDeserializer<Block>, BlockFactory<Block> {
+    companion object : ResourceLocationCodec<Block>, BlockFactory<Block> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
             check(registries != null) { "Registries is null!" }
 

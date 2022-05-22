@@ -19,7 +19,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -53,7 +53,7 @@ data class Biome(
         return resourceLocation.full
     }
 
-    companion object : ResourceLocationDeserializer<Biome> {
+    companion object : ResourceLocationCodec<Biome> {
 
         private fun getColorMapCoordinate(value: Float): Int {
             return ((1.0 - value.clamp(0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()

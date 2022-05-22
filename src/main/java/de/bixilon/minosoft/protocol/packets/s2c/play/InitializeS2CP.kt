@@ -12,15 +12,12 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import com.google.common.collect.HashBiMap
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
@@ -41,14 +38,15 @@ import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 @LoadPacket(threadSafe = false)
 class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int
     val isHardcore: Boolean
     val gamemode: Gamemodes
-    var dimensionProperties: DimensionProperties
+    var dimensionProperties: DimensionProperties? = null
+        private set
+    var dimensionType: ResourceLocation? = null
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
@@ -64,9 +62,9 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     var hashedSeed: Long = 0L
         private set
-    var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
-        private set
     var simulationDistance: Int = -1
+        private set
+    var registries: JsonObject? = null
         private set
 
     init {
@@ -85,7 +83,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
             dimensionProperties = buffer.connection.registries.dimensionRegistry[buffer.readByte().toInt()].type
             difficulty = Difficulties[buffer.readUnsignedByte()]
-            maxPlayers = buffer.readByte().toInt()
+            maxPlayers = buffer.readUnsignedByte()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
                 levelType = buffer.readString()
             }
@@ -102,12 +100,11 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
                 dimensionProperties = buffer.connection.registries.dimensionRegistry[buffer.readInt()].type
             } else {
-                val dynamicRegistry = buffer.readNBT().asJsonObject()
-                dimensions = parseDimensionCodec(dynamicRegistry, buffer.versionId)
-                dimensionProperties = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
-                    dimensions[buffer.readResourceLocation()]!!.type // dimension type
+                registries = buffer.readNBT().asJsonObject()
+                if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
+                    dimensionType = buffer.readResourceLocation() // dimension type
                 } else {
-                    DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
+                    dimensionProperties = DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
                 }
                 buffer.readResourceLocation() // dimension id
             }
@@ -157,8 +154,9 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         connection.world.hardcore = isHardcore
-        connection.registries.dimensionRegistry.setData(dimensions)
-        connection.world.dimension = dimensionProperties
+
+        registries?.let { connection.registries.update(it) }
+        connection.world.dimension = dimensionProperties ?: connection.registries.dimensionRegistry[dimensionType]?.type ?: throw NullPointerException("Can not find dimension: $dimensionType")
 
         connection.world.entities.getId(playerEntity)?.let { connection.world.entities.remove(it) } // e.g. bungeecord sends this packet twice
         connection.world.entities.add(entityId, null, playerEntity)
@@ -177,29 +175,6 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.sendPacket(PluginC2SP(brandName, buffer.toArray()))
 
         connection.state = PlayConnectionStates.SPAWNING
-    }
-
-    private fun parseDimensionCodec(nbt: Map<String, Any>, versionId: Int): HashBiMap<ResourceLocation, Dimension> {
-        val dimensionMap: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
-        val listTag: MutableList<Map<*, *>> = if (versionId < ProtocolVersions.V_20W28A) {
-            nbt["dimension"]?.listCast()
-        } else {
-            nbt["minecraft:dimension_type"]?.toJsonObject()?.get("value")?.listCast()
-        }!!
-        for (tag in listTag) {
-            val dimensionResourceLocation = ResourceLocation(tag[if (versionId < ProtocolVersions.V_1_16_PRE3) {
-                "key"
-            } else {
-                "name"
-            }].unsafeCast())
-            val dimensionPropertyTag = if (versionId < ProtocolVersions.V_1_16_PRE3 || versionId >= ProtocolVersions.V_1_16_2_PRE1) {
-                tag["element"].asJsonObject()
-            } else {
-                tag.asJsonObject()
-            }
-            dimensionMap[dimensionResourceLocation] = Dimension.deserialize(null, dimensionResourceLocation, dimensionPropertyTag)
-        }
-        return dimensionMap
     }
 
     override fun log(reducedLog: Boolean) {

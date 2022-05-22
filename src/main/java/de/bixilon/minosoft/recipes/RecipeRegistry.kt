@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.recipes
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.data.registries.registries.registry.Registry
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -49,7 +48,7 @@ class RecipeRegistry(
         return idValueMap[id] ?: parent?.get(id)
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<Recipe>?, flattened: Boolean, metaType: Registry.MetaTypes, alternative: AbstractRegistry<Recipe>?): AbstractRegistry<Recipe> {
+    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): Recipe? {
         TODO("Not yet implemented")
     }
 

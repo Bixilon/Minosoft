@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.Broken
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
@@ -73,11 +75,9 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?>
         return forceGet(id)
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockState?>?, flattened: Boolean, metaType: Registry.MetaTypes, alternative: AbstractRegistry<BlockState?>?): AbstractRegistry<BlockState?> {
-        TODO("Not yet implemented")
-    }
-
     override fun getId(value: BlockState?): Int {
         TODO("Not yet implemented")
     }
+
+    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?) = Broken()
 }

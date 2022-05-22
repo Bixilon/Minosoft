@@ -13,18 +13,17 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import de.bixilon.minosoft.util.Broken
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 class ResourceLocationRegistry(
     override var parent: AbstractRegistry<ResourceLocation>? = null,
 ) : AbstractRegistry<ResourceLocation> {
-    private var initialized = false
     private val idValueMap: Int2ObjectOpenHashMap<ResourceLocation> = Int2ObjectOpenHashMap()
     private val valueIdMap: Object2IntOpenHashMap<ResourceLocation> = Object2IntOpenHashMap()
 
@@ -56,38 +55,22 @@ class ResourceLocationRegistry(
         return valueIdMap[value] ?: parent?.getId(value) ?: -1
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<ResourceLocation>?, flattened: Boolean, metaType: Registry.MetaTypes, alternative: AbstractRegistry<ResourceLocation>?): AbstractRegistry<ResourceLocation> {
-        return initialize(data, alternative.unsafeCast())
-    }
-
-    fun initialize(data: Map<ResourceLocation, Any>?, alternative: ResourceLocationRegistry? = null): ResourceLocationRegistry {
-        check(!initialized) { "Already initialized" }
-
-        if (data == null) {
-            if (alternative != null) {
-                parent = alternative
-            }
-            return this
-        }
-
+    override fun update(data: Map<ResourceLocation, Any>, registries: Registries?) {
         for ((resourceLocation, value) in data) {
             val id: Int = when (value) {
                 is Number -> value.toInt()
                 is Map<*, *> -> value["id"].toInt()
                 else -> throw IllegalArgumentException("Don't know what $value is!")
             }
-            idValueMap[id] = resourceLocation
-            valueIdMap[resourceLocation] = id
+            addItem(resourceLocation, id)
         }
-        if (idValueMap.isEmpty()) {
-            parent = alternative
-        }
-        initialized = true
-        return this
     }
 
-    fun rawInitialize(data: Map<String, Any>?, alternative: ResourceLocationRegistry? = null): ResourceLocationRegistry {
-        return initialize(data?.toResourceLocationMap(), alternative)
+    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?) = Broken()
+
+    fun addItem(resourceLocation: ResourceLocation, id: Int) {
+        idValueMap[id] = resourceLocation
+        valueIdMap[resourceLocation] = id
     }
 
 

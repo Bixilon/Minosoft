@@ -16,14 +16,14 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
 
 class BlockDataDataType(
     override val resourceLocation: ResourceLocation,
 ) : RegistryItem() {
 
-    companion object : ResourceLocationDeserializer<BlockDataDataType> {
+    companion object : ResourceLocationCodec<BlockDataDataType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockDataDataType {
             return BlockDataDataType(resourceLocation)
         }

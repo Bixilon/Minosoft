@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.CastUtil.asAnyCollection
 
@@ -34,7 +34,7 @@ data class BlockEntityType<T : BlockEntity>(
         return factory.build(connection)
     }
 
-    companion object : ResourceLocationDeserializer<BlockEntityType<*>> {
+    companion object : ResourceLocationCodec<BlockEntityType<*>> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityType<*>? {
             // ToDo: Fix resource location
             check(registries != null)

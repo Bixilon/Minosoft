@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -102,7 +102,7 @@ open class Fluid(
         return velocity
     }
 
-    companion object : ResourceLocationDeserializer<Fluid> {
+    companion object : ResourceLocationCodec<Fluid> {
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Fluid {
             check(registries != null) { "Registries is null!" }

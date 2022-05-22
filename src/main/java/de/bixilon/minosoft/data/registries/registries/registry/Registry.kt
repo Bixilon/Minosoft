@@ -15,20 +15,25 @@ package de.bixilon.minosoft.data.registries.registries.registry
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
-import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
+    val codec: ResourceLocationCodec<T>? = null,
+    val metaType: MetaTypes = MetaTypes.NONE,
+    var flattened: Boolean = false,
 ) : AbstractRegistry<T> {
-    private var initialized = false
     protected val idValueMap: Int2ObjectOpenHashMap<T> = Int2ObjectOpenHashMap()
     protected val valueIdMap: Object2IntOpenHashMap<T> = Object2IntOpenHashMap()
     protected val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
@@ -105,49 +110,37 @@ open class Registry<T : RegistryItem>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>?, flattened: Boolean, metaType: MetaTypes, alternative: AbstractRegistry<T>?): Registry<T> {
-        check(!initialized) { "Already initialized" }
-        if (deserializer == null) {
-            throw NullPointerException("Deserializer can not be null!")
-        }
-
-        if (data == null) {
-            if (alternative != null) {
-                parent = alternative
-            }
-            return this
-        }
-
-        for ((resourceLocation, value) in data) {
+    override fun update(data: Map<ResourceLocation, Any>, registries: Registries?) {
+        for ((name, value) in data) {
             check(value is Map<*, *>)
-            val item = deserializer.deserialize(registries, resourceLocation, value.asJsonObject()) ?: continue
-            value["id"]?.toInt()?.let { id ->
-                var itemId = id
-                if (!flattened) {
-                    when (metaType) {
-                        MetaTypes.NONE -> {
-                        }
-                        MetaTypes.BITS_4 -> {
-                            itemId = itemId shl 4
-                        }
-                        MetaTypes.BITS_16 -> {
-                            itemId = itemId shl 16
-                        }
-                    }
-                    value["meta"]?.toInt()?.let { meta ->
-                        itemId = itemId or meta
-                    }
-                }
-                idValueMap[id] = item
-                valueIdMap[item] = id
-            }
-            resourceLocationMap[resourceLocation] = item
+            val id = value["id"]?.toInt()?.let { if (metaType != MetaTypes.NONE && !flattened) metaType.modify(it, value["meta"]?.toInt() ?: 0) else it }
+            addItem(name, id, value.unsafeCast(), registries)
         }
-        if (resourceLocationMap.isEmpty()) {
-            parent = alternative
+    }
+
+    override fun update(data: List<JsonObject>, registries: Registries?) {
+        for (entry in data) {
+            val name = (entry["name"] ?: entry["key"])?.toResourceLocation() ?: throw IllegalArgumentException("Can not find name: $entry")
+            val id = entry["id"]?.toInt()
+
+            val entryData = entry["element"]?.toJsonObject() ?: entry
+            addItem(name, id, entryData, registries)
         }
-        initialized = true
-        return this
+    }
+
+    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): T? {
+        if (codec == null) {
+            throw IllegalStateException("codec is null!")
+        }
+        val item = codec.deserialize(registries, resourceLocation, data) ?: return null
+
+        if (id != null) {
+            idValueMap[id] = item
+            valueIdMap[item] = id
+        }
+        resourceLocationMap[resourceLocation] = item
+
+        return item
     }
 
     open fun postInit(registries: Registries) {
@@ -155,15 +148,6 @@ open class Registry<T : RegistryItem>(
             value.inject(registries)
             value.postInit(registries)
         }
-    }
-
-    fun setData(resourceLocationMap: Map<ResourceLocation, T> = mapOf(), idValueMap: Map<Int, T> = mapOf(), valueIdMap: Map<T, Int> = mapOf()) {
-        this.resourceLocationMap.clear()
-        this.resourceLocationMap.putAll(resourceLocationMap)
-        this.idValueMap.clear()
-        this.idValueMap.putAll(idValueMap)
-        this.valueIdMap.clear()
-        this.valueIdMap.putAll(valueIdMap)
     }
 
     override fun toString(): String {
@@ -174,12 +158,6 @@ open class Registry<T : RegistryItem>(
         resourceLocationMap.clear()
         idValueMap.clear()
         valueIdMap.clear()
-    }
-
-    enum class MetaTypes {
-        NONE,
-        BITS_4,
-        BITS_16,
     }
 
     override fun noParentIterator(): Iterator<T> {

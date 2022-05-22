@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.registries.inventory
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdCodec
 
 data class CreativeModeTab(
     override val name: String,
@@ -27,7 +27,7 @@ data class CreativeModeTab(
 ) : RegistryFakeEnumerable {
 
 
-    companion object : IdDeserializer<CreativeModeTab> {
+    companion object : IdCodec<CreativeModeTab> {
         override fun deserialize(registries: Registries, data: Map<String, Any>): CreativeModeTab {
             return CreativeModeTab(
                 name = data["language_id"].unsafeCast(),

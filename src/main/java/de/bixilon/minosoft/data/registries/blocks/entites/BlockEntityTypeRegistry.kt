@@ -13,16 +13,15 @@
 
 package de.bixilon.minosoft.data.registries.blocks.entites
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 
 class BlockEntityTypeRegistry(
     parentRegistry: BlockEntityTypeRegistry? = null,
-) : Registry<BlockEntityType<*>>(parentRegistry) {
+) : Registry<BlockEntityType<*>>(parentRegistry, codec = BlockEntityType) {
     private val blockTypeMap: MutableMap<Block, BlockEntityType<*>> = mutableMapOf()
 
     operator fun get(block: Block): BlockEntityType<*>? {
@@ -37,15 +36,12 @@ class BlockEntityTypeRegistry(
         return super.get(any)
     }
 
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType<*>>?, flattened: Boolean, metaType: MetaTypes, alternative: AbstractRegistry<BlockEntityType<*>>?): Registry<BlockEntityType<*>> {
-        super.initialize(data, registries, deserializer, flattened, metaType, alternative)
+    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): BlockEntityType<*>? {
+        val item = super.addItem(resourceLocation, id, data, registries) ?: return null
 
-        for ((_, type) in resourceLocationMap) {
-            for (block in type.blocks) {
-                blockTypeMap[block] = type
-            }
+        for (block in item.blocks) {
+            blockTypeMap[block] = item
         }
-
-        return this
+        return item
     }
 }

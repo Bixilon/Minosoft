@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,15 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
+enum class MetaTypes(val bits: Int) {
+    NONE(0),
+    BLOCKS(4),
+    ITEM(16),
+    ;
 
-interface ResourceLocationDeserializer<T> {
-    fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): T?
+    private val metaMask = (1 shl bits) - 1
+
+    fun modify(id: Int, meta: Int): Int {
+        return (id shr bits) or (meta and metaMask)
+    }
 }

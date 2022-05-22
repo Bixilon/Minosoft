@@ -11,27 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.entities.villagers
+package de.bixilon.minosoft.datafixer
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 
-data class VillagerProfession(
-    override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem() {
+object RegistryFixer {
+    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
+        "dimension" to "dimension_type",
+    ).asResourceLocationMap()
 
-    override fun toString(): String {
-        return resourceLocation.full
-    }
 
-    companion object : ResourceLocationCodec<VillagerProfession> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): VillagerProfession {
-            return VillagerProfession(
-                resourceLocation = resourceLocation,
-            )
-        }
+    fun ResourceLocation.fix(): ResourceLocation {
+        return RENAMES.getOrDefault(this, this)
     }
 }

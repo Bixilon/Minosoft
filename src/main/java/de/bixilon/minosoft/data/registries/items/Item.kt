@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.registries.items.armor.*
 import de.bixilon.minosoft.data.registries.items.arrow.ArrowItem
 import de.bixilon.minosoft.data.registries.items.arrow.SpectralArrowItem
@@ -42,7 +41,7 @@ import de.bixilon.minosoft.data.registries.items.throwable.potion.PotionItem
 import de.bixilon.minosoft.data.registries.items.tools.*
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -61,7 +60,6 @@ open class Item(
     val maxDurability: Int = data["max_damage"]?.toInt() ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
     override val translationKey: ResourceLocation? = data["translation_key"]?.toResourceLocation()
-    val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }
 
     open var model: BakedItemModel? = null
     var tintProvider: TintProvider? = null
@@ -90,7 +88,7 @@ open class Item(
         return InteractionResults.PASS
     }
 
-    companion object : ResourceLocationDeserializer<Item> {
+    companion object : ResourceLocationCodec<Item> {
         const val INFINITE_MINING_SPEED_MULTIPLIER = -1.0f
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {

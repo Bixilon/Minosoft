@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.collections.Clearable
@@ -31,11 +33,15 @@ interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegis
 
     fun getId(value: T): Int
 
-    fun rawInitialize(data: Map<String, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>?, flattened: Boolean = true, metaType: Registry.MetaTypes = Registry.MetaTypes.NONE, alternative: AbstractRegistry<T>? = null): AbstractRegistry<T> {
-        return initialize(data?.toResourceLocationMap(), registries, deserializer, flattened, metaType, alternative)
+    fun rawUpdate(data: Map<String, Any>?, registries: Registries?) {
+        val map: Map<ResourceLocation, JsonObject> = data?.toResourceLocationMap()?.unsafeCast() ?: return
+        update(map, registries)
     }
 
-    fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>?, flattened: Boolean = true, metaType: Registry.MetaTypes = Registry.MetaTypes.NONE, alternative: AbstractRegistry<T>? = null): AbstractRegistry<T>
+    fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): T?
+
+    fun update(data: List<JsonObject>, registries: Registries?) = Unit
+    fun update(data: Map<ResourceLocation, Any>, registries: Registries?) = Unit
 
     fun noParentIterator(): Iterator<T>
 

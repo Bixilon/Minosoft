@@ -13,16 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 
 class ItemRegistry(
     parent: Registry<Item>? = null,
-) : Registry<Item>(parent = parent) {
-    private var flattened = false
+    flattened: Boolean = false,
+) : Registry<Item>(parent = parent, codec = Item, flattened = flattened, metaType = MetaTypes.ITEM) {
 
     override fun getOrNull(id: Int): Item? {
         return if (!flattened) {
@@ -37,10 +34,5 @@ class ItemRegistry(
         } else {
             super.getOrNull(id)
         }
-    }
-
-    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<Item>?, flattened: Boolean, metaType: MetaTypes, alternative: AbstractRegistry<Item>?): Registry<Item> {
-        this.flattened = flattened
-        return super.initialize(data, registries, deserializer, flattened, metaType, alternative)
     }
 }

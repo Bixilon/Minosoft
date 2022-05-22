@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,14 +15,14 @@ package de.bixilon.minosoft.data.registries.biomes
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
+import de.bixilon.minosoft.data.registries.registries.registry.codec.IdCodec
 
 data class BiomePrecipitation(
     override val name: String,
 ) : RegistryFakeEnumerable {
 
-    companion object : IdDeserializer<BiomePrecipitation> {
+    companion object : IdCodec<BiomePrecipitation> {
         override fun deserialize(registries: Registries, data: Map<String, Any>): BiomePrecipitation {
             return BiomePrecipitation(
                 name = data["name"].unsafeCast()

@@ -11,27 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.entities.villagers
+package de.bixilon.minosoft.data.registries.registries.registry.codec
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
-data class VillagerProfession(
-    override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem() {
-
-    override fun toString(): String {
-        return resourceLocation.full
-    }
-
-    companion object : ResourceLocationCodec<VillagerProfession> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): VillagerProfession {
-            return VillagerProfession(
-                resourceLocation = resourceLocation,
-            )
-        }
-    }
+interface ResourceLocationCodec<T> {
+    fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): T?
 }

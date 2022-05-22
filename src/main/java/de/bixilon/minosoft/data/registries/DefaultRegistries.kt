@@ -52,18 +52,18 @@ object DefaultRegistries {
     val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimationS2CP.EntityAnimations)
     val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SP.EntityActions)
 
-    val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
+    val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry(codec = EntityObjectType)
 
-    val BLOCK_DATA_TYPE_REGISTRY: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry() }
+    val BLOCK_DATA_TYPE_REGISTRY: PerVersionRegistry<BlockDataDataType, Registry<BlockDataDataType>> = PerVersionRegistry { Registry(codec = BlockDataDataType) }
 
-    val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel, Registry<PluginChannel>> = PerVersionRegistry { Registry() }
+    val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel, Registry<PluginChannel>> = PerVersionRegistry { Registry(codec = PluginChannel) }
 
-    val CONTAINER_TYPE_REGISTRY: PerVersionRegistry<ContainerType, Registry<ContainerType>> = PerVersionRegistry { Registry() }
+    val CONTAINER_TYPE_REGISTRY: PerVersionRegistry<ContainerType, Registry<ContainerType>> = PerVersionRegistry { Registry(codec = ContainerType) }
 
     val GAME_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
     val WORLD_EVENT_REGISTRY: PerVersionRegistry<ResourceLocation, ResourceLocationRegistry> = PerVersionRegistry { ResourceLocationRegistry() }
 
-    val CAT_VARIANT_REGISTRY: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry() }
+    val CAT_VARIANT_REGISTRY: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry(codec = CatVariant) }
 
 
     fun load(latch: CountUpAndDownLatch) {
@@ -89,7 +89,7 @@ object DefaultRegistries {
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")].asJsonObject(), PluginChannel)
 
-        ENTITY_OBJECT_REGISTRY.rawInitialize(registriesJson[ResourceLocation("entity_objects")].asJsonObject(), null, EntityObjectType)
+        ENTITY_OBJECT_REGISTRY.rawUpdate(registriesJson[ResourceLocation("entity_objects")].asJsonObject(), null)
 
         BLOCK_DATA_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_data_data_types")].asJsonObject(), BlockDataDataType)
 
