@@ -1,4 +1,14 @@
 {
+  "841": {
+    "name": "1.19-pre1",
+    "protocol_id": 1073741909,
+    "packets": {
+      "c2s": ["confirm_teleport", "block_nbt", "difficulty", "command", "chat_message", "chat_preview", "client_action", "settings", "chat_suggestions", "container_button", "container_click", "close_container", "plugin", "book", "entity_nbt", "entity_interact", "generate_structure", "heartbeat", "lock_difficulty", "position", "position_rotation", "rotation", "ground_change", "move_vehicle", "steer_boat", "item_pick", "crafting_recipe", "toggle_fly", "player_action", "entity_action", "steer_vehicle", "pong", "displayed_recipe", "recipe_book", "anvil_item_name", "resourcepack", "advancement_tab", "trade", "beacon_effect", "hotbar_slot", "command_block", "minecart_command_block", "item_stack_create", "jigsaw_block", "structure_block", "sign_text", "swing_arm", "entity_spectate", "block_interact", "use_item"],
+      "s2c": [
+        "entity_object_spawn", "entity_experience_orb", "entity_player", "entity_animation", "statistics", "block_break", "block_break_animation", "block_data", "block_action", "block", "bossbar", "difficulty", "chat_preview", "clear_title", "chat_suggestions", "commands", "close_container", "container_items", "container_properties", "container_item", "item_cooldown", "plugin", "named_sound", "kick", "entity_status", "explosion", "unload_chunk", "game_event", "open_horse_container", "initialize_world_border", "heartbeat", "chunk", "world_event", "particle", "chunk_light", "initialize", "map", "villager_trades", "relative_move", "movement_rotation", "rotation", "move_vehicle", "book", "open_container", "sign_editor", "ping", "crafting_recipe", "player_abilities", "signed_chat_message", "end_combat_event", "enter_combat_event", "kill_combat_event", "tab_list", "player_face", "position_rotation", "unlock_recipes", "entity_destroy", "entity_remove_effect", "resourcepack", "respawn", "head_rotation", "blocks", "advancement_tab", "play_status", "hotbar_text", "center_world_border", "interpolate_world_border", "size_world_border", "warn_time_world_border", "warn_blocks_world_border", "camera", "hotbar_slot", "chunk_center", "view_distance", "compass_position", "temporary_chat_preview", "objective_position", "entity_data", "entity_attach", "velocity", "entity_equipment", "experience", "health", "objective", "entity_passenger", "teams", "scoreboard_score", "simulation_distance", "subtitle", "time", "title_text", "title_times", "entity_sound", "sound_event", "stop_sound", "chat_message", "tab_list_text", "nbt_response", "entity_collect", "teleport", "advancements", "entity_attributes", "entity_effect", "recipes", "tags"
+      ]
+    }
+  },
   "840": {
     "name": "22w19a",
     "protocol_id": 1073741908,
