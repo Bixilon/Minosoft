@@ -19,9 +19,10 @@ import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class MinecraftRegistryFixer(private val connection: PlayConnection) {
+object MinecraftRegistryFixer {
 
-    init {
+
+    fun register(connection: PlayConnection) {
         connection.registerEvent(CallbackEventInvoker.of<RegistriesLoadEvent> {
             if (it.state != RegistriesLoadEvent.States.POST) {
                 return@of

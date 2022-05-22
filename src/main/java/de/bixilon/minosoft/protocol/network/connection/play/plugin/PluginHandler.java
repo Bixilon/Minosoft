@@ -11,10 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.connection.play
+package de.bixilon.minosoft.protocol.network.connection.play.plugin;
 
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
+import org.jetbrains.annotations.NotNull;
 
-class ServerInfo {
-    var brand: String by watched("unknown")
+public interface PluginHandler {
+
+    void handle(final @NotNull PlayInByteBuffer buffer);
 }

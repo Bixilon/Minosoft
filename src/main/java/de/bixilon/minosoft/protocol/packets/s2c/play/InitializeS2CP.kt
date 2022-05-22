@@ -16,22 +16,18 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
-import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.PacketErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.packets.c2s.play.PluginC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
@@ -167,12 +163,6 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.border.reset()
 
         connection.settingsManager.sendClientSettings()
-
-        // ToDo: This has nothing to do here!
-        val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
-        val buffer = PlayOutByteBuffer(connection)
-        buffer.writeString("vanilla") // ToDo: Remove prefix
-        connection.sendPacket(PluginC2SP(brandName, buffer.toArray()))
 
         connection.state = PlayConnectionStates.SPAWNING
     }

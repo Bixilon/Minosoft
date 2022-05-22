@@ -46,6 +46,8 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
+import de.bixilon.minosoft.protocol.network.connection.play.plugin.DefaultPluginHandler
+import de.bixilon.minosoft.protocol.network.connection.play.plugin.PluginManager
 import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicker
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
@@ -73,6 +75,7 @@ class PlayConnection(
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
     val ticker = ConnectionTicker(this)
+    val pluginManager = PluginManager(this)
 
     val serverInfo = ServerInfo()
     lateinit var assetsManager: AssetsManager
@@ -102,7 +105,8 @@ class PlayConnection(
         }
 
     init {
-        MinecraftRegistryFixer(this)
+        MinecraftRegistryFixer.register(this)
+        DefaultPluginHandler.register(this)
 
         network::connected.observe(this) {
             if (it) {

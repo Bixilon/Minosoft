@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -119,7 +120,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, BaseComponent("Account ", connection.account.username))
         layout += TextElement(guiRenderer, BaseComponent("Address ", connection.address))
         layout += TextElement(guiRenderer, BaseComponent("Network version ", connection.version))
-        layout += TextElement(guiRenderer, BaseComponent("Server brand ", connection.serverInfo.brand))
+        layout += TextElement(guiRenderer, BaseComponent("Server brand ", connection.serverInfo.brand)).apply { connection.serverInfo::brand.observe(this@DebugHUDElement) { this.text = BaseComponent("Server brand ", it) } }
 
         layout += LineSpacerElement(guiRenderer)
 

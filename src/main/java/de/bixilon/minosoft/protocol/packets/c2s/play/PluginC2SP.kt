@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
@@ -26,6 +27,8 @@ class PluginC2SP(
     val channel: ResourceLocation,
     val data: ByteArray,
 ) : PlayC2SPacket {
+
+    constructor(channel: ResourceLocation, buffer: OutByteBuffer) : this(channel, buffer.toArray())
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeResourceLocation(channel)

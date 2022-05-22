@@ -238,7 +238,7 @@ open class InByteBuffer {
         return string
     }
 
-    @Deprecated("Use readArray")
+    @Deprecated("Use readArray", ReplaceWith("readArray(length) { readString() }"))
     fun readStringArray(length: Int = readVarInt()): Array<String> {
         return readArray(length) { readString() }
     }
