@@ -232,12 +232,6 @@ class Registries {
         return currentField?.get(this) as Registry<T>?
     }
 
-    @Deprecated("TODO")
-    operator fun get(name: ResourceLocation): AbstractRegistry<*>? {
-        return null // ToDo
-    }
-
-
     private fun <T, R : AbstractRegistry<T>> register(name: String, registry: R): R {
         registries[name.toResourceLocation()] = registry
 
