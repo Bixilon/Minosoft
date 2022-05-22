@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.status
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.text.ChatComponent
-import java.util.*
+import de.bixilon.minosoft.util.KUtil.toFavicon
 
 class ServerStatus(
     data: Map<String, Any>,
@@ -50,10 +50,7 @@ class ServerStatus(
         }
         data["description"]?.let { motd = ChatComponent.of(it) }
 
-        data["favicon"]?.toString()?.let {
-            val favicon = Base64.getDecoder().decode(it.replace("data:image/png;base64,", "").replace("\n", ""))
-            this.favicon = favicon
-        }
+        data["favicon"]?.toString()?.toFavicon()?.let { this.favicon = it }
     }
 
     override fun toString(): String {

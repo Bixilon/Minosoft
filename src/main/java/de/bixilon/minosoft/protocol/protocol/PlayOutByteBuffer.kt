@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
+import java.time.Instant
 
 class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     val versionId = connection.version.versionId
@@ -82,5 +83,13 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     fun writeSignatureData(signature: SignatureData) {
         writeLong(signature.salt)
         writeByteArray(signature.signature)
+    }
+
+    fun writeInstant(instant: Instant) {
+        if (versionId >= ProtocolVersions.V_22W19A) {
+            writeLong(instant.toEpochMilli())
+        } else {
+            writeLong(instant.epochSecond)
+        }
     }
 }

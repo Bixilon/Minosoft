@@ -44,6 +44,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import java.time.Instant
 
 
 class PlayInByteBuffer : InByteBuffer {
@@ -268,5 +269,13 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun readPlayerPublicKey(): PlayerPublicKey? {
         return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
+    }
+
+    fun readInstant(): Instant {
+        val time = readLong()
+        if (versionId >= ProtocolVersions.V_22W19A) {
+            return Instant.ofEpochMilli(time)
+        }
+        return Instant.ofEpochSecond(time)
     }
 }

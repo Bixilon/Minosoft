@@ -133,29 +133,33 @@ object KUtil {
     }
 
     fun Any?.format(): ChatComponent {
-        return ChatComponent.of(when (this) {
-            is ChatComponent -> return this
-            null -> TextComponent("null").color(ChatColors.DARK_RED)
-            is TextFormattable -> this.toText()
-            is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
-            is Enum<*> -> {
-                val name = this.name
-                TextComponent(if (name.length == 1) {
-                    name
-                } else {
-                    name.lowercase()
-                }).color(ChatColors.YELLOW)
+        return ChatComponent.of(
+            when (this) {
+                is ChatComponent -> return this
+                null -> TextComponent("null").color(ChatColors.DARK_RED)
+                is TextFormattable -> this.toText()
+                is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
+                is Enum<*> -> {
+                    val name = this.name
+                    TextComponent(
+                        if (name.length == 1) {
+                            name
+                        } else {
+                            name.lowercase()
+                        }
+                    ).color(ChatColors.YELLOW)
+                }
+                is Float -> "§d%.3f".format(this)
+                is Double -> "§d%.4f".format(this)
+                is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
+                is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
+                is ResourceLocationAble -> resourceLocation.format()
+                is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
+                is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+                is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
+                else -> this.toString()
             }
-            is Float -> "§d%.3f".format(this)
-            is Double -> "§d%.4f".format(this)
-            is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
-            is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
-            is ResourceLocationAble -> resourceLocation.format()
-            is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
-            is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
-            is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
-            else -> this.toString()
-        })
+        )
     }
 
     fun Any.toJson(beautiful: Boolean = false): String {
@@ -261,5 +265,9 @@ object KUtil {
             return null
         }
         return this.codePointAt(index)
+    }
+
+    fun String.toFavicon(): ByteArray {
+        return Base64.getDecoder().decode(this.replace("data:image/png;base64,", "").replace("\n", ""))
     }
 }

@@ -66,10 +66,6 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
         private set
-    var worlds: Array<ResourceLocation>? = null
-        private set
-    var world: ResourceLocation? = null
-        private set
     var simulationDistance: Int = -1
         private set
 
@@ -101,19 +97,19 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 buffer.readByte() // previous game mode
             }
             if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-                worlds = buffer.readArray { buffer.readResourceLocation() }
+                buffer.readArray { buffer.readResourceLocation() } // list of dimensions
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
                 dimensionProperties = buffer.connection.registries.dimensionRegistry[buffer.readInt()].type
             } else {
-                val dimensionCodec = buffer.readNBT().asJsonObject()
-                dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
-                dimensionProperties = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-                    dimensions[buffer.readResourceLocation()]!!.type
+                val dynamicRegistry = buffer.readNBT().asJsonObject()
+                dimensions = parseDimensionCodec(dynamicRegistry, buffer.versionId)
+                dimensionProperties = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A) {
+                    dimensions[buffer.readResourceLocation()]!!.type // dimension type
                 } else {
                     DimensionProperties.deserialize(buffer.readNBT().asJsonObject())
                 }
-                world = buffer.readResourceLocation()
+                buffer.readResourceLocation() // dimension id
             }
 
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {

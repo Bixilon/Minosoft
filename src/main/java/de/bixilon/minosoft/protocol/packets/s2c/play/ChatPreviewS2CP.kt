@@ -10,41 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play.chat
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.time.Instant
 
-@LoadPacket(threadSafe = false)
-class CommandC2SP(
-    val command: String,
-    val time: Instant = Instant.now(),
-    val signature: CommandArgumentSignature,
-) : PlayC2SPacket {
-
-    override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeString(command)
-        buffer.writeInstant(time)
-        buffer.writeLong(signature.salt)
-        buffer.writeVarInt(signature.signatures.size)
-        for ((argument, signature) in signature.signatures) {
-            buffer.writeString(argument)
-            buffer.writeByteArray(signature)
-        }
-    }
+@LoadPacket
+class ChatPreviewS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val id = buffer.readInt()
+    val preview = buffer.readOptional { buffer.readChatComponent() }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat message (message=$command, time=$time, signature=$signature)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat preview (id=$id, preview=\"${preview}§r\")" }
     }
-
-
-    data class CommandArgumentSignature(
-        val salt: Long,
-        val signatures: Map<String, ByteArray>,
-    )
 }
