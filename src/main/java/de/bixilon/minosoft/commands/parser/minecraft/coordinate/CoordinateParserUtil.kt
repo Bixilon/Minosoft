@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.commands.parser.minecraft.coordinate
 
 import de.bixilon.minosoft.commands.parser.brigadier._float.FloatParser.Companion.readFloat
+import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser.Companion.readInt
 import de.bixilon.minosoft.commands.util.CommandReader
 
 object CoordinateParserUtil {
 
-    fun CommandReader.readCoordinateOrNull(): Coordinate? {
+    fun CommandReader.readCoordinateOrNull(decimal: Boolean = true, caret: Boolean = true): Coordinate? {
         val peek = peek() ?: return null
         val type = when (peek) {
             '~'.code -> {
@@ -27,12 +28,15 @@ object CoordinateParserUtil {
             }
             '^'.code -> {
                 read()
+                if (!caret) {
+                    throw CaretNotAllowedError(this, pointer)
+                }
                 CoordinateRelatives.CARET
             }
             else -> CoordinateRelatives.NONE
         }
 
-        val offset = if (peekWhitespaces() == 0) readFloat() else null
+        val offset = if (peekWhitespaces() == 0) if (decimal) readFloat() else readInt()?.toFloat() else null
         if (offset == null && type == CoordinateRelatives.NONE) {
             return null
         }
@@ -42,7 +46,7 @@ object CoordinateParserUtil {
     }
 
 
-    fun CommandReader.readCoordinate(): Coordinate {
-        readResult { readCoordinateOrNull() }.let { return it.result ?: throw InvalidCoordinateError(this, it) }
+    fun CommandReader.readCoordinate(decimal: Boolean = true, caret: Boolean = true): Coordinate {
+        readResult { readCoordinateOrNull(decimal, caret) }.let { return it.result ?: throw InvalidCoordinateError(this, it) }
     }
 }

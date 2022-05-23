@@ -19,6 +19,9 @@ import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
 import de.bixilon.minosoft.commands.parser.brigadier._long.LongParser
 import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.angle.AngleParser
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.block.BlockPositionParser
+import de.bixilon.minosoft.commands.parser.minecraft.coordinate.rotation.RotationParser
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec2.Vec2Parser
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.vec3.Vec3Parser
 import de.bixilon.minosoft.commands.parser.minecraft.range.RangeParserFactory
@@ -54,6 +57,9 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
 
     Vec2Parser,
     Vec3Parser,
+    BlockPositionParser,
+    AngleParser,
+    RotationParser,
 
     DummyParser,
 
@@ -63,7 +69,6 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
 
 /* TODO:
 minecraft:game_profile
-minecraft:block_pos
 minecraft:column_pos
 minecraft:block_state
 minecraft:block_predicate
@@ -78,8 +83,6 @@ minecraft:objective
 minecraft:objective_criteria
 minecraft:operation
 minecraft:particle
-minecraft:rotation
-minecraft:angle
 minecraft:scoreboard_slot
 minecraft:score_holder
 minecraft:swizzle
