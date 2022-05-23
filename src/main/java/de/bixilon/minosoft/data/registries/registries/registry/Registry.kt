@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonPrimitive
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
@@ -47,25 +45,10 @@ open class Registry<T : RegistryItem>(
             return value
         }
 
-    open operator fun get(json: JsonElement?): T? {
-        return when (json) {
-            null -> return null
-            is JsonPrimitive -> {
-                when {
-                    json.isString -> get(json.asString.toResourceLocation())
-                    json.isNumber -> getOrNull(json.asInt)
-                    else -> TODO()
-                }
-            }
-            else -> TODO()
-        }
-    }
-
     override operator fun get(any: Any?): T? {
         return when (any) {
             null -> null
             is Number -> getOrNull(any.toInt())
-            is JsonElement -> get(any)
             is ResourceLocation -> get(any)
             is String -> get(any)
             is ResourceLocationAble -> get(any.resourceLocation)

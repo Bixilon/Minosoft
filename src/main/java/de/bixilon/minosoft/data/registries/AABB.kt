@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries
 
-import com.google.gson.JsonObject
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -32,8 +31,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ONE
 class AABB {
     val min: Vec3d
     val max: Vec3d
-
-    constructor(jsonData: JsonObject) : this(jsonData["from"].toVec3(Vec3.EMPTY), jsonData["to"].toVec3(Vec3.ONE))
 
     constructor(jsonData: Map<String, Any>) : this(jsonData["from"]!!.toVec3(Vec3.EMPTY), jsonData["to"]!!.toVec3(Vec3.ONE))
 
