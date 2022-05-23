@@ -38,7 +38,7 @@ class CommandC2SP(
             buffer.writeString(argument)
             buffer.writeByteArray(signature)
         }
-        if (buffer.versionId >= ProtocolVersions.V_19_PRE_1) {
+        if (buffer.versionId >= ProtocolVersions.V_1_19_PRE_1) {
             buffer.writeBoolean(signedPreview)
         }
     }

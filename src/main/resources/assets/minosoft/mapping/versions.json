@@ -1,4 +1,9 @@
 {
+  "842": {
+    "name": "1.19-pre2",
+    "protocol_id": 1073741910,
+    "packets": 841
+  },
   "841": {
     "name": "1.19-pre1",
     "protocol_id": 1073741909,
