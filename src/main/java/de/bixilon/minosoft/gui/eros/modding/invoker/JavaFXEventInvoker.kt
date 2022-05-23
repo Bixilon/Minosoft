@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.eros.modding.invoker
 
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
-import de.bixilon.minosoft.modding.loading.Priorities
 import kotlin.reflect.KClass
 
 /**
@@ -32,7 +32,7 @@ class JavaFXEventInvoker<E : Event> private constructor(
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
-) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null), EventInstantFireable, OneShotInvoker {
+) : EventInvoker(ignoreCancelled, EventPriorities.NORMAL, null), EventInstantFireable, OneShotInvoker {
 
     override operator fun invoke(event: Event) {
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {

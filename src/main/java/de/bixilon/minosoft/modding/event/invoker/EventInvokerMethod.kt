@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,17 +12,17 @@
  */
 package de.bixilon.minosoft.modding.event.invoker
 
+import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.EventListener
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler
-import de.bixilon.minosoft.modding.loading.Priorities
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 
 class EventInvokerMethod(
     ignoreCancelled: Boolean,
-    priority: Priorities,
+    priority: EventPriorities,
     listener: EventListener,
     val method: Method,
 ) : EventInvoker(ignoreCancelled, priority, listener) {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,24 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.loading;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP
 
-public enum Priorities {
-    LOWEST,
-    LOW,
-    NORMAL,
-    HIGH,
-    HIGHEST,
-    ULTRA_HIGH; // this priority is even higher. Do not use in normal case!
+class RespawnEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+) : PlayConnectionEvent(connection, initiator) {
 
-    private static final Priorities[] PRIORITIES = values();
-
-    public static Priorities byId(int id) {
-        return PRIORITIES[id];
-    }
-
-    public static Priorities getHigherPriority(Priorities priority) {
-        return byId(priority.ordinal() + 1);
-    }
+    constructor(connection: PlayConnection, packet: RespawnS2CP) : this(connection, EventInitiators.SERVER)
 }

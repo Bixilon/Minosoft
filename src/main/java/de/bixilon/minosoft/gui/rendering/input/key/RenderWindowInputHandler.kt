@@ -35,8 +35,8 @@ import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
+import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.modding.loading.Priorities
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -98,7 +98,7 @@ class RenderWindowInputHandler(
 
         connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
         connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
-        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent>(priority = Priorities.LOW) { scroll(it.offset, it) })
+        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) })
 
         connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
             val inputHandler = inputHandler

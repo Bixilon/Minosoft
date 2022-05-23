@@ -43,7 +43,6 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.plugin.DefaultPluginHandler
@@ -112,18 +111,6 @@ class PlayConnection(
             if (it) {
                 ACTIVE_CONNECTIONS += this
                 ERRORED_CONNECTIONS -= this
-                for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
-                    var valid = false
-                    for (serverAddress in validators) {
-                        if (serverAddress.check(address)) {
-                            valid = true
-                            break
-                        }
-                    }
-                    if (valid) {
-                        registerEvents(*invokers.toTypedArray())
-                    }
-                }
 
                 state = PlayConnectionStates.HANDSHAKING
                 network.send(HandshakeC2SP(address, ProtocolStates.LOGIN, version.protocolId))

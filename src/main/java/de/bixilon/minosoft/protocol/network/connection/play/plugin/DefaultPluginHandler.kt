@@ -37,7 +37,7 @@ object DefaultPluginHandler {
 
     private fun sendBrand(channel: ResourceLocation, connection: PlayConnection, brand: String = "vanilla") {
         val buffer = PlayOutByteBuffer(connection)
-        buffer.writeString("vanilla") // ToDo: Remove length prefix
+        buffer.writeString(brand) // ToDo: Remove length prefix
         connection.sendPacket(PluginC2SP(channel, buffer))
     }
 }

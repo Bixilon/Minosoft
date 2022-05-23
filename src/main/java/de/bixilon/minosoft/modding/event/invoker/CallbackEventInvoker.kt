@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.modding.event.invoker
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
 import kotlin.reflect.KClass
 
 class CallbackEventInvoker<E : Event> private constructor(
@@ -24,7 +24,7 @@ class CallbackEventInvoker<E : Event> private constructor(
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
-    priority: Priorities,
+    priority: EventPriorities,
 ) : EventInvoker(ignoreCancelled, priority, null), EventInstantFireable {
 
     override operator fun invoke(event: Event) {
@@ -37,7 +37,7 @@ class CallbackEventInvoker<E : Event> private constructor(
     companion object {
         @JvmOverloads
         @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, priority: Priorities = Priorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventInvoker<E> {
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, priority: EventPriorities = EventPriorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventInvoker<E> {
             return CallbackEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,

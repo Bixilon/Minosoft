@@ -19,9 +19,9 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
+import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.modding.loading.Priorities
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.kordamp.ikonli.Ikon
@@ -36,7 +36,7 @@ object CustomServerType : ServerType {
     override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
 
     init {
-        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<ErosProfileSelectEvent>(priority = Priorities.LOW) {
+        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<ErosProfileSelectEvent>(priority = EventPriorities.LOW) {
             servers = ErosProfileManager.selected.server.entries
         })
     }

@@ -157,16 +157,16 @@ Your event methods need to be annotated by `EventHandler`. `EventHandler` **can*
 Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
 
 ```java
+import de.bixilon.minosoft.modding.EventPriorities;
 import de.bixilon.minosoft.modding.event.EventListener;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
-import de.bixilon.minosoft.modding.loading.Priorities;
 
 public class ChatEvent extends EventListener {
 
-  @EventHandler(priority = Priorities.HIGHEST)
+  @EventHandler(priority = EventPriorities.HIGHEST)
   public void onChatMessageReceiving(ChatMessageReceiveEvent event) {
     if (event.getMessage().getMessage().contains("Bixilon")) {
       MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
