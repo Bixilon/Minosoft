@@ -182,4 +182,23 @@ internal class CommandReaderTest {
         assertEquals(read, "not")
         assertFalse(negated)
     }
+
+    @Test
+    fun readEmptyJson() {
+        val reader = CommandReader("{}")
+        assertEquals(reader.readJson(), emptyMap())
+    }
+
+    @Test
+    fun readBasicJson() {
+        val reader = CommandReader("""{"test": 123}""")
+        assertEquals(reader.readJson(), mapOf("test" to 123))
+    }
+
+    @Test
+    fun readJsonWithTrailingData() {
+        val reader = CommandReader("""{"test": 123} abc""")
+        assertEquals(reader.readJson(), mapOf("test" to 123))
+        assertEquals(reader.readString(), "abc")
+    }
 }

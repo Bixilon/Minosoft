@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.commands.util
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.commands.errors.reader.*
 import de.bixilon.minosoft.commands.errors.reader.map.DuplicatedKeyMapError
 import de.bixilon.minosoft.commands.errors.reader.map.ExpectedKeyMapError
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.commands.errors.reader.map.InvalidMapSeparatorError
 import de.bixilon.minosoft.commands.errors.reader.number.NegativeNumberError
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.json.Jackson
 
 open class CommandReader(val string: String) {
     var pointer = 0
@@ -357,6 +359,12 @@ open class CommandReader(val string: String) {
         }
 
         return map
+    }
+
+
+    fun readJson(): JsonObject {
+        skipWhitespaces()
+        return Jackson.MAPPER.readValue(JsonReader(this), Jackson.JSON_MAP_TYPE)
     }
 
     override fun toString(): String {
