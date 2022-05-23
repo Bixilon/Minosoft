@@ -37,4 +37,10 @@ internal class ChatComponentParserTest {
         val reader = CommandReader("""{"text":"hello world"}""")
         assertEquals(ChatComponentParser.parse(reader).message, "hello world")
     }
+
+    @Test
+    fun readWithSpacesBasicJsonText() {
+        val reader = CommandReader("""     {"text"   :     "hello world"}""")
+        assertEquals(ChatComponentParser.parse(reader).message, "hello world")
+    }
 }

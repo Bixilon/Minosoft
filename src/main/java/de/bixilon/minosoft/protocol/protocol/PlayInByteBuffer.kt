@@ -298,7 +298,7 @@ class PlayInByteBuffer : InByteBuffer {
             builder.name = readString()
         }
         if (type == ArgumentNodes.ARGUMENT) {
-            val parserName = readResourceLocation()
+            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentTypeRegistry[readVarInt()] else readResourceLocation()
             val parser = ArgumentParserFactories[parserName]
             if (parser == null) {
                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
@@ -306,14 +306,15 @@ class PlayInByteBuffer : InByteBuffer {
             } else {
                 builder.parser = parser.read(this)
             }
-        }
-        if (flags.isBitMask(0x10)) {
-            val suggestionName = readResourceLocation()
-            val suggestionType = SuggestionFactories[suggestionName]
-            if (suggestionType == null) {
-                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
-            } else {
-                builder.suggestionType = suggestionType.build(this.connection, this)
+
+            if (flags.isBitMask(0x10)) {
+                val suggestionName = readResourceLocation()
+                val suggestionType = SuggestionFactories[suggestionName]
+                if (suggestionType == null) {
+                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
+                } else {
+                    builder.suggestionType = suggestionType.build(this.connection, this)
+                }
             }
         }
 
