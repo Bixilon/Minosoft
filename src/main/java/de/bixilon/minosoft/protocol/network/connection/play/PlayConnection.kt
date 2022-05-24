@@ -39,6 +39,7 @@ import de.bixilon.minosoft.data.tags.DefaultTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
@@ -97,9 +98,13 @@ class PlayConnection(
     override var error: Throwable?
         get() = super.error
         set(value) {
+            val previous = super.error
             super.error = value
             ERRORED_CONNECTIONS += this
             value?.let { state = PlayConnectionStates.ERROR }
+            if (previous == null) {
+                error.report()
+            }
         }
 
     init {
