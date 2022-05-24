@@ -266,6 +266,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
+        super.onChildChange(child)
     }
 
     override fun tick() {

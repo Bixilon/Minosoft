@@ -91,5 +91,6 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
+        super.onChildChange(child)
     }
 }
