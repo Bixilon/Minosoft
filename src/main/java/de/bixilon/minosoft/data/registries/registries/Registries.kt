@@ -41,6 +41,7 @@ import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
+import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.datafixer.RegistryFixer.fix
@@ -94,6 +95,7 @@ class Registries {
 
     val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry(codec = BiomePrecipitation)
     val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry(codec = BiomeCategory)
+    val soundGroupRegistry: FakeEnumRegistry<SoundGroup> = FakeEnumRegistry(codec = SoundGroup)
 
     val blockStateRegistry = BlockStateRegistry(false)
 
@@ -160,6 +162,7 @@ class Registries {
 
         motiveRegistry.rawUpdate(pixlyzerData["motives"]?.toJsonObject(), this)
         soundEventRegistry.rawUpdate(pixlyzerData["sound_events"]?.toJsonObject(), null)
+        soundGroupRegistry.update(pixlyzerData["sound_groups"]?.unsafeCast(), this)
         particleTypeRegistry.rawUpdate(pixlyzerData["particles"]?.toJsonObject(), this)
         materialRegistry.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this)
         enchantmentRegistry.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this)

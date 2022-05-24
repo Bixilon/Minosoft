@@ -62,6 +62,8 @@ open class Block(
     open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.toDouble() ?: 1.0
     var tintProvider: TintProvider? = null
 
+    var soundGroup = data["sound_group"]?.toInt()?.let { registries.soundGroupRegistry[it] }
+
     init {
         this::item.inject(data["item"])
     }

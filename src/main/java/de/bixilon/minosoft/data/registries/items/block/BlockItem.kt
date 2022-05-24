@@ -80,8 +80,8 @@ open class BlockItem(
             stack.item.decreaseCount()
         }
 
-        placeBlockState.placeSoundEvent?.let {
-            connection.world.playSoundEvent(it, placePosition, placeBlockState.soundEventVolume, placeBlockState.soundEventPitch)
+        placeBlockState.block.soundGroup?.let { group ->
+            group.place?.let { connection.world.playSoundEvent(it, placePosition, group.volume, group.pitch) }
         }
         return InteractionResults.SUCCESS
     }

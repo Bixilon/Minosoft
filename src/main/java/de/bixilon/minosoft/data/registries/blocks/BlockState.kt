@@ -16,7 +16,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -35,13 +34,6 @@ data class BlockState(
     val outlineShape: VoxelShape,
     val hardness: Float,
     val requiresTool: Boolean,
-    val breakSoundEvent: ResourceLocation?,
-    val stepSoundEvent: ResourceLocation?,
-    val placeSoundEvent: ResourceLocation?,
-    val hitSoundEvent: ResourceLocation?,
-    val fallSoundEvent: ResourceLocation?,
-    val soundEventVolume: Float = 1.0f,
-    val soundEventPitch: Float = 1.0f,
     val isSolid: Boolean,
 ) {
     var blockModel: BakedBlockModel? = null
@@ -140,13 +132,6 @@ data class BlockState(
                 outlineShape = outlineShape,
                 hardness = data["hardness"]?.toFloat() ?: 1.0f,
                 requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
-                breakSoundEvent = data["break_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                stepSoundEvent = data["step_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                placeSoundEvent = data["place_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                hitSoundEvent = data["hit_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                fallSoundEvent = data["fall_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
-                soundEventVolume = data["sound_type_volume"]?.toFloat() ?: 1.0f,
-                soundEventPitch = data["sound_type_pitch"]?.toFloat() ?: 1.0f,
                 isSolid = data["solid_render"]?.toBoolean() ?: false,
             )
         }

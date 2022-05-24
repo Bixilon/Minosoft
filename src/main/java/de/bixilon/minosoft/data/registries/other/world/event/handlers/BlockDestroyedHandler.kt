@@ -30,13 +30,13 @@ object BlockDestroyedHandler : WorldEventHandler {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block_destroyed".toResourceLocation()
 
     override fun handle(connection: PlayConnection, position: Vec3i, data: Int, isGlobal: Boolean) {
-        val state = connection.registries.blockStateRegistry[data] ?: return
+        val state = connection.registries.blockStateRegistry.getOrNull(data) ?: return
         handleDestroy(connection, position, state)
     }
 
     fun handleDestroy(connection: PlayConnection, position: Vec3i, state: BlockState) {
-        state.breakSoundEvent?.let {
-            connection.world.playSoundEvent(it, position, volume = state.soundEventVolume, pitch = state.soundEventPitch)
+        state.block.soundGroup?.let { group ->
+            group.destroy?.let { connection.world.playSoundEvent(it, position, group.volume, group.pitch) }
         }
 
         addBlockBreakParticles(connection, position, state)
