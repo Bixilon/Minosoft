@@ -30,7 +30,6 @@ data class BlockState(
     val properties: Map<BlockProperties, Any> = mapOf(),
     val material: Material,
     val collisionShape: VoxelShape,
-    val occlusionShape: VoxelShape,
     val outlineShape: VoxelShape,
     val hardness: Float,
     val requiresTool: Boolean,
@@ -79,6 +78,7 @@ data class BlockState(
 
     override fun toString(): String {
         val out = StringBuilder()
+        out.append(block.resourceLocation.toString())
         if (properties.isNotEmpty()) {
             if (out.isNotEmpty()) {
                 out.append(", ")
@@ -91,7 +91,7 @@ data class BlockState(
         if (out.isNotEmpty()) {
             out.append(")")
         }
-        return String.format("%s%s", block.resourceLocation, out)
+        return out.toString()
     }
 
     companion object {
@@ -128,7 +128,6 @@ data class BlockState(
                 properties = properties.toMap(),
                 material = material,
                 collisionShape = collisionShape,
-                occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
                 hardness = data["hardness"]?.toFloat() ?: 1.0f,
                 requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,

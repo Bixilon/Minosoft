@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
-abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int = 1000) : InputElement, DragTarget {
+abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
     val renderWindow = guiRenderer.renderWindow
     open val activeWhenHidden = false
@@ -67,7 +67,7 @@ abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int =
         }
 
     @Deprecated("Warning: Should not be directly accessed!")
-    val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, initialCacheSize)
+    open val cache = GUIMeshCache(guiRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, initialCacheSize)
 
     private var previousMaxSize = Vec2i.EMPTY
 
@@ -146,7 +146,7 @@ abstract class Element(val guiRenderer: GUIRenderer, var initialCacheSize: Int =
      *
      * @return The number of z layers used
      */
-    fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    open fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         val offset = Vec2i(offset)
         var directRendering = false
         if (consumer is GUIMesh && consumer.data == cache.data) {

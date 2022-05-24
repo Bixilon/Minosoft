@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
@@ -26,13 +27,14 @@ class GridCell(
     private val rowConstraint: GridRowConstraint,
     private val child: Element,
     parent: Element?,
-) : Element(guiRenderer, child.initialCacheSize) {
+) : Element(guiRenderer, 0) {
     override var cacheUpToDate: Boolean by child::cacheUpToDate
     override var cacheEnabled: Boolean by child::cacheEnabled
     override var prefMaxSize: Vec2i by child::prefMaxSize
     override var size: Vec2i by child::size
     override var margin: Vec4i by child::margin
     override var prefSize: Vec2i by child::prefSize
+    override val cache: GUIMeshCache by child::cache
 
     init {
         _parent = parent
@@ -56,8 +58,12 @@ class GridCell(
         child.parent = this
     }
 
-    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    override fun render(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         return child.render(offset, consumer, options)
+    }
+
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        return child.forceRender(offset, consumer, options)
     }
 
     override fun tick() {
