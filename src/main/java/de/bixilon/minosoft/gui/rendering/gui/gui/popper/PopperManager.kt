@@ -19,7 +19,6 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
@@ -28,8 +27,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 class PopperManager(
     override val guiRenderer: GUIRenderer,
 ) : Initializable, InputHandler, GUIElementDrawer {
-    var poppers: MutableList<LayoutedGUIElement<Popper>> = mutableListOf()
-    private val renderWindow = guiRenderer.renderWindow
+    private val poppers: MutableList<PopperGUIElement> = mutableListOf()
     override var lastTickTime: Long = -1L
 
 
@@ -40,7 +38,7 @@ class PopperManager(
     }
 
     fun draw() {
-        val toRemove: MutableSet<LayoutedGUIElement<Popper>> = mutableSetOf()
+        val toRemove: MutableSet<PopperGUIElement> = mutableSetOf()
         val time = TimeUtil.millis
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
@@ -68,6 +66,7 @@ class PopperManager(
             }
             popper.mesh.draw()
         }
+        poppers -= toRemove
     }
 
     override fun onCharPress(char: Int): Boolean {
@@ -119,7 +118,7 @@ class PopperManager(
     }
 
     fun add(popper: Popper) {
-        poppers += LayoutedGUIElement(popper)
+        poppers += PopperGUIElement(popper)
         popper.onOpen()
     }
 

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.MouseTrackedPopper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
@@ -30,7 +30,7 @@ class ItemInfoPopper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
     val stack: ItemStack,
-) : Popper(guiRenderer, position) {
+) : MouseTrackedPopper(guiRenderer, position) {
     private val textElement = TextElement(guiRenderer, "", background = false, parent = this)
 
     init {
