@@ -21,12 +21,12 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.popper.MouseTrackedPopper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-class TextPopper(
+open class TextPopper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
     text: Any,
 ) : MouseTrackedPopper(guiRenderer, position) {
-    private val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+    protected val textElement = TextElement(guiRenderer, text, background = false, parent = this)
 
     init {
         forceSilentApply()

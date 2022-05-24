@@ -11,21 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
+package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
+import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 
 class NodeTextInputElement(
     guiRenderer: GUIRenderer,
@@ -42,15 +41,13 @@ class NodeTextInputElement(
     parent: Element? = null,
 ) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, shadow, scale, cutAtSize, parent) {
     private var showError = false
-    private val errorElement = TextElement(guiRenderer, "")
+    private val errorElement = NodeErrorElement(guiRenderer, Vec2i.EMPTY)
 
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
-        if (showError) {
-            errorElement.render(offset, consumer, options)
-        }
+        errorElement.position = offset
     }
 
 
@@ -88,7 +85,7 @@ class NodeTextInputElement(
 
 
     private fun updateError(error: Throwable?) {
-        error?.message?.let { errorElement.text = TextComponent(it).color(ChatColors.RED) }
+        errorElement.error = error
         showError = error != null
         cacheUpToDate = false
     }
