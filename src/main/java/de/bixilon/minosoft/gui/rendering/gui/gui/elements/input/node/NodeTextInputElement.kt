@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
@@ -25,6 +26,9 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class NodeTextInputElement(
     guiRenderer: GUIRenderer,
@@ -42,12 +46,14 @@ class NodeTextInputElement(
 ) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, shadow, scale, cutAtSize, parent) {
     private var showError = false
     private val errorElement = NodeErrorElement(guiRenderer, Vec2i.EMPTY)
+    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2i.EMPTY)
 
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         super.forceRender(offset, consumer, options)
 
         errorElement.position = offset
+        suggestions.position = offset
     }
 
 
@@ -65,9 +71,12 @@ class NodeTextInputElement(
         }
         val stack = createStack()
         try {
-            node.getSuggestions(CommandReader(value), stack)
+            suggestions.suggestions = node.getSuggestions(CommandReader(value), stack)
             updateError(null)
         } catch (exception: Throwable) {
+            if (exception !is ReaderError) {
+                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { exception }
+            }
             updateError(exception)
         }
         super.onChange()
@@ -88,5 +97,8 @@ class NodeTextInputElement(
         errorElement.error = error
         showError = error != null
         cacheUpToDate = false
+        if (error != null) {
+            suggestions.suggestions = null
+        }
     }
 }

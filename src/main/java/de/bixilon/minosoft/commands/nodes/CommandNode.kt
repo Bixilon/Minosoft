@@ -61,9 +61,6 @@ abstract class CommandNode(
 
 
     open fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
-        if (reader.string.isEmpty()) {
-            return emptyList()
-        }
         val pointer = reader.pointer
         val stackSize = stack.size
         val suggestions: MutableList<Any?> = mutableListOf()
@@ -75,7 +72,7 @@ abstract class CommandNode(
                 if (reader.canPeek()) {
                     continue
                 }
-                if (stack.size == stackSize + 1) {
+                if (stack.size == stackSize || stack.size == stackSize + 1) {
                     suggestions.addAll(childSuggestions)
                     continue
                 }

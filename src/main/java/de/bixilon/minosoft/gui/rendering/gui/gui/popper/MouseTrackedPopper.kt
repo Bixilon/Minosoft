@@ -21,10 +21,20 @@ abstract class MouseTrackedPopper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
     background: Boolean = true,
+    trackMouse: Boolean = true,
 ) : Popper(guiRenderer, position, background) {
+    var trackMouse = trackMouse
+        set(value) {
+            field = value
+            if (value) {
+                onMouseMove(guiRenderer.currentMousePosition, guiRenderer.currentMousePosition)
+            }
+        }
 
     override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
-        this.position = position
+        if (trackMouse) {
+            this.position = position
+        }
         return super.onMouseMove(position, absolute)
     }
 }

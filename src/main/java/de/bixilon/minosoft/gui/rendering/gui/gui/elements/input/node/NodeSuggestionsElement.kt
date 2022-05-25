@@ -20,15 +20,16 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.text.TextPopper
 
-class NodeErrorElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPopper(guiRenderer, position, ChatComponent.EMPTY) {
-    var error: Throwable? = null
+class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPopper(guiRenderer, position, ChatComponent.EMPTY) {
+    var suggestions: List<Any?>? = null
         set(value) {
             if (field == value) {
                 return
             }
-            visible = value != null
-            value?.let { updateError(it.message) }
-
+            visible = value != null && value.isNotEmpty()
+            if (visible && value != null) {
+                updateSuggestions(value)
+            }
             field = value
         }
 
@@ -49,8 +50,13 @@ class NodeErrorElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPopper(g
         trackMouse = false
     }
 
-    private fun updateError(message: String?) {
-        this.textElement.text = TextComponent(message).color(ChatColors.RED)
+    private fun updateSuggestions(suggestions: List<Any?>) {
+        val message = StringBuilder()
+        for (suggestion in suggestions) {
+            message.append(suggestion.toString())
+            message.append('\n')
+        }
+        this.textElement.text = TextComponent(message.toString()).color(ChatColors.RED)
         forceSilentApply()
     }
 }

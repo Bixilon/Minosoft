@@ -63,10 +63,7 @@ class ChatNode(
         }
         reader.skipWhitespaces()
         val node = getNode(reader, stack)
-        if (!reader.canPeek()) {
-            return emptyList()
-        }
-        val string = parser.parse(reader)
+        val string = if (reader.canPeek()) parser.parse(reader) else ""
         return node?.getSuggestions(CommandReader(string), stack) ?: emptyList()
     }
 }
