@@ -34,10 +34,9 @@ class SpaceFontProvider(
         data["advances"]?.toJsonObject()?.let {
             for ((charData, spacing) in it) {
                 val char = charData.codePoints().iterator().nextInt()
-                chars[char] = CharData(renderWindow, char, null, spacing.toInt(), spacing.toInt(), Vec2.EMPTY, Vec2.EMPTY)
+                chars[char] = CharData(renderWindow, null, spacing.toInt(), spacing.toInt(), Vec2.EMPTY, Vec2.EMPTY)
             }
         }
-
     }
 
     override fun postInit(latch: CountUpAndDownLatch) = Unit

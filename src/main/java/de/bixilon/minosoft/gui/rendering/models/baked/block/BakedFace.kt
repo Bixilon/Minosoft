@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 class BakedFace(
     override val sizeStart: Vec2,
     override val sizeEnd: Vec2,
-    val positions: Array<Vec3>,
+    val positions: FloatArray,
     val uv: Array<Vec2>,
     val shade: Float,
     val tintIndex: Int,
@@ -48,8 +48,8 @@ class BakedFace(
             color.b *= (tint and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
         }
         for ((index, textureIndex) in meshToUse.order) {
-            val indexPosition = positions[index].array
-            meshToUse.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, color.rgb, light)
+            val indexOffset = index * 3
+            meshToUse.addVertex(floatArrayOf(positions[indexOffset + 0] + position[0], positions[indexOffset + 1] + position[1], positions[indexOffset + 2] + position[2]), uv[textureIndex], texture, color.rgb, light)
         }
     }
 }

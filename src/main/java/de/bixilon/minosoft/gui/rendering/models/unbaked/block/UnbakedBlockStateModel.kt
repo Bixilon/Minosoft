@@ -133,10 +133,17 @@ class UnbakedBlockStateModel(
                         Directions.WEST, Directions.EAST -> 0.6f
                     }
                 }
+                val floatPositions = FloatArray(4 * 3) // positions.size * 3
+                for ((index, position) in positions.withIndex()) {
+                    floatPositions[index * 3 + 0] = position.x
+                    floatPositions[index * 3 + 1] = position.y
+                    floatPositions[index * 3 + 2] = position.z
+                }
+
                 val bakedFace = BakedFace(
                     sizeStart = sizeStart,
                     sizeEnd = sizeEnd,
-                    positions = positions,
+                    positions = floatPositions,
                     uv = texturePositions,
                     shade = shade,
                     tintIndex = face.tintIndex,

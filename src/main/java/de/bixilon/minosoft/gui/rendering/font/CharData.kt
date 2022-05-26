@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 
 class CharData(
     private val renderWindow: RenderWindow,
-    val char: Int,
     val texture: AbstractTexture?,
     val width: Int,
     val scaledWidth: Int,

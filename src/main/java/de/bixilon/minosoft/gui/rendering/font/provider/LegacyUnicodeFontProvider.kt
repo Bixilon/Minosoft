@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class LegacyUnicodeFontProvider(
-    private val renderWindow: RenderWindow,
+    renderWindow: RenderWindow,
     data: Map<String, Any>,
 ) : FontProvider {
     private val chars: Array<CharData?> = arrayOfNulls(1 shl Char.SIZE_BITS)
@@ -68,7 +68,6 @@ class LegacyUnicodeFontProvider(
 
                     val charData = CharData(
                         renderWindow = renderWindow,
-                        char = char,
                         texture = texture,
                         width = width,
                         scaledWidth = scaledWidth,
