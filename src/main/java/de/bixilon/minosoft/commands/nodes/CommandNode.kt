@@ -67,6 +67,9 @@ abstract class CommandNode(
         var error: Throwable? = null
         var errorStack = 0
         for (child in children) {
+            reader.pointer = pointer
+            stack.reset(stackSize)
+
             try {
                 val childSuggestions = child.getSuggestions(reader, stack)
                 if (reader.canPeek()) {
@@ -78,14 +81,11 @@ abstract class CommandNode(
                 }
                 return childSuggestions
             } catch (exception: Throwable) {
-                if (stack.size >= errorStack || error == null) {
+                if (stack.size > errorStack || error == null) {
                     error = exception
                     errorStack = stack.size
                 }
             }
-            reader.pointer = pointer
-
-            stack.reset(stackSize)
         }
         if (suggestions.isEmpty()) {
             throw error ?: throw TrailingTextArgument(reader)

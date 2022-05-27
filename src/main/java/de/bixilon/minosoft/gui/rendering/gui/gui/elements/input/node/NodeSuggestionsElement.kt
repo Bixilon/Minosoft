@@ -17,10 +17,16 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
-import de.bixilon.minosoft.gui.rendering.gui.gui.popper.text.TextPopper
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPopper(guiRenderer, position, ChatComponent.EMPTY) {
+class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper(guiRenderer, position) {
+    private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
+    private var textCount = 0
     var suggestions: List<Any?>? = null
         set(value) {
             if (field == value) {
@@ -46,17 +52,38 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPo
             field = value
         }
 
-    init {
-        trackMouse = false
+
+    override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        super.forceRender(offset, consumer, options)
+        for ((index, suggestion) in suggestionText.withIndex()) {
+            if (index >= textCount) {
+                break
+            }
+
+            suggestion.render(offset + Vec2i(0, index * Font.TOTAL_CHAR_HEIGHT), consumer, options)
+        }
     }
 
     private fun updateSuggestions(suggestions: List<Any?>) {
-        val message = StringBuilder()
-        for (suggestion in suggestions) {
-            message.append(suggestion.toString())
-            message.append('\n')
+        val size = Vec2i()
+        var textCount = 0
+        for ((index, suggestion) in suggestions.withIndex()) {
+            if (index >= MAX_SUGGESTIONS) {
+                break
+            }
+            val text = suggestionText[index]
+            text.text = TextComponent(suggestion).color(ChatColors.WHITE)
+            size.x = maxOf(size.x, text.size.x)
+            size.y += Font.TOTAL_CHAR_HEIGHT
+            textCount++
         }
-        this.textElement.text = TextComponent(message.toString()).color(ChatColors.RED)
+        this.textCount = textCount
+        this._size = size
         forceSilentApply()
+    }
+
+
+    private companion object {
+        const val MAX_SUGGESTIONS = 10
     }
 }

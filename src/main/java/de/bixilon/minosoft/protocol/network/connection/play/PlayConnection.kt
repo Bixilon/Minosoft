@@ -93,7 +93,7 @@ class PlayConnection(
 
     var state by watched(PlayConnectionStates.WAITING)
 
-    var rootNode: RootNode? = null
+    var rootNode: RootNode? = RootNode() // TODO: Remove this, only for testing purposes!!!
 
     override var error: Throwable?
         get() = super.error
