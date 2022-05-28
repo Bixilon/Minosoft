@@ -33,6 +33,9 @@ abstract class CommandNode(
     }
 
     open fun execute(reader: CommandReader, stack: CommandStack) {
+        if (children.isEmpty()) {
+            throw TrailingTextArgument(reader)
+        }
         val pointer = reader.pointer
         val stackSize = stack.size
 
@@ -60,6 +63,9 @@ abstract class CommandNode(
 
 
     open fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+        if (children.isEmpty() && reader.canPeek()) {
+            throw TrailingTextArgument(reader)
+        }
         val suggestions: MutableList<Any?> = mutableListOf()
 
         val pointer = reader.pointer
@@ -95,8 +101,8 @@ abstract class CommandNode(
         }
         if (parserSucceeds == 0) {
             throw childError ?: return emptyList()
-
         }
+
         return suggestions
     }
 

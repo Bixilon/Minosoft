@@ -111,4 +111,14 @@ internal class SuggestionChildReadingTest {
     fun test2TrailingWhitespace() {
         assertEquals(createCommand().getSuggestions(CommandReader("1_literal 1_literal_2 "), CommandStack()), emptyList())
     }
+
+    @Test
+    fun testEmptyNode() {
+        assertEquals(RootNode().getSuggestions(CommandReader(""), CommandStack()), emptyList())
+    }
+
+    @Test
+    fun testTrailingTextEmptyNode() {
+        assertThrows<TrailingTextArgument> { RootNode().getSuggestions(CommandReader("trailing"), CommandStack()) }
+    }
 }

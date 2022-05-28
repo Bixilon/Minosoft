@@ -39,7 +39,7 @@ abstract class ExecutableNode(
     }
 
     override fun execute(reader: CommandReader, stack: CommandStack) {
-        if (!reader.canPeekNext()) {
+        if (!reader.canPeek()) {
             // empty string
             if (executable) {
                 return execute(stack)

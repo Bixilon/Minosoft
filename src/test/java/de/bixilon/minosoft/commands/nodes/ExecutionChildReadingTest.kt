@@ -18,7 +18,6 @@ import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.errors.literal.ExpectedLiteralArgument
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
-import de.bixilon.minosoft.commands.parser.brigadier.string.StringParseError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
@@ -75,7 +74,7 @@ internal class ExecutionChildReadingTest {
 
     @Test
     fun testBlankStringArgument() {
-        assertThrows<StringParseError> { (createCommand().execute(CommandReader("1_execute "), CommandStack())) }
+        assertThrows<ExpectedArgumentError> { (createCommand().execute(CommandReader("1_execute "), CommandStack())) }
     }
 
     @Test
@@ -98,7 +97,6 @@ internal class ExecutionChildReadingTest {
         assertThrows<ExpectedLiteralArgument> { (createCommand().execute(CommandReader(""), CommandStack())) }
     }
 
-
     @Test
     fun testTrailingWhitespace() {
         assertDoesNotThrow { createCommand().execute(CommandReader("2_literal "), CommandStack()) }
@@ -107,5 +105,15 @@ internal class ExecutionChildReadingTest {
     @Test
     fun test2TrailingWhitespace() {
         assertDoesNotThrow { createCommand().execute(CommandReader("1_literal 2_literal_2 "), CommandStack()) }
+    }
+
+    @Test
+    fun testEmptyRootNode() {
+        assertThrows<TrailingTextArgument> { RootNode().execute(CommandReader(""), CommandStack()) }
+    }
+
+    @Test
+    fun testTrailingTextEmptyRootNode() {
+        assertThrows<TrailingTextArgument> { RootNode().execute(CommandReader("trailing"), CommandStack()) }
     }
 }

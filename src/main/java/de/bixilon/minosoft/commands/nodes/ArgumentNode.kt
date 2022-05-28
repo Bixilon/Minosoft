@@ -64,7 +64,7 @@ class ArgumentNode : ExecutableNode {
             stack.push(name, parsed)
             return super.getSuggestions(reader, stack)
         } catch (error: Throwable) {
-            if (stack.size > stackSize) {
+            if (stack.size > stackSize + 1) {
                 // we were deeper in the stack, we are not the last argument
                 throw error
             }
