@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper(guiRenderer, position) {
     private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
     private var textCount = 0
+    private var offset = 0
     var suggestions: List<Any?>? = null
         set(value) {
             if (field == value) {
@@ -67,12 +68,23 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper
     private fun updateSuggestions(suggestions: List<Any?>) {
         val size = Vec2i()
         var textCount = 0
+        val offset = offset
+
+        val startCutAt = maxOf(0, minOf(suggestions.size - MAX_SUGGESTIONS, offset))
+        val endCutAt = minOf(startCutAt + MAX_SUGGESTIONS, suggestions.size)
         for ((index, suggestion) in suggestions.withIndex()) {
-            if (index >= MAX_SUGGESTIONS) {
+            if (index < startCutAt) {
+                continue
+            }
+            if (index >= endCutAt) {
                 break
             }
             val text = suggestionText[index]
-            text.text = TextComponent(suggestion).color(ChatColors.WHITE)
+            val textComponent = TextComponent(suggestion).color(ChatColors.WHITE)
+            if (index == startCutAt) {
+                textComponent.color = ChatColors.YELLOW
+            }
+            text.text = textComponent
             size.x = maxOf(size.x, text.size.x)
             size.y += Font.TOTAL_CHAR_HEIGHT
             textCount++

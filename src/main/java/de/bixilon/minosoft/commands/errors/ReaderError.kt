@@ -19,4 +19,6 @@ abstract class ReaderError(
     val reader: CommandReader,
     val start: Int,
     val end: Int,
-) : Exception("Error at $start-$end: ${reader.string} (at ${reader.string.substring(start, end)})")
+) : Exception() {
+    override val message: String = "${this::class.simpleName} at $start-$end: ${reader.string} (at ${reader.string.substring(start, end)})"
+}

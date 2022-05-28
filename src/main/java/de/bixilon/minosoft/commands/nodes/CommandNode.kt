@@ -61,34 +61,42 @@ abstract class CommandNode(
 
 
     open fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+        val suggestions: MutableList<Any?> = mutableListOf()
+
         val pointer = reader.pointer
         val stackSize = stack.size
-        val suggestions: MutableList<Any?> = mutableListOf()
-        var error: Throwable? = null
-        var errorStack = 0
+
+        var childError: Throwable? = null
+        var errorStack = -1
+        var parserSucceeds = 0
+
         for (child in children) {
             reader.pointer = pointer
             stack.reset(stackSize)
-
             try {
                 val childSuggestions = child.getSuggestions(reader, stack)
                 if (reader.canPeek()) {
-                    continue
+                    throw TrailingTextArgument(reader)
                 }
+                parserSucceeds++
+
                 if (stack.size == stackSize || stack.size == stackSize + 1) {
+                    // only went 1 layer deeper, add to suggestions
                     suggestions.addAll(childSuggestions)
                     continue
                 }
+
                 return childSuggestions
-            } catch (exception: Throwable) {
-                if (stack.size > errorStack || error == null) {
-                    error = exception
+            } catch (error: Throwable) {
+                if (stack.size > errorStack) {
                     errorStack = stack.size
+                    childError = error
                 }
             }
         }
-        if (suggestions.isEmpty()) {
-            throw error ?: throw TrailingTextArgument(reader)
+        if (parserSucceeds == 0) {
+            throw childError ?: return emptyList()
+
         }
         return suggestions
     }

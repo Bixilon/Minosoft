@@ -48,7 +48,7 @@ open class CommandReader(val string: String) {
     }
 
     fun peekNext(pointer: Int = this.pointer): Int? {
-        if (!canPeekNext()) {
+        if (!canPeekNext(pointer)) {
             return null
         }
         return string.codePointAt(pointer)
@@ -80,8 +80,11 @@ open class CommandReader(val string: String) {
         return count
     }
 
-    fun skipWhitespaces(): Int {
+    fun skipWhitespaces(minimum: Int = 0): Int {
         val count = peekWhitespaces()
+        if (count < minimum) {
+            throw ExpectedWhitespaceError(this, pointer, minimum, count)
+        }
         pointer += count
         return count
     }
@@ -154,11 +157,13 @@ open class CommandReader(val string: String) {
             return null
         }
         while (true) {
-            val char = read(false) ?: return builder.toString()
+            val char = peekNext() ?: return builder.toString()
+
             if (Character.isWhitespace(char)) {
                 return builder.toString()
             }
             builder.appendCodePoint(char)
+            pointer++
         }
     }
 

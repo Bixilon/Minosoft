@@ -47,28 +47,31 @@ class ArgumentNode : ExecutableNode {
     }
 
     override fun execute(reader: CommandReader, stack: CommandStack) {
-        reader.skipWhitespaces()
+        reader.skipWhitespaces(1)
         val parsed = parser.parse(reader)
         stack.push(name, parsed)
         super.execute(reader, stack)
     }
 
     override fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
-        reader.skipWhitespaces()
-        val parseError: Throwable
-        val lastPointer = reader.pointer
+        reader.skipWhitespaces(1)
+        val pointer = reader.pointer
+        val stackSize = stack.size
         try {
-            stack.push(name, parser.parse(reader))
+            // try parsing our argument
+            // it should succeed if we are not the last
+            val parsed = parser.parse(reader)
+            stack.push(name, parsed)
             return super.getSuggestions(reader, stack)
         } catch (error: Throwable) {
-            parseError = error
-            reader.pointer = lastPointer
+            if (stack.size > stackSize) {
+                // we were deeper in the stack, we are not the last argument
+                throw error
+            }
+            reader.pointer = pointer
+            stack.reset(stackSize)
         }
 
-        val suggestions = parser.getSuggestions(reader)
-        if (reader.canPeekNext() || suggestions.isEmpty()) {
-            throw parseError
-        }
-        return suggestions
+        return parser.getSuggestions(reader)
     }
 }

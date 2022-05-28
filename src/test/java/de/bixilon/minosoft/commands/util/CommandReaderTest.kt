@@ -89,6 +89,18 @@ internal class CommandReaderTest {
         assertEquals(reader.readString(), "test \"test")
     }
 
+    fun testTrailingWhitespaceStringRead() {
+        val reader = CommandReader("test ")
+        assertEquals(reader.readString(), "test")
+        assertEquals(reader.readNext(), ' '.code)
+    }
+
+    fun testSkipBeginningWhitespace() {
+        val reader = CommandReader(" test")
+        assertEquals(reader.peekNext(), ' '.code)
+        assertEquals(reader.readString(), "test")
+    }
+
     @Test
     fun readNumeric() {
         val reader = CommandReader("123")

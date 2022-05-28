@@ -11,17 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.commands.errors.reader
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
+import de.bixilon.minosoft.commands.errors.ReaderError
+import de.bixilon.minosoft.commands.util.CommandReader
 
-object RegistryFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "dimension" to "dimension_type",
-    ).asResourceLocationMap()
-
-    fun ResourceLocation.fix(): ResourceLocation {
-        return RENAMES.getOrDefault(this, this)
-    }
-}
+class ExpectedWhitespaceError(
+    reader: CommandReader,
+    pointer: Int,
+    val expected: Int,
+    val found: Int,
+) : ReaderError(reader, pointer, pointer + found)

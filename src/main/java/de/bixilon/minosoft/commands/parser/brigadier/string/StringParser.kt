@@ -34,7 +34,7 @@ class StringParser(
     }
 
     override fun getSuggestions(reader: CommandReader): List<String> {
-        reader.readString(mode)
+        reader.readResult { reader.readString(mode) }.let { it.result ?: throw StringParseError(reader, it) }
         return examples
     }
 

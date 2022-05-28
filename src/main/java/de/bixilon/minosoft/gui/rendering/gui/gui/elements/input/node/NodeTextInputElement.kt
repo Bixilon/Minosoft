@@ -60,7 +60,7 @@ class NodeTextInputElement(
     private fun createStack(): CommandStack {
         return CommandStack(
             connection = guiRenderer.connection,
-            print = PlayerPrintTarget(guiRenderer.connection)
+            print = PlayerPrintTarget(guiRenderer.connection),
         )
     }
 
