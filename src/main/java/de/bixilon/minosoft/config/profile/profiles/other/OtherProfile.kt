@@ -38,7 +38,7 @@ class OtherProfile(
     /**
      * Use native network transport if available
      */
-    var epoll by delegate(true)
+    var nativeNetwork by delegate(true)
 
 
     /**

@@ -186,7 +186,7 @@ class PlayConnection(
                 renderLatch.awaitWithChange()
             }
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
-            network.connect(address, profiles.other.epoll)
+            network.connect(address, profiles.other.nativeNetwork)
             state = PlayConnectionStates.ESTABLISHING
         } catch (exception: Throwable) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }

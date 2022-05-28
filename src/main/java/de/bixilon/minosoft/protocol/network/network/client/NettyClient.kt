@@ -24,6 +24,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.NetworkException
 import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.CriticalNetworkException
+import de.bixilon.minosoft.protocol.network.network.client.natives.NioNatives
+import de.bixilon.minosoft.protocol.network.network.client.natives.TransportNatives
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.PacketDeflater
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.PacketInflater
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.encryption.PacketDecryptor
@@ -39,11 +41,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.*
-import io.netty.channel.epoll.Epoll
-import io.netty.channel.epoll.EpollEventLoopGroup
-import io.netty.channel.epoll.EpollSocketChannel
-import io.netty.channel.nio.NioEventLoopGroup
-import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import javax.crypto.Cipher
@@ -91,20 +88,12 @@ class NettyClient(
     private val packetQueue: MutableList<C2SPacket> = mutableListOf() // Used for pause sending
     private var sendingPaused = false
 
-    fun connect(address: ServerAddress, epoll: Boolean) {
+    fun connect(address: ServerAddress, native: Boolean) {
         state = ProtocolStates.HANDSHAKING
-        val threadPool: EventLoopGroup
-        val channelClass: Class<out Channel>
-        if (epoll && Epoll.isAvailable()) {
-            threadPool = EPOLL_THREAD_POOL
-            channelClass = EpollSocketChannel::class.java
-        } else {
-            threadPool = NIO_THREAD_POOL
-            channelClass = NioSocketChannel::class.java
-        }
+        val natives = if (native) TransportNatives.get() else NioNatives
         val bootstrap = Bootstrap()
-            .group(threadPool)
-            .channel(channelClass)
+            .group(natives.pool)
+            .channel(natives.channel)
             .handler(NetworkPipeline(this))
 
         val future = bootstrap.connect(address.hostname, address.port)
@@ -211,10 +200,5 @@ class NettyClient(
             return null
         }
         return channel
-    }
-
-    companion object {
-        private val NIO_THREAD_POOL by lazy { NioEventLoopGroup(NamedThreadFactory("Nio#%d")) }
-        private val EPOLL_THREAD_POOL by lazy { EpollEventLoopGroup(NamedThreadFactory("Epoll#%d")) }
     }
 }
