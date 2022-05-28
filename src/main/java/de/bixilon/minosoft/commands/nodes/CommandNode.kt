@@ -35,9 +35,13 @@ abstract class CommandNode(
     open fun execute(reader: CommandReader, stack: CommandStack) {
         val pointer = reader.pointer
         val stackSize = stack.size
-        var lastError: Throwable? = null
-        var highestStack = 0
+
+        var childError: Throwable? = null
+        var errorStack = -1
+
         for (child in children) {
+            reader.pointer = pointer
+            stack.reset(stackSize)
             try {
                 executeChild(child, reader, stack)
                 if (reader.canPeek()) {
@@ -45,18 +49,13 @@ abstract class CommandNode(
                 }
                 return
             } catch (error: Throwable) {
-                val size = stack.size
-                if (size >= highestStack) {
-                    highestStack = size
-                    lastError = error
+                if (stack.size > errorStack) {
+                    errorStack = stack.size
+                    childError = error
                 }
             }
-            reader.pointer = pointer
-
-            stack.reset(stackSize)
         }
-
-        throw lastError ?: if (reader.canPeek()) throw TrailingTextArgument(reader) else return
+        throw childError ?: return
     }
 
 

@@ -13,29 +13,34 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.DeadEndError
+import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.errors.literal.ExpectedLiteralArgument
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
-import de.bixilon.minosoft.commands.errors.reader.ExpectedWhitespaceError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParseError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 
-internal class SuggestionChildReadingTest {
+internal class ExecutionChildReadingTest {
 
     private fun createCommand(): CommandNode {
         return RootNode()
+            .addChild(LiteralNode("0_literal"))
             .addChild(
                 LiteralNode("1_literal")
                     .addChild(LiteralNode("1_literal_2"))
-                    .addChild(LiteralNode("2_literal_2"))
+                    .addChild(LiteralNode("2_literal_2", executable = true))
             )
-            .addChild(LiteralNode("2_literal"))
+            .addChild(LiteralNode("2_literal", executable = true))
             .addChild(
                 LiteralNode("1_execute")
                     .addChild(ArgumentNode("args", StringParser(StringParser.StringModes.GREEDY), executable = true))
@@ -49,66 +54,58 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun testValid() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_execute test"), CommandStack()), emptyList())
+        val stack = CommandStack()
+        assertDoesNotThrow { (createCommand().execute(CommandReader("1_execute test"), stack)) }
+        assertNotNull(stack["1_execute"])
+        assertEquals(stack["args"], "test")
     }
 
     @Test
     fun testValid2() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_execute this is a really long valid greedy read string..."), CommandStack()), emptyList())
+        val stack = CommandStack()
+        assertDoesNotThrow { (createCommand().execute(CommandReader("1_execute this is a really long valid greedy read string..."), stack)) }
+        assertNotNull(stack["1_execute"])
+        assertEquals(stack["args"], "this is a really long valid greedy read string...")
     }
 
     @Test
     fun testInvalidLiteralValid() {
-        assertThrows<InvalidLiteralArgumentError> { (createCommand().getSuggestions(CommandReader("3_404_not_found"), CommandStack())) }
+        assertThrows<InvalidLiteralArgumentError> { (createCommand().execute(CommandReader("3_404_not_found"), CommandStack())) }
     }
 
     @Test
     fun testBlankStringArgument() {
-        assertThrows<StringParseError> { (createCommand().getSuggestions(CommandReader("1_execute "), CommandStack())) }
+        assertThrows<StringParseError> { (createCommand().execute(CommandReader("1_execute "), CommandStack())) }
     }
 
     @Test
     fun testNoStringArgument() {
-        assertThrows<ExpectedWhitespaceError> { (createCommand().getSuggestions(CommandReader("1_execute"), CommandStack())) }
+        assertThrows<ExpectedArgumentError> { (createCommand().execute(CommandReader("1_execute"), CommandStack())) }
     }
 
     @Test
-    fun testPrefixSuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_"), CommandStack()), listOf("1_literal", "1_execute"))
-    }
-
-    @Test
-    fun testEmptySuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader(""), CommandStack()), listOf("1_literal", "2_literal", "1_execute"))
+    fun testDeadEnd() {
+        assertThrows<DeadEndError> { (createCommand().execute(CommandReader("0_literal"), CommandStack())) }
     }
 
     @Test
     fun testTrailingData() {
-        assertThrows<TrailingTextArgument> { (createCommand().getSuggestions(CommandReader("2_literal test"), CommandStack())) }
+        assertThrows<TrailingTextArgument> { (createCommand().execute(CommandReader("0_literal test"), CommandStack())) }
     }
 
     @Test
-    fun test2InvalidLiteral() {
-        assertThrows<InvalidLiteralArgumentError> { (createCommand().getSuggestions(CommandReader("1_literal test"), CommandStack())) }
+    fun testEmpty() {
+        assertThrows<ExpectedLiteralArgument> { (createCommand().execute(CommandReader(""), CommandStack())) }
     }
 
-    @Test
-    fun test2EmptyLevelSuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_literal"), CommandStack()), listOf("1_literal_2", "2_literal_2"))
-    }
-
-    @Test
-    fun test2TrailingData() {
-        assertThrows<TrailingTextArgument> { (createCommand().getSuggestions(CommandReader("2_literal 1_literal_2 test"), CommandStack())) }
-    }
 
     @Test
     fun testTrailingWhitespace() {
-        assertEquals(createCommand().getSuggestions(CommandReader("2_literal "), CommandStack()), emptyList())
+        assertDoesNotThrow { createCommand().execute(CommandReader("2_literal "), CommandStack()) }
     }
 
     @Test
     fun test2TrailingWhitespace() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_literal 1_literal_2 "), CommandStack()), emptyList())
+        assertDoesNotThrow { createCommand().execute(CommandReader("1_literal 2_literal_2 "), CommandStack()) }
     }
 }
