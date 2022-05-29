@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,7 +49,7 @@ class NodeTextInputElement(
 ) : TextInputElement(guiRenderer, value, maxLength, cursorStyles, editable, onChange, background, shadow, scale, cutAtSize, parent) {
     private var showError = false
     private val errorElement = NodeErrorElement(guiRenderer, Vec2i.EMPTY)
-    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2i.EMPTY)
+    private val suggestions = NodeSuggestionsElement(guiRenderer, Vec2i.EMPTY, this)
 
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
@@ -112,5 +113,11 @@ class NodeTextInputElement(
         showError = false
         suggestions.onClose()
         errorElement.onClose()
+    }
+
+    fun updateSuggestion(suggestion: Any) {
+        val string = suggestion.toString()
+        _set(value + string.substring(KUtil.getOverlappingText(value, string), string.length))
+        forceApply()
     }
 }

@@ -294,4 +294,22 @@ object KUtil {
 
         return ret
     }
+
+    fun getOverlappingText(start: String, end: String): Int {
+        var overlapping = 0
+
+        shift@ for (shift in 1..end.length) {
+            if (start.length < shift) {
+                break
+            }
+            for (i in 0 until shift) {
+                if (end.codePointAt(i) != start.codePointAt(start.length - (shift - i))) {
+                    continue@shift
+                }
+            }
+            overlapping = shift
+        }
+
+        return overlapping
+    }
 }

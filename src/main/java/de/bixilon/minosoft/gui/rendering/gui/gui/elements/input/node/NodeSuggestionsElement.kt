@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.util.KUtil
 
-class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper(guiRenderer, position) {
+class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
     private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
     private var textCount = 0
     private var offset = 0
@@ -54,6 +54,15 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper
                 guiRenderer.popper.remove(this)
             }
             field = value
+        }
+
+    val activeSuggestion: Any?
+        get() {
+            val suggestions = suggestions ?: return null
+            if (suggestions.isEmpty()) {
+                return null
+            }
+            return suggestions[offset]
         }
 
 
@@ -114,6 +123,9 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper
         if (type == KeyChangeTypes.RELEASE) {
             return super.onKey(key, type)
         }
+        if (key == KeyCodes.KEY_ENTER || key == KeyCodes.KEY_KP_ENTER || key == KeyCodes.KEY_TAB) {
+            return applySuggestion()
+        }
         val offset = when (key) {
             KeyCodes.KEY_UP -> -1
             KeyCodes.KEY_PAGE_UP -> -5
@@ -132,6 +144,11 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper
     fun reset() {
         suggestions = null
         offset = 0
+    }
+
+    fun applySuggestion(): Boolean {
+        inputElement.updateSuggestion(activeSuggestion ?: return false)
+        return true
     }
 
     private companion object {

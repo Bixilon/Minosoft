@@ -98,7 +98,7 @@ open class TextInputElement(
         textElement.unmark()
     }
 
-    private fun _set(value: String) {
+    protected fun _set(value: String) {
         val previous = _value.toString()
         val next = _value.replace(0, _value.length, value)
         _pointer = value.length

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.errors.DeadEndError
-import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
+import de.bixilon.minosoft.commands.errors.literal.TrailingTextError
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 
@@ -47,7 +47,7 @@ abstract class CommandNode(
             try {
                 executeChild(child, reader, stack)
                 if (reader.canPeek()) {
-                    throw TrailingTextArgument(reader)
+                    throw TrailingTextError(reader)
                 }
                 return
             } catch (error: Throwable) {
@@ -78,7 +78,7 @@ abstract class CommandNode(
             try {
                 val childSuggestions = child.getSuggestions(reader, stack)
                 if (reader.canPeek()) {
-                    throw TrailingTextArgument(reader)
+                    throw TrailingTextError(reader)
                 }
                 parserSucceeds++
 
@@ -115,7 +115,7 @@ abstract class CommandNode(
     protected fun checkForDeadEnd(reader: CommandReader) {
         if (children.isEmpty()) {
             if (reader.canPeek()) {
-                throw TrailingTextArgument(reader)
+                throw TrailingTextError(reader)
             } else {
                 throw DeadEndError(reader)
             }

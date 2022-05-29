@@ -48,4 +48,39 @@ internal class KUtilTest {
     fun testInvalidSizeArrayModify() {
         assertThrows<IllegalArgumentException> { KUtil.modifyArrayIndex(0, 0) }
     }
+
+    @Test
+    fun testNonOverlappingString() {
+        assertEquals(KUtil.getOverlappingText("test", "invalid"), 0)
+    }
+
+    @Test
+    fun testEmptyOverlappingText() {
+        assertEquals(KUtil.getOverlappingText("", ""), 0)
+    }
+
+    @Test
+    fun testFullyOverlapping() {
+        assertEquals(KUtil.getOverlappingText("next", "next"), 4)
+    }
+
+    @Test
+    fun testSingleChatOverlapping() {
+        assertEquals(KUtil.getOverlappingText("next", "test"), 1)
+    }
+
+    @Test
+    fun testSingleChatOverlapping2() {
+        assertEquals(KUtil.getOverlappingText("n", "nix"), 1)
+    }
+
+    @Test
+    fun testSingleChatOverlapping3() {
+        assertEquals(KUtil.getOverlappingText("nix", "x"), 1)
+    }
+
+    @Test
+    fun testSingleChatOverlapping4() {
+        assertEquals(KUtil.getOverlappingText("nix", "ix"), 2)
+    }
 }

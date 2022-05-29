@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.errors.DeadEndError
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
-import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
+import de.bixilon.minosoft.commands.errors.literal.TrailingTextError
 import de.bixilon.minosoft.commands.errors.reader.ExpectedWhitespaceError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParseError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
@@ -95,7 +95,7 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun testTrailingData() {
-        assertThrows<TrailingTextArgument> { (createCommand().getSuggestions(CommandReader("2_literal test"), CommandStack())) }
+        assertThrows<TrailingTextError> { (createCommand().getSuggestions(CommandReader("2_literal test"), CommandStack())) }
     }
 
     @Test
@@ -110,7 +110,7 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun test2TrailingData() {
-        assertThrows<TrailingTextArgument> { (createCommand().getSuggestions(CommandReader("2_literal 1_literal_2 test"), CommandStack())) }
+        assertThrows<TrailingTextError> { (createCommand().getSuggestions(CommandReader("2_literal 1_literal_2 test"), CommandStack())) }
     }
 
     @Test
@@ -135,7 +135,7 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun testTrailingTextEmptyNode() {
-        assertThrows<TrailingTextArgument> { RootNode().getSuggestions(CommandReader("trailing"), CommandStack()) }
+        assertThrows<TrailingTextError> { RootNode().getSuggestions(CommandReader("trailing"), CommandStack()) }
     }
 
     @Test
