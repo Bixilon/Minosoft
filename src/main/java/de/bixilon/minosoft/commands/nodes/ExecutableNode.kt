@@ -48,6 +48,18 @@ abstract class ExecutableNode(
         super.execute(reader, stack)
     }
 
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+        if (!reader.canPeek()) {
+            // empty string
+            if (executable) {
+                return emptyList()
+            } else {
+                checkForDeadEnd(reader)
+            }
+        }
+        return super.getSuggestions(reader, stack)
+    }
+
     override fun executeChild(child: CommandNode, reader: CommandReader, stack: CommandStack) {
         super.executeChild(child, reader, stack)
         if (!onlyDirectExecution) {

@@ -35,7 +35,7 @@ internal class SuggestionChildReadingTest {
             .addChild(
                 LiteralNode("1_literal")
                     .addChild(LiteralNode("1_literal_2"))
-                    .addChild(LiteralNode("2_literal_2"))
+                    .addChild(LiteralNode("2_literal_2", executable = true))
             )
             .addChild(LiteralNode("2_literal"))
             .addChild(
@@ -151,5 +151,10 @@ internal class SuggestionChildReadingTest {
     @Test
     fun testStringOptionalArguments() {
         assertDoesNotThrow { createCommand().getSuggestions(CommandReader("3_literal string"), CommandStack()) }
+    }
+
+    @Test
+    fun testNoSuggestionsErrors() {
+        assertEquals(createCommand().getSuggestions(CommandReader("1_literal 2_literal_2"), CommandStack()), emptyList())
     }
 }
