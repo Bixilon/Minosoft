@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -23,6 +24,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.util.KUtil
 
 class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper(guiRenderer, position) {
     private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
@@ -79,9 +82,9 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper
             if (index >= endCutAt) {
                 break
             }
-            val text = suggestionText[index]
-            val textComponent = TextComponent(suggestion).color(ChatColors.WHITE)
-            if (index == startCutAt) {
+            val text = suggestionText[index - startCutAt]
+            val textComponent = TextComponent(suggestion.toString().lowercase()).color(ChatColors.WHITE)
+            if (index == offset) {
                 textComponent.color = ChatColors.YELLOW
             }
             text.text = textComponent
@@ -94,6 +97,42 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i) : Popper
         forceSilentApply()
     }
 
+    fun modifyOffset(modify: Int) {
+        if (modify == 0) {
+            return
+        }
+        val suggestions = suggestions ?: return
+        offset = KUtil.modifyArrayIndex(offset + modify, suggestions.size)
+        updateSuggestions(suggestions)
+    }
+
+
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (suggestions.isNullOrEmpty()) {
+            return super.onKey(key, type)
+        }
+        if (type == KeyChangeTypes.RELEASE) {
+            return super.onKey(key, type)
+        }
+        val offset = when (key) {
+            KeyCodes.KEY_UP -> -1
+            KeyCodes.KEY_PAGE_UP -> -5
+            KeyCodes.KEY_DOWN -> 1
+            KeyCodes.KEY_PAGE_DOWN -> 5
+            else -> 0
+        }
+        modifyOffset(offset)
+        return offset != 0
+    }
+
+    override fun onClose() {
+        reset()
+    }
+
+    fun reset() {
+        suggestions = null
+        offset = 0
+    }
 
     private companion object {
         const val MAX_SUGGESTIONS = 10

@@ -96,7 +96,11 @@ abstract class CommandNode(
                 }
             }
         }
+
         if (parserSucceeds == 0) {
+            if (!reader.canPeek(pointer) && executable) {
+                return emptyList()
+            }
             throw childError ?: return emptyList()
         }
 

@@ -41,7 +41,7 @@ class ChatNode(
     }
 
     private fun getNode(reader: CommandReader, stack: CommandStack): RootNode? {
-        val peek = reader.unsafePeek()
+        val peek = reader.peek()
         if (peek == '.'.code) {
             if (allowCLI) {
                 reader.read()

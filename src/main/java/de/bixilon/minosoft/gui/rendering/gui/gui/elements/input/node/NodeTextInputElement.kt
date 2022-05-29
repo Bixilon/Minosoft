@@ -19,12 +19,14 @@ import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.mark.TextCursorStyles
 import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -66,12 +68,8 @@ class NodeTextInputElement(
 
     override fun onChange() {
         val value = value
-        if (value.isBlank()) {
-            return super.onChange()
-        }
-        val stack = createStack()
         try {
-            suggestions.suggestions = node.getSuggestions(CommandReader(value), stack)
+            suggestions.suggestions = node.getSuggestions(CommandReader(value), createStack())
             updateError(null)
         } catch (exception: Throwable) {
             if (exception !is ReaderError) {
@@ -85,11 +83,18 @@ class NodeTextInputElement(
     fun submit() {
         val stack = createStack()
         try {
-            node.execute(CommandReader(value), createStack())
+            node.execute(CommandReader(value), stack)
         } catch (exception: Throwable) {
             exception.message?.let { stack.print.print(it) }
         }
         updateError(null)
+    }
+
+    override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (suggestions.onKey(key, type)) {
+            return true
+        }
+        return super.onKey(key, type)
     }
 
 
@@ -100,5 +105,12 @@ class NodeTextInputElement(
         if (error != null) {
             suggestions.suggestions = null
         }
+    }
+
+    override fun onClose() {
+        super.onClose()
+        showError = false
+        suggestions.onClose()
+        errorElement.onClose()
     }
 }

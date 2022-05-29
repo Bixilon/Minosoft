@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.suggestion
 
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 
-class ArraySuggestion<T>(val values: List<T>) : SuggestionType<T> {
+class ArraySuggestion<T>(val values: List<T>, val ignoreCase: Boolean = false) : SuggestionType<T> {
 
     override fun suggest(input: String?): List<T>? {
         if (input == null || input.isBlank()) {
@@ -23,7 +23,7 @@ class ArraySuggestion<T>(val values: List<T>) : SuggestionType<T> {
         }
         val list: MutableList<T> = mutableListOf()
         for (entry in values) {
-            if (entry.toString().lowercase().startsWith(input)) {
+            if (entry.toCasedString().startsWith(input.toCasedString())) {
                 list += entry
             }
         }
@@ -31,5 +31,13 @@ class ArraySuggestion<T>(val values: List<T>) : SuggestionType<T> {
             return null
         }
         return list
+    }
+
+    private fun Any?.toCasedString(): String {
+        var string = this.toString()
+        if (ignoreCase) {
+            string = string.lowercase()
+        }
+        return string
     }
 }

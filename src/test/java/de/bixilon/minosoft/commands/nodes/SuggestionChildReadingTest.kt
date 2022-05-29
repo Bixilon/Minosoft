@@ -22,6 +22,7 @@ import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -37,6 +38,10 @@ internal class SuggestionChildReadingTest {
                     .addChild(LiteralNode("2_literal_2"))
             )
             .addChild(LiteralNode("2_literal"))
+            .addChild(
+                LiteralNode("3_literal", executable = true)
+                    .addChild(ArgumentNode("arg", StringParser(StringParser.StringModes.SINGLE)))
+            )
             .addChild(
                 LiteralNode("1_execute")
                     .addChild(ArgumentNode("args", StringParser(StringParser.StringModes.GREEDY), executable = true))
@@ -80,7 +85,12 @@ internal class SuggestionChildReadingTest {
 
     @Test
     fun testEmptySuggestions() {
-        assertEquals(createCommand().getSuggestions(CommandReader(""), CommandStack()), listOf("1_literal", "2_literal", "1_execute"))
+        assertEquals(createCommand().getSuggestions(CommandReader(""), CommandStack()), listOf("1_literal", "2_literal", "3_literal", "1_execute"))
+    }
+
+    @Test
+    fun testWhitespaceSuggestions() {
+        assertEquals(createCommand().getSuggestions(CommandReader(" "), CommandStack()), listOf("1_literal", "2_literal", "3_literal", "1_execute"))
     }
 
     @Test
@@ -126,5 +136,20 @@ internal class SuggestionChildReadingTest {
     @Test
     fun testTrailingTextEmptyNode() {
         assertThrows<TrailingTextArgument> { RootNode().getSuggestions(CommandReader("trailing"), CommandStack()) }
+    }
+
+    @Test
+    fun testEmptyWhitespaceSuggestions() {
+        assertThrows<DeadEndError> { RootNode().getSuggestions(CommandReader(" "), CommandStack()) }
+    }
+
+    @Test
+    fun testOptionalArguments() {
+        assertDoesNotThrow { createCommand().getSuggestions(CommandReader("3_literal"), CommandStack()) }
+    }
+
+    @Test
+    fun testStringOptionalArguments() {
+        assertDoesNotThrow { createCommand().getSuggestions(CommandReader("3_literal string"), CommandStack()) }
     }
 }

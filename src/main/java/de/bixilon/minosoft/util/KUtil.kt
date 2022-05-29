@@ -281,4 +281,17 @@ object KUtil {
     fun String.toFavicon(): ByteArray {
         return Base64.getDecoder().decode(this.replace("data:image/png;base64,", "").replace("\n", ""))
     }
+
+    fun modifyArrayIndex(value: Int, size: Int): Int {
+        if (size <= 0) {
+            throw IllegalArgumentException("Size must be > 1: $size")
+        }
+        var ret = value % size
+
+        if (ret < 0) {
+            ret += size
+        }
+
+        return ret
+    }
 }

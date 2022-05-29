@@ -74,6 +74,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             while (input._value.startsWith(' ')) {
                 input._value.deleteCharAt(0)
                 input._pointer--
+                input.onChange()
             }
         }
     }
@@ -93,11 +94,13 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             DefaultThreadPool += { messages += it.message }
         })
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(), KeyBinding(
-            mapOf(
-                KeyActions.PRESS to setOf(KeyCodes.KEY_T),
-            ),
-        )) { guiRenderer.gui.open(ChatElement) }
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:open_chat".toResourceLocation(), KeyBinding(
+                mapOf(
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_T),
+                ),
+            )
+        ) { guiRenderer.gui.open(ChatElement) }
 
         internal.init()
     }
@@ -174,20 +177,14 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (input.onKey(key, type)) {
+            return true
+        }
         if (type != KeyChangeTypes.RELEASE) {
             when (key) {
-                KeyCodes.KEY_ENTER -> {
-                    submit()
-                    return true
-                }
-                KeyCodes.KEY_PAGE_UP -> {
-                    messages.scrollOffset++
-                    return true
-                }
-                KeyCodes.KEY_PAGE_DOWN -> {
-                    messages.scrollOffset--
-                    return true
-                }
+                KeyCodes.KEY_ENTER -> submit()
+                KeyCodes.KEY_PAGE_UP -> messages.scrollOffset++
+                KeyCodes.KEY_PAGE_DOWN -> messages.scrollOffset--
                 KeyCodes.KEY_UP -> {
                     val size = history.size
                     if (historyIndex > size) {
@@ -211,10 +208,9 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
                     }
                     input.value = history[historyIndex]
                 }
-                else -> {}
+                else -> return super.onKey(key, type)
             }
         }
-        input.onKey(key, type)
 
         return true
     }

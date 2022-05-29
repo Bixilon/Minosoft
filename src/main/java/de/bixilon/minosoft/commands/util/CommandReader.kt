@@ -29,7 +29,7 @@ open class CommandReader(val string: String) {
     var pointer = 0
     val length = string.length
 
-    fun canPeek(ignoreWhitespaces: Boolean = true): Boolean {
+    fun canPeek(pointer: Int = this.pointer, ignoreWhitespaces: Boolean = true): Boolean {
         if (pointer >= length) {
             return false
         }

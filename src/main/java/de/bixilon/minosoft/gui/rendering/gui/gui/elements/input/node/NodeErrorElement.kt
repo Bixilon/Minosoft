@@ -53,4 +53,8 @@ class NodeErrorElement(guiRenderer: GUIRenderer, position: Vec2i) : TextPopper(g
         this.textElement.text = TextComponent(message).color(ChatColors.RED)
         forceSilentApply()
     }
+
+    override fun onClose() {
+        visible = false
+    }
 }

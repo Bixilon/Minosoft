@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.commands.parser.minosoft.enums
 
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.commands.errors.suggestion.NoSuggestionError
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
@@ -28,7 +27,7 @@ class EnumParser<E : Enum<*>>(
     val values: ValuesEnum<E>,
 ) : ArgumentParser<E> {
     override val examples: List<E> = values.VALUES.toList()
-    private val suggestion = ArraySuggestion(examples)
+    private val suggestion = ArraySuggestion(examples, ignoreCase = true)
     override val placeholder = ChatComponent.of("<enum>")
 
     override fun parse(reader: CommandReader): E {
@@ -44,7 +43,7 @@ class EnumParser<E : Enum<*>>(
         if (text.result == null) {
             return examples
         }
-        return suggestion.suggest(text.result) ?: throw NoSuggestionError(reader, text)
+        return suggestion.suggest(text.result) ?: throw EnumParseError(reader, text)
     }
 
     companion object : ArgumentParserFactory<EnumParser<*>> {

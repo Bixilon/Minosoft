@@ -226,7 +226,7 @@ open class TextInputElement(
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (type == KeyChangeTypes.RELEASE) {
-            return true
+            return false
         }
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
         val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
