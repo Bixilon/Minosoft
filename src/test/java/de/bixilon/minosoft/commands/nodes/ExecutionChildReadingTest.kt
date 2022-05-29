@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.commands.nodes
 
 import de.bixilon.minosoft.commands.errors.DeadEndError
-import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.errors.literal.ExpectedLiteralArgument
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
+import de.bixilon.minosoft.commands.errors.reader.ExpectedWhitespaceError
+import de.bixilon.minosoft.commands.parser.brigadier.string.StringParseError
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
@@ -74,12 +75,12 @@ internal class ExecutionChildReadingTest {
 
     @Test
     fun testBlankStringArgument() {
-        assertThrows<ExpectedArgumentError> { (createCommand().execute(CommandReader("1_execute "), CommandStack())) }
+        assertThrows<StringParseError> { (createCommand().execute(CommandReader("1_execute "), CommandStack())) }
     }
 
     @Test
     fun testNoStringArgument() {
-        assertThrows<ExpectedArgumentError> { (createCommand().execute(CommandReader("1_execute"), CommandStack())) }
+        assertThrows<ExpectedWhitespaceError> { (createCommand().execute(CommandReader("1_execute"), CommandStack())) }
     }
 
     @Test
@@ -109,7 +110,7 @@ internal class ExecutionChildReadingTest {
 
     @Test
     fun testEmptyRootNode() {
-        assertThrows<TrailingTextArgument> { RootNode().execute(CommandReader(""), CommandStack()) }
+        assertThrows<DeadEndError> { RootNode().execute(CommandReader(""), CommandStack()) }
     }
 
     @Test

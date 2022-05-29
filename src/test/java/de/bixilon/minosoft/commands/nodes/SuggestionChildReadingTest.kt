@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.DeadEndError
 import de.bixilon.minosoft.commands.errors.literal.InvalidLiteralArgumentError
 import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
 import de.bixilon.minosoft.commands.errors.reader.ExpectedWhitespaceError
@@ -103,18 +104,23 @@ internal class SuggestionChildReadingTest {
     }
 
     @Test
+    fun checkDeadEnd() {
+        assertThrows<DeadEndError> { createCommand().getSuggestions(CommandReader("2_literal"), CommandStack()) }
+    }
+
+    @Test
     fun testTrailingWhitespace() {
-        assertEquals(createCommand().getSuggestions(CommandReader("2_literal "), CommandStack()), emptyList())
+        assertThrows<DeadEndError> { createCommand().getSuggestions(CommandReader("2_literal "), CommandStack()) }
     }
 
     @Test
     fun test2TrailingWhitespace() {
-        assertEquals(createCommand().getSuggestions(CommandReader("1_literal 1_literal_2 "), CommandStack()), emptyList())
+        assertThrows<DeadEndError> { createCommand().getSuggestions(CommandReader("1_literal 1_literal_2 "), CommandStack()) }
     }
 
     @Test
     fun testEmptyNode() {
-        assertEquals(RootNode().getSuggestions(CommandReader(""), CommandStack()), emptyList())
+        assertThrows<DeadEndError> { RootNode().getSuggestions(CommandReader(""), CommandStack()) }
     }
 
     @Test

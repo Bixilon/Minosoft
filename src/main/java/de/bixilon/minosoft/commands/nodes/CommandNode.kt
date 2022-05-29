@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.commands.nodes
 
+import de.bixilon.minosoft.commands.errors.DeadEndError
 import de.bixilon.minosoft.commands.errors.literal.TrailingTextArgument
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.util.CommandReader
@@ -33,9 +34,7 @@ abstract class CommandNode(
     }
 
     open fun execute(reader: CommandReader, stack: CommandStack) {
-        if (children.isEmpty()) {
-            throw TrailingTextArgument(reader)
-        }
+        checkForDeadEnd(reader)
         val pointer = reader.pointer
         val stackSize = stack.size
 
@@ -63,9 +62,7 @@ abstract class CommandNode(
 
 
     open fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
-        if (children.isEmpty() && reader.canPeek()) {
-            throw TrailingTextArgument(reader)
-        }
+        checkForDeadEnd(reader)
         val suggestions: MutableList<Any?> = mutableListOf()
 
         val pointer = reader.pointer
@@ -108,5 +105,16 @@ abstract class CommandNode(
 
     fun clear() {
         children.clear()
+    }
+
+
+    protected fun checkForDeadEnd(reader: CommandReader) {
+        if (children.isEmpty()) {
+            if (reader.canPeek()) {
+                throw TrailingTextArgument(reader)
+            } else {
+                throw DeadEndError(reader)
+            }
+        }
     }
 }

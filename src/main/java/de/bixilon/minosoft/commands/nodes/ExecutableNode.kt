@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.commands.nodes
 
-import de.bixilon.minosoft.commands.errors.DeadEndError
-import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
 import de.bixilon.minosoft.commands.stack.CommandExecutor
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
@@ -43,10 +41,8 @@ abstract class ExecutableNode(
             // empty string
             if (executable) {
                 return execute(stack)
-            } else if (children.isEmpty()) {
-                throw DeadEndError(reader)
             } else {
-                throw ExpectedArgumentError(reader)
+                checkForDeadEnd(reader)
             }
         }
         super.execute(reader, stack)
