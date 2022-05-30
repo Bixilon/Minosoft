@@ -117,7 +117,13 @@ class NodeTextInputElement(
 
     fun updateSuggestion(suggestion: Any) {
         val string = suggestion.toString()
-        _set(value + string.substring(KUtil.getOverlappingText(value, string), string.length))
+        val overlappingLength = KUtil.getOverlappingText(value, string)
+        var nextValue = value
+        if (overlappingLength == 0) {
+            nextValue += " " // ToDo: Not 100% correct, check for word separator
+        }
+        nextValue += string.substring(overlappingLength, string.length)
+        _set(nextValue)
         forceApply()
     }
 }
