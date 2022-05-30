@@ -12,7 +12,6 @@
  */
 
 package de.bixilon.minosoft.gui.rendering.font.provider
-
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch

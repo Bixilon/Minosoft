@@ -36,11 +36,13 @@ import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.network.client.NettyClient
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
+import io.netty.channel.SimpleChannelInboundHandler
 import org.kamranzafar.jtar.TarHeader
 import java.util.*
 
@@ -252,6 +254,9 @@ object KUtil {
         DefaultThreadPool += { TimeWorker::class.java.forceInit() }
         DefaultThreadPool += { SystemInformation::class.java.forceInit() }
         DefaultThreadPool += { StatusConnection::class.java.forceInit() }
+        DefaultThreadPool += { PlayConnection::class.java.forceInit() }
+        DefaultThreadPool += { NettyClient::class.java.forceInit() }
+        DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {
