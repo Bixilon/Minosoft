@@ -241,7 +241,7 @@
         </profile>
 
         <profile>
-            <id>natives-windows-x86</id>
+            <id>generic-linux</id>
             <activation>
                 <os>
                     <family>unix</family>
