@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl
 
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
-import de.bixilon.minosoft.data.commands.CommandStringReader
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -38,7 +38,7 @@ class GLSLShaderCode(
             reader.readUnquotedString() // data type
             reader.skipWhitespaces()
 
-            uniforms += reader.readUnquotedString()
+            uniforms += reader.readWord() ?: continue
         }
 
         for ((name, value) in Shader.DEFAULT_DEFINES) {
@@ -53,7 +53,7 @@ class GLSLShaderCode(
             val code = StringBuilder()
 
             for (line in rawCode.lines()) {
-                val lineReader = CommandStringReader(line)
+                val lineReader = StringReader(line)
                 lineReader.skipWhitespaces()
 
                 fun pushLine() {
@@ -61,13 +61,13 @@ class GLSLShaderCode(
                     code.append('\n')
                 }
 
-                val remaining = lineReader.peekRemaining()
+                val remaining = lineReader.peekRemaining() ?: continue
                 when {
                     remaining.startsWith("#include ") -> {
                         val reader = GLSLStringReader(remaining.removePrefix("#include "))
                         reader.skipWhitespaces()
 
-                        val include = ResourceLocation(reader.readString())
+                        val include = ResourceLocation(reader.readString()!!)
 
                         val includeCode = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
                         this.uniforms += includeCode.uniforms

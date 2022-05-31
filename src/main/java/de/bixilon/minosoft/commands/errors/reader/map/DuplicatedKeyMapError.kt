@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.commands.errors.reader.map
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
 class DuplicatedKeyMapError(
-    reader: CommandReader,
+    reader: StringReader,
     val key: ReadResult<*>,
     val existingValue: Any?,
 ) : ReaderError(reader, key.start, key.end)

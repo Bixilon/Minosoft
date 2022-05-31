@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.commands.parser.minecraft.resource.location
 
 import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 
 class InvalidResourceLocationError(
-    reader: CommandReader,
+    reader: StringReader,
     result: ReadResult<ResourceLocation?>,
 ) : ParserError(reader, result)

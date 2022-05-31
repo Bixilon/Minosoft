@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.errors.parser
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
-abstract class ParserError(reader: CommandReader, val result: ReadResult<*>) : ReaderError(reader, result.start, result.end)
+abstract class ParserError(reader: StringReader, val result: ReadResult<*>) : ReaderError(reader, result.start, result.end)

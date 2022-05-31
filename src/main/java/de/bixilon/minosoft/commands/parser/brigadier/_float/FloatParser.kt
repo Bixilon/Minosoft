@@ -16,6 +16,7 @@ package de.bixilon.minosoft.commands.parser.brigadier._float
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -57,11 +58,11 @@ class FloatParser(
             return FloatParser(min = min, max = max)
         }
 
-        fun CommandReader.readFloat(): Float? {
+        fun StringReader.readFloat(): Float? {
             return readNumeric()?.toFloatOrNull()
         }
 
-        fun CommandReader.readRequiredFloat(): Float {
+        fun StringReader.readRequiredFloat(): Float {
             readResult { readFloat() }.let { return it.result ?: throw FloatParseError(this, it) }
         }
     }

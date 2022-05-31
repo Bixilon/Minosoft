@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.commands.errors
 
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 abstract class ReaderError(
-    val reader: CommandReader,
+    val reader: StringReader,
     val start: Int,
     val end: Int,
 ) : Exception() {

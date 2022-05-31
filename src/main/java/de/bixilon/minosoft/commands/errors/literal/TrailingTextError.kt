@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.commands.errors.literal
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class TrailingTextError(
-    reader: CommandReader,
+    reader: StringReader,
 ) : ReaderError(reader, reader.pointer, reader.length)

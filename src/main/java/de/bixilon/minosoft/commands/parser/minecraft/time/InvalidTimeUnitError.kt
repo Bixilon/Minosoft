@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.commands.parser.minecraft.time
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class InvalidTimeUnitError(
-    reader: CommandReader,
+    reader: StringReader,
     position: Int,
     read: Int?,
 ) : ReaderError(reader, position, position + 1)

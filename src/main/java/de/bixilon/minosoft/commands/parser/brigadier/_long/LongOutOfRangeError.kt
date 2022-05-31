@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.commands.parser.brigadier._long
 
 import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
 class LongOutOfRangeError(
-    reader: CommandReader,
+    reader: StringReader,
     result: ReadResult<Long?>,
     val min: Long,
     val max: Long,

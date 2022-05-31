@@ -16,6 +16,7 @@ package de.bixilon.minosoft.commands.parser.brigadier._double
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -57,11 +58,11 @@ class DoubleParser(
             return DoubleParser(min = min, max = max)
         }
 
-        fun CommandReader.readDouble(): Double? {
+        fun StringReader.readDouble(): Double? {
             return readNumeric()?.toDoubleOrNull()
         }
 
-        fun CommandReader.readRequiredDouble(): Double {
+        fun StringReader.readRequiredDouble(): Double {
             readResult { readDouble() }.let { return it.result ?: throw DoubleParseError(this, it) }
         }
     }

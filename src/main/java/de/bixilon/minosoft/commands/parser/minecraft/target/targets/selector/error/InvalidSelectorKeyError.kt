@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error
 
 import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
 class InvalidSelectorKeyError(
-    reader: CommandReader,
+    reader: StringReader,
     key: ReadResult<String>,
 ) : ParserError(reader, key)

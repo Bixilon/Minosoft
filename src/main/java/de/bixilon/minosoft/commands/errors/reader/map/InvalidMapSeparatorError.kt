@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.commands.errors.reader.map
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class InvalidMapSeparatorError(
-    reader: CommandReader,
+    reader: StringReader,
     pointer: Int,
     val found: Int?,
 ) : ReaderError(reader, pointer - 1, pointer)

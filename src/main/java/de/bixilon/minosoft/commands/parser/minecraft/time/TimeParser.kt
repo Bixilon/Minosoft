@@ -29,7 +29,7 @@ object TimeParser : ArgumentParser<Int>, ArgumentParserFactory<TimeParser> {
     override val placeholder = ChatComponent.of("<time>")
 
     override fun parse(reader: CommandReader): Int {
-        reader.readResult { readTime() }.let { return it.result }
+        reader.readResult { reader.readTime() }.let { return it.result }
     }
 
     fun CommandReader.readTime(): Int {

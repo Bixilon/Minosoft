@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.commands.parser.brigadier._float
 
 import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
 class FloatOutOfRangeError(
-    reader: CommandReader,
+    reader: StringReader,
     result: ReadResult<Float?>,
     val min: Float,
     val max: Float,

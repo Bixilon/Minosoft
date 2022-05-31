@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.util
 
 import java.io.Reader
 
-class JsonReader(val reader: CommandReader) : Reader() {
+class JsonReader(val reader: StringReader) : Reader() {
 
     override fun read(cbuf: CharArray, off: Int, len: Int): Int {
         cbuf[0] = reader.readNext()?.toChar() ?: return 0

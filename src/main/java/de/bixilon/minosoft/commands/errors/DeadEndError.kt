@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.commands.errors
 
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class DeadEndError(
-    reader: CommandReader,
+    reader: StringReader,
 ) : ReaderError(reader, reader.pointer, reader.pointer)

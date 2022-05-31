@@ -18,6 +18,7 @@ import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -33,7 +34,7 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanPa
         return reader.readRequiredBoolean()
     }
 
-    fun CommandReader.readBoolean(): Boolean? {
+    fun StringReader.readBoolean(): Boolean? {
         return when (readUnquotedString()) {
             "true" -> true
             "false" -> false

@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.commands.errors.reader
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class UnfinishedQuotedStringError(
-    reader: CommandReader,
+    reader: StringReader,
     start: Int,
 ) : ReaderError(reader, start, reader.length)

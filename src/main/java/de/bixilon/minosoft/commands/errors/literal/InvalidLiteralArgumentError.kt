@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.commands.errors.literal
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class InvalidLiteralArgumentError(
-    reader: CommandReader,
+    reader: StringReader,
     val argument: String,
 ) : ReaderError(reader, reader.pointer - argument.length, reader.pointer)

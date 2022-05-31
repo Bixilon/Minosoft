@@ -17,6 +17,7 @@ import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -32,7 +33,7 @@ object UUIDParser : ArgumentParser<UUID>, ArgumentParserFactory<UUIDParser> {
         reader.readResult { readUUID() }.let { return it.result ?: throw InvalidUUIDError(reader, it) }
     }
 
-    fun CommandReader.readUUID(): UUID? {
+    fun StringReader.readUUID(): UUID? {
         val string = readWord() ?: return null
 
         return try {

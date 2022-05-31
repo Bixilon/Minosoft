@@ -18,6 +18,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.commands.parser.brigadier.BrigadierParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -58,7 +59,7 @@ class StringParser(
         }
 
 
-        fun CommandReader.readString(mode: StringModes): String? {
+        fun StringReader.readString(mode: StringModes): String? {
             return when (mode) {
                 StringModes.SINGLE -> readUnquotedString()
                 StringModes.QUOTED -> readString()

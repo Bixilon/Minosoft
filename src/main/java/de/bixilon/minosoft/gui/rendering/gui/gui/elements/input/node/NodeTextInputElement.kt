@@ -19,7 +19,7 @@ import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.commands.util.CommandReader.Companion.isWord
+import de.bixilon.minosoft.commands.util.StringReader.Companion.isWord
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element

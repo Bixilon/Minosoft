@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.commands.errors.reader.map
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
 class ExpectedKeyMapError(
-    reader: CommandReader,
+    reader: StringReader,
     result: ReadResult<*>,
 ) : ReaderError(reader, result.start, result.end)

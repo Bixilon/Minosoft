@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.error
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class InvalidTargetSelector(
-    reader: CommandReader,
+    reader: StringReader,
 ) : ReaderError(reader, reader.pointer - 1, reader.pointer)

@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.commands.parser.minecraft.range._int
 
 import de.bixilon.minosoft.commands.errors.parser.ParserError
-import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.commands.util.ReadResult
+import de.bixilon.minosoft.commands.util.StringReader
 
 class IntRangeParseError(
-    reader: CommandReader,
+    reader: StringReader,
     result: ReadResult<IntRange?>,
 ) : ParserError(reader, result)

@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.commands.errors.reader.number
 
 import de.bixilon.minosoft.commands.errors.ReaderError
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class NegativeNumberError(
-    reader: CommandReader,
+    reader: StringReader,
     pointer: Int,
 ) : ReaderError(reader, pointer, pointer + 1)

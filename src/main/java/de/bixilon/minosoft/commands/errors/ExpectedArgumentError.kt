@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.commands.errors
 
-import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.StringReader
 
 class ExpectedArgumentError(
-    reader: CommandReader,
+    reader: StringReader,
 ) : ReaderError(reader, reader.pointer, reader.pointer)
