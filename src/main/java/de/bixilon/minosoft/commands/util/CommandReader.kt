@@ -277,7 +277,7 @@ open class CommandReader(val string: String) {
         skipWhitespaces()
         while (true) {
             val peek = peekNext() ?: break
-            if (peek in '0'.code..'9'.code || peek in 'a'.code..'z'.code || peek in 'A'.code..'Z'.code || peek == '_'.code || peek == '-'.code || peek == '/'.code) {
+            if (peek.isWord()) {
                 builder.appendCodePoint(peek)
                 pointer++
                 continue
@@ -379,5 +379,10 @@ open class CommandReader(val string: String) {
     companion object {
         const val STRING_QUOTE = '"'.code
         const val STRING_SINGLE_QUOTE = '\''.code
+
+
+        fun Int.isWord(): Boolean {
+            return this in '0'.code..'9'.code || this in 'a'.code..'z'.code || this in 'A'.code..'Z'.code || this == '_'.code || this == '-'.code || this == '/'.code
+        }
     }
 }

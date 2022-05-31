@@ -19,6 +19,7 @@ import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.commands.stack.print.PlayerPrintTarget
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.CommandReader.Companion.isWord
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -29,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -119,8 +121,9 @@ class NodeTextInputElement(
         val string = suggestion.toString()
         val overlappingLength = KUtil.getOverlappingText(value, string)
         var nextValue = value
-        if (overlappingLength == 0) {
-            nextValue += " " // ToDo: Not 100% correct, check for word separator
+        val lastChar = value.codePointAtOrNull(value.length - 1)
+        if (overlappingLength == 0 && lastChar != null && lastChar.isWord()) {
+            nextValue += " "
         }
         nextValue += string.substring(overlappingLength, string.length)
         _set(nextValue)
