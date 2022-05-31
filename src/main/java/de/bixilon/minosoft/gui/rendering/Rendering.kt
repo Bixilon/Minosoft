@@ -89,7 +89,7 @@ class Rendering(private val connection: PlayConnection) {
             exception.printStackTrace()
             try {
                 renderWindow.window.destroy()
-                connection.fireEvent(WindowCloseEvent(window = renderWindow.window))
+                connection.fireEvent(WindowCloseEvent(renderWindow, window = renderWindow.window))
             } catch (ignored: Throwable) {
             }
             connection.network.disconnect()

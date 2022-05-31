@@ -15,12 +15,11 @@ package de.bixilon.minosoft.gui.rendering.modding.events.input
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 
 class MouseScrollEvent(
-    renderWindow: RenderWindow = Rendering.currentContext!!,
+    renderWindow: RenderWindow,
     offset: Vec2d,
 ) : RenderEvent(renderWindow), CancelableEvent {
     val offset: Vec2d = offset

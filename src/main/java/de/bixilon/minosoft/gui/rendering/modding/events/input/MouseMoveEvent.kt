@@ -15,11 +15,10 @@ package de.bixilon.minosoft.gui.rendering.modding.events.input
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
 
 class MouseMoveEvent(
-    renderWindow: RenderWindow = Rendering.currentContext!!,
+    renderWindow: RenderWindow,
     position: Vec2d,
     previous: Vec2d,
     delta: Vec2d,

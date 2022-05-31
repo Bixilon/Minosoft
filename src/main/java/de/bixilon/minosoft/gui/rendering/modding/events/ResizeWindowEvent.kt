@@ -15,10 +15,9 @@ package de.bixilon.minosoft.gui.rendering.modding.events
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Rendering
 
 class ResizeWindowEvent(
-    renderWindow: RenderWindow = Rendering.currentContext!!,
+    renderWindow: RenderWindow,
     val previousSize: Vec2i,
     val size: Vec2i,
 ) : RenderEvent(renderWindow)

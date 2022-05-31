@@ -95,6 +95,8 @@ class RenderWindow(
 
     private var slowRendering = profile.performance.slowRendering
 
+    lateinit var thread: Thread
+        private set
 
     var renderingState = RenderingStates.RUNNING
         private set(value) {
@@ -128,6 +130,10 @@ class RenderWindow(
 
     fun init(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
+        if (this::thread.isInitialized) {
+            throw IllegalStateException("Thread is already set!")
+        }
+        this.thread = Thread.currentThread()
         val stopwatch = Stopwatch()
 
         window.init(connection.profiles.rendering)
@@ -209,7 +215,7 @@ class RenderWindow(
         })
 
 
-        connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
+        connection.fireEvent(ResizeWindowEvent(this, previousSize = Vec2i(0, 0), size = window.size))
 
         textureManager.dynamicTextures.activate()
         textureManager.staticTextures.activate()
