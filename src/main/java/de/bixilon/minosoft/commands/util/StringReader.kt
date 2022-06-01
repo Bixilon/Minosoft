@@ -264,12 +264,14 @@ open class StringReader(val string: String) {
         return builder.toString()
     }
 
-    fun readWord(): String? {
+    fun readWord(skipWhitespace: Boolean = true): String? {
         if (!canPeek()) {
             return null
         }
         val builder = StringBuilder()
-        skipWhitespaces()
+        if (skipWhitespace) {
+            skipWhitespaces()
+        }
         while (true) {
             val peek = peekNext() ?: break
             if (peek.isWord()) {

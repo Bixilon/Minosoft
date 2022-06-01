@@ -19,6 +19,7 @@ import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser
 import de.bixilon.minosoft.commands.parser.brigadier._long.LongParser
 import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser
 import de.bixilon.minosoft.commands.parser.brigadier.string.StringParser
+import de.bixilon.minosoft.commands.parser.minecraft.color.ColorParser
 import de.bixilon.minosoft.commands.parser.minecraft.component.ChatComponentParser
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.angle.AngleParser
 import de.bixilon.minosoft.commands.parser.minecraft.coordinate.block.BlockPositionParser
@@ -62,6 +63,8 @@ object ArgumentParserFactories : DefaultFactory<ArgumentParserFactory<*>>(
     AngleParser,
     RotationParser,
 
+    ColorParser,
+
     ChatComponentParser,
 
     DummyParser,
@@ -77,7 +80,6 @@ minecraft:block_state
 minecraft:block_predicate
 minecraft:item_stack
 minecraft:item_predicate
-minecraft:color
 minecraft:message
 minecraft:nbt
 minecraft:nbt_path

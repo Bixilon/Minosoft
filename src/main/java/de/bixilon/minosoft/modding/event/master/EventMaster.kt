@@ -33,9 +33,11 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
     override val size: Int
         get() {
             var size = eventInvokers.size
+            parentLock.acquire()
             for (parent in parents) {
                 size += parent.size
             }
+            parentLock.release()
             return size
         }
 
