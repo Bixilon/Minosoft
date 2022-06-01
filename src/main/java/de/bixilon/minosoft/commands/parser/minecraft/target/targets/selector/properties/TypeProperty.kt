@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,9 +22,9 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 class TypeProperty(
     val type: ResourceLocation,
     val negated: Boolean,
-) : TargetProperty {
+) : EntityTargetProperty {
 
-    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
+    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
         if (negated) {
             return entity.type.resourceLocation != type
         }
@@ -32,7 +32,7 @@ class TypeProperty(
     }
 
 
-    companion object : TargetPropertyFactory<TypeProperty> {
+    companion object : EntityTargetPropertyFactory<TypeProperty> {
         override val name: String = "type"
 
         override fun read(reader: CommandReader): TypeProperty {

@@ -11,14 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
+package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
-import de.bixilon.minosoft.data.entities.entities.Entity
+// See https://minecraft.fandom.com/wiki/Target_selectors
+object ConnectionTargetProperties {
+    val properties: MutableMap<String, ConnectionTargetPropertyFactory<*>> = mutableMapOf()
 
-interface TargetProperty {
 
-    fun passes(properties: SelectorProperties, entity: Entity): Boolean
+    init {
+        register(StateProperty)
+        register(ConnectedProperty)
+    }
 
-    fun updateProperties(properties: SelectorProperties) = Unit
+    fun register(factory: ConnectionTargetPropertyFactory<*>) {
+        properties[factory.name] = factory
+    }
+
+    operator fun get(key: String): ConnectionTargetPropertyFactory<*>? {
+        return properties[key]
+    }
 }

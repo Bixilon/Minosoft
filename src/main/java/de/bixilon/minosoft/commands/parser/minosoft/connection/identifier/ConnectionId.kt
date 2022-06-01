@@ -11,45 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.identifier.name
+package de.bixilon.minosoft.commands.parser.minosoft.connection.identifier
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.world.WorldEntities
+import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionTarget
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class NameEntityTarget(
-    val name: String,
-) : EntityTarget {
+class ConnectionId(
+    val id: Int,
+) : ConnectionTarget {
 
-    override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
-        var entity: Entity? = null
-        entities.lock.acquire()
-        for (entry in entities) {
-            if (entry.customName?.message == name) {
-                entity = entry
-                break
+    override fun getConnections(connections: Collection<PlayConnection>): List<PlayConnection> {
+        for (connection in connections) {
+            if (connection.connectionId == id) {
+                return listOf(connection)
             }
         }
-        entities.lock.release()
-
-        if (entity == null) {
-            return emptyList()
-        }
-        return listOf(entity)
+        return emptyList()
     }
 
     override fun toString(): String {
-        return "{$name}"
+        return "{$id}"
     }
 
     override fun hashCode(): Int {
-        return name.hashCode()
+        return id
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is NameEntityTarget) {
+        if (other !is ConnectionId) {
             return false
         }
-        return name == other.name
+        return id == other.id
     }
 }

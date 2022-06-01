@@ -13,27 +13,27 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetPropertyFactory
 import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 
 class SortProperty(
     val sorting: Sorting,
-) : TargetProperty {
+) : EntityTargetProperty {
 
-    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
+    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
         return true
     }
 
-    override fun updateProperties(properties: SelectorProperties) {
+    override fun updateProperties(properties: EntitySelectorProperties) {
         sorting.sort(properties.center, properties.entities)
     }
 
 
-    companion object : TargetPropertyFactory<SortProperty> {
+    companion object : EntityTargetPropertyFactory<SortProperty> {
         override val name: String = "sort"
         private val parser = EnumParser(Sorting)
 

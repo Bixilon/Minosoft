@@ -11,27 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
+package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties
 
-import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser.Companion.readRequiredInt
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.entities.entities.Entity
 
-class LimitProperty(
-    val limit: Int,
-) : EntityTargetProperty {
+interface ConnectionTargetPropertyFactory<T : ConnectionTargetProperty> {
+    val name: String
 
-    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
-        return properties.entities.size < limit
-    }
-
-
-    companion object : EntityTargetPropertyFactory<LimitProperty> {
-        override val name: String = "limit"
-
-        override fun read(reader: CommandReader): LimitProperty {
-            return LimitProperty(reader.readRequiredInt())
-        }
-    }
+    fun read(reader: CommandReader): T
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pr
 
 import de.bixilon.minosoft.commands.util.CommandReader
 
-interface TargetPropertyFactory<T : TargetProperty> {
+interface EntityTargetPropertyFactory<T : EntityTargetProperty> {
     val name: String
 
     fun read(reader: CommandReader): T

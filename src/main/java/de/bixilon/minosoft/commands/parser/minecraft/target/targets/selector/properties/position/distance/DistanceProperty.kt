@@ -15,28 +15,28 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pr
 
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRange
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetPropertyFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 
 class DistanceProperty(
     val range: FloatRange,
-) : TargetProperty {
+) : EntityTargetProperty {
 
     init {
         check(range.min >= 0.0) { "Minimum distance can not be below 0" }
         check(range.max >= range.min) { "Maximum distance can not be smaller than minimum distance" }
     }
 
-    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
+    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
         val entityPosition = entity.position
 
         return (entityPosition - properties.center).length().toFloat() in range
     }
 
-    companion object : TargetPropertyFactory<DistanceProperty> {
+    companion object : EntityTargetPropertyFactory<DistanceProperty> {
         override val name: String = "distance"
         private val parser = FloatRangeParser(0.0f)
 

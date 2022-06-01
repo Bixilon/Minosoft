@@ -16,7 +16,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.commands.parser.minecraft.target.TargetSelectors
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.EntityTarget
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.XCenterProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.YCenterProperty
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center.ZCenterProperty
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.world.WorldEntities
 
 class SelectorEntityTarget(
     val selector: TargetSelectors,
-    val properties: Map<String, TargetProperty>,
+    val properties: Map<String, EntityTargetProperty>,
 ) : EntityTarget {
 
     override fun getEntities(executor: Entity?, entities: WorldEntities): List<Entity> {
@@ -37,7 +37,7 @@ class SelectorEntityTarget(
         }
         entities.lock.release()
 
-        val selectorProperties = SelectorProperties(
+        val selectorProperties = EntitySelectorProperties(
             entities = selected,
             center = executor?.position ?: Vec3d(),
             executor = executor,

@@ -11,13 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
+package de.bixilon.minosoft.commands.parser.minosoft.connection
 
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-data class SelectorProperties(
-    val entities: MutableList<Entity>,
-    val center: Vec3d,
-    val executor: Entity?,
-)
+interface ConnectionTarget {
+
+    fun getConnections(connections: Collection<PlayConnection>): List<PlayConnection>
+}

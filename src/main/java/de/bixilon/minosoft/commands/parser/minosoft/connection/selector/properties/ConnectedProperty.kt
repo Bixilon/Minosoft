@@ -11,27 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
+package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties
 
-import de.bixilon.minosoft.commands.parser.brigadier._int.IntParser.Companion.readRequiredInt
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
+import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
+import de.bixilon.minosoft.commands.parser.brigadier.bool.BooleanParser.readBoolean
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-class LimitProperty(
-    val limit: Int,
-) : EntityTargetProperty {
+class ConnectedProperty(
+    val connected: Boolean,
+) : ConnectionTargetProperty {
 
-    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
-        return properties.entities.size < limit
+    override fun passes(connection: PlayConnection): Boolean {
+        val connected = connection.network.connected
+        return connected == this.connected
     }
 
+    companion object : ConnectionTargetPropertyFactory<ConnectedProperty> {
+        override val name: String = "connected"
 
-    companion object : EntityTargetPropertyFactory<LimitProperty> {
-        override val name: String = "limit"
-
-        override fun read(reader: CommandReader): LimitProperty {
-            return LimitProperty(reader.readRequiredInt())
+        override fun read(reader: CommandReader): ConnectedProperty {
+            return ConnectedProperty(reader.readBoolean() ?: throw ExpectedArgumentError(reader))
         }
     }
 }

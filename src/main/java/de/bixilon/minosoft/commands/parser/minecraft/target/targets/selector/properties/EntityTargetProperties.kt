@@ -22,8 +22,8 @@ import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pro
 import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.sort.SortProperty
 
 // See https://minecraft.fandom.com/wiki/Target_selectors
-object TargetProperties {
-    val properties: MutableMap<String, TargetPropertyFactory<*>> = mutableMapOf()
+object EntityTargetProperties {
+    val properties: MutableMap<String, EntityTargetPropertyFactory<*>> = mutableMapOf()
 
 
     init {
@@ -55,11 +55,11 @@ object TargetProperties {
          */
     }
 
-    fun register(factory: TargetPropertyFactory<*>) {
+    fun register(factory: EntityTargetPropertyFactory<*>) {
         properties[factory.name] = factory
     }
 
-    operator fun get(key: String): TargetPropertyFactory<*>? {
+    operator fun get(key: String): EntityTargetPropertyFactory<*>? {
         return properties[key]
     }
 }

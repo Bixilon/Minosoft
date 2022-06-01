@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pr
 
 import de.bixilon.minosoft.commands.parser.brigadier._double.DoubleParseError
 import de.bixilon.minosoft.commands.parser.brigadier._double.DoubleParser.Companion.readDouble
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetPropertyFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.Axes
 
@@ -23,7 +23,7 @@ class XCenterProperty(
     value: Double,
 ) : CenterProperty(Axes.X, value) {
 
-    companion object : TargetPropertyFactory<XCenterProperty> {
+    companion object : EntityTargetPropertyFactory<XCenterProperty> {
         override val name: String = "x"
 
         override fun read(reader: CommandReader): XCenterProperty {

@@ -11,23 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.rotation
+package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector
 
-import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRange
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
-import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.entities.Entity
 
-interface RotationProperty : EntityTargetProperty {
-    val range: FloatRange
-
-    fun getValue(rotation: EntityRotation): Double
-
-
-    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
-        val rotation = getValue(entity.rotation)
-
-        return rotation.toFloat() in range
-    }
-}
+data class EntitySelectorProperties(
+    val entities: MutableList<Entity>,
+    val center: Vec3d,
+    val executor: Entity?,
+)

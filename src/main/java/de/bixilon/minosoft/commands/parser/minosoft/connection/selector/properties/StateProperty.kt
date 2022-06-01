@@ -11,32 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
+package de.bixilon.minosoft.commands.parser.minosoft.connection.selector.properties
 
 import de.bixilon.minosoft.commands.errors.ExpectedArgumentError
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
+import de.bixilon.minosoft.commands.parser.minosoft.enums.EnumParser
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 
-class NameProperty(
-    val name: String,
+class StateProperty(
+    val state: PlayConnectionStates,
     val negated: Boolean,
-) : EntityTargetProperty {
+) : ConnectionTargetProperty {
 
-    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
-        // ToDo: Check player name?
+    override fun passes(connection: PlayConnection): Boolean {
+        val state = connection.state
         if (negated) {
-            return entity.customName?.message != name
+            return state != this.state
         }
-        return entity.customName?.message == name
+        return state == this.state
     }
 
-    companion object : EntityTargetPropertyFactory<NameProperty> {
-        override val name: String = "name"
+    companion object : ConnectionTargetPropertyFactory<StateProperty> {
+        private val parser = EnumParser(PlayConnectionStates)
+        override val name: String = "state"
 
-        override fun read(reader: CommandReader): NameProperty {
-            val (word, negated) = reader.readNegateable { readWord() ?: throw ExpectedArgumentError(reader) } ?: throw ExpectedArgumentError(reader)
-            return NameProperty(word, negated)
+        override fun read(reader: CommandReader): StateProperty {
+            val (word, negated) = reader.readNegateable { parser.parse(reader) } ?: throw ExpectedArgumentError(reader)
+            return StateProperty(word, negated)
         }
     }
 }

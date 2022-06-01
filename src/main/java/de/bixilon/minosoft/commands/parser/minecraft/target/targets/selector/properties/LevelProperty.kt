@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties
 
 import de.bixilon.minosoft.commands.parser.minecraft.range._int.IntRangeParser
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.entities.Entity
 
 class LevelProperty(
     val range: IntRange,
-) : TargetProperty {
+) : EntityTargetProperty {
 
-    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
+    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
         TODO()
     }
 
-    companion object : TargetPropertyFactory<LevelProperty> {
+    companion object : EntityTargetPropertyFactory<LevelProperty> {
         override val name: String = "level"
         private val parser = IntRangeParser()
 

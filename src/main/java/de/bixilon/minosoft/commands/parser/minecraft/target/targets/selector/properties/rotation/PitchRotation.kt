@@ -15,7 +15,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.pr
 
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRange
 import de.bixilon.minosoft.commands.parser.minecraft.range._float.FloatRangeParser
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetPropertyFactory
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetPropertyFactory
 import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.entities.EntityRotation
 
@@ -28,7 +28,7 @@ class PitchRotation(
     }
 
 
-    companion object : TargetPropertyFactory<YawRotation> {
+    companion object : EntityTargetPropertyFactory<YawRotation> {
         const val MIN = -90.0f
         const val MAX = 90.0f
         override val name: String = "x_rotation"

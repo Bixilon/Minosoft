@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.position.center
 
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.SelectorProperties
-import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.TargetProperty
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.EntitySelectorProperties
+import de.bixilon.minosoft.commands.parser.minecraft.target.targets.selector.properties.EntityTargetProperty
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
@@ -22,13 +22,13 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
 abstract class CenterProperty(
     val axis: Axes,
     val value: Double,
-) : TargetProperty {
+) : EntityTargetProperty {
 
-    override fun passes(properties: SelectorProperties, entity: Entity): Boolean {
+    override fun passes(properties: EntitySelectorProperties, entity: Entity): Boolean {
         return true
     }
 
-    override fun updateProperties(properties: SelectorProperties) {
+    override fun updateProperties(properties: EntitySelectorProperties) {
         properties.center[axis] = value
     }
 }
