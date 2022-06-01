@@ -38,7 +38,7 @@ class EnumParser<E : Enum<*>>(
         return values.getOrNull(readWord()?.lowercase()) // ToDo: Allow ordinals
     }
 
-    override fun getSuggestions(reader: CommandReader): List<E> {
+    override fun getSuggestions(reader: CommandReader): Collection<E> {
         val text = reader.readResult { reader.readWord() }
         if (text.result == null) {
             return examples

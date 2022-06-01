@@ -15,9 +15,9 @@ package de.bixilon.minosoft.commands.suggestion
 
 import de.bixilon.minosoft.commands.suggestion.types.SuggestionType
 
-class ArraySuggestion<T>(val values: List<T>, val ignoreCase: Boolean = false) : SuggestionType<T> {
+class ArraySuggestion<T>(val values: Collection<T>, val ignoreCase: Boolean = false) : SuggestionType<T> {
 
-    override fun suggest(input: String?): List<T>? {
+    override fun suggest(input: String?): Collection<T>? {
         if (input == null || input.isBlank()) {
             return values
         }

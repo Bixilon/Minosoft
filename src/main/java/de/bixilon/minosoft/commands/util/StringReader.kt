@@ -197,8 +197,10 @@ open class StringReader(val string: String) {
         }
     }
 
-    fun readString(): String? {
-        skipWhitespaces()
+    fun readString(skipWhitespace: Boolean = true): String? {
+        if (skipWhitespace) {
+            skipWhitespaces()
+        }
         val start = peekNext() ?: return null
         if (start == STRING_QUOTE || start == STRING_SINGLE_QUOTE) {
             return readQuotedString()

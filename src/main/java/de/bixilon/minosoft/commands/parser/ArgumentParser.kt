@@ -21,5 +21,5 @@ interface ArgumentParser<T> {
     val placeholder: ChatComponent
 
     fun parse(reader: CommandReader): T
-    fun getSuggestions(reader: CommandReader): List<Any?>
+    fun getSuggestions(reader: CommandReader): Collection<Any?>
 }

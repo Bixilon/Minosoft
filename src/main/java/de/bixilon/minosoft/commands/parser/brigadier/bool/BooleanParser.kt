@@ -52,7 +52,7 @@ object BooleanParser : BrigadierParser<Boolean>, ArgumentParserFactory<BooleanPa
         if (text.result == null) {
             return examples
         }
-        return suggestion.suggest(text.result) ?: throw NoSuggestionError(reader, text)
+        return suggestion.suggest(text.result)?.toList() ?: throw NoSuggestionError(reader, text)
     }
 
     override fun read(buffer: PlayInByteBuffer) = this

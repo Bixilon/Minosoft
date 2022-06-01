@@ -72,7 +72,7 @@ class NodeTextInputElement(
     override fun onChange() {
         val value = value
         try {
-            suggestions.suggestions = node.getSuggestions(CommandReader(value), createStack())
+            suggestions.suggestions = node.getSuggestions(CommandReader(value), createStack()).toList()
             updateError(null)
         } catch (exception: Throwable) {
             if (exception !is ReaderError) {

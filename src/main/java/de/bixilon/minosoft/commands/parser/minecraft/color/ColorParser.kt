@@ -15,7 +15,9 @@ package de.bixilon.minosoft.commands.parser.minecraft.color
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
+import de.bixilon.minosoft.commands.suggestion.ArraySuggestion
 import de.bixilon.minosoft.commands.util.CommandReader
+import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -27,8 +29,9 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ColorParser(
     val supportsRGB: Boolean = true,
 ) : ArgumentParser<RGBColor> {
-    override val examples: List<Any> = listOf()
+    override val examples: List<Any> = listOf("red", "yellow")
     override val placeholder = ChatComponent.of("<color>")
+    private val suggestions = ArraySuggestion(ChatColors.NAME_MAP.keys, true)
 
     override fun parse(reader: CommandReader): RGBColor {
         reader.readResult { reader.readColor() }.let { return it.result ?: throw ColorParseError(reader, it) }
@@ -48,18 +51,31 @@ class ColorParser(
                 null
             }
         }
-        val string = readString() ?: return null
+        val string = readString(false) ?: return null
         if (string == "reset") {
             return ChatColors.WHITE // ToDo
         }
         return ChatColors.NAME_MAP[string.lowercase()]
     }
 
-    override fun getSuggestions(reader: CommandReader): List<Any> {
-        if (reader.readString()?.isBlank() != false) {
-            return examples
+    override fun getSuggestions(reader: CommandReader): Collection<Any> {
+        if (reader.peek() == '#'.code) {
+            reader.read()
+            if (!supportsRGB) {
+                throw HexNotSupportedError(reader, reader.readResult { reader.read()!!.toChar() })
+            }
+            val pointer = reader.pointer
+            val hex = reader.readWord(false) ?: return emptyList()
+            try {
+                hex.asColor()
+            } catch (exception: NumberFormatException) {
+                throw ColorParseError(reader, ReadResult(pointer, reader.pointer, hex, null))
+            }
+            return emptyList()
         }
-        return emptyList()
+        val pointer = reader.pointer
+        val string = reader.readWord()
+        return suggestions.suggest(string) ?: throw ColorParseError(reader, ReadResult(pointer, reader.pointer, string ?: "", null))
     }
 
 

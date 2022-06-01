@@ -53,7 +53,7 @@ class ArgumentNode : ExecutableNode {
         super.execute(reader, stack)
     }
 
-    override fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
         reader.skipWhitespaces(1)
         val pointer = reader.pointer
         val stackSize = stack.size

@@ -57,7 +57,7 @@ class ChatNode(
         return null
     }
 
-    override fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+    override fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
         if (reader.string.isEmpty()) {
             return emptyList()
         }

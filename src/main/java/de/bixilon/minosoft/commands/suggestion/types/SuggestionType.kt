@@ -15,5 +15,5 @@ package de.bixilon.minosoft.commands.suggestion.types
 
 interface SuggestionType<T> {
 
-    fun suggest(input: String?): List<T>?
+    fun suggest(input: String?): Collection<T>?
 }

@@ -31,7 +31,7 @@ class RootNode : CommandNode {
         execute(CommandReader(command), stack)
     }
 
-    fun getSuggestions(command: String): List<Any?> {
+    fun getSuggestions(command: String): Collection<Any?> {
         return getSuggestions(CommandReader(command), CommandStack())
     }
 }

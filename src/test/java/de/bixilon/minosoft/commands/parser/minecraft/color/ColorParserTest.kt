@@ -36,6 +36,14 @@ internal class ColorParserTest {
         assertEquals(parser.parse(reader), ChatColors.GREEN)
     }
 
+
+    @Test
+    fun testInvalidColor() {
+        val reader = CommandReader("invalid")
+        val parser = ColorParser()
+        assertThrows<ColorParseError> { parser.parse(reader) }
+    }
+
     @Test
     fun testHexBlack() {
         val reader = CommandReader("#000000")
@@ -62,5 +70,26 @@ internal class ColorParserTest {
         val reader = CommandReader("#ABCDEF")
         val parser = ColorParser(supportsRGB = false)
         assertThrows<HexNotSupportedError> { parser.parse(reader) }
+    }
+
+    @Test
+    fun testYellowSuggestions() {
+        val reader = CommandReader("y")
+        val parser = ColorParser()
+        assertEquals(parser.getSuggestions(reader), listOf("yellow"))
+    }
+
+    @Test
+    fun testHexSuggestion() {
+        val reader = CommandReader("#")
+        val parser = ColorParser()
+        assertEquals(parser.getSuggestions(reader), emptyList())
+    }
+
+    @Test
+    fun testInvalidColorSuggestion() {
+        val reader = CommandReader("none")
+        val parser = ColorParser()
+        assertThrows<ColorParseError> { parser.getSuggestions(reader) }
     }
 }

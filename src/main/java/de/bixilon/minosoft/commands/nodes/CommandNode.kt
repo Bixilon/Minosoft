@@ -61,7 +61,7 @@ abstract class CommandNode(
     }
 
 
-    open fun getSuggestions(reader: CommandReader, stack: CommandStack): List<Any?> {
+    open fun getSuggestions(reader: CommandReader, stack: CommandStack): Collection<Any?> {
         checkForDeadEnd(reader)
         val suggestions: MutableList<Any?> = mutableListOf()
 
