@@ -13,13 +13,17 @@
 
 package de.bixilon.minosoft.gui.eros.util
 
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import javafx.scene.image.Image
+import javafx.scene.image.PixelReader
+import javafx.scene.image.PixelWriter
 import javafx.scene.image.WritableImage
 import java.io.ByteArrayInputStream
 
 
 object JavaFXAccountUtil {
+    const val HEAD_SIZE = 8
 
     val Account.avatar: Image
         get() {
@@ -28,7 +32,23 @@ object JavaFXAccountUtil {
             }
             return this.properties?.textures?.skin?.read()?.let {
                 val image = Image(ByteArrayInputStream(it), 0.0, 0.0, true, false)
-                return@let WritableImage(image.pixelReader, 8, 8, 8, 8)
+                val written = WritableImage(image.pixelReader, HEAD_SIZE, HEAD_SIZE, 8, 8)
+                if (ErosProfileManager.selected.general.renderSkinOverlay) {
+                    written.pixelWriter.writeNonTransparent(0, 0, HEAD_SIZE, HEAD_SIZE, image.pixelReader, 40, 8)
+                }
+                return@let written
             } ?: JavaFXUtil.MINOSOFT_LOGO
         }
+
+    private fun PixelWriter.writeNonTransparent(dX: Int, dY: Int, width: Int, height: Int, reader: PixelReader, sX: Int, sY: Int) {
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                val color = reader.getArgb(sX + x, sY + y)
+                if (color ushr 24 == 0) {
+                    continue
+                }
+                setArgb(dX + x, dY + y, color)
+            }
+        }
+    }
 }

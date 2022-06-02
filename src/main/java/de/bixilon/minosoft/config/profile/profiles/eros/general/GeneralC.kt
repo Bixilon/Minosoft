@@ -43,4 +43,10 @@ class GeneralC {
      * If profile is not set or not found, the global default profile is used
      */
     var profileOverrides: MutableMap<ResourceLocation, String> by mapDelegate()
+
+
+    /**
+     * Renders the skin overlay (hat) above the head (used for avatars)
+     */
+    var renderSkinOverlay by delegate(true)
 }
