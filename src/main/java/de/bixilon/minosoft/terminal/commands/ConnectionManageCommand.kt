@@ -16,10 +16,13 @@ package de.bixilon.minosoft.terminal.commands
 import de.bixilon.jiibles.Table
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.minosoft.commands.nodes.ArgumentNode
+import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.nodes.LiteralNode
 import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionParser
 import de.bixilon.minosoft.commands.parser.minosoft.connection.ConnectionTarget
+import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.terminal.cli.CLI
 
 object ConnectionManageCommand : Command {
     override var node = LiteralNode("connection")
@@ -38,6 +41,54 @@ object ConnectionManageCommand : Command {
                 }
                 it.print.print(table)
             })
-                .addChild(ArgumentNode("filter", ConnectionParser, executable = true))
+                .addChild(ArgumentNode("filter", ConnectionParser, executable = true)),
+            LiteralNode("disconnect")
+                .addFilter { stack, connections ->
+                    var disconnects = 0
+                    for (connection in connections) {
+                        if (!connection.network.connected) {
+                            continue
+                        }
+                        connection.network.disconnect()
+                        disconnects++
+                    }
+                    stack.print.print("Disconnected from $disconnects connections.")
+                },
+            LiteralNode("select")
+                .addFilter { stack, connections ->
+                    var toSelect: PlayConnection? = null
+                    for (connection in connections) {
+                        if (!connection.network.connected) {
+                            continue
+                        }
+                        if (toSelect != null) {
+                            stack.print.print("Can not select multiple connections!")
+                            return@addFilter
+                        }
+                        toSelect = connection
+                    }
+                    if (toSelect == null) {
+                        stack.print.print("No connection matched your filter!")
+                        return@addFilter
+                    }
+                    CLI.connection = toSelect
+                    stack.print.print("Selected ${toSelect.connectionId}")
+                },
         )
+
+
+    private fun CommandNode.addFilter(executor: (stack: CommandStack, connections: Collection<PlayConnection>) -> Unit): CommandNode {
+        val node = ArgumentNode("filter", ConnectionParser, executor = {
+            val connections = PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedList()
+            connections += PlayConnection.ERRORED_CONNECTIONS.toSynchronizedList()
+            val filteredConnections = it.get<ConnectionTarget?>("filter")?.getConnections(connections) ?: connections
+            if (filteredConnections.isEmpty()) {
+                it.print.print("No connection matched your filter!")
+                return@ArgumentNode
+            }
+            executor(it, connections)
+        })
+        addChild(node)
+        return node
+    }
 }

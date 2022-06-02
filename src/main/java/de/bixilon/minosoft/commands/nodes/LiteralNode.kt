@@ -38,8 +38,8 @@ class LiteralNode : ExecutableNode {
 
     constructor(builder: CommandNodeBuilder) : this(builder.name ?: throw NullPointerException("No name in builder!"), setOf(), builder.suggestionType, builder.executable)
 
-    override fun addChild(node: CommandNode): LiteralNode {
-        super.addChild(node)
+    override fun addChild(vararg node: CommandNode): LiteralNode {
+        super.addChild(*node)
         return this
     }
 

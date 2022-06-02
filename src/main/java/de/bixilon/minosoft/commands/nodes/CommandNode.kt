@@ -24,7 +24,7 @@ abstract class CommandNode(
 ) {
     protected val children: MutableList<CommandNode> = mutableListOf()
 
-    open fun addChild(node: CommandNode): CommandNode {
+    open fun addChild(vararg node: CommandNode): CommandNode {
         children += node
         return this
     }

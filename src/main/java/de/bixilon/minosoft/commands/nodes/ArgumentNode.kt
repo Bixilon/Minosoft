@@ -41,8 +41,8 @@ class ArgumentNode : ExecutableNode {
 
     constructor(builder: CommandNodeBuilder) : this(builder.name ?: throw NullPointerException("No name in builder!"), builder.parser ?: throw NullPointerException("No parser in builder!"), builder.suggestionType, builder.executable)
 
-    override fun addChild(node: CommandNode): ArgumentNode {
-        super.addChild(node)
+    override fun addChild(vararg node: CommandNode): ArgumentNode {
+        super.addChild(*node)
         return this
     }
 
