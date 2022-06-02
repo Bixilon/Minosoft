@@ -49,4 +49,10 @@ class GeneralC {
      * Renders the skin overlay (hat) above the head (used for avatars)
      */
     var renderSkinOverlay by delegate(true)
+
+    /**
+     * Hides eros (all eros windows) once a connection with a server is successfully established.
+     * Will also show it again, once it got disconnected
+     */
+    var hideErosOnceConnected by delegate(false)
 }

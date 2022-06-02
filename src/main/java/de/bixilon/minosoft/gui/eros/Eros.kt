@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros
 
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -20,6 +21,7 @@ import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import javafx.stage.Window
 
 object Eros {
     private val TITLE = "minosoft:eros_window_title".toResourceLocation()
@@ -28,6 +30,31 @@ object Eros {
     lateinit var mainErosController: MainErosController
 
     var skipErosStartup = false
+
+    var initialized = false
+        private set
+
+    var visible: Boolean = false
+        private set
+
+
+    @Synchronized
+    fun setVisibility(visible: Boolean) {
+        if (visible == this.visible) {
+            return
+        }
+        if (!initialized) {
+            return
+        }
+        if (visible) {
+            mainErosController.stage.show()
+        } else {
+            for (window in Window.getWindows().toSynchronizedSet()) {
+                JavaFXUtil.runLater { window.hide() }
+            }
+        }
+        this.visible = visible
+    }
 
 
     init {
@@ -53,6 +80,8 @@ object Eros {
         JavaFXUtil.openModalAsync<MainErosController>(TITLE, LAYOUT) {
             mainErosController = it
             it.stage.show()
+            initialized = true
+            visible = true
         }
     }
 }

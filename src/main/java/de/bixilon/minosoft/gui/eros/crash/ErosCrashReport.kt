@@ -143,7 +143,7 @@ class ErosCrashReport : JavaFXWindowController() {
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
             tryCatch(executor = { FileWatcherService.stop() })
             tryCatch(executor = {
-                for (window in Window.getWindows()) {
+                for (window in Window.getWindows().toSynchronizedSet()) {
                     JavaFXUtil.runLater { window.hide() }
                 }
             })

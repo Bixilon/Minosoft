@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server
 
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
@@ -41,6 +42,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.KickEvent
 import de.bixilon.minosoft.modding.event.events.LoginKickEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
@@ -138,6 +140,24 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 if (it.disconnected) {
                     account.connections -= server
                     serverCard.connections -= connection
+                }
+                if (ErosProfileManager.selected.general.hideErosOnceConnected) {
+                    if (connection.network.connected) {
+                        if (connection.state == PlayConnectionStates.PLAYING) {
+                            Eros.setVisibility(false)
+                        }
+                    } else {
+                        var connected = false
+                        for (entry in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                            if (entry.network.connected) {
+                                connected = true
+                                break
+                            }
+                        }
+                        if (!connected) {
+                            Eros.setVisibility(true)
+                        }
+                    }
                 }
                 JavaFXUtil.runLater { updateServer(server, true) }
             }
