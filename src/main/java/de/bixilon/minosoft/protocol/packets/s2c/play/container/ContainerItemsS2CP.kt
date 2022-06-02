@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE_1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -29,17 +29,19 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val containerId = buffer.readUnsignedByte()
-    val revision: Int = if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val revision: Int = if (buffer.versionId >= V_1_17_1_PRE1) {
         buffer.readVarInt()
     } else {
         -1
     }
-    val items: Array<ItemStack?> = buffer.readArray(if (buffer.versionId >= V_1_17_1_PRE_1) {
-        buffer.readVarInt()
-    } else {
-        buffer.readUnsignedShort()
-    }) { buffer.readItemStack() }
-    val cursor = if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val items: Array<ItemStack?> = buffer.readArray(
+        if (buffer.versionId >= V_1_17_1_PRE1) {
+            buffer.readVarInt()
+        } else {
+            buffer.readUnsignedShort()
+        }
+    ) { buffer.readItemStack() }
+    val cursor = if (buffer.versionId >= V_1_17_1_PRE1) {
         buffer.readItemStack()
     } else {
         null

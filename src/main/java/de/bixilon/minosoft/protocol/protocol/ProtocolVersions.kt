@@ -15,11 +15,11 @@ package de.bixilon.minosoft.protocol.protocol
 @Suppress("UNUSED")
 object ProtocolVersions {
     const val V_1_19_RC1 = 846
-    const val V_1_19_PRE_5 = 845
-    const val V_1_19_PRE_4 = 844
-    const val V_1_19_PRE_3 = 843
-    const val V_1_19_PRE_2 = 842
-    const val V_1_19_PRE_1 = 841
+    const val V_1_19_PRE5 = 845
+    const val V_1_19_PRE4 = 844
+    const val V_1_19_PRE3 = 843
+    const val V_1_19_PRE2 = 842
+    const val V_1_19_PRE1 = 841
     const val V_22W19A = 840
     const val V_22W18A = 839
     const val V_22W17A = 838
@@ -32,9 +32,9 @@ object ProtocolVersions {
     const val V_22W11A = 830
     const val V_1_18_2 = 829
     const val V_1_18_2_RC1 = 828
-    const val V_1_18_2_PRE_3 = 827
-    const val V_1_18_2_PRE_2 = 826
-    const val V_1_18_2_PRE_1 = 825
+    const val V_1_18_2_PRE3 = 827
+    const val V_1_18_2_PRE2 = 826
+    const val V_1_18_2_PRE1 = 825
     const val V_22W07A = 824
     const val V_22W06A = 823
     const val V_22W05A = 822
@@ -68,9 +68,9 @@ object ProtocolVersions {
     const val V_1_17_1 = 794
     const val V_1_17_1_RC2 = 793
     const val V_1_17_1_RC1 = 792
-    const val V_1_17_1_PRE_3 = 791
-    const val V_1_17_1_PRE_2 = 790
-    const val V_1_17_1_PRE_1 = 789
+    const val V_1_17_1_PRE3 = 791
+    const val V_1_17_1_PRE2 = 790
+    const val V_1_17_1_PRE1 = 789
     const val V_1_17 = 788
     const val V_1_17_RC2 = 787
     const val V_1_17_RC1 = 786

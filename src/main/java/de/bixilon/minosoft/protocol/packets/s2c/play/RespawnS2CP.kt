@@ -91,7 +91,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (buffer.versionId >= ProtocolVersions.V_20W18A) {
             copyMetaData = buffer.readBoolean()
         }
-        if (buffer.versionId >= ProtocolVersions.V_1_19_PRE_2) {
+        if (buffer.versionId >= ProtocolVersions.V_1_19_PRE2) {
             lastDeathPosition = buffer.readPlayOptional { GlobalPositionEntityDataType.read(this) }
         }
     }

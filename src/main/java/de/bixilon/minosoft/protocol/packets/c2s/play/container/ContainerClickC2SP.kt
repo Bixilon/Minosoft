@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE_1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -35,17 +35,17 @@ class ContainerClickC2SP(
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByte(containerId)
-        if (buffer.versionId >= V_1_17_1_PRE_1) {
+        if (buffer.versionId >= V_1_17_1_PRE1) {
             buffer.writeVarInt(revision)
         }
 
         buffer.writeShort(slot ?: -999)
         buffer.writeByte(button)
-        if (buffer.versionId < V_1_17_1_PRE_1) { // ToDo
+        if (buffer.versionId < V_1_17_1_PRE1) { // ToDo
             buffer.writeShort(actionId)
         }
         buffer.writeVarInt(mode) // was byte in protocol
-        if (buffer.versionId >= V_1_17_1_PRE_1) { // ToDo
+        if (buffer.versionId >= V_1_17_1_PRE1) { // ToDo
             buffer.writeVarInt(next.size)
             for ((slot, value) in next) {
                 buffer.writeShort(slot)

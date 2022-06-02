@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
-import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
@@ -140,7 +139,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
                 isEnableRespawnScreen = buffer.readBoolean()
             }
-            if (buffer.versionId >= ProtocolVersions.V_1_19_PRE_2) {
+            if (buffer.versionId >= ProtocolVersions.V_1_19_PRE2) {
                 lastDeathPosition = buffer.readPlayOptional { GlobalPositionEntityDataType.read(this) }
             }
         }

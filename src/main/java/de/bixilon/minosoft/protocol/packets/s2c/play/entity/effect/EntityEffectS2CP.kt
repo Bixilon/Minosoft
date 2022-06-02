@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_18_2_PRE_1
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_18_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W12A
 import de.bixilon.minosoft.util.BitByte.isBitMask
@@ -66,7 +66,7 @@ class EntityEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     private fun PlayInByteBuffer.readStatusEffectInstance(): StatusEffectInstance {
-        val effectId = if (versionId < V_1_18_2_PRE_1) {
+        val effectId = if (versionId < V_1_18_2_PRE1) {
             readUnsignedByte()
         } else {
             readVarInt()
