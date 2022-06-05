@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.natives
 
+import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import io.netty.channel.Channel
 import io.netty.channel.EventLoopGroup
-import io.netty.channel.epoll.Epoll
 
 interface TransportNatives {
     val pool: EventLoopGroup
@@ -25,11 +25,7 @@ interface TransportNatives {
     companion object {
 
         fun get(): TransportNatives {
-            if (Epoll.isAvailable()) {
-                return EpollNatives
-            }
-
-            return NioNatives
+            return tryCatch { EpollNatives } ?: NioNatives
         }
     }
 }

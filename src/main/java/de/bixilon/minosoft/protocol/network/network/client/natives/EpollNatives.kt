@@ -15,10 +15,17 @@ package de.bixilon.minosoft.protocol.network.network.client.natives
 
 import de.bixilon.minosoft.protocol.network.network.client.NamedThreadFactory
 import io.netty.channel.Channel
+import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
 import io.netty.channel.epoll.EpollSocketChannel
 
 object EpollNatives : TransportNatives {
     override val pool by lazy { EpollEventLoopGroup(NamedThreadFactory("Epoll#%d")) }
     override val channel: Class<out Channel> = EpollSocketChannel::class.java
+
+    init {
+        if (!Epoll.isAvailable()) {
+            throw IllegalStateException("Epoll is not available!")
+        }
+    }
 }
