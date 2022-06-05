@@ -244,7 +244,7 @@
             <id>generic-linux</id>
             <activation>
                 <os>
-                    <family>unix</family>
+                    <family>linux</family>
                 </os>
             </activation>
             <dependencies>
@@ -260,7 +260,7 @@
             <id>not-generic-linux</id>
             <activation>
                 <os>
-                    <family>!unix</family>
+                    <family>!linux</family>
                 </os>
             </activation>
             <dependencies>
