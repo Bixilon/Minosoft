@@ -42,8 +42,8 @@ object ConnectionManageCommand : Command {
                 it.print.print(table)
             })
                 .addChild(ArgumentNode("filter", ConnectionParser, executable = true)),
-            LiteralNode("disconnect")
-                .addFilter { stack, connections ->
+            LiteralNode("disconnect").apply {
+                addFilter { stack, connections ->
                     var disconnects = 0
                     for (connection in connections) {
                         if (!connection.network.connected) {
@@ -53,9 +53,10 @@ object ConnectionManageCommand : Command {
                         disconnects++
                     }
                     stack.print.print("Disconnected from $disconnects connections.")
-                },
-            LiteralNode("select")
-                .addFilter { stack, connections ->
+                }
+            },
+            LiteralNode("select").apply {
+                addFilter { stack, connections ->
                     var toSelect: PlayConnection? = null
                     for (connection in connections) {
                         if (!connection.network.connected) {
@@ -73,7 +74,8 @@ object ConnectionManageCommand : Command {
                     }
                     CLI.connection = toSelect
                     stack.print.print("Selected ${toSelect.connectionId}")
-                },
+                }
+            },
         )
 
 

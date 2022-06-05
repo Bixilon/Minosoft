@@ -47,10 +47,10 @@ open class TextInputElement(
     val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    private val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
-    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
-    private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
-    private var cursorOffset: Vec2i = Vec2i.EMPTY
+    protected val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
+    protected val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
+    protected val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
+    protected var cursorOffset: Vec2i = Vec2i.EMPTY
     val _value = StringBuffer(256)
     var value: String
         get() = _value.toString()
