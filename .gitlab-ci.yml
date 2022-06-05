@@ -17,4 +17,8 @@ build:
     - master
     - merge_requests
   script:
-    - 'mvn $MAVEN_CLI_OPTS compile'
+    - 'mvn $MAVEN_CLI_OPTS verify'
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
