@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateSine
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
+import de.bixilon.kutil.math.simple.DoubleMath.floor
 
 object Vec3dUtil {
 
@@ -34,6 +35,11 @@ object Vec3dUtil {
     val Vec3d.Companion.MAX: Vec3d
         get() = Vec3d(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
 
+    val Vec3d.floor: Vec3i
+        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
+
+    val Vec3d.blockPosition: Vec3i
+        get() = this.floor
 
     fun Vec3d.toVec3(): Vec3 {
         val array = array

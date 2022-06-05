@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.util
 
 import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
@@ -22,7 +21,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
-import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
@@ -30,8 +28,6 @@ import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 import kotlin.random.Random
@@ -117,19 +113,9 @@ object VecUtil {
     val Vec3.ticks: Vec3
         get() = this / ProtocolDefinition.TICKS_PER_SECOND
 
-
     fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
-
-    val Vec3i.chunkPosition: Vec2i
-        get() = Vec2i(x shr 4, z shr 4)
-
-    val Vec3i.inChunkPosition: Vec3i
-        get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
-
-    val Vec3i.inChunkSectionPosition: Vec3i
-        get() = Vec3i(x and 0x0F, y.inSectionHeight, z and 0x0F)
 
     val Int.inSectionHeight: Int
         get() = if (this < 0) {
@@ -141,17 +127,8 @@ object VecUtil {
     val Int.sectionHeight: Int
         get() = this shr 4
 
-    val Vec3i.sectionHeight: Int
-        get() = y.sectionHeight
-
     val Vec3i.entityPosition: Vec3d
         get() = Vec3d(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
-
-    val Vec3.blockPosition: Vec3i
-        get() = this.floor
-
-    val Vec3d.blockPosition: Vec3i
-        get() = this.floor
 
     val Vec3i.centerf: Vec3
         get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f)
@@ -278,18 +255,6 @@ object VecUtil {
         return minOf(directionXDistance, directionYDistance, directionZDistance)
     }
 
-    val Vec3.min: Float
-        get() = minOf(this.x, this.y, this.z)
-
-    val Vec3.max: Float
-        get() = maxOf(this.x, this.y, this.z)
-
-    val Vec3.floor: Vec3i
-        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
-
-    val Vec3d.floor: Vec3i
-        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
-
     fun Vec3d.getMinDistanceDirection(aabb: AABB): Directions {
         var minDistance = Double.MAX_VALUE
         var minDistanceDirection = Directions.UP
@@ -328,21 +293,6 @@ object VecUtil {
 
     val Double.noise: Double
         get() = Random.nextDouble() / this * if (Random.nextBoolean()) 1.0 else -1.0
-
-    @Deprecated("Use VecXUtil", ReplaceWith("interpolateLinear(delta, start, end)", "de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear"))
-    fun lerp(delta: Float, start: Vec3, end: Vec3): Vec3 {
-        return interpolateLinear(delta, start, end)
-    }
-
-    @Deprecated("Use VecXUtil", ReplaceWith("interpolateLinear(delta, start, end)", "de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec2Util.interpolateLinear"))
-    fun lerp(delta: Float, start: Vec2, end: Vec2): Vec2 {
-        TODO()
-    }
-
-    @Deprecated("Use VecXUtil", ReplaceWith("interpolateLinear(delta, start, end)", "de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear"))
-    fun lerp(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
-        return interpolateLinear(delta, start, end)
-    }
 
 
     fun Vec3d.clearZero() {

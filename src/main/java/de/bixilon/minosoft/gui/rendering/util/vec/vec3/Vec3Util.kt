@@ -17,11 +17,13 @@ import de.bixilon.kotlinglm.func.cos
 import de.bixilon.kotlinglm.func.sin
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec3.swizzle.xy
 import de.bixilon.kotlinglm.vec3.swizzle.xz
 import de.bixilon.kotlinglm.vec3.swizzle.yz
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.kutil.math.simple.FloatMath.floor
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.text.RGBColor
@@ -46,6 +48,12 @@ object Vec3Util {
 
     val Vec3.rgb: Int
         get() = ((r * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 16) or ((g * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 8) or (b * RGBColor.COLOR_FLOAT_DIVIDER).toInt()
+
+    val Vec3.floor: Vec3i
+        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
+
+    val Vec3.blockPosition: Vec3i
+        get() = this.floor
 
     fun rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)

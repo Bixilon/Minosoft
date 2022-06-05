@@ -25,10 +25,10 @@ import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 
 class MatrixHandler(

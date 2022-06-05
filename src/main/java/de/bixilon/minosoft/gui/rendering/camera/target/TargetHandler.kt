@@ -26,9 +26,9 @@ import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.FluidTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
 
 class TargetHandler(
     private val renderWindow: RenderWindow,

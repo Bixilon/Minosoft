@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.floor
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
