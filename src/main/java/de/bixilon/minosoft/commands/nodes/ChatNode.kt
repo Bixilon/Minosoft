@@ -28,10 +28,11 @@ class ChatNode(
 
     override fun execute(reader: CommandReader, stack: CommandStack) {
         reader.skipWhitespaces()
+        val peek = reader.peek()
         val node = getNode(reader, stack)
         val string = parser.parse(reader)
         if (node != CLI.ROOT_NODE && string.isNotBlank()) {
-            if (node == stack.connection.rootNode) {
+            if (peek == '/'.code) {
                 stack.connection.util.sendChatMessage("/$string")
             } else {
                 stack.connection.util.sendChatMessage(string)

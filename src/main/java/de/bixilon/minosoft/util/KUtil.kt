@@ -312,4 +312,16 @@ object KUtil {
 
         return overlapping
     }
+
+    fun String.removeTrailingWhitespaces(): String {
+        var string = this
+        while (string.startsWith(' ')) {
+            string = string.removePrefix(" ")
+        }
+        while (string.endsWith(' ')) {
+            string = string.removeSuffix(" ")
+        }
+
+        return string
+    }
 }
