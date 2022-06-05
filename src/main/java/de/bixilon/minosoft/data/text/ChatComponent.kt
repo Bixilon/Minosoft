@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
+import de.bixilon.minosoft.util.KUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.util.json.Jackson
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
@@ -97,10 +98,9 @@ interface ChatComponent {
             if (raw is Translatable && raw !is ResourceLocation) {
                 return (translator ?: Minosoft.LANGUAGE_MANAGER).translate(raw.translationKey, parent)
             }
-            if (raw is Map<*, *>) {
-                return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode)
-            }
-            val string = when (raw) {
+
+            when (raw) {
+                is Map<*, *> -> return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode)
                 is List<*> -> {
                     val component = BaseComponent()
                     for (part in raw) {
@@ -108,12 +108,16 @@ interface ChatComponent {
                     }
                     return component
                 }
-                else -> raw.toString()
             }
-            if (!ignoreJson && string.startsWith('{')) {
-                try {
-                    return BaseComponent(translator, parent, Jackson.MAPPER.readValue(string, Jackson.JSON_MAP_TYPE), restrictedMode)
-                } catch (ignored: JacksonException) {
+            val string = raw.toString()
+            if (!ignoreJson) {
+                val whitespaceLess = string.removeTrailingWhitespaces()
+                if (whitespaceLess.startsWith('{') || whitespaceLess.startsWith('[')) {
+                    try {
+                        val read: Any = Jackson.MAPPER.readValue(whitespaceLess, Jackson.JSON_MAP_TYPE)
+                        return of(read, translator, parent, ignoreJson = true, restrictedMode)
+                    } catch (ignored: JacksonException) {
+                    }
                 }
             }
 
