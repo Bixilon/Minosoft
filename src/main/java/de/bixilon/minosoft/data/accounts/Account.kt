@@ -46,7 +46,7 @@ abstract class Account(
     abstract val uuid: UUID
 
 
-    open val supportsSkins: Boolean get() = true
+    @get:JsonIgnore open val supportsSkins: Boolean get() = true
 
     @Transient
     @JsonIgnore

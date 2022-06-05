@@ -63,7 +63,7 @@ class SettingsC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Settings (locale=$locale, viewDistance=$viewDistance, chatMode=$chatMode, chatColors=$chatColors, skinParts=${skinParts.joinToString()}, mainHand=$mainArm, disableTextFiltering=$disableTextFiltering, allowListing=$allowListing)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Settings (locale=$locale, viewDistance=$viewDistance, chatMode=$chatMode, chatColors=$chatColors, skinParts=${skinParts.contentToString()}, mainHand=$mainArm, disableTextFiltering=$disableTextFiltering, allowListing=$allowListing)" }
     }
 
     enum class SkinParts {
