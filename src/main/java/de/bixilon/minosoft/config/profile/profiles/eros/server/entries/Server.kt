@@ -50,7 +50,7 @@ class Server(
     /**
      * Sends version -1 in the handshake to query the servers version
      */
-    @get:JsonInclude(JsonInclude.Include.NON_DEFAULT) var queryVersion by delegate(queryVersion)
+    var queryVersion by delegate(queryVersion)
 
     /**
      * Profiles to use for the connection to the server.
