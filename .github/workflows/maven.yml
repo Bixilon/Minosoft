@@ -25,6 +25,8 @@ jobs:
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@v1
+        with:
+          fail_on_test_failures: true
       - name: Upload Linux x64 build
         uses: actions/upload-artifact@v2
         with:
@@ -45,6 +47,8 @@ jobs:
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@v1
+        with:
+          fail_on_test_failures: true
       - name: Upload Windows x64 build
         uses: actions/upload-artifact@v2
         with:
