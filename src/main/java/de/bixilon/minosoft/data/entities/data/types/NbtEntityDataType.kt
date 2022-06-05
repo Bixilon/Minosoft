@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.entities.data.types
 
-import com.google.gson.JsonObject
 import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 object NbtEntityDataType : EntityDataType<JsonObject> {

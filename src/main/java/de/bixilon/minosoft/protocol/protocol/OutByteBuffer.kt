@@ -12,14 +12,12 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import com.google.gson.JsonObject
 import com.sun.javafx.geom.Vec3f
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.collections.bytes.HeapArrayByteList
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
@@ -64,10 +62,6 @@ open class OutByteBuffer() {
 
     fun writeChatComponent(chatComponent: ChatComponent) {
         writeString(chatComponent.legacyText)
-    }
-
-    fun writeJSON(json: JsonObject) {
-        writeString(Util.GSON.toJson(json))
     }
 
     fun writeString(string: String) {

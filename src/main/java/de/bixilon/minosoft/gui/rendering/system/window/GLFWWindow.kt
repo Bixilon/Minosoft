@@ -20,10 +20,8 @@ import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.WindowFocusChangeEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.WindowIconifyChangeEvent
+import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
@@ -168,9 +166,6 @@ class GLFWWindow(
         }
 
     override fun init(profile: RenderingProfile) {
-        GLFWErrorCallback.createPrint(System.err).set()
-        check(glfwInit()) { "Unable to initialize GLFW" }
-
         glfwDefaultWindowHints()
         if (renderWindow.preferQuads) {
             setOpenGLVersion(3, 0, false)
@@ -215,12 +210,11 @@ class GLFWWindow(
         glfwFreeCallbacks(window)
         glfwDestroyWindow(window)
 
-        glfwTerminate()
-        glfwSetErrorCallback(null)!!.free()
+        glfwSetErrorCallback(null)?.free()
     }
 
     override fun close() {
-        if (eventMaster.fireEvent(WindowCloseEvent(window = this))) {
+        if (fireGLFWEvent(WindowCloseEvent(renderWindow, window = this))) {
             return
         }
 
@@ -249,7 +243,7 @@ class GLFWWindow(
             return
         }
 
-        eventMaster.fireEvent(WindowFocusChangeEvent(window = this, focused = focused))
+        fireGLFWEvent(WindowFocusChangeEvent(renderWindow, window = this, focused = focused))
     }
 
     private fun onIconify(window: Long, iconified: Boolean) {
@@ -257,14 +251,14 @@ class GLFWWindow(
             return
         }
 
-        eventMaster.fireEvent(WindowIconifyChangeEvent(window = this, iconified = iconified))
+        fireGLFWEvent(WindowIconifyChangeEvent(renderWindow, window = this, iconified = iconified))
     }
 
     private fun onClose(window: Long) {
         if (window != this.window) {
             return
         }
-        val cancelled = eventMaster.fireEvent(WindowCloseEvent(window = this))
+        val cancelled = fireGLFWEvent(WindowCloseEvent(renderWindow, window = this))
 
         if (cancelled) {
             glfwSetWindowShouldClose(window, false)
@@ -277,7 +271,7 @@ class GLFWWindow(
         }
         val previousSize = Vec2i(_size)
         _size = Vec2i(width, height)
-        eventMaster.fireEvent(ResizeWindowEvent(previousSize = previousSize, size = _size))
+        fireGLFWEvent(ResizeWindowEvent(renderWindow, previousSize = previousSize, size = _size))
         this.skipNextMouseEvent = true
     }
 
@@ -301,14 +295,14 @@ class GLFWWindow(
             }
         }
 
-        eventMaster.fireEvent(RawKeyInputEvent(keyCode = keyCode, keyChangeType = keyAction))
+        fireGLFWEvent(RawKeyInputEvent(renderWindow, keyCode = keyCode, keyChangeType = keyAction))
     }
 
     private fun charInput(windowId: Long, char: Int) {
         if (windowId != window) {
             return
         }
-        eventMaster.fireEvent(RawCharInputEvent(char = char))
+        fireGLFWEvent(RawCharInputEvent(renderWindow, char = char))
     }
 
     private fun mouseMove(windowId: Long, x: Double, y: Double) {
@@ -322,7 +316,7 @@ class GLFWWindow(
         val delta = position - previous
         this.mousePosition = position
         if (!skipNextMouseEvent) {
-            eventMaster.fireEvent(MouseMoveEvent(position = position, previous = previous, delta = delta))
+            fireGLFWEvent(MouseMoveEvent(renderWindow, position = position, previous = previous, delta = delta))
         } else {
             skipNextMouseEvent = false
         }
@@ -333,7 +327,7 @@ class GLFWWindow(
             return
         }
 
-        eventMaster.fireEvent(MouseScrollEvent(offset = Vec2d(xOffset, yOffset)))
+        fireGLFWEvent(MouseScrollEvent(renderWindow, offset = Vec2d(xOffset, yOffset)))
     }
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
@@ -348,7 +342,22 @@ class GLFWWindow(
         glfwSetWindowIcon(window, images)
     }
 
+    private fun fireGLFWEvent(event: RenderEvent): Boolean {
+        // ToDo: It looks like glfwPollEvents is mixing threads. This should not happen.
+        if (Rendering.currentContext != event.renderWindow) {
+            event.renderWindow.queue += { eventMaster.fireEvent(event) }
+            return false
+        }
+        return eventMaster.fireEvent(event)
+    }
+
     companion object {
+
+        init {
+            GLFWErrorCallback.createPrint(System.err).set()
+            check(glfwInit()) { "Unable to initialize GLFW" }
+        }
+
         val KEY_CODE_MAPPING = mapOf(
             GLFW_KEY_UNKNOWN to KeyCodes.KEY_UNKNOWN,
             GLFW_KEY_SPACE to KeyCodes.KEY_SPACE,

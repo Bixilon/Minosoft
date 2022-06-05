@@ -34,23 +34,23 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 
-class TextInputElement(
+open class TextInputElement(
     guiRenderer: GUIRenderer,
     value: String = "",
     val maxLength: Int = Int.MAX_VALUE,
     val cursorStyles: TextCursorStyles = TextCursorStyles.CLICKED,
     var editable: Boolean = true,
-    var onChange: () -> Unit = {},
+    var onChangeCallback: () -> Unit = {},
     val background: Boolean = true,
     shadow: Boolean = true,
     scale: Float = 1.0f,
     val cutAtSize: Boolean = false,
     parent: Element? = null,
 ) : Element(guiRenderer) {
-    private val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
-    private val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
-    private val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
-    private var cursorOffset: Vec2i = Vec2i.EMPTY
+    protected val cursor = ColorElement(guiRenderer, size = Vec2i(minOf(1.0f, scale), Font.TOTAL_CHAR_HEIGHT * scale))
+    protected val textElement = MarkTextElement(guiRenderer, "", background = false, parent = this, scale = scale, shadow = shadow)
+    protected val backgroundElement = ColorElement(guiRenderer, Vec2i.EMPTY, RenderConstants.TEXT_BACKGROUND_COLOR)
+    protected var cursorOffset: Vec2i = Vec2i.EMPTY
     val _value = StringBuffer(256)
     var value: String
         get() = _value.toString()
@@ -98,10 +98,13 @@ class TextInputElement(
         textElement.unmark()
     }
 
-    private fun _set(value: String) {
-        _value.replace(0, _value.length, value)
+    protected fun _set(value: String) {
+        val previous = _value.toString()
+        val next = _value.replace(0, _value.length, value)
         _pointer = value.length
-        onChange()
+        if (previous != next.toString()) {
+            onChange()
+        }
         textUpToDate = false
     }
 
@@ -223,7 +226,7 @@ class TextInputElement(
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
         if (type == KeyChangeTypes.RELEASE) {
-            return true
+            return false
         }
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
         val shiftDown = guiRenderer.isKeyDown(ModifierKeys.SHIFT)
@@ -253,6 +256,7 @@ class TextInputElement(
                     _value.delete(_pointer + delete, _pointer)
                     _pointer += delete
                     textUpToDate = false
+                    onChange()
                 }
             }
             KeyCodes.KEY_DELETE -> {
@@ -267,6 +271,7 @@ class TextInputElement(
                     val delete = if (controlDown) calculateWordPointer(true) else 1
                     _value.delete(_pointer, _pointer + delete)
                     textUpToDate = false
+                    onChange()
                 }
             }
             KeyCodes.KEY_LEFT -> {
@@ -373,6 +378,10 @@ class TextInputElement(
 
     override fun onOpen() {
         cursorTick = 19 // make cursor visible
+    }
+
+    open fun onChange() {
+        onChangeCallback()
     }
 
     companion object {

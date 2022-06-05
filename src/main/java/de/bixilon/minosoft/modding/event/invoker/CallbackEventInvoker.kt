@@ -25,7 +25,7 @@ class CallbackEventInvoker<E : Event> private constructor(
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
     priority: EventPriorities,
-) : EventInvoker(ignoreCancelled, priority, null), EventInstantFireable {
+) : EventInvoker(ignoreCancelled, priority), EventInstantFireable {
 
     override operator fun invoke(event: Event) {
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {

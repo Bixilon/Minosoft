@@ -17,16 +17,16 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
+import de.bixilon.minosoft.gui.rendering.gui.gui.popper.MouseTrackedPopper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 
-class TextPopper(
+open class TextPopper(
     guiRenderer: GUIRenderer,
     position: Vec2i,
     text: Any,
-) : Popper(guiRenderer, position) {
-    private val textElement = TextElement(guiRenderer, text, background = false, parent = this)
+) : MouseTrackedPopper(guiRenderer, position) {
+    protected val textElement = TextElement(guiRenderer, text, background = false, parent = this)
 
     init {
         forceSilentApply()

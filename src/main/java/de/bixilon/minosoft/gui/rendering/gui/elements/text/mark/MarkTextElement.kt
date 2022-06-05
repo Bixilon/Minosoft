@@ -98,8 +98,6 @@ class MarkTextElement(
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
-        super.onKey(key, type)
-
         val controlDown = guiRenderer.isKeyDown(ModifierKeys.CONTROL)
 
         when (key) {
@@ -115,7 +113,7 @@ class MarkTextElement(
                 }
             }
             KeyCodes.KEY_ESCAPE -> unmark()
-            else -> return true
+            else -> return super.onKey(key, type)
         }
         return true
     }

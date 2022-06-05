@@ -29,6 +29,7 @@ object RenderConstants {
     const val COLORMAP_SIZE = 255
 
     const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] "
+    const val INTERNAL_MESSAGES_PREFIX = "§f[§a§lINTERNAL§f] "
 
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 

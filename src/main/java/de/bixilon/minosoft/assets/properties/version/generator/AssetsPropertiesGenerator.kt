@@ -32,7 +32,7 @@ object AssetsPropertiesGenerator {
         profile.verify = false
         val (versionId, clientJarHash) = args
 
-        val assetsManager = JarAssetsManager("abcdef", clientJarHash, profile, Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, mapOf(), mapOf()))
+        val assetsManager = JarAssetsManager("abcdef", clientJarHash, profile, Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, emptyMap(), emptyMap()))
         try {
             assetsManager.load(CountUpAndDownLatch(1))
         } catch (exception: InvalidAssetException) {

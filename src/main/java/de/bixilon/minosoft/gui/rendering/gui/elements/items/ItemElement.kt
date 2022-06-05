@@ -83,11 +83,6 @@ class ItemElement(
         return true
     }
 
-    override fun onMouseMove(position: Vec2i, absolute: Vec2i): Boolean {
-        popper?.position = absolute
-        return true
-    }
-
     override fun onMouseLeave(): Boolean {
         renderWindow.window.resetCursor()
         popper?.hide()

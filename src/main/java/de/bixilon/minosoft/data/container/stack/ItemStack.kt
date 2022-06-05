@@ -125,7 +125,7 @@ class ItemStack {
             item.item.translationKey?.let {
                 val language = holder?.connection?.language ?: return@let
                 val translated = language.translate(it)
-                rarity.color.let { color -> translated.applyDefaultColor(color) }
+                rarity.color.let { color -> translated.setFallbackColor(color) }
                 return translated
             }
             return ChatComponent.of(toString())

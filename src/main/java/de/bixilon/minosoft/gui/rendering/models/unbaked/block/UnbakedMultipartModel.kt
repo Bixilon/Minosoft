@@ -28,7 +28,7 @@ import java.util.*
 class UnbakedMultipartModel(
     val models: Set<AbstractUnbakedBlockModel>,
 ) : AbstractUnbakedBlockModel {
-    override val textures: Map<String, String> = mapOf()
+    override val textures: Map<String, String> = emptyMap()
 
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {
         val baked: Array<BakedBlockModel?> = arrayOfNulls(this.models.size)

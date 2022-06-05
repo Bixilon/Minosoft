@@ -247,10 +247,28 @@ class BaseComponent : ChatComponent {
         return nodes
     }
 
-    override fun applyDefaultColor(color: RGBColor) {
-        for (part in parts) {
-            part.applyDefaultColor(color)
-        }
+    override fun obfuscate(): BaseComponent {
+        for (part in parts) part.obfuscate(); return this
+    }
+
+    override fun bold(): BaseComponent {
+        for (part in parts) part.bold(); return this
+    }
+
+    override fun strikethrough(): BaseComponent {
+        for (part in parts) part.strikethrough(); return this
+    }
+
+    override fun underline(): BaseComponent {
+        for (part in parts) part.underline(); return this
+    }
+
+    override fun italic(): BaseComponent {
+        for (part in parts) part.italic(); return this
+    }
+
+    override fun setFallbackColor(color: RGBColor): BaseComponent {
+        for (part in parts) part.setFallbackColor(color); return this
     }
 
     override fun toString(): String {

@@ -49,10 +49,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             return true
         }
 
-        fun pushLine(index: Int = -1) {
+        fun pushLine(cutAt: Int = -1) {
             var pushText: String = currentLineText
-            if (index > 0) {
-                pushText = currentLineText.substring(0, index)
+            if (cutAt > 0) {
+                pushText = currentLineText.substring(0, cutAt)
             }
             if (consumer != null || pushText.isEmpty()) {
                 return
@@ -130,12 +130,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
         applyOffset()
 
-        var index = -1
         for (char in text.message.codePoints()) {
-            index++
             if (char == '\n'.code) {
+
                 if (wrap()) {
-                    pushLine(index)
                     return true
                 }
                 continue

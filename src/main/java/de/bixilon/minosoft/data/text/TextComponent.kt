@@ -35,29 +35,24 @@ open class TextComponent(
 ) : ChatComponent, TextStyle {
     override var message: String = message.toString().replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&')
 
-    fun obfuscate(): TextComponent {
-        formatting.add(PreChatFormattingCodes.OBFUSCATED)
-        return this
+    override fun obfuscate(): TextComponent {
+        formatting.add(PreChatFormattingCodes.OBFUSCATED); return this
     }
 
-    fun bold(): TextComponent {
-        formatting.add(PreChatFormattingCodes.BOLD)
-        return this
+    override fun bold(): TextComponent {
+        formatting.add(PreChatFormattingCodes.BOLD); return this
     }
 
-    fun strikethrough(): TextComponent {
-        formatting.add(PreChatFormattingCodes.STRIKETHROUGH)
-        return this
+    override fun strikethrough(): TextComponent {
+        formatting.add(PreChatFormattingCodes.STRIKETHROUGH); return this
     }
 
-    fun underline(): TextComponent {
-        formatting.add(PreChatFormattingCodes.UNDERLINED)
-        return this
+    override fun underline(): TextComponent {
+        formatting.add(PreChatFormattingCodes.UNDERLINED); return this
     }
 
-    fun italic(): TextComponent {
-        formatting.add(PreChatFormattingCodes.ITALIC)
-        return this
+    override fun italic(): TextComponent {
+        formatting.add(PreChatFormattingCodes.ITALIC); return this
     }
 
     fun clickEvent(clickEvent: ClickEvent?) {
@@ -77,10 +72,11 @@ open class TextComponent(
         return legacyText
     }
 
-    override fun applyDefaultColor(color: RGBColor) {
+    override fun setFallbackColor(color: RGBColor): TextComponent {
         if (this.color == null) {
             this.color = color
         }
+        return this
     }
 
     override val ansiColoredMessage: String

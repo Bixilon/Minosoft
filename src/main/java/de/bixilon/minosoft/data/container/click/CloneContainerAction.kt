@@ -29,7 +29,7 @@ class CloneContainerAction(
         val itemStack = clicked.copy(count = clicked.item.item.maxStackSize)
         this.copied = itemStack
 
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.createAction(this), mapOf(), clicked))
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.createAction(this), emptyMap(), clicked))
 
         container.floatingItem = itemStack
     }

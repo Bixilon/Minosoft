@@ -12,62 +12,52 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.data.commands.CommandArgumentNode
-import de.bixilon.minosoft.data.commands.CommandLiteralNode
-import de.bixilon.minosoft.data.commands.CommandNode
-import de.bixilon.minosoft.data.commands.CommandRootNode
+import de.bixilon.minosoft.commands.nodes.CommandNode
+import de.bixilon.minosoft.commands.nodes.RootNode
+import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.Broken
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val nodes = buffer.readCommandNodeArray()
-    val root = nodes[buffer.readVarInt()].unsafeCast<CommandRootNode>()
+    val nodes = buffer.readArray { buffer.readCommandNode() }.build()
+    val rootNode = nodes[buffer.readVarInt()].nullCast<RootNode>()
+
 
     override fun handle(connection: PlayConnection) {
-        connection.commandRoot = root
+        connection.rootNode = rootNode
     }
 
-    override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Commands (nodes=$nodes, root=$root)" }
-    }
-
-    fun PlayInByteBuffer.readCommandNode(): CommandNode {
-        val flags = readByte().toInt()
-        return when (CommandNode.NodeTypes.byId(flags and 0x03)!!) {
-            CommandNode.NodeTypes.ROOT -> CommandRootNode(flags, this)
-            CommandNode.NodeTypes.LITERAL -> CommandLiteralNode(flags, this)
-            CommandNode.NodeTypes.ARGUMENT -> CommandArgumentNode(flags, this)
+    fun Array<CommandNodeBuilder>.build(): Array<CommandNode> {
+        val nodes: Array<CommandNode?> = arrayOfNulls(this.size)
+        for ((index, builder) in this.withIndex()) {
+            val node = builder.build()
+            nodes[index] = node
         }
-    }
 
-    @JvmOverloads
-    @Deprecated("refactor")
-    fun PlayInByteBuffer.readCommandNodeArray(length: Int = readVarInt()): Array<CommandNode> {
-        val nodes = readArray(length) { readCommandNode() }
-        for (node in nodes) {
-            if (node.redirectNodeId != -1) {
-                node.redirectNode = nodes[node.redirectNodeId]
-            }
+        for ((index, builder) in this.withIndex()) {
+            val node = nodes[index] ?: Broken()
+            builder.redirectNode?.let { node.redirect = nodes[it] }
 
-            for (childId in node.childrenIds) {
-                when (val child = nodes[childId]) {
-                    is CommandArgumentNode -> {
-                        node.argumentsChildren.add(child)
-                    }
-                    is CommandLiteralNode -> {
-                        node.literalChildren[child.name] = child
-                    }
+            builder.children?.let {
+                for ((childIndex, child) in it.withIndex()) {
+                    node.addChild(nodes.getOrNull(child) ?: throw IllegalArgumentException("Invalid child: $child for $childIndex"))
                 }
             }
         }
 
-        return nodes
+        return nodes.unsafeCast()
+    }
+
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Commands (nodes=$nodes, rootNode=$rootNode)" }
     }
 }

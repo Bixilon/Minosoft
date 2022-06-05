@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.Dragged
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 
-class LayoutedGUIElement<T : LayoutedElement>(
+open class LayoutedGUIElement<T : LayoutedElement>(
     val layout: T,
 ) : GUIMeshElement<Element>(layout.unsafeCast()) {
 
@@ -29,7 +29,7 @@ class LayoutedGUIElement<T : LayoutedElement>(
         prepare(layout.layoutOffset)
     }
 
-    private fun getOffset(position: Vec2i): Vec2i? {
+    protected open fun getOffset(position: Vec2i): Vec2i? {
         val layoutOffset = layout.layoutOffset
         val size = element.size
         if (position isSmaller layoutOffset) {

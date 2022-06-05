@@ -40,7 +40,7 @@ class ContainerText(
             if (area == null || text == null) {
                 return null
             }
-            text.applyDefaultColor(DEFAULT_TEXT_COLOR)
+            text.setFallbackColor(DEFAULT_TEXT_COLOR)
             val textElement = TextElement(guiRenderer, text, background = false, shadow = false)
             textElement.prefMaxSize = area.size
 

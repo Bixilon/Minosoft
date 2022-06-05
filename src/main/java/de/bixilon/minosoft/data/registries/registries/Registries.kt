@@ -109,6 +109,8 @@ class Registries {
     val gameEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
     val worldEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
 
+    val argumentTypeRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
+
     var isFullyLoaded = false
         private set
 
@@ -156,6 +158,7 @@ class Registries {
         containerTypeRegistry.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this)
         gameEventRegistry.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this)
         worldEventRegistry.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this)
+        argumentTypeRegistry.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this)
 
 
         entityTypeRegistry.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this)
@@ -231,7 +234,6 @@ class Registries {
         } while (currentField == null && currentClass != Object::class.java)
         return currentField?.get(this) as Registry<T>?
     }
-
 
     private fun <T, R : AbstractRegistry<T>> register(name: String, registry: R): R {
         registries[name.toResourceLocation()] = registry

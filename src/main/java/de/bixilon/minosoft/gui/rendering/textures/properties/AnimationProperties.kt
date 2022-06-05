@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,7 +23,7 @@ data class AnimationProperties(
     var width: Int = -1,
     var height: Int = -1,
     @JsonProperty("frametime") private val frameTime: Int = 1,
-    @JsonProperty("frames") private val _frames: List<Any> = listOf(),
+    @JsonProperty("frames") private val _frames: List<Any> = emptyList(),
 ) {
     @JsonIgnore
     private var initialized = false

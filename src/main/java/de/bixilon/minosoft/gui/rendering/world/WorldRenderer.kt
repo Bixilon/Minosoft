@@ -412,7 +412,7 @@ class WorldRenderer(
         val cameraSectionPosition = Vec3i(cameraChunkPosition.x, cameraSectionHeight, cameraChunkPosition.y)
         queue.sortBy {
             if (it.chunkPosition == cameraChunkPosition) {
-                return@sortBy Int.MAX_VALUE
+                return@sortBy -Int.MAX_VALUE
             }
             (it.sectionPosition - cameraSectionPosition).length2()
         }

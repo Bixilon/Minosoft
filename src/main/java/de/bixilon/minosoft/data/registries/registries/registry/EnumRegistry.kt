@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import com.google.gson.JsonPrimitive
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -44,12 +43,6 @@ class EnumRegistry<T : Enum<*>>(
         return when (data) {
             is Int -> values[data]
             is String -> values.NAME_MAP[data.lowercase(Locale.getDefault())] ?: error("Can not find enum: $data")
-            is JsonPrimitive -> {
-                if (data.isNumber) {
-                    return getEnum(data.asInt)
-                }
-                return getEnum(data.asString)
-            }
             else -> throw IllegalArgumentException("Unknown enum value: $data")
         }
     }

@@ -44,9 +44,9 @@ import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.AutoConnect
-import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.RenderPolling
@@ -76,6 +76,8 @@ object Minosoft {
 
         val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
 
+        taskWorker += Task(identifier = BootTasks.CLI, priority = ThreadPool.HIGH, executor = CLI::startThread)
+
         taskWorker += Task(identifier = BootTasks.PACKETS, priority = ThreadPool.HIGH, executor = PacketTypeRegistry::init)
         taskWorker += Task(identifier = BootTasks.VERSIONS, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.PACKETS), executor = Versions::load)
         taskWorker += Task(identifier = BootTasks.PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(BootTasks.VERSIONS), executor = GlobalProfileManager::initialize)
@@ -87,8 +89,6 @@ object Minosoft {
 
 
         taskWorker += Task(identifier = BootTasks.LAN_SERVERS, dependencies = arrayOf(BootTasks.PROFILES), executor = LANServerListener::listen)
-
-        taskWorker += Task(identifier = BootTasks.CLI, executor = { CLI.initialize() })
 
         if (!RunConfiguration.DISABLE_EROS) {
             taskWorker += Task(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start() })

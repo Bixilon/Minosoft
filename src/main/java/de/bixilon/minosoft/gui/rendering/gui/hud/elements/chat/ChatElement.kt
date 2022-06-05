@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
-import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.TextInputElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node.NodeTextInputElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
@@ -39,7 +40,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
     private val chatProfile = profile.chat
-    private val input = TextInputElement(guiRenderer, maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
+    private val input = NodeTextInputElement(guiRenderer, ChatNode("", allowCLI = true), maxLength = connection.version.maxChatMessageSize).apply { parent = this@ChatElement }
     private val internal = InternalChatElement(guiRenderer).apply { parent = this@ChatElement }
     private val history: MutableList<String> = mutableListOf()
     private var historyIndex = -1
@@ -69,10 +70,11 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         chatProfile::width.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
         chatProfile::height.profileWatchRendering(this, profile = profile) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
         forceSilentApply()
-        input.onChange = {
+        input.onChangeCallback = {
             while (input._value.startsWith(' ')) {
                 input._value.deleteCharAt(0)
                 input._pointer--
+                input.onChange()
             }
         }
     }
@@ -92,11 +94,13 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
             DefaultThreadPool += { messages += it.message }
         })
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:open_chat".toResourceLocation(), KeyBinding(
-            mapOf(
-                KeyActions.PRESS to setOf(KeyCodes.KEY_T),
-            ),
-        )) { guiRenderer.gui.open(ChatElement) }
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:open_chat".toResourceLocation(), KeyBinding(
+                mapOf(
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_T),
+                ),
+            )
+        ) { guiRenderer.gui.open(ChatElement) }
 
         internal.init()
     }
@@ -162,9 +166,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     private fun submit() {
         val value = input.value
-        if (value.isNotBlank()) {
-            connection.util.sendChatMessage(value)
-        }
+        input.submit()
         input.value = ""
         if (history.lastOrNull() != value) {
             // ToDo: Improve history
@@ -175,20 +177,14 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
     }
 
     override fun onKey(key: KeyCodes, type: KeyChangeTypes): Boolean {
+        if (input.onKey(key, type)) {
+            return true
+        }
         if (type != KeyChangeTypes.RELEASE) {
             when (key) {
-                KeyCodes.KEY_ENTER -> {
-                    submit()
-                    return true
-                }
-                KeyCodes.KEY_PAGE_UP -> {
-                    messages.scrollOffset++
-                    return true
-                }
-                KeyCodes.KEY_PAGE_DOWN -> {
-                    messages.scrollOffset--
-                    return true
-                }
+                KeyCodes.KEY_ENTER -> submit()
+                KeyCodes.KEY_PAGE_UP -> messages.scrollOffset++
+                KeyCodes.KEY_PAGE_DOWN -> messages.scrollOffset--
                 KeyCodes.KEY_UP -> {
                     val size = history.size
                     if (historyIndex > size) {
@@ -212,10 +208,9 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
                     }
                     input.value = history[historyIndex]
                 }
-                else -> {}
+                else -> return super.onKey(key, type)
             }
         }
-        input.onKey(key, type)
 
         return true
     }
@@ -267,6 +262,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun onChildChange(child: Element) {
         forceSilentApply()
+        super.onChildChange(child)
     }
 
     override fun tick() {

@@ -58,7 +58,7 @@ class SimpleContainerAction(
                 } else {
                     floatingItem.item._count-- // don't use decrease, item + container is already locked
                 }
-                return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), mapOf(), null))
+                return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), emptyMap(), null))
             }
             val slotType = container.getSlotType(slot)
             val matches = floatingItem.matches(target)

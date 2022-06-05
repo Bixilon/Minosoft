@@ -21,7 +21,6 @@ object RegistryFixer {
         "dimension" to "dimension_type",
     ).asResourceLocationMap()
 
-
     fun ResourceLocation.fix(): ResourceLocation {
         return RENAMES.getOrDefault(this, this)
     }

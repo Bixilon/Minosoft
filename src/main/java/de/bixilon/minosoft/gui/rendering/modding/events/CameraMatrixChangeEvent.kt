@@ -15,10 +15,9 @@ package de.bixilon.minosoft.gui.rendering.modding.events
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Rendering
 
 class CameraMatrixChangeEvent(
-    renderWindow: RenderWindow = Rendering.currentContext!!,
+    renderWindow: RenderWindow,
     viewMatrix: Mat4,
     projectionMatrix: Mat4,
     viewProjectionMatrix: Mat4,

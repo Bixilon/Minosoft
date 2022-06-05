@@ -24,6 +24,8 @@ import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.cli.CLI.removeDuplicatedWhitespaces
+import de.bixilon.minosoft.util.KUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -33,27 +35,31 @@ class ConnectionUtil(
 ) {
 
     fun sendDebugMessage(message: Any) {
-        connection.fireEvent(InternalMessageReceiveEvent(connection, BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })))
-        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { message }
+        val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
+        connection.fireEvent(InternalMessageReceiveEvent(connection, component))
+        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
+    }
+
+    fun sendInternal(message: Any) {
+        val component = ChatComponent.of(message)
+        val prefixed = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, component)
+        connection.fireEvent(InternalMessageReceiveEvent(connection, if (connection.profiles.gui.chat.internal.hidden) prefixed else component))
+        Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
     }
 
     fun sendChatMessage(message: String) {
-        var toSend = message
-        // remove prefixed spaces
-        while (toSend.startsWith(' ')) {
-            toSend = toSend.removeRange(0, 1)
-        }
+        val message = message.removeDuplicatedWhitespaces().removeTrailingWhitespaces()
         if (message.isBlank()) {
             throw IllegalArgumentException("Chat message can not be blank!")
         }
         if (message.contains(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)) {
-            throw IllegalArgumentException("Chat message can not contain chat formatting (${ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR}): $toSend")
+            throw IllegalArgumentException("Chat message must not contain chat formatting (${ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR}): $message")
         }
-        if (connection.fireEvent(ChatMessageSendEvent(connection, toSend))) {
+        if (connection.fireEvent(ChatMessageSendEvent(connection, message))) {
             return
         }
-        Log.log(LogMessageType.CHAT_OUT) { toSend }
-        connection.sendPacket(ChatMessageC2SP(toSend))
+        Log.log(LogMessageType.CHAT_OUT) { message }
+        connection.sendPacket(ChatMessageC2SP(message))
     }
 
     fun prepareSpawn() {

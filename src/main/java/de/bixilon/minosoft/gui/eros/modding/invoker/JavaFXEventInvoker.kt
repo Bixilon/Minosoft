@@ -32,7 +32,7 @@ class JavaFXEventInvoker<E : Event> private constructor(
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
-) : EventInvoker(ignoreCancelled, EventPriorities.NORMAL, null), EventInstantFireable, OneShotInvoker {
+) : EventInvoker(ignoreCancelled, EventPriorities.NORMAL), EventInstantFireable, OneShotInvoker {
 
     override operator fun invoke(event: Event) {
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {

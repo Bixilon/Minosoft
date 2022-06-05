@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.registries
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonPrimitive
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.primitive.IntUtil.toInt
@@ -29,14 +27,6 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
 
     constructor(data: Any, aabbs: List<AABB>) : this() {
         when (data) {
-            is JsonArray -> {
-                for (index in data) {
-                    this.aabbs.add(aabbs[index.asInt])
-                }
-            }
-            is JsonPrimitive -> {
-                this.aabbs.add(aabbs[data.asInt])
-            }
             is Collection<*> -> {
                 for (index in data) {
                     this.aabbs.add(aabbs[index?.toInt()!!])

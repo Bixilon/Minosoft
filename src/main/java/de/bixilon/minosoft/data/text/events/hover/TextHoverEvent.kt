@@ -37,11 +37,6 @@ class TextHoverEvent(
         return true
     }
 
-    override fun onMouseMove(guiRenderer: GUIRenderer, position: Vec2i, absolute: Vec2i): Boolean {
-        popper?.position = absolute
-        return true
-    }
-
     override fun onMouseLeave(guiRenderer: GUIRenderer): Boolean {
         this.popper?.let { guiRenderer.popper -= it }
         this.popper = null

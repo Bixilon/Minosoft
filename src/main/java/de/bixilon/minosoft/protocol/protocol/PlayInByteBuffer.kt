@@ -15,6 +15,12 @@ package de.bixilon.minosoft.protocol.protocol
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
+import de.bixilon.minosoft.commands.nodes.NamedNode
+import de.bixilon.minosoft.commands.nodes.builder.ArgumentNodes
+import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
+import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
+import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
+import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
@@ -40,6 +46,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
+import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -277,5 +284,40 @@ class PlayInByteBuffer : InByteBuffer {
             return Instant.ofEpochMilli(time)
         }
         return Instant.ofEpochSecond(time)
+    }
+
+    fun readCommandNode(): CommandNodeBuilder {
+        val builder = CommandNodeBuilder()
+        val flags = readUnsignedByte()
+        val type = ArgumentNodes.VALUES[flags and 0x03]
+        builder.type = type
+        builder.children = readVarIntArray()
+        builder.redirectNode = if (flags.isBitMask(0x08)) readVarInt() else null
+        builder.executable = flags.isBitMask(0x04)
+        if (NamedNode::class.java.isAssignableFrom(type.klass.java)) {
+            builder.name = readString()
+        }
+        if (type == ArgumentNodes.ARGUMENT) {
+            val parserName = if (versionId >= ProtocolVersions.V_22W12A) connection.registries.argumentTypeRegistry[readVarInt()] else readResourceLocation()
+            val parser = ArgumentParserFactories[parserName]
+            if (parser == null) {
+                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find parser: $parserName" }
+                builder.parser = DummyParser
+            } else {
+                builder.parser = parser.read(this)
+            }
+
+            if (flags.isBitMask(0x10)) {
+                val suggestionName = readResourceLocation()
+                val suggestionType = SuggestionFactories[suggestionName]
+                if (suggestionType == null) {
+                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Can not find suggestion type: $suggestionName" }
+                } else {
+                    builder.suggestionType = suggestionType.build(this.connection, this)
+                }
+            }
+        }
+
+        return builder
     }
 }

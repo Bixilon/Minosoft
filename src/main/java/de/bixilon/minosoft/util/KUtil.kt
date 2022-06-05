@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.jiibles.Table
+import de.bixilon.jiibles.TableStyles
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
@@ -49,6 +51,10 @@ import java.util.*
 
 object KUtil {
     val RANDOM = Random()
+
+    init {
+        Table.DEFAULT_STYLE = TableStyles.FANCY
+    }
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
@@ -274,5 +280,48 @@ object KUtil {
 
     fun String.toFavicon(): ByteArray {
         return Base64.getDecoder().decode(this.replace("data:image/png;base64,", "").replace("\n", ""))
+    }
+
+    fun modifyArrayIndex(value: Int, size: Int): Int {
+        if (size <= 0) {
+            throw IllegalArgumentException("Size must be > 1: $size")
+        }
+        var ret = value % size
+
+        if (ret < 0) {
+            ret += size
+        }
+
+        return ret
+    }
+
+    fun getOverlappingText(start: String, end: String): Int {
+        var overlapping = 0
+
+        shift@ for (shift in 1..end.length) {
+            if (start.length < shift) {
+                break
+            }
+            for (i in 0 until shift) {
+                if (end.codePointAt(i) != start.codePointAt(start.length - (shift - i))) {
+                    continue@shift
+                }
+            }
+            overlapping = shift
+        }
+
+        return overlapping
+    }
+
+    fun String.removeTrailingWhitespaces(): String {
+        var string = this
+        while (string.startsWith(' ')) {
+            string = string.removePrefix(" ")
+        }
+        while (string.endsWith(' ')) {
+            string = string.removeSuffix(" ")
+        }
+
+        return string
     }
 }

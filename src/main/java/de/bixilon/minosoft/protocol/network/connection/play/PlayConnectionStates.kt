@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -43,7 +45,9 @@ enum class PlayConnectionStates : Translatable {
     override val translationKey: ResourceLocation = "minosoft:connection.play.state.${name.lowercase()}".toResourceLocation()
 
 
-    companion object {
+    companion object : ValuesEnum<PlayConnectionStates> {
+        override val VALUES: Array<PlayConnectionStates> = values()
+        override val NAME_MAP: Map<String, PlayConnectionStates> = EnumUtil.getEnumValues(VALUES)
 
         val PlayConnectionStates.disconnected
             get() = this == DISCONNECTED || this == KICKED || this == ERROR

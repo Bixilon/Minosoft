@@ -117,17 +117,16 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
         const val COLOR_FLOAT_DIVIDER = 255.0f
 
         fun String.asColor(): RGBColor {
-            return RGBColor(let {
-                var colorString = this
-                if (colorString.startsWith("#")) {
-                    colorString = colorString.substring(1)
-                }
-                return@let if (colorString.length == 6) {
-                    Integer.parseUnsignedInt(colorString + "ff", 16)
-                } else {
-                    Integer.parseUnsignedInt(colorString, 16)
-                }
-            })
+            var colorString = this
+            if (colorString.startsWith("#")) {
+                colorString = colorString.substring(1)
+            }
+            val rgb = if (colorString.length == 6) {
+                Integer.parseUnsignedInt(colorString + "ff", 16)
+            } else {
+                Integer.parseUnsignedInt(colorString, 16)
+            }
+            return RGBColor(rgb)
         }
 
         fun Int.asRGBColor(): RGBColor {

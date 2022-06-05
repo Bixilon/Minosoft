@@ -58,8 +58,9 @@ class Version(
 
     val flattened: Boolean get() = versionId >= ProtocolDefinition.FLATTING_VERSION_ID
     val hasOffhand: Boolean get() = versionId >= V_15W31A
-    val maxPacketLength get() = (versionId < ProtocolVersions.V_1_17_1_RC2).decide(1 shl 21, 1 shl 23)
-    val maxChatMessageSize get() = (versionId < ProtocolVersions.V_16W38A).decide(100, 256)
+    val maxPacketLength get() = if (versionId < ProtocolVersions.V_1_17_1_RC2) 1 shl 21 else 1 shl 23
+    val maxChatMessageSize get() = if (versionId < ProtocolVersions.V_16W38A) 100 else 256
     val hasAttackCooldown get() = versionId >= ProtocolVersions.V_15W34A
     val requiresSignedChat get() = versionId >= ProtocolVersions.V_22W17A
+    val supportsRGBChat get() = versionId >= ProtocolVersions.V_20W17A
 }

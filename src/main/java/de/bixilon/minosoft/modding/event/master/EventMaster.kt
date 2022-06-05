@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.master
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
-import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.modding.event.EventInstantFire
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
@@ -27,24 +25,29 @@ import java.util.*
 import kotlin.reflect.full.companionObjectInstance
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
-    val parents: MutableSet<AbstractEventMaster> = synchronizedSetOf(*parents)
-    private val eventInvokerLock = SimpleLock()
+    private val parents: MutableSet<AbstractEventMaster> = mutableSetOf(*parents)
+    private val parentLock = SimpleLock()
     private val eventInvokers: PriorityQueue<EventInvoker> = PriorityQueue()
+    private val eventInvokerLock = SimpleLock()
 
     override val size: Int
         get() {
             var size = eventInvokers.size
+            parentLock.acquire()
             for (parent in parents) {
                 size += parent.size
             }
+            parentLock.release()
             return size
         }
 
 
     override fun fireEvent(event: Event): Boolean {
-        for (parent in parents.toSynchronizedSet()) {
+        parentLock.acquire()
+        for (parent in parents) {
             parent.fireEvent(event)
         }
+        parentLock.release()
 
         val toRemove: MutableSet<EventInvoker> = mutableSetOf()
         eventInvokerLock.acquire()

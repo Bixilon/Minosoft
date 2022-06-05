@@ -116,31 +116,19 @@ class GUIRenderer(
     override fun onMouseMove(position: Vec2i): Boolean {
         val scaledPosition = position.scale()
         currentMousePosition = scaledPosition
-        if (dragged.onMouseMove(scaledPosition)) {
-            return true
-        }
-        return gui.onMouseMove(scaledPosition)
+        return popper.onMouseMove(scaledPosition) || dragged.onMouseMove(scaledPosition) || gui.onMouseMove(scaledPosition)
     }
 
     override fun onCharPress(char: Int): Boolean {
-        if (dragged.onCharPress(char)) {
-            return true
-        }
-        return gui.onCharPress(char)
+        return popper.onCharPress(char) || dragged.onCharPress(char) || gui.onCharPress(char)
     }
 
     override fun onKey(type: KeyChangeTypes, key: KeyCodes): Boolean {
-        if (dragged.onKey(type, key)) {
-            return true
-        }
-        return gui.onKey(type, key)
+        return popper.onKey(type, key) || dragged.onKey(type, key) || gui.onKey(type, key)
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
-        if (dragged.onScroll(scrollOffset)) {
-            return true
-        }
-        return gui.onScroll(scrollOffset)
+        return popper.onScroll(scrollOffset) || dragged.onScroll(scrollOffset) || gui.onScroll(scrollOffset)
     }
 
     override fun drawOther() {

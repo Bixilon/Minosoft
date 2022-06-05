@@ -25,7 +25,6 @@ class SingularPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T
         item = registry.getOrNull(buffer.readVarInt())
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getOrNull(id: Int): T? {
         return item
     }
