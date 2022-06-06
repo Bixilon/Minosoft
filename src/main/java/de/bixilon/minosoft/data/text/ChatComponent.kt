@@ -114,7 +114,7 @@ interface ChatComponent {
                 val whitespaceLess = string.removeTrailingWhitespaces()
                 if (whitespaceLess.startsWith('{') || whitespaceLess.startsWith('[')) {
                     try {
-                        val read: Any = Jackson.MAPPER.readValue(whitespaceLess, Jackson.JSON_MAP_TYPE)
+                        val read: Any = Jackson.MAPPER.readValue(whitespaceLess, Any::class.java)
                         return of(read, translator, parent, ignoreJson = true, restrictedMode)
                     } catch (ignored: JacksonException) {
                     }
