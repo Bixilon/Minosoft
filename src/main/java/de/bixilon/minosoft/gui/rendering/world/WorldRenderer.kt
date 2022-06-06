@@ -802,7 +802,7 @@ class WorldRenderer(
             workQueue()
         }
 
-        culledQueueLock.acquire()
+        culledQueueLock.lock()
         queueLock.acquire()
         for ((chunkPosition, sectionHeights) in queue) {
             val originalSectionHeight = this.culledQueue[chunkPosition] ?: continue
@@ -812,7 +812,7 @@ class WorldRenderer(
             }
         }
         queueLock.release()
-        culledQueueLock.release()
+        culledQueueLock.unlock()
 
         visible.sort()
 
