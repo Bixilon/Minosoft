@@ -25,7 +25,7 @@ data class TabListItem(
     var ping: Int = -1,
     var gamemode: Gamemodes = Gamemodes.SURVIVAL,
     var displayName: ChatComponent = ChatComponent.of(name),
-    var properties: PlayerProperties = PlayerProperties(),
+    var properties: PlayerProperties? = null,
     var team: Team? = null,
     var publicKey: PlayerPublicKey? = null,
 ) : Comparable<TabListItem> {

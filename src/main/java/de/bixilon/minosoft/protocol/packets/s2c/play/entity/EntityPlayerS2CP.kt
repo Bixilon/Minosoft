@@ -40,7 +40,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         entityId = buffer.readVarInt()
         var name = "TBA"
 
-        var properties = PlayerProperties()
+        var properties: PlayerProperties? = null
         if (buffer.versionId < ProtocolVersions.V_14W21A) {
             name = buffer.readString()
             entityUUID = buffer.readUUIDString()

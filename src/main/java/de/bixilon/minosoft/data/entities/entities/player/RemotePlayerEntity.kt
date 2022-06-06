@@ -32,7 +32,7 @@ class RemotePlayerEntity(
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
-    properties: PlayerProperties = PlayerProperties(),
+    properties: PlayerProperties? = null,
     tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : PlayerEntity(connection, entityType, data, position, rotation, name, properties, tabListItem) {
 

@@ -18,21 +18,23 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PlayerModel(renderWindow: RenderWindow, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderWindow, player) {
-    override val model: BakedSkeletalModel = renderWindow.modelLoader.entities.loadModel(
-        "minecraft:entities/player/steve".toResourceLocation(),
-        "minecraft:entities/player/steve".toResourceLocation().bbModel(),
-        mutableMapOf(0 to renderWindow.textureManager.steveTexture),
-    )
+    override val instance = createModel()
 
-    init {
+    private fun createModel(): SkeletalInstance {
+        val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(BB_MODEL)
+        val texture = renderWindow.textureManager.getSkin(entity)
+        val model = unbaked.bake(renderWindow, mutableMapOf(0 to texture))
         model.loadMesh(renderWindow)
+
+        return SkeletalInstance(renderWindow, Vec3i(), model)
     }
 
-    override val instance: SkeletalInstance = SkeletalInstance(renderWindow, Vec3i(), model)
 
+    companion object {
+        private val BB_MODEL = "minecraft:entities/player/steve".toResourceLocation().bbModel()
+    }
 }

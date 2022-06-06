@@ -15,11 +15,9 @@ package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class SkeletalEntityModel<E : Entity>(renderWindow: RenderWindow, entity: E) : EntityModel<E>(renderWindow, entity) {
-    abstract val model: BakedSkeletalModel
 
     abstract val instance: SkeletalInstance
 

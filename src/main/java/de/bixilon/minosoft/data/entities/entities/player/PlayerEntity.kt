@@ -46,7 +46,7 @@ abstract class PlayerEntity(
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
-    properties: PlayerProperties = PlayerProperties(),
+    properties: PlayerProperties? = null,
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, data, position, rotation) {
     override val dimensions: Vec2

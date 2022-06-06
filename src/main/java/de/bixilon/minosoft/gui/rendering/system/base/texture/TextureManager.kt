@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -82,5 +83,9 @@ abstract class TextureManager {
             return steveTexture
         }
         return alexTexture
+    }
+
+    fun getSkin(player: PlayerEntity): DynamicTexture {
+        return getSkin(true, player.uuid ?: return steveTexture, player.tabListItem.properties)
     }
 }
