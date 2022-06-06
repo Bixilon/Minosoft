@@ -262,14 +262,14 @@ object ChunkUtil {
 
     fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
         return arrayOf(
-            chunkPosition + Vec2i(-1, -1),
-            chunkPosition + Vec2i(-1, 0),
-            chunkPosition + Vec2i(-1, 1),
-            chunkPosition + Vec2i(0, -1),
-            chunkPosition + Vec2i(0, 1),
-            chunkPosition + Vec2i(1, -1),
-            chunkPosition + Vec2i(1, 0),
-            chunkPosition + Vec2i(1, 1),
+            chunkPosition + Vec2i(-1, -1), // 0
+            chunkPosition + Vec2i(-1, +0), // 1
+            chunkPosition + Vec2i(-1, +1), // 2
+            chunkPosition + Vec2i(+0, -1), // 3
+            chunkPosition + Vec2i(+0, +1), // 4
+            chunkPosition + Vec2i(+1, -1), // 5
+            chunkPosition + Vec2i(+1, +0), // 6
+            chunkPosition + Vec2i(+1, +1), // 7
         )
     }
 

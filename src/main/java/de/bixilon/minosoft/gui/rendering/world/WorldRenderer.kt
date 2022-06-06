@@ -171,23 +171,24 @@ class WorldRenderer(
             val chunkPosition = it.blockPosition.chunkPosition
             val sectionHeight = it.blockPosition.sectionHeight
             val chunk = world[chunkPosition] ?: return@of
-            queueSection(chunkPosition, sectionHeight, chunk)
+            val neighbours = world.getChunkNeighbours(chunkPosition)
+            queueSection(chunkPosition, sectionHeight, chunk, neighbours = neighbours)
             val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
 
             if (inChunkSectionPosition.y == 0) {
-                queueSection(chunkPosition, sectionHeight - 1, chunk)
+                queueSection(chunkPosition, sectionHeight - 1, chunk, neighbours = neighbours)
             } else if (inChunkSectionPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
-                queueSection(chunkPosition, sectionHeight + 1, chunk)
+                queueSection(chunkPosition, sectionHeight + 1, chunk, neighbours = neighbours)
             }
             if (inChunkSectionPosition.z == 0) {
-                queueSection(Vec2i(chunkPosition.x, chunkPosition.y - 1), sectionHeight)
+                queueSection(Vec2i(chunkPosition.x, chunkPosition.y - 1), sectionHeight, chunk = neighbours[3])
             } else if (inChunkSectionPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
-                queueSection(Vec2i(chunkPosition.x, chunkPosition.y + 1), sectionHeight)
+                queueSection(Vec2i(chunkPosition.x, chunkPosition.y + 1), sectionHeight, chunk = neighbours[4])
             }
             if (inChunkSectionPosition.x == 0) {
-                queueSection(Vec2i(chunkPosition.x - 1, chunkPosition.y), sectionHeight)
+                queueSection(Vec2i(chunkPosition.x - 1, chunkPosition.y), sectionHeight, chunk = neighbours[1])
             } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
-                queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight)
+                queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight, chunk = neighbours[6])
             }
         })
 
@@ -216,26 +217,27 @@ class WorldRenderer(
                     neighbours[5] = true
                 }
             }
+            val neighbours = world.getChunkNeighbours(it.chunkPosition)
             for ((sectionHeight, neighbourUpdates) in sectionHeights) {
-                queueSection(it.chunkPosition, sectionHeight, chunk)
+                queueSection(it.chunkPosition, sectionHeight, chunk, neighbours = neighbours)
 
                 if (neighbourUpdates[0]) {
-                    queueSection(it.chunkPosition, sectionHeight - 1, chunk)
+                    queueSection(it.chunkPosition, sectionHeight - 1, chunk, neighbours = neighbours)
                 }
                 if (neighbourUpdates[1]) {
-                    queueSection(it.chunkPosition, sectionHeight + 1, chunk)
+                    queueSection(it.chunkPosition, sectionHeight + 1, chunk, neighbours = neighbours)
                 }
                 if (neighbourUpdates[2]) {
-                    queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y - 1), sectionHeight)
+                    queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y - 1), sectionHeight, chunk = neighbours[3])
                 }
                 if (neighbourUpdates[3]) {
-                    queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y + 1), sectionHeight)
+                    queueSection(Vec2i(it.chunkPosition.x, it.chunkPosition.y + 1), sectionHeight, chunk = neighbours[4])
                 }
                 if (neighbourUpdates[4]) {
-                    queueSection(Vec2i(it.chunkPosition.x - 1, it.chunkPosition.y), sectionHeight)
+                    queueSection(Vec2i(it.chunkPosition.x - 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[1])
                 }
                 if (neighbourUpdates[5]) {
-                    queueSection(Vec2i(it.chunkPosition.x + 1, it.chunkPosition.y), sectionHeight)
+                    queueSection(Vec2i(it.chunkPosition.x + 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[6])
                 }
             }
         })
@@ -548,7 +550,10 @@ class WorldRenderer(
         meshesToUnloadLock.unlock()
     }
 
-    private fun internalQueueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, ignoreFrustum: Boolean): Boolean {
+    private fun internalQueueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, ignoreFrustum: Boolean, neighbours: Array<Chunk?> = world.getChunkNeighbours(chunkPosition)): Boolean {
+        if (chunkPosition != chunk.chunkPosition) {
+            throw IllegalStateException("Chunk position mismatch!")
+        }
         if (!chunk.isFullyLoaded) { // ToDo: Unload if empty
             return false
         }
@@ -558,7 +563,6 @@ class WorldRenderer(
             return false
         }
 
-        val neighbours = world.getChunkNeighbours(chunkPosition)
         if (!neighbours.received) {
             return false
         }
@@ -586,11 +590,11 @@ class WorldRenderer(
         return false
     }
 
-    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false) {
+    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk?> = world.getChunkNeighbours(chunkPosition)) {
         if (chunk == null || section == null || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
-        val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, ignoreFrustum)
+        val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, ignoreFrustum, neighbours = neighbours)
 
         if (queued) {
             sortQueue()
@@ -602,16 +606,20 @@ class WorldRenderer(
         if (!chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
+        this.loadedMeshesLock.acquire()
         if (this.loadedMeshes.containsKey(chunkPosition)) {
             // ToDo: this also ignores light updates
+            this.loadedMeshesLock.release()
             return
         }
+        this.loadedMeshesLock.release()
 
+        val neighbours = world.getChunkNeighbours(chunkPosition)
         // ToDo: Check if chunk is visible (not section, chunk)
         var queueChanges = 0
         for (sectionHeight in chunk.lowestSection until chunk.highestSection) {
             val section = chunk[sectionHeight] ?: continue
-            val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, false)
+            val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, false, neighbours = neighbours)
             if (queued) {
                 queueChanges++
             }
@@ -791,8 +799,9 @@ class WorldRenderer(
 
 
         for ((chunkPosition, sectionHeights) in queue) {
+            val neighbours = world.getChunkNeighbours(chunkPosition)
             for (sectionHeight in sectionHeights.intIterator()) {
-                queueSection(chunkPosition, sectionHeight, ignoreFrustum = true)
+                queueSection(chunkPosition, sectionHeight, ignoreFrustum = true, neighbours = neighbours)
             }
         }
         if (sortQueue && queue.isNotEmpty()) {
