@@ -55,6 +55,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.truncate
 import de.bixilon.minosoft.util.SystemInformation
 import kotlin.math.abs
 
@@ -120,7 +121,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += TextElement(guiRenderer, BaseComponent("Account ", connection.account.username))
         layout += TextElement(guiRenderer, BaseComponent("Address ", connection.address))
         layout += TextElement(guiRenderer, BaseComponent("Network version ", connection.version))
-        layout += TextElement(guiRenderer, BaseComponent("Server brand ", connection.serverInfo.brand)).apply { connection.serverInfo::brand.observe(this@DebugHUDElement) { this.text = BaseComponent("Server brand ", it) } }
+        layout += TextElement(guiRenderer, BaseComponent("Server brand ", connection.serverInfo.brand)).apply { connection.serverInfo::brand.observe(this@DebugHUDElement) { this.text = BaseComponent("Server brand ", it.truncate(50)) } }
 
         layout += LineSpacerElement(guiRenderer)
 

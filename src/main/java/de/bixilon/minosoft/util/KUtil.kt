@@ -271,6 +271,7 @@ object KUtil {
         return prefixed.toArray()
     }
 
+    @Deprecated("Kutil 1.12")
     fun String.codePointAtOrNull(index: Int): Int? {
         if (index < 0 || index >= this.length) {
             return null
@@ -278,10 +279,12 @@ object KUtil {
         return this.codePointAt(index)
     }
 
+    @Deprecated("Kutil 1.12")
     fun String.toFavicon(): ByteArray {
         return Base64.getDecoder().decode(this.replace("data:image/png;base64,", "").replace("\n", ""))
     }
 
+    @Deprecated("Kutil 1.12")
     fun modifyArrayIndex(value: Int, size: Int): Int {
         if (size <= 0) {
             throw IllegalArgumentException("Size must be > 1: $size")
@@ -295,6 +298,7 @@ object KUtil {
         return ret
     }
 
+    @Deprecated("Kutil 1.12")
     fun getOverlappingText(start: String, end: String): Int {
         var overlapping = 0
 
@@ -313,6 +317,7 @@ object KUtil {
         return overlapping
     }
 
+    @Deprecated("Kutil 1.12")
     fun String.removeTrailingWhitespaces(): String {
         var string = this
         while (string.startsWith(' ')) {
@@ -323,5 +328,13 @@ object KUtil {
         }
 
         return string
+    }
+
+    @Deprecated("Kutil 1.12")
+    fun String.truncate(length: Int): String {
+        if (this.length <= length) {
+            return this
+        }
+        return this.substring(0, length)
     }
 }
