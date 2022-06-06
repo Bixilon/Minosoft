@@ -32,6 +32,9 @@ import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
+import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -117,7 +120,18 @@ abstract class PlayerEntity(
             return ChatColors.RED
         }
 
+    override fun createModel(renderWindow: RenderWindow): EntityModel<PlayerEntity>? {
+        return PlayerModel(renderWindow, this)
+    }
+
     companion object {
+        private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
+        private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
+        private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
+        private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
+        private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
+        private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
+        private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
@@ -127,12 +141,5 @@ abstract class PlayerEntity(
             Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
             Poses.DYING to Vec2(0.2f, 0.2f),
         )
-        private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
-        private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
-        private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
-        private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
-        private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
-        private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
-        private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
     }
 }

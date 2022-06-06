@@ -11,17 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+package de.bixilon.minosoft.gui.rendering.entity.models
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
+import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
-interface DynamicTexture : ShaderTexture {
-    val uuid: UUID
-    val usages: AtomicInteger
+abstract class SkeletalEntityModel<E : Entity>(renderWindow: RenderWindow, entity: E) : EntityModel<E>(renderWindow, entity) {
+    abstract val model: BakedSkeletalModel
 
-    val state: DynamicTextureState
+    abstract val instance: SkeletalInstance
 
-    var onStateChange: (() -> Unit)?
+    override fun draw() {
+        instance.draw()
+    }
 }

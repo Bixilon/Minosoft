@@ -17,14 +17,14 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import java.nio.ByteBuffer
 
-interface AbstractTexture : ShaderIdentifiable {
+interface AbstractTexture : ShaderTexture {
     val resourceLocation: ResourceLocation
 
     var textureArrayUV: Vec2
@@ -55,4 +55,13 @@ interface AbstractTexture : ShaderIdentifiable {
 
         return OpenGLTextureUtil.generateMipMaps(data, size)
     }
+
+    override fun transformUV(end: FloatArray?): FloatArray {
+        return renderData.transformUV(end)
+    }
+
+    override fun transformUV(end: Vec2?): Vec2 {
+        return renderData.transformUV(end)
+    }
+
 }

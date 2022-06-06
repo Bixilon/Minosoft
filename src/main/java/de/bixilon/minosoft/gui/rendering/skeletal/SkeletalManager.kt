@@ -33,6 +33,7 @@ class SkeletalManager(
     fun postInit() {
         shader.defines["TRANSFORMS"] = TRANSFORMS
         shader.loadAnimated()
+        renderWindow.textureManager.dynamicTextures.use(shader)
         shader["uSkeletalBuffer"] = uniformBuffer
         shader.setUInt("uLight", 0xFF)
         renderWindow.lightMap.use(shader)

@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -31,7 +31,7 @@ import java.util.*
 
 class BakedSkeletalModel(
     val model: SkeletalModel,
-    val textures: Int2ObjectOpenHashMap<AbstractTexture>,
+    val textures: Int2ObjectOpenHashMap<ShaderTexture>,
 ) {
     lateinit var mesh: SkeletalMesh
 

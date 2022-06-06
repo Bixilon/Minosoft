@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import java.nio.ByteBuffer
@@ -43,4 +44,13 @@ class OpenGLDynamicTexture(
     override fun toString(): String {
         return uuid.toString()
     }
+
+    override fun transformUV(end: Vec2?): Vec2 {
+        return end ?: Vec2(1.0f)
+    }
+
+    override fun transformUV(end: FloatArray?): FloatArray {
+        return end ?: floatArrayOf(1.0f, 1.0f)
+    }
 }
+

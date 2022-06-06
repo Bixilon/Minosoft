@@ -48,6 +48,9 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.entity.models.DummyModel
+import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -137,6 +140,9 @@ abstract class Entity(
         get() = isSprinting && !isSneaking // ToDo: Touching fluids
 
     protected var lastTickTime = -1L
+
+
+    open var model: EntityModel<out Entity>? = null
 
 
     // fluids stuff
@@ -593,6 +599,8 @@ abstract class Entity(
         }
 
     open fun onAttack(attacker: Entity) = true
+
+    open fun createModel(renderWindow: RenderWindow): EntityModel<*>? = DummyModel(renderWindow, this)
 
 
     companion object {

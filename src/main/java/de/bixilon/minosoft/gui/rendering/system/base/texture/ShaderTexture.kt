@@ -11,17 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.kotlinglm.vec2.Vec2
 
-interface DynamicTexture : ShaderTexture {
-    val uuid: UUID
-    val usages: AtomicInteger
+interface ShaderTexture : ShaderIdentifiable {
 
-    val state: DynamicTextureState
-
-    var onStateChange: (() -> Unit)?
+    fun transformUV(end: Vec2?): Vec2
+    fun transformUV(end: FloatArray?): FloatArray
 }
