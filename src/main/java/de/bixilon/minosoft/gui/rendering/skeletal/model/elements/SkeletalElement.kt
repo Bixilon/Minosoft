@@ -25,6 +25,7 @@ import java.util.*
 data class SkeletalElement(
     val name: String,
     val rescale: Boolean = false,
+    val visible: Boolean = true,
     val locked: Boolean = false,
     val from: Vec3 = Vec3.EMPTY,
     val to: Vec3 = Vec3.ONE,

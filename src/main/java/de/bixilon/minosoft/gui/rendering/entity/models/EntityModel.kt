@@ -73,7 +73,6 @@ abstract class EntityModel<E : Entity>(
     }
 
     open fun updateVisibility(graph: WorldVisibilityGraph) {
-        this.aabb = entity.cameraAABB
         visible = graph.isAABBVisible(aabb)
     }
 

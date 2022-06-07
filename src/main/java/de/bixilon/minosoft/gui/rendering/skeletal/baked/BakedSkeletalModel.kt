@@ -73,6 +73,9 @@ class BakedSkeletalModel(
 
 
         for (element in model.elements) {
+            if (!element.visible) {
+                continue
+            }
             for ((direction, face) in element.faces) {
                 val positions = direction.getPositions(element.from.fromBlockCoordinates(), element.to.fromBlockCoordinates())
 
