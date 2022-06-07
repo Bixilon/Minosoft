@@ -204,6 +204,7 @@ minosoft:menu.pause.back_to_game=Back to game
 minosoft:menu.pause.options.debug=Debug options
 minosoft:menu.pause.disconnect=Disconnect
 minosoft:menu.pause.disconnect.confirm=§cClick again to disconnect
+minosoft:menu.pause.show_eros=Show eros again
 minosoft:menu.pause.exit=Exit
 minosoft:menu.pause.exit.confirm=§cClick again to exit
 
