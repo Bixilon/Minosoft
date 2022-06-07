@@ -38,6 +38,8 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerMo
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
+import de.bixilon.minosoft.util.BitByte.isBitMask
 
 abstract class PlayerEntity(
     connection: PlayConnection,
@@ -68,8 +70,16 @@ abstract class PlayerEntity(
     val score: Int
         get() = data.get(SCORE_DATA, 0)
 
-    private fun getSkinPartsFlag(bitMask: Int): Boolean {
-        return data.getBitMask(SKIN_PARTS_DATA, bitMask, 0x00.toByte())
+    fun getSkinParts(): Set<SettingsC2SP.SkinParts> {
+        val flags = data.get(SKIN_PARTS_DATA, 0x00.toByte()).toInt()
+        val parts: MutableSet<SettingsC2SP.SkinParts> = mutableSetOf()
+        for (part in SettingsC2SP.SkinParts.VALUES) {
+            if (!flags.isBitMask(part.bitmask)) {
+                continue
+            }
+            parts += part
+        }
+        return parts
     }
 
     @get:SynchronizedEntityData

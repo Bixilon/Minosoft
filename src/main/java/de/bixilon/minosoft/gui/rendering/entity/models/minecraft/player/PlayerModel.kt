@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player) {
     override val instance = createModel()
-    open val skinParts: Set<SettingsC2SP.SkinParts> = emptySet() // ToDo: How to get them?
+    open val skinParts: Set<SettingsC2SP.SkinParts> = player.getSkinParts()
 
     private fun createModel(): SkeletalInstance {
         val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(BB_MODEL)
