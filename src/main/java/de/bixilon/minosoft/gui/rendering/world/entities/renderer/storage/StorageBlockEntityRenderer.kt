@@ -31,10 +31,14 @@ abstract class StorageBlockEntityRenderer<E : StorageBlockEntity>(
     }
 
     fun open() {
-        this.skeletal?.playAnimation("animation.chest.opening")
+        val skeletal = this.skeletal ?: return
+        skeletal.clearAnimation()
+        skeletal.playAnimation("animation.chest.opening")
     }
 
     fun close() {
-        this.skeletal?.playAnimation("animation.chest.closing")
+        val skeletal = this.skeletal ?: return
+        skeletal.clearAnimation()
+        skeletal.playAnimation("animation.chest.closing")
     }
 }

@@ -31,6 +31,7 @@ data class SkeletalAnimation(
     val length: Float,
     val animators: Map<UUID, SkeletalAnimator>,
 ) {
+
     fun get(channel: KeyframeChannels, animatorUUID: UUID, time: Float): Vec3? {
         val animator = animators[animatorUUID] ?: return null
 
