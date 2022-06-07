@@ -19,7 +19,6 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
@@ -150,7 +149,6 @@ class RendererManager(
                 register(ParticleRenderer)
             }
             register(EntityRenderer)
-            register(EntityHitboxRenderer)
             register(ChunkBorderRenderer)
             register(WorldBorderRenderer)
             register(GUIRenderer)

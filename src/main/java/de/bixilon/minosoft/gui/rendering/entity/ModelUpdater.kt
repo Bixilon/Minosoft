@@ -11,24 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity.models
+package de.bixilon.minosoft.gui.rendering.entity
 
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.renderer.Drawable
 
-abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity: E) : EntityModel<E>(renderer, entity) {
-    abstract val instance: SkeletalInstance
+interface ModelUpdater : Drawable {
 
+    fun checkUpdate(): Boolean = false
 
-    override fun prepare() {
-        super.prepare()
-        instance.model.loadMesh(renderWindow)
-    }
+    fun prepareAsync() = Unit
+    fun prepare() = Unit
 
-    override fun draw() {
-        super.draw()
-        instance.updatePosition(entity.cameraPosition, entity.rotation)
-        instance.draw()
-    }
+    fun unload() = Unit
 }

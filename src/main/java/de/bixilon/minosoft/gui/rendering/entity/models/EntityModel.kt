@@ -14,14 +14,78 @@
 package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.gui.rendering.entity.EntityHitbox
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entity.ModelUpdater
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
 abstract class EntityModel<E : Entity>(
-    val renderWindow: RenderWindow,
+    val renderer: EntityRenderer,
     val entity: E,
-) {
+) : ModelUpdater {
+    val renderWindow = renderer.renderWindow
+    open var update = true
+    var aabb = AABB.EMPTY
+    open var hitbox: EntityHitbox = EntityHitbox(this)
+    var visible = false
 
-    open fun draw() {
-        println("Drawing entity: $entity")
+    override val skipDraw: Boolean
+        get() = !visible
+
+    override fun checkUpdate(): Boolean {
+        val aabb = entity.cameraAABB
+        var update = false
+        if (this.aabb != aabb) {
+            this.aabb = aabb
+            visible = renderer.visibilityGraph.isAABBVisible(aabb)
+            update = true
+        }
+        update = hitbox.checkUpdate() || update
+
+        return update
+    }
+
+    override fun prepareAsync() {
+        if (!update) {
+            return
+        }
+
+        hitbox.prepareAsync()
+
+    }
+
+    override fun prepare() {
+        if (!update) {
+            return
+        }
+        hitbox.prepare()
+        update = false
+    }
+
+    override fun draw() {
+        drawHitbox()
+    }
+
+    override fun unload() {
+        hitbox.unload()
+    }
+
+    open fun updateVisibility(graph: WorldVisibilityGraph) {
+        this.aabb = entity.cameraAABB
+        visible = graph.isAABBVisible(aabb)
+    }
+
+    protected open fun drawHitbox() {
+        if (renderer.profile.hitbox.showThroughWalls) {
+            renderWindow.renderSystem.reset(faceCulling = false, depth = DepthFunctions.ALWAYS)
+        } else {
+            renderWindow.renderSystem.reset(faceCulling = false)
+        }
+
+        renderWindow.shaderManager.genericColorShader.use()
+
+        hitbox.draw()
     }
 }

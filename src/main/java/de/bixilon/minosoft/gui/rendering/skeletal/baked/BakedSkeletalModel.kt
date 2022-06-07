@@ -64,6 +64,9 @@ class BakedSkeletalModel(
     }
 
     fun loadMesh(renderWindow: RenderWindow) {
+        if (this::mesh.isInitialized) {
+            return
+        }
         val mesh = SkeletalMesh(renderWindow, 1000)
 
         val outlinerMapping = calculateOutlinerMapping()

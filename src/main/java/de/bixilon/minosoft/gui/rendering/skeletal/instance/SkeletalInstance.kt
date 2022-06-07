@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
@@ -30,10 +33,12 @@ class SkeletalInstance(
     transform: Mat4 = Mat4(),
 ) {
     private var baseTransform = Mat4().translateAssign(blockPosition.toVec3) * transform
+    private var previousBaseTransform = baseTransform
     private var currentAnimation: SkeletalAnimation? = null
     private var animationTime = 0.0f
     private var animationLastFrame = -1L
     private var transforms: List<Mat4> = emptyList()
+
 
     var light: Int = 0xFF
 
@@ -63,7 +68,18 @@ class SkeletalInstance(
         renderWindow.skeletalManager.draw(this, light)
     }
 
+    fun updatePosition(position: Vec3, rotation: EntityRotation) {
+        val matrix = Mat4()
+            .translateAssign(position)
+            .rotateAssign((rotation.yaw + 90.0f).toFloat().rad, Vec3(0, 1, 0))
+
+        if (baseTransform != matrix) {
+            baseTransform = matrix
+        }
+    }
+
     fun calculateTransforms(): List<Mat4> {
+        val baseTransform = baseTransform
         val animation = currentAnimation
         if (animation != null) {
             val time = TimeUtil.millis
@@ -76,7 +92,7 @@ class SkeletalInstance(
                 clearAnimation()
                 return calculateTransforms()
             }
-        } else if (this.transforms.isNotEmpty()) {
+        } else if (this.transforms.isNotEmpty() && baseTransform === previousBaseTransform) {
             return this.transforms
         }
 
@@ -85,6 +101,7 @@ class SkeletalInstance(
             calculateTransform(animationTime, baseTransform, animation, outliner, transforms)
         }
         this.transforms = transforms
+        this.previousBaseTransform = baseTransform
         return transforms
     }
 

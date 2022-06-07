@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 
 @Deprecated("TODO")
-class DummyModel(renderWindow: RenderWindow, entity: Entity) : EntityModel<Entity>(renderWindow, entity)
+class DummyModel(renderer: EntityRenderer, entity: Entity) : EntityModel<Entity>(renderer, entity)

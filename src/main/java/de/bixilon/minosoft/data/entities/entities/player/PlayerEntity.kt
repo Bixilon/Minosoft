@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
@@ -120,8 +120,8 @@ abstract class PlayerEntity(
             return ChatColors.RED
         }
 
-    override fun createModel(renderWindow: RenderWindow): EntityModel<PlayerEntity>? {
-        return PlayerModel(renderWindow, this)
+    override fun createModel(renderer: EntityRenderer): EntityModel<PlayerEntity>? {
+        return PlayerModel(renderer, this)
     }
 
     companion object {

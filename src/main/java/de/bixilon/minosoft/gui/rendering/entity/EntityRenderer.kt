@@ -13,28 +13,95 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.config.key.KeyActions
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
+import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
+import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
+import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
+import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class EntityRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OpaqueDrawable, SkipAll {
+) : Renderer, OpaqueDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    val profile = connection.profiles.entity.hitbox
-    private val visibilityGraph = renderWindow.camera.visibilityGraph
+    val profile = connection.profiles.entity
+    val visibilityGraph = renderWindow.camera.visibilityGraph
+    private val models: MutableMap<Entity, EntityModel<*>> = mutableMapOf()
+    private lateinit var localModel: LocalPlayerModel
+    private val lock = SimpleLock()
+    private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
 
-    override val skipAll: Boolean
-        get() = false
+    var hitboxes = profile.hitbox.enabled
 
     override fun init(latch: CountUpAndDownLatch) {
+        connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> { event ->
+            lock.lock()
+            event.entity.createModel(this)?.let { models[event.entity] = it }
+            lock.unlock()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
+            toUnload += models.remove(it.entity) ?: return@of
+        })
+        connection.registerEvent(CallbackEventInvoker.of<VisibilityGraphChangeEvent> {
+            runAsync { it.updateVisibility(visibilityGraph) }
+        })
+
+        profile.hitbox::enabled.profileWatch(this, profile = profile) { this.hitboxes = it }
+
+        renderWindow.inputHandler.registerKeyCallback(
+            HITBOX_TOGGLE_KEY_COMBINATION,
+            KeyBinding(
+                mapOf(
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_B),
+                ),
+            ), defaultPressed = profile.hitbox.enabled
+        ) {
+            profile.hitbox.enabled = it
+            connection.util.sendDebugMessage("Entity hit boxes: ${it.format()}")
+            hitboxes = it
+        }
+    }
+
+    override fun postInit(latch: CountUpAndDownLatch) {
+        localModel = renderWindow.connection.player.createModel(this)
+
+        models[connection.player] = localModel
+    }
+
+    override fun prepareDraw() {
+        runAsync {
+            it.update = it.checkUpdate()
+            it.prepareAsync()
+        }
+        while (toUnload.isNotEmpty()) { // ToDo: Thread safety
+            val model = toUnload.removeAt(0)
+            model.unload()
+        }
+        lock.acquire()
+        for (model in models.values) {
+            model.prepare()
+        }
+        lock.release()
     }
 
     override fun setupOpaque() {
@@ -42,19 +109,36 @@ class EntityRenderer(
     }
 
     override fun drawOpaque() {
-        connection.world.entities.lock.acquire()
-        for (entity in connection.world.entities) {
-            if (entity.model == null) {
-                entity.model = entity.createModel(renderWindow)
+        // ToDo: Probably more transparent
+        lock.acquire()
+        for (model in models.values) {
+            if (model.skipDraw) {
+                continue
             }
-            entity.model?.draw()
+            model.draw()
         }
-        connection.world.entities.lock.release()
+        lock.release()
+    }
+
+    private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
+        val latch = CountUpAndDownLatch(0)
+        lock.acquire()
+        for (model in models.values) {
+            latch.inc()
+            DefaultThreadPool += {
+                executor(model)
+                latch.dec()
+            }
+        }
+        lock.release()
+        latch.await()
     }
 
 
     companion object : RendererBuilder<EntityRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:entity")
+        private val HITBOX_TOGGLE_KEY_COMBINATION = "minosoft:toggle_hitboxes".toResourceLocation()
+
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): EntityRenderer {
             return EntityRenderer(connection, renderWindow)

@@ -56,6 +56,8 @@ import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.LocalPlayerModel
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -599,6 +601,10 @@ class LocalPlayerEntity(
 
     override val mainArm: Arms
         get() = connection.profiles.connection.mainArm
+
+    override fun createModel(renderer: EntityRenderer): LocalPlayerModel {
+        return LocalPlayerModel(renderer, this)
+    }
 
     companion object {
         private val CLIMBABLE_TAG = "minecraft:climbable".toResourceLocation()

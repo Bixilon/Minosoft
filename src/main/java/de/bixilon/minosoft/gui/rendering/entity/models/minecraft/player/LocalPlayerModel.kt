@@ -11,24 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.entity.models
+package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
-abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity: E) : EntityModel<E>(renderer, entity) {
-    abstract val instance: SkeletalInstance
+open class LocalPlayerModel(renderer: EntityRenderer, player: PlayerEntity) : PlayerModel(renderer, player) {
 
-
-    override fun prepare() {
-        super.prepare()
-        instance.model.loadMesh(renderWindow)
-    }
-
-    override fun draw() {
-        super.draw()
-        instance.updatePosition(entity.cameraPosition, entity.rotation)
-        instance.draw()
+    init {
+        renderer.profile.hitbox::showLocal.profileWatch(this, true, renderer.profile) {
+            hitbox.enabled = it
+        }
     }
 }

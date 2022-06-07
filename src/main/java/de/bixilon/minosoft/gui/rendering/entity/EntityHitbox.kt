@@ -16,99 +16,118 @@ package de.bixilon.minosoft.gui.rendering.entity
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
 
 class EntityHitbox(
-    val renderer: EntityHitboxRenderer,
-    val entity: Entity,
-    val visibility: WorldVisibilityGraph,
-) {
-    private lateinit var mesh: LineMesh
-    private var visible = false
+    val model: EntityModel<*>,
+) : ModelUpdater {
+    private var _mesh: LineMesh? = null
+    private var mesh: LineMesh? = null
     private var aabb = AABB.EMPTY
     private var hitBoxColor = ChatColors.WHITE
     private var velocity = Vec3d.EMPTY
     private var rotation = EntityRotation.EMPTY
-    private var checkVisibility = false
+
+    private var update = true
+
+    var enabled: Boolean = true
+        get() = field && model.renderer.hitboxes
+    private var lastEnabled = true
 
 
-    private fun update() {
-        val aabb = entity.cameraAABB.shrink(0.01f)
+    override fun checkUpdate(): Boolean {
+        val enabled = enabled
+        val lastEnabled = lastEnabled
+        this.lastEnabled = enabled
+        if (!enabled) {
+            return lastEnabled
+        }
+        val entity = model.entity
         val hitBoxColor = entity.hitBoxColor
         val velocity = entity.velocity
         val rotation = entity.rotation
-        val equals = aabb == this.aabb && hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation
-        if (equals && !checkVisibility) {
-            return
+        val equals = hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation
+        if (equals) {
+            return false
         }
-        this.aabb = aabb
         this.hitBoxColor = hitBoxColor
         this.velocity = velocity
         this.rotation = rotation
+        update = true
 
-        this.checkVisibility = false
+        return true
+    }
 
-        val visible = ((entity.isInvisible && renderer.profile.showInvisible) || !entity.isInvisible) && visibility.isAABBVisible(aabb)
-        if (checkVisibility && equals && this::mesh.isInitialized) {
-            // only visibility changed
-            this.visible = visible
+    override fun prepareAsync() {
+        if (mesh != null) {
+            this._mesh = mesh
+            mesh = null
+        }
+        if (!enabled) {
             return
         }
-        if (this.visible) {
-            this.mesh.unload()
+        val aabb = model.aabb
+        this.aabb = aabb
+
+        val visible = ((model.entity.isInvisible && model.renderer.profile.hitbox.showInvisible) || !model.entity.isInvisible) && model.visible
+
+        if (!visible) {
+            return
         }
-        if (visible) {
-            val mesh = LineMesh(renderer.renderWindow)
-            if (renderer.profile.lazy) {
-                mesh.drawLazyAABB(aabb, color = hitBoxColor)
-            } else {
-                mesh.drawAABB(aabb = aabb, color = hitBoxColor, margin = 0.1f)
-            }
-            val center = Vec3(aabb.center)
 
-            if (!velocity.empty) {
-                mesh.drawLine(center, center + Vec3(velocity) * 3, color = ChatColors.YELLOW)
-            }
+        val shrunk = aabb.shrink(0.01f)
+        val mesh = LineMesh(model.renderWindow)
+        if (model.renderer.profile.hitbox.lazy) {
+            mesh.drawLazyAABB(shrunk, color = hitBoxColor)
+        } else {
+            mesh.drawAABB(aabb = shrunk, color = hitBoxColor, margin = 0.1f)
+        }
+        val center = Vec3(shrunk.center)
 
-
-            val eyeHeight = aabb.min.y + entity.eyeHeight
-            val eyeAABB = AABB(Vec3(aabb.min.x, eyeHeight, aabb.min.z), Vec3(aabb.max.x, eyeHeight, aabb.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
-            mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
+        if (!velocity.empty) {
+            mesh.drawLine(center, center + Vec3(velocity) * 3, color = ChatColors.YELLOW)
+        }
 
 
-            val eyeStart = Vec3(center.x, eyeHeight, center.z)
+        val eyeHeight = shrunk.min.y + model.entity.eyeHeight
+        val eyeAABB = AABB(Vec3(shrunk.min.x, eyeHeight, shrunk.min.z), Vec3(shrunk.max.x, eyeHeight, shrunk.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
+        mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
 
-            mesh.drawLine(eyeStart, eyeStart + Vec3(rotation.front) * 5, color = ChatColors.BLUE)
+
+        val eyeStart = Vec3(center.x, eyeHeight, center.z)
+
+        mesh.drawLine(eyeStart, eyeStart + Vec3(rotation.front) * 5, color = ChatColors.BLUE)
+        this.mesh = mesh
+    }
+
+    override fun prepare() {
+        _mesh?.unload()
+        _mesh = null
+        val mesh = mesh ?: return
+        if (mesh.state == Mesh.MeshStates.PREPARING) {
             mesh.load()
-            this.mesh = mesh
-        }
-        this.visible = visible
-    }
-
-    fun draw() {
-        update()
-        if (this.visible) {
-            mesh.draw()
         }
     }
 
-    fun unload() {
-        this.visible = false
-        this.aabb = AABB.EMPTY
-        if (this::mesh.isInitialized && this.mesh.state == Mesh.MeshStates.LOADED) {
+    override fun draw() {
+        if (!enabled) {
+            return
+        }
+        mesh?.draw()
+    }
+
+    override fun unload() {
+        val mesh = mesh
+        this.mesh = null
+        if (mesh != null && mesh.state == Mesh.MeshStates.LOADED) {
             mesh.unload()
         }
-    }
-
-    fun updateVisibility() {
-        this.checkVisibility = true
     }
 }
