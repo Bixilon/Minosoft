@@ -110,6 +110,9 @@ interface ChatComponent {
                 }
             }
             val string = raw.toString()
+            if (string.isEmpty()) {
+                return EMPTY
+            }
             if (!ignoreJson) {
                 val whitespaceLess = string.removeTrailingWhitespaces()
                 if (whitespaceLess.startsWith('{') || whitespaceLess.startsWith('[')) {
