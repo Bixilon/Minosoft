@@ -23,8 +23,8 @@ abstract class ThrowableProjectile(connection: PlayConnection, entityType: Entit
     open val gravity: Float = 0.03f
 
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
 
 
         val velocity = this.velocity

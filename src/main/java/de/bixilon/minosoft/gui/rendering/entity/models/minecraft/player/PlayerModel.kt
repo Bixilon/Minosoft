@@ -27,6 +27,8 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     override val instance = createModel()
     open val skinParts: Set<SettingsC2SP.SkinParts> = player.getSkinParts()
 
+    private var playing = false
+
     private fun createModel(): SkeletalInstance {
         val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(BB_MODEL)
 

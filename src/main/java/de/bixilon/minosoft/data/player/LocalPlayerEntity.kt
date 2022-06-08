@@ -583,17 +583,23 @@ class LocalPlayerEntity(
     override val pushableByFluids: Boolean
         get() = !baseAbilities.isFlying
 
-    override fun realTick() {
+    override fun tick() {
         if (connection.world[positionInfo.blockPosition.chunkPosition] == null) {
             // chunk not loaded, so we don't tick?
             return
         }
-        super.realTick()
+        super.tick()
         tickMovement()
 
         sendMovementPackets()
 
         fovMultiplier.value = 1.0 + (walkingSpeed * 1.9).clamp(-2.0, 2.0)
+    }
+
+    override fun draw(time: Long) = Unit
+
+    fun _draw(time: Long) {
+        super.draw(time)
     }
 
     override val health: Double

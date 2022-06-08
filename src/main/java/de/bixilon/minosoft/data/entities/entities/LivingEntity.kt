@@ -122,8 +122,8 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         }
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
         tickStatusEffects()
 
         if (isSleeping) {

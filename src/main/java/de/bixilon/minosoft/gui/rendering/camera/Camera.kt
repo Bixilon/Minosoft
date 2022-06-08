@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
@@ -58,7 +60,11 @@ class Camera(
     }
 
     fun draw() {
-        matrixHandler.entity.tick()
+        val entity = matrixHandler.entity
+        entity.tryTick()
+        if (entity is LocalPlayerEntity) {
+            entity._draw(TimeUtil.millis)
+        }
         matrixHandler.draw()
         visibilityGraph.draw()
         targetHandler.raycast()

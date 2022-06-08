@@ -101,12 +101,12 @@ abstract class PlayerEntity(
     override val spawnSprintingParticles: Boolean
         get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
 
-    override fun realTick() {
+    override fun tick() {
         if (gamemode == Gamemodes.SPECTATOR) {
             onGround = false
         }
         // ToDo: Update water submersion state
-        super.realTick()
+        super.tick()
 
         val clampedPosition = position.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
         if (clampedPosition != position) {

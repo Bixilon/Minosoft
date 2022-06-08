@@ -187,7 +187,7 @@ class WorldEntities : Iterable<Entity> {
         lock.acquire()
         val latch = CountUpAndDownLatch(entities.size)
         for (entity in entities) {
-            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGH) { entity.tick(); latch.dec() }
+            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGH) { entity.tryTick(); latch.dec() }
         }
         lock.release()
         latch.await()

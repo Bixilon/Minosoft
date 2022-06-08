@@ -120,7 +120,6 @@ abstract class Entity(
     open val eyeHeight: Float
         get() = dimensions.y * 0.85f
 
-    private var lastFakeTickTime = -1L
     protected open var previousPosition: Vec3d = Vec3d(position)
     override var position: Vec3d = position
         set(value) {
@@ -297,29 +296,23 @@ abstract class Entity(
 
 
     @Synchronized
-    fun tick() {
+    fun tryTick() {
         val currentTime = TimeUtil.millis
-        if (lastFakeTickTime == -1L) {
-            lastFakeTickTime = currentTime
-            return
-        }
-        val deltaTime = currentTime - lastFakeTickTime
-        if (deltaTime <= 0) {
-            return
-        }
-
 
         if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
-            realTick()
+            tick()
             postTick()
             lastTickTime = currentTime
         }
-        cameraPosition = interpolateLinear((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+    }
+
+    open fun draw(time: Long) {
+        cameraPosition = interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
     }
 
     open val pushableByFluids: Boolean = false
 
-    open fun realTick() {
+    open fun tick() {
         previousPosition = position
         if (spawnSprintingParticles) {
             spawnSprintingParticles()

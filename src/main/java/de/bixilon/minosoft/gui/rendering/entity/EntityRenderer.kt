@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -90,6 +91,7 @@ class EntityRenderer(
 
     override fun prepareDraw() {
         runAsync {
+            it.entity.draw(TimeUtil.millis)
             it.update = it.checkUpdate()
             it.prepareAsync()
         }

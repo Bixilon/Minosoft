@@ -13,32 +13,25 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.SkeletalAnimator
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
 import java.util.*
 
-data class SkeletalAnimation(
-    val uuid: UUID,
-    val name: String,
-    val loop: AnimationLoops = AnimationLoops.LOOP,
-    val override: Boolean = false,
-    val length: Float,
-    val animators: Map<UUID, SkeletalAnimator>,
-) {
+@JsonDeserialize(`as` = StaticSkeletalAnimation::class)
+interface SkeletalAnimation {
+    val name: String
+    val loop: AnimationLoops
+    val length: Float
 
-    fun get(channel: KeyframeChannels, animatorUUID: UUID, time: Float): Vec3? {
-        val animator = animators[animatorUUID] ?: return null
+    fun get(channel: KeyframeChannels, animatorUUID: UUID, time: Float): Vec3?
 
-        return animator.get(channel, tweakTime(time))
-    }
-
-    private fun tweakTime(time: Float): Float {
+    fun tweakTime(time: Float): Float {
         when (loop) {
             AnimationLoops.LOOP -> return time % length
             AnimationLoops.ONCE -> {
