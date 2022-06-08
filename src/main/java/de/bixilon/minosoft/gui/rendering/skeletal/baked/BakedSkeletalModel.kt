@@ -76,8 +76,9 @@ class BakedSkeletalModel(
             if (!element.visible) {
                 continue
             }
+            val inflate = (element.inflate * 0.001f)
             for ((direction, face) in element.faces) {
-                val positions = direction.getPositions(element.from.fromBlockCoordinates(), element.to.fromBlockCoordinates())
+                val positions = direction.getPositions(element.from.fromBlockCoordinates() - inflate, element.to.fromBlockCoordinates() + inflate)
 
                 val uvDivider = Vec2(model.resolution.width, model.resolution.height)
                 val texturePositions = ModelBakeUtil.getTextureCoordinates(face.uvStart / uvDivider, face.uvEnd / uvDivider)

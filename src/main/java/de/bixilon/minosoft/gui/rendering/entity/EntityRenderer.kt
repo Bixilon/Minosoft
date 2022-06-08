@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
-import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
@@ -46,18 +47,15 @@ class EntityRenderer(
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val profile = connection.profiles.entity
     val visibilityGraph = renderWindow.camera.visibilityGraph
-    private val models: MutableMap<Entity, EntityModel<*>> = mutableMapOf()
+    private val models: LockMap<Entity, EntityModel<*>> = lockMapOf()
     private lateinit var localModel: LocalPlayerModel
-    private val lock = SimpleLock()
     private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
 
     var hitboxes = profile.hitbox.enabled
 
     override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> { event ->
-            lock.lock()
             event.entity.createModel(this)?.let { models[event.entity] = it }
-            lock.unlock()
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
             toUnload += models.remove(it.entity) ?: return@of
@@ -99,11 +97,11 @@ class EntityRenderer(
             val model = toUnload.removeAt(0)
             model.unload()
         }
-        lock.acquire()
-        for (model in models.values) {
+        models.lock.acquire()
+        for (model in models.original.values) {
             model.prepare()
         }
-        lock.release()
+        models.lock.release()
     }
 
     override fun setupOpaque() {
@@ -112,27 +110,27 @@ class EntityRenderer(
 
     override fun drawOpaque() {
         // ToDo: Probably more transparent
-        lock.acquire()
-        for (model in models.values) {
+        models.lock.acquire()
+        for (model in models.original.values) {
             if (model.skipDraw) {
                 continue
             }
             model.draw()
         }
-        lock.release()
+        models.lock.release()
     }
 
     private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
         val latch = CountUpAndDownLatch(0)
-        lock.acquire()
-        for (model in models.values) {
+        models.lock.acquire()
+        for (model in models.original.values) {
             latch.inc()
             DefaultThreadPool += {
                 executor(model)
                 latch.dec()
             }
         }
-        lock.release()
+        models.lock.release()
         latch.await()
     }
 

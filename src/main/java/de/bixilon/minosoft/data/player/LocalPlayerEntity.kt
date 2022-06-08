@@ -72,6 +72,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
+import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -148,6 +149,10 @@ class LocalPlayerEntity(
 
     var isUsingItem = false
     override var activeHand: Hands? = null
+
+
+    override val uuid: UUID
+        get() = super.uuid ?: connection.account.uuid
 
     fun useItem(hand: Hands) {
         isUsingItem = true

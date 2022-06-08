@@ -24,10 +24,9 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player) {
-    override val instance = createModel()
     open val skinParts: Set<SettingsC2SP.SkinParts> = player.getSkinParts()
 
-    private var playing = false
+    override val instance = createModel()
 
     private fun createModel(): SkeletalInstance {
         val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(BB_MODEL)
@@ -43,7 +42,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
             elements += element
         }
         val texture = renderWindow.textureManager.getSkin(entity)
-        val model = unbaked.bake(renderWindow, mutableMapOf(0 to texture))
+        val model = unbaked.copy(elements = elements).bake(renderWindow, mutableMapOf(0 to texture))
 
         return SkeletalInstance(renderWindow, Vec3i(), model)
     }

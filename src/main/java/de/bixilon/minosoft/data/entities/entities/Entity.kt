@@ -83,7 +83,7 @@ abstract class Entity(
 
     val id: Int?
         get() = connection.world.entities.getId(this)
-    val uuid: UUID?
+    open val uuid: UUID?
         get() = connection.world.entities.getUUID(this)
 
     @JvmField

@@ -65,13 +65,13 @@ abstract class TextureManager {
 
     fun getSkin(fetchSkin: Boolean, uuid: UUID, properties: PlayerProperties?): DynamicTexture {
         var properties = properties
-        if (properties == null) {
+        if (properties?.textures == null) {
             for (account in AccountProfileManager.selected.entries.values) {
                 if (account.uuid == uuid) {
                     properties = account.properties
                 }
             }
-            if (properties == null && fetchSkin) {
+            if (properties?.textures == null && fetchSkin) {
                 try {
                     properties = PlayerProperties.fetch(uuid) // ToDo: async
                 } catch (ignored: Throwable) {

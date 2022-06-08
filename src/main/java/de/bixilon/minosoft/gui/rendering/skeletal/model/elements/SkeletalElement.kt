@@ -36,4 +36,5 @@ data class SkeletalElement(
     val uvOffset: Vec2 = Vec2.EMPTY,
     val faces: Map<Directions, SkeletalFace> = emptyMap(),
     val uuid: UUID,
+    val inflate: Float = 0.0f,
 )
