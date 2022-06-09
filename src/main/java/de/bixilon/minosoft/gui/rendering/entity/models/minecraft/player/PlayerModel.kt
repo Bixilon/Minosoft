@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
+import de.bixilon.minosoft.data.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
@@ -37,7 +39,8 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
 
     private fun createModel(): SkeletalInstance {
-        val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(BB_MODEL)
+        val skinModel = entity.tabListItem.properties?.textures?.skin?.metadata?.model ?: if (entity.uuid?.isSteve() == true) SkinModel.NORMAL else SkinModel.SLIM
+        val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else NORMAL_MODEL)
 
         val elements: MutableList<SkeletalElement> = mutableListOf()
         elementLoop@ for (element in unbaked.elements) {
@@ -100,6 +103,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
 
     companion object {
-        private val BB_MODEL = "minecraft:entities/player/steve".toResourceLocation().bbModel()
+        private val NORMAL_MODEL = "minecraft:entities/player/default".toResourceLocation().bbModel()
+        private val SLIM_MODEL = "minecraft:entities/player/slim".toResourceLocation().bbModel()
     }
 }
