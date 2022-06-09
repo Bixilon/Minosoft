@@ -46,8 +46,8 @@ class TargetHandler(
 
 
     fun raycast() {
-        val eyePosition = camera.matrixHandler.eyePosition.toVec3d
-        val cameraFront = camera.matrixHandler.cameraFront.toVec3d
+        val eyePosition = camera.matrixHandler.entity.eyePosition.toVec3d
+        val cameraFront = camera.matrixHandler.entity.rotation.front.toVec3d
 
         target = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = true)
         fluidTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = true, entities = false) as FluidTarget?
