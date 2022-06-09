@@ -84,9 +84,6 @@ class LocalPlayerEntity(
     val experienceCondition = PlayerExperienceCondition()
     var spawnPosition: Vec3i = Vec3i.EMPTY
 
-    @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
-    var isSpawnConfirmed = false
-
     val baseAbilities = Abilities()
 
     val inventory = PlayerInventory(connection)

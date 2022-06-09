@@ -45,8 +45,14 @@ class OpenGLDynamicTexture(
 
     override var shaderId: Int = shaderId
         get() {
-            if (usages.get() == 0 || state == DynamicTextureState.UNLOADED) {
-                throw IllegalStateException("Texture was eventually garbage collected")
+            if (state == DynamicTextureState.UNLOADED) {
+                throw IllegalStateException("Texture was garbage collected!")
+            }
+            if (usages.get() == 0) {
+                throw IllegalStateException("Texture could be garbage collected every time!")
+            }
+            if (state == DynamicTextureState.LOADING) {
+                throw IllegalStateException("Texture was not loaded yet!")
             }
             return field
         }

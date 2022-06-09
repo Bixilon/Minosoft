@@ -60,7 +60,9 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
         this.skin = skin
         skin += this
 
-        val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skin))
+        val skinTexture = if (skin.state != DynamicTextureState.LOADED) renderWindow.textureManager.getFallbackTexture(entity.uuid) else skin
+
+        val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skinTexture))
 
         val instance = SkeletalInstance(renderWindow, model)
 

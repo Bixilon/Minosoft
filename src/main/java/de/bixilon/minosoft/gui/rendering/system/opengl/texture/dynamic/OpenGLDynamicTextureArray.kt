@@ -57,8 +57,8 @@ class OpenGLDynamicTextureArray(
             return size
         }
 
-    override fun pushArray(identifier: UUID, data: () -> ByteArray): DynamicTexture {
-        return pushBuffer(identifier) { ByteBuffer.wrap(data()) }
+    override fun pushArray(identifier: UUID, force: Boolean, data: () -> ByteArray): DynamicTexture {
+        return pushBuffer(identifier, force) { ByteBuffer.wrap(data()) }
     }
 
     private fun load(texture: OpenGLDynamicTexture, index: Int, mipmaps: Array<ByteBuffer>) {
@@ -73,7 +73,7 @@ class OpenGLDynamicTextureArray(
     }
 
     @Synchronized
-    override fun pushBuffer(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
+    override fun pushBuffer(identifier: UUID, force: Boolean, data: () -> ByteBuffer): OpenGLDynamicTexture {
         check(textureId >= 0) { "Dynamic texture array not yet initialized!" }
         cleanup()
         for (textureReference in textures) {
@@ -86,19 +86,31 @@ class OpenGLDynamicTextureArray(
         val texture = OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
         textures[index] = WeakReference(texture)
         texture.state = DynamicTextureState.LOADING
-        DefaultThreadPool += add@{
+
+        fun load() {
             val bytes = data()
 
             if (bytes.limit() > resolution * resolution * 4 || bytes.limit() < resolution * 4) { // allow anything in 1..resolution for y size
                 Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Dynamic texture $texture, has not a size of ${resolution}x${resolution}!" }
                 textures[index] = null
                 texture.state = DynamicTextureState.UNLOADED
-                return@add
+                return
             }
 
             val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, bytes.limit() / 4 / resolution))
             texture.data = mipmaps
-            renderWindow.queue += { load(texture, index, mipmaps) }
+            if (force) {
+                load(texture, index, mipmaps)
+            } else {
+                renderWindow.queue += { load(texture, index, mipmaps) }
+            }
+        }
+
+        if (force) {
+            check(Thread.currentThread() == renderWindow.thread) { "Thread mismatch: ${Thread.currentThread()}" }
+            load()
+        } else {
+            DefaultThreadPool += { load() }
         }
         return texture
     }
