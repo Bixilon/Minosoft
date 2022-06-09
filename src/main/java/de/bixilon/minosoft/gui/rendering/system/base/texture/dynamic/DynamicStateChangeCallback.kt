@@ -13,15 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+interface DynamicStateChangeCallback {
 
-interface DynamicTexture : ShaderTexture {
-    val uuid: UUID
-    val usages: AtomicInteger
-
-    val state: DynamicTextureState
-
-    var callbacks: MutableSet<DynamicStateChangeCallback>
+    fun onStateChange(texture: DynamicTexture, state: DynamicTextureState)
 }

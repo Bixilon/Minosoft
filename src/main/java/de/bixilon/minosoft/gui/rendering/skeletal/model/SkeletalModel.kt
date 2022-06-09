@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
@@ -23,14 +22,11 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutline
 import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 data class SkeletalModel(
     val meta: SkeletalMeta = SkeletalMeta(),
     val name: String = "empty",
-    val geometryName: String = name,
-    val visibleBox: Vec3 = Vec3.EMPTY,
     val resolution: SkeletalResolution = SkeletalResolution(),
     val elements: List<SkeletalElement> = emptyList(),
     val outliner: List<SkeletalOutliner> = emptyList(),

@@ -15,6 +15,5 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.meta
 
 data class SkeletalMeta(
     val formatVersion: String = "4.0",
-    val modelFormat: String = "free", // ToDo: Enum
-    val boxUV: Boolean = true,
+    val modelFormat: ModelFormats = ModelFormats.FREE,
 )

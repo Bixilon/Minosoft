@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -56,7 +57,6 @@ abstract class TextureManager {
     }
 
     fun loadDefaultSkins(connection: PlayConnection) {
-        // ToDo: For testing purposes only, they will be moved to static textures
         steveTexture = dynamicTextures.pushBuffer(UUID(0L, 0L)) { connection.assetsManager["minecraft:entity/steve".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
         alexTexture = dynamicTextures.pushBuffer(UUID(1L, 0L)) { connection.assetsManager["minecraft:entity/alex".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
         skin = getSkin(connection.account.supportsSkins, connection.account.uuid, connection.account.properties).apply { usages.incrementAndGet() }
@@ -86,6 +86,9 @@ abstract class TextureManager {
     }
 
     fun getSkin(player: PlayerEntity): DynamicTexture {
+        if (player is LocalPlayerEntity) {
+            return skin
+        }
         return getSkin(true, player.uuid ?: return steveTexture, player.tabListItem.properties)
     }
 }

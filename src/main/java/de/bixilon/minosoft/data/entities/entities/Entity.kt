@@ -86,9 +86,8 @@ abstract class Entity(
     open val uuid: UUID?
         get() = connection.world.entities.getUUID(this)
 
-    @JvmField
-    @Deprecated(message = "Use connection.version")
-    protected val versionId: Int = connection.version.versionId
+    @Deprecated(message = "Use connection.version", replaceWith = ReplaceWith("connection.version.versionId"))
+    protected val versionId: Int get() = connection.version.versionId
     open var _attachedEntity: Int? = null
 
     var vehicle: Entity? = null

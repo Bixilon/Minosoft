@@ -19,11 +19,12 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.unbaked.ModelBakeUtil
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
+import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -34,7 +35,6 @@ class BakedSkeletalModel(
     val textures: Int2ObjectOpenHashMap<ShaderTexture>,
 ) {
     lateinit var mesh: SkeletalMesh
-
 
     private fun calculateOutlinerMapping(): Map<UUID, Int> {
         val mapping: Object2IntOpenHashMap<UUID> = Object2IntOpenHashMap()
@@ -64,7 +64,7 @@ class BakedSkeletalModel(
     }
 
     fun loadMesh(renderWindow: RenderWindow) {
-        if (this::mesh.isInitialized) {
+        if (this::mesh.isInitialized && mesh.state == Mesh.MeshStates.LOADED) {
             return
         }
         val mesh = SkeletalMesh(renderWindow, 1000)
@@ -76,7 +76,7 @@ class BakedSkeletalModel(
             if (!element.visible) {
                 continue
             }
-            val inflate = (element.inflate * 0.001f)
+            val inflate = (element.inflate / BLOCK_RESOLUTION)
             for ((direction, face) in element.faces) {
                 val positions = direction.getPositions(element.from.fromBlockCoordinates() - inflate, element.to.fromBlockCoordinates() + inflate)
 
@@ -107,10 +107,14 @@ class BakedSkeletalModel(
         this.mesh = mesh
     }
 
+    fun unload() {
+        mesh.unload()
+    }
+
     companion object {
 
         fun Vec3.fromBlockCoordinates(): Vec3 {
-            return Vec3(this.x / UnbakedElement.BLOCK_RESOLUTION + 0.5f, this.y / UnbakedElement.BLOCK_RESOLUTION, this.z / UnbakedElement.BLOCK_RESOLUTION + 0.5f)
+            return Vec3(this.x / BLOCK_RESOLUTION + 0.5f, this.y / BLOCK_RESOLUTION, this.z / BLOCK_RESOLUTION + 0.5f)
         }
     }
 }

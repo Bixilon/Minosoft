@@ -11,17 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+package de.bixilon.minosoft.gui.rendering.skeletal.model.meta
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-
-interface DynamicTexture : ShaderTexture {
-    val uuid: UUID
-    val usages: AtomicInteger
-
-    val state: DynamicTextureState
-
-    var callbacks: MutableSet<DynamicStateChangeCallback>
+enum class ModelFormats {
+    FREE,
+    SKIN,
+    ;
 }

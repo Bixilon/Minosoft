@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import java.nio.ByteBuffer
@@ -25,12 +27,17 @@ class OpenGLDynamicTexture(
     shaderId: Int,
 ) : DynamicTexture {
     var data: Array<ByteBuffer>? = null
-    override var onStateChange: (() -> Unit)? = null
+    override var callbacks: MutableSet<DynamicStateChangeCallback> = synchronizedSetOf()
     override val usages = AtomicInteger()
     override var state: DynamicTextureState = DynamicTextureState.WAITING
         set(value) {
+            if (field == value) {
+                return
+            }
             field = value
-            onStateChange?.invoke()
+            for (callback in callbacks) {
+                callback.onStateChange(this, value)
+            }
         }
 
     override var shaderId: Int = shaderId

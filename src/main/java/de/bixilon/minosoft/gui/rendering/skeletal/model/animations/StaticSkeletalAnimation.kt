@@ -22,7 +22,6 @@ data class StaticSkeletalAnimation(
     val uuid: UUID,
     override val name: String,
     override val loop: AnimationLoops = AnimationLoops.LOOP,
-    val override: Boolean = false,
     override val length: Float,
     val animators: Map<UUID, SkeletalAnimator>,
 ) : SkeletalAnimation {

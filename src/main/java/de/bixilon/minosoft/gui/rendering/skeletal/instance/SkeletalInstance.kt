@@ -125,4 +125,8 @@ class SkeletalInstance(
             calculateTransform(skeletalTransform, animations, child, transforms)
         }
     }
+
+    fun unload() {
+        model.unload()
+    }
 }

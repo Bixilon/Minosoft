@@ -22,14 +22,8 @@ import java.util.*
 data class SkeletalTexture(
     val path: String,
     val name: String,
-    val folder: String = "",
     val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
     val id: Int,
-    val particle: Boolean = true,
-    val renderMode: String = "normal", // ToDo: enum
-    val visible: Boolean = true,
-    val mode: String = "bitmap", // ToDo: enum
-    val saved: Boolean = true,
     val uuid: UUID,
 ) {
     val resourceLocation = ResourceLocation(namespace, path).texture()
