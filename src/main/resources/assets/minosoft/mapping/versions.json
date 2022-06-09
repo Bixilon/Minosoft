@@ -2194,8 +2194,7 @@
   },
   "3": {
     "name": "1.7.1-pre",
-    "packets": 0,
-    "type": "release"
+    "packets": 0
   },
   "2": {
     "name": "13w43a",
