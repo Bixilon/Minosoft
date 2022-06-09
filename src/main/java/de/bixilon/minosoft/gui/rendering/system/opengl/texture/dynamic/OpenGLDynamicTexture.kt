@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
@@ -27,7 +27,8 @@ class OpenGLDynamicTexture(
     shaderId: Int,
 ) : DynamicTexture {
     var data: Array<ByteBuffer>? = null
-    override var callbacks: MutableSet<DynamicStateChangeCallback> = synchronizedSetOf()
+    private val callbacks: MutableSet<DynamicStateChangeCallback> = mutableSetOf()
+    private val callbackLock = SimpleLock()
     override val usages = AtomicInteger()
     override var state: DynamicTextureState = DynamicTextureState.WAITING
         set(value) {
@@ -35,9 +36,11 @@ class OpenGLDynamicTexture(
                 return
             }
             field = value
+            callbackLock.acquire()
             for (callback in callbacks) {
                 callback.onStateChange(this, value)
             }
+            callbackLock.release()
         }
 
     override var shaderId: Int = shaderId
@@ -58,6 +61,18 @@ class OpenGLDynamicTexture(
 
     override fun transformUV(end: FloatArray?): FloatArray {
         return end ?: floatArrayOf(1.0f, 1.0f)
+    }
+
+    override fun addListener(callback: DynamicStateChangeCallback) {
+        callbackLock.lock()
+        callbacks += callback
+        callbackLock.unlock()
+    }
+
+    override fun removeListener(callback: DynamicStateChangeCallback) {
+        callbackLock.lock()
+        callbacks -= callback
+        callbackLock.unlock()
     }
 }
 

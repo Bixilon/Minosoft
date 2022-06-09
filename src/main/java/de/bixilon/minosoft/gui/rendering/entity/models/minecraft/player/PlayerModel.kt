@@ -56,7 +56,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
         skin.usages.incrementAndGet()
         this.skin?.usages?.decrementAndGet()
         this.skin = skin
-        skin.callbacks += this
+        skin += this
 
         val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skin))
 
@@ -103,7 +103,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
 
     companion object {
-        private val NORMAL_MODEL = "minecraft:entities/player/default".toResourceLocation().bbModel()
+        private val NORMAL_MODEL = "minecraft:entities/player/normal".toResourceLocation().bbModel()
         private val SLIM_MODEL = "minecraft:entities/player/slim".toResourceLocation().bbModel()
     }
 }

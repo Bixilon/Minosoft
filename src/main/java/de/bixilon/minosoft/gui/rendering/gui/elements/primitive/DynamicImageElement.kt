@@ -42,9 +42,9 @@ open class DynamicImageElement(
     var texture: DynamicTexture? = null
         set(value) {
             field?.usages?.decrementAndGet()
-            field?.callbacks?.remove(this)
+            field?.removeListener(this)
             value?.usages?.incrementAndGet()
-            value?.callbacks?.add(this)
+            value?.addListener(this)
             field = value
             cacheUpToDate = false
         }

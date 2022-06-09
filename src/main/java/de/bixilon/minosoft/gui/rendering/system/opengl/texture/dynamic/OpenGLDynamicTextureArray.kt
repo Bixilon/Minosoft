@@ -173,15 +173,21 @@ class OpenGLDynamicTextureArray(
         renderWindow.queue += { reload() }
     }
 
+    @Synchronized
     private fun cleanup() {
-        for ((index, textureReference) in textures.withIndex()) {
-            if (textureReference == null) {
+        for ((index, reference) in textures.withIndex()) {
+            if (reference == null) {
                 continue
             }
-            val texture = textureReference.get()
-            if (texture != null && texture.usages.get() > 0) {
+            val texture = reference.get()
+            if (texture == null) {
+                textures[index] = null
                 continue
             }
+            if (texture.usages.get() > 0) {
+                continue
+            }
+            texture.state = DynamicTextureState.UNLOADED
             textures[index] = null
         }
     }

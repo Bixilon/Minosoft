@@ -30,6 +30,9 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 abstract class TextureManager {
@@ -89,6 +92,11 @@ abstract class TextureManager {
         if (player is LocalPlayerEntity) {
             return skin
         }
-        return getSkin(true, player.uuid ?: return steveTexture, player.tabListItem.properties)
+        val uuid = player.uuid
+        if (uuid == null) {
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Player uuid is null: $player" }
+            return steveTexture
+        }
+        return getSkin(true, uuid, player.tabListItem.properties)
     }
 }

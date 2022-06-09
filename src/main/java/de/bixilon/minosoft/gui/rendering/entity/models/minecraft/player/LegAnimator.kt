@@ -16,15 +16,14 @@ package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 import de.bixilon.kotlinglm.func.deg
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.AnimationLoops
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import kotlin.math.PI
 import kotlin.math.cos
 
 class LegAnimator(
-    val model: PlayerModel,
-) : SkeletalAnimation {
+    model: PlayerModel,
+) : ExtremitiesAnimator(model) {
     override val name: String = "leg_animator"
     override val loop: AnimationLoops = AnimationLoops.LOOP
     override val length: Float = 2.0f
@@ -43,7 +42,7 @@ class LegAnimator(
     }
 
     private fun calculateAngle(time: Float): Vec3 {
-        val angle = cos(time * PI)
+        val angle = cos(time * PI) * getVelocityMultiplier()
         return Vec3(angle.deg, 0, 0)
     }
 }

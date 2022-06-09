@@ -11,22 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 
-interface DynamicTexture : ShaderTexture {
-    val uuid: UUID
-    val usages: AtomicInteger
-
-    val state: DynamicTextureState
+abstract class ExtremitiesAnimator(
+    val model: PlayerModel,
+) : SkeletalAnimation {
 
 
-    fun addListener(callback: DynamicStateChangeCallback)
-    operator fun plusAssign(callback: DynamicStateChangeCallback) = addListener(callback)
-
-    operator fun minusAssign(callback: DynamicStateChangeCallback) = removeListener(callback)
-    fun removeListener(callback: DynamicStateChangeCallback)
+    protected fun getVelocityMultiplier(): Double {
+        var velocity = model.entity.velocity.length()
+        if (velocity > 1.0f) {
+            velocity = 1.0
+        }
+        return velocity
+    }
 }
