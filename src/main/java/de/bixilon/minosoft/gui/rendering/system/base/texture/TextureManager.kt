@@ -88,7 +88,7 @@ abstract class TextureManager {
         return alexTexture
     }
 
-    fun getSkin(player: PlayerEntity): DynamicTexture {
+    fun getSkin(player: PlayerEntity, properties: PlayerProperties? = player.tabListItem.properties): DynamicTexture {
         if (player is LocalPlayerEntity) {
             return skin
         }
@@ -97,6 +97,6 @@ abstract class TextureManager {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Player uuid is null: $player" }
             return steveTexture
         }
-        return getSkin(true, uuid, player.tabListItem.properties)
+        return getSkin(true, uuid, properties)
     }
 }

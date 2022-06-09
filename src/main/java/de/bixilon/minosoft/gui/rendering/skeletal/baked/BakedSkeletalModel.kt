@@ -35,6 +35,8 @@ class BakedSkeletalModel(
     val textures: Int2ObjectOpenHashMap<ShaderTexture>,
 ) {
     lateinit var mesh: SkeletalMesh
+    val loaded: Boolean
+        get() = this::mesh.isInitialized && mesh.state == Mesh.MeshStates.LOADED
 
     private fun calculateOutlinerMapping(): Map<UUID, Int> {
         val mapping: Object2IntOpenHashMap<UUID> = Object2IntOpenHashMap()
@@ -67,7 +69,7 @@ class BakedSkeletalModel(
     }
 
     fun loadMesh(renderWindow: RenderWindow) {
-        if (this::mesh.isInitialized && mesh.state == Mesh.MeshStates.LOADED) {
+        if (loaded) {
             return
         }
         val mesh = SkeletalMesh(renderWindow, 1000)
@@ -111,7 +113,9 @@ class BakedSkeletalModel(
     }
 
     fun unload() {
-        mesh.unload()
+        if (loaded) {
+            mesh.unload()
+        }
     }
 
     companion object {

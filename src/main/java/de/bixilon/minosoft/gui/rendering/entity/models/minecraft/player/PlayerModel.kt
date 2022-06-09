@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
 import de.bixilon.minosoft.data.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
@@ -30,16 +31,17 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player), DynamicStateChangeCallback {
     open val skinParts: Set<SettingsC2SP.SkinParts> = player.getSkinParts()
+    private var properties = player.tabListItem.properties
     private var skin: DynamicTexture? = null
     protected var refreshModel = false
 
     private var _instance: SkeletalInstance? = null
     private val animations: MutableList<SkeletalAnimation> = mutableListOf(LegAnimator(this), ArmAnimator(this))
-    override var instance = createModel()
+    override var instance = createModel(properties)
 
 
-    private fun createModel(): SkeletalInstance {
-        val skinModel = entity.tabListItem.properties?.textures?.skin?.metadata?.model ?: if (entity.uuid?.isSteve() == true) SkinModel.NORMAL else SkinModel.SLIM
+    private fun createModel(properties: PlayerProperties?): SkeletalInstance {
+        val skinModel = properties?.textures?.skin?.metadata?.model ?: if (entity.uuid?.isSteve() == true) SkinModel.NORMAL else SkinModel.SLIM
         val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else NORMAL_MODEL)
 
         val elements: MutableList<SkeletalElement> = mutableListOf()
@@ -52,7 +54,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
             }
             elements += element
         }
-        val skin = renderWindow.textureManager.getSkin(entity)
+        val skin = renderWindow.textureManager.getSkin(entity, properties)
         skin.usages.incrementAndGet()
         this.skin?.usages?.decrementAndGet()
         this.skin = skin
@@ -66,14 +68,17 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
             instance.playAnimation(animation)
         }
 
+        refreshModel = false
+        this.properties = properties
+
         return instance
     }
 
     override fun prepareAsync() {
-        if (refreshModel) {
+        val properties = entity.tabListItem.properties // ToDo: Check for skin layers
+        if (refreshModel || this.properties !== properties) {
             _instance = instance
-            instance = createModel()
-            refreshModel = false
+            instance = createModel(properties)
         }
         super.prepareAsync()
     }
