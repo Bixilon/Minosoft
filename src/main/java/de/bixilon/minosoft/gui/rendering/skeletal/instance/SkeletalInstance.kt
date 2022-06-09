@@ -70,7 +70,7 @@ class SkeletalInstance(
     fun updatePosition(position: Vec3, rotation: EntityRotation) {
         val matrix = Mat4()
             .translateAssign(position)
-            .rotateAssign((-rotation.yaw).toFloat().rad, Vec3(0, 1, 0))
+            .rotateAssign((180.0f - rotation.yaw).toFloat().rad, Vec3(0, 1, 0))
             .translateAssign(Vec3(-0.5, 0, -0.5)) // move to center
 
         if (baseTransform != matrix) {

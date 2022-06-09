@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity: E) : EntityModel<E>(renderer, entity) {
     abstract val instance: SkeletalInstance
+    open val hideSkeletalModel: Boolean get() = false
 
 
     override fun prepare() {
@@ -28,7 +29,9 @@ abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity:
 
     override fun draw() {
         super.draw()
-        instance.updatePosition(entity.cameraPosition, entity.rotation)
-        instance.draw()
+        if (!hideSkeletalModel) {
+            instance.updatePosition(entity.cameraPosition, entity.rotation)
+            instance.draw()
+        }
     }
 }

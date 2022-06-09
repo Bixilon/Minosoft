@@ -23,6 +23,9 @@ open class LocalPlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Pl
     override val skinParts: Set<SettingsC2SP.SkinParts>
         get() = renderWindow.connection.profiles.connection.skin.skinParts.toSet()
 
+    override val hideSkeletalModel: Boolean
+        get() = super.hideSkeletalModel || renderWindow.camera.renderPlayer
+
     init {
         renderer.profile.hitbox::showLocal.profileWatch(this, true, renderer.profile) {
             hitbox.enabled = it

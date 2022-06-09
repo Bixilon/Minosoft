@@ -43,17 +43,21 @@ class Camera(
             }
         }
 
+    val renderPlayer: Boolean
+        get() = !debugView || !firstPerson
+
     fun init() {
         matrixHandler.init()
 
-
-        renderWindow.inputHandler.registerKeyCallback("minosoft:camera_debug_view".toResourceLocation(),
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:camera_debug_view".toResourceLocation(),
             KeyBinding(
                 mapOf(
                     KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
                     KeyActions.STICKY to setOf(KeyCodes.KEY_V),
                 ),
-            )) {
+            )
+        ) {
             debugView = it
             renderWindow.connection.util.sendDebugMessage("Camera debug view: ${it.format()}")
         }
