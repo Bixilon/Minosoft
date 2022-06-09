@@ -38,26 +38,29 @@ class BakedSkeletalModel(
 
     private fun calculateOutlinerMapping(): Map<UUID, Int> {
         val mapping: Object2IntOpenHashMap<UUID> = Object2IntOpenHashMap()
+        var offset = 0
 
-        fun addOutliner(child: Any, outlinerIdOffset: Int): Int {
+        fun addOutliner(child: Any, parentId: Int) {
             if (child is UUID) {
-                mapping[child] = outlinerIdOffset
-                return 0
+                mapping[child] = parentId
+                return
             }
             if (child !is SkeletalOutliner) {
                 throw IllegalArgumentException()
             }
-
-            var offset = 1
+            if (mapping[child.uuid] != null) {
+                return
+            }
+            val id = offset++
+            mapping[child.uuid] = id
 
             for (childChild in child.children) {
-                offset += addOutliner(childChild, outlinerIdOffset + offset)
+                addOutliner(childChild, id)
             }
-            return offset
         }
 
         for (outliner in this.model.outliner) {
-            addOutliner(outliner, -1) // for the root 1 is always added
+            addOutliner(outliner, -1)
         }
 
         return mapping

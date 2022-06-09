@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.entities.EntityRendererRegister
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -39,7 +40,7 @@ class DoubleChestRenderer(
     light: Int,
 ) : StorageBlockEntityRenderer<StorageBlockEntity>(
     blockState,
-    SkeletalInstance(renderWindow, blockPosition, model, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix),
+    SkeletalInstance(renderWindow, model, blockPosition.toVec3, (blockState.properties[BlockProperties.FACING]?.nullCast() ?: Directions.NORTH).rotatedMatrix),
     light,
 ) {
 

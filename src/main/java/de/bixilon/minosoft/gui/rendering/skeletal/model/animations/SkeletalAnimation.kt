@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Compa
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY_INSTANCE
-import java.util.*
 
 @JsonDeserialize(`as` = StaticSkeletalAnimation::class)
 interface SkeletalAnimation {
@@ -29,9 +28,9 @@ interface SkeletalAnimation {
     val loop: AnimationLoops
     val length: Float
 
-    fun get(channel: KeyframeChannels, animatorUUID: UUID, time: Float): Vec3?
+    fun get(channel: KeyframeChannels, outliner: SkeletalOutliner, time: Float): Vec3?
 
-    fun tweakTime(time: Float): Float {
+    private fun tweakTime(time: Float): Float {
         when (loop) {
             AnimationLoops.LOOP -> return time % length
             AnimationLoops.ONCE -> {
@@ -51,7 +50,9 @@ interface SkeletalAnimation {
     fun calculateTransform(outliner: SkeletalOutliner, animationTime: Float): Mat4 {
         val transform = Mat4()
 
-        val rotation = get(KeyframeChannels.ROTATION, outliner.uuid, animationTime)
+        val tweakedTime = tweakTime(animationTime)
+
+        val rotation = get(KeyframeChannels.ROTATION, outliner, tweakedTime)
         if (rotation != null && rotation != Vec3.EMPTY_INSTANCE) {
             transform.translateAssign(outliner.origin.fromBlockCoordinates())
             transform.rotateAssign(-rotation.x.rad, Vec3(1, 0, 0))
@@ -59,11 +60,11 @@ interface SkeletalAnimation {
             transform.rotateAssign(-rotation.z.rad, Vec3(0, 0, 1))
             transform.translateAssign(-outliner.origin.fromBlockCoordinates())
         }
-        val scale = get(KeyframeChannels.SCALE, outliner.uuid, animationTime)
+        val scale = get(KeyframeChannels.SCALE, outliner, tweakedTime)
         if (scale != null && (scale.x != 1.0f || scale.y != 1.0f || scale.z != 1.0f)) {
             transform.scaleAssign(scale)
         }
-        val position = get(KeyframeChannels.POSITION, outliner.uuid, animationTime)
+        val position = get(KeyframeChannels.POSITION, outliner, tweakedTime)
         if (position != null && position != Vec3.EMPTY_INSTANCE) {
             transform[3, 0] += position.x
             transform[3, 1] += position.y

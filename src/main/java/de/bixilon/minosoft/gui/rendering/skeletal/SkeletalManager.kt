@@ -54,8 +54,8 @@ class SkeletalManager(
         val transforms = instance.calculateTransforms()
         var stride = 0
         for (transform in transforms) {
-            for (byte in transform.array) {
-                uniformBuffer.buffer.put(stride++, byte)
+            for (float in transform.array) {
+                uniformBuffer.buffer.put(stride++, float)
             }
         }
         uniformBuffer.upload(0 until (transforms.size * MAT4_SIZE))

@@ -87,16 +87,20 @@ class EntityRenderer(
         models[connection.player] = localModel
     }
 
+    private fun unloadUnused() {
+        while (toUnload.isNotEmpty()) { // ToDo: Thread safety
+            val model = toUnload.removeAt(0)
+            model.unload()
+        }
+    }
+
     override fun prepareDraw() {
         runAsync {
             it.entity.draw(TimeUtil.millis)
             it.update = it.checkUpdate()
             it.prepareAsync()
         }
-        while (toUnload.isNotEmpty()) { // ToDo: Thread safety
-            val model = toUnload.removeAt(0)
-            model.unload()
-        }
+        unloadUnused()
         models.lock.acquire()
         for (model in models.original.values) {
             model.prepare()

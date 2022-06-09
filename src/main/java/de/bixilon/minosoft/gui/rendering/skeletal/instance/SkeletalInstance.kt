@@ -16,23 +16,22 @@ package de.bixilon.minosoft.gui.rendering.skeletal.instance
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import java.util.*
 
 class SkeletalInstance(
     val renderWindow: RenderWindow,
-    blockPosition: Vec3i,
     val model: BakedSkeletalModel,
+    position: Vec3 = Vec3.EMPTY,
     transform: Mat4 = Mat4(),
 ) {
-    private var baseTransform = Mat4().translateAssign(blockPosition.toVec3) * transform
+    private var baseTransform = Mat4().translateAssign(position) * transform
     private var previousBaseTransform = baseTransform
     private var animations: MutableList<SkeletalAnimationInstance> = mutableListOf()
     private var transforms: List<Mat4> = emptyList()

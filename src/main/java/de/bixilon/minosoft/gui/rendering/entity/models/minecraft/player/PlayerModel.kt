@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
@@ -32,7 +32,9 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     protected var refreshModel = false
 
     private var _instance: SkeletalInstance? = null
+    private val animations: MutableList<SkeletalAnimation> = mutableListOf(LegAnimator(this), ArmAnimator(this))
     override var instance = createModel()
+
 
     private fun createModel(): SkeletalInstance {
         val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(BB_MODEL)
@@ -53,9 +55,15 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
         this.skin = skin
         skin.callbacks += this
 
-        val model = unbaked.copy(elements = elements).bake(renderWindow, mutableMapOf(0 to skin))
+        val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skin))
 
-        return SkeletalInstance(renderWindow, Vec3i(), model)
+        val instance = SkeletalInstance(renderWindow, model)
+
+        for (animation in animations) {
+            instance.playAnimation(animation)
+        }
+
+        return instance
     }
 
     override fun prepareAsync() {
@@ -84,6 +92,10 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
         if (skin === texture) {
             refreshModel = true
         }
+    }
+
+    override fun unload() {
+        skin?.usages?.decrementAndGet()
     }
 
 

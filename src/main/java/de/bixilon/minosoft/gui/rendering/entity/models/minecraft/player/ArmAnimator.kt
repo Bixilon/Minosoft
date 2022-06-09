@@ -11,25 +11,39 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
+package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
+import de.bixilon.kotlinglm.func.deg
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.SkeletalAnimator
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.AnimationLoops
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import java.util.*
+import kotlin.math.PI
+import kotlin.math.cos
 
-data class StaticSkeletalAnimation(
-    val uuid: UUID,
-    override val name: String,
-    override val loop: AnimationLoops = AnimationLoops.LOOP,
-    override val length: Float,
-    val animators: Map<UUID, SkeletalAnimator>,
+class ArmAnimator(
+    val model: PlayerModel,
 ) : SkeletalAnimation {
+    override val name: String = "arm_animator"
+    override val loop: AnimationLoops = AnimationLoops.LOOP
+    override val length: Float = 2.0f
 
     override fun get(channel: KeyframeChannels, outliner: SkeletalOutliner, time: Float): Vec3? {
-        val animator = animators[outliner.uuid] ?: return null
+        if (channel != KeyframeChannels.ROTATION) {
+            return null
+        }
+        if (outliner.name == "LEFT_ARM") {
+            return calculateAngle(time)
+        }
+        if (outliner.name == "RIGHT_ARM") {
+            return calculateAngle(time - 1.0f)
+        }
+        return null
+    }
 
-        return animator.get(channel, time)
+    private fun calculateAngle(time: Float): Vec3 {
+        val angle = cos(time * PI) * 1.4
+        return Vec3(angle.deg, 0, 0)
     }
 }

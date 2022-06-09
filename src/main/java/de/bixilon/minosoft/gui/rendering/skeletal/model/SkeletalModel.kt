@@ -34,7 +34,7 @@ data class SkeletalModel(
     val animations: List<SkeletalAnimation> = emptyList(),
 ) {
 
-    fun bake(renderWindow: RenderWindow, textureOverride: MutableMap<Int, ShaderTexture>): BakedSkeletalModel {
+    fun bake(renderWindow: RenderWindow, textureOverride: Map<Int, ShaderTexture>): BakedSkeletalModel {
         val textures: Int2ObjectOpenHashMap<ShaderTexture> = Int2ObjectOpenHashMap()
         for (entry in this.textures) {
             val override = textureOverride[entry.id]
