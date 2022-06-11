@@ -32,10 +32,12 @@ class VerifyAssetsDialog(
     @FXML private lateinit var progressFX: ProgressBar
     @FXML private lateinit var cancelButtonFX: Button
 
+    private var progress = Int.MAX_VALUE
+
     public override fun show() {
         JavaFXUtil.runLater {
             JavaFXUtil.openModal(TITLE, LAYOUT, this)
-            latch += { JavaFXUtil.runLater { update() } }
+            latch += { update() }
             update()
             super.show()
         }
@@ -50,18 +52,34 @@ class VerifyAssetsDialog(
     private fun update() {
         val count = latch.count
         val total = latch.total
+        val progress = getProgress(count, total)
+        val int = (progress * 100).toInt()
+        if (int == this.progress) {
+            return
+        }
+        this.progress = int
+        JavaFXUtil.runLater { _update(count, total, progress) }
+    }
+
+    private fun _update(count: Int, total: Int, progress: Double) {
+        if ((progress * 100).toInt() != this.progress) {
+            return
+        }
         if (count <= 0 && total > 0) {
             stage.close()
             return
         }
         countTextFX.text = "${total - count}/${total}"
         mibTextFX.text = "No clue how much MiB :)"
-        val progress = if (total <= 0) {
+        progressFX.progress = progress
+    }
+
+    private fun getProgress(count: Int, total: Int): Double {
+        return if (total <= 0) {
             0.0
         } else {
             (total - count.toDouble()) / total.toDouble()
         }
-        progressFX.progress = progress
     }
 
     @FXML

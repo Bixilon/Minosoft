@@ -119,7 +119,7 @@ class World(
 
     private fun updateWorldSize() {
         val nextSize = (chunkMax - chunkMin)
-        if (chunks.original.isNotEmpty()) {
+        if (chunks.unsafe.isNotEmpty()) {
             nextSize += 1 // own chunk
         }
         if (nextSize.x > MAX_CHUNKS_SIZE) {
@@ -154,7 +154,7 @@ class World(
 
     fun clear() {
         chunks.lock.lock()
-        chunks.original.clear()
+        chunks.unsafe.clear()
         chunkMin = Vec2i(Int.MAX_VALUE)
         chunkMax = Vec2i(Int.MIN_VALUE)
         updateWorldSize()

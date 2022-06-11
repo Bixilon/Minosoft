@@ -55,10 +55,14 @@ class IndexAssetsManager(
         private set
 
     private fun downloadAssetsIndex(): Map<String, Any> {
-        return Jackson.MAPPER.readValue(FileAssetsUtil.downloadAndGetAsset(profile.source.mojangPackages.formatPlaceholder(
-            "fullHash" to indexHash,
-            "filename" to "$assetsVersion.json",
-        ), hashType = FileAssetsUtil.HashTypes.SHA1).second, Jackson.JSON_MAP_TYPE)
+        return Jackson.MAPPER.readValue(
+            FileAssetsUtil.downloadAndGetAsset(
+                profile.source.mojangPackages.formatPlaceholder(
+                    "fullHash" to indexHash,
+                    "filename" to "$assetsVersion.json",
+                ), hashType = FileAssetsUtil.HashTypes.SHA1
+            ).second, Jackson.JSON_MAP_TYPE
+        )
     }
 
     fun verifyAsset(hash: String) {
@@ -111,10 +115,8 @@ class IndexAssetsManager(
 
             val size = data["size"]?.toLong() ?: -1
             val hash = data["hash"].toString()
-            synchronized(tasks.lock) {
-                if (tasks.count > DefaultThreadPool.threadCount - 1) {
-                    tasks.waitForChange()
-                }
+            if (tasks.count > DefaultThreadPool.threadCount - 1) {
+                tasks.waitForChange()
             }
             tasks.inc()
             DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.LOW) {

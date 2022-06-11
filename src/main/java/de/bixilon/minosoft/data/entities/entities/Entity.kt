@@ -349,7 +349,7 @@ abstract class Entity(
         enchantment ?: return 0
         var maxLevel = 0
         this.equipment.lock.acquire()
-        for ((slot, equipment) in this.equipment.original) {
+        for ((slot, equipment) in this.equipment.unsafe) {
             equipment.enchanting.enchantments[enchantment]?.let {
                 if (it > maxLevel) {
                     maxLevel = it
@@ -574,7 +574,7 @@ abstract class Entity(
             var protectionLevel = 0.0f
 
             this.equipment.lock.acquire()
-            for (equipment in equipment.original.values) {
+            for (equipment in equipment.unsafe.values) {
                 val item = equipment.item.item
 
                 if (item is ArmorItem) {

@@ -102,7 +102,7 @@ class EntityRenderer(
         }
         unloadUnused()
         models.lock.acquire()
-        for (model in models.original.values) {
+        for (model in models.unsafe.values) {
             model.prepare()
         }
         models.lock.release()
@@ -115,7 +115,7 @@ class EntityRenderer(
     override fun drawOpaque() {
         // ToDo: Probably more transparent
         models.lock.acquire()
-        for (model in models.original.values) {
+        for (model in models.unsafe.values) {
             if (model.skipDraw) {
                 continue
             }
@@ -127,7 +127,7 @@ class EntityRenderer(
     private fun runAsync(executor: ((EntityModel<*>) -> Unit)) {
         val latch = CountUpAndDownLatch(0)
         models.lock.acquire()
-        for (model in models.original.values) {
+        for (model in models.unsafe.values) {
             latch.inc()
             DefaultThreadPool += {
                 executor(model)
