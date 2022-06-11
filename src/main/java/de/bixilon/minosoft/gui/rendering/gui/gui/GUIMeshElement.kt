@@ -89,9 +89,13 @@ open class GUIMeshElement<T : Element>(
         this.mesh = GUIMesh(renderWindow, guiRenderer.matrix, mesh.data)
     }
 
-    fun prepare(offset: Vec2i) {
-        element.render(offset, mesh, null)
+    fun prepare() = Unit
 
+    fun prepareAsync(offset: Vec2i) {
+        element.render(offset, mesh, null)
+    }
+
+    open fun postPrepare() {
         val revision = element.cache.revision
         if (revision != lastRevision) {
             createNewMesh()
@@ -100,8 +104,8 @@ open class GUIMeshElement<T : Element>(
         }
     }
 
-    open fun prepare() {
-        prepare(Vec2i.EMPTY)
+    open fun prepareAsync() {
+        prepareAsync(Vec2i.EMPTY)
     }
 
     override fun draw() {
