@@ -25,10 +25,10 @@ import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.chat.ChatTextPositions
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
-import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries

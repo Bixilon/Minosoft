@@ -11,11 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player
+package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 
-class PlayerHealthCondition {
+class HealthCondition {
     var hp by watched(20.0f)
     var hunger by watched(20)
     var saturation by watched(0.0f)

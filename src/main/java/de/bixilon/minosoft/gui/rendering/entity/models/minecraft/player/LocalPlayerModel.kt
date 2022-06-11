@@ -16,12 +16,8 @@ package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
-import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 
 open class LocalPlayerModel(renderer: EntityRenderer, player: PlayerEntity) : PlayerModel(renderer, player) {
-
-    override val skinParts: Set<SettingsC2SP.SkinParts>
-        get() = renderWindow.connection.profiles.connection.skin.skinParts.toSet()
 
     override val hideSkeletalModel: Boolean
         get() = super.hideSkeletalModel || renderWindow.camera.renderPlayer

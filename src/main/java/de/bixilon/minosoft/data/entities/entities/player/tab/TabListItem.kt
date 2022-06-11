@@ -11,10 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.tab
+package de.bixilon.minosoft.data.entities.entities.player.tab
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey

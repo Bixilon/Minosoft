@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player
+package de.bixilon.minosoft.data.entities.entities.player
 
-class PlayerExperienceCondition {
-    var level = 0
-    var totalExperience = 0
-    var experienceBarProgress = 0.0f
+object DefaultPlayerProperties {
+    const val TEXTURES = "textures"
 }

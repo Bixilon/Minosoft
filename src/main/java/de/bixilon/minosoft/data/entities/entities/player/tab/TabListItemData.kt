@@ -11,10 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.properties.textures.metadata
+package de.bixilon.minosoft.data.entities.entities.player.tab
 
-enum class SkinModel {
-    SLIM,
-    NORMAL,
-    ;
-}
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.scoreboard.Team
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.PlayerPublicKey
+
+data class TabListItemData(
+    val name: String? = null,
+    var ping: Int? = null,
+    var gamemode: Gamemodes? = null,
+    var hasDisplayName: Boolean? = null,
+    var displayName: ChatComponent? = null,
+    val properties: PlayerProperties? = null,
+    var team: Team? = null,
+    var removeFromTeam: Boolean = false,
+    var publicKey: PlayerPublicKey? = null,
+)

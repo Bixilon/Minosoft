@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.properties
+package de.bixilon.minosoft.data.entities.entities.player.properties
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.kutil.uuid.UUIDUtil.trim
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
-import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

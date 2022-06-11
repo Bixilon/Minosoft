@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,26 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.player
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+package de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata
 
-enum class Arms {
-    LEFT,
-    RIGHT,
-    ;
+import com.fasterxml.jackson.annotation.JsonInclude
 
-    companion object : ValuesEnum<Arms> {
-        override val VALUES: Array<Arms> = values()
-        override val NAME_MAP: Map<String, Arms> = EnumUtil.getEnumValues(VALUES)
-
-        val Arms.opposite: Arms
-            get() {
-                return when (this) {
-                    LEFT -> RIGHT
-                    RIGHT -> LEFT
-                }
-            }
-    }
-}
+data class SkinMetadata(
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    val model: SkinModel = SkinModel.NORMAL,
+)

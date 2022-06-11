@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.camera.target
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.gui.rendering.RenderWindow

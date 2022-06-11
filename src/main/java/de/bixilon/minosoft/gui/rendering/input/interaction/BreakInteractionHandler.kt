@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments

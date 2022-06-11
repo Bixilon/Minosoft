@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.properties.textures
+package de.bixilon.minosoft.data.entities.entities.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.url.URLUtil.checkWeb

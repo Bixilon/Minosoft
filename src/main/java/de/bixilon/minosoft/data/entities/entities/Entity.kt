@@ -29,9 +29,9 @@ import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock

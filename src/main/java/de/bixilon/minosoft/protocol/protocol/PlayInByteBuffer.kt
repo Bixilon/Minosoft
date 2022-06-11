@@ -23,8 +23,8 @@ import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData

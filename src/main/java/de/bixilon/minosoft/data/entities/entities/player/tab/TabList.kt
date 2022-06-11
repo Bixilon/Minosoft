@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,8 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player
+package de.bixilon.minosoft.data.entities.entities.player.tab
 
-object DefaultPlayerProperties {
-    const val TEXTURES = "textures"
+import de.bixilon.minosoft.data.text.ChatComponent
+import java.util.*
+
+class TabList {
+    val tabListItemsByUUID: MutableMap<UUID, TabListItem> = mutableMapOf()
+    val tabListItemsByName: MutableMap<String, TabListItem> = mutableMapOf()
+    var header = ChatComponent.of("")
+    var footer = ChatComponent.of("")
 }

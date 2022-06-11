@@ -18,7 +18,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties

@@ -17,7 +17,7 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph

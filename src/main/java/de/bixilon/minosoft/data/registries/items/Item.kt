@@ -17,8 +17,8 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.language.Translatable
-import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.items.armor.*

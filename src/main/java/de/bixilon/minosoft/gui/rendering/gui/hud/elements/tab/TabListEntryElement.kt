@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer

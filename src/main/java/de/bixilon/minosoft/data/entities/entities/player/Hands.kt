@@ -10,12 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities.player
 
-package de.bixilon.minosoft.data.player.properties.textures.metadata
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-import com.fasterxml.jackson.annotation.JsonInclude
+enum class Hands {
+    MAIN,
+    OFF,
+    ;
 
-data class SkinMetadata(
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    val model: SkinModel = SkinModel.NORMAL,
-)
+    companion object : ValuesEnum<Hands> {
+        override val VALUES: Array<Hands> = values()
+        override val NAME_MAP: Map<String, Hands> = EnumUtil.getEnumValues(VALUES)
+    }
+}

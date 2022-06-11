@@ -11,22 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.tab
+package de.bixilon.minosoft.data.entities.entities.player.local
 
-import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.scoreboard.Team
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.PlayerPublicKey
+data class Abilities(
+    var isInvulnerable: Boolean = false,
+    var isFlying: Boolean = false,
+    var canFly: Boolean = false,
+    var creative: Boolean = false, // ToDo: This is the check if we are in creative mode, but no exactly sure...
 
-data class TabListItemData(
-    val name: String? = null,
-    var ping: Int? = null,
-    var gamemode: Gamemodes? = null,
-    var hasDisplayName: Boolean? = null,
-    var displayName: ChatComponent? = null,
-    val properties: PlayerProperties? = null,
-    var team: Team? = null,
-    var removeFromTeam: Boolean = false,
-    var publicKey: PlayerPublicKey? = null,
+    var flyingSpeed: Double = 0.05,
+    var walkingSpeed: Double = 0.1,
 )

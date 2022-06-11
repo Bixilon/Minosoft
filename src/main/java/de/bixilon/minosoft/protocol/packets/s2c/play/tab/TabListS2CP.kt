@@ -17,8 +17,8 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.player.tab.TabListItem
-import de.bixilon.minosoft.data.player.tab.TabListItemData
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket

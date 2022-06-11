@@ -24,7 +24,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*

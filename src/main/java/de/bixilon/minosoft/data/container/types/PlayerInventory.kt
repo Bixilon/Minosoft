@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.container.slots.equipment.FeetSlotType
 import de.bixilon.minosoft.data.container.slots.equipment.HeadSlotType
 import de.bixilon.minosoft.data.container.slots.equipment.LegsSlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType

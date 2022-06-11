@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer

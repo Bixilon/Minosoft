@@ -17,9 +17,9 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTexture.Companion.isSteve
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture

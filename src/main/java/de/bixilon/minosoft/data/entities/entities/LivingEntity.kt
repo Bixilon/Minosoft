@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatColors

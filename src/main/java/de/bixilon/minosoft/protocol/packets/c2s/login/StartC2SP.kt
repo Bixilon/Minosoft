@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.login
 
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket

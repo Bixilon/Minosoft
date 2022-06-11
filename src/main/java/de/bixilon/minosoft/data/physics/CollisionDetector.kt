@@ -19,7 +19,7 @@ import de.bixilon.kotlinglm.vec3.Vec3bool
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.world.Chunk

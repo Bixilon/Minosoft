@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.connection.skin.SkinC
-import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 
 /**
  * Profile for connection

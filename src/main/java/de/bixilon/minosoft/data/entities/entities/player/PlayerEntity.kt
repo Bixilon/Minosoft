@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.entities.entities.player
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.watchedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -24,9 +26,8 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.player.Arms
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.ChatColors
@@ -38,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerMo
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 import de.bixilon.minosoft.util.BitByte.isBitMask
 
 abstract class PlayerEntity(
@@ -70,16 +70,24 @@ abstract class PlayerEntity(
     val score: Int
         get() = data.get(SCORE_DATA, 0)
 
-    fun getSkinParts(): Set<SettingsC2SP.SkinParts> {
-        val flags = data.get(SKIN_PARTS_DATA, 0x00.toByte()).toInt()
-        val parts: MutableSet<SettingsC2SP.SkinParts> = mutableSetOf()
-        for (part in SettingsC2SP.SkinParts.VALUES) {
-            if (!flags.isBitMask(part.bitmask)) {
-                continue
+    @get:SynchronizedEntityData
+    val skinParts: MutableSet<SkinParts> by watchedSet(mutableSetOf())
+
+
+    init {
+        data.observe(SKIN_PARTS_DATA) { raw: Any? ->
+            if (raw == null) {
+                skinParts.clear()
+                return@observe
             }
-            parts += part
+            val flags = raw.toInt()
+            for (part in SkinParts.VALUES) {
+                if (!flags.isBitMask(part.bitmask)) {
+                    skinParts -= part
+                }
+                skinParts += part
+            }
         }
-        return parts
     }
 
     @get:SynchronizedEntityData
@@ -142,6 +150,7 @@ abstract class PlayerEntity(
         private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
         private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
         private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
+
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),

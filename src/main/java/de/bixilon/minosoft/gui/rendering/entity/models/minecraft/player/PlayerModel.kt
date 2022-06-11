@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
+import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.properties.textures.PlayerTexture.Companion.isSteve
-import de.bixilon.minosoft.data.player.properties.textures.metadata.SkinModel
+import de.bixilon.minosoft.data.entities.entities.player.SkinParts
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTexture.Companion.isSteve
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader.Companion.bbModel
@@ -26,11 +28,9 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
-import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player), DynamicStateChangeCallback {
-    open val skinParts: Set<SettingsC2SP.SkinParts> = player.getSkinParts()
     private var properties = player.tabListItem.properties
     private var skin: DynamicTexture? = null
     protected var refreshModel = false
@@ -39,6 +39,10 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     private val animations: MutableList<SkeletalAnimation> = mutableListOf(LegAnimator(this), ArmAnimator(this))
     override var instance = createModel(properties)
 
+    init {
+        entity::skinParts.observeSet(this) { refreshModel = true }
+    }
+
 
     private fun createModel(properties: PlayerProperties?): SkeletalInstance {
         val skinModel = properties?.textures?.skin?.metadata?.model ?: if (entity.uuid?.isSteve() == true) SkinModel.NORMAL else SkinModel.SLIM
@@ -46,9 +50,9 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
         val elements: MutableList<SkeletalElement> = mutableListOf()
         elementLoop@ for (element in unbaked.elements) {
-            for (skinPart in SettingsC2SP.SkinParts.VALUES) {
+            for (skinPart in SkinParts.VALUES) {
                 if (skinPart.name == element.name) {
-                    elements += element.skinCopy(skinParts, skinPart)
+                    elements += element.skinCopy(entity.skinParts, skinPart)
                     continue@elementLoop
                 }
             }
@@ -91,7 +95,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
         super.prepare()
     }
 
-    private fun SkeletalElement.skinCopy(parts: Set<SettingsC2SP.SkinParts>, part: SettingsC2SP.SkinParts): SkeletalElement {
+    private fun SkeletalElement.skinCopy(parts: Set<SkinParts>, part: SkinParts): SkeletalElement {
         if (part in parts) {
             return this
         }

@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.player
+package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.func.common.floor
@@ -41,6 +41,8 @@ import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.entities.player.Arms
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.physics.PhysicsConstants
@@ -80,8 +82,8 @@ class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
 ) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username, account.properties) {
-    val healthCondition = PlayerHealthCondition()
-    val experienceCondition = PlayerExperienceCondition()
+    val healthCondition = HealthCondition()
+    val experienceCondition = ExperienceCondition()
     var spawnPosition: Vec3i = Vec3i.EMPTY
 
     val baseAbilities = Abilities()

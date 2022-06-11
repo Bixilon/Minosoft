@@ -11,14 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player.properties.textures
+package de.bixilon.minosoft.data.entities.entities.player.local
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import de.bixilon.minosoft.data.player.properties.textures.metadata.SkinMetadata
-import java.net.URL
-
-class SkinPlayerTexture(
-    url: URL,
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    val metadata: SkinMetadata = SkinMetadata(),
-) : PlayerTexture(url = url)
+class ExperienceCondition {
+    var level = 0
+    var totalExperience = 0
+    var experienceBarProgress = 0.0f
+}

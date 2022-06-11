@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
