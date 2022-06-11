@@ -68,8 +68,10 @@ class PlayController : EmbeddedJavaFXController<Pane>(), Refreshable {
             currentController = JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
                 serverType = new
                 initWatch()
-                refreshList()
-                playTypeContentFX.children.setAll(this.root)
+                JavaFXUtil.runLater {
+                    refreshList()
+                    playTypeContentFX.children.setAll(this.root)
+                }
             }
             playTypeContentFX.children.setAll(currentController.root)
         }
