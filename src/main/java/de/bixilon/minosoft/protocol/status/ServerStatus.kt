@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.status
 
+import de.bixilon.kutil.image.ImageEncodingUtil.toFavicon
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.KUtil.toFavicon
 
 class ServerStatus(
     data: Map<String, Any>,

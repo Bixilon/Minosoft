@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
+import de.bixilon.kutil.string.TextUtil
+import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.commands.errors.ReaderError
 import de.bixilon.minosoft.commands.nodes.CommandNode
 import de.bixilon.minosoft.commands.stack.CommandStack
@@ -30,9 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.terminal.cli.CLI.removeDuplicatedWhitespaces
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
-import de.bixilon.minosoft.util.KUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -122,7 +122,7 @@ class NodeTextInputElement(
     fun updateSuggestion(suggestion: Any) {
         val string = suggestion.toString()
         val value = value.removeDuplicatedWhitespaces().removeTrailingWhitespaces()
-        val overlappingLength = KUtil.getOverlappingText(value, string)
+        val overlappingLength = TextUtil.getOverlappingText(value, string)
         var nextValue = value
         val lastChar = value.codePointAtOrNull(value.length - 1)
         if (overlappingLength == 0 && lastChar != null && lastChar.isWord()) {

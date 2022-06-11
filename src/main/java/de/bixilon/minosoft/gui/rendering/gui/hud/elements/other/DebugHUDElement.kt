@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec4.Vec4i
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
+import de.bixilon.kutil.string.StringUtil.truncate
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
@@ -55,7 +56,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.truncate
 import de.bixilon.minosoft.util.SystemInformation
 import kotlin.math.abs
 

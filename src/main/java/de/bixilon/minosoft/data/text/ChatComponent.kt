@@ -14,12 +14,12 @@ package de.bixilon.minosoft.data.text
 
 import com.fasterxml.jackson.core.JacksonException
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.util.json.Jackson
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
