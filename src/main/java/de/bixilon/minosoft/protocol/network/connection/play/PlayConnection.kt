@@ -164,7 +164,7 @@ class PlayConnection(
         try {
             state = PlayConnectionStates.LOADING_ASSETS
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
-            version.load(profiles.resources)
+            version.load(profiles.resources, latch)
             registries.parentRegistries = version.registries
 
             Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }

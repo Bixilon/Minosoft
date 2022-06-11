@@ -45,7 +45,7 @@ object DefaultRegistries {
     val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
     val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
 
-    val ENTITY_DATA_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataDataTypes)
+    val ENTITY_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataDataTypes)
 
     val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CF.TitleActions)
 
@@ -77,7 +77,7 @@ object DefaultRegistries {
         ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")].asJsonObject())
         ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")].asJsonObject())
 
-        ENTITY_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_data_data_types")].asJsonObject()) // ToDo
+        ENTITY_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_data_data_types")].asJsonObject()) // ToDo
 
         TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")].asJsonObject())
 

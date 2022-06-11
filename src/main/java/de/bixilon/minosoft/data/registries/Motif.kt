@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
-data class Motive(
+data class Motif(
     override val resourceLocation: ResourceLocation,
     val width: Int,
     val height: Int,
@@ -27,9 +27,9 @@ data class Motive(
         return resourceLocation.full
     }
 
-    companion object : ResourceLocationCodec<Motive> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Motive {
-            return Motive(
+    companion object : ResourceLocationCodec<Motif> {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Motif {
+            return Motif(
                 resourceLocation = resourceLocation,
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),

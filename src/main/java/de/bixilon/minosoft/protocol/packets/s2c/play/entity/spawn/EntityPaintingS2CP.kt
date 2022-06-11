@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.byId
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
-import de.bixilon.minosoft.data.registries.Motive
+import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -41,10 +41,10 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     init {
-        val motive: Motive? = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.connection.registries.motiveRegistry[buffer.readResourceLocation()]
+        val motif: Motif? = if (buffer.versionId < ProtocolVersions.V_18W02A) {
+            buffer.connection.registries.motifRegistry[buffer.readResourceLocation()]
         } else {
-            buffer.connection.registries.motiveRegistry[buffer.readVarInt()]
+            buffer.connection.registries.motifRegistry[buffer.readVarInt()]
         }
         val position: Vec3i
         val direction: Directions
@@ -55,7 +55,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             position = buffer.readBlockPosition()
             direction = byId(buffer.readUnsignedByte())
         }
-        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.RESOURCE_LOCATION]!!, EntityData(buffer.connection), position, direction, motive!!)
+        entity = Painting(buffer.connection, buffer.connection.registries.entityTypeRegistry[Painting.RESOURCE_LOCATION]!!, EntityData(buffer.connection), position, direction, motif!!)
     }
 
     override fun handle(connection: PlayConnection) {
@@ -65,6 +65,6 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity painting (entityId=$entityId, motive=${entity.motive}, direction=${entity.direction})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity painting (entityId=$entityId, motive=${entity.motif}, direction=${entity.direction})" }
     }
 }

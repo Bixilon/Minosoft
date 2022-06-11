@@ -19,6 +19,7 @@ import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 object RegistryFixer {
     private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
         "dimension" to "dimension_type",
+        "motive" to "motif",
     ).asResourceLocationMap()
 
     fun ResourceLocation.fix(): ResourceLocation {

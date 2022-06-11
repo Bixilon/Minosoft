@@ -190,7 +190,7 @@ class PlayInByteBuffer : InByteBuffer {
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
+                val type = connection.registries.entityDataTypesRegistry[item and 0xFF shr 5]!!
                 data[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
@@ -202,7 +202,7 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
+                val type = connection.registries.entityDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
                 data[index] = type.type.read(this)
                 index = readUnsignedByte()
             }
