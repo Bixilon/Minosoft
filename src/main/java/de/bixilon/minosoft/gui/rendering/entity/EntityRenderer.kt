@@ -81,7 +81,7 @@ class EntityRenderer(
         }
     }
 
-    override fun postInit(latch: CountUpAndDownLatch) {
+    override fun postAsyncInit(latch: CountUpAndDownLatch) {
         localModel = renderWindow.connection.player.createModel(this)
 
         models[connection.player] = localModel
