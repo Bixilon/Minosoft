@@ -47,6 +47,7 @@ import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
 import io.netty.channel.SimpleChannelInboundHandler
 import org.kamranzafar.jtar.TarHeader
 import java.util.*
+import javax.net.ssl.SSLContext
 
 
 object KUtil {
@@ -263,6 +264,7 @@ object KUtil {
         DefaultThreadPool += { PlayConnection::class.java.forceInit() }
         DefaultThreadPool += { NettyClient::class.java.forceInit() }
         DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
+        DefaultThreadPool += { SSLContext.getDefault() }
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {
