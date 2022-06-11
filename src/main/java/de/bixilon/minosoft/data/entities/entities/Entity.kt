@@ -284,8 +284,8 @@ abstract class Entity(
         get() = defaultAABB + position
 
 
-    val cameraAABB: AABB
-        get() = defaultAABB + cameraPosition
+    open var cameraAABB: AABB = AABB.EMPTY
+        protected set
 
     open val hitBoxColor: RGBColor
         get() = when {
@@ -307,6 +307,7 @@ abstract class Entity(
 
     open fun draw(time: Long) {
         cameraPosition = interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+        cameraAABB = defaultAABB + cameraPosition
     }
 
     open val pushableByFluids: Boolean = false

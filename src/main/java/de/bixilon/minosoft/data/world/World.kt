@@ -300,10 +300,19 @@ class World(
 
     operator fun get(aabb: AABB): Map<Vec3i, BlockState> {
         val ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
+        var run = 0
+        var chunk: Chunk? = null
+        var lastChunkPosition = Vec2i.EMPTY
         for (position in aabb.blockPositions) {
-            this[position]?.let { ret[position] = it }
+            val chunkPosition = position.chunkPosition
+            if (chunkPosition != lastChunkPosition || run++ == 0) {
+                chunk = this[chunkPosition]
+                lastChunkPosition = chunkPosition
+            }
+            val state = chunk?.get(position.inChunkPosition) ?: continue
+            ret[position] = state
         }
-        return ret.toMap()
+        return ret
     }
 
     fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {

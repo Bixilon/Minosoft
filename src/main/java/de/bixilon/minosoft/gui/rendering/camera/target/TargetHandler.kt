@@ -96,12 +96,13 @@ class TargetHandler(
         }
 
         var target: GenericTarget? = null
+        var run = 0
         var currentChunk: Chunk? = null
         var currentChunkPosition = Vec2i.EMPTY
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
             val chunkPosition = blockPosition.chunkPosition
-            if (chunkPosition != currentChunkPosition || currentChunk == null) {
+            if (chunkPosition != currentChunkPosition || run++ == 0) {
                 currentChunk = connection.world[chunkPosition]
                 currentChunkPosition = chunkPosition
             }

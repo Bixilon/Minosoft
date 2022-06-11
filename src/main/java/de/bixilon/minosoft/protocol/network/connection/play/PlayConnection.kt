@@ -158,7 +158,7 @@ class PlayConnection(
         ticker.init()
     }
 
-    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(0)) {
+    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
         val count = latch.count
         check(!wasConnected) { "Connection was already connected!" }
         try {
@@ -185,6 +185,7 @@ class PlayConnection(
                 renderer.init(renderLatch)
                 renderLatch.awaitWithChange()
             }
+            latch.dec() // remove initial value
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address, profiles.other.nativeNetwork)
             state = PlayConnectionStates.ESTABLISHING

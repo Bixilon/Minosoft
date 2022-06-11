@@ -17,6 +17,8 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.LockMap
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -59,17 +61,14 @@ class HUDManager(
     }
 
     private fun registerDefaultElements() {
-        registerElement(DebugHUDElement)
-        registerElement(CrosshairHUDElement)
-        registerElement(BossbarLayout)
-        registerElement(ChatElement)
+        val latch = CountUpAndDownLatch(1)
 
-        registerElement(BreakProgressHUDElement)
-        registerElement(TabListElement)
-        registerElement(HotbarElement)
-        registerElement(PerformanceHUDElement)
-        registerElement(TitleElement)
-        registerElement(ScoreboardSideElement)
+        for (builder in DEFAULT_ELEMENTS) {
+            latch.inc()
+            DefaultThreadPool += { registerElement(builder); latch.dec() }
+        }
+        latch.dec()
+        latch.await()
     }
 
     fun onMatrixChange() {
@@ -90,11 +89,13 @@ class HUDManager(
             element.init()
         }
 
-        renderWindow.inputHandler.registerKeyCallback("minosoft:enable_hud".toResourceLocation(), KeyBinding(
-            mapOf(
-                KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
-            ),
-        ), defaultPressed = enabled) { enabled = it }
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:enable_hud".toResourceLocation(), KeyBinding(
+                mapOf(
+                    KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
+                ),
+            ), defaultPressed = enabled
+        ) { enabled = it }
     }
 
     override fun postInit() {
@@ -114,5 +115,22 @@ class HUDManager(
 
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {
         return hudElements[hudBuilder.RESOURCE_LOCATION]?.unsafeCast()
+    }
+
+
+    companion object {
+        val DEFAULT_ELEMENTS = listOf(
+            DebugHUDElement,
+            CrosshairHUDElement,
+            BossbarLayout,
+            ChatElement,
+
+            BreakProgressHUDElement,
+            TabListElement,
+            HotbarElement,
+            PerformanceHUDElement,
+            TitleElement,
+            ScoreboardSideElement,
+        )
     }
 }
