@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.accounts.types.microsoft
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
@@ -126,9 +127,11 @@ class MicrosoftAccount(
         }
 
         try {
-            latch?.inc()
-            AccountUtil.fetchMinecraftProfile(minecraft)
-            latch?.dec()
+            if (AccountProfileManager.selected.alwaysFetchProfile) {
+                latch?.inc()
+                AccountUtil.fetchMinecraftProfile(minecraft)
+                latch?.dec()
+            }
             state = AccountStates.WORKING
         } catch (exception: Throwable) {
             refreshMinecraftToken(latch)

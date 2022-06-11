@@ -50,6 +50,12 @@ class AccountProfile(
     var clientToken by delegate(KUtil.RANDOM.randomString(128))
 
     /**
+     * Before using an account, it always tries to fetch the profile.
+     * If the fetch is successful, we can be sure that the account is working.
+     */
+    var alwaysFetchProfile by delegate(true)
+
+    /**
      * All accounts
      */
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
