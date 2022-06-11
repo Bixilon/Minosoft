@@ -77,6 +77,9 @@ abstract class EntityModel<E : Entity>(
     }
 
     protected open fun drawHitbox() {
+        if (!hitbox.enabled) {
+            return
+        }
         if (renderer.profile.hitbox.showThroughWalls) {
             renderWindow.renderSystem.reset(faceCulling = false, depth = DepthFunctions.ALWAYS)
         } else {

@@ -39,7 +39,7 @@ class EntityHitbox(
 
     var enabled: Boolean = true
         get() = field && model.renderer.hitboxes
-    private var lastEnabled = true
+    private var lastEnabled = enabled
 
 
     override fun checkUpdate(): Boolean {
@@ -47,13 +47,13 @@ class EntityHitbox(
         val lastEnabled = lastEnabled
         this.lastEnabled = enabled
         if (!enabled) {
-            return lastEnabled
+            return !lastEnabled
         }
         val entity = model.entity
         val hitBoxColor = entity.hitBoxColor
         val velocity = entity.velocity
         val rotation = entity.rotation
-        val equals = hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation
+        val equals = hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation && !lastEnabled
         if (equals) {
             return false
         }

@@ -82,7 +82,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
     override fun prepareAsync() {
         val properties = entity.tabListItem.properties // ToDo: Check for skin layers
-        if (refreshModel || this.properties !== properties) {
+        if (refreshModel || this.properties != properties) {
             _instance = instance
             instance = createModel(properties)
         }
