@@ -104,113 +104,37 @@ class BlockSectionDataProvider(
     private fun floodFill(): ShortArray {
         // mark regions and check direct neighbours
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
-        var nextFloodFillId: Short = 1
+        var nextFloodId = 1.toShort()
+
+        fun deepSearch(x: Int, y: Int, z: Int, nextId: Short) {
+            val index = y shl 8 or (z shl 4) or x
+            val blockState = unsafeGet(index)
+            val id = regions[index]
+            if (id > 0) {
+                return
+            }
+            if (blockState.isSolid()) {
+                if (nextId == nextFloodId) {
+                    nextFloodId++
+                }
+                return
+            }
+            regions[index] = nextId
+            if (x > 0) deepSearch(x - 1, y, z, nextId)
+            if (x < ProtocolDefinition.SECTION_MAX_X) deepSearch(x + 1, y, z, nextId)
+            if (y > 0) deepSearch(x, y - 1, z, nextId)
+            if (y < ProtocolDefinition.SECTION_MAX_Y) deepSearch(x, y + 1, z, nextId)
+            if (z > 0) deepSearch(x, y, z - 1, nextId)
+            if (z < ProtocolDefinition.SECTION_MAX_Z) deepSearch(x, y, z + 1, nextId)
+        }
 
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    val index = y shl 8 or (z shl 4) or x
-                    val blockState = unsafeGet(index)
-
-                    if (blockState.isSolid()) {
-                        continue
-                    }
-
-                    fun checkNeighbour(index: Int, neighbourIndex: Int): Boolean {
-                        if (!unsafeGet(neighbourIndex).isSolid() && regions[neighbourIndex] != 0.toShort()) {
-                            regions[index] = regions[neighbourIndex]
-                            return true
-                        }
-                        return false
-                    }
-
-                    if (x > 0 && checkNeighbour(index, y shl 8 or (z shl 4) or (x - 1))) {
-                        continue
-                    }
-                    if (z > 0 && checkNeighbour(index, y shl 8 or ((z - 1) shl 4) or x)) {
-                        continue
-                    }
-                    if (y > 0 && checkNeighbour(index, (y - 1) shl 8 or (z shl 4) or x)) {
-                        continue
-                    }
-                    regions[index] = nextFloodFillId++
+                    deepSearch(x, y, z, nextFloodId)
                 }
             }
         }
-
-        // check neighbour regions
-
-        val regionOverride = ShortArray(nextFloodFillId.toInt()) { it.toShort() }
-        // check if 2 regions are direct neighbours
-
-        for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    val index = y shl 8 or (z shl 4) or x
-                    val region = regions[index]
-                    if (region == 0.toShort()) {
-                        // solid block
-                        continue
-                    }
-                    val regionInt = region.toInt()
-
-                    if (y < ProtocolDefinition.SECTION_MAX_Y) {
-                        val neighbourRegion = regions[(y + 1) shl 8 or (z shl 4) or x]
-                        if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
-                            val maxRegion = maxOf(neighbourRegion, region, regionOverride[regionInt], regionOverride[neighbourRegion.toInt()])
-                            regionOverride[regionInt] = maxRegion
-                            regionOverride[neighbourRegion.toInt()] = maxRegion
-                        }
-                    }
-                    if (z < ProtocolDefinition.SECTION_MAX_Z) {
-                        val neighbourRegion = regions[y shl 8 or ((z + 1) shl 4) or x]
-                        if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
-                            val maxRegion = maxOf(neighbourRegion, region, regionOverride[regionInt], regionOverride[neighbourRegion.toInt()])
-                            regionOverride[regionInt] = maxRegion
-                            regionOverride[neighbourRegion.toInt()] = maxRegion
-                        }
-                    }
-                    if (x < ProtocolDefinition.SECTION_MAX_X) {
-                        val neighbourRegion = regions[y shl 8 or (z shl 4) or (x + 1)]
-                        if (neighbourRegion > 0 && regionInt > 0 && region != neighbourRegion) {
-                            val maxRegion = maxOf(neighbourRegion, region, regionOverride[regionInt], regionOverride[neighbourRegion.toInt()])
-                            regionOverride[regionInt] = maxRegion
-                            regionOverride[neighbourRegion.toInt()] = maxRegion
-                        }
-                    }
-                }
-            }
-        }
-
-        // resolve all regions
-        for ((region, override) in regionOverride.withIndex()) {
-            if (override == region.toShort()) {
-                continue
-            }
-            var nextOverride = override.toInt()
-            var previousOverride = -1
-            while (nextOverride != previousOverride) {
-                regionOverride[region] = nextOverride.toShort()
-                previousOverride = nextOverride
-                nextOverride = regionOverride[nextOverride].toInt()
-            }
-        }
-
-        // merge neighbour regions
-
-        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            val region = regions[index].toInt()
-            if (region == 0) {
-                continue
-            }
-            val override = regionOverride[region]
-            if (regions[index] == override) {
-                continue
-            }
-            regions[index] = override
-        }
-
-        // generate in/out occlusion result
 
         return regions
     }
