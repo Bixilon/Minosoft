@@ -25,11 +25,11 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
 
     constructor(vararg aabbs: AABB) : this(aabbs.toMutableList())
 
-    constructor(data: Any, aabbs: List<AABB>) : this() {
+    constructor(data: Any, aabbs: Array<AABB>) : this() {
         when (data) {
             is Collection<*> -> {
                 for (index in data) {
-                    this.aabbs.add(aabbs[index?.toInt()!!])
+                    this.aabbs.add(aabbs[index.toInt()])
                 }
             }
             is Int -> {
@@ -39,7 +39,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
     }
 
     // somehow, the kotlin compiler gives an error if both constructors have the "same" signature JsonElement, List<>
-    constructor(voxelShapes: List<VoxelShape>, data: Any) : this() {
+    constructor(voxelShapes: Array<VoxelShape>, data: Any) : this() {
         when (data) {
             is Collection<*> -> {
                 for (index in data) {

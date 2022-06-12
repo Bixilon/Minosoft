@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.registries
 
-import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.TaskWorker
@@ -53,6 +52,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.recipes.RecipeRegistry
+import de.bixilon.minosoft.util.KUtil.cast
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.logging.Log
@@ -65,7 +65,7 @@ import kotlin.reflect.jvm.javaField
 
 class Registries {
     val registries: MutableMap<ResourceLocation, AbstractRegistry<*>> = mutableMapOf()
-    var shapes: MutableList<VoxelShape> = mutableListOf()
+    var shapes: Array<VoxelShape> = emptyArray()
     val motifRegistry: Registry<Motif> = register("motif", Registry(codec = Motif))
     val blockRegistry: Registry<Block> = register("block", Registry(flattened = true, codec = Block, metaType = MetaTypes.BLOCKS))
     val itemRegistry: ItemRegistry = register("item", ItemRegistry())
@@ -214,27 +214,28 @@ class Registries {
         inner.dec()
         inner.await()
         isFullyLoaded = true
-        shapes.clear()
+        shapes = emptyArray()
     }
 
-    private fun loadShapes(pixlyzerData: Map<String, Any>?) {
-        pixlyzerData ?: return
-        val aabbs = loadAABBs(pixlyzerData["aabbs"].nullCast()!!)
-        loadVoxelShapes(pixlyzerData["shapes"].unsafeCast(), aabbs)
+    private fun loadShapes(data: Map<String, Any>?) {
+        data ?: return
+        val aabbs = loadAABBs(data["aabbs"].unsafeCast())
+        loadVoxelShapes(data["shapes"].unsafeCast(), aabbs)
     }
 
-    private fun loadVoxelShapes(pixlyzerData: Collection<Any>, aabbs: List<AABB>) {
-        for (shape in pixlyzerData) {
-            shapes.add(VoxelShape(shape, aabbs))
+    private fun loadVoxelShapes(data: Collection<Any>, aabbs: Array<AABB>) {
+        this.shapes = arrayOfNulls<VoxelShape>(data.size).cast()
+        for ((index, shape) in data.withIndex()) {
+            this.shapes[index] = VoxelShape(shape, aabbs)
         }
     }
 
-    private fun loadAABBs(pixlyzerData: Collection<Map<String, Any>>): List<AABB> {
-        val aabbs = mutableListOf<AABB>()
-        for (data in pixlyzerData) {
-            aabbs.add(AABB(data))
+    private fun loadAABBs(data: Collection<Map<String, Any>>): Array<AABB> {
+        val aabbs: Array<AABB?> = arrayOfNulls(data.size)
+        for ((index, aabb) in data.withIndex()) {
+            aabbs[index] = AABB(aabb)
         }
-        return aabbs
+        return aabbs.cast()
     }
 
     fun clear() {
