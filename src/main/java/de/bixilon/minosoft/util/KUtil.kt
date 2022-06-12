@@ -282,4 +282,9 @@ object KUtil {
         }
         return "0".repeat(digits - string.length) + string
     }
+
+    @Deprecated("Part of KUtil 1.13")
+    fun <T> Array<T?>.cast(): Array<T> {
+        return this.unsafeCast()
+    }
 }

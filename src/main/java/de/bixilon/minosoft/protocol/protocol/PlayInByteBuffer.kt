@@ -47,6 +47,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.BitByte.isBitMask
+import de.bixilon.minosoft.util.KUtil.cast
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -166,22 +167,21 @@ class PlayInByteBuffer : InByteBuffer {
         val length = when {
             versionId >= V_20W28A -> readVarInt()
             versionId >= V_19W36A -> 1024
-
             else -> 0
         }
 
         check(length <= this.size) { "Trying to allocate too much memory" }
 
-        val ret: MutableList<Biome> = mutableListOf()
-        for (i in 0 until length) {
+        val biomes: Array<Biome?> = arrayOfNulls(length)
+        for (i in biomes.indices) {
             val biomeId: Int = if (versionId >= V_20W28A) {
                 readVarInt()
             } else {
                 readInt()
             }
-            ret.add(i, connection.registries.biomeRegistry[biomeId])
+            biomes[i] = connection.registries.biomeRegistry[biomeId]
         }
-        return ret.toTypedArray()
+        return biomes.cast()
     }
 
     fun readEntityData(): Int2ObjectOpenHashMap<Any?> {
