@@ -17,6 +17,7 @@
       "from": [-4, 24, -4],
       "to": [4, 32, 4],
       "origin": [0, 0, 0],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [8, 8, 16, 16],
@@ -86,6 +87,7 @@
       "to": [4, 24, 2],
       "origin": [0, 0, 0],
       "uv_offset": [16, 16],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [20, 20, 28, 32],
@@ -155,6 +157,7 @@
       "to": [8, 24, 2],
       "origin": [0, 0, 0],
       "uv_offset": [40, 16],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [44, 20, 48, 32],
@@ -224,6 +227,7 @@
       "to": [-4, 24, 2],
       "origin": [0, 0, 0],
       "uv_offset": [32, 48],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [36, 52, 40, 64],
@@ -293,6 +297,7 @@
       "to": [3.9, 12, 2],
       "origin": [0, 0, 0],
       "uv_offset": [0, 16],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [4, 20, 8, 32],
@@ -362,6 +367,7 @@
       "to": [0.1, 12, 2],
       "origin": [0, 0, 0],
       "uv_offset": [16, 48],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [20, 52, 24, 64],

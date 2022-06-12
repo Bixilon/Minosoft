@@ -22,7 +22,9 @@ in vec2 finUV;
 #include "minosoft:texture"
 #include "minosoft:alpha"
 
+#include "minosoft:animation/main_fragment"
+
 void main() {
-    #include "minosoft:animation/main_fragment"
+    run_animation();
     discard_alpha();
 }

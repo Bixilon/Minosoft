@@ -25,10 +25,11 @@ layout (location = 3) in uint vinTintColor;// Light (0xFF000000); 3 bytes color 
 
 uniform mat4 uViewProjectionMatrix;
 
+#include "minosoft:animation/main_vertex"
+
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
     finTintColor = getRGBColor(vinTintColor & 0xFFFFFFu);
 
-
-    #include "minosoft:animation/main_vertex"
+    run_animation();
 }

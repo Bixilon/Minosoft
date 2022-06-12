@@ -24,9 +24,11 @@ layout (location = 3) in uint vinTintColor;
 #include "minosoft:color"
 
 
+#include "minosoft:animation/main_vertex"
+
 void main() {
     gl_Position = vec4(vinPosition, 1.0f);
     finTintColor = getRGBAColor(vinTintColor);
 
-    #include "minosoft:animation/main_vertex"
+    run_animation();
 }

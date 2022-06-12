@@ -26,10 +26,12 @@ uniform mat4 uViewProjectionMatrix;
 #include "minosoft:color"
 #include "minosoft:light"
 
+#include "minosoft:animation/main_vertex"
+
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
     finTintColor = getRGBColor(vinTintColorAndLight & 0xFFFFFFu) * getLight(vinTintColorAndLight >> 24u);
     finFragmentPosition = vinPosition;
 
-    #include "minosoft:animation/main_vertex"
+    run_animation();
 }

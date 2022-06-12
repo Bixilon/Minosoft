@@ -17,6 +17,7 @@
       "from": [-4, 24, -4],
       "to": [4, 32, 4],
       "origin": [0, 0, 0],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [8, 8, 16, 16],
@@ -86,6 +87,7 @@
       "to": [4, 24, 2],
       "origin": [0, 0, 0],
       "uv_offset": [16, 16],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [20, 20, 28, 32],
@@ -155,6 +157,7 @@
       "to": [7, 24, 2],
       "origin": [0, 0, 0],
       "uv_offset": [40, 16],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [44, 20, 47, 32],
@@ -224,6 +227,7 @@
       "to": [-4, 24, 2],
       "origin": [0, 0, 0],
       "uv_offset": [32, 48],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [36, 52, 39, 64],
@@ -288,149 +292,12 @@
       "type": "cube",
       "uuid": "0bc9a70e-d062-27a1-4864-1ca1eef87225"
     }, {
-      "name": "RIGHT_ARM",
-      "from": [4, 12, -2],
-      "to": [8, 24, 2],
-      "origin": [0, 0, 0],
-      "uv_offset": [40, 16],
-      "faces": {
-        "north": {
-          "uv": [44, 20, 48, 32],
-          "texture": 0
-        },
-        "east": {
-          "uv": [40, 20, 44, 32],
-          "texture": 0
-        },
-        "south": {
-          "uv": [52, 20, 56, 32],
-          "texture": 0
-        },
-        "west": {
-          "uv": [48, 20, 52, 32],
-          "texture": 0
-        },
-        "up": {
-          "uv": [48, 20, 44, 16],
-          "texture": 0
-        },
-        "down": {
-          "uv": [52, 16, 48, 20],
-          "texture": 0
-        }
-      },
-      "type": "cube",
-      "uuid": "feeb8a9e-1099-d4ed-8e4b-53dd68b5357b"
-    }, {
-      "name": "RIGHT_SLEEVE",
-      "from": [4, 12, -2],
-      "to": [8, 24, 2],
-      "inflate": 0.25,
-      "origin": [0, 0, 0],
-      "uv_offset": [40, 32],
-      "faces": {
-        "north": {
-          "uv": [44, 36, 48, 48],
-          "texture": 0
-        },
-        "east": {
-          "uv": [40, 36, 44, 48],
-          "texture": 0
-        },
-        "south": {
-          "uv": [52, 36, 56, 48],
-          "texture": 0
-        },
-        "west": {
-          "uv": [48, 36, 52, 48],
-          "texture": 0
-        },
-        "up": {
-          "uv": [48, 36, 44, 32],
-          "texture": 0
-        },
-        "down": {
-          "uv": [52, 32, 48, 36],
-          "texture": 0
-        }
-      },
-      "type": "cube",
-      "uuid": "a05a34bc-73df-2361-b8fc-e9cbeda48ea1"
-    }, {
-      "name": "LEFT_ARM",
-      "from": [-8, 12, -2],
-      "to": [-4, 24, 2],
-      "origin": [0, 0, 0],
-      "uv_offset": [32, 48],
-      "faces": {
-        "north": {
-          "uv": [36, 52, 40, 64],
-          "texture": 0
-        },
-        "east": {
-          "uv": [32, 52, 36, 64],
-          "texture": 0
-        },
-        "south": {
-          "uv": [44, 52, 48, 64],
-          "texture": 0
-        },
-        "west": {
-          "uv": [40, 52, 44, 64],
-          "texture": 0
-        },
-        "up": {
-          "uv": [40, 52, 36, 48],
-          "texture": 0
-        },
-        "down": {
-          "uv": [44, 48, 40, 52],
-          "texture": 0
-        }
-      },
-      "type": "cube",
-      "uuid": "1773dbda-88eb-b14d-2e53-f91077dcf6a6"
-    }, {
-      "name": "LEFT_SLEEVE",
-      "from": [-8, 12, -2],
-      "to": [-4, 24, 2],
-      "inflate": 0.25,
-      "origin": [0, 0, 0],
-      "uv_offset": [48, 48],
-      "faces": {
-        "north": {
-          "uv": [52, 52, 56, 64],
-          "texture": 0
-        },
-        "east": {
-          "uv": [48, 52, 52, 64],
-          "texture": 0
-        },
-        "south": {
-          "uv": [60, 52, 64, 64],
-          "texture": 0
-        },
-        "west": {
-          "uv": [56, 52, 60, 64],
-          "texture": 0
-        },
-        "up": {
-          "uv": [56, 52, 52, 48],
-          "texture": 0
-        },
-        "down": {
-          "uv": [60, 48, 56, 52],
-          "texture": 0
-        }
-      },
-      "type": "cube",
-      "uuid": "0bc9a70e-d062-27a1-4864-1ca1eef87225"
-    }, {
       "name": "RIGHT_LEG",
       "from": [-0.1, 0, -2],
       "to": [3.9, 12, 2],
       "origin": [0, 0, 0],
       "uv_offset": [0, 16],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [4, 20, 8, 32],
@@ -500,6 +367,7 @@
       "to": [0.1, 12, 2],
       "origin": [0, 0, 0],
       "uv_offset": [16, 48],
+      "transparency": false,
       "faces": {
         "north": {
           "uv": [20, 52, 24, 64],

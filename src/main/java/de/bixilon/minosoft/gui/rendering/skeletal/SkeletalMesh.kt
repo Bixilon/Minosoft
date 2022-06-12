@@ -20,9 +20,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, EntitiesMeshStruct, initialCacheSize = initialCacheSize) {
+class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, SkeletalMeshStruct, initialCacheSize = initialCacheSize) {
 
-    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture) {
+    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
         val transformedUV = texture.transformUV(uv)
         data.add(position[0])
         data.add(position[1])
@@ -31,15 +31,17 @@ class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
         data.add(transformedUV.y)
         data.add(Float.fromBits(transform))
         data.add(Float.fromBits(texture.shaderId))
+        data.add(Float.fromBits(flags))
     }
 
 
-    data class EntitiesMeshStruct(
+    data class SkeletalMeshStruct(
         val position: Vec3,
         val uv: Vec2,
         val transform: Int,
         val indexLayerAnimation: Int,
+        val flags: Int,
     ) {
-        companion object : MeshStruct(EntitiesMeshStruct::class)
+        companion object : MeshStruct(SkeletalMeshStruct::class)
     }
 }

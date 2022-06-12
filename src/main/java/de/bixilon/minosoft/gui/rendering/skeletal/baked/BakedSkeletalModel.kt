@@ -102,9 +102,15 @@ class BakedSkeletalModel(
                 }
                 val outlinerId = outlinerMapping[element.uuid] ?: 0
 
+                var flags = 0
+                if (element.transparency && face.transparency) {
+                    flags = flags or 0x01
+                }
+
+                val texture = textures[face.texture]!!
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
-                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, textures[face.texture]!!)
+                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, texture, flags)
                 }
             }
         }

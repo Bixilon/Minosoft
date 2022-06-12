@@ -34,4 +34,5 @@ data class SkeletalElement(
     val faces: Map<Directions, SkeletalFace> = emptyMap(),
     val uuid: UUID,
     val inflate: Float = 0.0f,
+    val transparency: Boolean = true,
 )

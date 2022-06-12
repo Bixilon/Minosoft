@@ -20,6 +20,7 @@ import de.bixilon.kotlinglm.vec4.swizzle.zw
 data class SkeletalFace(
     val uv: Vec4,
     val texture: Int,
+    val transparency: Boolean = true,
 ) {
     val uvStart = uv.xy
     val uvEnd = uv.zw
