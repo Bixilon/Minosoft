@@ -36,7 +36,7 @@ open class AxeItem(
         for ((origin, target) in it) {
             entries[registries.blockRegistry[origin.toInt()]] = registries.blockRegistry[target]!!
         }
-        entries.toMap()
+        entries
     }
 
     override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {

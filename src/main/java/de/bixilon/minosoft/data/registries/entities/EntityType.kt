@@ -122,7 +122,7 @@ data class EntityType(
                 height = data["height"].unsafeCast(),
                 fireImmune = data["fire_immune"]?.toBoolean() ?: false,
                 sizeFixed = data["size_fixed"]?.toBoolean() ?: false,
-                attributes = attributes.toMap(),
+                attributes = attributes,
                 factory = factory,
                 spawnEgg = registries.itemRegistry[data["spawn_egg_item"]]?.nullCast(), // ToDo: Not yet in PixLyzer
             )

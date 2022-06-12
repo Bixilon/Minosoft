@@ -53,7 +53,7 @@ data class ParticleType(
             val factory = DefaultParticleFactory[resourceLocation]
             return ParticleType(
                 resourceLocation = resourceLocation,
-                textures = textures.toList(),
+                textures = textures,
                 overrideLimiter = data["override_limiter"]?.toBoolean() ?: false,
                 factory = factory,
             )

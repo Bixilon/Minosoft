@@ -58,8 +58,8 @@ data class StatusEffect(
                 category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] },
                 translationKey = data["translation_key"]?.toResourceLocation(),
                 color = data["color"].unsafeCast<Int>().asRGBColor(),
-                attributes = attributes.toMap(),
-                uuidAttributes = uuidAttributes.toMap(),
+                attributes = attributes,
+                uuidAttributes = uuidAttributes,
             )
         }
     }

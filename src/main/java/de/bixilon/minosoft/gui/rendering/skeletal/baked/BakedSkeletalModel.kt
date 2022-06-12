@@ -50,7 +50,7 @@ class BakedSkeletalModel(
             if (child !is SkeletalOutliner) {
                 throw IllegalArgumentException()
             }
-            if (mapping[child.uuid] != null) {
+            if (mapping.containsKey(child.uuid)) {
                 return
             }
             val id = offset++

@@ -34,7 +34,7 @@ open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
             }
         }
 
-        factoryMap = ret.toMap()
+        factoryMap = ret
     }
 
     operator fun get(`class`: String?): T? {

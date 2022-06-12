@@ -73,8 +73,8 @@ object GlobalProfileManager {
             classMapping[manager.profileClass] = manager
         }
 
-        this.DEFAULT_MANAGERS = map.toMap()
-        this.CLASS_MAPPING = classMapping.toMap()
+        this.DEFAULT_MANAGERS = map
+        this.CLASS_MAPPING = classMapping
     }
 
     private var initialized = false

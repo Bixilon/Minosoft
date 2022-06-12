@@ -114,7 +114,7 @@ object KUtil {
             ret += resourceLocation.toResourceLocation()
         }
 
-        return ret.toSet()
+        return ret
     }
 
     fun pause() {
@@ -194,7 +194,7 @@ object KUtil {
             ret[value.resourceLocation] = value
         }
 
-        return ret.toMap()
+        return ret
     }
 
     fun String?.nullCompare(other: String?): Int? {

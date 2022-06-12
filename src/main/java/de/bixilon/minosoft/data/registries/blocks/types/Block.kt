@@ -129,9 +129,9 @@ open class Block(
                 propertiesOut[property] = values.toList()
             }
 
-            block.states = states.toSet()
+            block.states = states
             block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"].unsafeCast())!!
-            block.properties = propertiesOut.toMap()
+            block.properties = propertiesOut
             return block
         }
 

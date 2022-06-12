@@ -40,7 +40,7 @@ abstract class MeshStruct(struct: KClass<*>) {
             stride += bytes
         }
 
-        this.attributes = attributes.toList()
+        this.attributes = attributes
     }
 
     companion object {

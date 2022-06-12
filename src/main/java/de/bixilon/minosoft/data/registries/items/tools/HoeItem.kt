@@ -39,7 +39,7 @@ open class HoeItem(
         for ((origin, target) in it) {
             entries[registries.blockRegistry[origin.toInt()]] = registries.blockStateRegistry[target]!!
         }
-        entries.toMap()
+        entries
     }
 
     override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {

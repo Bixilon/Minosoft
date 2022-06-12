@@ -417,12 +417,7 @@ open class InByteBuffer {
         for (id in ids) {
             items += idResolver(id)
         }
-        return Pair(resourceLocation, Tag(items.toSet()))
-    }
-
-    @Deprecated("Use readArray", ReplaceWith("mapOf(*(readArray(length) { readTag(idResolver) }))"))
-    fun <T> readTagArray(length: Int = readVarInt(), idResolver: (Int) -> T): Map<ResourceLocation, Tag<T>> {
-        return mapOf(*(readArray(length) { readTag(idResolver) }))
+        return Pair(resourceLocation, Tag(items))
     }
 
     fun <T> readOptional(reader: InByteBuffer.() -> T): T? {

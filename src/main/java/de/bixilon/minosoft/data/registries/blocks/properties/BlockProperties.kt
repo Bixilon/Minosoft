@@ -146,7 +146,7 @@ enum class BlockProperties {
                 list.add(value)
             }
 
-            return@run map.toMap()
+            return@run map
         }
 
         fun parseProperty(group: String, value: Any): Pair<BlockProperties, Any> {

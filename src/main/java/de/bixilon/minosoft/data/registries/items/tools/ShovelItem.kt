@@ -39,7 +39,7 @@ open class ShovelItem(
         for ((origin, target) in it) {
             entries[registries.blockRegistry[origin.toInt()]] = registries.blockStateRegistry[target]!!
         }
-        entries.toMap()
+        entries
     }
 
 

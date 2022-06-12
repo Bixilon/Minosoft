@@ -227,8 +227,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    fun readEntityIdArray(length: Int = readVarInt()): Array<Int> {
-        return readArray(length) { readEntityId() }
+    fun readEntityIdArray(length: Int = readVarInt()): IntArray {
+        val array = IntArray(length)
+        for (i in array.indices) {
+            array[i] = readEntityId()
+        }
+        return array
     }
 
     fun readPlayerProperties(): PlayerProperties {

@@ -60,6 +60,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import java.lang.reflect.Field
+import kotlin.reflect.jvm.javaField
 
 
 class Registries {
@@ -251,8 +252,8 @@ class Registries {
         do {
             currentField = TYPE_MAP[currentClass]
             currentClass = currentClass.superclass
-        } while (currentField == null && currentClass != Object::class.java)
-        return currentField?.get(this) as Registry<T>?
+        } while (currentField == null && currentClass != Any::class.java)
+        return currentField?.get(this).unsafeCast()
     }
 
     private fun <T, R : AbstractRegistry<T>> register(name: String, registry: R): R {
@@ -302,7 +303,7 @@ class Registries {
                 fields.add(field)
             }
 
-            PARENTABLE_FIELDS = fields.toList()
+            PARENTABLE_FIELDS = fields
         }
 
         init {
@@ -331,9 +332,9 @@ class Registries {
                 types[RegistryUtil.getClassOfFactory(generic)] = field
             }
 
-            types[Item::class.java] = Registries::class.java.getDeclaredField("itemRegistry")
+            types[Item::class.java] = Registries::itemRegistry.javaField!!
 
-            TYPE_MAP = types.toMap()
+            TYPE_MAP = types
         }
     }
 }

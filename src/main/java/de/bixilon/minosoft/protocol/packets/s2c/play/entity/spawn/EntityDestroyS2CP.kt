@@ -26,14 +26,16 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(threadSafe = false)
 class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val entityIds: List<Int> = if (buffer.versionId < ProtocolVersions.V_21W17A || buffer.versionId >= V_1_17_1_RC1) {
-        buffer.readEntityIdArray(if (buffer.versionId < ProtocolVersions.V_14W04A) {
-            buffer.readUnsignedByte()
-        } else {
-            buffer.readVarInt()
-        }).toList()
+    val entityIds: IntArray = if (buffer.versionId < ProtocolVersions.V_21W17A || buffer.versionId >= V_1_17_1_RC1) {
+        buffer.readEntityIdArray(
+            if (buffer.versionId < ProtocolVersions.V_14W04A) {
+                buffer.readUnsignedByte()
+            } else {
+                buffer.readVarInt()
+            }
+        )
     } else {
-        listOf(buffer.readVarInt())
+        intArrayOf(buffer.readVarInt())
     }
 
 

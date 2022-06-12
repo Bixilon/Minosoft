@@ -71,7 +71,7 @@ enum class LogMessageType(
                 ret[value] = value.defaultLevel
             }
 
-            ret.toMap()
+            ret
         }
     }
 }
