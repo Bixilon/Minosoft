@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -163,14 +164,22 @@ class PlayConnection(
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.LOADING_ASSETS
-            fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
-            version.load(profiles.resources, latch)
-            registries.parentRegistries = version.registries
+            val inner = CountUpAndDownLatch(2, latch)
+            DefaultThreadPool += {
+                fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
+                version.load(profiles.resources, latch)
+                registries.parentRegistries = version.registries
+                inner.dec()
+            }
+            DefaultThreadPool += {
+                Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
+                assetsManager = AssetsLoader.create(profiles.resources, version, latch)
+                assetsManager.load(latch)
+                Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
+                inner.dec()
+            }
+            inner.await()
 
-            Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
-            assetsManager = AssetsLoader.create(profiles.resources, version, latch)
-            assetsManager.load(latch)
-            Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             state = PlayConnectionStates.LOADING
 
             language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
