@@ -144,55 +144,55 @@ class Registries {
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error != null) error = it }, criticalErrorHandler = { _, it -> if (error != null) error = it })
         // enums
-        worker += Task(shapes) { loadShapes(pixlyzerData["shapes"]?.toJsonObject()) }
+        worker += Task(this::shapes) { loadShapes(pixlyzerData["shapes"]?.toJsonObject()) }
 
-        worker += Task(equipmentSlotRegistry) { equipmentSlotRegistry.initialize(pixlyzerData["equipment_slots"]) }
-        worker += Task(handEquipmentSlotRegistry) { handEquipmentSlotRegistry.initialize(pixlyzerData["hand_equipment_slots"]) }
-        worker += Task(armorEquipmentSlotRegistry) { armorEquipmentSlotRegistry.initialize(pixlyzerData["armor_equipment_slots"]) }
-        worker += Task(armorStandEquipmentSlotRegistry) { armorStandEquipmentSlotRegistry.initialize(pixlyzerData["armor_stand_equipment_slots"]) }
+        worker += Task(this::equipmentSlotRegistry) { equipmentSlotRegistry.initialize(pixlyzerData["equipment_slots"]) }
+        worker += Task(this::handEquipmentSlotRegistry) { handEquipmentSlotRegistry.initialize(pixlyzerData["hand_equipment_slots"]) }
+        worker += Task(this::armorEquipmentSlotRegistry) { armorEquipmentSlotRegistry.initialize(pixlyzerData["armor_equipment_slots"]) }
+        worker += Task(this::armorStandEquipmentSlotRegistry) { armorStandEquipmentSlotRegistry.initialize(pixlyzerData["armor_stand_equipment_slots"]) }
 
-        worker += Task(entityDataTypesRegistry) { entityDataTypesRegistry.initialize(pixlyzerData["entity_data_data_types"]) }
+        worker += Task(this::entityDataTypesRegistry) { entityDataTypesRegistry.initialize(pixlyzerData["entity_data_data_types"]) }
 
-        worker += Task(titleActionsRegistry) { titleActionsRegistry.initialize(pixlyzerData["title_actions"]) }
-        worker += Task(entityAnimationRegistry) { entityAnimationRegistry.initialize(pixlyzerData["entity_animations"]) }
-        worker += Task(entityActionsRegistry) { entityActionsRegistry.initialize(pixlyzerData["entity_actions"]) }
+        worker += Task(this::titleActionsRegistry) { titleActionsRegistry.initialize(pixlyzerData["title_actions"]) }
+        worker += Task(this::entityAnimationRegistry) { entityAnimationRegistry.initialize(pixlyzerData["entity_animations"]) }
+        worker += Task(this::entityActionsRegistry) { entityActionsRegistry.initialize(pixlyzerData["entity_actions"]) }
 
         // id stuff
-        worker += Task(biomeCategoryRegistry) { biomeCategoryRegistry.update(pixlyzerData["biome_categories"]?.unsafeCast(), this) }
-        worker += Task(biomePrecipitationRegistry) { biomePrecipitationRegistry.update(pixlyzerData["biome_precipitations"]?.unsafeCast(), this) }
+        worker += Task(this::biomeCategoryRegistry) { biomeCategoryRegistry.update(pixlyzerData["biome_categories"]?.unsafeCast(), this) }
+        worker += Task(this::biomePrecipitationRegistry) { biomePrecipitationRegistry.update(pixlyzerData["biome_precipitations"]?.unsafeCast(), this) }
 
         // id resource location stuff
-        worker += Task(containerTypeRegistry) { containerTypeRegistry.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this) }
-        worker += Task(gameEventRegistry) { gameEventRegistry.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this) }
-        worker += Task(worldEventRegistry) { worldEventRegistry.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this) }
-        worker += Task(argumentTypeRegistry) { argumentTypeRegistry.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this) }
+        worker += Task(this::containerTypeRegistry) { containerTypeRegistry.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this) }
+        worker += Task(this::gameEventRegistry) { gameEventRegistry.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this) }
+        worker += Task(this::worldEventRegistry) { worldEventRegistry.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this) }
+        worker += Task(this::argumentTypeRegistry) { argumentTypeRegistry.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this) }
 
 
-        worker += Task(entityTypeRegistry) { entityTypeRegistry.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this) }
+        worker += Task(this::entityTypeRegistry) { entityTypeRegistry.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this) }
 
-        worker += Task(motifRegistry) { motifRegistry.rawUpdate(pixlyzerData["motives"]?.toJsonObject(), this) }
-        worker += Task(soundEventRegistry) { soundEventRegistry.rawUpdate(pixlyzerData["sound_events"]?.toJsonObject(), null) }
-        worker += Task(soundGroupRegistry, dependencies = arrayOf(soundEventRegistry)) { soundGroupRegistry.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
-        worker += Task(particleTypeRegistry) { particleTypeRegistry.rawUpdate(pixlyzerData["particles"]?.toJsonObject(), this) }
-        worker += Task(materialRegistry) { materialRegistry.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this) }
-        worker += Task(enchantmentRegistry) { enchantmentRegistry.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this) }
-        worker += Task(statusEffectRegistry) { statusEffectRegistry.rawUpdate(pixlyzerData["status_effects"]?.toJsonObject(), this) }
-        worker += Task(biomeRegistry, dependencies = arrayOf(biomeCategoryRegistry, biomePrecipitationRegistry)) { biomeRegistry.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
-        worker += Task(dimensionRegistry) { dimensionRegistry.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
-        worker += Task(fluidRegistry) { fluidRegistry.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
-        worker += Task(blockRegistry, dependencies = arrayOf(fluidRegistry, shapes)) { blockRegistry.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
-        worker += Task(itemRegistry, dependencies = arrayOf(blockRegistry, entityTypeRegistry, fluidRegistry, statusEffectRegistry)) { itemRegistry.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
+        worker += Task(this::motifRegistry) { motifRegistry.rawUpdate(pixlyzerData["motives"]?.toJsonObject(), this) }
+        worker += Task(this::soundEventRegistry) { soundEventRegistry.rawUpdate(pixlyzerData["sound_events"]?.toJsonObject(), null) }
+        worker += Task(this::soundGroupRegistry, dependencies = arrayOf(this::soundEventRegistry)) { soundGroupRegistry.update(pixlyzerData["sound_groups"]?.unsafeCast(), this) }
+        worker += Task(this::particleTypeRegistry) { particleTypeRegistry.rawUpdate(pixlyzerData["particles"]?.toJsonObject(), this) }
+        worker += Task(this::materialRegistry) { materialRegistry.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this) }
+        worker += Task(this::enchantmentRegistry) { enchantmentRegistry.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this) }
+        worker += Task(this::statusEffectRegistry) { statusEffectRegistry.rawUpdate(pixlyzerData["status_effects"]?.toJsonObject(), this) }
+        worker += Task(this::biomeRegistry, dependencies = arrayOf(this::biomeCategoryRegistry, this::biomePrecipitationRegistry)) { biomeRegistry.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
+        worker += Task(this::dimensionRegistry) { dimensionRegistry.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
+        worker += Task(this::fluidRegistry) { fluidRegistry.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
+        worker += Task(this::blockRegistry, dependencies = arrayOf(this::fluidRegistry, this::shapes)) { blockRegistry.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
+        worker += Task(this::itemRegistry, dependencies = arrayOf(this::blockRegistry, this::entityTypeRegistry, this::fluidRegistry, this::statusEffectRegistry)) { itemRegistry.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
 
-        worker += Task(blockEntityTypeRegistry, dependencies = arrayOf(blockRegistry)) { blockEntityTypeRegistry.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
+        worker += Task(this::blockEntityTypeRegistry, dependencies = arrayOf(this::blockRegistry)) { blockEntityTypeRegistry.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
 
-        worker += Task(villagerProfessionRegistry) { villagerProfessionRegistry.rawUpdate(pixlyzerData["villager_professions"]?.toJsonObject(), this) }
-        worker += Task(villagerTypeRegistry) { villagerTypeRegistry.rawUpdate(pixlyzerData["villager_types"]?.toJsonObject(), null) }
+        worker += Task(this::villagerProfessionRegistry) { villagerProfessionRegistry.rawUpdate(pixlyzerData["villager_professions"]?.toJsonObject(), this) }
+        worker += Task(this::villagerTypeRegistry) { villagerTypeRegistry.rawUpdate(pixlyzerData["villager_types"]?.toJsonObject(), null) }
 
 
-        worker += Task(blockDataTypeRegistry) { blockDataTypeRegistry.rawUpdate(pixlyzerData["block_data_data_types"]?.toJsonObject(), this) }
+        worker += Task(this::blockDataTypeRegistry) { blockDataTypeRegistry.rawUpdate(pixlyzerData["block_data_data_types"]?.toJsonObject(), this) }
 
-        worker += Task(catVariants) { catVariants.rawUpdate(pixlyzerData["variant/cat"]?.toJsonObject(), this) }
-        worker += Task(frogVariants) { frogVariants.rawUpdate(pixlyzerData["variant/frog"]?.toJsonObject(), this) }
+        worker += Task(this::catVariants) { catVariants.rawUpdate(pixlyzerData["variant/cat"]?.toJsonObject(), this) }
+        worker += Task(this::frogVariants) { frogVariants.rawUpdate(pixlyzerData["variant/frog"]?.toJsonObject(), this) }
 
         val inner = CountUpAndDownLatch(1, latch)
         worker.work(inner)
