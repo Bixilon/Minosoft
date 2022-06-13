@@ -22,6 +22,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
@@ -50,10 +51,10 @@ import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.datafixer.RegistryFixer.fix
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.recipes.RecipeRegistry
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -95,7 +96,7 @@ class Registries {
 
     val titleActionsRegistry: EnumRegistry<TitleS2CF.TitleActions> = EnumRegistry(values = TitleS2CF.TitleActions)
 
-    val entityAnimationRegistry: EnumRegistry<EntityAnimationS2CP.EntityAnimations> = EnumRegistry(values = EntityAnimationS2CP.EntityAnimations)
+    val entityAnimationRegistry: EnumRegistry<EntityAnimations> = EnumRegistry(values = EntityAnimations)
     val entityActionsRegistry: EnumRegistry<EntityActionC2SP.EntityActions> = EnumRegistry(values = EntityActionC2SP.EntityActions)
 
     val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry(codec = BiomePrecipitation)
@@ -143,6 +144,7 @@ class Registries {
 
         var error: Throwable? = null
         val worker = TaskWorker(errorHandler = { _, it -> if (error != null) error = it }, criticalErrorHandler = { _, it -> if (error != null) error = it })
+        val stopwatch = Stopwatch()
         // enums
         worker += Task(this::shapes) { loadShapes(pixlyzerData["shapes"]?.toJsonObject()) }
 
@@ -215,6 +217,7 @@ class Registries {
         inner.await()
         isFullyLoaded = true
         shapes = emptyArray()
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Registries for $version loaded in ${stopwatch.totalTime()}" }
     }
 
     private fun loadShapes(data: Map<String, Any>?) {

@@ -221,8 +221,8 @@
       "1": "TAKE_DAMAGE",
       "2": "LEAVE_BED",
       "3": "EAT_FOOD",
-      "4": "CRITICAL_EFFECT",
-      "5": "MAGIC_CRITICAL_EFFECT",
+      "4": "CRITICAL_HIT",
+      "5": "ENCHANTED_HIT",
       "102": "UNKNOWN_1",
       "104": "START_SNEAKING",
       "105": "STOP_SNEAKING"
@@ -232,16 +232,16 @@
       "1": "TAKE_DAMAGE",
       "2": "LEAVE_BED",
       "3": "EAT_FOOD",
-      "4": "CRITICAL_EFFECT",
-      "5": "MAGIC_CRITICAL_EFFECT"
+      "4": "CRITICAL_HIT",
+      "5": "ENCHANTED_HIT"
     },
     "110": [
       "SWING_MAIN_ARM",
       "TAKE_DAMAGE",
       "LEAVE_BED",
       "SWING_OFF_ARM",
-      "CRITICAL_EFFECT",
-      "MAGIC_CRITICAL_EFFECT"
+      "CRITICAL_HIT",
+      "ENCHANTED_HIT"
     ]
   },
   "minecraft:entity_actions": {
