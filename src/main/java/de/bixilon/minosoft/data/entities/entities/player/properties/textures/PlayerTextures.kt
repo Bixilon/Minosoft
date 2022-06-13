@@ -32,6 +32,7 @@ data class PlayerTextures(
 ) {
 
     companion object {
+
         fun of(encoded: String, signature: String): PlayerTextures {
             check(YggdrasilUtil.verify(encoded, signature)) { "Texture signature is invalid!" }
 

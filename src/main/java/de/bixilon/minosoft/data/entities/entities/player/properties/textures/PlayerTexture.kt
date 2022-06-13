@@ -41,7 +41,7 @@ open class PlayerTexture(
         this.data?.let { return it }
         val sha256 = when (url.host) {
             "textures.minecraft.net" -> url.file.split("/").last()
-            else -> TODO("Can not get texture identifier!")
+            else -> TODO("Can not get texture identifier: $url")
         }
 
         FileUtil.safeReadFile(FileAssetsUtil.getPath(sha256), true)?.let {
@@ -55,14 +55,14 @@ open class PlayerTexture(
             throw IllegalStateException("Texture is too big!")
         }
         val data = FileAssetsUtil.saveAndGet(input)
-        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloaded skin ($url)" }
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloaded player texture ($url)" }
         return data.second
     }
 
     companion object {
         private const val MAX_TEXTURE_SIZE = 64 * 64 * 3 + 100 // width * height * rgb + some padding
         private val ALLOWED_DOMAINS = arrayOf(".minecraft.net", ".mojang.com")
-        private val BLOCKED_DOMAINS = arrayOf("bugs.mojang.com", "education.minecraft.net", "feedback.minecraft.net")
+        private val BLOCKED_DOMAINS = arrayOf("bugs.mojang.com", "education.minecraft.net", "feedback.minecraft.net") // pretty much guaranteed to not happen, texture data must always be signed by mojang. Taken from the original game.
 
         private fun urlMatches(url: URL, domains: Array<String>): Boolean {
             for (checkURL in domains) {

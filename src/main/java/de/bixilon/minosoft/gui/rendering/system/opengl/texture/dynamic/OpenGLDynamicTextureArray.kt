@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -37,6 +38,7 @@ import java.util.*
 
 class OpenGLDynamicTextureArray(
     val renderWindow: RenderWindow,
+    val renderSystem: OpenGLRenderSystem,
     val index: Int = 7,
     val initialSize: Int = 32,
     val resolution: Int,
@@ -100,14 +102,14 @@ class OpenGLDynamicTextureArray(
             val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, bytes.limit() / 4 / resolution))
             texture.data = mipmaps
             if (force) {
-                load(texture, index, mipmaps)
+                load(texture, index, mipmaps) // thread check already done
             } else {
                 renderWindow.queue += { load(texture, index, mipmaps) }
             }
         }
 
         if (force) {
-            check(Thread.currentThread() == renderWindow.thread) { "Thread mismatch: ${Thread.currentThread()}" }
+            renderSystem.assertThread()
             load()
         } else {
             DefaultThreadPool += { load() }
