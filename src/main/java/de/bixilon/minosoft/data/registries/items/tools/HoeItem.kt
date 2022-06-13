@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
+import de.bixilon.kutil.cast.CollectionCast.toAnyMap
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.CastUtil.toAnyMap
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class HoeItem(

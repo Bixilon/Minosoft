@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import java.net.URLConnection
 import java.net.URLStreamHandler
 import java.net.URLStreamHandlerFactory
 
+@Deprecated("KUtil 1.13")
 object URLProtocolStreamHandlers : URLStreamHandlerFactory {
     val PROTOCOLS: MutableMap<String, URLStreamHandler> = mutableMapOf(
         "resource" to ResourceURLHandler,
@@ -30,7 +31,6 @@ object URLProtocolStreamHandlers : URLStreamHandlerFactory {
     override fun createURLStreamHandler(protocol: String?): URLStreamHandler? {
         return PROTOCOLS[protocol]
     }
-
 
     val NULL_URL_CONNECTION: URLConnection = object : URLConnection(null) {
         override fun connect() = Unit

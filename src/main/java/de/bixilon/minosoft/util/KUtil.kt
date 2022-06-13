@@ -27,6 +27,7 @@ import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
+import de.bixilon.kutil.time.Cooldown
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -286,5 +287,9 @@ object KUtil {
     @Deprecated("Part of KUtil 1.13")
     fun <T> Array<T?>.cast(): Array<T> {
         return this.unsafeCast()
+    }
+
+    fun Cooldown.setTicks(ticks: Int) {
+        set(ticks * ProtocolDefinition.TICK_TIME)
     }
 }

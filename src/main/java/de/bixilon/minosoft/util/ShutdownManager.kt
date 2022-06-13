@@ -24,6 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import javafx.application.Platform
 import kotlin.system.exitProcess
 
+@Deprecated("Kutil 1.13")
 object ShutdownManager {
     private var initialized = false
     var shuttingDown = false
