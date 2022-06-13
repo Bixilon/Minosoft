@@ -106,13 +106,13 @@ class BlockSectionDataProvider(
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
         var nextFloodId = 1.toShort()
 
-        fun deepSearch(x: Int, y: Int, z: Int, nextId: Short) {
+        fun trace(x: Int, y: Int, z: Int, nextId: Short) {
             val index = y shl 8 or (z shl 4) or x
-            val blockState = unsafeGet(index)
             val id = regions[index]
             if (id > 0) {
                 return
             }
+            val blockState = unsafeGet(index)
             if (blockState.isSolid()) {
                 if (nextId == nextFloodId) {
                     nextFloodId++
@@ -120,18 +120,18 @@ class BlockSectionDataProvider(
                 return
             }
             regions[index] = nextId
-            if (x > 0) deepSearch(x - 1, y, z, nextId)
-            if (x < ProtocolDefinition.SECTION_MAX_X) deepSearch(x + 1, y, z, nextId)
-            if (y > 0) deepSearch(x, y - 1, z, nextId)
-            if (y < ProtocolDefinition.SECTION_MAX_Y) deepSearch(x, y + 1, z, nextId)
-            if (z > 0) deepSearch(x, y, z - 1, nextId)
-            if (z < ProtocolDefinition.SECTION_MAX_Z) deepSearch(x, y, z + 1, nextId)
+            if (x > 0) trace(x - 1, y, z, nextId)
+            if (x < ProtocolDefinition.SECTION_MAX_X) trace(x + 1, y, z, nextId)
+            if (y > 0) trace(x, y - 1, z, nextId)
+            if (y < ProtocolDefinition.SECTION_MAX_Y) trace(x, y + 1, z, nextId)
+            if (z > 0) trace(x, y, z - 1, nextId)
+            if (z < ProtocolDefinition.SECTION_MAX_Z) trace(x, y, z + 1, nextId)
         }
 
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    deepSearch(x, y, z, nextFloodId)
+                    trace(x, y, z, nextFloodId)
                 }
             }
         }

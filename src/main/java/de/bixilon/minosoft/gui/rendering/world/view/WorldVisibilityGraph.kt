@@ -69,6 +69,7 @@ class WorldVisibilityGraph(
     private var graph: Array<Array<BooleanArray?>?> = arrayOfNulls(0)
 
     private lateinit var chunkCache: Array<Array<Chunk?>?>
+    private lateinit var frustumCache: Array<ByteArray?>
 
     // check for view distance (hide chunks that are far away)
     // check if direction is non-negative (i.e. basic frustum culling)
@@ -213,6 +214,29 @@ class WorldVisibilityGraph(
         return chunk
     }
 
+    private fun isInFrustum(chunkPosition: Vec2i, sectionHeight: Int): Boolean {
+        val x = chunkPosition.x - chunkMin.x
+
+        if (x >= frustumCache.size || x < 0) {
+            return frustum.containsChunk(chunkPosition, sectionHeight)
+        }
+        var array = frustumCache[x]
+        if (array == null) {
+            array = ByteArray(worldSize.y)
+            frustumCache[x] = array
+        }
+        val y = chunkPosition.y - chunkMin.y
+        if (y >= array.size || y < 0) {
+            return frustum.containsChunk(chunkPosition, sectionHeight)
+        }
+        var visibility = array[y]
+        if (visibility == 0.toByte()) {
+            visibility = if (frustum.containsChunk(chunkPosition, sectionHeight)) 1 else 0
+            array[y] = visibility
+        }
+        return visibility == 1.toByte()
+    }
+
     private fun checkSection(graph: Array<Array<BooleanArray?>?>, chunkPosition: Vec2i, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, directionVector: Vec3i, steps: Int, ignoreVisibility: Boolean) {
         if (steps > 64 * 3) {
             Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Potential stack overflow: $chunkPosition:$sectionIndex $direction $directionVector" }
@@ -229,7 +253,7 @@ class WorldVisibilityGraph(
 
         if (ignoreVisibility) {
             visibilities[sectionIndex] = true
-        } else if (!frustum.containsChunk(chunkPosition, sectionIndex + minSection)) {
+        } else if (!isInFrustum(chunkPosition, sectionIndex + minSection)) {
             return
         }
 
@@ -333,6 +357,7 @@ class WorldVisibilityGraph(
             this.chunkMin = chunkMin
             this.worldSize = worldSize
             this.chunkCache = arrayOfNulls(worldSize.x)
+            this.frustumCache = arrayOfNulls(worldSize.x)
         }
 
         val graph: Array<Array<BooleanArray?>?> = arrayOfNulls(worldSize.x)
