@@ -22,12 +22,15 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.Cooldown
+import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -44,8 +47,9 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
-import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
+import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
+import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
 import java.util.*
 import javax.net.ssl.SSLContext
@@ -53,10 +57,6 @@ import javax.net.ssl.SSLContext
 
 object KUtil {
     val RANDOM = Random()
-
-    init {
-        Table.DEFAULT_STYLE = TableStyles.FANCY
-    }
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
@@ -274,22 +274,20 @@ object KUtil {
         return prefixed.toArray()
     }
 
-    @Deprecated("Part of KUtil 1.13")
-    fun Int.toHex(digits: Int): String {
-        val string = Integer.toHexString(this)
-
-        if (string.length >= digits) {
-            return string
-        }
-        return "0".repeat(digits - string.length) + string
-    }
-
-    @Deprecated("Part of KUtil 1.13")
-    fun <T> Array<T?>.cast(): Array<T> {
-        return this.unsafeCast()
-    }
-
     fun Cooldown.setTicks(ticks: Int) {
         set(ticks * ProtocolDefinition.TICK_TIME)
+    }
+
+    fun init() {
+        Table.DEFAULT_STYLE = TableStyles.FANCY
+        URLProtocolStreamHandlers.register("resource", ResourceURLHandler)
+        ShutdownManager += {
+            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                connection.network.disconnect()
+            }
+        }
+        ShutdownManager += {
+            Platform.exit()
+        }
     }
 }

@@ -16,12 +16,12 @@ package de.bixilon.minosoft.gui.rendering.font.provider
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.util.KUtil.toHex
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class LegacyUnicodeFontProvider(

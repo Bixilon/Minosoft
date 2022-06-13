@@ -23,5 +23,5 @@ class S2CPacketNotImplementedException(
     val state: ProtocolStates,
     val version: Version?,
 ) : NetworkException() {
-    override val message: String = "packetId=0x${packetId.toHex()}, state=$state, version=$version"
+    override val message: String = "packetId=0x${packetId.toHex(0)}, state=$state, version=$version"
 }

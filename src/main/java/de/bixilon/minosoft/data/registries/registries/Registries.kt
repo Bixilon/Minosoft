@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.registries
 
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.TaskWorker
@@ -52,7 +53,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.recipes.RecipeRegistry
-import de.bixilon.minosoft.util.KUtil.cast
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.logging.Log

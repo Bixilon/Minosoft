@@ -75,7 +75,7 @@ abstract class TextureManager {
             }
             if (properties?.textures == null && fetchSkin) {
                 try {
-                    properties = PlayerProperties.fetch(uuid) // ToDo: async
+                    properties = PlayerProperties.fetch(uuid)
                 } catch (ignored: Throwable) {
                 }
             }

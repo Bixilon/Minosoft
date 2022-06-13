@@ -12,8 +12,10 @@
  */
 package de.bixilon.minosoft
 
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
+
 @Deprecated("Kutil 1.13")
-enum class ShutdownReasons(val exitCode: Int) {
+enum class ShutdownReasons(override val exitCode: Int) : AbstractShutdownReason {
     UNKNOWN(1),
     REQUESTED_BY_USER(0),
     ALL_FINE(0),
@@ -23,5 +25,7 @@ enum class ShutdownReasons(val exitCode: Int) {
     CLI_HELP(0),
     LAUNCHER_FXML_LOAD_ERROR(1),
     ;
+
+    override val message: String? get() = null
 
 }

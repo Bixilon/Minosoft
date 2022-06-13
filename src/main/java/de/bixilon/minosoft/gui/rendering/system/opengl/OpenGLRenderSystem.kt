@@ -287,12 +287,16 @@ class OpenGLRenderSystem(
     }
 
     override fun getErrors(): List<OpenGLError> {
-        val errors: MutableList<OpenGLError> = mutableListOf()
         var error: Int = glGetError()
-        while (error != GL_NO_ERROR) {
+        if (error == GL_NO_ERROR) {
+            return emptyList()
+        }
+        val errors: MutableList<OpenGLError> = mutableListOf()
+        do {
             errors += OpenGLError(error)
             error = glGetError()
-        }
+        } while (error != GL_NO_ERROR)
+
         return errors
     }
 
