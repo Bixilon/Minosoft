@@ -14,11 +14,13 @@ package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.watchedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.Poses
@@ -51,6 +53,12 @@ abstract class PlayerEntity(
     properties: PlayerProperties? = null,
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, data, position, rotation) {
+    protected var _model: PlayerModel?
+        get() = super.model.nullCast()
+        set(value) {
+            super.model = value
+        }
+
     override val dimensions: Vec2
         get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
 
@@ -139,7 +147,21 @@ abstract class PlayerEntity(
         }
 
     override fun createModel(renderer: EntityRenderer): EntityModel<PlayerEntity>? {
-        return PlayerModel(renderer, this)
+        return PlayerModel(renderer, this).apply { this@PlayerEntity.model = this }
+    }
+
+
+    fun swingHand(hand: Hands) {
+        val arm = hand.getArm(mainArm)
+        _model?.swingArm(arm)
+    }
+
+    override fun handleAnimation(animation: EntityAnimations) {
+        when (animation) {
+            EntityAnimations.SWING_MAIN_ARM -> swingHand(Hands.MAIN)
+            EntityAnimations.SWING_OFF_ARM -> swingHand(Hands.OFF)
+            else -> super.handleAnimation(animation)
+        }
     }
 
     companion object {

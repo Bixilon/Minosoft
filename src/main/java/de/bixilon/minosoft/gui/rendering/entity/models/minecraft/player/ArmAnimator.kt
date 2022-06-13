@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
 import de.bixilon.kotlinglm.func.deg
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.animator.keyframes.KeyframeChannels
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
@@ -23,8 +24,7 @@ import kotlin.math.cos
 
 class ArmAnimator(
     model: PlayerModel,
-) : ExtremitiesAnimator(model) {
-    override val name: String = "arm_animator"
+) : ExtremitiesAnimator("arm_animator", model) {
     override val loop: AnimationLoops = AnimationLoops.LOOP
     override val length: Float = 2.0f
 
@@ -42,7 +42,11 @@ class ArmAnimator(
     }
 
     private fun calculateAngle(time: Float): Vec3 {
-        val angle = cos(time * PI) * 1.4 * getVelocityMultiplier()
+        val angle = cos(time * PI) * 1.4 * velocityMultiplier
         return Vec3(angle.deg, 0, 0)
+    }
+
+    fun swingArm(arm: Arms) {
+
     }
 }

@@ -23,8 +23,7 @@ import kotlin.math.cos
 
 class LegAnimator(
     model: PlayerModel,
-) : ExtremitiesAnimator(model) {
-    override val name: String = "leg_animator"
+) : ExtremitiesAnimator("leg_animator", model) {
     override val loop: AnimationLoops = AnimationLoops.LOOP
     override val length: Float = 2.0f
 
@@ -42,7 +41,7 @@ class LegAnimator(
     }
 
     private fun calculateAngle(time: Float): Vec3 {
-        val angle = cos(time * PI) * getVelocityMultiplier()
+        val angle = cos(time * PI) * velocityMultiplier
         return Vec3(angle.deg, 0, 0)
     }
 }

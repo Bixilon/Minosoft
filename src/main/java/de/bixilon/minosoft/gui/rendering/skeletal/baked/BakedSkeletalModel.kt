@@ -81,7 +81,7 @@ class BakedSkeletalModel(
             if (!element.visible) {
                 continue
             }
-            val inflate = (element.inflate / BLOCK_RESOLUTION)
+            val inflate = (element.inflate / BLOCK_RESOLUTION) / 2
             for ((direction, face) in element.faces) {
                 val positions = direction.getPositions(element.from.fromBlockCoordinates() - inflate, element.to.fromBlockCoordinates() + inflate)
 

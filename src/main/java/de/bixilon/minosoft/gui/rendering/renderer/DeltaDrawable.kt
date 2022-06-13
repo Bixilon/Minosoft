@@ -10,25 +10,15 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.player
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+package de.bixilon.minosoft.gui.rendering.renderer
 
-enum class Hands {
-    MAIN,
-    OFF,
-    ;
+interface DeltaDrawable {
+    val skipDraw: Boolean
+        get() = false
 
-    fun getArm(main: Arms): Arms {
-        if (this == MAIN) {
-            return main
-        }
-        return if (main == Arms.LEFT) Arms.RIGHT else Arms.LEFT
-    }
-
-    companion object : ValuesEnum<Hands> {
-        override val VALUES: Array<Hands> = values()
-        override val NAME_MAP: Map<String, Hands> = EnumUtil.getEnumValues(VALUES)
-    }
+    /**
+     * Functions gets called every frame
+     */
+    fun draw(millis: Long) = Unit
 }

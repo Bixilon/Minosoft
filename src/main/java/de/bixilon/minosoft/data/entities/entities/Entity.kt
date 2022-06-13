@@ -24,6 +24,7 @@ import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
@@ -119,9 +120,14 @@ abstract class Entity(
     open val eyeHeight: Float
         get() = dimensions.y * 0.85f
 
+    var deltaMovement: Vec3d = Vec3d.EMPTY
     protected open var previousPosition: Vec3d = Vec3d(position)
     override var position: Vec3d = position
         set(value) {
+            val delta = value - field
+            if (delta != deltaMovement) {
+                deltaMovement = delta
+            }
             previousPosition = field
             field = value
             positionInfo.update()
@@ -143,6 +149,8 @@ abstract class Entity(
     val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
     var submergedFluid: Fluid? = null
 
+
+    open var model: EntityModel<*>? = null
 
     fun forceMove(deltaPosition: Vec3d) {
         position = position + deltaPosition
@@ -589,7 +597,11 @@ abstract class Entity(
 
     open fun onAttack(attacker: Entity) = true
 
-    open fun createModel(renderer: EntityRenderer): EntityModel<*>? = DummyModel(renderer, this)
+    open fun createModel(renderer: EntityRenderer): EntityModel<*>? {
+        return DummyModel(renderer, this).apply { this@Entity.model = this }
+    }
+
+    open fun handleAnimation(animation: EntityAnimations) = Unit
 
 
     companion object {

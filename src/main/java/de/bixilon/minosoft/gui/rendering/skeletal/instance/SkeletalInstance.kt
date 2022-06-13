@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.renderer.DeltaDrawable
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
@@ -35,6 +36,8 @@ class SkeletalInstance(
     private var previousBaseTransform = baseTransform
     private var animations: MutableList<SkeletalAnimationInstance> = mutableListOf()
     private var transforms: List<Mat4> = emptyList()
+
+    private var lastDraw = -1L
 
 
     var light: Int = 0xFF
@@ -80,8 +83,8 @@ class SkeletalInstance(
 
     fun calculateTransforms(): List<Mat4> {
         val baseTransform = baseTransform
+        val time = TimeUtil.millis
         if (animations.isNotEmpty()) {
-            val time = TimeUtil.millis
             val toRemove: MutableSet<SkeletalAnimationInstance> = mutableSetOf()
             for (animation in animations) {
                 animation.draw(time)
@@ -99,6 +102,13 @@ class SkeletalInstance(
             }
         }
 
+        val delta = time - lastDraw
+        for (instance in animations) {
+            val animation = instance.animation
+            if (animation is DeltaDrawable) {
+                animation.draw(delta)
+            }
+        }
         val transforms: MutableList<Mat4> = mutableListOf()
         for (outliner in model.model.outliner) {
             calculateTransform(baseTransform, animations, outliner, transforms)

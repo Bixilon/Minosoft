@@ -13,17 +13,36 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
+import de.bixilon.kotlinglm.vec3.swizzle.xz
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.CustomSkeletalAnimation
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 abstract class ExtremitiesAnimator(
+    name: String,
     val model: PlayerModel,
-) : SkeletalAnimation {
+) : CustomSkeletalAnimation(name) {
+    protected var previousVelocityMultiplier = 0.0f
+    protected var _velocityMultiplier = 0.0f
+    var velocityMultiplier = 0.0f
+        private set
+
+    override fun tick() {
+        previousVelocityMultiplier = _velocityMultiplier
+        _velocityMultiplier = _getVelocityMultiplier()
+    }
+
+    override fun draw(millis: Long) {
+        val lastTick = lastTick
+        super.draw(millis)
+        velocityMultiplier = interpolateLinear((millis - lastTick) / ProtocolDefinition.TICK_TIMEf * 3, previousVelocityMultiplier, _velocityMultiplier)
+    }
 
 
-    protected fun getVelocityMultiplier(): Double {
-        var velocity = model.entity.velocity.length()
+    private fun _getVelocityMultiplier(): Float {
+        var velocity = model.entity.deltaMovement.xz.length().toFloat()
         if (velocity > 1.0f) {
-            velocity = 1.0
+            velocity = 1.0f
         }
         return velocity
     }

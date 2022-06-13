@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
 import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
@@ -35,9 +36,14 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     private var skin: DynamicTexture? = null
     protected var refreshModel = false
 
+    private val legAnimator = LegAnimator(this)
+    private val armAnimator = ArmAnimator(this)
+    private val animations: MutableList<SkeletalAnimation> = mutableListOf(legAnimator, armAnimator)
+
+
     private var _instance: SkeletalInstance? = null
-    private val animations: MutableList<SkeletalAnimation> = mutableListOf(LegAnimator(this), ArmAnimator(this))
     override var instance = createModel(properties)
+
 
     init {
         entity::skinParts.observeSet(this) { refreshModel = true }
@@ -110,6 +116,10 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
     override fun unload() {
         skin?.usages?.decrementAndGet()
+    }
+
+    fun swingArm(arm: Arms) {
+        armAnimator.swingArm(arm)
     }
 
 

@@ -10,25 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.player
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
-enum class Hands {
-    MAIN,
-    OFF,
-    ;
+import de.bixilon.minosoft.gui.rendering.renderer.DeltaDrawable
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-    fun getArm(main: Arms): Arms {
-        if (this == MAIN) {
-            return main
+abstract class CustomSkeletalAnimation(override val name: String) : SkeletalAnimation, DeltaDrawable {
+    protected var lastTick = -1L
+
+
+    open fun tick() = Unit
+
+    override fun draw(millis: Long) {
+        if (millis - lastTick > ProtocolDefinition.TICK_TIME) {
+            tick()
+            lastTick = millis
         }
-        return if (main == Arms.LEFT) Arms.RIGHT else Arms.LEFT
-    }
-
-    companion object : ValuesEnum<Hands> {
-        override val VALUES: Array<Hands> = values()
-        override val NAME_MAP: Map<String, Hands> = EnumUtil.getEnumValues(VALUES)
     }
 }

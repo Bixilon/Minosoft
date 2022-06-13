@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
 import de.bixilon.minosoft.data.entities.EntityAnimations
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -28,5 +29,10 @@ class EntityAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity animation (entityId=$entityId, animation=$animation)" }
+    }
+
+    override fun handle(connection: PlayConnection) {
+        val entity = connection.world.entities[entityId] ?: return
+        entity.handleAnimation(animation)
     }
 }
