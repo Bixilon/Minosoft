@@ -21,6 +21,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.*
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Broken
 import kotlin.math.abs
 
 enum class Directions(

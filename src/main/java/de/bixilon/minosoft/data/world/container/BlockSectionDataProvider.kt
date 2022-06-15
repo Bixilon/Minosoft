@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.container
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -264,27 +265,31 @@ class BlockSectionDataProvider(
             }
 
             when (first) {
-                Directions.DOWN -> when (second) {
-                    Directions.UP -> return 0
-                    Directions.NORTH -> return 1
-                    Directions.SOUTH -> return 2
-                    Directions.WEST -> return 3
-                    Directions.EAST -> return 4
+                Directions.DOWN -> return when (second) {
+                    Directions.UP -> 0
+                    Directions.NORTH -> 1
+                    Directions.SOUTH -> 2
+                    Directions.WEST -> 3
+                    Directions.EAST -> 4
+                    else -> Broken()
                 }
-                Directions.UP -> when (second) {
-                    Directions.NORTH -> return 5
-                    Directions.SOUTH -> return 6
-                    Directions.WEST -> return 7
-                    Directions.EAST -> return 8
+                Directions.UP -> return when (second) {
+                    Directions.NORTH -> 5
+                    Directions.SOUTH -> 6
+                    Directions.WEST -> 7
+                    Directions.EAST -> 8
+                    else -> Broken()
                 }
-                Directions.NORTH -> when (second) {
-                    Directions.SOUTH -> return 9
-                    Directions.WEST -> return 10
-                    Directions.EAST -> return 11
+                Directions.NORTH -> return when (second) {
+                    Directions.SOUTH -> 9
+                    Directions.WEST -> 10
+                    Directions.EAST -> 11
+                    else -> Broken()
                 }
-                Directions.SOUTH -> when (second) {
-                    Directions.WEST -> return 12
-                    Directions.EAST -> return 13
+                Directions.SOUTH -> return when (second) {
+                    Directions.WEST -> 12
+                    Directions.EAST -> 13
+                    else -> Broken()
                 }
                 else -> return 14 // WEST->EAST
             }

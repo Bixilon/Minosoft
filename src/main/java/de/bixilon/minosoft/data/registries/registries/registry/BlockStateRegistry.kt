@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.Broken
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {

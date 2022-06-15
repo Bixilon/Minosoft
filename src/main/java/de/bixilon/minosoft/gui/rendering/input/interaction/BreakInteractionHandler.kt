@@ -273,6 +273,7 @@ class BreakInteractionHandler(
                     }
                     legacyAcknowledgedBreakStarts.remove(it.blockPosition)
                 }
+                else -> Unit
             }
         })
 

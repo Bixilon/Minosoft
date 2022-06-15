@@ -160,6 +160,7 @@ class ItemElement(
             KeyCodes.KEY_8 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_8))
             KeyCodes.KEY_9 -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.HOTBAR_9))
             KeyCodes.KEY_F -> container.invokeAction(SlotSwapContainerAction(slotId, SlotSwapContainerAction.SwapTargets.OFFHAND))
+            else -> Unit
         }
 
         return true
