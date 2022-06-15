@@ -53,7 +53,6 @@ abstract class EntityModel<E : Entity>(
         }
 
         hitbox.prepareAsync()
-
     }
 
     override fun prepare() {

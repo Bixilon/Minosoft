@@ -97,7 +97,7 @@ class WorldRenderer(
     private val loadedMeshes: MutableMap<Vec2i, Int2ObjectOpenHashMap<WorldMesh>> = mutableMapOf() // all prepared (and up to date) meshes
     private val loadedMeshesLock = SimpleLock()
 
-    val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
+    val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 2, 1)
     private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
@@ -445,59 +445,9 @@ class WorldRenderer(
         }
         queueLock.unlock()
         for (item in items) {
-            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW, interuptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             task.runnable.runnable = Runnable {
-                var locked = false
-                try {
-                    val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable
-                    val section = chunk[item.sectionHeight] ?: return@Runnable
-                    if (section.blocks.isEmpty) {
-                        return@Runnable queueItemUnload(item)
-                    }
-                    val neighbourChunks: Array<Chunk>
-                    world.getChunkNeighbours(item.chunkPosition).let {
-                        if (!it.loaded) {
-                            return@Runnable queueSection(item.chunkPosition, item.sectionHeight, chunk, section)
-                        }
-                        neighbourChunks = it.unsafeCast()
-                    }
-                    val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
-                    val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
-                    solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
-                    if (section.blocks.fluidCount > 0) {
-                        fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
-                    }
-                    if (mesh.clearEmpty() == 0) {
-                        return@Runnable queueItemUnload(item)
-                    }
-                    item.mesh = mesh
-                    meshesToLoadLock.lock()
-                    locked = true
-                    if (meshesToLoadSet.remove(item)) {
-                        meshesToLoad.remove(item) // Remove duplicates
-                    }
-                    if (item.chunkPosition == cameraChunkPosition) {
-                        // still higher priority
-                        meshesToLoad.add(0, item)
-                    } else {
-                        meshesToLoad += item
-                    }
-                    meshesToLoadSet += item
-                    meshesToLoadLock.unlock()
-                } catch (exception: Throwable) {
-                    if (locked) {
-                        meshesToLoadLock.unlock()
-                    }
-                    if (exception !is InterruptedException) {
-                        // otherwise task got interrupted (probably because of chunk unload)
-                        throw exception
-                    }
-                } finally {
-                    preparingTasksLock.lock()
-                    preparingTasks -= task
-                    preparingTasksLock.unlock()
-                    workQueue()
-                }
+                prepareItem(item, task)
             }
             preparingTasksLock.lock()
             preparingTasks += task
@@ -505,6 +455,61 @@ class WorldRenderer(
             DefaultThreadPool += task.runnable
         }
         workingOnQueue = false
+    }
+
+    private fun prepareItem(item: WorldQueueItem, task: SectionPrepareTask) {
+        var locked = false
+        try {
+            Thread.sleep(1000L)
+            val chunk = item.chunk ?: world[item.chunkPosition] ?: return
+            val section = chunk[item.sectionHeight] ?: return
+            if (section.blocks.isEmpty) {
+                return queueItemUnload(item)
+            }
+            val neighbourChunks: Array<Chunk>
+            world.getChunkNeighbours(item.chunkPosition).let {
+                if (!it.loaded) {
+                    return queueSection(item.chunkPosition, item.sectionHeight, chunk, section)
+                }
+                neighbourChunks = it.unsafeCast()
+            }
+            val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
+            val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
+            solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
+            if (section.blocks.fluidCount > 0) {
+                fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
+            }
+            if (mesh.clearEmpty() == 0) {
+                return queueItemUnload(item)
+            }
+            item.mesh = mesh
+            meshesToLoadLock.lock()
+            locked = true
+            if (meshesToLoadSet.remove(item)) {
+                meshesToLoad.remove(item) // Remove duplicates
+            }
+            if (item.chunkPosition == cameraChunkPosition) {
+                // still higher priority
+                meshesToLoad.add(0, item)
+            } else {
+                meshesToLoad += item
+            }
+            meshesToLoadSet += item
+            meshesToLoadLock.unlock()
+        } catch (exception: Throwable) {
+            if (locked) {
+                meshesToLoadLock.unlock()
+            }
+            if (exception !is InterruptedException) {
+                // otherwise task got interrupted (probably because of chunk unload)
+                throw exception
+            }
+        } finally {
+            preparingTasksLock.lock()
+            preparingTasks -= task
+            preparingTasksLock.unlock()
+            workQueue()
+        }
     }
 
     private fun queueItemUnload(item: WorldQueueItem) {
