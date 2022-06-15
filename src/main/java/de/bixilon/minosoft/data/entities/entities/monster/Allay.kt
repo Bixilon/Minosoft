@@ -15,7 +15,9 @@ package de.bixilon.minosoft.data.entities.entities.monster
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
+import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.PathfinderMob
+import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -23,8 +25,19 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class Allay(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, data, position, rotation) {
 
+    @get:SynchronizedEntityData
+    val isDancing: Boolean
+        get() = data.getBoolean(IS_DANCING_DATA, false)
+
+    @get:SynchronizedEntityData
+    val canDuplicate: Boolean
+        get() = data.getBoolean(CAN_DUPLICATE_DATA, true)
+
     companion object : EntityFactory<Allay> {
         override val RESOURCE_LOCATION = "minecraft:allay".toResourceLocation()
+        private val IS_DANCING_DATA = EntityDataField("IS_DANCING")
+        private val CAN_DUPLICATE_DATA = EntityDataField("CAN_DUPLICATE")
+
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Allay {
             return Allay(connection, entityType, data, position, rotation)

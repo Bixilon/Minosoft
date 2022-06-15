@@ -43,7 +43,7 @@ class Painting(
 
     companion object : EntityFactory<Painting> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("painting")
-        private val MOTIVE_DATA = EntityDataField("MOTIVE")
+        private val MOTIVE_DATA = EntityDataField("MOTIF", "MOTIVE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Painting {
             return Painting(connection, entityType, data, position.toVec3i(), Directions.NORTH, null)
