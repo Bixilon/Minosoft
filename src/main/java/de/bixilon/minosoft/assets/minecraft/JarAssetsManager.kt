@@ -62,10 +62,12 @@ class JarAssetsManager(
         } else {
             var clientJar = FileUtil.safeReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
             if (clientJar == null) {
-                val downloaded = FileAssetsUtil.downloadAndGetAsset(profile.source.launcherPackages.formatPlaceholder(
-                    "fullHash" to clientJarHash,
-                    "filename" to "client.jar",
-                ), false, FileAssetsUtil.HashTypes.SHA1)
+                val downloaded = FileAssetsUtil.downloadAndGetAsset(
+                    profile.source.pistonObjects.formatPlaceholder(
+                        "fullHash" to clientJarHash,
+                        "filename" to "client.jar",
+                    ), false, FileAssetsUtil.HashTypes.SHA1
+                )
                 check(downloaded.first == clientJarHash) { "Minecraft client.jar verification failed!" }
                 clientJar = ByteArrayInputStream(downloaded.second).readZipArchive()
             }
