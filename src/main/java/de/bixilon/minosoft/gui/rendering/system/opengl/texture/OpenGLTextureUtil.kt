@@ -20,6 +20,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LEVEL
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
+import org.lwjgl.system.MemoryUtil
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -108,10 +109,13 @@ object OpenGLTextureUtil {
         val byteOutput = ByteArrayOutputStream()
         val dataOutput = DataOutputStream(byteOutput)
         for (color in rgb) {
-            dataOutput.writeInt(color shl 8)
+            dataOutput.writeInt((color shl 8) or 0xFF)
         }
 
-        return Pair(Vec2i(image.width, image.height), ByteBuffer.wrap(byteOutput.toByteArray()))
+        val buffer = MemoryUtil.memAlloc(byteOutput.size())
+        buffer.put(byteOutput.toByteArray())
+
+        return Pair(Vec2i(image.width, image.height), buffer)
     }
 
     fun InputStream.readTexture(): Pair<Vec2i, ByteBuffer> {
