@@ -2,7 +2,8 @@
   "848": {
     "name": "1.19",
     "protocol_id": 759,
-    "packets": 841
+    "packets": 841,
+    "type": "release"
   },
   "847": {
     "name": "1.19-rc2",
