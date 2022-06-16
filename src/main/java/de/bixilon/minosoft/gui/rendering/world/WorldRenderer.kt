@@ -56,7 +56,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.length2
@@ -380,6 +379,7 @@ class WorldRenderer(
         meshesToLoadLock.lock()
         meshesToUnloadLock.lock()
         loadedMeshesLock.lock()
+
         val meshes = loadedMeshes.remove(chunkPosition)
 
         culledQueue.remove(chunkPosition)

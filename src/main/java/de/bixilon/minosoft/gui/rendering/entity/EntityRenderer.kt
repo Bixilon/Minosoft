@@ -55,10 +55,10 @@ class EntityRenderer(
 
     override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> { event ->
-            event.entity.createModel(this)?.let { models[event.entity] = it }
+            DefaultThreadPool += { event.entity.createModel(this)?.let { models[event.entity] = it } }
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
-            toUnload += models.remove(it.entity) ?: return@of
+            DefaultThreadPool += add@{ toUnload += models.remove(it.entity) ?: return@add }
         })
         connection.registerEvent(CallbackEventInvoker.of<VisibilityGraphChangeEvent> {
             runAsync { it.updateVisibility(visibilityGraph) }
