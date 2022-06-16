@@ -12,7 +12,8 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.CreateObjectiveS2CP
 
@@ -21,7 +22,7 @@ class ScoreboardObjective(
     var displayName: ChatComponent,
     var unit: CreateObjectiveS2CP.ObjectiveUnits,
 ) {
-    val scores: MutableMap<String, ScoreboardScore> = synchronizedMapOf()
+    val scores: LockMap<String, ScoreboardScore> = lockMapOf()
 
 
     override fun toString(): String {

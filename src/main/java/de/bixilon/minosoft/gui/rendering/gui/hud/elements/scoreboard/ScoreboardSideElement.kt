@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
+import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
@@ -45,7 +46,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     private val backgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameBackgroundElement = ColorElement(guiRenderer, size = Vec2i.EMPTY, color = RenderConstants.TEXT_BACKGROUND_COLOR)
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
-    private val scores: MutableMap<ScoreboardScore, ScoreboardScoreElement> = synchronizedMapOf()
+    private val scores: LockMap<ScoreboardScore, ScoreboardScoreElement> = lockMapOf()
 
     override val layoutOffset: Vec2i
         get() = super.size.let { return@let Vec2i(guiRenderer.scaledSize.x - it.x, (guiRenderer.scaledSize.y - it.y) / 2) }
@@ -74,11 +75,14 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         nameElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), consumer, options)
         offset.y += Font.TOTAL_CHAR_HEIGHT
 
-        val scores = scores.toSynchronizedMap().entries.sortedWith { a, b -> a.key.compareTo(b.key) }
+        this.scores.lock.acquire()
+        val scores = this.scores.unsafe.entries.sortedWith { a, b -> a.key.compareTo(b.key) }
+        this.scores.lock.release()
+
         var index = 0
         for ((_, score) in scores) {
             score.render(offset, consumer, options)
-            offset.y += score.size.y
+            offset.y += Font.TOTAL_CHAR_HEIGHT
 
             if (++index >= MAX_SCORES) {
                 break
@@ -93,7 +97,14 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
             return
         }
 
-        this.scores.clear()
+        this.scores.lock.lock()
+        this.scores.unsafe.clear()
+        objective.scores.lock.acquire()
+        for (score in objective.scores.values) {
+            this.scores.unsafe.getOrPut(score) { ScoreboardScoreElement(guiRenderer, score, this) }
+        }
+        objective.scores.lock.release()
+        this.scores.lock.unlock()
 
         updateName()
 
@@ -131,7 +142,6 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
         }
     }
 
-    @Synchronized
     private fun queueSizeRecalculation() {
         cacheUpToDate = false
     }
@@ -142,7 +152,7 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
     }
 
     fun updateScore(score: ScoreboardScore) {
-        scores.getOrPut(score) { ScoreboardScoreElement(guiRenderer, score, this) }
+        scores.synchronizedGetOrPut(score) { ScoreboardScoreElement(guiRenderer, score, this) }
         queueSizeRecalculation()
     }
 
