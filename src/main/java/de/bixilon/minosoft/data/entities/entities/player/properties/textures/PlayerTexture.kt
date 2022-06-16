@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.data.entities.entities.player.properties.textures
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.bixilon.kutil.hash.HashUtil.sha256
 import de.bixilon.kutil.url.URLUtil.checkWeb
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.io.File
 import java.net.URL
 import java.util.*
 
@@ -44,19 +46,30 @@ open class PlayerTexture(
             else -> TODO("Can not get texture identifier: $url")
         }
 
-        FileUtil.safeReadFile(FileAssetsUtil.getPath(sha256), true)?.let {
+        val diskPath = FileAssetsUtil.getPath(sha256)
+
+        FileUtil.safeReadFile(diskPath, true)?.let {
             val data = it.readAllBytes()
+            if (data.sha256() != sha256) {
+                // hash mismatch, download again
+                File(diskPath).delete()
+                return@let
+            }
             this.data = data
             return data
         }
 
         val input = url.openStream()
         if (input.available() > MAX_TEXTURE_SIZE) {
-            throw IllegalStateException("Texture is too big!")
+            throw IllegalStateException("Texture is too big: ${input.available()}!")
         }
-        val data = FileAssetsUtil.saveAndGet(input)
+        val (hash, data) = FileAssetsUtil.saveAndGet(input)
+        if (sha256 != hash) {
+            File(diskPath).delete()
+            throw IllegalStateException("Hash mismatch (expected=$sha256, got=$hash)")
+        }
         Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloaded player texture ($url)" }
-        return data.second
+        return data
     }
 
     companion object {
