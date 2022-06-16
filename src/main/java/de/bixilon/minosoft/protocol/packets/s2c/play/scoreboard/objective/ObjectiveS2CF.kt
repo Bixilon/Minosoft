@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 object ObjectiveS2CF : PlayPacketFactory {
     override val direction = PacketDirection.SERVER_TO_CLIENT
 

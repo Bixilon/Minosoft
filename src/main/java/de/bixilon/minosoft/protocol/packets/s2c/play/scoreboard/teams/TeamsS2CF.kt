@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.packets.factory.PacketDirection
 import de.bixilon.minosoft.protocol.packets.factory.factories.PlayPacketFactory
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 object TeamsS2CF : PlayPacketFactory {
     override val direction = PacketDirection.SERVER_TO_CLIENT
 

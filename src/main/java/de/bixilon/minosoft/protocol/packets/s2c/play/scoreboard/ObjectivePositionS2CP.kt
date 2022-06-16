@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = false)
 class ObjectivePositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     private val position: ScoreboardPositions = ScoreboardPositions[buffer.readUnsignedByte()]
     private val name: String? = buffer.readNullString()
