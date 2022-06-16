@@ -18,6 +18,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistr
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
@@ -45,11 +45,11 @@ object DefaultRegistries {
     val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
     val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
 
-    val ENTITY_DATA_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataDataTypes)
+    val ENTITY_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataDataTypes)
 
     val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CF.TitleActions)
 
-    val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimationS2CP.EntityAnimations)
+    val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimations)
     val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SP.EntityActions)
 
     val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry(codec = EntityObjectType)
@@ -77,7 +77,7 @@ object DefaultRegistries {
         ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")].asJsonObject())
         ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")].asJsonObject())
 
-        ENTITY_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_data_data_types")].asJsonObject()) // ToDo
+        ENTITY_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_data_data_types")].asJsonObject()) // ToDo
 
         TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")].asJsonObject())
 

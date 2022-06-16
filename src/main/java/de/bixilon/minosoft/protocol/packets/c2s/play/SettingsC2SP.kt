@@ -15,7 +15,8 @@ package de.bixilon.minosoft.protocol.packets.c2s.play
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.player.Arms
+import de.bixilon.minosoft.data.entities.entities.player.Arms
+import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -64,24 +65,6 @@ class SettingsC2SP(
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Settings (locale=$locale, viewDistance=$viewDistance, chatMode=$chatMode, chatColors=$chatColors, skinParts=${skinParts.contentToString()}, mainHand=$mainArm, disableTextFiltering=$disableTextFiltering, allowListing=$allowListing)" }
-    }
-
-    enum class SkinParts {
-        CAPE,
-        JACKET,
-        LEFT_SLEEVE,
-        RIGHT_SLEEVE,
-        LEFT_PANTS,
-        RIGHT_PANTS,
-        HAT,
-        ;
-
-        val bitmask = 1 shl ordinal
-
-        companion object : ValuesEnum<SkinParts> {
-            override val VALUES: Array<SkinParts> = values()
-            override val NAME_MAP: Map<String, SkinParts> = EnumUtil.getEnumValues(VALUES)
-        }
     }
 
     enum class ChatModes {

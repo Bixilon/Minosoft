@@ -23,6 +23,8 @@ out vec4 foutColor;
 
 #define FOG// for animation/main_fragment
 
+#include "minosoft:animation/main_fragment"
+
 void main() {
-    #include "minosoft:animation/main_fragment"
+    run_animation();
 }

@@ -13,92 +13,130 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.instance
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.renderer.DeltaDrawable
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import java.util.*
 
 class SkeletalInstance(
     val renderWindow: RenderWindow,
-    blockPosition: Vec3i,
     val model: BakedSkeletalModel,
+    position: Vec3 = Vec3.EMPTY,
     transform: Mat4 = Mat4(),
 ) {
-    private var baseTransform = Mat4().translateAssign(blockPosition.toVec3) * transform
-    private var currentAnimation: SkeletalAnimation? = null
-    private var animationTime = 0.0f
-    private var animationLastFrame = -1L
+    private var baseTransform = Mat4().translateAssign(position) * transform
+    private var previousBaseTransform = baseTransform
+    private var animations: MutableList<SkeletalAnimationInstance> = mutableListOf()
     private var transforms: List<Mat4> = emptyList()
+
+    private var lastDraw = -1L
+
 
     var light: Int = 0xFF
 
-    fun playAnimation(name: String) {
-        clearAnimation()
-        var animation: SkeletalAnimation? = null
-        for (animationEntry in model.model.animations) {
-            if (animationEntry.name != name) {
+    fun getAnimation(name: String): SkeletalAnimation? {
+        for (animation in model.model.animations) {
+            if (animation.name != name) {
                 continue
             }
-            animation = animationEntry
-            break
+            return animation
         }
-        if (animation == null) {
-            throw IllegalArgumentException("Can not find animation $name")
-        }
-        this.currentAnimation = animation
+        return null
+    }
+
+    fun playAnimation(animation: SkeletalAnimation) {
+        val instance = SkeletalAnimationInstance(animation)
+        animations.removeAll { it.animation == animation }
+        animations += instance
+    }
+
+    fun playAnimation(name: String) {
+        playAnimation(getAnimation(name) ?: throw IllegalArgumentException("Can not find animation $name"))
     }
 
     fun clearAnimation() {
-        animationTime = 0.0f
-        animationLastFrame = -1L
-        this.currentAnimation = null
+        animations.clear()
     }
 
     fun draw() {
         renderWindow.skeletalManager.draw(this, light)
     }
 
+    fun updatePosition(position: Vec3, rotation: EntityRotation) {
+        val matrix = Mat4()
+            .translateAssign(position)
+            .rotateAssign((180.0f - rotation.yaw).toFloat().rad, Vec3(0, 1, 0))
+            .translateAssign(Vec3(-0.5, 0, -0.5)) // move to center
+
+        if (baseTransform != matrix) {
+            baseTransform = matrix
+        }
+    }
+
     fun calculateTransforms(): List<Mat4> {
-        val animation = currentAnimation
-        if (animation != null) {
-            val time = TimeUtil.millis
-            if (this.animationLastFrame > 0L) {
-                val delta = time - this.animationLastFrame
-                animationTime += delta / 1000.0f
+        val baseTransform = baseTransform
+        val time = TimeUtil.millis
+        if (animations.isNotEmpty()) {
+            val toRemove: MutableSet<SkeletalAnimationInstance> = mutableSetOf()
+            for (animation in animations) {
+                animation.draw(time)
+                if (animation.canClear()) {
+                    toRemove += animation
+                }
             }
-            animationLastFrame = time
-            if (animation.canClear(animationTime)) {
-                clearAnimation()
-                return calculateTransforms()
+            if (toRemove.isNotEmpty()) {
+                this.animations -= toRemove
             }
-        } else if (this.transforms.isNotEmpty()) {
-            return this.transforms
+        }
+        if (animations.isEmpty()) {
+            if (this.transforms.isNotEmpty() && baseTransform === previousBaseTransform) {
+                return this.transforms
+            }
         }
 
+        val delta = time - lastDraw
+        for (instance in animations) {
+            val animation = instance.animation
+            if (animation is DeltaDrawable) {
+                animation.draw(delta)
+            }
+        }
         val transforms: MutableList<Mat4> = mutableListOf()
         for (outliner in model.model.outliner) {
-            calculateTransform(animationTime, baseTransform, animation, outliner, transforms)
+            calculateTransform(baseTransform, animations, outliner, transforms)
         }
         this.transforms = transforms
+        this.previousBaseTransform = baseTransform
         return transforms
     }
 
-    private fun calculateTransform(animationTime: Float, transform: Mat4, animation: SkeletalAnimation?, outliner: Any /* UUID or SkeletalOutliner */, transforms: MutableList<Mat4>) {
+    private fun calculateTransform(transform: Mat4, animations: List<SkeletalAnimationInstance>, outliner: Any /* UUID or SkeletalOutliner */, transforms: MutableList<Mat4>) {
         if (outliner is UUID) {
             return
         }
         check(outliner is SkeletalOutliner)
-        val skeletalTransform = transform * (animation?.calculateTransform(outliner, animationTime) ?: Mat4())
+        val skeletalTransform = Mat4(transform)
+
+        for (animation in this.animations) {
+            skeletalTransform *= animation.animation.calculateTransform(outliner, animation.time)
+        }
 
         transforms += skeletalTransform
 
         for (child in outliner.children) {
-            calculateTransform(animationTime, skeletalTransform, animation, child, transforms)
+            calculateTransform(skeletalTransform, animations, child, transforms)
         }
+    }
+
+    fun unload() {
+        model.unload()
     }
 }

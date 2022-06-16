@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.entites
 
+import de.bixilon.kutil.cast.CollectionCast.asAnyCollection
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.entities.block.DefaultBlockDataFactory
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.CastUtil.asAnyCollection
 
 data class BlockEntityType<T : BlockEntity>(
     override val resourceLocation: ResourceLocation,

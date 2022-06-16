@@ -42,6 +42,6 @@ class PerVersionEnumRegistry<T : Enum<*>>(
         for ((versionId, json) in data) {
             versions[versionId.toInt()] = EnumRegistry(values = values, mutable = false).initialize(json)
         }
-        this.versions = versions.toMap()
+        this.versions = versions
     }
 }

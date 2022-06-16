@@ -90,6 +90,8 @@ class DraggedManager(
             element.draw()
         }
         element.prepare()
+        element.prepareAsync()
+        element.postPrepare()
 
         guiRenderer.setup()
         if (!element.enabled || element.mesh.data.isEmpty) {

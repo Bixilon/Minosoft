@@ -51,9 +51,6 @@ class ModelLoader(
     }
 
     private fun loadBlockStates(block: Block) {
-        if (block.resourceLocation.toString() == "minecraft:oak_wall_sign.json") {
-            println("Test")
-        }
         val blockStateJson = assetsManager[block.resourceLocation.blockState()].readJsonObject()
 
         val model = RootModel(this, blockStateJson) ?: return

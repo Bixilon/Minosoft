@@ -15,11 +15,12 @@ package de.bixilon.minosoft.gui.rendering.renderer
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitboxRenderer
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -61,15 +62,38 @@ class RendererManager(
     }
 
     fun init(latch: CountUpAndDownLatch) {
+        val inner = CountUpAndDownLatch(1, latch)
+        for (renderer in renderers.values) {
+            inner.inc()
+            DefaultThreadPool += { renderer.preAsyncInit(inner); inner.dec() }
+        }
+        inner.dec()
+        inner.await()
+
         for (renderer in renderers.values) {
             renderer.init(latch)
         }
+
+        val inner2 = CountUpAndDownLatch(1, latch)
+        for (renderer in renderers.values) {
+            inner2.inc()
+            DefaultThreadPool += { renderer.asyncInit(inner2); inner2.dec() }
+        }
+        inner2.dec()
+        inner2.await()
     }
 
     fun postInit(latch: CountUpAndDownLatch) {
         for (renderer in renderers.values) {
             renderer.postInit(latch)
         }
+        val inner = CountUpAndDownLatch(1, latch)
+        for (renderer in renderers.values) {
+            inner.inc()
+            DefaultThreadPool += { renderer.postAsyncInit(inner); inner.dec() }
+        }
+        inner.dec()
+        inner.await()
     }
 
     private fun renderNormal(rendererList: Collection<Renderer>) {
@@ -148,7 +172,7 @@ class RendererManager(
             if (!profiles.particle.skipLoading) {
                 register(ParticleRenderer)
             }
-            register(EntityHitboxRenderer)
+            register(EntityRenderer)
             register(ChunkBorderRenderer)
             register(WorldBorderRenderer)
             register(GUIRenderer)

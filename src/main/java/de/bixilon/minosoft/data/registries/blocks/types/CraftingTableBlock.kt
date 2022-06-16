@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.registries.Registries

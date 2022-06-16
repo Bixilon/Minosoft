@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.versions
 
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -39,12 +40,12 @@ class Version(
 
 
     @Synchronized
-    fun load(profile: ResourcesProfile) {
+    fun load(profile: ResourcesProfile, latch: CountUpAndDownLatch) {
         if (registries != null) {
             // already loaded
             return
         }
-        registries = RegistriesLoader.load(profile, this)
+        registries = RegistriesLoader.load(profile, this, latch)
     }
 
     @Synchronized

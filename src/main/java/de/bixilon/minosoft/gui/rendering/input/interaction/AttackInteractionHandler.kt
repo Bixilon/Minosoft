@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
+import de.bixilon.kutil.time.Cooldown
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -29,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.norender.emitter.EntityE
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.CritParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.EnchantedHitParticle
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.EntityAttackC2SP
-import de.bixilon.minosoft.util.Cooldown
+import de.bixilon.minosoft.util.KUtil.setTicks
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class AttackInteractionHandler(

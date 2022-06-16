@@ -28,6 +28,9 @@ class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val reason: ChatComponent = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {
+        if (!connection.network.connected) {
+            return // already disconnected, maybe timed out?
+        }
         connection.fireEvent(KickEvent(connection, this))
         // got kicked
         connection.network.disconnect()

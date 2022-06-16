@@ -78,7 +78,7 @@ class AABB {
                     }
                 }
             }
-            return result.toList()
+            return result
         }
 
     private fun min(axis: Axes): Double {

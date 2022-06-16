@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.entities.data.types.registry
 
-import de.bixilon.minosoft.data.registries.Motive
+import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object MotiveEntityDataType : RegistryEntityDataType<Motive> {
+object MotiveEntityDataType : RegistryEntityDataType<Motif> {
 
-    override fun read(buffer: PlayInByteBuffer): Motive? {
-        return read(buffer, buffer.connection.registries.motiveRegistry)
+    override fun read(buffer: PlayInByteBuffer): Motif? {
+        return read(buffer, buffer.connection.registries.motifRegistry)
     }
 }

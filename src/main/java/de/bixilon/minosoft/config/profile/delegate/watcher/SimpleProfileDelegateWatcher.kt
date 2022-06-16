@@ -18,6 +18,7 @@ import de.bixilon.kutil.watcher.WatchUtil.identifier
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
@@ -56,8 +57,10 @@ class SimpleProfileDelegateWatcher<T>(
         }
 
         @JvmOverloads
-        fun <T> KProperty<T>.profileWatchRendering(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
-            val context = Rendering.currentContext ?: throw IllegalStateException("Can only be registered in a render context!")
+        fun <T> KProperty<T>.profileWatchRendering(reference: Any, instant: Boolean = false, profile: Profile? = null, context: RenderWindow? = Rendering.currentContext, callback: ((T) -> Unit)) {
+            if (context == null) {
+                throw NullPointerException("Context is null!")
+            }
             ProfilesDelegateManager.register(reference, SimpleProfileDelegateWatcher(this, profile, instant) {
                 val changeContext = Rendering.currentContext
                 if (changeContext === context) {

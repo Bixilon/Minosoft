@@ -17,6 +17,8 @@ out vec4 foutColor;
 
 #include "minosoft:animation/header_fragment"
 
+flat in uint finFlags;
+
 #include "minosoft:texture"
 #include "minosoft:alpha"
 #include "minosoft:fog"
@@ -24,6 +26,13 @@ out vec4 foutColor;
 #define FOG// for animation/main_fragment
 #define TRANSPARENT
 
+
+#include "minosoft:animation/main_fragment"
+
 void main() {
-    #include "minosoft:animation/main_fragment"
+    run_animation();
+
+    if ((finFlags & 0x01u) == 0u) {
+        foutColor.a = 1.0f;
+    }
 }

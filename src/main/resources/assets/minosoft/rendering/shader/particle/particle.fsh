@@ -20,6 +20,8 @@ out vec4 foutColor;
 #include "minosoft:texture"
 #include "minosoft:alpha"
 
+#include "minosoft:animation/main_fragment"
+
 void main() {
-    #include "minosoft:animation/main_fragment"
+    run_animation();
 }

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.registries.Motive
+import de.bixilon.minosoft.data.registries.Motif
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -34,16 +34,16 @@ class Painting(
     data: EntityData,
     position: Vec3i,
     @get:SynchronizedEntityData val direction: Directions,
-    val fixedMotive: Motive?,
+    val fixedMotif: Motif?,
 ) : Entity(connection, entityType, data, position.entityPosition, EntityRotation(0.0f, 0.0f)) {
 
     @get:SynchronizedEntityData
-    val motive: Motive?
-        get() = fixedMotive ?: data.get<Motive?>(MOTIVE_DATA, null)
+    val motif: Motif?
+        get() = fixedMotif ?: data.get<Motif?>(MOTIF_DATA, null)
 
     companion object : EntityFactory<Painting> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("painting")
-        private val MOTIVE_DATA = EntityDataField("MOTIF", "MOTIVE")
+        private val MOTIF_DATA = EntityDataField("MOTIF", "MOTIVE")
 
         override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): Painting {
             return Painting(connection, entityType, data, position.toVec3i(), Directions.NORTH, null)

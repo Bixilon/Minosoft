@@ -56,7 +56,7 @@ class SolidCullSectionPreparer(
         profile.performance::fastBedrock.profileWatch(this, true, profile) { this.fastBedrock = it }
     }
 
-    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+    private fun _prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val random = Random(0L)
 
         val randomBlockModels = profile.antiMoirePattern
@@ -65,8 +65,6 @@ class SolidCullSectionPreparer(
         val blocks = section.blocks
         val sectionLight = section.light
         val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()
-        section.acquire()
-        neighbours.acquire()
         var blockEntity: BlockEntity?
         var model: SingleBlockRenderable
         var blockState: BlockState
@@ -178,9 +176,18 @@ class SolidCullSectionPreparer(
                 }
             }
         }
-        section.release()
-        neighbours.release()
         mesh.blockEntities = blockEntities
+    }
+
+    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+        section.acquire()
+        neighbours.acquire()
+        try {
+            _prepareSolid(chunkPosition, sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
+        } finally {
+            section.release()
+            neighbours.release()
+        }
     }
 
     companion object {

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFacePropertie
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.util.Broken
 import java.util.*
 import kotlin.math.abs
 

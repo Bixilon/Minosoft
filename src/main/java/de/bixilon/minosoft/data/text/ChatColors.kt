@@ -82,7 +82,7 @@ object ChatColors {
         }
 
         this.VALUES = values.toTypedArray()
-        this.NAME_MAP = nameMap.toMap()
+        this.NAME_MAP = nameMap
     }
 
     operator fun get(id: Int): RGBColor {

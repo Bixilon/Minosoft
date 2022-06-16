@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.popper
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
@@ -45,6 +47,7 @@ class PopperManager(
             lastTickTime = time
         }
 
+        val latch = CountUpAndDownLatch(1)
         for (popper in poppers) {
             if (popper.layout.dead) {
                 toRemove += popper
@@ -58,7 +61,17 @@ class PopperManager(
             if (!popper.skipDraw) {
                 popper.draw()
             }
+            latch.inc()
             popper.prepare()
+            DefaultThreadPool += { popper.prepareAsync(); latch.dec() }
+        }
+        latch.dec()
+        latch.await()
+
+        poppers -= toRemove
+
+        for (popper in poppers) {
+            popper.postPrepare()
 
             guiRenderer.setup()
             if (!popper.enabled || popper.mesh.data.isEmpty) {
@@ -66,7 +79,6 @@ class PopperManager(
             }
             popper.mesh.draw()
         }
-        poppers -= toRemove
     }
 
     override fun onCharPress(char: Int): Boolean {

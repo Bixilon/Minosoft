@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.camera.target
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
@@ -28,7 +30,10 @@ import de.bixilon.minosoft.gui.rendering.camera.target.targets.GenericTarget
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.floor
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 
 class TargetHandler(
     private val renderWindow: RenderWindow,
@@ -46,8 +51,8 @@ class TargetHandler(
 
 
     fun raycast() {
-        val eyePosition = camera.matrixHandler.eyePosition.toVec3d
-        val cameraFront = camera.matrixHandler.cameraFront.toVec3d
+        val eyePosition = camera.matrixHandler.entity.eyePosition.toVec3d
+        val cameraFront = camera.matrixHandler.entity.rotation.front.toVec3d
 
         target = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = true)
         fluidTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = true, entities = false) as FluidTarget?
@@ -91,9 +96,17 @@ class TargetHandler(
         }
 
         var target: GenericTarget? = null
+        var run = 0
+        var currentChunk: Chunk? = null
+        var currentChunkPosition = Vec2i.EMPTY
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
-            val blockState = connection.world[blockPosition]
+            val chunkPosition = blockPosition.chunkPosition
+            if (chunkPosition != currentChunkPosition || run++ == 0) {
+                currentChunk = connection.world[chunkPosition]
+                currentChunkPosition = chunkPosition
+            }
+            val blockState = currentChunk?.get(blockPosition.inChunkPosition)
 
             if (blockState == null) {
                 currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)

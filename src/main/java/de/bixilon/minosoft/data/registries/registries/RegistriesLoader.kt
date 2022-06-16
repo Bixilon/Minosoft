@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
@@ -27,24 +28,23 @@ import java.io.File
 
 object RegistriesLoader {
 
-    fun load(profile: ResourcesProfile, version: Version): Registries {
+    fun load(profile: ResourcesProfile, version: Version, latch: CountUpAndDownLatch): Registries {
         val registries = Registries()
         if (!version.flattened) {
             // ToDo: Pre flattening support
-            return registries
             throw PreFlatteningLoadingError()
         }
         val pixlyzerHash = AssetsVersionProperties[version]?.pixlyzerHash ?: throw IllegalStateException("$version has no pixlyzer data available!")
 
         val pixlyzerData = getPixlyzerData(profile.source.pixlyzer, pixlyzerHash)
 
-        registries.load(version, pixlyzerData)
+        registries.load(version, pixlyzerData, latch)
 
         registries.equipmentSlotRegistry.parent = DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
         registries.handEquipmentSlotRegistry.parent = DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
         registries.armorEquipmentSlotRegistry.parent = DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
         registries.armorStandEquipmentSlotRegistry.parent = DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.forVersion(version)
-        registries.entityDataDataDataTypesRegistry.parent = DefaultRegistries.ENTITY_DATA_DATA_TYPES_REGISTRY.forVersion(version)
+        registries.entityDataTypesRegistry.parent = DefaultRegistries.ENTITY_DATA_TYPES_REGISTRY.forVersion(version)
         registries.titleActionsRegistry.parent = DefaultRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
         registries.entityAnimationRegistry.parent = DefaultRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
         registries.entityActionsRegistry.parent = DefaultRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
@@ -52,7 +52,7 @@ object RegistriesLoader {
         registries.containerTypeRegistry.parent = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)
         registries.gameEventRegistry.parent = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version)
         registries.worldEventRegistry.parent = DefaultRegistries.WORLD_EVENT_REGISTRY.forVersion(version)
-        registries.blockDataDataDataTypeRegistry.parent = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version)
+        registries.blockDataTypeRegistry.parent = DefaultRegistries.BLOCK_DATA_TYPE_REGISTRY.forVersion(version)
         registries.catVariants.parent = DefaultRegistries.CAT_VARIANT_REGISTRY.forVersion(version)
 
         return registries

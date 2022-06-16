@@ -14,9 +14,13 @@ package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.watchedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.Poses
@@ -24,17 +28,20 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
-import de.bixilon.minosoft.data.player.Arms
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
+import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.BitByte.isBitMask
 
 abstract class PlayerEntity(
     connection: PlayConnection,
@@ -43,9 +50,15 @@ abstract class PlayerEntity(
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
-    properties: PlayerProperties = PlayerProperties(),
+    properties: PlayerProperties? = null,
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, data, position, rotation) {
+    protected var _model: PlayerModel?
+        get() = super.model.nullCast()
+        set(value) {
+            super.model = value
+        }
+
     override val dimensions: Vec2
         get() = pose?.let { DIMENSIONS[it] } ?: Vec2(type.width, type.height)
 
@@ -65,8 +78,24 @@ abstract class PlayerEntity(
     val score: Int
         get() = data.get(SCORE_DATA, 0)
 
-    private fun getSkinPartsFlag(bitMask: Int): Boolean {
-        return data.getBitMask(SKIN_PARTS_DATA, bitMask, 0x00.toByte())
+    @get:SynchronizedEntityData
+    val skinParts: MutableSet<SkinParts> by watchedSet(mutableSetOf())
+
+
+    init {
+        data.observe(SKIN_PARTS_DATA) { raw: Any? ->
+            if (raw == null) {
+                skinParts.clear()
+                return@observe
+            }
+            val flags = raw.toInt()
+            for (part in SkinParts.VALUES) {
+                if (!flags.isBitMask(part.bitmask)) {
+                    skinParts -= part
+                }
+                skinParts += part
+            }
+        }
     }
 
     @get:SynchronizedEntityData
@@ -88,12 +117,12 @@ abstract class PlayerEntity(
     override val spawnSprintingParticles: Boolean
         get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
 
-    override fun realTick() {
+    override fun tick() {
         if (gamemode == Gamemodes.SPECTATOR) {
             onGround = false
         }
         // ToDo: Update water submersion state
-        super.realTick()
+        super.tick()
 
         val clampedPosition = position.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
         if (clampedPosition != position) {
@@ -117,7 +146,33 @@ abstract class PlayerEntity(
             return ChatColors.RED
         }
 
+    override fun createModel(renderer: EntityRenderer): EntityModel<PlayerEntity>? {
+        return PlayerModel(renderer, this).apply { this@PlayerEntity.model = this }
+    }
+
+
+    fun swingHand(hand: Hands) {
+        val arm = hand.getArm(mainArm)
+        _model?.swingArm(arm)
+    }
+
+    override fun handleAnimation(animation: EntityAnimations) {
+        when (animation) {
+            EntityAnimations.SWING_MAIN_ARM -> swingHand(Hands.MAIN)
+            EntityAnimations.SWING_OFF_ARM -> swingHand(Hands.OFF)
+            else -> super.handleAnimation(animation)
+        }
+    }
+
     companion object {
+        private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
+        private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
+        private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
+        private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
+        private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
+        private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
+        private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
+
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
@@ -127,12 +182,5 @@ abstract class PlayerEntity(
             Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
             Poses.DYING to Vec2(0.2f, 0.2f),
         )
-        private val ABSORPTION_HEARTS_DATA = EntityDataField("PLAYER_ABSORPTION_HEARTS")
-        private val SCORE_DATA = EntityDataField("PLAYER_SCORE")
-        private val SKIN_PARTS_DATA = EntityDataField("PLAYER_SKIN_PARTS_FLAGS")
-        private val MAIN_ARM_DATA = EntityDataField("PLAYER_SKIN_MAIN_HAND")
-        private val LEFT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_LEFT_SHOULDER_DATA")
-        private val RIGHT_SHOULDER_DATA_DATA = EntityDataField("PLAYER_RIGHT_SHOULDER_DATA")
-        private val LAST_DEATH_POSITION_DATA = EntityDataField("PLAYER_LAST_DEATH_POSITION")
     }
 }

@@ -33,7 +33,7 @@ class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator
         throw IllegalArgumentException("Can not find a registry for version $version")
     }
 
-    fun initialize(data: Map<String, Any>, deserializer: ResourceLocationCodec<E>?) {
+    fun initialize(data: Map<String, Any>, codec: ResourceLocationCodec<E>?) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
         val versions: SortedMap<Int, R> = sortedMapOf({ t, t2 -> t2 - t })
@@ -42,6 +42,6 @@ class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator
             registry.rawUpdate(json.toJsonObject(), null)
             versions[versionId.toInt()] = registry
         }
-        this.versions = versions.toMap()
+        this.versions = versions
     }
 }

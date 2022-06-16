@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util
 
-import de.bixilon.kutil.unit.UnitFormatter
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -34,16 +34,16 @@ class Stopwatch {
     }
 
     fun labTime(): String {
-        return UnitFormatter.formatNanos(lab())
+        return lab().formatNanos()
     }
 
     fun labPrint() {
         val delta = lab()
-        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Stop watch ($id) lab: ${UnitFormatter.formatNanos(delta)}" }
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Stop watch ($id) lab: ${delta.formatNanos()}" }
     }
 
     fun totalTime(): String {
-        return UnitFormatter.formatNanos(System.nanoTime() - startTime)
+        return (System.nanoTime() - startTime).formatNanos()
     }
 
     companion object {

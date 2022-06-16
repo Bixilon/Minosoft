@@ -22,11 +22,15 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
+import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.time.Cooldown
+import de.bixilon.kutil.url.URLProtocolStreamHandlers
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -43,18 +47,16 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.json.Jackson
-import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
+import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
+import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
 import java.util.*
+import javax.net.ssl.SSLContext
 
 
 object KUtil {
     val RANDOM = Random()
-
-    init {
-        Table.DEFAULT_STYLE = TableStyles.FANCY
-    }
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
@@ -113,7 +115,7 @@ object KUtil {
             ret += resourceLocation.toResourceLocation()
         }
 
-        return ret.toSet()
+        return ret
     }
 
     fun pause() {
@@ -193,7 +195,7 @@ object KUtil {
             ret[value.resourceLocation] = value
         }
 
-        return ret.toMap()
+        return ret
     }
 
     fun String?.nullCompare(other: String?): Int? {
@@ -263,6 +265,7 @@ object KUtil {
         DefaultThreadPool += { PlayConnection::class.java.forceInit() }
         DefaultThreadPool += { NettyClient::class.java.forceInit() }
         DefaultThreadPool += { SimpleChannelInboundHandler::class.java.forceInit() }
+        DefaultThreadPool += { SSLContext.getDefault() }
     }
 
     fun ByteArray.withLengthPrefix(): ByteArray {
@@ -271,70 +274,20 @@ object KUtil {
         return prefixed.toArray()
     }
 
-    @Deprecated("Kutil 1.12")
-    fun String.codePointAtOrNull(index: Int): Int? {
-        if (index < 0 || index >= this.length) {
-            return null
-        }
-        return this.codePointAt(index)
+    fun Cooldown.setTicks(ticks: Int) {
+        set(ticks * ProtocolDefinition.TICK_TIME)
     }
 
-    @Deprecated("Kutil 1.12")
-    fun String.toFavicon(): ByteArray {
-        return Base64.getDecoder().decode(this.replace("data:image/png;base64,", "").replace("\n", ""))
-    }
-
-    @Deprecated("Kutil 1.12")
-    fun modifyArrayIndex(value: Int, size: Int): Int {
-        if (size <= 0) {
-            throw IllegalArgumentException("Size must be > 1: $size")
-        }
-        var ret = value % size
-
-        if (ret < 0) {
-            ret += size
-        }
-
-        return ret
-    }
-
-    @Deprecated("Kutil 1.12")
-    fun getOverlappingText(start: String, end: String): Int {
-        var overlapping = 0
-
-        shift@ for (shift in 1..end.length) {
-            if (start.length < shift) {
-                break
+    fun init() {
+        Table.DEFAULT_STYLE = TableStyles.FANCY
+        URLProtocolStreamHandlers.register("resource", ResourceURLHandler)
+        ShutdownManager += {
+            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
+                connection.network.disconnect()
             }
-            for (i in 0 until shift) {
-                if (end.codePointAt(i) != start.codePointAt(start.length - (shift - i))) {
-                    continue@shift
-                }
-            }
-            overlapping = shift
         }
-
-        return overlapping
-    }
-
-    @Deprecated("Kutil 1.12")
-    fun String.removeTrailingWhitespaces(): String {
-        var string = this
-        while (string.startsWith(' ')) {
-            string = string.removePrefix(" ")
+        ShutdownManager += {
+            Platform.exit()
         }
-        while (string.endsWith(' ')) {
-            string = string.removeSuffix(" ")
-        }
-
-        return string
-    }
-
-    @Deprecated("Kutil 1.12")
-    fun String.truncate(length: Int): String {
-        if (this.length <= length) {
-            return this
-        }
-        return this.substring(0, length)
     }
 }

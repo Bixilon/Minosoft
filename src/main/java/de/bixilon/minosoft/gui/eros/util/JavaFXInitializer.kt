@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.eros.util
 import afester.javafx.svg.SvgLoader
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

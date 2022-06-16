@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -12,7 +12,10 @@
  */
 package de.bixilon.minosoft
 
-enum class ShutdownReasons(val exitCode: Int) {
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
+
+@Deprecated("Kutil 1.13")
+enum class ShutdownReasons(override val exitCode: Int) : AbstractShutdownReason {
     UNKNOWN(1),
     REQUESTED_BY_USER(0),
     ALL_FINE(0),
@@ -22,5 +25,7 @@ enum class ShutdownReasons(val exitCode: Int) {
     CLI_HELP(0),
     LAUNCHER_FXML_LOAD_ERROR(1),
     ;
+
+    override val message: String? get() = null
 
 }

@@ -25,14 +25,14 @@ import java.util.*
 data class SkeletalElement(
     val name: String,
     val rescale: Boolean = false,
-    val locked: Boolean = false,
+    val visible: Boolean = true,
     val from: Vec3 = Vec3.EMPTY,
     val to: Vec3 = Vec3.ONE,
-    val autouv: Int = 0,
-    val color: Int = 0,
     val rotation: Vec3 = Vec3.EMPTY,
     val origin: Vec3 = Vec3.EMPTY,
     val uvOffset: Vec2 = Vec2.EMPTY,
     val faces: Map<Directions, SkeletalFace> = emptyMap(),
     val uuid: UUID,
+    val inflate: Float = 0.0f,
+    val transparency: Boolean = true,
 )

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
@@ -41,6 +43,7 @@ interface GUIElementDrawer {
             lastTickTime = time
         }
 
+        val latch = CountUpAndDownLatch(1)
         for (element in elements) {
             if (!element.enabled) {
                 continue
@@ -54,8 +57,26 @@ interface GUIElementDrawer {
             element.draw()
 
             if (element is LayoutedGUIElement<*>) {
+                latch.inc()
                 element.prepare()
+                DefaultThreadPool += { element.prepareAsync();latch.dec() }
             }
+        }
+        latch.dec()
+        latch.await()
+
+
+        for (element in elements) {
+            if (!element.enabled) {
+                continue
+            }
+            if (element !is LayoutedGUIElement<*>) {
+                continue
+            }
+            if (element.skipDraw) {
+                continue
+            }
+            element.postPrepare()
         }
 
         guiRenderer.setup()

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -37,11 +39,13 @@ import java.util.*
 
 class OpenGLDynamicTextureArray(
     val renderWindow: RenderWindow,
+    val renderSystem: OpenGLRenderSystem,
     val index: Int = 7,
     val initialSize: Int = 32,
     val resolution: Int,
 ) : DynamicTextureArray {
     private var textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(initialSize)
+    private val lock = ThreadLock()
     private var textureId = -1
     var shaders: MutableSet<Shader> = mutableSetOf()
 
@@ -57,8 +61,8 @@ class OpenGLDynamicTextureArray(
             return size
         }
 
-    override fun pushArray(identifier: UUID, data: () -> ByteArray): DynamicTexture {
-        return pushBuffer(identifier) { ByteBuffer.wrap(data()) }
+    override fun pushArray(identifier: UUID, force: Boolean, data: () -> ByteArray): DynamicTexture {
+        return pushBuffer(identifier, force) { ByteBuffer.wrap(data()) }
     }
 
     private fun load(texture: OpenGLDynamicTexture, index: Int, mipmaps: Array<ByteBuffer>) {
@@ -72,13 +76,14 @@ class OpenGLDynamicTextureArray(
         renderWindow.textureManager.staticTextures.activate()
     }
 
-    @Synchronized
-    override fun pushBuffer(identifier: UUID, data: () -> ByteBuffer): OpenGLDynamicTexture {
+    override fun pushBuffer(identifier: UUID, force: Boolean, data: () -> ByteBuffer): OpenGLDynamicTexture {
+        lock.lock()
         check(textureId >= 0) { "Dynamic texture array not yet initialized!" }
         cleanup()
         for (textureReference in textures) {
             val texture = textureReference?.get()
             if (texture?.uuid == identifier) {
+                lock.unlock()
                 return texture
             }
         }
@@ -86,20 +91,35 @@ class OpenGLDynamicTextureArray(
         val texture = OpenGLDynamicTexture(identifier, createShaderIdentifier(index = index))
         textures[index] = WeakReference(texture)
         texture.state = DynamicTextureState.LOADING
-        DefaultThreadPool += add@{
+
+        fun load() {
             val bytes = data()
 
             if (bytes.limit() > resolution * resolution * 4 || bytes.limit() < resolution * 4) { // allow anything in 1..resolution for y size
                 Log.log(LogMessageType.ASSETS, LogLevels.WARN) { "Dynamic texture $texture, has not a size of ${resolution}x${resolution}!" }
+                lock.lock()
                 textures[index] = null
+                lock.unlock()
                 texture.state = DynamicTextureState.UNLOADED
-                return@add
+                return
             }
 
             val mipmaps = OpenGLTextureUtil.generateMipMaps(bytes, Vec2i(resolution, bytes.limit() / 4 / resolution))
             texture.data = mipmaps
-            renderWindow.queue += { load(texture, index, mipmaps) }
+            if (force) {
+                load(texture, index, mipmaps) // thread check already done
+            } else {
+                renderWindow.queue += { load(texture, index, mipmaps) }
+            }
         }
+
+        if (force) {
+            renderSystem.assertThread()
+            load()
+        } else {
+            DefaultThreadPool += { load() }
+        }
+        lock.unlock()
         return texture
     }
 
@@ -140,17 +160,21 @@ class OpenGLDynamicTextureArray(
     }
 
     private fun getNextIndex(): Int {
+        lock.lock()
         for ((index, texture) in textures.withIndex()) {
             if (texture == null) {
+                lock.unlock()
                 return index
             }
         }
         val nextIndex = textures.size
         grow()
+        lock.unlock()
         return nextIndex
     }
 
     private fun reload() {
+        lock.lock()
         glDeleteTextures(textureId)
         load(CountUpAndDownLatch(0))
 
@@ -162,27 +186,38 @@ class OpenGLDynamicTextureArray(
         for (shader in shaders) {
             _use(shader)
         }
+        lock.unlock()
     }
 
     private fun grow() {
+        lock.lock()
         val textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(textures.size + initialSize)
         for ((index, texture) in this.textures.withIndex()) {
             textures[index] = texture
         }
         this.textures = textures
         renderWindow.queue += { reload() }
+        lock.unlock()
     }
 
+    @Synchronized
     private fun cleanup() {
-        for ((index, textureReference) in textures.withIndex()) {
-            if (textureReference == null) {
+        lock.lock()
+        for ((index, reference) in textures.withIndex()) {
+            if (reference == null) {
                 continue
             }
-            val texture = textureReference.get()
-            if (texture != null && texture.usages.get() > 0) {
+            val texture = reference.get()
+            if (texture == null) {
+                textures[index] = null
                 continue
             }
+            if (texture.usages.get() > 0) {
+                continue
+            }
+            texture.state = DynamicTextureState.UNLOADED
             textures[index] = null
         }
+        lock.unlock()
     }
 }

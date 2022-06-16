@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
@@ -21,5 +22,5 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic.OpenGLDyn
 
 class OpenGLTextureManager(val renderWindow: RenderWindow) : TextureManager() {
     override val staticTextures: StaticTextureArray = OpenGLTextureArray(renderWindow)
-    override val dynamicTextures: DynamicTextureArray = OpenGLDynamicTextureArray(renderWindow, resolution = 64)
+    override val dynamicTextures: DynamicTextureArray = OpenGLDynamicTextureArray(renderWindow, renderWindow.renderSystem.unsafeCast(), resolution = 64)
 }

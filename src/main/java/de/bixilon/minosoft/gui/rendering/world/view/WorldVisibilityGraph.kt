@@ -52,7 +52,7 @@ class WorldVisibilityGraph(
     private var cameraChunkPosition = Vec2i.EMPTY
     private var cameraSectionHeight = 0
     private var viewDistance = connection.world.view.viewDistance
-    private val chunks = connection.world.chunks.original
+    private val chunks = connection.world.chunks.unsafe
     private var lastFrustumRevision = -1
 
 

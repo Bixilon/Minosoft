@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -25,10 +26,10 @@ import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.chat.ChatTextPositions
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
-import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -158,19 +159,27 @@ class PlayConnection(
         ticker.init()
     }
 
-    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(0)) {
+    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
         val count = latch.count
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.LOADING_ASSETS
-            fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
-            version.load(profiles.resources)
-            registries.parentRegistries = version.registries
+            val inner = CountUpAndDownLatch(2, latch)
+            DefaultThreadPool += {
+                fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
+                version.load(profiles.resources, latch)
+                registries.parentRegistries = version.registries
+                inner.dec()
+            }
+            DefaultThreadPool += {
+                Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
+                assetsManager = AssetsLoader.create(profiles.resources, version, latch)
+                assetsManager.load(latch)
+                Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
+                inner.dec()
+            }
+            inner.await()
 
-            Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
-            assetsManager = AssetsLoader.create(profiles.resources, version, latch)
-            assetsManager.load(latch)
-            Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             state = PlayConnectionStates.LOADING
 
             language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
@@ -185,6 +194,7 @@ class PlayConnection(
                 renderer.init(renderLatch)
                 renderLatch.awaitWithChange()
             }
+            latch.dec() // remove initial value
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address, profiles.other.nativeNetwork)
             state = PlayConnectionStates.ESTABLISHING

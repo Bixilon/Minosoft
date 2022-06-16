@@ -56,7 +56,7 @@ class EntityAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             attributes[key] = attribute
         }
-        this.attributes = attributes.toMap()
+        this.attributes = attributes
     }
 
     override fun handle(connection: PlayConnection) {

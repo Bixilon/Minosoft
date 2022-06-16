@@ -33,8 +33,8 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
         get() = data.get(ITEM_DATA, null)
 
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
 
         when {
             // ToDo: Apply water and lava "bouncing"

@@ -178,7 +178,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     reason = event.reason,
                 ).show()
             })
-            val latch = CountUpAndDownLatch(0)
+            val latch = CountUpAndDownLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
             connection::state.observeFX(this) { if (it.disconnected) assetsDialog.close() }
             ConnectingDialog(connection).show()

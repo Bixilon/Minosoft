@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.renderer
 
-interface Drawable {
-    val skipDraw: Boolean
-        get() = false
+interface Drawable : DeltaDrawable {
 
     /**
      * Functions gets called every frame
      */
     fun draw() {}
+
+    override fun draw(millis: Long) {
+        draw()
+    }
 }

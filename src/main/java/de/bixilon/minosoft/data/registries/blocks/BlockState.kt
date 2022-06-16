@@ -99,7 +99,7 @@ data class BlockState(
         fun deserialize(block: Block, registries: Registries, data: Map<String, Any>): BlockState {
             val properties = data["properties"]?.toJsonObject()?.let {
                 getProperties(it)
-            } ?: mutableMapOf()
+            } ?: emptyMap()
 
             val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
 
@@ -119,13 +119,12 @@ data class BlockState(
                     VoxelShape.EMPTY
                 }
 
-            val occlusionShape = data["occlusion_shapes"]?.asShape() ?: VoxelShape.EMPTY
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
 
             return BlockState(
                 block = block,
-                properties = properties.toMap(),
+                properties = properties,
                 material = material,
                 collisionShape = collisionShape,
                 outlineShape = outlineShape,

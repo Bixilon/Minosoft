@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.data
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -27,7 +28,9 @@ class EntityData(
     data: Int2ObjectOpenHashMap<Any?>? = null,
 ) {
     private val lock = SimpleLock()
-    private val data: Int2ObjectOpenHashMap<Any> = Int2ObjectOpenHashMap<Any>()
+    private val data: Int2ObjectOpenHashMap<Any> = Int2ObjectOpenHashMap()
+    private val watcher: Int2ObjectOpenHashMap<MutableSet<(Any?) -> Unit>> = Int2ObjectOpenHashMap()
+    private val watcherLock = SimpleLock()
 
     init {
         data?.let { merge(it) }
@@ -38,9 +41,20 @@ class EntityData(
         for ((index, value) in data) {
             if (value == null) {
                 this.data.remove(index)
-                continue
+            } else {
+                this.data[index] = value
             }
-            this.data[index] = value
+
+            val watchers = watcher[index] ?: continue
+            watcherLock.acquire()
+            for (watcher in watchers) {
+                try {
+                    watcher.invoke(value)
+                } catch (error: Throwable) {
+                    error.printStackTrace()
+                }
+            }
+            watcherLock.release()
         }
         lock.unlock()
     }
@@ -86,5 +100,12 @@ class EntityData(
 
     fun getChatComponent(field: EntityDataField, default: Any?): ChatComponent {
         return ChatComponent.of(get(field, default))
+    }
+
+    fun <K> observe(field: EntityDataField, watcher: (value: K?) -> Unit) {
+        val index = connection.registries.getEntityDataIndex(field) ?: return // field not available
+        watcherLock.lock()
+        this.watcher.getOrPut(index) { mutableSetOf() }.add(watcher.unsafeCast())
+        watcherLock.unlock()
     }
 }

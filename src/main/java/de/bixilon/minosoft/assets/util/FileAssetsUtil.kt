@@ -33,6 +33,9 @@ object FileAssetsUtil {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "assets/objects/"
 
     fun getPath(hash: String): String {
+        if (hash.length <= 10) {
+            throw IllegalArgumentException("Hash too short: $hash")
+        }
         if (!hash.isHexString) {
             throw IllegalArgumentException("String is not a hex string. Invalid data or manipulated?: $hash")
         }
@@ -47,7 +50,7 @@ object FileAssetsUtil {
         return saveAndGet(URL(url).openStream(), compress, true, hashType)
     }
 
-    fun saveAndGet(stream: InputStream, compress: Boolean = true, get: Boolean = true, hashType: HashTypes = HashTypes.SHA256): Pair<String, ByteArray> {
+    fun saveAndGet(stream: InputStream, compress: Boolean = true, get: Boolean = true, hashType: HashTypes = HashTypes.SHA256, close: Boolean = true): Pair<String, ByteArray> {
         var tempFile: File
         do {
             tempFile = File(RunConfiguration.TEMPORARY_FOLDER + KUtil.RANDOM.randomString(32))
@@ -81,6 +84,9 @@ object FileAssetsUtil {
             if (get) {
                 returnStream.write(buffer, 0, length)
             }
+        }
+        if (close) {
+            stream.close()
         }
         output.close()
         val hash = digest.digest().toHex()

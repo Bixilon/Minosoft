@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.PixelImageView
-import de.bixilon.minosoft.util.ShutdownManager
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView

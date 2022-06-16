@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.cli.CLI.removeDuplicatedWhitespaces
-import de.bixilon.minosoft.util.KUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

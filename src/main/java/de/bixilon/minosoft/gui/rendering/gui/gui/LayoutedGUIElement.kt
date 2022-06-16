@@ -25,8 +25,8 @@ open class LayoutedGUIElement<T : LayoutedElement>(
     val layout: T,
 ) : GUIMeshElement<Element>(layout.unsafeCast()) {
 
-    override fun prepare() {
-        prepare(layout.layoutOffset)
+    override fun prepareAsync() {
+        prepareAsync(layout.layoutOffset)
     }
 
     protected open fun getOffset(position: Vec2i): Vec2i? {

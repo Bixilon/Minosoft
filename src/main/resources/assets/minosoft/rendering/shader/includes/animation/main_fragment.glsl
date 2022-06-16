@@ -12,15 +12,37 @@
  */
 
 
-#ifdef MIPMAP_LEVEL
-vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1, MIPMAP_LEVEL);
-#else
-vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1);
-#endif
-discard_if_0(firstTexelColor.a);
+void run_animation() {
+    #ifdef MIPMAP_LEVEL
 
-if (finInterpolation == 0.0f) {
-    foutColor = firstTexelColor * finTintColor;
+    vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1, MIPMAP_LEVEL);
+    #else
+    vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1);
+    #endif
+    discard_if_0(firstTexelColor.a);
+
+    if (finInterpolation == 0.0f) {
+        foutColor = firstTexelColor * finTintColor;
+        #ifdef TRANSPARENT
+        set_alpha_transparent();
+        #endif
+
+    #ifdef FOG
+    set_fog();
+    #endif
+    return;
+}
+    #ifdef MIPMAP_LEVEL
+    vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2, MIPMAP_LEVEL);
+    #else
+    vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2);
+    #endif
+
+discard_if_0(secondTexelColor.a);
+
+    foutColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
+
+
     #ifdef TRANSPARENT
     set_alpha_transparent();
     #endif
@@ -30,22 +52,3 @@ if (finInterpolation == 0.0f) {
     #endif
     return;
 }
-    #ifdef MIPMAP_LEVEL
-vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2, MIPMAP_LEVEL);
-#else
-vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2);
-#endif
-
-discard_if_0(secondTexelColor.a);
-
-foutColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
-
-
-#ifdef TRANSPARENT
-set_alpha_transparent();
-#endif
-
-#ifdef FOG
-set_fog();
-#endif
-return;

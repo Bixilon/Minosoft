@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import java.nio.ByteBuffer
@@ -24,18 +27,32 @@ class OpenGLDynamicTexture(
     shaderId: Int,
 ) : DynamicTexture {
     var data: Array<ByteBuffer>? = null
-    override var onStateChange: (() -> Unit)? = null
+    private val callbacks: MutableSet<DynamicStateChangeCallback> = mutableSetOf()
+    private val callbackLock = SimpleLock()
     override val usages = AtomicInteger()
     override var state: DynamicTextureState = DynamicTextureState.WAITING
         set(value) {
+            if (field == value) {
+                return
+            }
             field = value
-            onStateChange?.invoke()
+            callbackLock.acquire()
+            for (callback in callbacks) {
+                callback.onStateChange(this, value)
+            }
+            callbackLock.release()
         }
 
     override var shaderId: Int = shaderId
         get() {
-            if (usages.get() == 0 || state == DynamicTextureState.UNLOADED) {
-                throw IllegalStateException("Texture was eventually garbage collected")
+            if (state == DynamicTextureState.UNLOADED) {
+                throw IllegalStateException("Texture was garbage collected!")
+            }
+            if (usages.get() == 0) {
+                throw IllegalStateException("Texture could be garbage collected every time!")
+            }
+            if (state == DynamicTextureState.LOADING) {
+                throw IllegalStateException("Texture was not loaded yet!")
             }
             return field
         }
@@ -43,4 +60,25 @@ class OpenGLDynamicTexture(
     override fun toString(): String {
         return uuid.toString()
     }
+
+    override fun transformUV(end: Vec2?): Vec2 {
+        return end ?: Vec2(1.0f)
+    }
+
+    override fun transformUV(end: FloatArray?): FloatArray {
+        return end ?: floatArrayOf(1.0f, 1.0f)
+    }
+
+    override fun addListener(callback: DynamicStateChangeCallback) {
+        callbackLock.lock()
+        callbacks += callback
+        callbackLock.unlock()
+    }
+
+    override fun removeListener(callback: DynamicStateChangeCallback) {
+        callbackLock.lock()
+        callbacks -= callback
+        callbackLock.unlock()
+    }
 }
+

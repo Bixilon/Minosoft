@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -166,6 +168,7 @@ class GLFWWindow(
         }
 
     override fun init(profile: RenderingProfile) {
+        initLatch.await() // wait for async glfw init
         glfwDefaultWindowHints()
         if (renderWindow.preferQuads) {
             setOpenGLVersion(3, 0, false)
@@ -352,10 +355,14 @@ class GLFWWindow(
     }
 
     companion object {
+        private val initLatch = CountUpAndDownLatch(1)
 
         init {
-            GLFWErrorCallback.createPrint(System.err).set()
-            check(glfwInit()) { "Unable to initialize GLFW" }
+            DefaultThreadPool += {
+                GLFWErrorCallback.createPrint(System.err).set()
+                check(glfwInit()) { "Unable to initialize GLFW" }
+                initLatch.dec()
+            }
         }
 
         val KEY_CODE_MAPPING = mapOf(

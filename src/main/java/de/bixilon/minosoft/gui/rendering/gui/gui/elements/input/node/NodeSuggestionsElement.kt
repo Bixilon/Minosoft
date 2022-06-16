@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.array.ArrayUtil
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.popper.Popper
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.util.KUtil
 
 class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inputElement: NodeTextInputElement) : Popper(guiRenderer, position) {
     private var suggestionText = Array(MAX_SUGGESTIONS) { TextElement(guiRenderer, ChatComponent.EMPTY).apply { prefMaxSize = Vec2i(300, Font.TOTAL_CHAR_HEIGHT) } }
@@ -111,7 +111,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
             return
         }
         val suggestions = suggestions ?: return
-        offset = KUtil.modifyArrayIndex(offset + modify, suggestions.size)
+        offset = ArrayUtil.modifyArrayIndex(offset + modify, suggestions.size)
         updateSuggestions(suggestions)
     }
 

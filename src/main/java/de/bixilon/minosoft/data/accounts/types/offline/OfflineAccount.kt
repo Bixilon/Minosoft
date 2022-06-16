@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation

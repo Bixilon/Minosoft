@@ -24,14 +24,15 @@ import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
-import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -48,6 +49,9 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.entity.models.DummyModel
+import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -80,12 +84,11 @@ abstract class Entity(
 
     val id: Int?
         get() = connection.world.entities.getId(this)
-    val uuid: UUID?
+    open val uuid: UUID?
         get() = connection.world.entities.getUUID(this)
 
-    @JvmField
-    @Deprecated(message = "Use connection.version")
-    protected val versionId: Int = connection.version.versionId
+    @Deprecated(message = "Use connection.version", replaceWith = ReplaceWith("connection.version.versionId"))
+    protected val versionId: Int get() = connection.version.versionId
     open var _attachedEntity: Int? = null
 
     var vehicle: Entity? = null
@@ -117,10 +120,14 @@ abstract class Entity(
     open val eyeHeight: Float
         get() = dimensions.y * 0.85f
 
-    private var lastFakeTickTime = -1L
+    var deltaMovement: Vec3d = Vec3d.EMPTY
     protected open var previousPosition: Vec3d = Vec3d(position)
     override var position: Vec3d = position
         set(value) {
+            val delta = value - field
+            if (delta != deltaMovement) {
+                deltaMovement = delta
+            }
             previousPosition = field
             field = value
             positionInfo.update()
@@ -138,11 +145,12 @@ abstract class Entity(
 
     protected var lastTickTime = -1L
 
-
     // fluids stuff
     val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
     var submergedFluid: Fluid? = null
 
+
+    open var model: EntityModel<*>? = null
 
     fun forceMove(deltaPosition: Vec3d) {
         position = position + deltaPosition
@@ -284,8 +292,8 @@ abstract class Entity(
         get() = defaultAABB + position
 
 
-    val cameraAABB: AABB
-        get() = defaultAABB + cameraPosition
+    open var cameraAABB: AABB = AABB.EMPTY
+        protected set
 
     open val hitBoxColor: RGBColor
         get() = when {
@@ -295,29 +303,24 @@ abstract class Entity(
 
 
     @Synchronized
-    fun tick() {
+    fun tryTick() {
         val currentTime = TimeUtil.millis
-        if (lastFakeTickTime == -1L) {
-            lastFakeTickTime = currentTime
-            return
-        }
-        val deltaTime = currentTime - lastFakeTickTime
-        if (deltaTime <= 0) {
-            return
-        }
-
 
         if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
-            realTick()
+            tick()
             postTick()
             lastTickTime = currentTime
         }
-        cameraPosition = interpolateLinear((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+    }
+
+    open fun draw(time: Long) {
+        cameraPosition = interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+        cameraAABB = defaultAABB + cameraPosition
     }
 
     open val pushableByFluids: Boolean = false
 
-    open fun realTick() {
+    open fun tick() {
         previousPosition = position
         if (spawnSprintingParticles) {
             spawnSprintingParticles()
@@ -354,7 +357,7 @@ abstract class Entity(
         enchantment ?: return 0
         var maxLevel = 0
         this.equipment.lock.acquire()
-        for ((slot, equipment) in this.equipment.original) {
+        for ((slot, equipment) in this.equipment.unsafe) {
             equipment.enchanting.enchantments[enchantment]?.let {
                 if (it > maxLevel) {
                     maxLevel = it
@@ -579,7 +582,7 @@ abstract class Entity(
             var protectionLevel = 0.0f
 
             this.equipment.lock.acquire()
-            for (equipment in equipment.original.values) {
+            for (equipment in equipment.unsafe.values) {
                 val item = equipment.item.item
 
                 if (item is ArmorItem) {
@@ -593,6 +596,12 @@ abstract class Entity(
         }
 
     open fun onAttack(attacker: Entity) = true
+
+    open fun createModel(renderer: EntityRenderer): EntityModel<*>? {
+        return DummyModel(renderer, this).apply { this@Entity.model = this }
+    }
+
+    open fun handleAnimation(animation: EntityAnimations) = Unit
 
 
     companion object {

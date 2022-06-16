@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
@@ -36,14 +37,14 @@ open class DynamicImageElement(
     size: Vec2i = Vec2i.EMPTY,
     tint: RGBColor = ChatColors.WHITE,
     parent: Element? = null,
-) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6) {
+) : Element(guiRenderer, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6), DynamicStateChangeCallback {
 
     var texture: DynamicTexture? = null
         set(value) {
             field?.usages?.decrementAndGet()
-            field?.onStateChange = null
+            field?.removeListener(this)
             value?.usages?.incrementAndGet()
-            value?.onStateChange = { forceApply() }
+            value?.addListener(this)
             field = value
             cacheUpToDate = false
         }
@@ -100,5 +101,11 @@ open class DynamicImageElement(
 
     protected fun finalize() {
         texture?.usages?.decrementAndGet()
+    }
+
+    override fun onStateChange(texture: DynamicTexture, state: DynamicTextureState) {
+        if (texture === this.texture) {
+            forceApply()
+        }
     }
 }

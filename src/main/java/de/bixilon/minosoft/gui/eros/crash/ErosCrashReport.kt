@@ -20,6 +20,7 @@ import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.kutil.unsafe.UnsafeUtil
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
-import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

@@ -19,11 +19,12 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.unbaked.ModelBakeUtil
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
+import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -31,47 +32,58 @@ import java.util.*
 
 class BakedSkeletalModel(
     val model: SkeletalModel,
-    val textures: Int2ObjectOpenHashMap<AbstractTexture>,
+    val textures: Int2ObjectOpenHashMap<ShaderTexture>,
 ) {
     lateinit var mesh: SkeletalMesh
-
+    val loaded: Boolean
+        get() = this::mesh.isInitialized && mesh.state == Mesh.MeshStates.LOADED
 
     private fun calculateOutlinerMapping(): Map<UUID, Int> {
         val mapping: Object2IntOpenHashMap<UUID> = Object2IntOpenHashMap()
+        var offset = 0
 
-        fun addOutliner(child: Any, outlinerIdOffset: Int): Int {
+        fun addOutliner(child: Any, parentId: Int) {
             if (child is UUID) {
-                mapping[child] = outlinerIdOffset
-                return 0
+                mapping[child] = parentId
+                return
             }
             if (child !is SkeletalOutliner) {
                 throw IllegalArgumentException()
             }
-
-            var offset = 1
+            if (mapping.containsKey(child.uuid)) {
+                return
+            }
+            val id = offset++
+            mapping[child.uuid] = id
 
             for (childChild in child.children) {
-                offset += addOutliner(childChild, outlinerIdOffset + offset)
+                addOutliner(childChild, id)
             }
-            return offset
         }
 
         for (outliner in this.model.outliner) {
-            addOutliner(outliner, -1) // for the root 1 is always added
+            addOutliner(outliner, -1)
         }
 
         return mapping
     }
 
     fun loadMesh(renderWindow: RenderWindow) {
+        if (loaded) {
+            return
+        }
         val mesh = SkeletalMesh(renderWindow, 1000)
 
         val outlinerMapping = calculateOutlinerMapping()
 
 
         for (element in model.elements) {
+            if (!element.visible) {
+                continue
+            }
+            val inflate = (element.inflate / BLOCK_RESOLUTION) / 2
             for ((direction, face) in element.faces) {
-                val positions = direction.getPositions(element.from.fromBlockCoordinates(), element.to.fromBlockCoordinates())
+                val positions = direction.getPositions(element.from.fromBlockCoordinates() - inflate, element.to.fromBlockCoordinates() + inflate)
 
                 val uvDivider = Vec2(model.resolution.width, model.resolution.height)
                 val texturePositions = ModelBakeUtil.getTextureCoordinates(face.uvStart / uvDivider, face.uvEnd / uvDivider)
@@ -90,9 +102,15 @@ class BakedSkeletalModel(
                 }
                 val outlinerId = outlinerMapping[element.uuid] ?: 0
 
+                var flags = 0
+                if (element.transparency && face.transparency) {
+                    flags = flags or 0x01
+                }
+
+                val texture = textures[face.texture]!!
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
-                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, textures[face.texture]!!)
+                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, texture, flags)
                 }
             }
         }
@@ -100,10 +118,16 @@ class BakedSkeletalModel(
         this.mesh = mesh
     }
 
+    fun unload() {
+        if (loaded) {
+            mesh.unload()
+        }
+    }
+
     companion object {
 
         fun Vec3.fromBlockCoordinates(): Vec3 {
-            return Vec3(this.x / UnbakedElement.BLOCK_RESOLUTION + 0.5f, this.y / UnbakedElement.BLOCK_RESOLUTION, this.z / UnbakedElement.BLOCK_RESOLUTION + 0.5f)
+            return Vec3(this.x / BLOCK_RESOLUTION + 0.5f, this.y / BLOCK_RESOLUTION, this.z / BLOCK_RESOLUTION + 0.5f)
         }
     }
 }

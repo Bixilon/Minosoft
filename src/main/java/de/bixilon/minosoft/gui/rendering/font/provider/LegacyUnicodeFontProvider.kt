@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font.provider
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
@@ -42,7 +43,7 @@ class LegacyUnicodeFontProvider(
                 char += UNICODE_PAGE_SIZE
                 continue
             }
-            val texture = renderWindow.textureManager.staticTextures.createTexture(template.format("%02x".format(page)).toResourceLocation().texture(), mipmaps = false)
+            val texture = renderWindow.textureManager.staticTextures.createTexture(template.replace("%s", page.toHex(2)).toResourceLocation().texture(), mipmaps = false)
             for (y in 0 until UNICODE_PAGE_SIZE / CHAR_SIZE) {
                 val yStart = PIXEL.y * y * CHAR_SIZE
                 val yEnd = PIXEL.y * (y + 1) * CHAR_SIZE

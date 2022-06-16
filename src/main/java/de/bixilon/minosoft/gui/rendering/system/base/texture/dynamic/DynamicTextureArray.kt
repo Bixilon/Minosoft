@@ -22,10 +22,10 @@ import java.util.*
 interface DynamicTextureArray : TextureArray {
     val size: Int
 
-    fun pushBuffer(identifier: UUID, data: () -> ByteBuffer): DynamicTexture
-    fun pushArray(identifier: UUID, data: () -> ByteArray): DynamicTexture
+    fun pushBuffer(identifier: UUID, force: Boolean = false, data: () -> ByteBuffer): DynamicTexture
+    fun pushArray(identifier: UUID, force: Boolean = false, data: () -> ByteArray): DynamicTexture
 
-    fun pushRawArray(identifier: UUID, data: () -> ByteArray): DynamicTexture {
-        return pushBuffer(identifier) { ByteArrayInputStream(data()).readTexture().second }
+    fun pushRawArray(identifier: UUID, force: Boolean = false, data: () -> ByteArray): DynamicTexture {
+        return pushBuffer(identifier, force) { ByteArrayInputStream(data()).readTexture().second }
     }
 }

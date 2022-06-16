@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.terminal.cli
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.ShutdownReasons
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
 import de.bixilon.minosoft.terminal.commands.connection.ConnectionCommand
-import de.bixilon.minosoft.util.ShutdownManager
 import org.jline.reader.*
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder

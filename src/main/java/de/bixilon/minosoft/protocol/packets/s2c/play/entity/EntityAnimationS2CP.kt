@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.data.entities.EntityAnimations
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -31,23 +31,8 @@ class EntityAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity animation (entityId=$entityId, animation=$animation)" }
     }
 
-    enum class EntityAnimations {
-        SWING_MAIN_ARM,
-        TAKE_DAMAGE,
-        LEAVE_BED,
-        EAT_FOOD,
-        SWING_OFF_ARM,
-        CRITICAL_EFFECT,
-        MAGIC_CRITICAL_EFFECT,
-        UNKNOWN_1,
-        START_SNEAKING,
-        STOP_SNEAKING,
-        ;
-        // ToDo: find out what unknown_1 is, check values, check ids and load data from pixlyzer
-
-        companion object : ValuesEnum<EntityAnimations> {
-            override val VALUES = values()
-            override val NAME_MAP: Map<String, EntityAnimations> = EnumUtil.getEnumValues(VALUES)
-        }
+    override fun handle(connection: PlayConnection) {
+        val entity = connection.world.entities[entityId] ?: return
+        entity.handleAnimation(animation)
     }
 }

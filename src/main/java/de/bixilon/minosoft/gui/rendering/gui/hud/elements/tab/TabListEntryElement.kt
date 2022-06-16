@@ -15,8 +15,9 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -49,7 +50,7 @@ class TabListEntryElement(
 
     private val background: ColorElement
 
-    private val skinElement = DynamicImageElement(guiRenderer, renderWindow.textureManager.getSkin(guiRenderer.connection.network.encrypted, uuid, item.properties), uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
+    private val skinElement = DynamicImageElement(guiRenderer, null, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(8, 8), parent = this)
 
     // private val skinElement = ImageElement(guiRenderer, guiRenderer.renderWindow.textureManager.steveTexture, uvStart = Vec2(0.125), uvEnd = Vec2(0.25), size = Vec2i(512, 512))
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
@@ -80,6 +81,7 @@ class TabListEntryElement(
 
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
+        DefaultThreadPool += { skinElement.texture = renderWindow.textureManager.getSkin(guiRenderer.connection.network.encrypted, uuid, item.properties) }
         forceSilentApply()
     }
 
@@ -92,15 +94,17 @@ class TabListEntryElement(
 
     override fun forceSilentApply() {
         // ToDo (Performance): If something changed, should we just prepare the changed
-        pingElement = AtlasImageElement(guiRenderer, tabList.pingBarsAtlasElements[when {
-            ping < 0 -> 0
-            ping < 150 -> 5
-            ping < 300 -> 4
-            ping < 600 -> 3
-            ping < 1000 -> 2
-            else -> 1
-        }])
-        nameElement.prefMaxSize = Vec2i(max(0, maxSize.x - pingElement.size.x), HEIGHT)
+        pingElement = AtlasImageElement(
+            guiRenderer, tabList.pingBarsAtlasElements[when {
+                ping < 0 -> 0
+                ping < 150 -> 5
+                ping < 300 -> 4
+                ping < 600 -> 3
+                ping < 1000 -> 2
+                else -> 1
+            }]
+        )
+        nameElement.prefMaxSize = Vec2i(max(0, maxSize.x - pingElement.size.x - skinElement.size.x - INNER_MARGIN), HEIGHT)
 
         nameElement.text = displayName
 

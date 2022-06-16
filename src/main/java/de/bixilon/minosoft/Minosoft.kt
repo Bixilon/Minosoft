@@ -68,6 +68,7 @@ object Minosoft {
         Log::class.java.forceInit()
         CommandLineArguments.parse(args)
         KUtil.initUtilClasses()
+        KUtil.init()
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }

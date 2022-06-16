@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -32,15 +32,15 @@ import java.util.*
 
 @LoadPacket(threadSafe = false)
 class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    private val entityId: Int
-    private var entityUUID: UUID? = null
+    val entityId: Int
+    val entityUUID: UUID
     val entity: PlayerEntity
 
     init {
         entityId = buffer.readVarInt()
         var name = "TBA"
 
-        var properties = PlayerProperties()
+        var properties: PlayerProperties? = null
         if (buffer.versionId < ProtocolVersions.V_14W21A) {
             name = buffer.readString()
             entityUUID = buffer.readUUIDString()
@@ -78,9 +78,9 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         // connection.tabList.tabListItemsByUUID[entityUUID]?.let { entity.tabListItem = it }
+        connection.world.entities.add(entityId, entityUUID, entity)
 
         connection.fireEvent(EntitySpawnEvent(connection, this))
-        connection.world.entities.add(entityId, entityUUID, entity)
     }
 
     override fun log(reducedLog: Boolean) {

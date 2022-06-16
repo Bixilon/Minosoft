@@ -18,8 +18,8 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.GUIMeshElement
 
 class DraggedGUIElement<T : Dragged>(element: T) : GUIMeshElement<T>(element) {
 
-    override fun prepare() {
-        prepare(guiRenderer.currentMousePosition - (element.size / 2))
+    override fun prepareAsync() {
+        prepareAsync(guiRenderer.currentMousePosition - (element.size / 2))
     }
 
     override fun onMouseMove(position: Vec2i): Boolean {

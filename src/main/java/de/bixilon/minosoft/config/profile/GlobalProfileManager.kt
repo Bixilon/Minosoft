@@ -73,8 +73,8 @@ object GlobalProfileManager {
             classMapping[manager.profileClass] = manager
         }
 
-        this.DEFAULT_MANAGERS = map.toMap()
-        this.CLASS_MAPPING = classMapping.toMap()
+        this.DEFAULT_MANAGERS = map
+        this.CLASS_MAPPING = classMapping
     }
 
     private var initialized = false
@@ -90,8 +90,8 @@ object GlobalProfileManager {
                 return
             }
 
-            this.selectedProfiles.original.clear()
-            this.selectedProfiles.original.putAll(Jackson.MAPPER.readValue(file.read(), SELECTED_PROFILES_TYPE))
+            this.selectedProfiles.unsafe.clear()
+            this.selectedProfiles.unsafe.putAll(Jackson.MAPPER.readValue(file.read(), SELECTED_PROFILES_TYPE))
         } finally {
             selectedProfiles.lock.unlock()
         }
@@ -104,7 +104,7 @@ object GlobalProfileManager {
         selectedProfiles.lock.lock()
         DefaultThreadPool += {
             try {
-                val data: Map<String, String> = Jackson.MAPPER.convertValue(selectedProfiles.original, SELECTED_PROFILES_TYPE)
+                val data: Map<String, String> = Jackson.MAPPER.convertValue(selectedProfiles.unsafe, SELECTED_PROFILES_TYPE)
                 val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
                 FileUtil.safeSaveToFile(File(RunConfiguration.HOME_DIRECTORY + "config/selected_profiles.json"), jsonString)

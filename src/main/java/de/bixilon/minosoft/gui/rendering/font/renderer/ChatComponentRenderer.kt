@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.EmptyComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer
@@ -46,6 +47,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             return when (text) {
                 is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, text)
                 is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, element, renderWindow, consumer, options, renderInfo, text)
+                is EmptyComponent -> return true
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }
@@ -54,6 +56,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             when (text) {
                 is BaseComponent -> BaseComponentRenderer.render3dFlat(renderWindow, offset, scale, maxSize, consumer, text, light)
                 is TextComponent -> TextComponentRenderer.render3dFlat(renderWindow, offset, scale, maxSize, consumer, text, light)
+                is EmptyComponent -> return
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }
@@ -76,6 +79,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
             return when (text) {
                 is BaseComponent -> BaseComponentRenderer.calculatePrimitiveCount(text)
                 is TextComponent -> TextComponentRenderer.calculatePrimitiveCount(text)
+                is EmptyComponent -> 0
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model
 
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
@@ -22,15 +21,12 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.meta.SkeletalMeta
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
 import de.bixilon.minosoft.gui.rendering.skeletal.model.resolution.SkeletalResolution
 import de.bixilon.minosoft.gui.rendering.skeletal.model.textures.SkeletalTexture
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 data class SkeletalModel(
     val meta: SkeletalMeta = SkeletalMeta(),
     val name: String = "empty",
-    val geometryName: String = name,
-    val visibleBox: Vec3 = Vec3.EMPTY,
     val resolution: SkeletalResolution = SkeletalResolution(),
     val elements: List<SkeletalElement> = emptyList(),
     val outliner: List<SkeletalOutliner> = emptyList(),
@@ -38,8 +34,8 @@ data class SkeletalModel(
     val animations: List<SkeletalAnimation> = emptyList(),
 ) {
 
-    fun bake(renderWindow: RenderWindow, textureOverride: MutableMap<Int, AbstractTexture>): BakedSkeletalModel {
-        val textures: Int2ObjectOpenHashMap<AbstractTexture> = Int2ObjectOpenHashMap()
+    fun bake(renderWindow: RenderWindow, textureOverride: Map<Int, ShaderTexture>): BakedSkeletalModel {
+        val textures: Int2ObjectOpenHashMap<ShaderTexture> = Int2ObjectOpenHashMap()
         for (entry in this.textures) {
             val override = textureOverride[entry.id]
             if (override != null) {

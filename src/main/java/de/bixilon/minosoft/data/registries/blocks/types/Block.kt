@@ -16,6 +16,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.cast.CollectionCast.asAnyMap
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.primitive.DoubleUtil.toDouble
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
@@ -23,7 +24,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
@@ -39,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.CastUtil.asAnyMap
 import kotlin.random.Random
 
 open class Block(
@@ -129,9 +129,9 @@ open class Block(
                 propertiesOut[property] = values.toList()
             }
 
-            block.states = states.toSet()
+            block.states = states
             block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"].unsafeCast())!!
-            block.properties = propertiesOut.toMap()
+            block.properties = propertiesOut
             return block
         }
 

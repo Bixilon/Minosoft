@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.concurrent.lock.thread.ThreadMissmatchException
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -49,6 +50,7 @@ import java.nio.FloatBuffer
 class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
 ) : RenderSystem {
+    private var thread: Thread? = null
     override val shaders: MutableSet<Shader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     override lateinit var vendor: OpenGLVendor
@@ -103,7 +105,12 @@ class OpenGLRenderSystem(
         }
 
 
+    @Synchronized
     override fun init() {
+        if (thread != null) {
+            throw IllegalStateException("Context is thread bound!")
+        }
+        thread = Thread.currentThread()
         GL.createCapabilities()
 
         this.vendorString = glGetString(GL_VENDOR) ?: "UNKNOWN"
@@ -130,7 +137,7 @@ class OpenGLRenderSystem(
         if (RenderConstants.OPENGL_DEBUG_MODE) {
             glEnable(GL_DEBUG_OUTPUT)
             glDebugMessageCallback({ source, type, id, severity, length, message, userParameter ->
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity,length=$length,message=$message,userParameter=$userParameter" }
+                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
             }, 0)
         }
     }
@@ -280,12 +287,16 @@ class OpenGLRenderSystem(
     }
 
     override fun getErrors(): List<OpenGLError> {
-        val errors: MutableList<OpenGLError> = mutableListOf()
         var error: Int = glGetError()
-        while (error != GL_NO_ERROR) {
+        if (error == GL_NO_ERROR) {
+            return emptyList()
+        }
+        val errors: MutableList<OpenGLError> = mutableListOf()
+        do {
             errors += OpenGLError(error)
             error = glGetError()
-        }
+        } while (error != GL_NO_ERROR)
+
         return errors
     }
 
@@ -296,6 +307,14 @@ class OpenGLRenderSystem(
             glPolygonOffset(factor, unit)
             this.polygonOffsetFactor = factor
             this.polygonOffsetUnit = unit
+        }
+    }
+
+    fun assertThread() {
+        val thread = thread ?: throw IllegalStateException("Not yet initialized!")
+        val current = Thread.currentThread()
+        if (thread !== current) {
+            throw ThreadMissmatchException(thread, current)
         }
     }
 

@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toMutableJsonObject
 import de.bixilon.minosoft.commands.nodes.NamedNode
@@ -23,8 +24,8 @@ import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.player.properties.textures.PlayerTextures
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
@@ -166,22 +167,21 @@ class PlayInByteBuffer : InByteBuffer {
         val length = when {
             versionId >= V_20W28A -> readVarInt()
             versionId >= V_19W36A -> 1024
-
             else -> 0
         }
 
         check(length <= this.size) { "Trying to allocate too much memory" }
 
-        val ret: MutableList<Biome> = mutableListOf()
-        for (i in 0 until length) {
+        val biomes: Array<Biome?> = arrayOfNulls(length)
+        for (i in biomes.indices) {
             val biomeId: Int = if (versionId >= V_20W28A) {
                 readVarInt()
             } else {
                 readInt()
             }
-            ret.add(i, connection.registries.biomeRegistry[biomeId])
+            biomes[i] = connection.registries.biomeRegistry[biomeId]
         }
-        return ret.toTypedArray()
+        return biomes.cast()
     }
 
     fun readEntityData(): Int2ObjectOpenHashMap<Any?> {
@@ -190,7 +190,7 @@ class PlayInByteBuffer : InByteBuffer {
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.registries.entityDataDataDataTypesRegistry[item and 0xFF shr 5]!!
+                val type = connection.registries.entityDataTypesRegistry[item and 0xFF shr 5]!!
                 data[index] = type.type.read(this)
                 item = readUnsignedByte()
             }
@@ -202,7 +202,7 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.registries.entityDataDataDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
+                val type = connection.registries.entityDataTypesRegistry[id] ?: throw IllegalArgumentException("Can not get entity data type (id=$id)")
                 data[index] = type.type.read(this)
                 index = readUnsignedByte()
             }
@@ -227,8 +227,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    fun readEntityIdArray(length: Int = readVarInt()): Array<Int> {
-        return readArray(length) { readEntityId() }
+    fun readEntityIdArray(length: Int = readVarInt()): IntArray {
+        val array = IntArray(length)
+        for (i in array.indices) {
+            array[i] = readEntityId()
+        }
+        return array
     }
 
     fun readPlayerProperties(): PlayerProperties {

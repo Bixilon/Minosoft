@@ -14,7 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.language.LanguageUtil.i18n
+import de.bixilon.minosoft.gui.eros.Eros
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
@@ -26,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug.DebugMenu
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.ShutdownManager
 
 class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
 
@@ -36,6 +39,9 @@ class PauseMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
         add(ButtonElement(guiRenderer, "menu.pause.back_to_game".i18n()) { guiRenderer.gui.pause(false) })
         add(ButtonElement(guiRenderer, "menu.pause.options.debug".i18n()) { guiRenderer.gui.push(DebugMenu) })
         add(NeutralizedButtonElement(guiRenderer, "menu.pause.disconnect".i18n(), "menu.pause.disconnect.confirm".i18n()) { guiRenderer.connection.network.disconnect() })
+        if (ErosProfileManager.selected.general.hideErosOnceConnected) {
+            add(ButtonElement(guiRenderer, "menu.pause.show_eros".i18n()) { JavaFXUtil.runLater { Eros.setVisibility(true) } })
+        }
         add(NeutralizedButtonElement(guiRenderer, "menu.pause.exit".i18n(), "menu.pause.exit.confirm".i18n()) { guiRenderer.connection.network.disconnect(); ShutdownManager.shutdown() })
     }
 

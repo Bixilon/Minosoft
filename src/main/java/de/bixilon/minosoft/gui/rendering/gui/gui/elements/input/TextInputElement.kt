@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.string.StringUtil.codePointAtOrNull
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.util.KUtil.codePointAtOrNull
 
 open class TextInputElement(
     guiRenderer: GUIRenderer,

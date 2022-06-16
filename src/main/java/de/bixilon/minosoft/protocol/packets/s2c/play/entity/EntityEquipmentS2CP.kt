@@ -49,7 +49,7 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
             }
         }
-        this.equipment = equipment.toMap()
+        this.equipment = equipment
     }
 
     override fun handle(connection: PlayConnection) {

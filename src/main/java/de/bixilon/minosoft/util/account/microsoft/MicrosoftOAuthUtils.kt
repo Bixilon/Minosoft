@@ -20,7 +20,7 @@ import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.accounts.AccountStates
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftTokens
-import de.bixilon.minosoft.data.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.code.MicrosoftDeviceCode
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.connection.skin
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
-import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
+import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 
 class SkinC {
     /**
@@ -61,29 +61,29 @@ class SkinC {
     var hat by delegate(true)
 
 
-    @get:JsonIgnore val skinParts: Array<SettingsC2SP.SkinParts>
+    @get:JsonIgnore val skinParts: Array<SkinParts>
         get() {
-            val parts: MutableSet<SettingsC2SP.SkinParts> = mutableSetOf()
+            val parts: MutableSet<SkinParts> = mutableSetOf()
             if (cape) {
-                parts += SettingsC2SP.SkinParts.CAPE
+                parts += SkinParts.CAPE
             }
             if (jacket) {
-                parts += SettingsC2SP.SkinParts.JACKET
+                parts += SkinParts.JACKET
             }
             if (leftSleeve) {
-                parts += SettingsC2SP.SkinParts.LEFT_SLEEVE
+                parts += SkinParts.LEFT_SLEEVE
             }
             if (rightSleeve) {
-                parts += SettingsC2SP.SkinParts.RIGHT_SLEEVE
+                parts += SkinParts.RIGHT_SLEEVE
             }
             if (leftPants) {
-                parts += SettingsC2SP.SkinParts.LEFT_PANTS
+                parts += SkinParts.LEFT_PANTS
             }
             if (rightPants) {
-                parts += SettingsC2SP.SkinParts.RIGHT_PANTS
+                parts += SkinParts.RIGHT_PANTS
             }
             if (hat) {
-                parts += SettingsC2SP.SkinParts.HAT
+                parts += SkinParts.HAT
             }
             return parts.toTypedArray()
         }

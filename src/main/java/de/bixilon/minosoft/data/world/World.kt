@@ -119,7 +119,7 @@ class World(
 
     private fun updateWorldSize() {
         val nextSize = (chunkMax - chunkMin)
-        if (chunks.original.isNotEmpty()) {
+        if (chunks.unsafe.isNotEmpty()) {
             nextSize += 1 // own chunk
         }
         if (nextSize.x > MAX_CHUNKS_SIZE) {
@@ -154,7 +154,7 @@ class World(
 
     fun clear() {
         chunks.lock.lock()
-        chunks.original.clear()
+        chunks.unsafe.clear()
         chunkMin = Vec2i(Int.MAX_VALUE)
         chunkMax = Vec2i(Int.MIN_VALUE)
         updateWorldSize()
@@ -300,10 +300,19 @@ class World(
 
     operator fun get(aabb: AABB): Map<Vec3i, BlockState> {
         val ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
+        var run = 0
+        var chunk: Chunk? = null
+        var lastChunkPosition = Vec2i.EMPTY
         for (position in aabb.blockPositions) {
-            this[position]?.let { ret[position] = it }
+            val chunkPosition = position.chunkPosition
+            if (chunkPosition != lastChunkPosition || run++ == 0) {
+                chunk = this[chunkPosition]
+                lastChunkPosition = chunkPosition
+            }
+            val state = chunk?.get(position.inChunkPosition) ?: continue
+            ret[position] = state
         }
-        return ret.toMap()
+        return ret
     }
 
     fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {

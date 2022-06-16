@@ -36,7 +36,7 @@ open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) : 
             }
         }
 
-        factoryMap = ret.toMap()
+        factoryMap = ret
     }
 
     operator fun get(resourceLocation: ResourceLocation): T? {
