@@ -60,10 +60,8 @@ class FluidCullSectionPreparer(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+    private fun _prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val blocks = section.blocks
-        section.acquire()
-        neighbours.acquire()
 
         val random = Random(0L)
         var blockState: BlockState
@@ -256,8 +254,6 @@ class FluidCullSectionPreparer(
                 }
             }
         }
-        section.release()
-        neighbours.release()
     }
 
     private fun getCornerHeight(providedChunk: Chunk, providedChunkPosition: Vec2i, position: Vec3i, fluid: Fluid): Float {
@@ -310,6 +306,17 @@ class FluidCullSectionPreparer(
 
 
         return totalHeight / count
+    }
+
+    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+        section.acquire()
+        neighbours.acquire()
+        try {
+            _prepareFluid(chunkPosition, sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
+        } finally {
+            section.release()
+            neighbours.release()
+        }
     }
 
     private companion object {
