@@ -18,6 +18,7 @@ import de.bixilon.jiibles.TableStyles
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
+import de.bixilon.kutil.base64.Base64Util
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -289,5 +290,10 @@ object KUtil {
         ShutdownManager += {
             Platform.exit()
         }
+    }
+
+    @Deprecated("KUtil 1.14")
+    fun String.fromBase64(): ByteArray {
+        return Base64Util.DECODER.decode(this)
     }
 }

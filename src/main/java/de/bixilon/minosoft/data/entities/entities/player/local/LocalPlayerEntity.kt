@@ -81,6 +81,7 @@ import kotlin.math.pow
 class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
+    val privateKey: PlayerPrivateKey?,
 ) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username, account.properties) {
     val healthCondition = HealthCondition()
     val experienceCondition = ExperienceCondition()

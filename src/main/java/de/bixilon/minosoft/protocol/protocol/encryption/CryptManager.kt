@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.protocol.encryption
 
+import de.bixilon.minosoft.util.KUtil.fromBase64
 import java.nio.charset.StandardCharsets
-import java.security.Key
-import java.security.KeyFactory
-import java.security.MessageDigest
-import java.security.PublicKey
+import java.security.*
+import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -26,14 +25,12 @@ import javax.crypto.spec.IvParameterSpec
 object CryptManager {
     // little thanks to https://skmedix.github.io/ForgeJavaDocs/javadoc/forge/1.7.10-10.13.4.1614/net/minecraft/util/CryptManager.html
 
-    @JvmStatic
     fun createNewSharedKey(): SecretKey {
         val key = KeyGenerator.getInstance("AES")
         key.init(128)
         return key.generateKey()
     }
 
-    @JvmStatic
     fun getServerHash(serverId: String, publicKey: PublicKey, secretKey: SecretKey): ByteArray {
         return digestOperation(serverId.toByteArray(StandardCharsets.ISO_8859_1), secretKey.encoded, publicKey.encoded)
     }
@@ -46,14 +43,12 @@ object CryptManager {
         return digest.digest()
     }
 
-    @JvmStatic
     fun decodePublicKey(key: ByteArray): PublicKey {
         val keySpec = X509EncodedKeySpec(key)
         val keyFactory = KeyFactory.getInstance("RSA")
         return keyFactory.generatePublic(keySpec)
     }
 
-    @JvmStatic
     fun encryptData(key: Key, data: ByteArray): ByteArray {
         return cipherOperation(Cipher.ENCRYPT_MODE, key, data)
     }
@@ -68,10 +63,27 @@ object CryptManager {
         return cipher
     }
 
-    @JvmStatic
     fun createNetCipherInstance(opMode: Int, key: Key): Cipher {
         val cipher = Cipher.getInstance("AES/CFB8/NoPadding")
         cipher.init(opMode, key, IvParameterSpec(key.encoded))
         return cipher
+    }
+
+    fun getPlayerPrivateKey(key: String): PrivateKey {
+        return getPlayerPrivateKey(key.replace("\n", "").removePrefix("-----BEGIN RSA PRIVATE KEY-----").removeSuffix("-----END RSA PRIVATE KEY-----").fromBase64())
+    }
+
+    fun getPlayerPrivateKey(key: ByteArray): PrivateKey {
+        val rsa = KeyFactory.getInstance("RSA")
+        return rsa.generatePrivate(PKCS8EncodedKeySpec(key))
+    }
+
+    fun getPlayerPublicKey(key: String): PublicKey {
+        return getPlayerPublicKey(key.replace("\n", "").removePrefix("-----BEGIN RSA PUBLIC KEY-----").removeSuffix("-----END RSA PUBLIC KEY-----").fromBase64())
+    }
+
+    fun getPlayerPublicKey(key: ByteArray): PublicKey {
+        val rsa = KeyFactory.getInstance("RSA")
+        return rsa.generatePublic(X509EncodedKeySpec(key))
     }
 }

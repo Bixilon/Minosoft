@@ -15,7 +15,8 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.worker.TaskWorker
+import de.bixilon.kutil.concurrent.worker.tasks.Task
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -27,6 +28,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.physics.CollisionDetector
@@ -53,10 +55,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicke
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
+import de.bixilon.minosoft.util.KUtil.fromBase64
 import de.bixilon.minosoft.util.ServerAddress
-import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -96,9 +99,6 @@ class PlayConnection(
     var state by watched(PlayConnectionStates.WAITING)
 
     var rootNode: RootNode? = null
-
-    var privateKey: MinecraftPrivateKey? = null
-        private set
 
     override var error: Throwable?
         get() = super.error
@@ -168,40 +168,38 @@ class PlayConnection(
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.LOADING_ASSETS
-            val inner = CountUpAndDownLatch(3, latch)
-            DefaultThreadPool += {
+            val taskWorker = TaskWorker()
+            taskWorker += {
                 fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
                 registries.parentRegistries = version.registries
-                inner.dec()
             }
-            DefaultThreadPool += {
+
+            taskWorker += {
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Downloading and verifying assets. This might take a while..." }
                 assetsManager = AssetsLoader.create(profiles.resources, version, latch)
                 assetsManager.load(latch)
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
-                inner.dec()
             }
+            var privateKey: PlayerPrivateKey? = null
             if (version.requiresSignedChat) {
-                DefaultThreadPool += {
-                    try {
-                        privateKey = account.fetchKey(latch)
-                    } catch (exception: Throwable) {
-                        exception.printStackTrace()
-                    }
-                    inner.dec()
+                taskWorker += Task(optional = true) {
+                    val minecraftKey = account.fetchKey(latch) ?: return@Task
+                    privateKey = PlayerPrivateKey(
+                        signature = minecraftKey.signature.fromBase64(),
+                        private = CryptManager.getPlayerPrivateKey(minecraftKey.pair.private),
+                        public = CryptManager.getPlayerPublicKey(minecraftKey.pair.public),
+                    )
                 }
-            } else {
-                inner.dec()
             }
-            inner.await()
+            taskWorker.work(latch)
 
             state = PlayConnectionStates.LOADING
 
             language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
-            player = LocalPlayerEntity(account, this)
+            player = LocalPlayerEntity(account, this, privateKey)
 
             if (!RunConfiguration.DISABLE_RENDERING) {
                 val renderer = Rendering(this)
