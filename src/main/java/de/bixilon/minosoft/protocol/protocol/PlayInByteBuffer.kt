@@ -45,6 +45,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
+import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.BitByte.isBitMask
@@ -279,7 +280,11 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readPlayerPublicKey(): PlayerPublicKey? {
-        return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
+        if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
+            return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
+        }
+        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
+
     }
 
     fun readInstant(): Instant {

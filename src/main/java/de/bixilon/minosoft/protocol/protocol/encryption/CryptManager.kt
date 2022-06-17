@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -91,5 +92,10 @@ object CryptManager {
 
     fun createSignature(version: Version): Signature {
         return Signature.getInstance(if (version.versionId == ProtocolVersions.V_22W17A) "SHA1withRSA" else "SHA256withRSA")
+    }
+
+    fun PublicKey.encodeNetwork(): String {
+        check(this.algorithm == "RSA") { "Can only encode RSA keys" }
+        return "-----BEGIN RSA PRIVATE KEY-----\n" + Base64.getMimeEncoder().encodeToString(this.encoded) + "\n-----END RSA PRIVATE KEY-----\n"
     }
 }
