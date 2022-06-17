@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.protocol.encryption
 
+import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil.fromBase64
 import java.nio.charset.StandardCharsets
 import java.security.*
@@ -85,5 +87,9 @@ object CryptManager {
     fun getPlayerPublicKey(key: ByteArray): PublicKey {
         val rsa = KeyFactory.getInstance("RSA")
         return rsa.generatePublic(X509EncodedKeySpec(key))
+    }
+
+    fun createSignature(version: Version): Signature {
+        return Signature.getInstance(if (version.versionId == ProtocolVersions.V_22W17A) "SHA1withRSA" else "SHA256withRSA")
     }
 }

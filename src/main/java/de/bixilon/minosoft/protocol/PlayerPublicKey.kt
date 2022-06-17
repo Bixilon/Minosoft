@@ -13,18 +13,27 @@
 
 package de.bixilon.minosoft.protocol
 
+import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
+import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
+import de.bixilon.minosoft.util.KUtil.fromBase64
+import java.security.PublicKey
+import java.time.Instant
 
 class PlayerPublicKey(
-    val expiresAt: Long,
-    val keyString: String,
-    val signature: String,
+    val expiresAt: Instant,
+    val publicKey: PublicKey,
+    val signature: ByteArray,
 ) {
 
-    constructor(nbt: JsonObject) : this(nbt["expires_at"].toLong(), nbt["key"].toString(), nbt["signature"].toString())
+    constructor(nbt: JsonObject) : this(Instant.ofEpochMilli(nbt["expires_at"].toLong()), CryptManager.getPlayerPublicKey(nbt["key"].toString()), nbt["signature"].toString().fromBase64())
 
     fun toNbt(): JsonObject {
-        TODO()
+        return mapOf(
+            "expires_at" to expiresAt.epochSecond,
+            "key" to publicKey.encoded.toBase64(),
+            "signature" to signature.toBase64(),
+        )
     }
 }

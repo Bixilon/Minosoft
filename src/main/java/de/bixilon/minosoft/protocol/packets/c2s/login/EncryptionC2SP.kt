@@ -19,21 +19,16 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.security.PublicKey
-import javax.crypto.SecretKey
 
 @LoadPacket(state = ProtocolStates.LOGIN)
 class EncryptionC2SP private constructor(
     val secret: ByteArray,
     val nonce: Any,
 ) : PlayC2SPacket {
-
-    constructor(secretKey: SecretKey, nonce: ByteArray, key: PublicKey) : this(CryptManager.encryptData(key, secretKey.encoded), CryptManager.encryptData(key, nonce))
 
     constructor(secret: ByteArray, nonce: ByteArray) : this(secret, nonce as Any)
     constructor(secret: ByteArray, nonce: SignatureData) : this(secret, nonce as Any)

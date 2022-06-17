@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.util.collections.bytes.HeapArrayByteList
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
@@ -66,7 +67,7 @@ open class OutByteBuffer() {
 
     fun writeString(string: String) {
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
-        val bytes = string.toByteArray(StandardCharsets.UTF_8)
+        val bytes = string.encodeNetwork()
         writeVarInt(bytes.size)
         writeUnprefixedByteArray(bytes)
     }

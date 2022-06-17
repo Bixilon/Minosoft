@@ -58,7 +58,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
-import de.bixilon.minosoft.util.KUtil.fromBase64
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -185,8 +184,12 @@ class PlayConnection(
             if (version.requiresSignedChat) {
                 taskWorker += Task(optional = true) {
                     val minecraftKey = account.fetchKey(latch) ?: return@Task
+                    if (!minecraftKey.isSignatureCorrect()) {
+                        throw IllegalArgumentException("Yggdrasil signature mismatch!")
+                    }
                     privateKey = PlayerPrivateKey(
-                        signature = minecraftKey.signature.fromBase64(),
+                        expiresAt = minecraftKey.expiresAt,
+                        signature = minecraftKey.signatureBytes,
                         private = CryptManager.getPlayerPrivateKey(minecraftKey.pair.private),
                         public = CryptManager.getPlayerPublicKey(minecraftKey.pair.public),
                     )

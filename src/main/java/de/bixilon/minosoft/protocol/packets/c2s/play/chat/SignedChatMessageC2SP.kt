@@ -24,7 +24,7 @@ import java.time.Instant
 
 @LoadPacket(threadSafe = false)
 class SignedChatMessageC2SP(
-    val message: String,
+    val message: ByteArray,
     val time: Instant = Instant.now(),
     val signature: SignatureData? = null,
     val previewed: Boolean = false,
@@ -34,13 +34,11 @@ class SignedChatMessageC2SP(
         if (buffer.versionId == ProtocolVersions.V_22W17A) {
             buffer.writeInstant(time)
         }
-        buffer.writeString(message)
+        buffer.writeByteArray(message)
         if (buffer.versionId >= ProtocolVersions.V_22W18A) {
             buffer.writeInstant(time)
         }
-        if (buffer.versionId >= ProtocolVersions.V_22W17A) {
-            buffer.writeSignatureData(signature ?: SignatureData.EMPTY)
-        }
+        buffer.writeSignatureData(signature ?: SignatureData.EMPTY)
         if (buffer.versionId >= ProtocolVersions.V_22W19A) {
             buffer.writeBoolean(previewed)
         }

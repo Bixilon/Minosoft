@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.login
 
+import com.google.common.primitives.Longs
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.minosoft.protocol.PacketErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -22,17 +23,19 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
+import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.math.BigInteger
+import java.security.SecureRandom
 import javax.crypto.Cipher
 
 @LoadPacket(state = ProtocolStates.LOGIN, threadSafe = false)
 class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val serverId: String = buffer.readString()
     val publicKey: ByteArray = buffer.readByteArray()
-    val verifyToken: ByteArray = buffer.readByteArray()
+    val nonce: ByteArray = buffer.readByteArray()
 
     override fun handle(connection: PlayConnection) {
         val secretKey = CryptManager.createNewSharedKey()
@@ -43,14 +46,27 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val encryptCipher = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey)
         val decryptCipher = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey)
 
+        val encryptedSecretKey = CryptManager.encryptData(publicKey, secretKey.encoded)
+        val privateKey = connection.player.privateKey
+        if (connection.version.requiresSignedChat && privateKey != null) {
+            val salt = SecureRandom().nextLong()
 
-        connection.sendPacket(EncryptionC2SP(secretKey, verifyToken, publicKey))
+            val signature = CryptManager.createSignature(connection.version)
+            signature.initSign(privateKey.private)
+            signature.update(nonce)
+            signature.update(Longs.toByteArray(salt))
+            val signed = signature.sign()
+
+            connection.sendPacket(EncryptionC2SP(encryptedSecretKey, SignatureData(salt, signed)))
+        } else {
+            connection.sendPacket(EncryptionC2SP(encryptedSecretKey, CryptManager.encryptData(secretKey, nonce)))
+        }
 
         connection.network.setupEncryption(encryptCipher, decryptCipher)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Encryption request (serverId=$serverId, publicKey=${publicKey.toBase64()}, verifyToken=${verifyToken.toBase64()})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Encryption request (serverId=$serverId, publicKey=${publicKey.toBase64()}, nonce=${nonce.toBase64()})" }
     }
 
     companion object : PacketErrorHandler {

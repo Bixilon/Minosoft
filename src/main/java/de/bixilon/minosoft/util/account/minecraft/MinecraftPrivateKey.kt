@@ -13,8 +13,12 @@
 
 package de.bixilon.minosoft.util.account.minecraft
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.minosoft.util.KUtil.fromBase64
+import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
+import java.nio.charset.StandardCharsets
 import java.time.Instant
 
 data class MinecraftPrivateKey(
@@ -23,9 +27,16 @@ data class MinecraftPrivateKey(
     @JsonProperty("expiresAt") val expiresAt: Instant,
     @JsonProperty("refreshedAfter") val refreshedAfter: Instant,
 ) {
+    @get:JsonIgnore val signatureBytes: ByteArray by lazy { signature.fromBase64() }
 
     fun isExpired(): Boolean {
         val now = Instant.now()
         return now.isAfter(expiresAt) || now.isAfter(refreshedAfter)
+    }
+
+    fun isSignatureCorrect(): Boolean {
+        val bytes = (expiresAt.toEpochMilli().toString() + pair.public).toByteArray(StandardCharsets.US_ASCII)
+
+        return YggdrasilUtil.verify(bytes, signatureBytes)
     }
 }

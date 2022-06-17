@@ -77,7 +77,13 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     }
 
     fun writePublicKey(key: PlayerPublicKey) {
-        writeNBT(key.toNbt())
+        if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
+            writeNBT(key.toNbt())
+        } else {
+            writeInstant(key.expiresAt)
+            writeByteArray(key.publicKey.encoded)
+            writeByteArray(key.signature)
+        }
     }
 
     fun writeSignatureData(signature: SignatureData) {

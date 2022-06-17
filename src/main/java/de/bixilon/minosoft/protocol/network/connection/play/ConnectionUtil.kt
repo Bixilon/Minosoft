@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import com.google.common.primitives.Longs
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.commands.stack.CommandStack
@@ -24,16 +25,23 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
+import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
+import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.terminal.cli.CLI.removeDuplicatedWhitespaces
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.security.SecureRandom
+import java.time.Instant
 
 class ConnectionUtil(
     private val connection: PlayConnection,
 ) {
+    private val random = SecureRandom()
 
     fun sendDebugMessage(message: Any) {
         val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
@@ -60,13 +68,29 @@ class ConnectionUtil(
             return
         }
         Log.log(LogMessageType.CHAT_OUT) { message }
-        if (!connection.version.requiresSignedChat) {
+        val privateKey = connection.player.privateKey?.private
+        if (privateKey == null || !connection.version.requiresSignedChat) {
             return connection.sendPacket(ChatMessageC2SP(message))
         }
-        TODO("Can not send signed chat!")
+
+        val signature = CryptManager.createSignature(connection.version)
+
+        val messageBytes = message.encodeNetwork()
+        val salt = random.nextLong()
+        val time = Instant.now()
+        val uuid = connection.player.uuid
+
+        signature.initSign(privateKey)
+        signature.update(Longs.toByteArray(salt))
+        signature.update(Longs.toByteArray(uuid.leastSignificantBits))
+        signature.update(Longs.toByteArray(uuid.mostSignificantBits))
+        signature.update(Longs.toByteArray(time.epochSecond))
+        signature.update(messageBytes)
+
+        connection.sendPacket(SignedChatMessageC2SP(messageBytes, time = time, signature = SignatureData(salt, signature.sign()), false))
     }
 
-    @Deprecated("message will re removed asa brigadier is fully implemented")
+    @Deprecated("message will re removed as soon as brigadier is fully implemented")
     fun sendCommand(message: String, stack: CommandStack) {
         if (!connection.version.requiresSignedChat) {
             return sendChatMessage(message)

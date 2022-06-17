@@ -11,18 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.player.local
+package de.bixilon.minosoft.protocol
 
-import de.bixilon.minosoft.protocol.PlayerPublicKey
-import java.security.PrivateKey
-import java.security.PublicKey
-import java.time.Instant
+import java.nio.charset.StandardCharsets
 
-class PlayerPrivateKey(
-    val expiresAt: Instant,
-    val signature: ByteArray,
-    val private: PrivateKey,
-    val public: PublicKey,
-) {
-    val playerKey: PlayerPublicKey = PlayerPublicKey(expiresAt, public, signature)
+object ProtocolUtil {
+
+    fun String.encodeNetwork(): ByteArray {
+        return this.toByteArray(StandardCharsets.UTF_8)
+    }
 }

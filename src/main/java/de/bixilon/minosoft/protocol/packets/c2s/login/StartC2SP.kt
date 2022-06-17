@@ -26,10 +26,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(state = ProtocolStates.LOGIN)
 class StartC2SP(
     val username: String,
-    val publicKey: PlayerPublicKey? = null,
+    val publicKey: PlayerPublicKey?,
 ) : PlayC2SPacket {
 
-    constructor(player: LocalPlayerEntity) : this(player.name)
+    constructor(player: LocalPlayerEntity) : this(player.name, player.privateKey?.playerKey)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(username)
