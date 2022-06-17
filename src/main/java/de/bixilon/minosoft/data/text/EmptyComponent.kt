@@ -20,6 +20,8 @@ object EmptyComponent : ChatComponent {
     override val legacyText: String = ""
     override val message: String = ""
 
+    override fun getJson(): Any = emptyList<Any>()
+
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> = nodes
 
     override fun setFallbackColor(color: RGBColor) = this

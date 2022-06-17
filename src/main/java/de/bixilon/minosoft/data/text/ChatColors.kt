@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
+import de.bixilon.kutil.collections.map.bi.AbstractBiMap
+import de.bixilon.kutil.collections.map.bi.MutableBiMap
+
 object ChatColors {
     @JvmField
     val BLACK = RGBColor(0, 0, 0)
@@ -64,12 +68,12 @@ object ChatColors {
 
 
     val VALUES: Array<RGBColor>
-    val NAME_MAP: Map<String, RGBColor>
+    val NAME_MAP: AbstractBiMap<String, RGBColor>
 
 
     init {
         val values: MutableList<RGBColor> = mutableListOf()
-        val nameMap: MutableMap<String, RGBColor> = mutableMapOf()
+        val nameMap: MutableBiMap<String, RGBColor> = mutableBiMapOf()
 
 
         for (field in this::class.java.declaredFields) {

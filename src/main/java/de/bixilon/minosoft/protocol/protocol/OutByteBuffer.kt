@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.util.collections.bytes.HeapArrayByteList
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.nbtType
 import java.nio.ByteBuffer
@@ -61,8 +62,12 @@ open class OutByteBuffer() {
         writeInt(value.toInt())
     }
 
+    fun writeJson(json: Any) {
+        writeString(Jackson.MAPPER.writeValueAsString(json))
+    }
+
     fun writeChatComponent(chatComponent: ChatComponent) {
-        writeString(chatComponent.legacyText)
+        writeJson(chatComponent.getJson())
     }
 
     fun writeString(string: String) {
@@ -187,11 +192,13 @@ open class OutByteBuffer() {
                 writeUnprefixedByteArray(bytes)
             }
             is Collection<*> -> {
-                this.writeNBTTagType(if (tag.isEmpty()) {
-                    NBTTagTypes.END
-                } else {
-                    tag.iterator().next().nbtType
-                })
+                this.writeNBTTagType(
+                    if (tag.isEmpty()) {
+                        NBTTagTypes.END
+                    } else {
+                        tag.iterator().next().nbtType
+                    }
+                )
 
                 writeInt(tag.size)
 
@@ -223,11 +230,13 @@ open class OutByteBuffer() {
     }
 
     fun writeBoolean(value: Boolean) {
-        writeByte(if (value) {
-            0x01
-        } else {
-            0x00
-        })
+        writeByte(
+            if (value) {
+                0x01
+            } else {
+                0x00
+            }
+        )
     }
 
     fun writeUnprefixedString(string: String) {

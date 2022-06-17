@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
@@ -169,6 +170,26 @@ open class TextComponent(
         clickEvent?.applyJavaFX(text)
         hoverEvent?.applyJavaFX(text)
         return nodes
+    }
+
+    override fun getJson(): Any {
+        if (message.isEmpty()) {
+            return emptyMap<String, Any>()
+        }
+        val json: MutableJsonObject = mutableMapOf(
+            "text" to message
+        )
+
+        if (PreChatFormattingCodes.OBFUSCATED in formatting) json["obfuscated"] = true
+        if (PreChatFormattingCodes.BOLD in formatting) json["bold"] = true
+        if (PreChatFormattingCodes.STRIKETHROUGH in formatting) json["strikethrough"] = true
+        if (PreChatFormattingCodes.UNDERLINED in formatting) json["underlined"] = true
+        if (PreChatFormattingCodes.ITALIC in formatting) json["italic"] = true
+
+
+        color?.let { json["color"] = ChatColors.NAME_MAP.getKey(it) ?: it.toString() }
+
+        return json
     }
 
     fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting, clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {

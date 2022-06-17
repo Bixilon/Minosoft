@@ -197,6 +197,20 @@ class BaseComponent : ChatComponent {
         }
     }
 
+    override fun getJson(): Any {
+        if (parts.isEmpty()) {
+            return emptyList<Any>()
+        }
+        if (parts.size == 1) {
+            return parts.first().getJson()
+        }
+        val list = mutableListOf<Any>()
+        for (part in parts) {
+            list += part.getJson()
+        }
+        return list
+    }
+
     override fun cut(length: Int) {
         if (length <= 0) {
             throw IllegalArgumentException("Can not cut <= 0: $length")

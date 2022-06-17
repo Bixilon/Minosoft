@@ -144,4 +144,28 @@ internal class ChatComponentTest {
         val actual = """{text":"Test"}""".chat()
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun testJson1() {
+        val text = TextComponent("dummy")
+        assertEquals(text.getJson(), mapOf("text" to "dummy"))
+    }
+
+    @Test
+    fun testJson2() {
+        val text = ChatComponent.of("dummy")
+        assertEquals(text.getJson(), mapOf("text" to "dummy"))
+    }
+
+    @Test
+    fun testJson3() {
+        val text = ChatComponent.of("dummy§knext")
+        assertEquals(text.getJson(), listOf(mapOf("text" to "dummy"), mapOf("text" to "next", "obfuscated" to true)))
+    }
+
+    @Test
+    fun testJson4() {
+        val text = ChatComponent.of("dummy§anext")
+        assertEquals(text.getJson(), listOf(mapOf("text" to "dummy"), mapOf("text" to "next", "color" to "green")))
+    }
 }

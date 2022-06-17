@@ -45,6 +45,9 @@ interface ChatComponent {
      */
     val message: String
 
+
+    fun getJson(): Any
+
     /**
      * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
      */
