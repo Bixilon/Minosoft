@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -146,18 +147,20 @@ class Chunk(
                 setBlockEntity(position, blockEntity)
             }
         }
-        data.light?.let {
-            for ((index, light) in it.withIndex()) {
-                light ?: continue
-                val section = getOrPut(index + lowestSection) ?: return@let
-                section.light = light
+        if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
+            data.light?.let {
+                for ((index, light) in it.withIndex()) {
+                    light ?: continue
+                    val section = getOrPut(index + lowestSection) ?: return@let
+                    section.light = light
+                }
             }
-        }
-        data.bottomLight?.let {
-            bottomLight = it
-        }
-        data.topLight?.let {
-            topLight = it
+            data.bottomLight?.let {
+                bottomLight = it
+            }
+            data.topLight?.let {
+                topLight = it
+            }
         }
         data.biomeSource?.let {
             this.biomeSource = it
