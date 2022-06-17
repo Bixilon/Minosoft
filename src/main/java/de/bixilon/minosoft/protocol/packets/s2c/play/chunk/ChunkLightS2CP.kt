@@ -14,7 +14,10 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.world.ChunkData
+import de.bixilon.minosoft.protocol.PacketSkipper
+import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -69,5 +72,12 @@ class ChunkLightS2CP @JvmOverloads constructor(buffer: PlayInByteBuffer, chunkPo
     override fun handle(connection: PlayConnection) {
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
         chunk.setData(chunkData)
+    }
+
+    companion object : PacketSkipper {
+
+        override fun canSkip(connection: Connection): Boolean {
+            return StaticConfiguration.IGNORE_SERVER_LIGHT
+        }
     }
 }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.factory
 
 import de.bixilon.minosoft.protocol.PacketErrorHandler
+import de.bixilon.minosoft.protocol.PacketSkipper
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.factory.factories.PacketFactory
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
@@ -23,16 +24,21 @@ class S2CPacketType constructor(
     val state: ProtocolStates,
     val clazz: Class<out S2CPacket>,
     private val packetErrorHandler: PacketErrorHandler?,
+    private val packetSkipper: PacketSkipper?,
     val annotation: LoadPacket?,
     val factory: PacketFactory? = null,
     override val threadSafe: Boolean = annotation!!.threadSafe,
     override val lowPriority: Boolean = annotation!!.lowPriority,
-) : AbstractPacketType, PacketErrorHandler {
+) : AbstractPacketType, PacketErrorHandler, PacketSkipper {
     override val direction = PacketDirection.SERVER_TO_CLIENT
 
 
     override fun onError(error: Throwable, connection: Connection) {
         packetErrorHandler?.onError(error, connection)
+    }
+
+    override fun canSkip(connection: Connection): Boolean {
+        return packetSkipper?.canSkip(connection) ?: false
     }
 
     override fun toString(): String {

@@ -49,6 +49,9 @@ class PacketDecoder(
         if (packetType.clazz == S2CPacket::class.java) {
             throw S2CPacketNotImplementedException(packetId, state, version)
         }
+        if (packetType.canSkip(client.connection)) {
+            return
+        }
 
         val packet = try {
             readPacket(packetType, data)
