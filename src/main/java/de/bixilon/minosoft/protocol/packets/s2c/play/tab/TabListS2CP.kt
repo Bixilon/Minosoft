@@ -52,7 +52,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     } else {
                         null
                     }
-                    val publicKey = if (buffer.versionId >= ProtocolVersions.V_22W18A) buffer.readPlayerPublicKey() else null
+                    val publicKey = if (buffer.versionId >= ProtocolVersions.V_22W18A) buffer.readOptional { buffer.readPlayerPublicKey() } else null
                     data = TabListItemData(
                         name = name,
                         properties = properties,
