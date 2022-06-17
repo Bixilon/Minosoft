@@ -59,7 +59,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             connection.sendPacket(EncryptionC2SP(encryptedSecretKey, SignatureData(salt, signed)))
         } else {
-            connection.sendPacket(EncryptionC2SP(encryptedSecretKey, CryptManager.encryptData(secretKey, nonce)))
+            connection.sendPacket(EncryptionC2SP(encryptedSecretKey, CryptManager.encryptData(publicKey, nonce)))
         }
 
         connection.network.setupEncryption(encryptCipher, decryptCipher)
