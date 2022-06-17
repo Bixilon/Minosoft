@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder
 import com.google.common.primitives.Longs
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
@@ -75,19 +76,19 @@ class ConnectionUtil(
 
         val signature = CryptManager.createSignature(connection.version)
 
-        val messageBytes = message.encodeNetwork()
         val salt = random.nextLong()
         val time = Instant.now()
         val uuid = connection.player.uuid
 
         signature.initSign(privateKey)
-        signature.update(Longs.toByteArray(salt))
-        signature.update(Longs.toByteArray(uuid.leastSignificantBits))
-        signature.update(Longs.toByteArray(uuid.mostSignificantBits))
-        signature.update(Longs.toByteArray(time.epochSecond))
-        signature.update(messageBytes)
 
-        connection.sendPacket(SignedChatMessageC2SP(messageBytes, time = time, signature = SignatureData(salt, signature.sign()), false))
+        signature.update(Longs.toByteArray(salt))
+        signature.update(Longs.toByteArray(uuid.mostSignificantBits))
+        signature.update(Longs.toByteArray(uuid.leastSignificantBits))
+        signature.update(Longs.toByteArray(time.epochSecond))
+        signature.update("""{"text":"${String(JsonStringEncoder.getInstance().quoteAsString(message))}"}""".encodeNetwork())
+
+        connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, signature = SignatureData(salt, signature.sign()), false))
     }
 
     @Deprecated("message will re removed as soon as brigadier is fully implemented")

@@ -31,9 +31,7 @@ class PlayerPublicKey(
 ) {
 
     init {
-        val bytes = (expiresAt.toEpochMilli().toString() + publicKey.encodeNetwork()).toByteArray(StandardCharsets.US_ASCII)
-
-        check(YggdrasilUtil.verify(bytes, signature)) { "Yggdrasil signature invalid" }
+        check(isSignatureCorrect()) { "Yggdrasil signature invalid" }
     }
 
     constructor(nbt: JsonObject) : this(Instant.ofEpochMilli(nbt["expires_at"].toLong()), CryptManager.getPlayerPublicKey(nbt["key"].toString()), nbt["signature"].toString().fromBase64())
@@ -44,5 +42,11 @@ class PlayerPublicKey(
             "key" to publicKey.encoded.toBase64(),
             "signature" to signature.toBase64(),
         )
+    }
+
+    private fun isSignatureCorrect(): Boolean {
+        val bytes = (expiresAt.toEpochMilli().toString() + publicKey.encodeNetwork()).toByteArray(StandardCharsets.US_ASCII)
+
+        return YggdrasilUtil.verify(bytes, signature)
     }
 }

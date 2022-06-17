@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol.encryption
 
-class SignatureData(
+data class SignatureData(
     val salt: Long,
     val signature: ByteArray,
 ) {

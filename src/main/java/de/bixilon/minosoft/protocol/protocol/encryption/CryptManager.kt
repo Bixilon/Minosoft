@@ -26,6 +26,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 
 object CryptManager {
+    private val MIME_ENCODER = Base64.getMimeEncoder(76, "\n".toByteArray(StandardCharsets.UTF_8))
     // little thanks to https://skmedix.github.io/ForgeJavaDocs/javadoc/forge/1.7.10-10.13.4.1614/net/minecraft/util/CryptManager.html
 
     fun createNewSharedKey(): SecretKey {
@@ -96,6 +97,6 @@ object CryptManager {
 
     fun PublicKey.encodeNetwork(): String {
         check(this.algorithm == "RSA") { "Can only encode RSA keys" }
-        return "-----BEGIN RSA PRIVATE KEY-----\n" + Base64.getMimeEncoder().encodeToString(this.encoded) + "\n-----END RSA PRIVATE KEY-----\n"
+        return "-----BEGIN RSA PUBLIC KEY-----\n" + MIME_ENCODER.encodeToString(this.encoded) + "\n-----END RSA PUBLIC KEY-----\n"
     }
 }

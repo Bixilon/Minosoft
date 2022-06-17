@@ -284,7 +284,6 @@ class PlayInByteBuffer : InByteBuffer {
             return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
         }
         return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
-
     }
 
     fun readInstant(): Instant {
