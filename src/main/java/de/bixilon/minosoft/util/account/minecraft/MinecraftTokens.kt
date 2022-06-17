@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.accounts.types.microsoft
+package de.bixilon.minosoft.util.account.minecraft
 
 data class MinecraftTokens(
     val accessToken: String,

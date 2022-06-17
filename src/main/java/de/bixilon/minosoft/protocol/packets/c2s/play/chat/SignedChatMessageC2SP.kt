@@ -15,20 +15,38 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.chat
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.time.Instant
 
 @LoadPacket(threadSafe = false)
-class ChatMessageC2SP(
+class SignedChatMessageC2SP(
     val message: String,
+    val time: Instant = Instant.now(),
+    val signature: SignatureData? = null,
+    val previewed: Boolean = false,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
+        if (buffer.versionId == ProtocolVersions.V_22W17A) {
+            buffer.writeInstant(time)
+        }
         buffer.writeString(message)
+        if (buffer.versionId >= ProtocolVersions.V_22W18A) {
+            buffer.writeInstant(time)
+        }
+        if (buffer.versionId >= ProtocolVersions.V_22W17A) {
+            buffer.writeSignatureData(signature ?: SignatureData.EMPTY)
+        }
+        if (buffer.versionId >= ProtocolVersions.V_22W19A) {
+            buffer.writeBoolean(previewed)
+        }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat message (message=$message)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Signed chat message (message=$message, time=$time, signature=$signature, previewed=$previewed)" }
     }
 }

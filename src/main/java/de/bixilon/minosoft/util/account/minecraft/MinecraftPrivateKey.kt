@@ -11,24 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.account.microsoft.minecraft
+package de.bixilon.minosoft.util.account.minecraft
 
-import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.util.account.microsoft.AuthenticationResponse
-import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonProperty
+import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
+import java.time.Instant
 
-data class MinecraftBearerResponse(
-    val username: UUID,
-    val roles: List<Any>,
-    val accessToken: String,
-    val tokenType: AuthenticationResponse.TokenTypes,
-    val expiresIn: Int,
+data class MinecraftPrivateKey(
+    @JsonProperty("keyPair") val pair: MinecraftKeyPair,
+    @JsonProperty("publicKeySignature") val signature: String,
+    @JsonProperty("expiresAt") val expiresAt: Instant,
+    @JsonProperty("refreshedAfter") val refreshedAfter: Instant,
 ) {
-    val expires = (TimeUtil.millis / 1000) + expiresIn
 
-
-    fun saveTokens(): MinecraftTokens {
-        return MinecraftTokens(accessToken = accessToken, expires = expires)
+    fun isExpired(): Boolean {
+        val now = Instant.now()
+        return now.isAfter(expiresAt) || now.isAfter(refreshedAfter)
     }
 }

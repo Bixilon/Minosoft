@@ -56,6 +56,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.ServerAddress
+import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -95,6 +96,9 @@ class PlayConnection(
     var state by watched(PlayConnectionStates.WAITING)
 
     var rootNode: RootNode? = null
+
+    var privateKey: MinecraftPrivateKey? = null
+        private set
 
     override var error: Throwable?
         get() = super.error
@@ -164,7 +168,7 @@ class PlayConnection(
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.LOADING_ASSETS
-            val inner = CountUpAndDownLatch(2, latch)
+            val inner = CountUpAndDownLatch(3, latch)
             DefaultThreadPool += {
                 fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
@@ -176,6 +180,18 @@ class PlayConnection(
                 assetsManager = AssetsLoader.create(profiles.resources, version, latch)
                 assetsManager.load(latch)
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
+                inner.dec()
+            }
+            if (version.requiresSignedChat) {
+                DefaultThreadPool += {
+                    try {
+                        privateKey = account.fetchKey(latch)
+                    } catch (exception: Throwable) {
+                        exception.printStackTrace()
+                    }
+                    inner.dec()
+                }
+            } else {
                 inner.dec()
             }
             inner.await()

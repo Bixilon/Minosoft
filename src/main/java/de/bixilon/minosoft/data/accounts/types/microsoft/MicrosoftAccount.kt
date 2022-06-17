@@ -25,6 +25,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
+import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
+import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -37,6 +39,7 @@ class MicrosoftAccount(
     username: String,
     @field:JsonProperty private var msa: MicrosoftTokens,
     @field:JsonProperty private var minecraft: MinecraftTokens,
+    @field:JsonProperty var key: MinecraftPrivateKey? = null,
     override val properties: PlayerProperties?,
 ) : Account(username) {
     override val id: String = uuid.toString()
@@ -136,6 +139,18 @@ class MicrosoftAccount(
         } catch (exception: Throwable) {
             refreshMinecraftToken(latch)
         }
+    }
+
+    override fun fetchKey(latch: CountUpAndDownLatch?): MinecraftPrivateKey {
+        var key = key
+        if (key == null || key.isExpired()) {
+            key = AccountUtil.fetchPrivateKey(minecraft)
+            this.key = key
+            save()
+            Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Fetched private key for $this. Expires at ${key.expiresAt}" }
+        }
+
+        return key
     }
 
     override fun toString(): String {

@@ -303,6 +303,7 @@
         <lwjgl.version>3.3.1</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
         <netty.version>4.1.77.Final</netty.version>
+        <jackson.version>2.13.3</jackson.version>
     </properties>
 
 
@@ -484,7 +485,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.13.3</version>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kamranzafar</groupId>

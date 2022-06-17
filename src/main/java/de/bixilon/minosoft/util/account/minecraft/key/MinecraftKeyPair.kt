@@ -11,24 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.account.microsoft.minecraft
+package de.bixilon.minosoft.util.account.minecraft.key
 
-import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.util.account.microsoft.AuthenticationResponse
-import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonProperty
 
-data class MinecraftBearerResponse(
-    val username: UUID,
-    val roles: List<Any>,
-    val accessToken: String,
-    val tokenType: AuthenticationResponse.TokenTypes,
-    val expiresIn: Int,
-) {
-    val expires = (TimeUtil.millis / 1000) + expiresIn
-
-
-    fun saveTokens(): MinecraftTokens {
-        return MinecraftTokens(accessToken = accessToken, expires = expires)
-    }
-}
+data class MinecraftKeyPair(
+    @JsonProperty("privateKey") val private: String,
+    @JsonProperty("publicKey") val public: String,
+)

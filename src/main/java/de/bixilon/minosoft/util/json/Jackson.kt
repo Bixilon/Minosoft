@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.databind.type.MapType
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import de.bixilon.minosoft.util.json.vec.Vec2Serializer
@@ -31,14 +32,17 @@ object Jackson {
         .disable(JsonParser.Feature.AUTO_CLOSE_SOURCE)
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         .build()
-        .registerModule(KotlinModule.Builder()
-            .withReflectionCacheSize(512)
-            .configure(KotlinFeature.NullToEmptyCollection, false)
-            .configure(KotlinFeature.NullToEmptyMap, false)
-            .configure(KotlinFeature.NullIsSameAsDefault, false)
-            .configure(KotlinFeature.SingletonSupport, false)
-            .configure(KotlinFeature.StrictNullChecks, false)
-            .build())
+        .registerModule(
+            KotlinModule.Builder()
+                .withReflectionCacheSize(512)
+                .configure(KotlinFeature.NullToEmptyCollection, false)
+                .configure(KotlinFeature.NullToEmptyMap, false)
+                .configure(KotlinFeature.NullIsSameAsDefault, false)
+                .configure(KotlinFeature.SingletonSupport, false)
+                .configure(KotlinFeature.StrictNullChecks, false)
+                .build()
+        )
+        .registerModule(JavaTimeModule())
         .registerModule(ResourceLocationSerializer)
         .registerModule(RGBColorSerializer)
         .registerModule(ChatComponentColorSerializer)

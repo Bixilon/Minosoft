@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.util.account
 
 import de.bixilon.kutil.uuid.UUIDUtil.trim
-import de.bixilon.minosoft.data.accounts.types.microsoft.MinecraftTokens
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftAPIException
 import de.bixilon.minosoft.util.account.microsoft.minecraft.MinecraftProfile
+import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
+import de.bixilon.minosoft.util.account.minecraft.MinecraftTokens
 import de.bixilon.minosoft.util.http.HTTP2.getJson
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.json.Jackson
@@ -28,6 +29,7 @@ import java.util.*
 object AccountUtil {
     private const val GET_PROFILE_URL = "https://api.minecraftservices.com/minecraft/profile"
     private const val MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join"
+    private const val CERTIFICATE_URL = "https://api.minecraftservices.com/player/certificates"
 
     fun fetchMinecraftProfile(token: MinecraftTokens): MinecraftProfile {
         val response = GET_PROFILE_URL.getJson(mapOf(
@@ -54,5 +56,19 @@ object AccountUtil {
         }
 
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang server join successful (username=$username, serverId=$serverId)" }
+    }
+
+    fun fetchPrivateKey(token: MinecraftTokens): MinecraftPrivateKey {
+        val response = emptyMap<String, Any>().postJson(
+            CERTIFICATE_URL, mapOf(
+                "Authorization" to "Bearer ${token.accessToken}",
+            )
+        )
+
+        if (response.statusCode != 200) {
+            throw MinecraftAPIException(response)
+        }
+
+        return Jackson.MAPPER.convertValue(response.body, MinecraftPrivateKey::class.java)
     }
 }

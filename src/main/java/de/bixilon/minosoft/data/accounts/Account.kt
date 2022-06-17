@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import java.util.*
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -81,4 +82,6 @@ abstract class Account(
             }
         }
     }
+
+    open fun fetchKey(latch: CountUpAndDownLatch?): MinecraftPrivateKey? = null
 }

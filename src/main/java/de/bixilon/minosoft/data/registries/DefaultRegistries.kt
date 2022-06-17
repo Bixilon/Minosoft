@@ -104,5 +104,4 @@ object DefaultRegistries {
         initialized = true
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loaded default registries!" }
     }
-
 }

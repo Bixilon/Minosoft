@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
+import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -59,7 +60,18 @@ class ConnectionUtil(
             return
         }
         Log.log(LogMessageType.CHAT_OUT) { message }
-        connection.sendPacket(ChatMessageC2SP(message))
+        if (!connection.version.requiresSignedChat) {
+            return connection.sendPacket(ChatMessageC2SP(message))
+        }
+        TODO("Can not send signed chat!")
+    }
+
+    @Deprecated("message will re removed asa brigadier is fully implemented")
+    fun sendCommand(message: String, stack: CommandStack) {
+        if (!connection.version.requiresSignedChat) {
+            return sendChatMessage(message)
+        }
+        TODO("Can not send signed chat!")
     }
 
     fun prepareSpawn() {
