@@ -74,18 +74,6 @@ class ChunkSection(
         blockEntities.unlock()
     }
 
-    companion object {
-        val Vec3i.index: Int
-            get() = getIndex(x, y, z)
-
-        val Int.indexPosition: Vec3i
-            get() = Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
-
-        fun getIndex(x: Int, y: Int, z: Int): Int {
-            return y shl 8 or (z shl 4) or x
-        }
-    }
-
     fun buildBiomeCache(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbours: Array<Chunk>, biomeAccessor: NoiseBiomeAccessor) {
         val chunkPositionX = chunkPosition.x
         val chunkPositionZ = chunkPosition.y
@@ -106,22 +94,23 @@ class ChunkSection(
     }
 
     fun onLightIncrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, luminance: Byte) {
-        traceLightIncrease(neighbours, true, x, y, z, luminance)
+        traceLightIncrease(neighbours, x, y, z, CENTER_OFFSET, luminance)
     }
 
 
-    private fun traceLightIncrease(neighbours: Array<ChunkSection?>, traceNeighbours: Boolean, x: Int, y: Int, z: Int, nextLuminance: Byte) {
+    private fun traceLightIncrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, neighbourOffset: Int, nextLuminance: Byte) {
         val index = getIndex(x, y, z)
         val block = blocks.unsafeGet(index)
-        if (block != null && block.luminance == 0.toByte() && block.isSolid) {
+        val blockLuminance = block?.luminance ?: 0
+        if (block != null && block.isSolid && blockLuminance == 0.toByte()) {
             // light can not pass through the block
             return
         }
+
         // get block or next luminance level
         var luminance = nextLuminance
-        val currentLuminance = block?.luminance ?: nextLuminance
-        if (currentLuminance > luminance) {
-            luminance = currentLuminance
+        if (blockLuminance > luminance) {
+            luminance = blockLuminance
         }
         val currentLight = light[index].toInt() and 0x0F // we just care about block light
         if (currentLight >= luminance) {
@@ -130,43 +119,56 @@ class ChunkSection(
         }
         light[index] = luminance
 
-        val neighbourLuminance = (luminance - 1).toByte()
-        if (neighbourLuminance == 0.toByte()) {
+        if (luminance == 1.toByte()) {
             // we can not further increase the light
             return
         }
 
+
+        if (blockLuminance > nextLuminance) {
+            // we only want to set our own light sources
+            return
+        }
+
+        val neighbourLuminance = (luminance - 1).toByte()
+
         if (y > 0) {
-            //       traceLightIncrease(neighbours, true, x, y - 1, z, neighbourLuminance)
-        } else if (traceNeighbours) {
-            //    neighbours[0]?.traceLightIncrease(neighbours, false, x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
+            traceLightIncrease(neighbours, x, y - 1, z, neighbourOffset, neighbourLuminance)
+        } else {
+            val nextOffset = neighbourOffset - 9
+            neighbours[nextOffset]?.traceLightIncrease(neighbours, x, ProtocolDefinition.SECTION_MAX_Y, z, nextOffset, neighbourLuminance)
         }
         if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            traceLightIncrease(neighbours, true, x, y + 1, z, neighbourLuminance)
-        } else if (traceNeighbours) {
-            neighbours[1]?.traceLightIncrease(neighbours, false, x, 0, z, neighbourLuminance)
+            traceLightIncrease(neighbours, x, y + 1, z, neighbourOffset, neighbourLuminance)
+        } else {
+            val nextOffset = neighbourOffset + 9
+            neighbours[nextOffset]?.traceLightIncrease(neighbours, x, 0, z, nextOffset, neighbourLuminance)
         }
 
         if (z > 0) {
-            traceLightIncrease(neighbours, true, x, y, z - 1, neighbourLuminance)
-        } else if (traceNeighbours) {
-            neighbours[2]?.traceLightIncrease(neighbours, false, x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            traceLightIncrease(neighbours, x, y, z - 1, neighbourOffset, neighbourLuminance)
+        } else {
+            val nextOffset = neighbourOffset - 1
+            neighbours[nextOffset]?.traceLightIncrease(neighbours, x, y, ProtocolDefinition.SECTION_MAX_Z, nextOffset, neighbourLuminance)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
-            traceLightIncrease(neighbours, true, x, y, z + 1, neighbourLuminance)
-        } else if (traceNeighbours) {
-            neighbours[3]?.traceLightIncrease(neighbours, false, x, y, 0, neighbourLuminance)
+            traceLightIncrease(neighbours, x, y, z + 1, neighbourOffset, neighbourLuminance)
+        } else {
+            val nextOffset = neighbourOffset + 1
+            neighbours[nextOffset]?.traceLightIncrease(neighbours, x, y, 0, nextOffset, neighbourLuminance)
         }
 
         if (x > 0) {
-            traceLightIncrease(neighbours, true, x - 1, y, z, neighbourLuminance)
-        } else if (traceNeighbours) {
-            neighbours[4]?.traceLightIncrease(neighbours, false, ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance)
+            traceLightIncrease(neighbours, x - 1, y, z, neighbourOffset, neighbourLuminance)
+        } else {
+            val nextOffset = neighbourOffset - 3
+            neighbours[nextOffset]?.traceLightIncrease(neighbours, ProtocolDefinition.SECTION_MAX_X, y, z, nextOffset, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
-            traceLightIncrease(neighbours, true, x + 1, y, z, neighbourLuminance)
-        } else if (traceNeighbours) {
-            neighbours[5]?.traceLightIncrease(neighbours, false, 0, y, z, neighbourLuminance)
+            traceLightIncrease(neighbours, x + 1, y, z, neighbourOffset, neighbourLuminance)
+        } else {
+            val nextOffset = neighbourOffset + 3
+            neighbours[nextOffset]?.traceLightIncrease(neighbours, 0, y, z, nextOffset, neighbourLuminance)
         }
     }
 
@@ -187,10 +189,24 @@ class ChunkSection(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    traceLightIncrease(neighbours, true, x, y, z, luminance)
+                    traceLightIncrease(neighbours, x, y, z, CENTER_OFFSET, luminance)
                 }
             }
         }
         blocks.release()
+    }
+
+    companion object {
+        const val CENTER_OFFSET = 13
+
+        val Vec3i.index: Int
+            get() = getIndex(x, y, z)
+
+        val Int.indexPosition: Vec3i
+            get() = Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
+
+        fun getIndex(x: Int, y: Int, z: Int): Int {
+            return y shl 8 or (z shl 4) or x
+        }
     }
 }

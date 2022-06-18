@@ -210,11 +210,13 @@ object ChunkUtil {
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
         val biomes: MutableList<Biome?> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
-            biomes.add(i, buffer.connection.registries.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
-                buffer.readUnsignedByte()
-            } else {
-                buffer.readInt()
-            }])
+            biomes.add(
+                i, buffer.connection.registries.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
+                    buffer.readUnsignedByte()
+                } else {
+                    buffer.readInt()
+                }]
+            )
         }
         return XZBiomeArray(biomes.toTypedArray())
     }
@@ -284,6 +286,43 @@ object ChunkUtil {
             neighbourChunks[4][sectionHeight],
             neighbourChunks[1][sectionHeight],
             neighbourChunks[6][sectionHeight],
+        )
+    }
+
+    /**
+     * @param neighbourChunks: **Fully loaded** direct neighbour chunks
+     */
+    fun getAllNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
+        return arrayOf(
+            neighbourChunks[0][sectionHeight - 1], // 0, (-1 | -1)
+            neighbourChunks[1][sectionHeight - 1], // 1, (-1 | +0)
+            neighbourChunks[2][sectionHeight - 1], // 2, (-1 | +1)
+            neighbourChunks[3][sectionHeight - 1], // 3, (+0 | -1)
+            chunk[sectionHeight - 1],              // 4, (+0 | +0)
+            neighbourChunks[4][sectionHeight - 1], // 5, (+0 | +1)
+            neighbourChunks[5][sectionHeight - 1], // 6, (-1 | -1)
+            neighbourChunks[6][sectionHeight - 1], // 7, (-1 | -1)
+            neighbourChunks[7][sectionHeight - 1], // 8, (-1 | -1)
+
+            neighbourChunks[0][sectionHeight + 0], // 9, (-1 | -1)
+            neighbourChunks[1][sectionHeight + 0], // 10, (-1 | +0)
+            neighbourChunks[2][sectionHeight + 0], // 11, (-1 | +1)
+            neighbourChunks[3][sectionHeight + 0], // 12, (+0 | -1)
+            chunk[sectionHeight + 0],              // 13, (+0 | +0)
+            neighbourChunks[4][sectionHeight + 0], // 14, (+0 | +1)
+            neighbourChunks[5][sectionHeight + 0], // 15, (+1 | -1)
+            neighbourChunks[6][sectionHeight + 0], // 16, (+1 | +0)
+            neighbourChunks[7][sectionHeight + 0], // 17, (+1 | +1)
+
+            neighbourChunks[0][sectionHeight + 1], // 18, (-1 | -1)
+            neighbourChunks[1][sectionHeight + 1], // 19, (-1 | +0)
+            neighbourChunks[2][sectionHeight + 1], // 20, (-1 | +1)
+            neighbourChunks[3][sectionHeight + 1], // 21, (+0 | -1)
+            chunk[sectionHeight + 1],              // 22, (+0 | +0)
+            neighbourChunks[4][sectionHeight + 1], // 23, (+0 | +1)
+            neighbourChunks[5][sectionHeight + 1], // 24, (+1 | -1)
+            neighbourChunks[6][sectionHeight + 1], // 25, (+1 | +0)
+            neighbourChunks[7][sectionHeight + 1], // 26, (+1 | +1)
         )
     }
 
