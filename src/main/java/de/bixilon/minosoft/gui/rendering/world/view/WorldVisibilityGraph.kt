@@ -18,8 +18,8 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
+import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.Camera

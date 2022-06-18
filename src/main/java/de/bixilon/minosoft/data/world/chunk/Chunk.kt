@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
@@ -21,9 +21,10 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
-import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.index
+import de.bixilon.minosoft.data.world.chunk.light.BorderSectionLight
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -45,8 +46,8 @@ class Chunk(
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     private val world = connection.world
-    var bottomLight: ByteArray? = null
-    var topLight: ByteArray? = null
+    var bottomLight = BorderSectionLight()
+    var topLight = BorderSectionLight()
     val lowestSection = world.dimension!!.minSection
     val highestSection = world.dimension!!.maxSection
     val cacheBiomes = world.cacheBiomeAccessor != null
@@ -61,6 +62,7 @@ class Chunk(
             }
             field = value
             if (value != null) {
+                updateSectionNeighbours(value)
                 recalculateLight()
             }
         }
@@ -92,25 +94,20 @@ class Chunk(
     fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
         val section = getOrPut(y.sectionHeight) ?: return
         val inSectionHeight = y.inSectionHeight
-        val previous = section.blocks.set(x, inSectionHeight, z, blockState)
+        section[x, inSectionHeight, z] = blockState
         section.blockEntities[x, inSectionHeight, z] = blockEntity
         if (blockEntity == null) {
             getOrPutBlockEntity(x, y, z)
         }
 
-        val previousLuminance = previous?.luminance ?: 0
-        val luminance = blockState?.luminance ?: 0
-        if (luminance == previousLuminance) {
+        val neighbours = this.neighbours ?: return
+
+        if (!section.light.update) {
             return
         }
-        val neighbours = this.neighbours ?: return
+        section.light.update = false
         val sectionHeight = y.sectionHeight
-        val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, sectionHeight)
-        if (luminance > previousLuminance) {
-            section.onLightIncrease(sectionNeighbours, x, inSectionHeight, z, luminance)
-        } else {
-            section.onLightDecrease(sectionNeighbours, x, inSectionHeight, z, luminance)
-        }
+
         connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight, true))
 
 
@@ -124,10 +121,10 @@ class Chunk(
                 for (chunkY in -1..1) {
                     val chunk = neighbours[neighbourIndex]
                     val neighbourSection = chunk[sectionHeight + chunkY] ?: continue
-                    if (!neighbourSection.lightUpdate) {
+                    if (!neighbourSection.light.update) {
                         continue
                     }
-                    neighbourSection.lightUpdate = false
+                    neighbourSection.light.update = false
                     connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight + chunkY, false))
                 }
                 neighbourIndex++
@@ -140,7 +137,6 @@ class Chunk(
     fun setBlocks(blocks: Map<Vec3i, BlockState?>) {
         for ((position, blockState) in blocks) {
             set(position, blockState)
-            getOrPutBlockEntity(position)
         }
     }
 
@@ -205,15 +201,10 @@ class Chunk(
                 for ((index, light) in it.withIndex()) {
                     light ?: continue
                     val section = getOrPut(index + lowestSection) ?: return@let
-                    section.light = light
+                    section.light.light = light
                 }
             }
-            data.bottomLight?.let {
-                bottomLight = it
-            }
-            data.topLight?.let {
-                topLight = it
-            }
+            // ToDo: top and bottom light
         }
         data.biomeSource?.let {
             this.biomeSource = it
@@ -238,8 +229,14 @@ class Chunk(
             section = ChunkSection(sectionHeight, BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback))
             val cacheBiomeAccessor = world.cacheBiomeAccessor
             val neighbours = this.neighbours
-            if (cacheBiomeAccessor != null && biomesInitialized && neighbours != null) {
-                section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
+            if (neighbours != null) {
+                if (cacheBiomeAccessor != null && biomesInitialized) {
+                    section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
+                }
+                for (neighbour in neighbours) {
+                    val neighbourNeighbours = neighbour.neighbours ?: continue
+                    neighbour.updateNeighbours(neighbourNeighbours, sectionHeight)
+                }
             }
             sections[sectionIndex] = section
         }
@@ -261,10 +258,10 @@ class Chunk(
         val sectionHeight = position.sectionHeight
         val index = position.inChunkSectionPosition.index
         if (sectionHeight == lowestSection - 1) {
-            return bottomLight?.get(index)?.toInt() ?: 0x00
+            return bottomLight.get(index).toInt()
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight?.get(index)?.toInt() ?: 0x00
+            return topLight.get(index).toInt()
         }
         return this[position.sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
     }
@@ -274,10 +271,10 @@ class Chunk(
         val inSectionHeight = y.inSectionHeight
         val index = inSectionHeight shl 8 or (z shl 4) or x
         if (sectionHeight == lowestSection - 1) {
-            return bottomLight?.get(index)?.toInt() ?: 0x00
+            return bottomLight.get(index).toInt()
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight?.get(index)?.toInt() ?: 0x00
+            return topLight.get(index).toInt()
         }
         return this[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
     }
@@ -312,15 +309,34 @@ class Chunk(
     }
 
     fun recalculateLight() {
-        val neighbours = neighbours ?: Broken("Neighbours not set!")
         val sections = sections ?: Broken("Sections is null")
-        for ((index, section) in sections.withIndex()) {
+        for (section in sections) {
             if (section == null) {
                 continue
             }
-            val sectionHeight = index + lowestSection
-            val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, sectionHeight)
-            section.recalculateLight(sectionNeighbours)
+            section.light.recalculate()
+        }
+    }
+
+    private fun updateSectionNeighbours(neighbours: Array<Chunk>) {
+        for ((index, section) in sections!!.withIndex()) {
+            if (section == null) {
+                continue
+            }
+            val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, index + lowestSection)
+            section.neighbours = sectionNeighbours
+        }
+    }
+
+    private fun updateNeighbours(neighbours: Array<Chunk>, sectionHeight: Int) {
+        for (nextSectionHeight in sectionHeight - 1..sectionHeight + 1) {
+            if (nextSectionHeight < lowestSection || nextSectionHeight > highestSection) {
+                continue
+            }
+
+            val section = this[sectionHeight] ?: return
+            val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, nextSectionHeight)
+            section.neighbours = sectionNeighbours
         }
     }
 }

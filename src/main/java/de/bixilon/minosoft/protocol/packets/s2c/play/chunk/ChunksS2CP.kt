@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
-import de.bixilon.minosoft.data.world.ChunkData
+import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

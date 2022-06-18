@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.indexPosition
 
 class MapBlockEntityProvider(
     var blockEntities: MutableMap<Vec3i, BlockEntity> = synchronizedMapOf(),

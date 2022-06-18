@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.math.simple.DoubleMath.square
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class NoiseBiomeAccessor(

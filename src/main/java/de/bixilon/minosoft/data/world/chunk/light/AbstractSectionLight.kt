@@ -11,14 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.preparer
+package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 
-interface SolidSectionPreparer {
+abstract class AbstractSectionLight {
+    open var update = false
 
-    fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh)
+
+    operator fun get(x: Int, y: Int, z: Int): Byte {
+        return get(getIndex(x, y, z))
+    }
+
+    abstract operator fun get(index: Int): Byte
 }

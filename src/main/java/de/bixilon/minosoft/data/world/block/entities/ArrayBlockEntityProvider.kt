@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.world.block.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
-import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.index
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ArrayBlockEntityProvider(
