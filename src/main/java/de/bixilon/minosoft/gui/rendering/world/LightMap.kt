@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -27,6 +28,7 @@ import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.random.Random
 
 @Deprecated("Needs refactoring")
 class LightMap(renderWindow: RenderWindow) {
@@ -38,6 +40,10 @@ class LightMap(renderWindow: RenderWindow) {
 
 
     fun init() {
+        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
+            initDebugLight()
+        }
+
         // Set Alpha for all of them
         for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
             uniformBuffer.buffer.put(i * 4 + 3, 1.0f)
@@ -46,11 +52,23 @@ class LightMap(renderWindow: RenderWindow) {
         update()
     }
 
+    private fun initDebugLight() {
+        val random = Random(10000L)
+        for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
+            uniformBuffer.buffer.put(i * 4 + 0, random.nextFloat())
+            uniformBuffer.buffer.put(i * 4 + 1, random.nextFloat())
+            uniformBuffer.buffer.put(i * 4 + 2, random.nextFloat())
+        }
+    }
+
     fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {
         uniformBuffer.use(shader, bufferName)
     }
 
     fun update() {
+        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
+            return
+        }
         val skyGradient = connection.world.time.lightBase.toFloat()
 
         // ToDo: Lightning
