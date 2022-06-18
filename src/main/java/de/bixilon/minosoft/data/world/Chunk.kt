@@ -100,7 +100,7 @@ class Chunk(
             return
         }
         val neighbours = this.neighbours ?: return
-        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, y.sectionHeight)
+        val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, y.sectionHeight)
         if (luminance > previousLuminance) {
             section.onLightIncrease(sectionNeighbours, x, inSectionHeight, z, luminance)
         } else {
@@ -292,8 +292,9 @@ class Chunk(
                 continue
             }
             val sectionHeight = index + lowestSection
-            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, sectionHeight)
+            val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, sectionHeight)
             section.recalculateLight(sectionNeighbours)
         }
     }
 }
+
