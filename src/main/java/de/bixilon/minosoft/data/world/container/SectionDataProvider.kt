@@ -126,8 +126,8 @@ open class SectionDataProvider<T>(
         return get(y shl 8 or (z shl 4) or x)
     }
 
-    operator fun set(x: Int, y: Int, z: Int, value: T) {
-        set(y shl 8 or (z shl 4) or x, value)
+    operator fun set(x: Int, y: Int, z: Int, value: T): T? {
+        return set(y shl 8 or (z shl 4) or x, value)
     }
 
     open operator fun set(index: Int, value: T): T? {

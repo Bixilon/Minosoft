@@ -16,6 +16,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -34,6 +35,7 @@ data class BlockState(
     val hardness: Float,
     val requiresTool: Boolean,
     val isSolid: Boolean,
+    val luminance: Byte,
 ) {
     var blockModel: BakedBlockModel? = null
 
@@ -131,6 +133,7 @@ data class BlockState(
                 hardness = data["hardness"]?.toFloat() ?: 1.0f,
                 requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
                 isSolid = data["solid_render"]?.toBoolean() ?: false,
+                luminance = data["luminance"]?.toInt()?.toByte() ?: 0,
             )
         }
 
