@@ -30,7 +30,8 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 
@@ -92,7 +93,10 @@ class Chunk(
         val section = getOrPut(y.sectionHeight) ?: return
         val inSectionHeight = y.inSectionHeight
         val previous = section.blocks.set(x, inSectionHeight, z, blockState)
-        section.blockEntities[x, inSectionHeight, z] = blockEntity // ToDo
+        section.blockEntities[x, inSectionHeight, z] = blockEntity
+        if (blockEntity == null) {
+            getOrPutBlockEntity(x, y, z)
+        }
 
         val previousLuminance = previous?.luminance ?: 0
         val luminance = blockState?.luminance ?: 0
@@ -100,11 +104,34 @@ class Chunk(
             return
         }
         val neighbours = this.neighbours ?: return
-        val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, y.sectionHeight)
+        val sectionHeight = y.sectionHeight
+        val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, sectionHeight)
         if (luminance > previousLuminance) {
             section.onLightIncrease(sectionNeighbours, x, inSectionHeight, z, luminance)
         } else {
             section.onLightDecrease(sectionNeighbours, x, inSectionHeight, z, luminance)
+        }
+        connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight, true))
+
+
+        var neighbourIndex = 0
+        for (chunkX in -1..1) {
+            for (chunkZ in -1..1) {
+                if (chunkX == 0 && chunkZ == 0) {
+                    continue
+                }
+                val chunkPosition = chunkPosition + Vec2i(chunkX, chunkZ)
+                for (chunkY in -1..1) {
+                    val chunk = neighbours[neighbourIndex]
+                    val neighbourSection = chunk[sectionHeight + chunkY] ?: continue
+                    if (!neighbourSection.lightUpdate) {
+                        continue
+                    }
+                    neighbourSection.lightUpdate = false
+                    connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight + chunkY, false))
+                }
+                neighbourIndex++
+            }
         }
     }
 

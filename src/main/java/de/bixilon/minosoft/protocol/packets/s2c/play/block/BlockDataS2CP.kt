@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.modding.event.events.BlockDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

@@ -34,6 +34,7 @@ class ChunkSection(
     var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
     var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION) { 0x00.toByte() }, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
+    var lightUpdate = false
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
         if (blockEntities.isEmpty) {
@@ -118,6 +119,9 @@ class ChunkSection(
             return
         }
         light[index] = luminance
+        if (!lightUpdate) {
+            lightUpdate = true
+        }
 
         if (luminance == 1.toByte()) {
             // we can not further increase the light
