@@ -18,11 +18,11 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader

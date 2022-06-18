@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.world.ChunkData
+import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.protocol.PacketSkipper
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

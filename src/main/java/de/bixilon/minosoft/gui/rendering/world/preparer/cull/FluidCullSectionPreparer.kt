@@ -27,9 +27,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.FaceProperties

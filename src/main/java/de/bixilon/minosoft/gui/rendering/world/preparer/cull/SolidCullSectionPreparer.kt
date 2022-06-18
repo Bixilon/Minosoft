@@ -27,8 +27,8 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil

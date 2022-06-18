@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.modding.event.events.blocks.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection

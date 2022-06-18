@@ -21,8 +21,8 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY

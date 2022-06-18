@@ -11,14 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.preparer
+package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
+@Deprecated("ToDo")
+class BorderSectionLight : AbstractSectionLight() {
 
-interface SolidSectionPreparer {
-
-    fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh)
+    override fun get(index: Int): Byte {
+        return 0xFF.toByte()
+    }
 }

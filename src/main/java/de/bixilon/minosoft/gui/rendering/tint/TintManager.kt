@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
-import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class TintManager(private val connection: PlayConnection) {
