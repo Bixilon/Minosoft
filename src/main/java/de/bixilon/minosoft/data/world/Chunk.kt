@@ -78,8 +78,17 @@ class Chunk(
 
     fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
         val section = getOrPut(y.sectionHeight) ?: return
-        section.blocks[x, y.inSectionHeight, z] = blockState
-        section.blockEntities[x, y.inSectionHeight, z] = blockEntity // ToDo
+        val inSectionHeight = y.inSectionHeight
+        val previous = section.blocks.set(x, inSectionHeight, z, blockState)
+        section.blockEntities[x, inSectionHeight, z] = blockEntity // ToDo
+
+        val previousLuminance = previous?.luminance ?: 0
+        val luminance = blockState?.luminance ?: 0
+        if (luminance > previousLuminance) {
+            section.onLightIncrease(x, inSectionHeight, z, luminance)
+        } else if (previousLuminance > luminance) {
+            section.onLightDecrease(x, inSectionHeight, z, luminance)
+        }
     }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
