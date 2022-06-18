@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
@@ -220,7 +221,7 @@ class World(
         val neighbourPositions = getChunkNeighbourPositions(chunkPosition)
         for (neighbourPosition in neighbourPositions) {
             val neighbour = this[neighbourPosition] ?: continue
-            neighbour.neighboursLoaded = false
+            neighbour.neighbours = null
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbour))
         }
         // connection.world.view.updateServerViewDistance(chunkPosition, false)
@@ -363,7 +364,7 @@ class World(
         val neighbours = getChunkNeighbours(neighboursPositions)
 
         if (neighbours.received) {
-            chunk.neighboursLoaded = true
+            chunk.neighbours = neighbours.cast()
 
             if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
                 chunk.buildBiomeCache()

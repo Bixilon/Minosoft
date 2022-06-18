@@ -28,16 +28,12 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    blocks: BlockSectionDataProvider,
+    val sectionHeight: Int,
+    var blocks: BlockSectionDataProvider,
     var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
     var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
     var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION) { 0x00.toByte() }, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
-    var blocks = blocks
-        set(value) {
-            field = value
-            recalculateLight()
-        }
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
         if (blockEntities.isEmpty) {
@@ -104,17 +100,17 @@ class ChunkSection(
         this.biomes.setData(biomes.unsafeCast())
     }
 
-    fun onLightDecrease(x: Int, y: Int, z: Int, luminance: Byte) {
+    fun onLightDecrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, luminance: Byte) {
         // ToDo: make faster, set light to 0 and trace to next night increase. then backtrace
-        recalculateLight()
+        recalculateLight(neighbours)
     }
 
-    fun onLightIncrease(x: Int, y: Int, z: Int, luminance: Byte) {
-        traceLightIncrease(x, y, z, luminance)
+    fun onLightIncrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, luminance: Byte) {
+        traceLightIncrease(neighbours, x, y, z, luminance)
     }
 
 
-    private fun traceLightIncrease(x: Int, y: Int, z: Int, nextLuminance: Byte) {
+    private fun traceLightIncrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, nextLuminance: Byte) {
         val index = getIndex(x, y, z)
         val block = blocks.unsafeGet(index)
         if (block != null && block.luminance == 0.toByte() && block.isSolid) {
@@ -141,16 +137,16 @@ class ChunkSection(
         }
 
         // ToDo: check neighbours and trace there
-        if (x > 0) traceLightIncrease(x - 1, y, z, neighbourLuminance)
-        if (x < ProtocolDefinition.SECTION_MAX_X) traceLightIncrease(x + 1, y, z, neighbourLuminance)
-        if (y > 0) traceLightIncrease(x, y - 1, z, neighbourLuminance)
-        if (y < ProtocolDefinition.SECTION_MAX_Y) traceLightIncrease(x, y + 1, z, neighbourLuminance)
-        if (z > 0) traceLightIncrease(x, y, z - 1, neighbourLuminance)
-        if (z < ProtocolDefinition.SECTION_MAX_Y) traceLightIncrease(x, y, z + 1, neighbourLuminance)
+        if (x > 0) traceLightIncrease(neighbours, x - 1, y, z, neighbourLuminance)
+        if (x < ProtocolDefinition.SECTION_MAX_X) traceLightIncrease(neighbours, x + 1, y, z, neighbourLuminance)
+        if (y > 0) traceLightIncrease(neighbours, x, y - 1, z, neighbourLuminance)
+        if (y < ProtocolDefinition.SECTION_MAX_Y) traceLightIncrease(neighbours, x, y + 1, z, neighbourLuminance)
+        if (z > 0) traceLightIncrease(neighbours, x, y, z - 1, neighbourLuminance)
+        if (z < ProtocolDefinition.SECTION_MAX_Y) traceLightIncrease(neighbours, x, y, z + 1, neighbourLuminance)
     }
 
 
-    fun recalculateLight() {
+    fun recalculateLight(neighbours: Array<ChunkSection?>) {
         // clear light
         for (index in light.indices) {
             light[index] = 0x00.toByte()
@@ -166,7 +162,7 @@ class ChunkSection(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    traceLightIncrease(x, y, z, luminance)
+                    traceLightIncrease(neighbours, x, y, z, luminance)
                 }
             }
         }
