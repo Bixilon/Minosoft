@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -31,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.chunk.ChunkUtil
 
 /**
  * Collection of chunks sections (from the lowest section to the highest section in y axis)
@@ -50,13 +52,23 @@ class Chunk(
 
     var blocksInitialized = false // All block data was received
     var biomesInitialized = false // All biome data is initialized (aka. cache built, or similar)
-    var neighboursLoaded = false
+
+    var neighbours: Array<Chunk>? = null
+        set(value) {
+            if (field.contentEquals(value)) {
+                return
+            }
+            field = value
+            if (value != null) {
+                recalculateLight()
+            }
+        }
 
     val isLoaded: Boolean
         get() = blocksInitialized && biomesInitialized
 
     val isFullyLoaded: Boolean
-        get() = isLoaded && neighboursLoaded
+        get() = isLoaded && neighbours != null
 
     init {
         // connection.world.view.updateServerViewDistance(chunkPosition, true)
@@ -84,10 +96,15 @@ class Chunk(
 
         val previousLuminance = previous?.luminance ?: 0
         val luminance = blockState?.luminance ?: 0
+        if (luminance == previousLuminance) {
+            return
+        }
+        val neighbours = this.neighbours ?: return
+        val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, y.sectionHeight)
         if (luminance > previousLuminance) {
-            section.onLightIncrease(x, inSectionHeight, z, luminance)
-        } else if (previousLuminance > luminance) {
-            section.onLightDecrease(x, inSectionHeight, z, luminance)
+            section.onLightIncrease(sectionNeighbours, x, inSectionHeight, z, luminance)
+        } else {
+            section.onLightDecrease(sectionNeighbours, x, inSectionHeight, z, luminance)
         }
     }
 
@@ -191,10 +208,10 @@ class Chunk(
 
         var section = sections[sectionIndex]
         if (section == null) {
-            section = ChunkSection(BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback))
-            val neighbours: Array<Chunk> = world.getChunkNeighbours(chunkPosition).unsafeCast()
+            section = ChunkSection(sectionHeight, BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback))
             val cacheBiomeAccessor = world.cacheBiomeAccessor
-            if (cacheBiomeAccessor != null && biomesInitialized && neighboursLoaded) {
+            val neighbours = this.neighbours
+            if (cacheBiomeAccessor != null && biomesInitialized && neighbours != null) {
                 section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
             }
             sections[sectionIndex] = section
@@ -242,7 +259,7 @@ class Chunk(
         val cacheBiomeAccessor = connection.world.cacheBiomeAccessor ?: return
         check(!biomesInitialized) { "Biome cache already initialized!" }
         check(cacheBiomes) { "Cache is disabled!" }
-        check(neighboursLoaded)
+        check(neighbours != null) { "Neighbours not set!" }
 
         // ToDo: Return if isEmpty
 
@@ -265,5 +282,18 @@ class Chunk(
             return section.biomes[x, y.inSectionHeight, z]
         }
         return biomeSource?.getBiome(x and 0x0F, y, z and 0x0F)
+    }
+
+    fun recalculateLight() {
+        val neighbours = neighbours ?: Broken("Neighbours not set!")
+        val sections = sections ?: Broken("Sections is null")
+        for ((index, section) in sections.withIndex()) {
+            if (section == null) {
+                continue
+            }
+            val sectionHeight = index + lowestSection
+            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, sectionHeight)
+            section.recalculateLight(sectionNeighbours)
+        }
     }
 }
