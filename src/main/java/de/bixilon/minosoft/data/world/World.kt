@@ -47,9 +47,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.BlockSetEvent
-import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
@@ -180,11 +180,13 @@ class World(
         blockState?.block?.onPlace(connection, blockPosition, blockState)
         chunk[inChunkPosition] = blockState
         chunk.getOrPutBlockEntity(inChunkPosition)
-        connection.fireEvent(BlockSetEvent(
-            connection = connection,
-            blockPosition = blockPosition,
-            blockState = blockState,
-        ))
+        connection.fireEvent(
+            BlockSetEvent(
+                connection = connection,
+                blockPosition = blockPosition,
+                blockState = blockState,
+            )
+        )
     }
 
     fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {

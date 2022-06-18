@@ -10,22 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.modding.event.events.blocks.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlocksS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.chunk.ChunkS2CP
 
-class BlocksSetEvent(
+/**
+ * Fired when a new chunk is received or a full chunk changes
+ */
+class ChunkDataChangeEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    val blocks: Map<Vec3i, BlockState?>,
     val chunkPosition: Vec2i,
+    val chunk: Chunk,
 ) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: BlocksS2CP) : this(connection, EventInitiators.SERVER, packet.blocks, packet.chunkPosition)
+    constructor(connection: PlayConnection, packet: ChunkS2CP) : this(connection, EventInitiators.SERVER, packet.chunkPosition, connection.world[packet.chunkPosition]!!)
 }

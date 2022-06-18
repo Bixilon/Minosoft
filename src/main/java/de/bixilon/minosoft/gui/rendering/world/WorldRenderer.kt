@@ -66,7 +66,13 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
-import de.bixilon.minosoft.modding.event.events.*
+import de.bixilon.minosoft.modding.event.events.RespawnEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlocksSetEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -186,6 +192,14 @@ class WorldRenderer(
             } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
                 queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight, chunk = neighbours[6])
             }
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<LightChangeEvent> {
+            if (it.blockChange) {
+                // change is already covered
+                return@of
+            }
+            queueSection(it.chunkPosition, it.sectionHeight, it.chunk)
         })
 
         connection.registerEvent(CallbackEventInvoker.of<BlocksSetEvent> {
