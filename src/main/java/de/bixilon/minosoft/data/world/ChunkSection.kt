@@ -106,11 +106,11 @@ class ChunkSection(
     }
 
     fun onLightIncrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, luminance: Byte) {
-        traceLightIncrease(neighbours, x, y, z, luminance)
+        traceLightIncrease(neighbours, true, x, y, z, luminance)
     }
 
 
-    private fun traceLightIncrease(neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, nextLuminance: Byte) {
+    private fun traceLightIncrease(neighbours: Array<ChunkSection?>, traceNeighbours: Boolean, x: Int, y: Int, z: Int, nextLuminance: Byte) {
         val index = getIndex(x, y, z)
         val block = blocks.unsafeGet(index)
         if (block != null && block.luminance == 0.toByte() && block.isSolid) {
@@ -132,17 +132,42 @@ class ChunkSection(
 
         val neighbourLuminance = (luminance - 1).toByte()
         if (neighbourLuminance == 0.toByte()) {
-            // luminance is 1, we can not further increase the light
+            // we can not further increase the light
             return
         }
 
-        // ToDo: check neighbours and trace there
-        if (x > 0) traceLightIncrease(neighbours, x - 1, y, z, neighbourLuminance)
-        if (x < ProtocolDefinition.SECTION_MAX_X) traceLightIncrease(neighbours, x + 1, y, z, neighbourLuminance)
-        if (y > 0) traceLightIncrease(neighbours, x, y - 1, z, neighbourLuminance)
-        if (y < ProtocolDefinition.SECTION_MAX_Y) traceLightIncrease(neighbours, x, y + 1, z, neighbourLuminance)
-        if (z > 0) traceLightIncrease(neighbours, x, y, z - 1, neighbourLuminance)
-        if (z < ProtocolDefinition.SECTION_MAX_Y) traceLightIncrease(neighbours, x, y, z + 1, neighbourLuminance)
+        if (y > 0) {
+            //       traceLightIncrease(neighbours, true, x, y - 1, z, neighbourLuminance)
+        } else if (traceNeighbours) {
+            //    neighbours[0]?.traceLightIncrease(neighbours, false, x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
+        }
+        if (y < ProtocolDefinition.SECTION_MAX_Y) {
+            traceLightIncrease(neighbours, true, x, y + 1, z, neighbourLuminance)
+        } else if (traceNeighbours) {
+            neighbours[1]?.traceLightIncrease(neighbours, false, x, 0, z, neighbourLuminance)
+        }
+
+        if (z > 0) {
+            traceLightIncrease(neighbours, true, x, y, z - 1, neighbourLuminance)
+        } else if (traceNeighbours) {
+            neighbours[2]?.traceLightIncrease(neighbours, false, x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+        }
+        if (z < ProtocolDefinition.SECTION_MAX_Y) {
+            traceLightIncrease(neighbours, true, x, y, z + 1, neighbourLuminance)
+        } else if (traceNeighbours) {
+            neighbours[3]?.traceLightIncrease(neighbours, false, x, y, 0, neighbourLuminance)
+        }
+
+        if (x > 0) {
+            traceLightIncrease(neighbours, true, x - 1, y, z, neighbourLuminance)
+        } else if (traceNeighbours) {
+            neighbours[4]?.traceLightIncrease(neighbours, false, ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance)
+        }
+        if (x < ProtocolDefinition.SECTION_MAX_X) {
+            traceLightIncrease(neighbours, true, x + 1, y, z, neighbourLuminance)
+        } else if (traceNeighbours) {
+            neighbours[5]?.traceLightIncrease(neighbours, false, 0, y, z, neighbourLuminance)
+        }
     }
 
 
@@ -162,7 +187,7 @@ class ChunkSection(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    traceLightIncrease(neighbours, x, y, z, luminance)
+                    traceLightIncrease(neighbours, true, x, y, z, luminance)
                 }
             }
         }
