@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -257,30 +258,36 @@ class FluidCullSectionPreparer(
     }
 
     private fun getCornerHeight(providedChunk: Chunk, providedChunkPosition: Vec2i, position: Vec3i, fluid: Fluid): Float {
-        // ToDo: Optimize more
         var totalHeight = 0.0f
         var count = 0
 
-        var lastChunkPosition = providedChunkPosition
-        var lastChunk: Chunk? = providedChunk
-
         for (side in 0 until 4) {
             val blockPosition = position + Vec3i(-(side and 0x01), 0, -(side shr 1 and 0x01))
-            val chunkPosition = blockPosition.chunkPosition
-            if (chunkPosition != lastChunkPosition) {
-                lastChunkPosition = chunkPosition
-                lastChunk = world[chunkPosition]
+            val chunkPositionOffset = blockPosition.chunkPosition - providedChunkPosition
+            val chunk = when {
+                chunkPositionOffset.x == 0 && chunkPositionOffset.y == 0 -> providedChunk // most likely, doing this one first
+                chunkPositionOffset.x == -1 && chunkPositionOffset.y == -1 -> providedChunk.neighbours?.get(0)
+                chunkPositionOffset.x == -1 && chunkPositionOffset.y == 0 -> providedChunk.neighbours?.get(1)
+                chunkPositionOffset.x == -1 && chunkPositionOffset.y == 1 -> providedChunk.neighbours?.get(2)
+                chunkPositionOffset.x == 0 && chunkPositionOffset.y == -1 -> providedChunk.neighbours?.get(3)
+                chunkPositionOffset.x == 0 && chunkPositionOffset.y == 1 -> providedChunk.neighbours?.get(4)
+                chunkPositionOffset.x == 1 && chunkPositionOffset.y == -1 -> providedChunk.neighbours?.get(5)
+                chunkPositionOffset.x == 1 && chunkPositionOffset.y == 0 -> providedChunk.neighbours?.get(6)
+                chunkPositionOffset.x == 1 && chunkPositionOffset.y == 1 -> providedChunk.neighbours?.get(7)
+                else -> Broken("Can not get neighbour chunk from offset $chunkPositionOffset")
             }
-            if (lastChunk == null) {
+
+            if (chunk == null) {
                 count++
                 continue
             }
+
             val inChunkPosition = blockPosition.inChunkPosition
-            if (fluid.matches(lastChunk.unsafeGet(inChunkPosition + Directions.UP))) {
+            if (fluid.matches(chunk.unsafeGet(inChunkPosition + Directions.UP))) {
                 return 1.0f
             }
 
-            val blockState = lastChunk.unsafeGet(inChunkPosition)
+            val blockState = chunk.unsafeGet(inChunkPosition)
             if (blockState == null) {
                 count++
                 continue
