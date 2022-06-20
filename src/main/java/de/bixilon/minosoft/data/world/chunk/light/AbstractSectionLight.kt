@@ -19,7 +19,7 @@ abstract class AbstractSectionLight {
     open var update = false
 
 
-    operator fun get(x: Int, y: Int, z: Int): Byte {
+    open operator fun get(x: Int, y: Int, z: Int): Byte {
         return get(getIndex(x, y, z))
     }
 

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
@@ -46,11 +47,11 @@ class SectionLight(
     }
 
     fun onLightIncrease(x: Int, y: Int, z: Int, luminance: Byte) {
-        traceLightIncrease(x, y, z, CENTER_OFFSET, luminance)
+        traceLightIncrease(x, y, z, luminance)
     }
 
 
-    private fun traceLightIncrease(x: Int, y: Int, z: Int, neighbourOffset: Int, nextLuminance: Byte) {
+    private fun traceLightIncrease(x: Int, y: Int, z: Int, nextLuminance: Byte) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
@@ -89,42 +90,36 @@ class SectionLight(
         val neighbourLuminance = (luminance - 1).toByte()
 
         if (y > 0) {
-            traceLightIncrease(x, y - 1, z, neighbourOffset, neighbourLuminance)
+            traceLightIncrease(x, y - 1, z, neighbourLuminance)
         } else {
-            val nextOffset = neighbourOffset - 9
-            neighbours[nextOffset]?.light?.traceLightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, nextOffset, neighbourLuminance)
+            neighbours[Directions.O_DOWN]?.light?.traceLightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
         }
         if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            traceLightIncrease(x, y + 1, z, neighbourOffset, neighbourLuminance)
+            traceLightIncrease(x, y + 1, z, neighbourLuminance)
         } else {
-            val nextOffset = neighbourOffset + 9
-            neighbours[nextOffset]?.light?.traceLightIncrease(x, 0, z, nextOffset, neighbourLuminance)
+            neighbours[Directions.O_UP]?.light?.traceLightIncrease(x, 0, z, neighbourLuminance)
         }
 
         if (z > 0) {
-            traceLightIncrease(x, y, z - 1, neighbourOffset, neighbourLuminance)
+            traceLightIncrease(x, y, z - 1, neighbourLuminance)
         } else {
-            val nextOffset = neighbourOffset - 1
-            neighbours[nextOffset]?.light?.traceLightIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, nextOffset, neighbourLuminance)
+            neighbours[Directions.O_NORTH]?.light?.traceLightIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
-            traceLightIncrease(x, y, z + 1, neighbourOffset, neighbourLuminance)
+            traceLightIncrease(x, y, z + 1, neighbourLuminance)
         } else {
-            val nextOffset = neighbourOffset + 1
-            neighbours[nextOffset]?.light?.traceLightIncrease(x, y, 0, nextOffset, neighbourLuminance)
+            neighbours[Directions.O_SOUTH]?.light?.traceLightIncrease(x, y, 0, neighbourLuminance)
         }
 
         if (x > 0) {
-            traceLightIncrease(x - 1, y, z, neighbourOffset, neighbourLuminance)
+            traceLightIncrease(x - 1, y, z, neighbourLuminance)
         } else {
-            val nextOffset = neighbourOffset - 3
-            neighbours[nextOffset]?.light?.traceLightIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, nextOffset, neighbourLuminance)
+            neighbours[Directions.O_WEST]?.light?.traceLightIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
-            traceLightIncrease(x + 1, y, z, neighbourOffset, neighbourLuminance)
+            traceLightIncrease(x + 1, y, z, neighbourLuminance)
         } else {
-            val nextOffset = neighbourOffset + 3
-            neighbours[nextOffset]?.light?.traceLightIncrease(0, y, z, nextOffset, neighbourLuminance)
+            neighbours[Directions.O_EAST]?.light?.traceLightIncrease(0, y, z, neighbourLuminance)
         }
     }
 
@@ -146,7 +141,7 @@ class SectionLight(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    traceLightIncrease(x, y, z, CENTER_OFFSET, luminance)
+                    traceLightIncrease(x, y, z, luminance)
                 }
             }
         }
@@ -156,9 +151,5 @@ class SectionLight(
 
     override operator fun get(index: Int): Byte {
         return light[index]
-    }
-
-    companion object {
-        const val CENTER_OFFSET = 13
     }
 }

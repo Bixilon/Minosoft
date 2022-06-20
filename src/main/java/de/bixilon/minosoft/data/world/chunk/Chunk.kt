@@ -46,8 +46,8 @@ class Chunk(
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     private val world = connection.world
-    var bottomLight = BorderSectionLight()
-    var topLight = BorderSectionLight()
+    var bottomLight = BorderSectionLight(false)
+    var topLight = BorderSectionLight(true)
     val lowestSection = world.dimension!!.minSection
     val highestSection = world.dimension!!.maxSection
     val cacheBiomes = world.cacheBiomeAccessor != null
@@ -258,10 +258,10 @@ class Chunk(
         val sectionHeight = position.sectionHeight
         val index = position.inChunkSectionPosition.index
         if (sectionHeight == lowestSection - 1) {
-            return bottomLight.get(index).toInt()
+            return bottomLight[index].toInt()
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight.get(index).toInt()
+            return topLight[index].toInt()
         }
         return this[position.sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
     }
@@ -271,10 +271,10 @@ class Chunk(
         val inSectionHeight = y.inSectionHeight
         val index = inSectionHeight shl 8 or (z shl 4) or x
         if (sectionHeight == lowestSection - 1) {
-            return bottomLight.get(index).toInt()
+            return bottomLight[index].toInt()
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight.get(index).toInt()
+            return topLight[index].toInt()
         }
         return this[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
     }
@@ -323,7 +323,7 @@ class Chunk(
             if (section == null) {
                 continue
             }
-            val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, index + lowestSection)
+            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, index + lowestSection)
             section.neighbours = sectionNeighbours
         }
     }
@@ -335,7 +335,7 @@ class Chunk(
             }
 
             val section = this[sectionHeight] ?: return
-            val sectionNeighbours = ChunkUtil.getAllNeighbours(neighbours, this, nextSectionHeight)
+            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, nextSectionHeight)
             section.neighbours = sectionNeighbours
         }
     }
