@@ -32,11 +32,11 @@ object AssetsPropertiesGenerator {
         profile.verify = false
         val (versionId, clientJarHash) = args
 
-        val assetsManager = JarAssetsManager("abcdef", clientJarHash, profile, Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, emptyMap(), emptyMap()))
+        val assetsManager = JarAssetsManager("1233456789abcdef", clientJarHash, profile, Version(versionId, -1, -1, VersionTypes.APRIL_FOOL, emptyMap(), emptyMap()))
         try {
             assetsManager.load(CountUpAndDownLatch(1))
         } catch (exception: InvalidAssetException) {
-            // this exception is thrown, because our initial has is "dummy"
+            // this exception is thrown, because our initial hash is "dummy"
             print(exception.hash)
         }
     }
