@@ -116,7 +116,7 @@ class IndexAssetsManager(
             val size = data["size"]?.toLong() ?: -1
             val hash = data["hash"].toString()
             if (tasks.count > DefaultThreadPool.threadCount - 1) {
-                tasks.waitForChange()
+                tasks.waitForChange(100L)
             }
             tasks.inc()
             DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.LOW) {
