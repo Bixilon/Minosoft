@@ -17,6 +17,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.io.File
 import java.io.FileInputStream
 import java.util.zip.ZipInputStream
@@ -30,6 +31,9 @@ class ZipAssetsManager(
     canUnload: Boolean = true,
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : FileAssetsManager(canUnload) {
+
+    constructor(file: File, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(ZipInputStream(FileInputStream(file)), canUnload, prefix)
+    constructor(path: String, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(File(path), canUnload, prefix)
 
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
@@ -56,6 +60,7 @@ class ZipAssetsManager(
         loaded = true
     }
 
-    constructor(file: File, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(ZipInputStream(FileInputStream(file)), canUnload, prefix)
-    constructor(path: String, canUnload: Boolean = true, prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX) : this(File(path), canUnload, prefix)
+    override fun contains(path: ResourceLocation): Boolean {
+        return path in assets
+    }
 }

@@ -85,4 +85,18 @@ class PriorityAssetsManager(
             }
         }
     }
+
+    override fun contains(path: ResourceLocation): Boolean {
+        for ((namespace, managers) in managers) {
+            if (path.namespace != namespace) {
+                continue
+            }
+            for (manager in managers) {
+                if (path in manager) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 }

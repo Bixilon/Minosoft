@@ -139,6 +139,13 @@ class JarAssetsManager(
         loaded = false
     }
 
+    override fun contains(path: ResourceLocation): Boolean {
+        if (path.namespace != ProtocolDefinition.DEFAULT_NAMESPACE) {
+            return false
+        }
+        return path.path in jarAssets
+    }
+
     companion object {
         private val REQUIRED_FILE_PREFIXES = arrayOf(
             "blockstates/",
