@@ -81,4 +81,8 @@ class DirectoryAssetsManager(
         }
         return FileUtil.safeReadFile(path.filePath, false)
     }
+
+    override fun contains(path: ResourceLocation): Boolean {
+        return path in assets
+    }
 }

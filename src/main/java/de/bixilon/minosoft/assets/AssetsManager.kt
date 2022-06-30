@@ -61,6 +61,9 @@ interface AssetsManager {
      */
     fun unload()
 
+    operator fun contains(path: ResourceLocation): Boolean
+
+
     companion object {
         const val DEFAULT_ASSETS_PREFIX = "assets"
     }

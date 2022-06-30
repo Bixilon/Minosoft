@@ -145,4 +145,8 @@ class IndexAssetsManager(
     override fun getOrNull(path: ResourceLocation): InputStream? {
         return FileUtil.readFile(FileAssetsUtil.getPath(assets[path]?.hash ?: return null))
     }
+
+    override fun contains(path: ResourceLocation): Boolean {
+        return path in assets
+    }
 }

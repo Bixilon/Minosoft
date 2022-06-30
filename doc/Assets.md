@@ -9,7 +9,7 @@ Assets are [Game Files](https://wiki.vg/Game_files). For example:
 - Language Files
 - Block/Item models
 - (Icons)
-- Maybe more, but not relevant at this time´```
+- Maybe more, but not relevant at this time
 
 ## Index assets
 

@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.css.StyleableProperty
@@ -51,6 +52,8 @@ object JavaFXUtil {
     lateinit var BIXILON_LOGO: Group
     private var watchingTheme = false
 
+    val THEME_ASSETS_MANAGER = Minosoft.MINOSOFT_ASSETS_MANAGER
+
     private fun startThemeWatcher() {
         if (watchingTheme) {
             return
@@ -62,8 +65,7 @@ object JavaFXUtil {
                 stage ?: continue
                 stage.scene.stylesheets.clear()
                 stage.scene.stylesheets.add(DEFAULT_STYLE)
-                val theme = ErosProfileManager.selected.theme.theme
-                stage.scene.stylesheets.add("resource:minosoft:eros/themes/$theme.css")
+                stage.scene.stylesheets.add(getThemeURL(it))
             }
         }
         watchingTheme = true
@@ -78,7 +80,7 @@ object JavaFXUtil {
 
         stage.scene.stylesheets.add(DEFAULT_STYLE)
         val theme = ErosProfileManager.selected.theme.theme
-        stage.scene.stylesheets.add("resource:minosoft:eros/themes/$theme.css")
+        stage.scene.stylesheets.add(getThemeURL(theme))
 
         stages.cleanup()
         stages.add(stage)
@@ -199,5 +201,14 @@ object JavaFXUtil {
         isAlwaysOnTop = false
         this.requestFocus()
         this.toFront()
+    }
+
+    private fun getThemeURL(name: String): String {
+        val path = "minosoft:eros/themes/$name.css"
+        if (path.toResourceLocation() !in THEME_ASSETS_MANAGER) {
+            throw Exception("Can not load theme: $name")
+        }
+
+        return "resource:$path"
     }
 }
