@@ -25,7 +25,7 @@ Generally I'd say TBA, but some basic rules are here. Feel free to contact me fi
 
 ## What not to include
 
-- This is a non-profit project, so don't include anything that violates open source rules.
+- This is a non-profit project, so don't include anything that makes money or includes closed source code.
 - No connections to other servers than mojang or resources (aka this or another git repo).
 - No ads, no data collection, nothing in this direction.
 - No copyright protected content.
