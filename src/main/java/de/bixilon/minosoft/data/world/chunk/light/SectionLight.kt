@@ -50,44 +50,13 @@ class SectionLight(
      */
 
     private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Byte) {
-        val index = getIndex(x, y, z)
-        val current = light[index] // and 0x0F
-        if (current == luminance) {
-            // everything is fine
-            return
-        }
-        light[index] = luminance
-
-        val expectedNeighbourLevel = if (luminance <= 1) 0 else (luminance - 1).toByte()
-
-        var neighbour = luminance
-        if (x > 0) {
-            neighbour = maxOf(neighbour, (traceDecrease(x - 1, y, z, expectedNeighbourLevel, current) - 1).toByte())
-        }
-        if (x < ProtocolDefinition.SECTION_MAX_X) {
-            neighbour = maxOf(neighbour, (traceDecrease(x + 1, y, z, expectedNeighbourLevel, current) - 1).toByte())
-        }
-        if (y > 0) {
-            neighbour = maxOf(neighbour, (traceDecrease(x, y - 1, z, expectedNeighbourLevel, current) - 1).toByte())
-        }
-        if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            neighbour = maxOf(neighbour, (traceDecrease(x, y + 1, z, expectedNeighbourLevel, current) - 1).toByte())
-        }
-        if (z > 0) {
-            neighbour = maxOf(neighbour, (traceDecrease(x, y, z - 1, expectedNeighbourLevel, current) - 1).toByte())
-        }
-        if (z < ProtocolDefinition.SECTION_MAX_Z) {
-            neighbour = maxOf(neighbour, (traceDecrease(x, y, z + 1, expectedNeighbourLevel, current) - 1).toByte())
-        }
-
-        light[index] = neighbour
+        traceDecrease(x, y, z, luminance, 16) // invalid light
     }
 
     fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte): Byte {
         val index = getIndex(x, y, z)
         val light = light[index]
-        if (light <= expectedLuminance) {
-            // smaller should never happen
+        if (light == expectedLuminance) {
             return expectedLuminance
         }
         if (light >= previous) {
