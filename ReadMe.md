@@ -25,7 +25,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Independent, I will probably accept almost all patches
 - Way more stuff
 
-(some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md)). You can find the architecture design [here](/doc/Architecture.md)
+(some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md)). You can find information about the architecture design [here](/doc/Architecture.md)
 
 ## System requirements
 
@@ -46,9 +46,10 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Item and block interaction
 - HUD
 - GUI (inventory, menus)
-- block entities (e.g. signs, chests)
-- basic entity rendering (hitboxes)
-- ~~original physics~~
+- Block entities (e.g. signs, chests)
+- Basic entity rendering (hitboxes)
+- Light
+- ~~Original physics~~
 
 ![Rendering](doc/img/rendering5.png)  
 A world, with a ton of hud features exposed
