@@ -121,6 +121,7 @@ class ErosCrashReport : JavaFXWindowController() {
             "This message should not be visible...",
             "lmfao",
             "Your fault",
+            "Technoblade never dies", // In memorial to technoblade. RIP Technoblade 30.6.2022
         )
 
 
