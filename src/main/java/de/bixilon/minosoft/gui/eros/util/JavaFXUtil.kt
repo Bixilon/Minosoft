@@ -198,9 +198,9 @@ object JavaFXUtil {
 
     fun Stage.bringToFront() {
         isAlwaysOnTop = true
-        isAlwaysOnTop = false
         this.requestFocus()
         this.toFront()
+        isAlwaysOnTop = false
     }
 
     private fun getThemeURL(name: String): String {

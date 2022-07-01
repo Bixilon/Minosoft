@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
@@ -50,10 +52,10 @@ class SectionLight(
      */
 
     private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Byte) {
-        traceDecrease(x, y, z, luminance, 16) // invalid light
+        traceDecrease(x, y, z, luminance, 16, Vec3i.EMPTY) // 16: invalid light level
     }
 
-    fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte): Byte {
+    fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte, direction: Vec3i): Byte {
         val index = getIndex(x, y, z)
         val light = light[index]
         if (light == expectedLuminance) {
@@ -63,29 +65,68 @@ class SectionLight(
             // another (stronger!) light source is emitting light here
             return light
         }
+        val neighbours = section.neighbours ?: return 0
+
+        update = true
         this.light[index] = expectedLuminance
 
         val expectedNeighbourLevel = if (expectedLuminance <= 1) 0 else (expectedLuminance - 1).toByte()
 
         var highestLevel = expectedLuminance
 
-        if (x > 0) {
-            highestLevel = maxOf(highestLevel, (traceDecrease(x - 1, y, z, expectedNeighbourLevel, light) - 1).toByte())
+        if (direction.x <= 0) {
+            highestLevel = maxOf(
+                highestLevel, (if (x > 0) {
+                    traceDecrease(x - 1, y, z, expectedNeighbourLevel, light, Vec3i(-1, direction.y, direction.z))
+                } else {
+                    neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, expectedLuminance, previous, Vec3i(-1, direction.y, direction.z)) ?: 0
+                } - 1).toByte()
+            )
         }
-        if (x < ProtocolDefinition.SECTION_MAX_X) {
-            highestLevel = maxOf(highestLevel, (traceDecrease(x + 1, y, z, expectedNeighbourLevel, light) - 1).toByte())
+        if (direction.x >= 0) {
+            highestLevel = maxOf(
+                highestLevel, (if (x < ProtocolDefinition.SECTION_MAX_X) {
+                    traceDecrease(x + 1, y, z, expectedNeighbourLevel, light, Vec3i(1, direction.y, direction.z))
+                } else {
+                    neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, expectedNeighbourLevel, light, Vec3i(1, direction.y, direction.z)) ?: 0
+                } - 1).toByte()
+            )
         }
-        if (y > 0) {
-            highestLevel = maxOf(highestLevel, (traceDecrease(x, y - 1, z, expectedNeighbourLevel, light) - 1).toByte())
+        if (direction.y <= 0) {
+            highestLevel = maxOf(
+                highestLevel, (if (y > 0) {
+                    traceDecrease(x, y - 1, z, expectedNeighbourLevel, light, Vec3i(direction.x, -1, direction.z))
+                } else {
+                    neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, expectedNeighbourLevel, light, Vec3i(direction.x, -1, direction.z)) ?: 0
+                } - 1).toByte()
+            )
         }
-        if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            highestLevel = maxOf(highestLevel, (traceDecrease(x, y + 1, z, expectedNeighbourLevel, light) - 1).toByte())
+        if (direction.y >= 0) {
+            highestLevel = maxOf(
+                highestLevel, (if (y < ProtocolDefinition.SECTION_MAX_Y) {
+                    traceDecrease(x, y + 1, z, expectedNeighbourLevel, light, Vec3i(direction.x, 1, direction.z))
+                } else {
+                    neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, expectedNeighbourLevel, light, Vec3i(direction.x, 1, direction.z)) ?: 0
+                } - 1).toByte()
+            )
         }
-        if (z > 0) {
-            highestLevel = maxOf(highestLevel, (traceDecrease(x, y, z - 1, expectedNeighbourLevel, light) - 1).toByte())
+        if (direction.z <= 0) {
+            highestLevel = maxOf(
+                highestLevel, (if (z > 0) {
+                    traceDecrease(x, y, z - 1, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, -1))
+                } else {
+                    neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, -1)) ?: 0
+                } - 1).toByte()
+            )
         }
-        if (z < ProtocolDefinition.SECTION_MAX_Z) {
-            highestLevel = maxOf(highestLevel, (traceDecrease(x, y, z + 1, expectedNeighbourLevel, light) - 1).toByte())
+        if (direction.z >= 0) {
+            highestLevel = maxOf(
+                highestLevel, (if (z < ProtocolDefinition.SECTION_MAX_Z) {
+                    traceDecrease(x, y, z + 1, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, 1))
+                } else {
+                    neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, 1)) ?: 0
+                } - 1).toByte()
+            )
         }
 
         this.light[index] = highestLevel
