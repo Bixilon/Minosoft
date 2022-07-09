@@ -115,8 +115,12 @@ class IndexAssetsManager(
 
             val size = data["size"]?.toLong() ?: -1
             val hash = data["hash"].toString()
-            if (tasks.count > DefaultThreadPool.threadCount - 1) {
-                tasks.waitForChange(100L)
+            while (tasks.count > DefaultThreadPool.threadCount - 1) {
+                // ToDo: The timeout is just a workaround for bad multi threading timings
+                try {
+                    tasks.waitForChange(100L)
+                } catch (_: InterruptedException) {
+                }
             }
             tasks.inc()
             DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.LOW) {
