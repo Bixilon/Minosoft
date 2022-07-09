@@ -167,7 +167,8 @@ class PlayConnection(
         check(!wasConnected) { "Connection was already connected!" }
         try {
             state = PlayConnectionStates.LOADING_ASSETS
-            val taskWorker = TaskWorker()
+            var error: Throwable? = null
+            val taskWorker = TaskWorker(errorHandler = { _, exception -> error = exception }, criticalErrorHandler = { _, exception -> error = exception })
             taskWorker += {
                 fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
@@ -196,6 +197,7 @@ class PlayConnection(
                 }
             }
             taskWorker.work(latch)
+            error?.let { throw it }
 
             state = PlayConnectionStates.LOADING
 
