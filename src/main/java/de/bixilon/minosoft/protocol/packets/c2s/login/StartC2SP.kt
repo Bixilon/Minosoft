@@ -22,19 +22,24 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 @LoadPacket(state = ProtocolStates.LOGIN)
 class StartC2SP(
     val username: String,
     val publicKey: PlayerPublicKey?,
+    val profileUUID: UUID? = null,
 ) : PlayC2SPacket {
 
-    constructor(player: LocalPlayerEntity) : this(player.name, player.privateKey?.playerKey)
+    constructor(player: LocalPlayerEntity) : this(player.name, player.privateKey?.playerKey, player.uuid)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(username)
         if (buffer.versionId >= ProtocolVersions.V_22W17A) {
             buffer.writeOptional(publicKey) { buffer.writePublicKey(it) }
+        }
+        if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
+            buffer.writeOptional(profileUUID) { buffer.writeUUID(it) }
         }
     }
 

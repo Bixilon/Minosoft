@@ -33,12 +33,18 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     var sender: UUID? = null
         private set
+    var overlay: Boolean = false
+        private set
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_14W04A) {
-            type = ChatMessageTypes[buffer.readVarInt()]
-            if (buffer.versionId >= ProtocolVersions.V_20W21A && buffer.versionId < ProtocolVersions.V_22W17A) {
-                sender = buffer.readUUID()
+            if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
+                overlay = buffer.readBoolean()
+            } else {
+                type = ChatMessageTypes[buffer.readVarInt()]
+                if (buffer.versionId >= ProtocolVersions.V_20W21A && buffer.versionId < ProtocolVersions.V_22W17A) {
+                    sender = buffer.readUUID()
+                }
             }
         }
         message.setFallbackColor(ProtocolDefinition.DEFAULT_COLOR)

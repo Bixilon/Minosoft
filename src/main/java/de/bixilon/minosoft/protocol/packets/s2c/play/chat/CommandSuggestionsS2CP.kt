@@ -12,33 +12,28 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class ChatSuggestionsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val action = Actions[buffer.readVarInt()]
-    val matches = buffer.readArray { buffer.readString() }
-
-    override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat suggestions (action=$action, matches=$matches)" }
+class CommandSuggestionsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    var matches: Array<String> = when {
+        buffer.versionId < ProtocolVersions.V_14W33A -> {
+            buffer.readVarInt() // ToDo:  count?
+            arrayOf(buffer.readString())
+        }
+        buffer.versionId < ProtocolVersions.V_17W45A -> {
+            buffer.readArray { buffer.readString() }
+        }
+        else -> TODO()
     }
 
-    enum class Actions {
-        ADD,
-        REMOVE,
-        SET,
-        ;
-
-        companion object : ValuesEnum<Actions> {
-            override val VALUES: Array<Actions> = values()
-            override val NAME_MAP: Map<String, Actions> = EnumUtil.getEnumValues(VALUES)
-        }
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Command suggestions (matches=$matches)" }
     }
 }
