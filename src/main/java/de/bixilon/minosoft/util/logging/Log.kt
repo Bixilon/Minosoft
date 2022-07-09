@@ -102,17 +102,12 @@ object Log {
 
 
     private fun skipLogging(type: LogMessageType, level: LogLevels): Boolean {
-        val levels = levels
-        if (levels == null) {
-            if (level.ordinal > LogLevels.INFO.ordinal) {
-                return !RunConfiguration.VERBOSE_LOGGING
-            }
+        if (RunConfiguration.VERBOSE_LOGGING) {
             return false
         }
-        levels[type]?.let {
-            if (it.ordinal < level.ordinal) {
-                return true
-            }
+        val setLevel = levels?.get(type) ?: LogLevels.INFO
+        if (setLevel.ordinal < level.ordinal) {
+            return true
         }
         return false
     }
