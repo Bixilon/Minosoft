@@ -16,9 +16,12 @@ package de.bixilon.minosoft.assets.util
 import com.github.luben.zstd.ZstdInputStream
 import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.array.ByteArrayUtil.toHex
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.hex.HexUtil.isHexString
 import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.util.FileAssetsUtil.HashTypes.Companion.hashType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -134,15 +137,7 @@ object FileAssetsUtil {
     }
 
     fun verifyAsset(hash: String, file: File = File(getPath(hash)), verify: Boolean, hashType: HashTypes = HashTypes.SHA256, compress: Boolean = true): Boolean {
-        if (!file.exists()) {
-            return false
-        }
-        if (!file.isFile) {
-            throw IllegalStateException("File is not a file: $file")
-        }
-        val size = file.length()
-        if (size < 0) {
-            file.delete()
+        if (!verifyAssetBasic(file)) {
             return false
         }
         if (!verify) {
@@ -152,10 +147,7 @@ object FileAssetsUtil {
         try {
             val digest = hashType.createDigest()
 
-            var input: InputStream = FileInputStream(file)
-            if (compress) {
-                input = ZstdInputStream(input)
-            }
+            val input = openStream(file, compress)
 
             val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
             var length: Int
@@ -177,6 +169,68 @@ object FileAssetsUtil {
         }
     }
 
+    private fun verifyAssetBasic(file: File): Boolean {
+        if (!file.exists()) {
+            return false
+        }
+        if (!file.isFile) {
+            throw IllegalStateException("File is not a file: $file")
+        }
+        val size = file.length()
+        if (size < 0) {
+            file.delete()
+            return false
+        }
+        return true
+    }
+
+    fun readVerified(hash: String, verify: Boolean, hashType: HashTypes = hash.hashType, compress: Boolean = true): InputStream? {
+        val file = File(getPath(hash))
+        if (!verifyAssetBasic(file)) {
+            return null
+        }
+        val stream = openStream(file, compress)
+        if (!verify) {
+            return stream
+        }
+
+        try {
+            val digest = hashType.createDigest()
+
+            val input = openStream(file, compress)
+            val output = ByteArrayOutputStream(if (compress) input.available() else maxOf(1000, input.available()))
+
+            val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
+            var length: Int
+            while (true) {
+                length = input.read(buffer, 0, buffer.size)
+                if (length < 0) {
+                    break
+                }
+                digest.update(buffer, 0, length)
+                output.write(buffer, 0, length)
+            }
+            val equals = hash == digest.digest().toHex()
+            if (!equals) {
+                file.delete()
+                return null
+            }
+            return ByteArrayInputStream(output.toByteArray())
+        } catch (exception: Throwable) {
+            file.delete()
+            return null
+        }
+    }
+
+    private fun openStream(file: File, compress: Boolean): InputStream {
+        var input: InputStream = FileInputStream(file)
+        if (compress) {
+            input = ZstdInputStream(input)
+        }
+
+        return input
+    }
+
     enum class HashTypes(
         val digestName: String,
         val length: Int,
@@ -187,6 +241,21 @@ object FileAssetsUtil {
 
         fun createDigest(): MessageDigest {
             return MessageDigest.getInstance(digestName)
+        }
+
+        companion object : ValuesEnum<HashTypes> {
+            override val VALUES: Array<HashTypes> = values()
+            override val NAME_MAP: Map<String, HashTypes> = EnumUtil.getEnumValues(VALUES)
+
+            val String.hashType: HashTypes
+                get() {
+                    for (type in VALUES) {
+                        if (this.length == type.length) {
+                            return type
+                        }
+                    }
+                    throw IllegalArgumentException("Can not determinate hash type: $this")
+                }
         }
     }
 }

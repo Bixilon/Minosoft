@@ -21,10 +21,11 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
+import de.bixilon.minosoft.assets.error.AssetCorruptedError
+import de.bixilon.minosoft.assets.error.AssetNotFoundError
 import de.bixilon.minosoft.assets.minecraft.MinecraftAssetsManager
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
-import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
@@ -35,7 +36,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 
@@ -55,6 +55,7 @@ class IndexAssetsManager(
         private set
 
     private fun downloadAssetsIndex(): Map<String, Any> {
+        Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading assets index ($indexHash)" }
         return Jackson.MAPPER.readValue(
             FileAssetsUtil.downloadAndGetAsset(
                 profile.source.mojangPackages.formatPlaceholder(
@@ -84,7 +85,7 @@ class IndexAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        var assets = FileUtil.safeReadFile(FileAssetsUtil.getPath(indexHash))?.readJsonObject() ?: downloadAssetsIndex()
+        var assets = FileAssetsUtil.readVerified(indexHash, verify)?.readJsonObject() ?: downloadAssetsIndex()
 
         assets["objects"].let { assets = it.asJsonObject() }
         val tasks = CountUpAndDownLatch(0)
@@ -143,10 +144,10 @@ class IndexAssetsManager(
     }
 
     override fun get(path: ResourceLocation): InputStream {
-        return FileUtil.readFile(FileAssetsUtil.getPath(assets[path]?.hash ?: throw FileNotFoundException("Could not find asset $path")))
+        return FileAssetsUtil.readVerified(assets[path]?.hash ?: throw AssetNotFoundError(path), verify, hashType = FileAssetsUtil.HashTypes.SHA1) ?: throw AssetCorruptedError(path)
     }
 
     override fun getOrNull(path: ResourceLocation): InputStream? {
-        return FileUtil.readFile(FileAssetsUtil.getPath(assets[path]?.hash ?: return null))
+        return FileAssetsUtil.readVerified(assets[path]?.hash ?: return null, verify, hashType = FileAssetsUtil.HashTypes.SHA1) ?: throw AssetCorruptedError(path)
     }
 }

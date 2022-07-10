@@ -18,7 +18,6 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.string.StringUtil.formatPlaceholder
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
-import de.bixilon.minosoft.assets.util.FileUtil
 import de.bixilon.minosoft.assets.util.FileUtil.readArchive
 import de.bixilon.minosoft.assets.util.FileUtil.readZipArchive
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
@@ -28,6 +27,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.generalize
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.kamranzafar.jtar.TarEntry
 import org.kamranzafar.jtar.TarHeader
 import org.kamranzafar.jtar.TarOutputStream
@@ -53,15 +55,15 @@ class JarAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        val jarAssetFile = File(FileAssetsUtil.getPath(jarAssetsHash))
-        if (FileAssetsUtil.verifyAsset(jarAssetsHash, jarAssetFile, profile.verify)) {
-            val jarAssets = FileUtil.readFile(jarAssetFile).readArchive()
+        val jarAssets = FileAssetsUtil.readVerified(jarAssetsHash, profile.verify)?.readArchive()
+        if (jarAssets != null) {
             for ((path, data) in jarAssets) {
                 this.jarAssets[path.removePrefix("assets/" + ProtocolDefinition.DEFAULT_NAMESPACE + "/")] = data
             }
         } else {
-            var clientJar = FileUtil.safeReadFile(File(FileAssetsUtil.getPath(clientJarHash)), false)?.readZipArchive()
+            var clientJar = FileAssetsUtil.readVerified(clientJarHash, profile.verify)?.readZipArchive()
             if (clientJar == null) {
+                Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE) { "Downloading minecraft jar ($clientJarHash)" }
                 val downloaded = FileAssetsUtil.downloadAndGetAsset(
                     profile.source.pistonObjects.formatPlaceholder(
                         "fullHash" to clientJarHash,
