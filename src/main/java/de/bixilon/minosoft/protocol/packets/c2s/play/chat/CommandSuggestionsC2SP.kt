@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class ChatSuggestionsC2SP(
+class CommandSuggestionsC2SP(
     val text: String,
     val assumeCommand: Boolean,
     val position: Vec3i? = null,
