@@ -223,7 +223,7 @@ class World(
         }
         // connection.world.view.updateServerViewDistance(chunkPosition, false)
         connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
-        if (chunkPosition.x == chunkMin.x || chunkPosition.y == chunkMin.y || chunkPosition.x == chunkMax.x || chunkPosition.y == chunkMax.y) {
+        if (chunkPosition.x <= chunkMin.x || chunkPosition.y <= chunkMin.y || chunkPosition.x >= chunkMax.x || chunkPosition.y >= chunkMax.y) {
             recalculateChunkExtreme()
         }
         occlusionUpdateCallback?.onOcclusionChange()

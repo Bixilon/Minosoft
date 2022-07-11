@@ -331,9 +331,9 @@ class WorldVisibilityGraph(
 
     @Synchronized
     private fun calculateGraph() {
-        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-            return
-        }
+         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
+             return
+         }
         connection.world.chunks.lock.acquire()
         recalculateNextFrame = false
         this.lastFrustumRevision = frustum.revision
