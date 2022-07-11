@@ -127,7 +127,6 @@ class MatrixHandler(
         this.eyePosition = eyePosition
         this.rotation = rotation
         val cameraBlockPosition = eyePosition.blockPosition
-        camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         if (fov != previousFOV || fogEnd != this.fogEnd) {
             this.fogEnd = fogEnd
             calculateProjectionMatrix()
@@ -137,8 +136,10 @@ class MatrixHandler(
         updateRotation(if (debugView) debugRotation else rotation)
         updateViewMatrix(if (debugView) debugPosition else eyePosition)
         updateViewProjectionMatrix()
+
         if (!debugView) {
             frustum.recalculate()
+            camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         }
 
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
