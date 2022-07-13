@@ -128,9 +128,10 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     for (i in 0 until buffer.readVarInt()) {
                         val xz = buffer.readUnsignedByte()
                         val y = buffer.readShort()
-                        val type = buffer.connection.registries.blockEntityTypeRegistry.getOrNull(buffer.readVarInt()) ?: continue
-                        val entity = type.build(buffer.connection)
+                        val typeId = buffer.readVarInt()
                         val nbt = buffer.readNBT()?.asJsonObject()
+                        val type = buffer.connection.registries.blockEntityTypeRegistry.getOrNull(typeId) ?: continue
+                        val entity = type.build(buffer.connection)
                         if (nbt != null) {
                             entity.updateNBT(nbt)
                         }
