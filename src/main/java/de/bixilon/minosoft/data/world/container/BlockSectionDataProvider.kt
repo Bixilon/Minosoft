@@ -56,6 +56,10 @@ class BlockSectionDataProvider(
     }
 
     fun recalculateOcclusion() {
+        if (isEmpty) {
+            occlusion = NO_OCCLUSION
+            return
+        }
         val regions = floodFill()
         calculateOcclusion(regions)
     }
