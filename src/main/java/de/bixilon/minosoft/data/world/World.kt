@@ -93,6 +93,7 @@ class World(
         return chunks[chunkPosition]
     }
 
+    @Synchronized
     private fun updateChunkExtreme(chunkPosition: Vec2i, mass: Boolean = false) {
         var changes = 0
         if (chunkPosition.x < chunkMin.x) {
@@ -117,6 +118,7 @@ class World(
         }
     }
 
+    @Synchronized
     private fun updateWorldSize() {
         val nextSize = (chunkMax - chunkMin)
         if (chunks.unsafe.isNotEmpty()) {
