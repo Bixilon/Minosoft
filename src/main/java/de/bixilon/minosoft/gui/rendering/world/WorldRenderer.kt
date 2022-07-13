@@ -300,8 +300,10 @@ class WorldRenderer(
                 culledQueue -= toRemove
 
                 queue.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
+                queueSet.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
 
                 meshesToLoad.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
+                meshesToLoadSet.removeAll { !visibilityGraph.isChunkVisible(it.chunkPosition) }
 
                 preparingTasksLock.acquire()
                 for (task in preparingTasks) {
