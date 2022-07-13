@@ -19,11 +19,17 @@ import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 object GlobalPositionEntityDataType : EntityDataType<GlobalPosition> {
 
     override fun read(buffer: PlayInByteBuffer): GlobalPosition? {
-        return buffer.readNBT()?.toJsonObject()?.toGlobalPosition(buffer.connection)
+        if (buffer.versionId < ProtocolVersions.V_1_19_PRE2) { // ToDo: find out version
+            return buffer.readNBT()?.toJsonObject()?.toGlobalPosition(buffer.connection)
+        }
+        val dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]
+        val position = buffer.readBlockPosition()
+        return GlobalPosition(dimension, position)
     }
 
 
