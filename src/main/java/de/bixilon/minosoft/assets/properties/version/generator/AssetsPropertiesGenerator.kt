@@ -14,16 +14,21 @@
 package de.bixilon.minosoft.assets.properties.version.generator
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.VersionTypes
+import de.bixilon.minosoft.util.logging.Log
+import kotlin.system.exitProcess
 
 object AssetsPropertiesGenerator {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        val stream = System.out
+        Log::class.java.forceInit()
         if (args.size != 2) {
             throw IllegalArgumentException("Usage: application <version id> <client jar hash>")
         }
@@ -37,7 +42,9 @@ object AssetsPropertiesGenerator {
             assetsManager.load(CountUpAndDownLatch(1))
         } catch (exception: InvalidAssetException) {
             // this exception is thrown, because our initial hash is "dummy"
-            print(exception.hash)
+            stream.print(exception.hash)
+            exitProcess(0)
         }
+        exitProcess(1)
     }
 }
