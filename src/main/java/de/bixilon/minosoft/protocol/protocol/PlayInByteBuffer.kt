@@ -22,6 +22,10 @@ import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
 import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
+import de.bixilon.minosoft.data.chat.signature.LastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.MessageBody
+import de.bixilon.minosoft.data.chat.signature.MessageHeader
+import de.bixilon.minosoft.data.chat.signature.SignedMessage
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
@@ -354,5 +358,26 @@ class PlayInByteBuffer : InByteBuffer {
 
     fun <T : Enum<*>> readEnum(registry: EnumRegistry<T>): T? {
         return registry[readVarInt()]
+    }
+
+    fun readMessageHeader(): MessageHeader {
+        return MessageHeader(readOptional { readByteArray() }, readUUID())
+    }
+
+    fun readLastSeenMessage(): LastSeenMessage {
+        return LastSeenMessage(readUUID(), readByteArray())
+    }
+
+    fun readMessageBody(): MessageBody {
+        return MessageBody(
+            text = readChatComponent(),
+            time = readInstant(),
+            salt = readLong(),
+            lastSeen = readArray { readLastSeenMessage() }
+        )
+    }
+
+    fun readSignedMessage(): SignedMessage {
+        return SignedMessage(readMessageHeader(), readByteArray(), readMessageBody(), readOptional { readChatComponent() })
     }
 }
