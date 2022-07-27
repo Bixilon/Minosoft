@@ -298,11 +298,11 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-        <javafx.version>19-ea+8</javafx.version>
-        <kotlin.version>1.7.0</kotlin.version>
+        <javafx.version>19-ea+9</javafx.version>
+        <kotlin.version>1.7.10</kotlin.version>
         <lwjgl.version>3.3.1</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
-        <netty.version>4.1.77.Final</netty.version>
+        <netty.version>4.1.79.Final</netty.version>
         <jackson.version>2.13.3</jackson.version>
     </properties>
 
@@ -438,7 +438,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>6.1.6</version>
+            <version>6.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -530,7 +530,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.2</version>
+            <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
