@@ -231,20 +231,19 @@ class RenderWindow(
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
-        var closed = false
-        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { closed = true })
+        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { renderingState = RenderingStates.QUITTING })
         while (true) {
-            if (connection.wasConnected || closed) {
-                break
-            }
-
             if (renderingState == RenderingStates.PAUSED) {
                 window.title = "Minosoft | Paused"
             }
 
             while (renderingState == RenderingStates.PAUSED) {
-                Thread.sleep(100L)
+                Thread.sleep(20L)
                 window.pollEvents()
+            }
+
+            if (connection.wasConnected || !renderingState.active) {
+                break
             }
 
             renderStats.startFrame()

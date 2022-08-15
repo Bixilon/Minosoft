@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
@@ -148,7 +147,7 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled || connection.state != PlayConnectionStates.PLAYING) {
+            if (!renderWindow.renderingState.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
                 return@TimeWorkerTask
             }
             val cameraPosition = connection.player.positionInfo.chunkPosition
@@ -194,7 +193,7 @@ class ParticleRenderer(
     }
 
     override fun addParticle(particle: Particle) {
-        if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
+        if (!renderWindow.renderingState.running || !enabled) {
             return
         }
         val particleCount = particles.size + particleQueue.size
