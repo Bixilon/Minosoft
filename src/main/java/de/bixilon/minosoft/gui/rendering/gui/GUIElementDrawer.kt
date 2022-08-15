@@ -27,21 +27,28 @@ interface GUIElementDrawer {
 
     fun drawElements(elements: Collection<GUIElement>) {
         val time = TimeUtil.millis
+        val tickLatch = CountUpAndDownLatch(1)
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in elements) {
                 if (!element.enabled) {
                     continue
                 }
-                element.tick()
-                if (element is Pollable) {
-                    if (element.poll()) {
-                        element.apply()
+                tickLatch.inc()
+                DefaultThreadPool += {
+                    element.tick()
+                    if (element is Pollable) {
+                        if (element.poll()) {
+                            element.apply()
+                        }
                     }
+                    tickLatch.dec()
                 }
             }
 
             lastTickTime = time
         }
+        tickLatch.dec()
+        tickLatch.await()
 
         val latch = CountUpAndDownLatch(1)
         for (element in elements) {
