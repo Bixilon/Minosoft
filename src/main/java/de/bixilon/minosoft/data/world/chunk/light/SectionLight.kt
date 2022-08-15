@@ -13,12 +13,10 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
@@ -44,7 +42,7 @@ class SectionLight(
 
 
     /*
-    TODO: Light decrease
+    Light decrease
      * Go in every direction and check if the light is different, else do nothing
      * if the light is equal or 1 more of the neighbour, then there is another light source
      * we will set our own light the  current neighbour level and check if any neighbour has a higher level
@@ -53,10 +51,10 @@ class SectionLight(
      */
 
     private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Byte) {
-        traceDecrease(x, y, z, luminance, (ProtocolDefinition.MAX_LIGHT_LEVEL + 1).toByte(), Vec3i.EMPTY) // 16: invalid light level
+        traceDecrease(x, y, z, luminance, (ProtocolDefinition.MAX_LIGHT_LEVEL + 1).toByte(), 0, 0, 0)
     }
 
-    fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte, direction: Vec3i): Byte {
+    fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte, directionX: Int, directionY: Int, directionZ: Int): Byte {
         val index = getIndex(x, y, z)
         val light = light[index]
         if (light == expectedLuminance) {
@@ -68,66 +66,74 @@ class SectionLight(
         }
         val neighbours = section.neighbours ?: return 0
 
-        update = true
+        if (!update) {
+            update = true
+        }
         this.light[index] = expectedLuminance
 
         val expectedNeighbourLevel = if (expectedLuminance <= 1) 0 else (expectedLuminance - 1).toByte()
 
         var highestLevel = expectedNeighbourLevel
 
-        if (direction.x <= 0) {
-            highestLevel = maxOf(
-                highestLevel, (if (x > 0) {
-                    traceDecrease(x - 1, y, z, highestLevel, light, Vec3i(-1, direction.y, direction.z))
-                } else {
-                    neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, highestLevel, previous, Vec3i(-1, direction.y, direction.z)) ?: 0
-                } - 1).toByte()
-            )
+        if (directionX <= 0) {
+            val neighbourLevel = if (x > 0) {
+                traceDecrease(x - 1, y, z, highestLevel, light, -1, directionY, directionZ)
+            } else {
+                neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, highestLevel, previous, -1, directionY, directionZ) ?: 0
+            } - 1
+            if (highestLevel < neighbourLevel) {
+                highestLevel = neighbourLevel.toByte()
+            }
         }
-        if (direction.x >= 0) {
-            highestLevel = maxOf(
-                highestLevel, (if (x < ProtocolDefinition.SECTION_MAX_X) {
-                    traceDecrease(x + 1, y, z, highestLevel, light, Vec3i(1, direction.y, direction.z))
-                } else {
-                    neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, highestLevel, light, Vec3i(1, direction.y, direction.z)) ?: 0
-                } - 1).toByte()
-            )
+        if (directionX >= 0) {
+            val neighbourLevel = if (x < ProtocolDefinition.SECTION_MAX_X) {
+                traceDecrease(x + 1, y, z, highestLevel, light, 1, directionY, directionZ)
+            } else {
+                neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, highestLevel, light, 1, directionY, directionZ) ?: 0
+            } - 1
+            if (highestLevel < neighbourLevel) {
+                highestLevel = neighbourLevel.toByte()
+            }
         }
-        if (direction.y <= 0) {
-            highestLevel = maxOf(
-                highestLevel, (if (y > 0) {
-                    traceDecrease(x, y - 1, z, highestLevel, light, Vec3i(direction.x, -1, direction.z))
-                } else {
-                    neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, highestLevel, light, Vec3i(direction.x, -1, direction.z)) ?: 0
-                } - 1).toByte()
-            )
+        if (directionY <= 0) {
+            val neighbourLevel = if (y > 0) {
+                traceDecrease(x, y - 1, z, highestLevel, light, directionX, -1, directionZ)
+            } else {
+                neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, highestLevel, light, directionX, -1, directionZ) ?: 0
+            } - 1
+            if (highestLevel < neighbourLevel) {
+                highestLevel = neighbourLevel.toByte()
+            }
         }
-        if (direction.y >= 0) {
-            highestLevel = maxOf(
-                highestLevel, (if (y < ProtocolDefinition.SECTION_MAX_Y) {
-                    traceDecrease(x, y + 1, z, highestLevel, light, Vec3i(direction.x, 1, direction.z))
-                } else {
-                    neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, highestLevel, light, Vec3i(direction.x, 1, direction.z)) ?: 0
-                } - 1).toByte()
-            )
+        if (directionY >= 0) {
+            val neighbourLevel = if (y < ProtocolDefinition.SECTION_MAX_Y) {
+                traceDecrease(x, y + 1, z, highestLevel, light, directionX, 1, directionZ)
+            } else {
+                neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, highestLevel, light, directionX, 1, directionZ) ?: 0
+            } - 1
+            if (highestLevel < neighbourLevel) {
+                highestLevel = neighbourLevel.toByte()
+            }
         }
-        if (direction.z <= 0) {
-            highestLevel = maxOf(
-                highestLevel, (if (z > 0) {
-                    traceDecrease(x, y, z - 1, highestLevel, light, Vec3i(direction.x, direction.y, -1))
-                } else {
-                    neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, highestLevel, light, Vec3i(direction.x, direction.y, -1)) ?: 0
-                } - 1).toByte()
-            )
+        if (directionZ <= 0) {
+            val neighbourLevel = if (z > 0) {
+                traceDecrease(x, y, z - 1, highestLevel, light, directionX, directionY, -1)
+            } else {
+                neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, highestLevel, light, directionX, directionY, -1) ?: 0
+            } - 1
+            if (highestLevel < neighbourLevel) {
+                highestLevel = neighbourLevel.toByte()
+            }
         }
-        if (direction.z >= 0) {
-            highestLevel = maxOf(
-                highestLevel, (if (z < ProtocolDefinition.SECTION_MAX_Z) {
-                    traceDecrease(x, y, z + 1, highestLevel, light, Vec3i(direction.x, direction.y, 1))
-                } else {
-                    neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, highestLevel, light, Vec3i(direction.x, direction.y, 1)) ?: 0
-                } - 1).toByte()
-            )
+        if (directionZ >= 0) {
+            val neighbourLevel = if (z < ProtocolDefinition.SECTION_MAX_Z) {
+                traceDecrease(x, y, z + 1, highestLevel, light, directionX, directionY, 1)
+            } else {
+                neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, highestLevel, light, directionX, directionY, 1) ?: 0
+            } - 1
+            if (highestLevel < neighbourLevel) {
+                highestLevel = neighbourLevel.toByte()
+            }
         }
 
         this.light[index] = highestLevel
