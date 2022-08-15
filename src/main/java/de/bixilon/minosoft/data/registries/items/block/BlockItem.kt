@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.items.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
@@ -74,7 +75,7 @@ open class BlockItem(
         }
 
 
-        connection.world[placePosition] = placeBlockState
+        DefaultThreadPool += { connection.world[placePosition] = placeBlockState }
 
         if (connection.player.gamemode != Gamemodes.CREATIVE) {
             stack.item.decreaseCount()

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 import de.bixilon.kotlinglm.pow
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -138,7 +139,7 @@ class BreakInteractionHandler(
         fun finishDigging() {
             connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, target.blockPosition, target.direction))
             clearDigging()
-            connection.world[target.blockPosition] = null
+            DefaultThreadPool += { connection.world[target.blockPosition] = null }
 
             BlockDestroyedHandler.handleDestroy(connection, target.blockPosition, target.blockState)
         }
