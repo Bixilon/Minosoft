@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -42,33 +43,52 @@ class ChunkBorderRenderer(
     private var chunkPosition: Vec2i? = null
     private var mesh: LineMesh? = null
 
+    private var nextMesh: LineMesh? = null
+    private var unload = false
+
     override val skipOpaque: Boolean
         get() = mesh == null || !profile.chunkBorder.enabled
 
     override fun init(latch: CountUpAndDownLatch) {
-        renderWindow.inputHandler.registerKeyCallback(CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
+        renderWindow.inputHandler.registerKeyCallback(
+            CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
                 mapOf(
                     KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
                     KeyActions.STICKY to setOf(KeyCodes.KEY_G),
                 ),
-            ), defaultPressed = profile.chunkBorder.enabled) {
+            ), defaultPressed = profile.chunkBorder.enabled
+        ) {
             profile.chunkBorder.enabled = it
             connection.util.sendDebugMessage("Chunk borders: ${it.format()}")
         }
     }
 
     override fun prepareDraw() {
-        if (!profile.chunkBorder.enabled) {
-            mesh?.unload()
+        if (unload) {
+            this.mesh?.unload()
             this.mesh = null
+            unload = false
+        }
+        val nextMesh = this.nextMesh ?: return
+        nextMesh.load()
+        if (this.mesh?.state == Mesh.MeshStates.LOADED) {
+            this.mesh?.unload()
+        }
+        this.mesh = nextMesh
+        this.nextMesh = null
+    }
+
+    override fun prepareDrawAsync() {
+        if (!profile.chunkBorder.enabled) {
+            this.unload = true
             return
         }
         val chunkPosition = renderWindow.connection.player.positionInfo.chunkPosition
         if (chunkPosition == this.chunkPosition && mesh != null) {
             return
         }
-        mesh?.unload()
+        unload = true
         val mesh = LineMesh(renderWindow)
 
         val dimension = renderWindow.connection.world.dimension ?: return
@@ -134,8 +154,7 @@ class ChunkBorderRenderer(
             }
         }
 
-        mesh.load()
-        this.mesh = mesh
+        this.nextMesh = mesh
         this.chunkPosition = chunkPosition
     }
 

@@ -116,12 +116,24 @@ class RendererManager(
         }
     }
 
+    private fun prepareDraw(rendererList: Collection<Renderer>) {
+        val latch = CountUpAndDownLatch(1)
+        for (renderer in rendererList) {
+            latch.inc()
+            DefaultThreadPool += { renderer.prepareDrawAsync(); latch.dec() }
+        }
+        latch.dec()
+        latch.await()
+
+        for (renderer in rendererList) {
+            renderer.prepareDraw()
+        }
+    }
+
     fun render() {
         val renderers = renderers.values
 
-        for (renderer in renderers) {
-            renderer.prepareDraw()
-        }
+        prepareDraw(renderers)
         renderNormal(renderers)
 
         renderSystem.framebuffer = null
