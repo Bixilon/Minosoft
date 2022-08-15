@@ -349,7 +349,7 @@ class WorldRenderer(
 
     private fun prepareWorld() {
         world.lock.acquire()
-        for ((chunkPosition, chunk) in world.chunks) {
+        for ((chunkPosition, chunk) in world.chunks.unsafe) {
             queueChunk(chunkPosition, chunk)
         }
         world.lock.release()

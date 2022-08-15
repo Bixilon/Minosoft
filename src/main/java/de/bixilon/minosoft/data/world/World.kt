@@ -148,7 +148,7 @@ class World(
         chunkMin = Vec2i(Int.MAX_VALUE)
         chunkMax = Vec2i(Int.MIN_VALUE)
 
-        for (chunkPosition in chunks.keys) {
+        for (chunkPosition in chunks.unsafe.keys) {
             updateChunkExtreme(chunkPosition, true)
         }
         updateWorldSize()
@@ -276,8 +276,8 @@ class World(
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.positionInfo.chunkPosition
         chunks.lock.acquire()
-        val latch = CountUpAndDownLatch(chunks.size)
-        for ((chunkPosition, chunk) in chunks) {
+        val latch = CountUpAndDownLatch(chunks.unsafe.size)
+        for ((chunkPosition, chunk) in chunks.unsafe) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 latch.dec()
@@ -400,7 +400,7 @@ class World(
     fun recalculateLight() {
         lock.acquire()
         val worker = TaskWorker()
-        for (chunk in chunks.values) {
+        for (chunk in chunks.unsafe.values) {
             worker += { chunk.recalculateLight() }
         }
         worker.work()
