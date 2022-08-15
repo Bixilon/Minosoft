@@ -157,6 +157,6 @@ class LightMap(private val renderWindow: RenderWindow) {
     }
 
     private companion object {
-        private const val UNIFORM_BUFFER_SIZE = 16 * 16 * 4 // skyLight * blockLight * RGBA
+        private const val UNIFORM_BUFFER_SIZE = ProtocolDefinition.LIGHT_LEVELS * ProtocolDefinition.LIGHT_LEVELS * 4 // skyLight * blockLight * RGBA
     }
 }

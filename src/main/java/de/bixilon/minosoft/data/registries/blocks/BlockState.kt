@@ -81,11 +81,10 @@ data class BlockState(
     override fun toString(): String {
         val out = StringBuilder()
         out.append(block.resourceLocation.toString())
+        out.append(" (")
         if (properties.isNotEmpty()) {
             if (out.isNotEmpty()) {
                 out.append(", ")
-            } else {
-                out.append(" (")
             }
             out.append("properties=")
             out.append(properties)
@@ -93,7 +92,7 @@ data class BlockState(
         if (out.isNotEmpty()) {
             out.append(")")
         }
-        return out.toString()
+        return out.toString().removeSuffix("()")
     }
 
     companion object {

@@ -36,7 +36,7 @@ class SectionLight(
         }
 
         if (luminance > previousLuminance) {
-            onLightIncrease(x, y, z, luminance)
+            traceIncrease(x, y, z, luminance, false)
         } else {
             startDecreaseTrace(x, y, z, luminance)
         }
@@ -73,71 +73,75 @@ class SectionLight(
 
         val expectedNeighbourLevel = if (expectedLuminance <= 1) 0 else (expectedLuminance - 1).toByte()
 
-        var highestLevel = expectedLuminance
+        var highestLevel = expectedNeighbourLevel
 
         if (direction.x <= 0) {
             highestLevel = maxOf(
                 highestLevel, (if (x > 0) {
-                    traceDecrease(x - 1, y, z, expectedNeighbourLevel, light, Vec3i(-1, direction.y, direction.z))
+                    traceDecrease(x - 1, y, z, highestLevel, light, Vec3i(-1, direction.y, direction.z))
                 } else {
-                    neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, expectedLuminance, previous, Vec3i(-1, direction.y, direction.z)) ?: 0
+                    neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, highestLevel, previous, Vec3i(-1, direction.y, direction.z)) ?: 0
                 } - 1).toByte()
             )
         }
         if (direction.x >= 0) {
             highestLevel = maxOf(
                 highestLevel, (if (x < ProtocolDefinition.SECTION_MAX_X) {
-                    traceDecrease(x + 1, y, z, expectedNeighbourLevel, light, Vec3i(1, direction.y, direction.z))
+                    traceDecrease(x + 1, y, z, highestLevel, light, Vec3i(1, direction.y, direction.z))
                 } else {
-                    neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, expectedNeighbourLevel, light, Vec3i(1, direction.y, direction.z)) ?: 0
+                    neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, highestLevel, light, Vec3i(1, direction.y, direction.z)) ?: 0
                 } - 1).toByte()
             )
         }
         if (direction.y <= 0) {
             highestLevel = maxOf(
                 highestLevel, (if (y > 0) {
-                    traceDecrease(x, y - 1, z, expectedNeighbourLevel, light, Vec3i(direction.x, -1, direction.z))
+                    traceDecrease(x, y - 1, z, highestLevel, light, Vec3i(direction.x, -1, direction.z))
                 } else {
-                    neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, expectedNeighbourLevel, light, Vec3i(direction.x, -1, direction.z)) ?: 0
+                    neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, highestLevel, light, Vec3i(direction.x, -1, direction.z)) ?: 0
                 } - 1).toByte()
             )
         }
         if (direction.y >= 0) {
             highestLevel = maxOf(
                 highestLevel, (if (y < ProtocolDefinition.SECTION_MAX_Y) {
-                    traceDecrease(x, y + 1, z, expectedNeighbourLevel, light, Vec3i(direction.x, 1, direction.z))
+                    traceDecrease(x, y + 1, z, highestLevel, light, Vec3i(direction.x, 1, direction.z))
                 } else {
-                    neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, expectedNeighbourLevel, light, Vec3i(direction.x, 1, direction.z)) ?: 0
+                    neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, highestLevel, light, Vec3i(direction.x, 1, direction.z)) ?: 0
                 } - 1).toByte()
             )
         }
         if (direction.z <= 0) {
             highestLevel = maxOf(
                 highestLevel, (if (z > 0) {
-                    traceDecrease(x, y, z - 1, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, -1))
+                    traceDecrease(x, y, z - 1, highestLevel, light, Vec3i(direction.x, direction.y, -1))
                 } else {
-                    neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, -1)) ?: 0
+                    neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, highestLevel, light, Vec3i(direction.x, direction.y, -1)) ?: 0
                 } - 1).toByte()
             )
         }
         if (direction.z >= 0) {
             highestLevel = maxOf(
                 highestLevel, (if (z < ProtocolDefinition.SECTION_MAX_Z) {
-                    traceDecrease(x, y, z + 1, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, 1))
+                    traceDecrease(x, y, z + 1, highestLevel, light, Vec3i(direction.x, direction.y, 1))
                 } else {
-                    neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, expectedNeighbourLevel, light, Vec3i(direction.x, direction.y, 1)) ?: 0
+                    neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, highestLevel, light, Vec3i(direction.x, direction.y, 1)) ?: 0
                 } - 1).toByte()
             )
         }
 
         this.light[index] = highestLevel
 
+        if (highestLevel > expectedNeighbourLevel) {
+            // level increased, we need to trace an increase now
+            traceIncrease(x, y, z, highestLevel, true)
+        }
 
         return highestLevel
     }
 
 
-    private fun onLightIncrease(x: Int, y: Int, z: Int, nextLuminance: Byte) {
+    private fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Byte, force: Boolean) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
@@ -152,7 +156,7 @@ class SectionLight(
             luminance = blockLuminance
         }
         val currentLight = light[index].toInt() // and 0x0F // we just care about block light
-        if (currentLight >= luminance) {
+        if (currentLight >= luminance && !force) {
             // light is already higher, no need to trace
             return
         }
@@ -176,45 +180,48 @@ class SectionLight(
         val neighbourLuminance = (luminance - 1).toByte()
 
         if (y > 0) {
-            onLightIncrease(x, y - 1, z, neighbourLuminance)
+            traceIncrease(x, y - 1, z, neighbourLuminance, false)
         } else {
-            neighbours[Directions.O_DOWN]?.light?.onLightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
+            neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, false)
         }
         if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            onLightIncrease(x, y + 1, z, neighbourLuminance)
+            traceIncrease(x, y + 1, z, neighbourLuminance, false)
         } else {
-            neighbours[Directions.O_UP]?.light?.onLightIncrease(x, 0, z, neighbourLuminance)
+            neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance, false)
         }
 
         if (z > 0) {
-            onLightIncrease(x, y, z - 1, neighbourLuminance)
+            traceIncrease(x, y, z - 1, neighbourLuminance, false)
         } else {
-            neighbours[Directions.O_NORTH]?.light?.onLightIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, false)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
-            onLightIncrease(x, y, z + 1, neighbourLuminance)
+            traceIncrease(x, y, z + 1, neighbourLuminance, false)
         } else {
-            neighbours[Directions.O_SOUTH]?.light?.onLightIncrease(x, y, 0, neighbourLuminance)
+            neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance, false)
         }
 
         if (x > 0) {
-            onLightIncrease(x - 1, y, z, neighbourLuminance)
+            traceIncrease(x - 1, y, z, neighbourLuminance, false)
         } else {
-            neighbours[Directions.O_WEST]?.light?.onLightIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance)
+            neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, false)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
-            onLightIncrease(x + 1, y, z, neighbourLuminance)
+            traceIncrease(x + 1, y, z, neighbourLuminance, false)
         } else {
-            neighbours[Directions.O_EAST]?.light?.onLightIncrease(0, y, z, neighbourLuminance)
+            neighbours[Directions.O_EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance, false)
+        }
+    }
+
+    fun resetLight() {
+        for (index in light.indices) {
+            light[index] = 0x00.toByte()
         }
     }
 
 
     fun recalculate() {
-        // clear light
-        for (index in light.indices) {
-            light[index] = 0x00.toByte()
-        }
+        resetLight()
         val blocks = section.blocks
 
         blocks.acquire()
@@ -227,7 +234,7 @@ class SectionLight(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    onLightIncrease(x, y, z, luminance)
+                    traceIncrease(x, y, z, luminance, false)
                 }
             }
         }
