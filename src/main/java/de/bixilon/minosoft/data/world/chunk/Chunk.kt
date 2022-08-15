@@ -28,6 +28,8 @@ import de.bixilon.minosoft.data.world.chunk.light.BorderSectionLight
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -338,6 +340,41 @@ class Chunk(
             val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, nextSectionHeight)
             section.neighbours = sectionNeighbours
         }
+    }
+
+    fun getWorld(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {
+        val originChunkPosition = origin.chunkPosition
+        val targetChunkPosition = blockPosition.chunkPosition
+
+        val deltaChunkPosition = targetChunkPosition - originChunkPosition
+
+        return getWorld(blockPosition.inChunkPosition, deltaChunkPosition)
+    }
+
+    private fun getWorld(inChunkSectionPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
+        if (chunkOffset.x == 0 && chunkOffset.y == 0) {
+            return this[inChunkSectionPosition]
+        }
+        val neighbours = this.neighbours ?: return null
+
+        if (chunkOffset.x > 0) {
+            chunkOffset.x--
+            return neighbours[6].getWorld(inChunkSectionPosition, chunkOffset)
+        }
+        if (chunkOffset.x < 0) {
+            chunkOffset.x++
+            return neighbours[1].getWorld(inChunkSectionPosition, chunkOffset)
+        }
+        if (chunkOffset.y > 0) {
+            chunkOffset.y--
+            return neighbours[4].getWorld(inChunkSectionPosition, chunkOffset)
+        }
+        if (chunkOffset.y < 0) {
+            chunkOffset.y++
+            return neighbours[3].getWorld(inChunkSectionPosition, chunkOffset)
+        }
+
+        Broken("Can not get chunk from offset: $chunkOffset")
     }
 }
 

@@ -42,10 +42,10 @@ import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -291,16 +291,21 @@ class World(
     }
 
     fun randomTick() {
+        val blockPosition = connection.player.position.blockPosition
+        val chunk = this[blockPosition.chunkPosition] ?: return
+
+
         for (i in 0 until 667) {
-            randomTick(16)
-            randomTick(32)
+            randomTick(16, blockPosition, chunk)
+            randomTick(32, blockPosition, chunk)
         }
     }
 
-    private fun randomTick(radius: Int) {
-        val blockPosition = connection.player.position.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
+    private fun randomTick(radius: Int, origin: Vec3i, chunk: Chunk) {
+        val offset = Vec3i.EMPTY + { random.nextInt(-radius, radius) }
+        val blockPosition = origin + offset
 
-        val blockState = this[blockPosition] ?: return
+        val blockState = chunk.getWorld(offset, origin, blockPosition) ?: return
 
         blockState.block.randomTick(connection, blockState, blockPosition, random)
     }
