@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
@@ -93,8 +94,8 @@ class LightMap(renderWindow: RenderWindow) {
         var skyGradientColor = Vec3(skyGradient, skyGradient, 1.0f)
         skyGradientColor = interpolateLinear(0.35f, skyGradientColor, Vec3.ONE)
 
-        for (skyLight in 0 until 16) {
-            for (blockLight in 0 until 16) {
+        for (skyLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+            for (blockLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
                 val index = ((skyLight shl 4) or blockLight) * 4
 
 

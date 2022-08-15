@@ -52,7 +52,7 @@ class SectionLight(
      */
 
     private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Byte) {
-        traceDecrease(x, y, z, luminance, 16, Vec3i.EMPTY) // 16: invalid light level
+        traceDecrease(x, y, z, luminance, (ProtocolDefinition.MAX_LIGHT_LEVEL + 1).toByte(), Vec3i.EMPTY) // 16: invalid light level
     }
 
     fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte, direction: Vec3i): Byte {
