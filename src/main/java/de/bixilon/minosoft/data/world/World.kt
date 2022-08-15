@@ -295,6 +295,7 @@ class World(
         val chunk = this[blockPosition.chunkPosition] ?: return
 
 
+        // ToDo: Split that up in multiple threads?
         for (i in 0 until 667) {
             randomTick(16, blockPosition, chunk)
             randomTick(32, blockPosition, chunk)

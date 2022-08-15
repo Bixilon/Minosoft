@@ -61,6 +61,7 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBColor) {
+        data.ensureSize(6 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         for (direction in Directions.VALUES) {
             val positions = direction.getPositions(Vec3(aabb.min), Vec3(aabb.max))
             for ((positionIndex, _) in order) {
@@ -70,6 +71,7 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
     }
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f) {
+        data.ensureSize(12 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         val min = aabb.min - margin
         val max = aabb.max + margin
 
@@ -94,6 +96,7 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
     }
 
     fun drawVoxelShape(shape: VoxelShape, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
+        data.ensureSize(shape.aabbCount * 12 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         for (aabb in shape) {
             drawAABB(aabb, position, lineWidth, color, margin)
         }

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
 
 class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
 
+    val aabbCount: Int = aabbs.size
+
 
     constructor(vararg aabbs: AABB) : this(aabbs.toMutableList())
 
