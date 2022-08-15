@@ -21,6 +21,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.worker.TaskWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
@@ -389,6 +390,16 @@ class World(
     fun getBrightness(position: Vec3i): Float {
         val light = getLight(position) and 0x0F
         return dimension?.lightLevels?.get(light) ?: 0.0f
+    }
+
+    fun recalculateLight() {
+        lock.acquire()
+        val worker = TaskWorker()
+        for (chunk in chunks.values) {
+            worker += { chunk.recalculateLight() }
+        }
+        worker.work()
+        lock.release()
     }
 
     companion object {

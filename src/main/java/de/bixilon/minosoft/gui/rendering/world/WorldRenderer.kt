@@ -337,9 +337,13 @@ class WorldRenderer(
         })
     }
 
-    private fun clearChunkCache() {
+    fun silentlyClearChunkCache() {
         unloadWorld()
         prepareWorld()
+    }
+
+    fun clearChunkCache() {
+        silentlyClearChunkCache()
         connection.util.sendDebugMessage("Chunk cache cleared!")
     }
 

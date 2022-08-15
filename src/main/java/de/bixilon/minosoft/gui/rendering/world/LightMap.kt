@@ -16,6 +16,9 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.key.KeyActions
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -25,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
@@ -32,7 +36,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 @Deprecated("Needs refactoring")
-class LightMap(renderWindow: RenderWindow) {
+class LightMap(private val renderWindow: RenderWindow) {
     private val connection = renderWindow.connection
     private val profile = connection.profiles.rendering.light
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
@@ -51,6 +55,20 @@ class LightMap(renderWindow: RenderWindow) {
         }
         uniformBuffer.init()
         update()
+
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:recalculate_light".toResourceLocation(),
+            KeyBinding(
+                mapOf(
+                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                    KeyActions.PRESS to setOf(KeyCodes.KEY_A),
+                ),
+            )
+        ) {
+            connection.world.recalculateLight()
+            renderWindow.renderer[WorldRenderer]?.silentlyClearChunkCache()
+            connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
+        }
     }
 
     private fun initDebugLight() {

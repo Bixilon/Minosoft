@@ -27,12 +27,13 @@ class SectionLight(
 ) : AbstractSectionLight() {
 
     fun onBlockChange(x: Int, y: Int, z: Int, previous: BlockState?, now: BlockState?) {
-        if (previous?.luminance == now?.luminance && previous?.isSolid == now?.isSolid) {
+        val previousLuminance = previous?.luminance ?: 0
+        val luminance = now?.luminance ?: 0
+
+        if (previousLuminance == luminance && previous?.isSolid == now?.isSolid) {
             // no change for light data
             return
         }
-        val previousLuminance = previous?.luminance ?: 0
-        val luminance = now?.luminance ?: 0
 
         if (luminance > previousLuminance) {
             onLightIncrease(x, y, z, luminance)
