@@ -23,12 +23,12 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
 import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.format
@@ -37,14 +37,15 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class ChunkBorderRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OpaqueDrawable {
+) : Renderer, OpaqueDrawable, MeshSwapper {
     private val profile = connection.profiles.rendering
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var chunkPosition: Vec2i? = null
-    private var mesh: LineMesh? = null
 
-    private var nextMesh: LineMesh? = null
-    private var unload = false
+    override var mesh: LineMesh? = null
+
+    override var nextMesh: LineMesh? = null
+    override var unload = false
 
     override val skipOpaque: Boolean
         get() = mesh == null || !profile.chunkBorder.enabled
@@ -64,22 +65,7 @@ class ChunkBorderRenderer(
         }
     }
 
-    override fun prepareDraw() {
-        if (unload) {
-            this.mesh?.unload()
-            this.mesh = null
-            unload = false
-        }
-        val nextMesh = this.nextMesh ?: return
-        nextMesh.load()
-        if (this.mesh?.state == Mesh.MeshStates.LOADED) {
-            this.mesh?.unload()
-        }
-        this.mesh = nextMesh
-        this.nextMesh = null
-    }
-
-    override fun prepareDrawAsync() {
+    override fun prePrepareDraw() {
         if (!profile.chunkBorder.enabled) {
             this.unload = true
             return

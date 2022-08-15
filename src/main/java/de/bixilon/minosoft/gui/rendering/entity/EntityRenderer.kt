@@ -94,12 +94,15 @@ class EntityRenderer(
         }
     }
 
-    override fun prepareDraw() {
+    override fun prePrepareDraw() {
         runAsync {
             it.entity.draw(TimeUtil.millis)
             it.update = it.checkUpdate()
             it.prepareAsync()
         }
+    }
+
+    override fun postPrepareDraw() {
         unloadUnused()
         models.lock.acquire()
         for (model in models.unsafe.values) {

@@ -212,11 +212,12 @@ class ParticleRenderer(
         particleQueueLock.unlock()
     }
 
-    override fun prepareDraw() {
+    override fun prePrepareDraw() {
         transparentMesh.unload()
         translucentMesh.unload()
+    }
 
-
+    override fun prepareDrawAsync() {
         transparentMesh.data.clear()
         translucentMesh.data.clear()
         transparentMesh = ParticleMesh(renderWindow, transparentMesh.data)
@@ -234,7 +235,9 @@ class ParticleRenderer(
         }
 
         particlesLock.release()
+    }
 
+    override fun postPrepareDraw() {
         transparentMesh.load()
         translucentMesh.load()
     }

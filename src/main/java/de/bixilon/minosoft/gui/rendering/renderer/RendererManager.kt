@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.renderer
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -117,16 +119,20 @@ class RendererManager(
     }
 
     private fun prepareDraw(rendererList: Collection<Renderer>) {
+        for (renderer in rendererList) {
+            renderer.prePrepareDraw()
+        }
+
         val latch = CountUpAndDownLatch(1)
         for (renderer in rendererList) {
             latch.inc()
-            DefaultThreadPool += { renderer.prepareDrawAsync(); latch.dec() }
+            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync(); latch.dec() }
         }
         latch.dec()
         latch.await()
 
         for (renderer in rendererList) {
-            renderer.prepareDraw()
+            renderer.postPrepareDraw()
         }
     }
 

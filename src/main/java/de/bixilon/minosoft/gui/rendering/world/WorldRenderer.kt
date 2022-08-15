@@ -700,7 +700,7 @@ class WorldRenderer(
         meshesToUnloadLock.release()
     }
 
-    override fun prepareDraw() {
+    override fun postPrepareDraw() {
         renderWindow.textureManager.staticTextures.use(shader)
         if (clearVisibleNextFrame) {
             visible.clear()
