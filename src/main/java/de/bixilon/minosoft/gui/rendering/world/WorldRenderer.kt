@@ -288,7 +288,7 @@ class WorldRenderer(
 
                 val loadedMeshesToRemove: MutableSet<Vec2i> = HashSet()
                 for ((chunkPosition, sections) in loadedMeshes) {
-                    if (visibilityGraph.isChunkVisible(chunkPosition)) {
+                    if (visibilityGraph.isInViewDistance(chunkPosition)) {
                         continue
                     }
                     loadedMeshesToRemove += chunkPosition
