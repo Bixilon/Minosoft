@@ -340,7 +340,7 @@ class WorldVisibilityGraph(
             connection.world.chunks.lock.release()
             return
         }
-        val worldSize = connection.world.chunkSize
+        val worldSize = Vec2i(connection.world.chunkSize)
         worldSize += 3 // add 3 for forced neighbours and the camera chunk
         val chunkMin = chunkPosition - (worldSize / 2)
         chunkMin.x -= 1 // remove 1 for proper index calculation
