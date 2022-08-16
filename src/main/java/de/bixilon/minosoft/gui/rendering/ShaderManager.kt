@@ -13,16 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 
 class ShaderManager(
     val renderWindow: RenderWindow,
 ) {
-    val genericColorShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"))
-    val genericTextureShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture"))
-    val genericTexture2dShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/texture_2d"))
+    val genericColorShader = renderWindow.renderSystem.createShader(minosoft("generic/color"))
+    val genericTextureShader = renderWindow.renderSystem.createShader(minosoft("generic/texture"))
+    val genericTexture2dShader = renderWindow.renderSystem.createShader(minosoft("generic/texture_2d"))
 
 
     fun postInit() {

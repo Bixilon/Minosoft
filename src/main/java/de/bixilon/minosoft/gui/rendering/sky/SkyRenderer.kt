@@ -34,15 +34,15 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 
 class SkyRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, PreDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val skyboxShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
-    private val skySunShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
+    private val skyboxShader = renderSystem.createShader(minosoft("sky/skybox"))
+    private val skySunShader = renderSystem.createShader(minosoft("sky/sun"))
     private val skyboxMesh = SkyboxMesh(renderWindow)
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture

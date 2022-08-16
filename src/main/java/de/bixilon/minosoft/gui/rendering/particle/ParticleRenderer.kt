@@ -41,6 +41,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
@@ -51,8 +52,8 @@ class ParticleRenderer(
 ) : Renderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val profile = connection.profiles.particle
-    private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
-    private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
+    private val transparentShader: Shader = renderSystem.createShader(minosoft("particle"))
+    private val translucentShader: Shader = renderSystem.createShader(minosoft("particle"))
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
     private var transparentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))

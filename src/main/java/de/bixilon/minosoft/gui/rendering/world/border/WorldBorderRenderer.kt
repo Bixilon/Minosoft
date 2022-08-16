@@ -30,14 +30,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
     override val renderWindow: RenderWindow,
 ) : Renderer, TranslucentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world/border"))
+    private val shader = renderSystem.createShader(minosoft("world/border"))
     private var borderMesh = WorldBorderMesh(renderWindow)
     private val border = renderWindow.connection.world.border
     private lateinit var texture: AbstractTexture

@@ -71,6 +71,10 @@ object KUtil {
         }
     }
 
+    fun minosoft(path: String): ResourceLocation {
+        return ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
+    }
+
     fun <T> T.synchronizedDeepCopy(): T {
         return when (this) {
             is Map<*, *> -> {
