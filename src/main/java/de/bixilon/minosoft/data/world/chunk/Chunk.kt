@@ -36,6 +36,7 @@ import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 
 /**
@@ -56,6 +57,8 @@ class Chunk(
 
     var blocksInitialized = false // All block data was received
     var biomesInitialized = false // All biome data is initialized (aka. cache built, or similar)
+
+    private val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
     var neighbours: Array<Chunk>? = null
         set(value) {
@@ -85,7 +88,7 @@ class Chunk(
         return this[y.sectionHeight]?.blocks?.unsafeGet(x, y.inSectionHeight, z)
     }
 
-    fun get(x: Int, y: Int, z: Int): BlockState? {
+    operator fun get(x: Int, y: Int, z: Int): BlockState? {
         return this[y.sectionHeight]?.blocks?.get(x, y.inSectionHeight, z)
     }
 
@@ -97,6 +100,8 @@ class Chunk(
         val section = getOrPut(y.sectionHeight) ?: return
         val inSectionHeight = y.inSectionHeight
         section[x, inSectionHeight, z] = blockState
+        updateHeightmap(x, y, z, blockState != null)
+
         section.blockEntities[x, inSectionHeight, z] = blockEntity
         if (blockEntity == null) {
             getOrPutBlockEntity(x, y, z)
@@ -191,6 +196,7 @@ class Chunk(
                 val section = getOrPut(index + lowestSection) ?: return@let
                 section.blocks = blocks
             }
+            updateHeightmap()
             blocksInitialized = true
         }
         data.blockEntities?.let {
@@ -375,6 +381,71 @@ class Chunk(
         }
 
         Broken("Can not get chunk from offset: $chunkOffset")
+    }
+
+
+    @Synchronized
+    private fun updateHeightmap() {
+        val maxY = ((highestSection + 1) * ProtocolDefinition.SECTION_MAX_Y) - 1
+
+        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            z@ for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+                checkHeightmapY(x, maxY, z)
+            }
+        }
+    }
+
+    private fun checkHeightmapY(x: Int, startY: Int, z: Int) {
+        val minY = lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y
+        var y = startY
+
+        var sectionHeight = y.sectionHeight
+        var section: ChunkSection? = this[sectionHeight]
+        while (y > minY) {
+            val nextSectionHeight = y.sectionHeight
+            if (sectionHeight != nextSectionHeight) {
+                sectionHeight = nextSectionHeight
+                section = this[sectionHeight]
+            }
+            if (section == null) {
+                y -= ProtocolDefinition.SECTION_HEIGHT_Y
+                continue
+            }
+            if (section.blocks[x, y.inSectionHeight, z]?.isSolid == true) {
+                y--
+                continue
+            }
+
+            heightmap[(z shl 4) or x] = y
+            return
+        }
+        heightmap[(z shl 4) or x] = minY
+    }
+
+    @Synchronized
+    private fun updateHeightmap(x: Int, y: Int, z: Int, place: Boolean) {
+        val index = (z shl 4) or x
+
+        val current = heightmap[index]
+
+        if (current > y) {
+            // our block is/was not the highest, ignore everything
+            return
+        }
+        if (current < y) {
+            if (place) {
+                // we are the highest block now
+                heightmap[index] = y
+            }
+            return
+        }
+
+        if (place) {
+            return
+        }
+
+        // we used to be the highest block, find out the block below us
+        checkHeightmapY(x, y - 1, z)
     }
 }
 
