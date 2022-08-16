@@ -63,7 +63,7 @@ class SkyRenderer(
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
             renderWindow.queue += {
-                skyboxShader.use().setMat4("uSkyViewProjectionMatrix", Mat4(viewProjectionMatrix))
+                skyboxShader.use().setMat4(SKY_MATRIX, Mat4(viewProjectionMatrix))
                 setSunMatrix(viewProjectionMatrix)
             }
         })
@@ -82,7 +82,7 @@ class SkyRenderer(
         } else {
             projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
         }
-        skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix)
+        skySunShader.use().setMat4(SKY_MATRIX, rotatedMatrix)
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
@@ -134,7 +134,7 @@ class SkyRenderer(
 
         fogManager.fogColor?.let { skyColor = it }
 
-        skyboxShader.use().setRGBColor("uSkyColor", skyColor)
+        skyboxShader.use().setRGBColor(SKY_COLOR, skyColor)
     }
 
     private fun drawSkybox() {
@@ -151,6 +151,8 @@ class SkyRenderer(
 
     companion object : RendererBuilder<SkyRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:sky")
+        private const val SKY_MATRIX = "uSkyViewProjectionMatrix"
+        private const val SKY_COLOR = "uSkyColor"
 
         private val SUN_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minecraft:textures/environment/sun.png")
 

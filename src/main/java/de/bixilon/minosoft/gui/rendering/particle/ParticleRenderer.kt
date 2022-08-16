@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -111,9 +112,9 @@ class ParticleRenderer(
                 fun applyToShader(shader: Shader) {
                     shader.apply {
                         use()
-                        setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
-                        setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
-                        setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
+                        setMat4(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4(it.viewProjectionMatrix))
+                        setVec3(ShaderUniforms.CAMERA_RIGHT, Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
+                        setVec3(ShaderUniforms.CAMERA_UP, Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
                     }
                 }
 

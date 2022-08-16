@@ -35,7 +35,7 @@ class SkeletalManager(
         shader.loadAnimated()
         renderWindow.textureManager.dynamicTextures.use(shader)
         shader["uSkeletalBuffer"] = uniformBuffer
-        shader.setUInt("uLight", 0xFF)
+        shader.setUInt(LIGHT, 0xFF)
         renderWindow.lightMap.use(shader)
     }
 
@@ -50,7 +50,7 @@ class SkeletalManager(
 
     fun draw(instance: SkeletalInstance, light: Int) {
         prepareDraw()
-        shader.setUInt("uLight", light)
+        shader.setUInt(LIGHT, light)
         val transforms = instance.calculateTransforms()
         var stride = 0
         for (transform in transforms) {
@@ -66,5 +66,7 @@ class SkeletalManager(
     private companion object {
         private const val TRANSFORMS = 32
         private const val MAT4_SIZE = 4 * 4
+
+        private const val LIGHT = "uLight"
     }
 }

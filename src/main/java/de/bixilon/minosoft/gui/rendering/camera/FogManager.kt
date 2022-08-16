@@ -98,7 +98,7 @@ class FogManager(
         val end = fogEnd
         val color = fogColor
         for (shader in renderWindow.renderSystem.shaders) {
-            if (!shader.uniforms.contains("uFogColor")) {
+            if (FOG_COLOR !in shader.uniforms) {
                 continue
             }
 
@@ -107,10 +107,10 @@ class FogManager(
             shader["uFogStart"] = start
             shader["uFogEnd"] = end
             if (color == null) {
-                shader["uUseFogColor"] = false
+                shader[USE_FOG_COLOR] = false
             } else {
-                shader["uFogColor"] = color
-                shader["uUseFogColor"] = true
+                shader[FOG_COLOR] = color
+                shader[USE_FOG_COLOR] = true
             }
         }
         updateShaders = false
@@ -118,5 +118,8 @@ class FogManager(
 
     companion object {
         private val LAVA_FOG_COLOR = RGBColor(0.6f, 0.1f, 0.0f)
+
+        private const val FOG_COLOR = "uFogColor"
+        private const val USE_FOG_COLOR = "uUseFogColor"
     }
 }

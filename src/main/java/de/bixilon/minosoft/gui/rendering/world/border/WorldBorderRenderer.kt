@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -72,8 +73,8 @@ class WorldBorderRenderer(
             offsetReset = time
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
-        shader.setFloat("uTextureOffset", 1.0f - textureOffset)
-        shader.setFloat("uCameraHeight", renderWindow.camera.matrixHandler.eyePosition.y)
+        shader.setFloat(ShaderUniforms.TEXTURE_OFFSET, 1.0f - textureOffset)
+        shader.setFloat(ShaderUniforms.CAMERA_HEIGHT, renderWindow.camera.matrixHandler.eyePosition.y)
 
         val distance = border.getDistanceTo(renderWindow.connection.player.position)
         val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)

@@ -11,15 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture
+package de.bixilon.minosoft.gui.rendering.system.base.shader
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
+object ShaderUniforms {
+    const val VIEW_PROJECTION_MATRIX = "uViewProjectionMatrix"
 
-interface TextureArray {
-    fun load(latch: CountUpAndDownLatch)
+    const val CAMERA_RIGHT = "uCameraRight"
+    const val CAMERA_UP = "uCameraUp"
+    const val CAMERA_POSITION = "uCameraPosition"
+    const val CAMERA_HEIGHT = "uCameraHeight"
 
-    fun activate()
-    fun use(shader: Shader, name: String = ShaderUniforms.TEXTURES)
+    const val TEXTURE_OFFSET = "uTextureOffset"
+
+    const val TEXTURES = "uTextures"
 }

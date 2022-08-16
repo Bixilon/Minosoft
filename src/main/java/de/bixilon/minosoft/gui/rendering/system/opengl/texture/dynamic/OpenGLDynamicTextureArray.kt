@@ -19,6 +19,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
@@ -151,7 +152,7 @@ class OpenGLDynamicTextureArray(
         _use(shader, name)
     }
 
-    private fun _use(shader: Shader, name: String = "uTextures") {
+    private fun _use(shader: Shader, name: String = ShaderUniforms.TEXTURES) {
         shader.use()
 
         activate()
