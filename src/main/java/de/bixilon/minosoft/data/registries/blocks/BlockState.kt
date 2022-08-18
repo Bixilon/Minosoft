@@ -35,7 +35,7 @@ data class BlockState(
     val hardness: Float,
     val requiresTool: Boolean,
     val isSolid: Boolean,
-    val luminance: Byte,
+    val luminance: Int,
 ) {
     var blockModel: BakedBlockModel? = null
 
@@ -132,7 +132,7 @@ data class BlockState(
                 hardness = data["hardness"]?.toFloat() ?: 1.0f,
                 requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
                 isSolid = data["solid_render"]?.toBoolean() ?: false,
-                luminance = data["luminance"]?.toInt()?.toByte() ?: 0,
+                luminance = data["luminance"]?.toInt() ?: 0,
             )
         }
 

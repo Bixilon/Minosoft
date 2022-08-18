@@ -50,13 +50,13 @@ class SectionLight(
      * should work, I guess?
      */
 
-    private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Byte) {
-        traceDecrease(x, y, z, luminance, (ProtocolDefinition.MAX_LIGHT_LEVEL + 1).toByte(), 0, 0, 0)
+    private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Int) {
+        traceDecrease(x, y, z, luminance, ProtocolDefinition.MAX_LIGHT_LEVEL + 1, 0, 0, 0)
     }
 
-    fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Byte, previous: Byte, directionX: Int, directionY: Int, directionZ: Int): Byte {
+    fun traceDecrease(x: Int, y: Int, z: Int, expectedLuminance: Int, previous: Int, directionX: Int, directionY: Int, directionZ: Int): Int {
         val index = getIndex(x, y, z)
-        val light = light[index]
+        val light = light[index].toInt() and 0x0F
         if (light == expectedLuminance) {
             return expectedLuminance
         }
@@ -69,9 +69,9 @@ class SectionLight(
         if (!update) {
             update = true
         }
-        this.light[index] = expectedLuminance
+        this.light[index] = ((this.light[index].toInt() and 0xF0) or expectedLuminance).toByte()
 
-        val expectedNeighbourLevel = if (expectedLuminance <= 1) 0 else (expectedLuminance - 1).toByte()
+        val expectedNeighbourLevel = if (expectedLuminance <= 1) 0 else (expectedLuminance - 1)
 
         var highestLevel = expectedNeighbourLevel
 
@@ -82,7 +82,7 @@ class SectionLight(
                 neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, highestLevel, previous, -1, directionY, directionZ) ?: 0
             } - 1
             if (highestLevel < neighbourLevel) {
-                highestLevel = neighbourLevel.toByte()
+                highestLevel = neighbourLevel
             }
         }
         if (directionX >= 0) {
@@ -92,7 +92,7 @@ class SectionLight(
                 neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, highestLevel, light, 1, directionY, directionZ) ?: 0
             } - 1
             if (highestLevel < neighbourLevel) {
-                highestLevel = neighbourLevel.toByte()
+                highestLevel = neighbourLevel
             }
         }
         if (directionY <= 0) {
@@ -102,7 +102,7 @@ class SectionLight(
                 neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, highestLevel, light, directionX, -1, directionZ) ?: 0
             } - 1
             if (highestLevel < neighbourLevel) {
-                highestLevel = neighbourLevel.toByte()
+                highestLevel = neighbourLevel
             }
         }
         if (directionY >= 0) {
@@ -112,7 +112,7 @@ class SectionLight(
                 neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, highestLevel, light, directionX, 1, directionZ) ?: 0
             } - 1
             if (highestLevel < neighbourLevel) {
-                highestLevel = neighbourLevel.toByte()
+                highestLevel = neighbourLevel
             }
         }
         if (directionZ <= 0) {
@@ -122,7 +122,7 @@ class SectionLight(
                 neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, highestLevel, light, directionX, directionY, -1) ?: 0
             } - 1
             if (highestLevel < neighbourLevel) {
-                highestLevel = neighbourLevel.toByte()
+                highestLevel = neighbourLevel
             }
         }
         if (directionZ >= 0) {
@@ -132,11 +132,11 @@ class SectionLight(
                 neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, highestLevel, light, directionX, directionY, 1) ?: 0
             } - 1
             if (highestLevel < neighbourLevel) {
-                highestLevel = neighbourLevel.toByte()
+                highestLevel = neighbourLevel
             }
         }
 
-        this.light[index] = highestLevel
+        this.light[index] = ((this.light[index].toInt() and 0xF0) or highestLevel).toByte()
 
         if (highestLevel > expectedNeighbourLevel) {
             // level increased, we need to trace an increase now
@@ -147,11 +147,11 @@ class SectionLight(
     }
 
 
-    private fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Byte, force: Boolean) {
+    private fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, force: Boolean) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
-        if (block != null && block.isSolid && blockLuminance == 0.toByte()) {
+        if (block != null && block.isSolid && blockLuminance == 0) {
             // light can not pass through the block
             return
         }
@@ -161,17 +161,17 @@ class SectionLight(
         if (blockLuminance > luminance) {
             luminance = blockLuminance
         }
-        val currentLight = light[index].toInt() // and 0x0F // we just care about block light
+        val currentLight = light[index].toInt() and 0x0F // we just care about block light
         if (currentLight >= luminance && !force) {
             // light is already higher, no need to trace
             return
         }
-        light[index] = luminance
+        this.light[index] = ((this.light[index].toInt() and 0xF0) or luminance).toByte()
         if (!update) {
             update = true
         }
 
-        if (luminance == 1.toByte()) {
+        if (luminance == 1) {
             // we can not further increase the light
             return
         }
@@ -183,7 +183,7 @@ class SectionLight(
         }
         val neighbours = section.neighbours ?: return
 
-        val neighbourLuminance = (luminance - 1).toByte()
+        val neighbourLuminance = luminance - 1
 
         if (y > 0) {
             traceIncrease(x, y - 1, z, neighbourLuminance, false)
@@ -236,7 +236,7 @@ class SectionLight(
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                     val index = getIndex(x, y, z)
                     val luminance = blocks.unsafeGet(index)?.luminance ?: continue
-                    if (luminance == 0.toByte()) {
+                    if (luminance == 0) {
                         // block is not emitting light, ignore it
                         continue
                     }
