@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
-import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
@@ -67,7 +66,7 @@ class World(
 ) : BiomeAccessor, WorldAudioPlayer, WorldParticleRenderer {
     val lock = SimpleLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
-    val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
+    val chunks: LockMap<Vec2i, Chunk> = LockMap(mutableMapOf(), lock)
     val entities = WorldEntities()
     var hardcore by watched(false)
     var dimension: DimensionProperties? by watched(null)

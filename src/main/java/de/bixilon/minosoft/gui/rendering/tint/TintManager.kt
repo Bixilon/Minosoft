@@ -44,7 +44,7 @@ class TintManager(private val connection: PlayConnection) {
         }
     }
 
-    private fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray? {
+    private fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray {
         val inChunkX = x and 0x0F
         val inChunkZ = z and 0x0F
         val biome = chunk.getBiome(inChunkX, y, inChunkZ)

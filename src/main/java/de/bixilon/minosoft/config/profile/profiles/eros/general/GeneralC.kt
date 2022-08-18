@@ -15,7 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.eros.general
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import de.bixilon.kutil.locale.LocaleUtil.fullName
+import de.bixilon.kutil.locale.LanguageUtil.fullName
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
