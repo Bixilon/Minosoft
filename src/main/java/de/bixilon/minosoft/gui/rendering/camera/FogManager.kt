@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateSine
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
@@ -113,8 +113,8 @@ class FogManager(
             return
         }
         val progress = delta / FOG_INTERPOLATION_TIME.toFloat()
-        this.interpolatedFogStart = interpolateSine(progress, _fogStart, fogStart)
-        this.interpolatedFogEnd = interpolateSine(progress, _fogEnd, fogEnd)
+        this.interpolatedFogStart = interpolateLinear(progress, _fogStart, fogStart)
+        this.interpolatedFogEnd = interpolateLinear(progress, _fogEnd, fogEnd)
         var color: RGBColor? = interpolateSine(progress, _fogColor ?: Colors.TRANSPARENT, fogColor ?: Colors.TRANSPARENT)
         if (color == Colors.TRANSPARENT) {
             color = null
