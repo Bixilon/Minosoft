@@ -209,7 +209,7 @@ minosoft:menu.pause.exit=Exit
 minosoft:menu.pause.exit.confirm=§cClick again to exit
 
 
-minosoft:main.about.text=Glad that you test my software :)\nThis project is really in early stage, don't use it on anti cheat protected servers\nI am looking for contributors :) Please help me make this usable
+minosoft:main.about.text=Glad that you test my software :)\nThis project is in a really early stage, don't use it on online servers!\nI am looking for contributors :) Please help me and make this usable
 minosoft:main.about.crash=Create crash report
 
 

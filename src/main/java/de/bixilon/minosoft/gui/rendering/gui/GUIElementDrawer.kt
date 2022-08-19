@@ -66,7 +66,7 @@ interface GUIElementDrawer {
             if (element is LayoutedGUIElement<*>) {
                 latch.inc()
                 element.prepare()
-                DefaultThreadPool += { element.prepareAsync();latch.dec() }
+                DefaultThreadPool += { element.prepareAsync(); latch.dec() }
             }
         }
         latch.dec()
