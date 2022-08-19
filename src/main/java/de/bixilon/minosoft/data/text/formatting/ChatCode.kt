@@ -10,11 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.data.text.formatting
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 
 interface ChatCode {
     companion object {

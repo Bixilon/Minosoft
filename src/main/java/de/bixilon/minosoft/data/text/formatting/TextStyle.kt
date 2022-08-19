@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,16 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.text
 
-enum class PostChatFormattingCodes(
-    override val char: Char,
-    override val ansi: String,
-) : ChatFormattingCode {
-    RESET('r', "\u001b[0m")
-    ;
+package de.bixilon.minosoft.data.text.formatting
 
-    override fun toString(): String {
-        return ansi
-    }
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+
+interface TextStyle {
+    var color: RGBColor?
+    val formatting: MutableCollection<ChatFormattingCode>
 }

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.data.text.formatting.color
 
 import de.bixilon.kutil.collections.CollectionUtil.mutableBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
@@ -85,8 +85,8 @@ object ChatColors {
             nameMap[field.name.lowercase()] = color
         }
 
-        this.VALUES = values.toTypedArray()
-        this.NAME_MAP = nameMap
+        VALUES = values.toTypedArray()
+        NAME_MAP = nameMap
     }
 
     operator fun get(id: Int): RGBColor {

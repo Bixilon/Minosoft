@@ -10,17 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.data.text.formatting
 
-enum class PreChatFormattingCodes(
+enum class PostChatFormattingCodes(
     override val char: Char,
     override val ansi: String,
 ) : ChatFormattingCode {
-    OBFUSCATED('k', "\u001b[5m"),
-    BOLD('l', "\u001b[1m"),
-    STRIKETHROUGH('m', "\u001b[9m"),
-    UNDERLINED('n', "\u001b[4m"),
-    ITALIC('o', "\u001b[3m"),
+    RESET('r', "\u001b[0m")
     ;
 
     override fun toString(): String {

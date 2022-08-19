@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 
 object RenderConstants {
     val DEFAULT_SKY_COLOR = "#ecff89".asColor()

@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.ChatCode.Companion.toColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 object RGBColorSerializer : SimpleModule() {
 

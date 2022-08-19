@@ -46,9 +46,9 @@ import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.DummyModel
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel

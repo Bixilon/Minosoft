@@ -11,26 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.data.text.formatting.color
 
-object ColorUtil {
+object Colors {
+    val TRUE_BLACK = RGBColor(0, 0, 0)
 
-    fun mixColors(vararg colors: Int): Int {
-        var red = 0
-        var green = 0
-        var blue = 0
+    val TRUE_RED = RGBColor(255, 0, 0)
+    val TRUE_GREEN = RGBColor(0, 255, 0)
+    val TRUE_BLUE = RGBColor(0, 0, 255)
 
-        for (color in colors) {
-            red += color shr 16 and 0xFF
-            green += color shr 8 and 0xFF
-            blue += color and 0xFF
-        }
+    val TRUE_YELLOW = RGBColor(255, 255, 0)
 
-        return ((red / colors.size) shl 16) or ((green / colors.size) shl 8) or (blue / colors.size)
-    }
+    val DARK_RED = RGBColor(255, 50, 30)
 
-    fun Float.asGray(): Int {
-        val color = (this * RGBColor.COLOR_FLOAT_DIVIDER).toInt()
-        return color shl 16 or color shl 8 or color
-    }
+    val TRANSPARENT = RGBColor(0, 0, 0, 0)
 }

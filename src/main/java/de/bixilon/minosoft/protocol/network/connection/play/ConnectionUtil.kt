@@ -19,8 +19,8 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent

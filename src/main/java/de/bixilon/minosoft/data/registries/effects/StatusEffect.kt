@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeMod
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*

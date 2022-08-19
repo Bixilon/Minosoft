@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
-import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.formatting.ChatCode
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer

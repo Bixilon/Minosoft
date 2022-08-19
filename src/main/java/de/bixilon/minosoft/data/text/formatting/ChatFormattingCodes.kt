@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,19 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.text.formatting
 
-package de.bixilon.minosoft.data.text
+import com.google.common.collect.HashBiMap
 
-object Colors {
-    val TRUE_BLACK = RGBColor(0, 0, 0)
+object ChatFormattingCodes {
+    private val FORMATTING_CODES = HashBiMap.create<Char, ChatFormattingCode>()
 
-    val TRUE_RED = RGBColor(255, 0, 0)
-    val TRUE_GREEN = RGBColor(0, 255, 0)
-    val TRUE_BLUE = RGBColor(0, 0, 255)
+    @JvmStatic
+    fun getChatFormattingCodeByChar(nextFormattingChar: Char): ChatFormattingCode? {
+        return FORMATTING_CODES[nextFormattingChar]
+    }
 
-    val TRUE_YELLOW = RGBColor(255, 255, 0)
+    init {
+        for (code in PreChatFormattingCodes.values()) {
+            FORMATTING_CODES[code.char] = code
+        }
 
-    val DARK_RED = RGBColor(255, 50, 30)
-
-    val TRANSPARENT = RGBColor(0, 0, 0, 0)
+        for (code in PostChatFormattingCodes.values()) {
+            FORMATTING_CODES[code.char] = code
+        }
+    }
 }

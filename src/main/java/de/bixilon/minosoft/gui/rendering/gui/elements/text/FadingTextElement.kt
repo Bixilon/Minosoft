@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element

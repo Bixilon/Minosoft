@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.PreChatFormattingCodes
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.WorldGUIConsumer

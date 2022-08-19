@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.pause
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement

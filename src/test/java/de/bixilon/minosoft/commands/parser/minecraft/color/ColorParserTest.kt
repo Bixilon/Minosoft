@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.commands.parser.minecraft.color
 
 import de.bixilon.minosoft.commands.util.CommandReader
-import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals

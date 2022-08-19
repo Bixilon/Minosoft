@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,8 +23,8 @@ import de.bixilon.kutil.watcher.list.ListDataWatcher.Companion.watchedList
 import de.bixilon.minosoft.data.container.InventoryDelegate
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 class DisplayProperty(

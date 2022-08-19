@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import javafx.collections.ObservableList
 import javafx.scene.Node
 object EmptyComponent : ChatComponent {

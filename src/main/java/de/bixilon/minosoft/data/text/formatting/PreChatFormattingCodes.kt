@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,25 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.data.text.formatting
 
-import com.google.common.collect.HashBiMap
+enum class PreChatFormattingCodes(
+    override val char: Char,
+    override val ansi: String,
+) : ChatFormattingCode {
+    OBFUSCATED('k', "\u001b[5m"),
+    BOLD('l', "\u001b[1m"),
+    STRIKETHROUGH('m', "\u001b[9m"),
+    UNDERLINED('n', "\u001b[4m"),
+    ITALIC('o', "\u001b[3m"),
+    ;
 
-object ChatFormattingCodes {
-    private val FORMATTING_CODES = HashBiMap.create<Char, ChatFormattingCode>()
-
-    @JvmStatic
-    fun getChatFormattingCodeByChar(nextFormattingChar: Char): ChatFormattingCode? {
-        return FORMATTING_CODES[nextFormattingChar]
-    }
-
-    init {
-        for (code in PreChatFormattingCodes.values()) {
-            FORMATTING_CODES[code.char] = code
-        }
-
-        for (code in PostChatFormattingCodes.values()) {
-            FORMATTING_CODES[code.char] = code
-        }
+    override fun toString(): String {
+        return ansi
     }
 }

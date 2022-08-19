@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.chat
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame

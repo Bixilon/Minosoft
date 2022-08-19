@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.kotlinglm.vec3.Vec3i;
-import de.bixilon.minosoft.data.text.ChatColors;
-import de.bixilon.minosoft.data.text.RGBColor;
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors;
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor;
 
 import java.net.InetAddress;
 import java.util.regex.Pattern;

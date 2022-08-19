@@ -17,8 +17,8 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
-import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.formatting.ChatCode
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamCreateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -82,12 +82,13 @@ class CreateTeamS2CP(
             suffix = buffer.readChatComponent()
         }
 
-        members = buffer.readStringArray(
+        members = buffer.readArray(
             if (buffer.versionId < ProtocolVersions.V_14W04A) {
                 buffer.readUnsignedShort()
             } else {
                 buffer.readVarInt()
-            }).toSet()
+            }
+        ) { buffer.readString() }.toSet()
     }
 
     private fun setLegacyFriendlyFire(data: Int) {
