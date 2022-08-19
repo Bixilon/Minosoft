@@ -68,6 +68,6 @@ class WorldView(
         val cameraPosition = connection.player.positionInfo.chunkPosition
         val max = connection.world.chunkMax - cameraPosition
         val min = connection.world.chunkMin - cameraPosition
-        serverViewDistance = maxOf(3, abs(max.x), abs(min.x), abs(min.y), abs(max.y))
+        serverViewDistance = maxOf(3, minOf(abs(min.x), abs(max.x), abs(min.y), abs(max.y)))
     }
 }

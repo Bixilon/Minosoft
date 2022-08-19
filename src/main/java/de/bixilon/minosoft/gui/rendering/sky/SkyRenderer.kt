@@ -132,7 +132,7 @@ class SkyRenderer(
             }
         } ?: let { baseColor = RenderConstants.DEFAULT_SKY_COLOR }
 
-        fogManager.fogColor?.let { skyColor = it }
+        fogManager.interpolatedFogColor?.let { skyColor = it }
 
         skyboxShader.use().setRGBColor(SKY_COLOR, skyColor)
     }
