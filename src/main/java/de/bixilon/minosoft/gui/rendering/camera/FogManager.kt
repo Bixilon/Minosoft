@@ -66,7 +66,7 @@ class FogManager(
         var fogStart = if (!renderWindow.connection.profiles.rendering.fog.enabled) {
             Float.MAX_VALUE
         } else {
-            renderWindow.connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X - (ProtocolDefinition.SECTION_WIDTH_X / 2.0f) // could be improved? basically view distance in blocks and then the center of that chunk
+            (renderWindow.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk
         }
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
