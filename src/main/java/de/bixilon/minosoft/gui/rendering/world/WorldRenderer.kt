@@ -103,6 +103,7 @@ class WorldRenderer(
     private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
+    @Volatile
     private var workingOnQueue = false
     private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
     private val queueSet: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
@@ -119,6 +120,7 @@ class WorldRenderer(
     private val meshesToUnloadLock = SimpleLock()
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
+    @Volatile
     private var clearVisibleNextFrame = false
     private var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
 
