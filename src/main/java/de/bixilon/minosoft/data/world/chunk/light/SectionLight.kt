@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.math.abs
 
 class SectionLight(
     val section: ChunkSection,
@@ -35,149 +34,58 @@ class SectionLight(
         }
 
         if (luminance > previousLuminance) {
-            traceIncrease(x, y, z, luminance, false)
+            traceIncrease(x, y, z, luminance)
         } else {
-            startDecreaseTrace(x, y, z, luminance)
+            startDecreaseTrace(x, y, z)
         }
     }
 
-
-    /*
-    Light decrease
-     * Go in every direction and check if the light is different, else do nothing
-     * if the light is equal or 1 more of the neighbour, then there is another light source
-     * we will set our own light the  current neighbour level and check if any neighbour has a higher level
-     * (before that we will need to decrease all decreasing light levels, to not confuse the recursive algorithm)
-     * should work, I guess?
-     */
-
-    private fun startDecreaseTrace(x: Int, y: Int, z: Int, luminance: Int) {
+    private fun startDecreaseTrace(x: Int, y: Int, z: Int) {
+        // that is kind of hacky, but far easier and kind of faster
         val light = this.light[getIndex(x, y, z)].toInt() and 0x0F
-        traceDecrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL + 1, light, 0, 0, 0, 0)
-        increaseSources(x, y, z, 0, light, 0, 0, 0)
+
+
+        decreaseLight(x, y, z, light)
     }
 
-    fun traceDecrease(x: Int, y: Int, z: Int, previousLight: Int, maxLight: Int, previousPath: Int, directionX: Int, directionY: Int, directionZ: Int) {
-        val path = abs(directionX) + abs(directionY) + abs(directionZ)
-        if (path < previousPath) {
-            // prevent going back
-            return
-        }
-        val index = getIndex(x, y, z)
-        val light = light[index].toInt() and 0x0F
-        if (light == 0) {
-            // already empty, there will be no light in that direction
-            return
-        }
-        if (light > maxLight - path || previousLight <= light) {
-            // another (stronger!) light source is emitting light here
-            return
-        }
+    private fun decreaseLight(x: Int, y: Int, z: Int, light: Int) {
+        decreaseCheckLevel(x, z, light)
 
-        if (path >= maxLight) {
-            // max length reached
-            return
+        val neighbours = section.neighbours ?: return
+        if (y - light < 0) {
+            neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y)
         }
-        if (!update) {
-            // the light in our section was updated, needed for the LightChangeEvent
-            update = true
+        if (y + light > ProtocolDefinition.SECTION_MAX_Y) {
+            neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y))
         }
+    }
+
+    private fun decreaseCheckLevel(x: Int, z: Int, light: Int) {
+        decreaseCheckX(z, light)
         val neighbours = section.neighbours ?: return
 
-        this.light[index] = (this.light[index].toInt() and 0xF0).toByte() // set light level to zero
-
-
-        if (x > 0) {
-            traceDecrease(x - 1, y, z, light, maxLight, path, directionX - 1, directionY, directionZ)
-        } else {
-            neighbours[Directions.O_WEST]?.light?.traceDecrease(ProtocolDefinition.SECTION_MAX_X, y, z, light, maxLight, path, directionX - 1, directionY, directionZ)
+        if (x - light < 0) {
+            neighbours[Directions.O_WEST]?.light?.decreaseCheckX(z, light - x)
         }
-        if (x < ProtocolDefinition.SECTION_MAX_X) {
-            traceDecrease(x + 1, y, z, light, maxLight, path, directionX + 1, directionY, directionZ)
-        } else {
-            neighbours[Directions.O_EAST]?.light?.traceDecrease(0, y, z, light, maxLight, path, directionX + 1, directionY, directionZ)
-        }
-
-        if (y > 0) {
-            traceDecrease(x, y - 1, z, light, maxLight, path, directionX, directionY - 1, directionZ)
-        } else {
-            neighbours[Directions.O_DOWN]?.light?.traceDecrease(x, ProtocolDefinition.SECTION_MAX_Y, z, light, maxLight, path, directionX, directionY - 1, directionZ)
-        }
-        if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            traceDecrease(x, y + 1, z, light, maxLight, path, directionX, directionY + 1, directionZ)
-        } else {
-            neighbours[Directions.O_UP]?.light?.traceDecrease(x, 0, z, light, maxLight, path, directionX, directionY + 1, directionZ)
-        }
-
-        if (z > 0) {
-            traceDecrease(x, y, z - 1, light, maxLight, path, directionX, directionY, directionZ - 1)
-        } else {
-            neighbours[Directions.O_NORTH]?.light?.traceDecrease(x, y, ProtocolDefinition.SECTION_MAX_Z, light, maxLight, path, directionX, directionY, directionZ - 1)
-        }
-        if (z < ProtocolDefinition.SECTION_MAX_Z) {
-            traceDecrease(x, y, z + 1, light, maxLight, path, directionX, directionY, directionZ + 1)
-        } else {
-            neighbours[Directions.O_SOUTH]?.light?.traceDecrease(x, y, 0, light, maxLight, path, directionX, directionY, directionZ + 1)
+        if (x + light > ProtocolDefinition.SECTION_MAX_X) {
+            neighbours[Directions.O_EAST]?.light?.decreaseCheckX(z, light - (ProtocolDefinition.SECTION_MAX_X - x))
         }
     }
 
-    private fun increaseSources(x: Int, y: Int, z: Int, previousPath: Int, maxPath: Int, directionX: Int, directionY: Int, directionZ: Int) {
-        val path = abs(directionX) + abs(directionY) + abs(directionZ)
-        if (path < previousPath) {
-            // prevent going back
-            return
-        }
-        if (path > maxPath) {
-            // out of range
-            return
-        }
-        val index = getIndex(x, y, z)
-        val light = light[index].toInt() and 0x0F
-        if (light > 0) {
-            // source is here
-            traceIncrease(x, y, z, light, true)
-            return
-        }
+    private fun decreaseCheckX(z: Int, light: Int) {
+        recalculate()
 
         val neighbours = section.neighbours ?: return
 
-
-        if (x > 0) {
-            increaseSources(x - 1, y, z, path, maxPath, directionX - 1, directionY, directionZ)
-        } else {
-            neighbours[Directions.O_WEST]?.light?.increaseSources(ProtocolDefinition.SECTION_MAX_X, y, z, path, maxPath, directionX - 1, directionY, directionZ)
+        if (z - light < 0) {
+            neighbours[Directions.O_NORTH]?.light?.recalculate()
         }
-        if (x < ProtocolDefinition.SECTION_MAX_X) {
-            increaseSources(x + 1, y, z, path, maxPath, directionX + 1, directionY, directionZ)
-        } else {
-            neighbours[Directions.O_EAST]?.light?.increaseSources(0, y, z, path, maxPath, directionX + 1, directionY, directionZ)
-        }
-
-        if (y > 0) {
-            increaseSources(x, y - 1, z, path, maxPath, directionX, directionY - 1, directionZ)
-        } else {
-            neighbours[Directions.O_DOWN]?.light?.increaseSources(x, ProtocolDefinition.SECTION_MAX_Y, z, path, maxPath, directionX, directionY - 1, directionZ)
-        }
-        if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            increaseSources(x, y + 1, z, path, maxPath, directionX, directionY + 1, directionZ)
-        } else {
-            neighbours[Directions.O_UP]?.light?.increaseSources(x, 0, z, path, maxPath, directionX, directionY + 1, directionZ)
-        }
-
-        if (z > 0) {
-            increaseSources(x, y, z - 1, path, maxPath, directionX, directionY, directionZ - 1)
-        } else {
-            neighbours[Directions.O_NORTH]?.light?.increaseSources(x, y, ProtocolDefinition.SECTION_MAX_Z, path, maxPath, directionX, directionY, directionZ - 1)
-        }
-        if (z < ProtocolDefinition.SECTION_MAX_Z) {
-            increaseSources(x, y, z + 1, path, maxPath, directionX, directionY, directionZ + 1)
-        } else {
-            neighbours[Directions.O_SOUTH]?.light?.increaseSources(x, y, 0, path, maxPath, directionX, directionY, directionZ + 1)
+        if (z + light > ProtocolDefinition.SECTION_MAX_Z) {
+            neighbours[Directions.O_SOUTH]?.light?.recalculate()
         }
     }
 
-
-    private fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, force: Boolean) {
+    private fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
@@ -188,7 +96,7 @@ class SectionLight(
 
         // get block or next luminance level
         val currentLight = light[index].toInt() and 0x0F // we just care about block light
-        if (currentLight >= nextLuminance && !force) {
+        if (currentLight >= nextLuminance) {
             // light is already higher, no need to trace
             return
         }
@@ -212,36 +120,36 @@ class SectionLight(
         val neighbourLuminance = nextLuminance - 1
 
         if (y > 0) {
-            traceIncrease(x, y - 1, z, neighbourLuminance, false)
+            traceIncrease(x, y - 1, z, neighbourLuminance)
         } else {
-            neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, false)
+            neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
         }
         if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            traceIncrease(x, y + 1, z, neighbourLuminance, false)
+            traceIncrease(x, y + 1, z, neighbourLuminance)
         } else {
-            neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance, false)
+            neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance)
         }
 
         if (z > 0) {
-            traceIncrease(x, y, z - 1, neighbourLuminance, false)
+            traceIncrease(x, y, z - 1, neighbourLuminance)
         } else {
-            neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, false)
+            neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
-            traceIncrease(x, y, z + 1, neighbourLuminance, false)
+            traceIncrease(x, y, z + 1, neighbourLuminance)
         } else {
-            neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance, false)
+            neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance)
         }
 
         if (x > 0) {
-            traceIncrease(x - 1, y, z, neighbourLuminance, false)
+            traceIncrease(x - 1, y, z, neighbourLuminance)
         } else {
-            neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, false)
+            neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
-            traceIncrease(x + 1, y, z, neighbourLuminance, false)
+            traceIncrease(x + 1, y, z, neighbourLuminance)
         } else {
-            neighbours[Directions.O_EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance, false)
+            neighbours[Directions.O_EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance)
         }
     }
 
@@ -253,6 +161,7 @@ class SectionLight(
 
 
     fun recalculate() {
+        update = true
         resetLight()
         val blocks = section.blocks
 
@@ -266,7 +175,7 @@ class SectionLight(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    traceIncrease(x, y, z, luminance, false)
+                    traceIncrease(x, y, z, luminance)
                 }
             }
         }
