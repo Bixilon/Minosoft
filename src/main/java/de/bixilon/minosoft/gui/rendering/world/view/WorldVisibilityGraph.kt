@@ -61,6 +61,7 @@ class WorldVisibilityGraph(
     private var sections = 16
 
     private var chunkMin = Vec2i.EMPTY
+    private var chunkMax = Vec2i.EMPTY
     private var worldSize = Vec2i.EMPTY
 
     private var graph: Array<Array<BooleanArray?>?> = arrayOfNulls(0)
@@ -225,7 +226,7 @@ class WorldVisibilityGraph(
             return
         }
 
-        if (directionX <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true)) {
+        if (directionX <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true) && chunkPosition.x > chunkMin.x) {
             val nextPosition = chunkPosition + Directions.WEST
             val nextChunk = chunk.neighbours?.get(1)
             if (nextChunk != null) {
@@ -237,7 +238,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionX >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true)) {
+        if (directionX >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true) && chunkPosition.x < chunkMax.x) {
             val nextPosition = chunkPosition + Directions.EAST
             val nextChunk = chunk.neighbours?.get(6)
             if (nextChunk != null) {
@@ -262,7 +263,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionZ <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true)) {
+        if (directionZ <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true) && chunkPosition.y > chunkMin.y) {
             val nextPosition = chunkPosition + Directions.NORTH
             val nextChunk = chunk.neighbours?.get(3)
             if (nextChunk != null) {
@@ -274,7 +275,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (directionZ >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true)) {
+        if (directionZ >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true) && chunkPosition.y < chunkMax.y) {
             val nextPosition = chunkPosition + Directions.SOUTH
             val nextChunk = chunk.neighbours?.get(4)
             if (nextChunk != null) {
@@ -285,16 +286,6 @@ class WorldVisibilityGraph(
                 }
             }
         }
-    }
-
-    private fun Vec3i.modify(axis: Int, value: Int): Vec3i {
-        val array = this.array
-        if (array[axis] == value) {
-            return this
-        }
-        val ret = Vec3i(this)
-        ret[axis] = value
-        return ret
     }
 
     @Synchronized
@@ -323,6 +314,7 @@ class WorldVisibilityGraph(
 
         if (this.chunkMin != chunkMin || this.worldSize != worldSize) {
             this.chunkMin = chunkMin
+            this.chunkMax = chunkMin + worldSize - 1
             this.worldSize = worldSize
             this.frustumCache = arrayOfNulls(worldSize.x)
         }
