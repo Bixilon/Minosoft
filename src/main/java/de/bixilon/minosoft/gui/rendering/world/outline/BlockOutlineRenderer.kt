@@ -79,14 +79,6 @@ class BlockOutlineRenderer(
         renderWindow.shaderManager.genericColorShader.use()
     }
 
-    private fun unload() {
-        mesh ?: return
-        mesh?.unload()
-        this.mesh = null
-        this.currentOutlinePosition = null
-        this.currentOutlineBlockState = null
-    }
-
     override fun postPrepareDraw() {
         if (unload) {
             this.currentOutlinePosition = null
@@ -96,7 +88,7 @@ class BlockOutlineRenderer(
     }
 
 
-    override fun prePrepareDraw() {
+    override fun prepareDrawAsync() {
         val target = renderWindow.camera.targetHandler.target.nullCast<BlockTarget>()
 
         if (target == null || connection.world.border.isOutside(target.blockPosition)) {

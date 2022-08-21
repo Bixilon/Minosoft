@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -154,7 +155,7 @@ class SkyRenderer(
         private const val SKY_MATRIX = "uSkyViewProjectionMatrix"
         private const val SKY_COLOR = "uSkyColor"
 
-        private val SUN_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minecraft:textures/environment/sun.png")
+        private val SUN_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minecraft:environment/sun").texture()
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): SkyRenderer {
             return SkyRenderer(connection, renderWindow)

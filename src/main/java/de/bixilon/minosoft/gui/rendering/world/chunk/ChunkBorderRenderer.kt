@@ -65,7 +65,7 @@ class ChunkBorderRenderer(
         }
     }
 
-    override fun prePrepareDraw() {
+    override fun prepareDrawAsync() {
         if (!profile.chunkBorder.enabled) {
             this.unload = true
             return
