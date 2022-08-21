@@ -210,7 +210,7 @@ class WorldVisibilityGraph(
         return visibility == 1.toByte()
     }
 
-    private fun checkSection(graph: Array<Array<BooleanArray?>?>, chunkPosition: Vec2i, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, directionVector: Vec3i, ignoreVisibility: Boolean) {
+    private fun checkSection(graph: Array<Array<BooleanArray?>?>, chunkPosition: Vec2i, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, directionX: Int, directionY: Int, directionZ: Int, ignoreVisibility: Boolean) {
         if ((direction == Directions.UP && sectionIndex >= maxIndex) || (direction == Directions.DOWN && sectionIndex < 0)) {
             return
         }
@@ -225,63 +225,63 @@ class WorldVisibilityGraph(
             return
         }
 
-        if (directionVector.x <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true)) {
+        if (directionX <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true)) {
             val nextPosition = chunkPosition + Directions.WEST
             val nextChunk = chunk.neighbours?.get(1)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
                     nextVisibilities[sectionIndex] = true
-                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.WEST, directionVector.modify(0, -1), false)
+                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.WEST, -1, directionY, directionZ, false)
                 }
             }
         }
 
-        if (directionVector.x >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true)) {
+        if (directionX >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true)) {
             val nextPosition = chunkPosition + Directions.EAST
             val nextChunk = chunk.neighbours?.get(6)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
                     nextVisibilities[sectionIndex] = true
-                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.EAST, directionVector.modify(0, 1), false)
+                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.EAST, 1, directionY, directionZ, false)
                 }
             }
         }
 
-        if (sectionIndex > 0 && directionVector.y <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.DOWN) != true)) {
+        if (sectionIndex > 0 && directionY <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.DOWN) != true)) {
             if (!visibilities[sectionIndex - 1]) {
                 visibilities[sectionIndex - 1] = true
-                checkSection(graph, chunkPosition, sectionIndex - 1, chunk, visibilities, Directions.DOWN, directionVector.modify(1, -1), false)
+                checkSection(graph, chunkPosition, sectionIndex - 1, chunk, visibilities, Directions.DOWN, directionX, -1, directionZ, false)
             }
         }
-        if (sectionIndex < maxIndex && directionVector.y >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.UP) != true)) {
+        if (sectionIndex < maxIndex && directionY >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.UP) != true)) {
             if (!visibilities[sectionIndex + 1]) {
                 visibilities[sectionIndex + 1] = true
-                checkSection(graph, chunkPosition, sectionIndex + 1, chunk, visibilities, Directions.UP, directionVector.modify(1, 1), false)
+                checkSection(graph, chunkPosition, sectionIndex + 1, chunk, visibilities, Directions.UP, directionX, 1, directionZ, false)
             }
         }
 
-        if (directionVector.z <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true)) {
+        if (directionZ <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true)) {
             val nextPosition = chunkPosition + Directions.NORTH
             val nextChunk = chunk.neighbours?.get(3)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
                     nextVisibilities[sectionIndex] = true
-                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.NORTH, directionVector.modify(2, -1), false)
+                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.NORTH, directionX, directionY, -1, false)
                 }
             }
         }
 
-        if (directionVector.z >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true)) {
+        if (directionZ >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true)) {
             val nextPosition = chunkPosition + Directions.SOUTH
             val nextChunk = chunk.neighbours?.get(4)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
                     nextVisibilities[sectionIndex] = true
-                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.SOUTH, directionVector.modify(2, 1), false)
+                    checkSection(graph, nextPosition, sectionIndex, nextChunk, nextVisibilities, Directions.SOUTH, directionX, directionY, 1, false)
                 }
             }
         }
@@ -299,9 +299,9 @@ class WorldVisibilityGraph(
 
     @Synchronized
     private fun calculateGraph() {
-         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-             return
-         }
+        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
+            return
+        }
         connection.world.chunks.lock.acquire()
         recalculateNextFrame = false
         this.lastFrustumRevision = frustum.revision
@@ -334,7 +334,8 @@ class WorldVisibilityGraph(
             val nextPosition = chunkPosition + direction
             val nextChunk = connection.world[nextPosition] ?: continue
             val nextVisibility = graph.getVisibility(nextPosition)
-            checkSection(graph, nextPosition, cameraSectionIndex + direction.vector.y, nextChunk, nextVisibility, direction, direction.vector, true)
+            val vector = direction.vector
+            checkSection(graph, nextPosition, cameraSectionIndex + vector.y, nextChunk, nextVisibility, direction, vector.x, vector.y, vector.z, true)
         }
 
         this.graph = graph
