@@ -34,7 +34,6 @@ import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
-import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
@@ -277,8 +276,9 @@ class WorldRenderer(
         val rendering = connection.profiles.rendering
         rendering.performance::fastBedrock.profileWatch(this, false, rendering) { clearChunkCache() }
 
-        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
-            if (event.viewDistance < this.previousViewDistance) {
+        profile::viewDistance.profileWatch(this) { viewDistance ->
+            val distance = maxOf(viewDistance, profile.simulationDistance)
+            if (distance < this.previousViewDistance) {
                 // Unload all chunks(-sections) that are out of view distance
                 culledQueueLock.lock()
                 queueLock.lock()
@@ -333,8 +333,8 @@ class WorldRenderer(
                 prepareWorld()
             }
 
-            this.previousViewDistance = event.viewDistance
-        })
+            this.previousViewDistance = distance
+        }
     }
 
     fun silentlyClearChunkCache() {
