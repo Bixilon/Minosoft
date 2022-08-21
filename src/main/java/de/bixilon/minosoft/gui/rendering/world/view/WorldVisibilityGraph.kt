@@ -65,7 +65,6 @@ class WorldVisibilityGraph(
 
     private var graph: Array<Array<BooleanArray?>?> = arrayOfNulls(0)
 
-    private lateinit var chunkCache: Array<Array<Chunk?>?>
     private lateinit var frustumCache: Array<ByteArray?>
 
     // check for view distance (hide chunks that are far away)
@@ -188,29 +187,6 @@ class WorldVisibilityGraph(
         return innerArray
     }
 
-    private fun getChunk(chunkPosition: Vec2i): Chunk? {
-        val x = chunkPosition.x - chunkMin.x
-
-        if (x >= chunkCache.size || x < 0) {
-            return null
-        }
-        var array = chunkCache[x]
-        if (array == null) {
-            array = arrayOfNulls(worldSize.y)
-            chunkCache[x] = array
-        }
-        val y = chunkPosition.y - chunkMin.y
-        if (y >= array.size || y < 0) {
-            return null
-        }
-        var chunk = array[y]
-        if (chunk == null) {
-            chunk = chunks[chunkPosition]
-            array[y] = chunk
-        }
-        return chunk
-    }
-
     private fun isInFrustum(chunkPosition: Vec2i, sectionHeight: Int): Boolean {
         val x = chunkPosition.x - chunkMin.x
 
@@ -251,7 +227,7 @@ class WorldVisibilityGraph(
 
         if (directionVector.x <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.WEST) != true)) {
             val nextPosition = chunkPosition + Directions.WEST
-            val nextChunk = getChunk(nextPosition)
+            val nextChunk = chunk.neighbours?.get(1)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
@@ -263,7 +239,7 @@ class WorldVisibilityGraph(
 
         if (directionVector.x >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.EAST) != true)) {
             val nextPosition = chunkPosition + Directions.EAST
-            val nextChunk = getChunk(nextPosition)
+            val nextChunk = chunk.neighbours?.get(6)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
@@ -288,7 +264,7 @@ class WorldVisibilityGraph(
 
         if (directionVector.z <= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.NORTH) != true)) {
             val nextPosition = chunkPosition + Directions.NORTH
-            val nextChunk = getChunk(nextPosition)
+            val nextChunk = chunk.neighbours?.get(3)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
@@ -300,7 +276,7 @@ class WorldVisibilityGraph(
 
         if (directionVector.z >= 0 && (chunk.sections?.get(sectionIndex)?.blocks?.isOccluded(inverted, Directions.SOUTH) != true)) {
             val nextPosition = chunkPosition + Directions.SOUTH
-            val nextChunk = getChunk(nextPosition)
+            val nextChunk = chunk.neighbours?.get(4)
             if (nextChunk != null) {
                 val nextVisibilities = graph.getVisibility(nextPosition)
                 if (!nextVisibilities[sectionIndex]) {
@@ -348,7 +324,6 @@ class WorldVisibilityGraph(
         if (this.chunkMin != chunkMin || this.worldSize != worldSize) {
             this.chunkMin = chunkMin
             this.worldSize = worldSize
-            this.chunkCache = arrayOfNulls(worldSize.x)
             this.frustumCache = arrayOfNulls(worldSize.x)
         }
 
@@ -357,7 +332,7 @@ class WorldVisibilityGraph(
 
         for (direction in Directions.VALUES) {
             val nextPosition = chunkPosition + direction
-            val nextChunk = getChunk(nextPosition) ?: continue
+            val nextChunk = connection.world[nextPosition] ?: continue
             val nextVisibility = graph.getVisibility(nextPosition)
             checkSection(graph, nextPosition, cameraSectionIndex + direction.vector.y, nextChunk, nextVisibility, direction, direction.vector, true)
         }
