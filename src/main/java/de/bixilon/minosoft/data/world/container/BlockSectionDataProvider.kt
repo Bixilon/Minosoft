@@ -297,8 +297,6 @@ class BlockSectionDataProvider(
                 }
                 else -> return 14 // WEST->EAST
             }
-
-            return -1 // Broken("Can not get index for occlusion culling $`in` -> $out!")
         }
     }
 }
