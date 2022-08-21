@@ -103,7 +103,6 @@ class WorldRenderer(
     private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
-    @Volatile
     private var workingOnQueue = false
     private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
     private val queueSet: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
@@ -120,7 +119,6 @@ class WorldRenderer(
     private val meshesToUnloadLock = SimpleLock()
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
-    @Volatile
     private var clearVisibleNextFrame = false
     private var visible = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
 
@@ -466,7 +464,7 @@ class WorldRenderer(
         for (item in items) {
             val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW, interuptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             task.runnable.runnable = Runnable {
-                prepareItem(item, task)
+                prepareItem(item, task, task.runnable)
             }
             preparingTasksLock.lock()
             preparingTasks += task
@@ -476,8 +474,7 @@ class WorldRenderer(
         workingOnQueue = false
     }
 
-    private fun prepareItem(item: WorldQueueItem, task: SectionPrepareTask) {
-        var locked = false
+    private fun prepareItem(item: WorldQueueItem, task: SectionPrepareTask, runnable: ThreadPoolRunnable) {
         try {
             val chunk = item.chunk ?: world[item.chunkPosition] ?: return
             val section = chunk[item.sectionHeight] ?: return
@@ -495,8 +492,8 @@ class WorldRenderer(
                 return queueItemUnload(item)
             }
             item.mesh = mesh
+            runnable.interuptable = false
             meshesToLoadLock.lock()
-            locked = true
             if (meshesToLoadSet.remove(item)) {
                 meshesToLoad.remove(item) // Remove duplicates
             }
@@ -509,9 +506,6 @@ class WorldRenderer(
             meshesToLoadSet += item
             meshesToLoadLock.unlock()
         } catch (exception: Throwable) {
-            if (locked) {
-                meshesToLoadLock.unlock()
-            }
             if (exception !is InterruptedException) {
                 // otherwise task got interrupted (probably because of chunk unload)
                 throw exception
