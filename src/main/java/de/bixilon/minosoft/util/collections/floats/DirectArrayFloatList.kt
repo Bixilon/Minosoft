@@ -41,15 +41,9 @@ class DirectArrayFloatList(
     private var output: FloatArray = FloatArray(0)
     private var outputUpToDate = false
 
-    private fun checkFinalized() {
-        if (finished) {
-            throw IllegalStateException("ArrayFloatList is already finalized!")
-        }
-    }
-
     @Synchronized
     override fun ensureSize(needed: Int) {
-        checkFinalized()
+        checkFinished()
         if (limit - size >= needed) {
             return
         }
