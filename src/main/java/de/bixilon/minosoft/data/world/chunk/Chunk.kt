@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -116,6 +117,17 @@ class Chunk(
         val sectionHeight = y.sectionHeight
 
         connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight, true))
+
+        val down = section.neighbours?.get(Directions.O_DOWN)?.light
+        if (down != null && down.update) {
+            down.update = false
+            connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight - 1, false))
+        }
+        val up = section.neighbours?.get(Directions.O_UP)?.light
+        if (up?.update == true) {
+            up.update = false
+            connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight + 1, false))
+        }
 
 
         var neighbourIndex = 0
