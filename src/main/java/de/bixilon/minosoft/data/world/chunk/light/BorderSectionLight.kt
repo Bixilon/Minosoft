@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-@Deprecated("ToDo")
+@Deprecated("Not yet implemented")
 class BorderSectionLight(val top: Boolean) : AbstractSectionLight() {
     val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
@@ -37,5 +37,9 @@ class BorderSectionLight(val top: Boolean) : AbstractSectionLight() {
 
     private fun getIndex(x: Int, z: Int): Int {
         return z shl 4 or x
+    }
+
+    fun update(array: ByteArray) {
+        // ToDo: Save light from server
     }
 }

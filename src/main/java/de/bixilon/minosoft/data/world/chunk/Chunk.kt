@@ -137,8 +137,8 @@ class Chunk(
                     continue
                 }
                 val chunkPosition = chunkPosition + Vec2i(chunkX, chunkZ)
+                val chunk = neighbours[neighbourIndex++]
                 for (chunkY in -1..1) {
-                    val chunk = neighbours[neighbourIndex]
                     val neighbourSection = chunk[sectionHeight + chunkY] ?: continue
                     if (!neighbourSection.light.update) {
                         continue
@@ -146,7 +146,6 @@ class Chunk(
                     neighbourSection.light.update = false
                     connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight + chunkY, false))
                 }
-                neighbourIndex++
             }
         }
     }
@@ -224,7 +223,8 @@ class Chunk(
                     section.light.light = light
                 }
             }
-            // ToDo: top and bottom light
+            data.bottomLight?.let { bottomLight.update(it) }
+            data.topLight?.let { topLight.update(it) }
         }
         data.biomeSource?.let {
             this.biomeSource = it
