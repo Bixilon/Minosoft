@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.items.block
 
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -41,10 +42,10 @@ open class BlockItem(
 
     override fun interactBlock(connection: PlayConnection, target: BlockTarget, hand: Hands, stack: ItemStack): InteractionResults {
         if (!connection.player.gamemode.canBuild) {
-            return InteractionResults.PASS
+            return InteractionResults.ERROR
         }
 
-        val placePosition = target.blockPosition
+        val placePosition = Vec3i(target.blockPosition)
         if (!target.blockState.material.replaceable) {
             placePosition += target.direction
 
@@ -54,7 +55,7 @@ open class BlockItem(
         }
 
         if (!connection.world.isPositionChangeable(placePosition)) {
-            return InteractionResults.PASS
+            return InteractionResults.ERROR
         }
 
         if (connection.world.getBlockEntity(placePosition) != null && !connection.player.isSneaking) {
@@ -71,7 +72,7 @@ open class BlockItem(
 
         val collisionShape = placeBlockState.collisionShape + placePosition
         if (connection.world.entities.isEntityIn(collisionShape)) {
-            return InteractionResults.CONSUME
+            return InteractionResults.ERROR
         }
 
 

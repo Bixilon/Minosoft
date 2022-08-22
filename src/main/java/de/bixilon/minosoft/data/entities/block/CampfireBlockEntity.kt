@@ -92,7 +92,6 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             for (i in 0 until 4) {
                 connection.world.addParticle(SmokeParticle(connection, position, Vec3d(0.0, 5.0E-4, 0.0)))
             }
-
         }
     }
 

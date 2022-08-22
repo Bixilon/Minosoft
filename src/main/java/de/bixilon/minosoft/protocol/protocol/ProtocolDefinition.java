@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 public final class ProtocolDefinition {
     public static final int STRING_MAX_LENGTH = 32767;
     public static final int DEFAULT_PORT = 25565;
-    public static final int SOCKET_CONNECT_TIMEOUT = 5000;
     public static final int SOCKET_TIMEOUT = 30000;
     public static final int STATUS_PROTOCOL_PACKET_MAX_SIZE = 1 << 16;
     public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
@@ -51,10 +50,7 @@ public final class ProtocolDefinition {
 
 
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
-    public static final Pattern RESOURCE_LOCATION_PATTERN = Pattern.compile("([a-z_0-9]+:)?[a-zA-Z_0-9.]+");
-    public static final Pattern SCOREBOARD_OBJECTIVE_PATTERN = Pattern.compile("[a-zA-z-.+]{1,16}");
 
-    public static final int SECTION_SIZE = 16;
     public static final int SECTION_WIDTH_X = 16;
     public static final int SECTION_MAX_X = SECTION_WIDTH_X - 1;
     public static final int SECTION_WIDTH_Z = 16;
@@ -92,17 +88,15 @@ public final class ProtocolDefinition {
     public static final float TICKS_PER_DAYf = (float) TICKS_PER_DAY;
 
     public static final byte LIGHT_LEVELS = 16;
-    public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
 
     static {
-        // java does (why ever) not allow to directly assign a null
-        InetAddress tempInetAddress;
+        InetAddress inetAddress;
         try {
-            tempInetAddress = InetAddress.getByName(LAN_SERVER_BROADCAST_ADDRESS);
+            inetAddress = InetAddress.getByName(LAN_SERVER_BROADCAST_ADDRESS);
         } catch (Exception e) {
             e.printStackTrace();
-            tempInetAddress = null;
+            inetAddress = null;
         }
-        LAN_SERVER_BROADCAST_INET_ADDRESS = tempInetAddress;
+        LAN_SERVER_BROADCAST_INET_ADDRESS = inetAddress;
     }
 }

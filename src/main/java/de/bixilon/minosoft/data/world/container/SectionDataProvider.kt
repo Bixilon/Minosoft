@@ -72,9 +72,9 @@ open class SectionDataProvider<T>(
         }
         var count = 0
 
-        var minX = 16
-        var minY = 16
-        var minZ = 16
+        var minX = ProtocolDefinition.SECTION_WIDTH_X
+        var minY = ProtocolDefinition.SECTION_HEIGHT_Y
+        var minZ = ProtocolDefinition.SECTION_WIDTH_Z
 
         var maxX = 0
         var maxY = 0
@@ -112,8 +112,8 @@ open class SectionDataProvider<T>(
             if (z > maxZ) {
                 maxZ = z
             }
-
         }
+
         this.minPosition = Vec3i(minX, minY, minZ)
         this.maxPosition = Vec3i(maxX, maxY, maxZ)
         this.count = count
@@ -219,6 +219,6 @@ open class SectionDataProvider<T>(
 
 
     companion object {
-        private val EMPTY_ITERATOR = listOf<Any>().iterator()
+        private val EMPTY_ITERATOR = emptyArray<Any>().iterator()
     }
 }
