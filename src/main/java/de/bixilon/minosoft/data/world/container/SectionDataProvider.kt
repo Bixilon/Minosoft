@@ -159,8 +159,18 @@ open class SectionDataProvider<T>(
             val z = (index shr 4) and 0x0F
             val y = index shr 8
 
-            if ((minPosition.x == x && minPosition.y == y && minPosition.z == z) || (maxPosition.x == x && maxPosition.y == y && maxPosition.z == z)) {
-                recalculate()
+            if (value == null) {
+                if ((minPosition.x == x && minPosition.y == y && minPosition.z == z) || (maxPosition.x == x && maxPosition.y == y && maxPosition.z == z)) {
+                    recalculate()
+                }
+            } else {
+                if (minPosition.x > x) minPosition.x = x
+                if (minPosition.y > y) minPosition.y = y
+                if (minPosition.z > z) minPosition.z = z
+
+                if (maxPosition.x < x) maxPosition.x = x
+                if (maxPosition.y < y) maxPosition.y = y
+                if (maxPosition.z < z) maxPosition.z = z
             }
         }
         unlock()
