@@ -34,6 +34,7 @@ class ChunkSection(
     var blocks: BlockSectionDataProvider,
     var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
     var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
+    var chunk: Chunk? = null,
 ) {
     var light = SectionLight(this)
     var neighbours: Array<ChunkSection?>? = null
@@ -86,7 +87,7 @@ class ChunkSection(
         val z = blockOffset.z
         val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours) //!!
+            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours)
         }
         this.biomes.setData(biomes.unsafeCast())
     }

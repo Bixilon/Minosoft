@@ -13,10 +13,13 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
+import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-@Deprecated("Not yet implemented")
-class BorderSectionLight(val top: Boolean) : AbstractSectionLight() {
+class BorderSectionLight(
+    val top: Boolean,
+    val chunk: Chunk,
+) : AbstractSectionLight() {
     val light = ByteArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
     override fun get(x: Int, y: Int, z: Int): Byte {
@@ -37,6 +40,59 @@ class BorderSectionLight(val top: Boolean) : AbstractSectionLight() {
 
     private fun getIndex(x: Int, z: Int): Int {
         return z shl 4 or x
+    }
+
+    internal fun traceIncrease(x: Int, z: Int, nextLuminance: Int) {
+        val index = z shl 4 or x
+        val currentLight = light[index].toInt() and 0x0F
+        if (currentLight >= nextLuminance) {
+            // light is already higher, no need to trace
+            return
+        }
+        this.light[index] = ((this.light[index].toInt() and 0xF0) or nextLuminance).toByte()
+
+        if (!update) {
+            update = true
+        }
+
+
+        if (nextLuminance == 1) {
+            // we can not further increase the light
+            return
+        }
+        val neighbourLuminance = nextLuminance - 1
+
+        if (top) {
+            chunk.sections?.last()?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
+        } else {
+            chunk.sections?.first()?.light?.traceIncrease(x, 0, z, neighbourLuminance)
+        }
+
+        if (z > 0) {
+            traceIncrease(x, z - 1, neighbourLuminance)
+        } else {
+            val neighbour = chunk.neighbours?.get(3)
+            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+        }
+        if (z < ProtocolDefinition.SECTION_MAX_Y) {
+            traceIncrease(x, z + 1, neighbourLuminance)
+        } else {
+            val neighbour = chunk.neighbours?.get(4)
+            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(x, 0, neighbourLuminance)
+        }
+
+        if (x > 0) {
+            traceIncrease(x - 1, z, neighbourLuminance)
+        } else {
+            val neighbour = chunk.neighbours?.get(1)
+            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
+        }
+        if (x < ProtocolDefinition.SECTION_MAX_X) {
+            traceIncrease(x + 1, z, neighbourLuminance)
+        } else {
+            val neighbour = chunk.neighbours?.get(6)
+            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(0, z, neighbourLuminance)
+        }
     }
 
     fun update(array: ByteArray) {

@@ -73,7 +73,6 @@ class SectionLight(
     }
 
     private fun decreaseCheckX(z: Int, light: Int) {
-        recalculate()
 
         val neighbours = section.neighbours ?: return
 
@@ -85,7 +84,7 @@ class SectionLight(
         }
     }
 
-    private fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int) {
+    fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
@@ -121,11 +120,15 @@ class SectionLight(
 
         if (y > 0) {
             traceIncrease(x, y - 1, z, neighbourLuminance)
+        } else if (section.sectionHeight == section.chunk?.lowestSection) {
+            section.chunk?.bottomLight?.traceIncrease(x, z, neighbourLuminance)
         } else {
             neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
         }
         if (y < ProtocolDefinition.SECTION_MAX_Y) {
             traceIncrease(x, y + 1, z, neighbourLuminance)
+        } else if (section.sectionHeight == section.chunk?.highestSection) {
+            section.chunk?.topLight?.traceIncrease(x, z, neighbourLuminance)
         } else {
             neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance)
         }

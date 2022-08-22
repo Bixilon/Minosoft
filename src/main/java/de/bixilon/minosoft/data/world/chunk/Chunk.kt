@@ -50,8 +50,8 @@ class Chunk(
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     private val world = connection.world
-    var bottomLight = BorderSectionLight(false)
-    var topLight = BorderSectionLight(true)
+    var bottomLight = BorderSectionLight(false, this)
+    var topLight = BorderSectionLight(true, this)
     val lowestSection = world.dimension!!.minSection
     val highestSection = world.dimension!!.maxSection
     val cacheBiomes = world.cacheBiomeAccessor != null
@@ -246,7 +246,7 @@ class Chunk(
 
         var section = sections[sectionIndex]
         if (section == null) {
-            section = ChunkSection(sectionHeight, BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback))
+            section = ChunkSection(sectionHeight, BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback), chunk = this)
             val cacheBiomeAccessor = world.cacheBiomeAccessor
             val neighbours = this.neighbours
             if (neighbours != null) {
