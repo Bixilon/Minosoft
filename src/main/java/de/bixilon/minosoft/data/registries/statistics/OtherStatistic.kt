@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.statistics
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 
-class CustomStatistic(
+class OtherStatistic(
     resourceLocation: ResourceLocation,
     translationKey: ResourceLocation?,
     unit: StatisticUnits,

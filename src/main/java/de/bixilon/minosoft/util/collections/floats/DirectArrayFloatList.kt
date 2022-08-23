@@ -48,8 +48,10 @@ class DirectArrayFloatList(
             return
         }
         var newSize = limit
-        while (newSize - size < needed) {
-            newSize += nextGrowStep
+        newSize += if (nextGrowStep < needed) {
+            (needed / nextGrowStep + 1) * nextGrowStep
+        } else {
+            nextGrowStep
         }
         val oldBuffer = buffer
         buffer = memAllocFloat(newSize)

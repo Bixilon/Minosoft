@@ -145,16 +145,16 @@ class WorldVisibilityGraph(
         if (chunkPosition == cameraChunkPosition && sectionHeight == cameraSectionHeight) { // ToDo: Remove duplicated chunk position check
             return true
         }
+        if (RenderConstants.OCCLUSION_CULLING_ENABLED) {
+            if (getChunkVisibility(chunkPosition)?.getOrNull(sectionHeight - minSection) == false) {
+                return false
+            }
+        }
 
         if (!frustum.containsChunk(chunkPosition, sectionHeight, minPosition, maxPosition)) {
             return false
         }
-        if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-            return true
-        }
-        val visible = getChunkVisibility(chunkPosition)?.getOrNull(sectionHeight - minSection)
-
-        return visible == true
+        return true
     }
 
     fun updateCamera(chunkPosition: Vec2i, sectionHeight: Int) {

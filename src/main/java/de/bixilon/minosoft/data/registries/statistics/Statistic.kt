@@ -40,7 +40,7 @@ open class Statistic(
                 for (value in it) {
                     custom += value.toResourceLocation()
                 }
-                return CustomStatistic(
+                return OtherStatistic(
                     resourceLocation = resourceLocation,
                     translationKey = translationKey,
                     unit = unit,
