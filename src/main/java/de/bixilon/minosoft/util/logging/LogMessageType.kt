@@ -50,7 +50,7 @@ enum class LogMessageType(
 
     RENDERING_GENERAL(ChatColors.GREEN),
     RENDERING_LOADING(ChatColors.GREEN),
-    AUDIO_LOADING(ChatColors.DARK_PURPLE),
+    AUDIO(ChatColors.DARK_PURPLE),
 
     CHAT_IN(ChatColors.LIGHT_PURPLE),
     CHAT_OUT(ChatColors.LIGHT_PURPLE),

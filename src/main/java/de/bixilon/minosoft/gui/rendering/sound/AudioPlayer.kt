@@ -66,15 +66,15 @@ class AudioPlayer(
 
 
     fun init(latch: CountUpAndDownLatch) {
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Loading OpenAL..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "Loading OpenAL..." }
 
         soundManager.load()
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Preloading sounds..." }
         soundManager.preload()
 
 
 
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Initializing OpenAL..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Initializing OpenAL..." }
         device = alcOpenDevice(null as ByteBuffer?)
         check(device != MemoryUtil.NULL) { "Failed to open the default device." }
 
@@ -102,7 +102,7 @@ class AudioPlayer(
 
         DefaultAudioBehavior.register(connection)
 
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
+        Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "OpenAL loaded!" }
 
         profile::enabled.profileWatch(this, false, profile) {
             if (it) {
@@ -188,7 +188,7 @@ class AudioPlayer(
             sound.load(connection.assetsManager)
             val source = getAvailableSource()
             if (source == null) {
-                Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not play sound: No source available: $sound" }
+                Log.log(LogMessageType.AUDIO, LogLevels.WARN) { "No source available: $sound" }
                 return@add
             }
             position?.let {
@@ -230,22 +230,22 @@ class AudioPlayer(
     }
 
     fun exit() {
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Unloading OpenAL..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "Unloading OpenAL..." }
 
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Unloading sounds..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Unloading sounds..." }
         soundManager.unload()
 
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Unloading sources..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Unloading sources..." }
         for (source in sources.toSynchronizedList()) {
             source.unload()
         }
 
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
+        Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
 
         alcSetThreadContext(MemoryUtil.NULL)
         alcDestroyContext(context)
         alcCloseDevice(device)
 
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Unloaded OpenAL!" }
+        Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "Unloaded OpenAL!" }
     }
 }
