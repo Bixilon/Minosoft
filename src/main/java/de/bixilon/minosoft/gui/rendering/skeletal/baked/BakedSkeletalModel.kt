@@ -108,9 +108,13 @@ class BakedSkeletalModel(
                 }
 
                 val texture = textures[face.texture]!!
+                val transform = Float.fromBits(outlinerId)
+                val textureShaderId = Float.fromBits(texture.shaderId)
+                val floatFlags = Float.fromBits(flags)
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
-                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, texture, flags)
+                    val transformedUV = texture.transformUV(texturePositions[textureIndex])
+                    mesh.addVertex(indexPosition, transformedUV, transform, textureShaderId, floatFlags)
                 }
             }
         }

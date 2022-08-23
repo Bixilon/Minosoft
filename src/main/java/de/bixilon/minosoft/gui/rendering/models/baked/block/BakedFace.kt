@@ -47,9 +47,10 @@ class BakedFace(
             color.g *= ((tint shr 8) and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
             color.b *= (tint and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
         }
+        val rgb = color.rgb
         for ((index, textureIndex) in meshToUse.order) {
             val indexOffset = index * 3
-            meshToUse.addVertex(floatArrayOf(positions[indexOffset + 0] + position[0], positions[indexOffset + 1] + position[1], positions[indexOffset + 2] + position[2]), uv[textureIndex], texture, color.rgb, light)
+            meshToUse.addVertex(floatArrayOf(positions[indexOffset + 0] + position[0], positions[indexOffset + 1] + position[1], positions[indexOffset + 2] + position[2]), uv[textureIndex], texture, rgb, light)
         }
     }
 }

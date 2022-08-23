@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -172,12 +173,14 @@ class FluidCullSectionPreparer(
                         )
 
 
+                        val tint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
+                        val light = chunk.getLight(position)
                         for ((positionIndex, textureIndex) in meshToUse.order) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tints?.get(0) ?: 0xFFFFFF, chunk.getLight(position))
+                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tint, light)
                         }
                         // ToDo: Sides that are connecting with non full cubes (e.g. air) also have cullface disabled
                         for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tints?.get(0) ?: 0xFFFFFF, chunk.getLight(position))
+                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tint, light)
                         }
                         rendered = true
                     }
@@ -237,7 +240,7 @@ class FluidCullSectionPreparer(
                         )
 
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
-                        val fluidTint = tints?.get(0) ?: 0xFFFFFF
+                        val fluidTint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
                         val fluidLight = chunk.getLight(x, offsetY + y, z)
                         for ((positionIndex, textureIndex) in meshToUse.order) {
                             meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
@@ -328,6 +331,7 @@ class FluidCullSectionPreparer(
 
     private companion object {
         private const val TEXTURE_CENTER = 1.0f / 2.0f
+        private const val FLUID_TINT_INDEX = 0
         private val FLUID_FACE_PROPERTY = FaceProperties(
             Vec2.EMPTY,
             Vec2(1.0f, 1.0f),

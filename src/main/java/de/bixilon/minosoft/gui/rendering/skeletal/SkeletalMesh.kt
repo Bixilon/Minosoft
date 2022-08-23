@@ -34,6 +34,18 @@ class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
         data.add(Float.fromBits(flags))
     }
 
+    @Deprecated("Pretty rendering specific")
+    fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
+        data.add(position[0])
+        data.add(position[1])
+        data.add(position[2])
+        data.add(transformedUV.x)
+        data.add(transformedUV.y)
+        data.add(transform)
+        data.add(textureShaderId)
+        data.add(flags)
+    }
+
 
     data class SkeletalMeshStruct(
         val position: Vec3,

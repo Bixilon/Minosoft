@@ -25,4 +25,7 @@ object Colors {
     val DARK_RED = RGBColor(255, 50, 30)
 
     val TRANSPARENT = RGBColor(0, 0, 0, 0)
+
+
+    const val WHITE = 0xFFFFFFFF.toInt()
 }

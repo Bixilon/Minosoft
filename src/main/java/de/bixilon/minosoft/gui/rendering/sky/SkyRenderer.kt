@@ -96,6 +96,7 @@ class SkyRenderer(
             skySunMesh.unload()
 
             skySunMesh = SimpleTextureMesh(renderWindow)
+            val tint = ChatColors.WHITE.with(alpha = 1.0f - connection.world.weather.rainGradient) // ToDo: Depends on time
             skySunMesh.addYQuad(
                 start = Vec2(-0.15f, -0.15f),
                 y = 1.0f,
@@ -105,7 +106,7 @@ class SkyRenderer(
                         position = position,
                         texture = sunTexture,
                         uv = uv,
-                        tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.weather.rainGradient), // ToDo: Depends on time
+                        tintColor = tint,
                     )
                 }
             )
