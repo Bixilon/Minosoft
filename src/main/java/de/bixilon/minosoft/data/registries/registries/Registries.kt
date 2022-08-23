@@ -73,7 +73,7 @@ class Registries {
     val enchantmentRegistry: Registry<Enchantment> = register("enchantment", Registry(codec = Enchantment))
     val particleTypeRegistry: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
     val statusEffectRegistry: Registry<StatusEffect> = register("mob_effect", Registry(codec = StatusEffect))
-    val statisticRegistry: Registry<Statistic> = register("custom_stat", Registry())
+    val statisticRegistry: Registry<Statistic> = register("custom_stat", Registry(codec = Statistic))
     val biomeRegistry: Registry<Biome> = register("biome", Registry(codec = Biome))
     val dimensionRegistry: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))
     val materialRegistry: Registry<Material> = register("material", Registry(codec = Material))
@@ -195,6 +195,8 @@ class Registries {
 
         worker += Task(this::catVariants) { catVariants.rawUpdate(pixlyzerData["variant/cat"]?.toJsonObject(), this) }
         worker += Task(this::frogVariants) { frogVariants.rawUpdate(pixlyzerData["variant/frog"]?.toJsonObject(), this) }
+
+        worker += Task(this::statisticRegistry) { statisticRegistry.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
 
         val inner = CountUpAndDownLatch(1, latch)
         worker.work(inner)
