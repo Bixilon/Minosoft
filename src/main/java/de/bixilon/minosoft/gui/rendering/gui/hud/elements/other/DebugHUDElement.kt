@@ -109,9 +109,11 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 } else {
                     val audioPlayer = renderWindow.rendering.audioPlayer
 
-                    this += audioPlayer.availableSources
+                    val sources = audioPlayer.sourcesCount
+
+                    this += sources - audioPlayer.availableSources
                     this += " / "
-                    this += audioPlayer.sourcesCount
+                    this += sources
                 }
             }
         }
