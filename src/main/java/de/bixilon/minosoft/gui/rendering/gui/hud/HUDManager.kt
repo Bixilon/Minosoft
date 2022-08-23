@@ -91,9 +91,7 @@ class HUDManager(
 
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:enable_hud".toResourceLocation(), KeyBinding(
-                mapOf(
                     KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
-                ),
             ), defaultPressed = enabled
         ) { enabled = it }
     }

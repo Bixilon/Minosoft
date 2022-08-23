@@ -69,10 +69,8 @@ class EntityRenderer(
         renderWindow.inputHandler.registerKeyCallback(
             HITBOX_TOGGLE_KEY_COMBINATION,
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_B),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_B),
             ), defaultPressed = profile.hitbox.enabled
         ) {
             profile.hitbox.enabled = it

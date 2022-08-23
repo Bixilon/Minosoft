@@ -59,10 +59,8 @@ class LightMap(private val renderWindow: RenderWindow) {
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:recalculate_light".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
             )
         ) {
             connection.world.recalculateLight()

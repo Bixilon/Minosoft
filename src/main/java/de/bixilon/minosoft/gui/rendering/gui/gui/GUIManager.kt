@@ -69,13 +69,13 @@ class GUIManager(
     }
 
     override fun postInit() {
-        renderWindow.inputHandler.registerKeyCallback("minosoft:back".toResourceLocation(),
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:back".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
-                ),
+                KeyActions.RELEASE to setOf(KeyCodes.KEY_ESCAPE),
                 ignoreConsumer = true,
-            )) { popOrPause() }
+            )
+        ) { popOrPause() }
 
 
         for (element in elementCache.values) {

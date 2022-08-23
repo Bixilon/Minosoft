@@ -33,13 +33,13 @@ class FunEffectManager(
 
 
     init {
-        renderWindow.inputHandler.registerKeyCallback("minosoft:switch_fun_settings".toResourceLocation(),
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:switch_fun_settings".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_J),
-                ),
-            )) {
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_J),
+            )
+        ) {
             effectUsed++
             if (effectUsed > DefaultFunEffects.size) {
                 effectUsed = 0

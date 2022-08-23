@@ -250,9 +250,7 @@ class BreakInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(DESTROY_BLOCK_KEYBINDING to KeyBinding(
-            mapOf(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
-            ),
         ))
 
         connection.registerEvent(CallbackEventInvoker.of<LegacyBlockBreakAckEvent> {

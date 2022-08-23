@@ -33,9 +33,7 @@ class SpectateInteractionManager(
 
     fun init() {
         renderWindow.inputHandler.registerKeyCallback(STOP_SPECTATING, KeyBinding(
-            mapOf(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
-            ),
         )) { spectate(null) }
 
         renderWindow.connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { spectate(null) })

@@ -60,10 +60,8 @@ class ChunkBorderRenderer(
         renderWindow.inputHandler.registerKeyCallback(
             CHUNK_BORDER_TOGGLE_KEY_COMBINATION,
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_G),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_G),
             ), defaultPressed = profile.chunkBorder.enabled
         ) {
             profile.chunkBorder.enabled = it

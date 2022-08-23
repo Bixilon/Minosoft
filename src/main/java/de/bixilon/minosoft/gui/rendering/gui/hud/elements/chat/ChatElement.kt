@@ -96,9 +96,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:open_chat".toResourceLocation(), KeyBinding(
-                mapOf(
                     KeyActions.PRESS to setOf(KeyCodes.KEY_T),
-                ),
             )
         ) { guiRenderer.gui.open(ChatElement) }
 

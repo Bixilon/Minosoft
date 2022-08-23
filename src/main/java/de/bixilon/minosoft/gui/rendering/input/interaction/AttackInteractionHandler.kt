@@ -45,9 +45,7 @@ class AttackInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerKeyCallback(ATTACK_ENTITY_KEYBINDING, KeyBinding(
-            mapOf(
                 KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
-            ),
         ), false) { tryAttack() }
     }
 

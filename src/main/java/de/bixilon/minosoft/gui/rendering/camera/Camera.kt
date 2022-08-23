@@ -52,10 +52,8 @@ class Camera(
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:camera_debug_view".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_V),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_V),
             )
         ) {
             debugView = it

@@ -50,62 +50,40 @@ class CameraInput(
     private fun registerKeyBindings() {
         renderWindow.inputHandler.registerCheckCallback(
             MOVE_SPRINT_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
-                ),
             ),
             MOVE_FORWARDS_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_W),
-                ),
             ),
             MOVE_BACKWARDS_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_S),
-                ),
             ),
             MOVE_LEFT_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_A),
-                ),
             ),
             MOVE_RIGHT_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_D),
-                ),
             ),
             FLY_UP_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_SPACE),
-                ),
             ),
             FLY_DOWN_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
-                ),
             ),
             JUMP_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_SPACE),
-                ),
             ),
             SNEAK_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
-                ),
             ),
             TOGGLE_FLY_KEYBINDING to KeyBinding(
-                mapOf(
                     KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE),
-                ),
             ),
         )
 
 
         renderWindow.inputHandler.registerKeyCallback(ZOOM_KEYBINDING, KeyBinding(
-            mapOf(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
-            ),
         )) { matrixHandler.zoom = if (it) 2.0f else 0.0f }
     }
 

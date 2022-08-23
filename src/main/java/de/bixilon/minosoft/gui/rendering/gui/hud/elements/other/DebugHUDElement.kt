@@ -314,9 +314,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
         override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
-            mapOf(
-                KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
-            ),
+            KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
         )
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugHUDElement> {

@@ -265,10 +265,8 @@ class WorldRenderer(
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:clear_chunk_cache".toResourceLocation(),
             KeyBinding(
-                mapOf(
                     KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
                     KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-                ),
             )
         ) { clearChunkCache() }
 

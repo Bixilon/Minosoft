@@ -255,9 +255,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
-            mapOf(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_TAB),
-            ),
         )
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<TabListElement> {
