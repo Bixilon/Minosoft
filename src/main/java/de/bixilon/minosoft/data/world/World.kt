@@ -405,7 +405,10 @@ class World(
         lock.acquire()
         val worker = TaskWorker()
         for (chunk in chunks.unsafe.values) {
-            worker += { chunk.recalculateLight() }
+            worker += { chunk.resetLight() }
+        }
+        for (chunk in chunks.unsafe.values) {
+            worker += { chunk.calculateLight() }
         }
         worker.work()
         lock.release()

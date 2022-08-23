@@ -166,6 +166,10 @@ class SectionLight(
     fun recalculate() {
         update = true
         resetLight()
+        calculate()
+    }
+
+    fun calculate() {
         val blocks = section.blocks
 
         blocks.acquire()

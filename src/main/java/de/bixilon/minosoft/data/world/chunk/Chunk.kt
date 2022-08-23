@@ -338,6 +338,26 @@ class Chunk(
         }
     }
 
+    fun calculateLight() {
+        val sections = sections ?: Broken("Sections is null")
+        for (section in sections) {
+            if (section == null) {
+                continue
+            }
+            section.light.calculate()
+        }
+    }
+
+    fun resetLight() {
+        val sections = sections ?: Broken("Sections is null")
+        for (section in sections) {
+            if (section == null) {
+                continue
+            }
+            section.light.resetLight()
+        }
+    }
+
     private fun updateSectionNeighbours(neighbours: Array<Chunk>) {
         for ((index, section) in sections!!.withIndex()) {
             if (section == null) {
