@@ -28,6 +28,13 @@ open class GenericColorMesh(renderWindow: RenderWindow, primitiveType: Primitive
         data.add(Float.fromBits((color ?: ChatColors.WHITE).rgba))
     }
 
+    fun addVertex(position: Vec3, color: Float) {
+        data.add(position.x)
+        data.add(position.y)
+        data.add(position.z)
+        data.add(color)
+    }
+
     data class GenericColorMeshStruct(
         val position: Vec3,
         val color: RGBColor,
