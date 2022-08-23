@@ -36,7 +36,7 @@ class Frustum(
 ) {
     private lateinit var data: FrustumData
     var revision = 0
-    private set
+        private set
 
     fun recalculate() {
         val matrix = matrixHandler.viewProjectionMatrix.transpose()
@@ -139,8 +139,9 @@ class Frustum(
     }
 
     fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
-        val min = Vec3i.of(chunkPosition, sectionHeight, minPosition)
-        val max = Vec3i.of(chunkPosition, sectionHeight, maxPosition + 1)
+        val base = Vec3i.of(chunkPosition, sectionHeight)
+        val min = base + minPosition
+        val max = base + maxPosition + 1
         return containsRegion(Vec3(min), Vec3(max))
     }
 

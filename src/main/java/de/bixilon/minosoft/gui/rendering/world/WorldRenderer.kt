@@ -769,7 +769,7 @@ class WorldRenderer(
             this.cameraPosition = cameraPosition
         }
 
-        val visible = VisibleMeshes(cameraPosition)
+        val visible = VisibleMeshes(cameraPosition, this.visible)
 
         loadedMeshesLock.acquire()
         for ((chunkPosition, meshes) in this.loadedMeshes) {
