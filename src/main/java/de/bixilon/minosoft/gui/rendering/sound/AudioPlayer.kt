@@ -184,6 +184,12 @@ class AudioPlayer(
         if (!profile.enabled) {
             return
         }
+        position?.let {
+            val distance = (this.listener.position - it).length()
+            if (distance >= sound.attenuationDistance) {
+                return
+            }
+        }
         queue += add@{
             sound.load(connection.assetsManager)
             val source = getAvailableSource()
