@@ -14,7 +14,11 @@
 package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.security.KeyFactory
 import java.security.PublicKey
 import java.security.Signature
@@ -27,6 +31,10 @@ object YggdrasilUtil {
         private set
 
     fun load() {
+        if (RunConfiguration.IGNORE_YGGDRASIL) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Yggdrasil signature checking is disabled. Servers can pretend that they have valid data from mojang!" }
+            return
+        }
         check(!this::PUBLIC_KEY.isInitialized) { "Already loaded!" }
         val spec = X509EncodedKeySpec(Minosoft.MINOSOFT_ASSETS_MANAGER["minosoft:mojang/yggdrasil_session_pubkey.der".toResourceLocation()].readAllBytes())
         val keyFactory: KeyFactory = KeyFactory.getInstance("RSA")
@@ -34,6 +42,9 @@ object YggdrasilUtil {
     }
 
     fun verify(data: ByteArray, signature: ByteArray): Boolean {
+        if (RunConfiguration.IGNORE_YGGDRASIL) {
+            return true
+        }
         val signatureInstance = Signature.getInstance("SHA1withRSA")
         signatureInstance.initVerify(PUBLIC_KEY)
         signatureInstance.update(data)
@@ -41,6 +52,9 @@ object YggdrasilUtil {
     }
 
     fun verify(data: String, signature: String): Boolean {
+        if (RunConfiguration.IGNORE_YGGDRASIL) {
+            return true
+        }
         return verify(data.toByteArray(), Base64.getDecoder().decode(signature))
     }
 }

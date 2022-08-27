@@ -79,6 +79,10 @@ object CommandLineArguments {
             addArgument("--verbose")
                 .action(Arguments.storeTrue())
                 .help("Enables verbose logging (only affects pre profiles loading stage)")
+
+            addArgument("--ignore_yggdrasil")
+                .action(Arguments.storeTrue())
+                .help("Disable all yggdrasil (mojang) signature checking")
         }
 
     fun parse(args: Array<String>) {
@@ -122,5 +126,7 @@ object CommandLineArguments {
 
         RunConfiguration.PROFILES_HOT_RELOADING = !namespace.getBoolean("disable_profile_hot_reloading")
         RunConfiguration.VERBOSE_LOGGING = namespace.getBoolean("verbose")
+
+        RunConfiguration.IGNORE_YGGDRASIL = namespace.getBoolean("ignore_yggdrasil")
     }
 }
