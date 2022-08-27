@@ -15,7 +15,7 @@ package de.bixilon.minosoft.util.account.minecraft
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import de.bixilon.minosoft.util.KUtil.fromBase64
+import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
 import java.nio.charset.StandardCharsets

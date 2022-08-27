@@ -105,7 +105,7 @@ class PlayInByteBuffer : InByteBuffer {
         return readParticleData(type)
     }
 
-    @Deprecated("Should be makde with factories")
+    @Deprecated("Should be made with factories")
     fun readParticleData(type: ParticleType): ParticleData {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {

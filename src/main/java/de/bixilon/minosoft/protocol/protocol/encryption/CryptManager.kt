@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.protocol.protocol.encryption
 
+import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil.fromBase64
 import java.nio.charset.StandardCharsets
 import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
