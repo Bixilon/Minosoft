@@ -103,9 +103,17 @@ class SectionLight(
         if (!update) {
             update = true
         }
+        val neighbours = section.neighbours ?: return
 
         if (nextLuminance == 1) {
             // we can not further increase the light
+            // set neighbour update, cullface might change lighting properties
+            if (y == 0) neighbours[Directions.O_DOWN]?.light?.update = true
+            if (y == ProtocolDefinition.SECTION_MAX_Y) neighbours[Directions.O_UP]?.light?.update = true
+            if (z == 0) neighbours[Directions.O_NORTH]?.light?.update = true
+            if (z == ProtocolDefinition.SECTION_MAX_Z) neighbours[Directions.O_SOUTH]?.light?.update = true
+            if (x == 0) neighbours[Directions.O_WEST]?.light?.update = true
+            if (x == ProtocolDefinition.SECTION_MAX_X) neighbours[Directions.O_EAST]?.light?.update = true
             return
         }
 
@@ -114,7 +122,6 @@ class SectionLight(
             // we only want to set our own light sources
             return
         }
-        val neighbours = section.neighbours ?: return
 
         val neighbourLuminance = nextLuminance - 1
 

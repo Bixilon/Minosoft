@@ -58,6 +58,11 @@ class BorderSectionLight(
 
         if (nextLuminance == 1) {
             // we can not further increase the light
+            if (top) {
+                chunk.sections?.last()?.light?.update = true
+            } else {
+                chunk.sections?.first()?.light?.update = true
+            }
             return
         }
         val neighbourLuminance = nextLuminance - 1
