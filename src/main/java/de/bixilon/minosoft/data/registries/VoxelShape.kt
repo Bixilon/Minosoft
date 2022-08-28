@@ -13,16 +13,20 @@
 
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 
 class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
 
-    val aabbCount: Int = aabbs.size
+    val aabbCount: Int get() = aabbs.size
 
 
     constructor(vararg aabbs: AABB) : this(aabbs.toMutableList())
@@ -34,6 +38,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
                     this.aabbs.add(aabbs[index.toInt()])
                 }
             }
+
             is Int -> {
                 this.aabbs.add(aabbs[data])
             }
@@ -48,6 +53,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
                     this.aabbs.addAll(voxelShapes[index!!.toInt()].aabbs)
                 }
             }
+
             is Int -> {
                 this.aabbs.addAll(voxelShapes[data].aabbs)
             }
@@ -113,6 +119,25 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
             }
         }
         return VoxelShapeRaycastResult(minDistance != Double.MAX_VALUE, minDistance, minDistanceDirection.inverted)
+    }
+
+    fun shouldDrawLine(start: Vec3d, end: Vec3d): Boolean {
+        var count = 0
+        val min = min(start, end)
+        val max = max(start, end)
+        for (aabb in aabbs) {
+            if (aabb.isOnEdge(min, max)) {
+                count++
+            }
+            if (count > 1) {
+                return false
+            }
+        }
+        return true
+    }
+
+    fun shouldDrawLine(start: Vec3, end: Vec3): Boolean {
+        return shouldDrawLine(start.toVec3d, end.toVec3d)
     }
 
     companion object {

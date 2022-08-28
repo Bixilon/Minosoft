@@ -26,6 +26,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ONE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.min
 
 
 class AABB {
@@ -39,8 +41,8 @@ class AABB {
     constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))
 
     constructor(min: Vec3d, max: Vec3d) {
-        this.min = Vec3d(minOf(min.x, max.x), minOf(min.y, max.y), minOf(min.z, max.z))
-        this.max = Vec3d(maxOf(min.x, max.x), maxOf(min.y, max.y), maxOf(min.z, max.z))
+        this.min = min(min, max)
+        this.max = max(max, min)
     }
 
     private constructor(unsafe: Boolean, min: Vec3d, max: Vec3d) {
@@ -229,6 +231,25 @@ class AABB {
             return false
         }
         return min == other.min && max == other.max
+    }
+
+    fun isOnEdge(min: Vec3d, max: Vec3d): Boolean {
+
+        fun checkSide(x: Double): Boolean {
+            return (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, max.y, min.z))
+                    || (this.min == Vec3d(x, min.y, min.z) && this.max == Vec3d(x, min.y, max.z))
+                    || (this.min == Vec3d(x, max.y, min.z) && this.max == Vec3d(x, max.y, max.z))
+                    || (this.min == Vec3d(x, min.y, max.z) && this.max == Vec3d(x, max.y, max.z))
+        }
+
+
+        return checkSide(min.x) // left quad
+                || checkSide(max.x) // right quad
+                // connections between 2 quads
+                || (this.min == min && this.max == Vec3d(max.x, min.y, min.z))
+                || (this.min == Vec3d(min.x, max.y, min.z) && this.max == Vec3d(max.x, max.y, min.z))
+                || (this.min == Vec3d(min.x, max.y, max.z) && this.max == max)
+                || (this.min == Vec3d(min.x, min.y, max.z) && this.max == Vec3d(max.x, min.y, max.z))
     }
 
     override fun toString(): String {

@@ -78,4 +78,12 @@ object Vec3dUtil {
     fun Vec3d.ceil(): Vec3i {
         return Vec3i(x.ceil, y.ceil, z.ceil)
     }
+
+    fun min(a: Vec3d, b: Vec3d): Vec3d {
+        return Vec3d(minOf(a.x, b.x), minOf(a.y, b.y), minOf(a.z, b.z))
+    }
+
+    fun max(a: Vec3d, b: Vec3d): Vec3d {
+        return Vec3d(maxOf(a.x, b.x), maxOf(a.y, b.y), maxOf(a.z, b.z))
+    }
 }

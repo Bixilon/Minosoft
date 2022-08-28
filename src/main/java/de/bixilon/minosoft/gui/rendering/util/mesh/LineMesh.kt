@@ -54,6 +54,13 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         drawLineQuad(start, end, invertedNormal1, invertedNormal2, directionWidth, floatColor)
     }
 
+    fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, shape: VoxelShape? = null) {
+        if (shape != null && !shape.shouldDrawLine(start, end)) {
+            return
+        }
+        drawLine(start, end, lineWidth, color)
+    }
+
     private fun drawLineQuad(start: Vec3, end: Vec3, normal1: Vec3, normal2: Vec3, directionWidth: Vec3, color: Float) {
         val positions = arrayOf(
             start + normal2 - directionWidth,
@@ -66,8 +73,8 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         }
     }
 
-    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
-        drawAABB(aabb + position, lineWidth, color, margin)
+    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f, shape: VoxelShape? = null) {
+        drawAABB(aabb + position, lineWidth, color, margin, shape)
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBColor) {
@@ -80,16 +87,20 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         }
     }
 
-    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f) {
+    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f, shape: VoxelShape? = null) {
         data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         val min = aabb.min - margin
         val max = aabb.max + margin
 
+        fun tryDrawLine(start: Vec3, end: Vec3) {
+            tryDrawLine(start, end, lineWidth, color, shape)
+        }
+
         fun drawSideQuad(x: Double) {
-            drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), lineWidth, color)
-            drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), lineWidth, color)
-            drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), lineWidth, color)
-            drawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z), lineWidth, color)
+            tryDrawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z))
+            tryDrawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z))
+            tryDrawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z))
+            tryDrawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z))
         }
 
         // left quad
@@ -99,16 +110,24 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         drawSideQuad(max.x)
 
         // connections between 2 quads
-        drawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z), lineWidth, color)
-        drawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z), lineWidth, color)
-        drawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z), lineWidth, color)
-        drawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z), lineWidth, color)
+        tryDrawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z))
+        tryDrawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z))
+        tryDrawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z))
+        tryDrawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z))
     }
 
     fun drawVoxelShape(shape: VoxelShape, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
-        data.ensureSize(shape.aabbCount * 12 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
+        val aabbs = shape.aabbCount
+        if (aabbs == 0) {
+            return
+        }
+        if (aabbs == 1) {
+            return drawAABB(shape.first(), position, lineWidth, color)
+        }
+        val positionedShape = shape + position
+
         for (aabb in shape) {
-            drawAABB(aabb, position, lineWidth, color, margin)
+            drawAABB(aabb + position, lineWidth, color, margin, positionedShape)
         }
     }
 }
