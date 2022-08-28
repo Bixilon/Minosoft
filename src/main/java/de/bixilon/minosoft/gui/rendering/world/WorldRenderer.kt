@@ -77,6 +77,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -110,8 +111,7 @@ class WorldRenderer(
     private val culledQueue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val culledQueueLock = SimpleLock()
 
-    // ToDo: Sometimes if you clear the chunk cache a ton of times, the workers are maxed out and nothing happens anymore
-    val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
+    val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 150 else 80
     private val meshesToLoad: MutableList<WorldQueueItem> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
     private val meshesToLoadSet: MutableSet<WorldQueueItem> = HashSet()
     private val meshesToLoadLock = SimpleLock()
