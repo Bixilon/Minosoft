@@ -44,42 +44,45 @@ class SectionLight(
         // that is kind of hacky, but far easier and kind of faster
         val light = this.light[getIndex(x, y, z)].toInt() and 0x0F
 
-        decreaseLight(x, y, z, light)
+        decreaseLight(x, y, z, light, true) // just clear the light
+        decreaseLight(x, y, z, light, false) //
     }
 
-    private fun decreaseLight(x: Int, y: Int, z: Int, light: Int) {
-        decreaseCheckLevel(x, z, light)
+    private fun decreaseLight(x: Int, y: Int, z: Int, light: Int, reset: Boolean) {
+        decreaseCheckLevel(x, z, light, reset)
 
         val neighbours = section.neighbours ?: return
         if (y - light < 0) {
-            neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y)
+            neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y, reset)
         }
         if (y + light > ProtocolDefinition.SECTION_MAX_Y) {
-            neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y))
+            neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
         }
     }
 
-    private fun decreaseCheckLevel(x: Int, z: Int, light: Int) {
-        decreaseCheckX(z, light)
+    private fun decreaseCheckLevel(x: Int, z: Int, light: Int, reset: Boolean) {
+        decreaseCheckX(z, light, reset)
         val neighbours = section.neighbours ?: return
 
         if (x - light < 0) {
-            neighbours[Directions.O_WEST]?.light?.decreaseCheckX(z, light - x)
+            neighbours[Directions.O_WEST]?.light?.decreaseCheckX(z, light - x, reset)
         }
         if (x + light > ProtocolDefinition.SECTION_MAX_X) {
-            neighbours[Directions.O_EAST]?.light?.decreaseCheckX(z, light - (ProtocolDefinition.SECTION_MAX_X - x))
+            neighbours[Directions.O_EAST]?.light?.decreaseCheckX(z, light - (ProtocolDefinition.SECTION_MAX_X - x), reset)
         }
     }
 
-    private fun decreaseCheckX(z: Int, light: Int) {
+    private fun decreaseCheckX(z: Int, light: Int, reset: Boolean) {
         val neighbours = section.neighbours ?: return
-        recalculate()
+        if (reset) resetLight() else calculate()
 
         if (z - light < 0) {
-            neighbours[Directions.O_NORTH]?.light?.recalculate()
+            val neighbour = neighbours[Directions.O_NORTH]?.light
+            if (reset) neighbour?.resetLight() else neighbour?.calculate()
         }
         if (z + light > ProtocolDefinition.SECTION_MAX_Z) {
-            neighbours[Directions.O_SOUTH]?.light?.recalculate()
+            val neighbour = neighbours[Directions.O_SOUTH]?.light
+            if (reset) neighbour?.resetLight() else neighbour?.calculate()
         }
     }
 
