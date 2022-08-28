@@ -102,6 +102,7 @@ class WorldRenderer(
     private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
+    @Volatile
     private var workingOnQueue = false
     private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
     private val queueSet: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
@@ -265,8 +266,8 @@ class WorldRenderer(
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:clear_chunk_cache".toResourceLocation(),
             KeyBinding(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_A),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
             )
         ) { clearChunkCache() }
 
@@ -448,19 +449,20 @@ class WorldRenderer(
         }
         workingOnQueue = true
 
+
         val items: MutableList<WorldQueueItem> = mutableListOf()
         queueLock.lock()
         for (i in 0 until maxPreparingTasks - size) {
             if (queue.isEmpty()) {
                 break
             }
-            val item = queue.removeAt(0)
+            val item = queue.removeFirst()
             queueSet.remove(item)
             items += item
         }
         queueLock.unlock()
         for (item in items) {
-            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW, interuptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW, interruptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             task.runnable.runnable = Runnable {
                 prepareItem(item, task, task.runnable)
             }
@@ -490,7 +492,7 @@ class WorldRenderer(
                 return queueItemUnload(item)
             }
             item.mesh = mesh
-            runnable.interuptable = false
+            runnable.interruptable = false
             meshesToLoadLock.lock()
             if (meshesToLoadSet.remove(item)) {
                 meshesToLoad.remove(item) // Remove duplicates
@@ -509,6 +511,7 @@ class WorldRenderer(
                 throw exception
             }
         } finally {
+            task.runnable.interruptable = false
             preparingTasksLock.lock()
             preparingTasks -= task
             preparingTasksLock.unlock()
