@@ -44,7 +44,6 @@ class SectionLight(
         // that is kind of hacky, but far easier and kind of faster
         val light = this.light[getIndex(x, y, z)].toInt() and 0x0F
 
-
         decreaseLight(x, y, z, light)
     }
 
@@ -73,8 +72,8 @@ class SectionLight(
     }
 
     private fun decreaseCheckX(z: Int, light: Int) {
-
         val neighbours = section.neighbours ?: return
+        recalculate()
 
         if (z - light < 0) {
             neighbours[Directions.O_NORTH]?.light?.recalculate()
