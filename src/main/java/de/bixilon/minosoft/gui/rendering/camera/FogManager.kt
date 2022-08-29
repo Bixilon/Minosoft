@@ -126,15 +126,15 @@ class FogManager(
 
 
     private fun updateShaders() {
-        val start = interpolatedFogStart
-        val end = interpolatedFogEnd
-        val color = interpolatedFogColor
-
         val revision = interpolatedRevision
 
         if (revision == this.shaderRevision) {
             return
         }
+
+        val start = interpolatedFogStart * interpolatedFogStart
+        val end = interpolatedFogEnd * interpolatedFogEnd
+        val color = interpolatedFogColor
 
         for (shader in renderWindow.renderSystem.shaders) {
             if (FOG_COLOR !in shader.uniforms) {

@@ -15,20 +15,20 @@ in vec3 finFragmentPosition;
 
 
 uniform vec3 uCameraPosition;
-uniform float uFogStart = 60.0f;
-uniform float uFogEnd = 75.0f;
+uniform float uFogStart = 60.0f * 60.0f;
+uniform float uFogEnd = 75.0f * 75.0f;
 uniform vec4 uFogColor;
 uniform bool uUseFogColor = false;
 
-float calulate_fog_alpha(float distance) {
-    if (distance < uFogStart) {
+float calulate_fog_alpha(float distance2) {
+    if (distance2 < uFogStart) {
         return 1.0f;
     }
-    if (distance > uFogEnd) {
+    if (distance2 > uFogEnd) {
         return 0.0f;
     }
 
-    return pow(1.0f - (distance - uFogStart) / (uFogEnd - uFogStart), 2);
+    return pow(1.0f - (distance2 - uFogStart) / (uFogEnd - uFogStart), 2);
 }
 
 float calculate_fog() {
@@ -36,15 +36,17 @@ float calculate_fog() {
         return 1.0f;
     };
     #ifdef FOG_SPHERE
-    float distance = length(finFragmentPosition.xyz - uCameraPosition.xyz);
+    vec3 distance_vec3 = finFragmentPosition.xyz - uCameraPosition.xyz;
+    float distance = dot(distance_vec3, distance_vec3);
     #else
-    float distance = length(finFragmentPosition.xz - uCameraPosition.xz);
+    vec2 distance_vec2 = finFragmentPosition.xz - uCameraPosition.xz;
+    float distance = dot(distance_vec2, distance_vec2);
     #endif
     return calulate_fog_alpha(distance);
 }
 
 void set_fog() {
-    float alpha =  calculate_fog();
+    float alpha = calculate_fog();
     if (uUseFogColor) {
         foutColor.rgb = mix(uFogColor.rgb, foutColor.rgb, foutColor.a * alpha);
         foutColor.a = 1.0f;
