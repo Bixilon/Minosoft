@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.entities.data.types
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.entities.data.types.registry.MotiveEntityDataType
+import de.bixilon.minosoft.data.entities.data.types.registry.MotifEntityDataType
 import de.bixilon.minosoft.data.entities.data.types.registry.VariantsEntityDataType
 
-enum class EntityDataDataTypes(val type: EntityDataType<*>) {
+enum class EntityDataTypes(val type: EntityDataType<*>) {
     BYTE(ByteEntityDataType),
     SHORT(ShortEntityDataType),
     INTEGER(IntEntityDataType),
@@ -44,15 +44,15 @@ enum class EntityDataDataTypes(val type: EntityDataType<*>) {
     FIREWORK_DATA(OptionalIntEntityDataType),
     GLOBAL_POSITION(GlobalPositionEntityDataType),
     OPTIONAL_GLOBAL_POSITION(OptionalGlobalPositionEntityDataType),
-    MOTIVE(MotiveEntityDataType),
+    MOTIF(MotifEntityDataType),
 
 
     CAT_VARIANT(VariantsEntityDataType.CatVariantType),
     FROG_VARIANT(VariantsEntityDataType.FrogVariantType),
     ;
 
-    companion object : ValuesEnum<EntityDataDataTypes> {
+    companion object : ValuesEnum<EntityDataTypes> {
         override val VALUES = values()
-        override val NAME_MAP: Map<String, EntityDataDataTypes> = EnumUtil.getEnumValues(VALUES)
+        override val NAME_MAP: Map<String, EntityDataTypes> = EnumUtil.getEnumValues(VALUES)
     }
 }

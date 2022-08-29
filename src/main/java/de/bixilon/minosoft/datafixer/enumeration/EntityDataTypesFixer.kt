@@ -11,17 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.datafixer.enumeration
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 
-object DataFixerUtil {
+object EntityDataTypesFixer : EnumFixer<EntityDataTypes> {
 
-    fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {
-        val out: MutableMap<ResourceLocation, ResourceLocation> = mutableMapOf()
-        for ((key, value) in this) {
-            out[ResourceLocation(key)] = ResourceLocation(value)
+    override fun _fix(name: String): EntityDataTypes {
+        return when (name) {
+            "motive" -> EntityDataTypes.MOTIF
+            else -> EntityDataTypes[name]
         }
-        return out
     }
 }

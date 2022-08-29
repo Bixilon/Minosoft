@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.registries.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
+import de.bixilon.minosoft.datafixer.rsl.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log

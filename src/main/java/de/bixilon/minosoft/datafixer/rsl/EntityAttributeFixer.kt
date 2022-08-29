@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.datafixer.rsl
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 
-object EntityAttributeFixer {
+object EntityAttributeFixer : ResourceLocationFixer {
     private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
         "generic.maxHealth" to "generic.max_health",
         "zombie.spawnReinforcements" to "zombie.spawn_reinforcements",
@@ -38,7 +38,7 @@ object EntityAttributeFixer {
     ).asResourceLocationMap()
 
 
-    fun ResourceLocation.fix(): ResourceLocation {
-        return RENAMES.getOrDefault(this, this)
+    override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {
+        return RENAMES.getOrDefault(resourceLocation, resourceLocation)
     }
 }

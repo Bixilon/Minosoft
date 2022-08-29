@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
-import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
+import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.*
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
@@ -49,7 +49,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.*
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.datafixer.RegistryFixer.fix
+import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
+import de.bixilon.minosoft.datafixer.rsl.RegistryFixer.fix
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.recipes.RecipeRegistry
@@ -92,7 +93,7 @@ class Registries {
     val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
 
-    val entityDataTypesRegistry: EnumRegistry<EntityDataDataTypes> = EnumRegistry(values = EntityDataDataTypes)
+    val entityDataTypesRegistry: EnumRegistry<EntityDataTypes> = EnumRegistry(values = EntityDataTypes, fixer = EntityDataTypesFixer)
 
     val titleActionsRegistry: EnumRegistry<TitleS2CF.TitleActions> = EnumRegistry(values = TitleS2CF.TitleActions)
 
@@ -143,7 +144,7 @@ class Registries {
         itemRegistry.flattened = isFlattened
 
         var error: Throwable? = null
-        val worker = TaskWorker(errorHandler = { _, it -> if (error != null) error = it }, criticalErrorHandler = { _, it -> if (error != null) error = it })
+        val worker = TaskWorker(errorHandler = { _, it -> if (error == null) error = it }, criticalErrorHandler = { _, it -> if (error == null) error = it })
         val stopwatch = Stopwatch()
         // enums
         worker += Task(this::shapes) { loadShapes(pixlyzerData["shapes"]?.toJsonObject()) }
@@ -208,6 +209,7 @@ class Registries {
             }
             inner.waitForChange()
         }
+        error?.let { throw it }
 
         // post init
         inner.inc()

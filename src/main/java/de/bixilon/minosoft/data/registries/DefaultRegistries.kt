@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
-import de.bixilon.minosoft.data.entities.data.types.EntityDataDataTypes
+import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
@@ -45,7 +45,7 @@ object DefaultRegistries {
     val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
     val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
 
-    val ENTITY_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataDataTypes)
+    val ENTITY_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataTypes)
 
     val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CF.TitleActions)
 

@@ -45,7 +45,7 @@ class SectionLight(
         val light = this.light[getIndex(x, y, z)].toInt() and 0x0F
 
         decreaseLight(x, y, z, light, true) // just clear the light
-        decreaseLight(x, y, z, light, false) //
+        decreaseLight(x, y, z, light, false) // increase the light in all sections
     }
 
     private fun decreaseLight(x: Int, y: Int, z: Int, light: Int, reset: Boolean) {

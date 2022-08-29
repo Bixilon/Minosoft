@@ -11,17 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.datafixer.enumeration
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+interface EnumFixer<T : Enum<*>> {
 
-object DataFixerUtil {
-
-    fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {
-        val out: MutableMap<ResourceLocation, ResourceLocation> = mutableMapOf()
-        for ((key, value) in this) {
-            out[ResourceLocation(key)] = ResourceLocation(value)
-        }
-        return out
+    fun fix(name: String): T {
+        return _fix(name.lowercase())
     }
+
+    fun _fix(name: String): T
 }

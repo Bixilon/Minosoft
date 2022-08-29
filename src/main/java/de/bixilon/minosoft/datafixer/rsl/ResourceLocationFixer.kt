@@ -11,17 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.datafixer.rsl
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.datafixer.Fixer
 
-object DataFixerUtil {
+interface ResourceLocationFixer : Fixer {
 
-    fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {
-        val out: MutableMap<ResourceLocation, ResourceLocation> = mutableMapOf()
-        for ((key, value) in this) {
-            out[ResourceLocation(key)] = ResourceLocation(value)
-        }
-        return out
+    fun _fix(resourceLocation: ResourceLocation): ResourceLocation
+
+    fun ResourceLocation.fix(): ResourceLocation {
+        return _fix(this)
     }
 }

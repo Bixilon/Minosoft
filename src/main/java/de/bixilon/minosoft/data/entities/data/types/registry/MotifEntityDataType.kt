@@ -11,18 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer
+package de.bixilon.minosoft.data.entities.data.types.registry
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
+import de.bixilon.minosoft.data.registries.Motif
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-object RegistryFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "dimension" to "dimension_type",
-        "motive" to "motif",
-    ).asResourceLocationMap()
+object MotifEntityDataType : RegistryEntityDataType<Motif> {
 
-    fun ResourceLocation.fix(): ResourceLocation {
-        return RENAMES.getOrDefault(this, this)
+    override fun read(buffer: PlayInByteBuffer): Motif? {
+        return read(buffer, buffer.connection.registries.motifRegistry)
     }
 }
