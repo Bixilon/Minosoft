@@ -186,7 +186,7 @@ class ChunkBorderRenderer(
     }
 
     override fun setupOpaque() {
-        renderWindow.renderSystem.reset(faceCulling = false)
+        renderWindow.renderSystem.reset()
         renderWindow.shaderManager.genericColorShader.use()
     }
 

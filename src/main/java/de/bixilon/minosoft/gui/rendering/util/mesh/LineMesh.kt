@@ -49,8 +49,8 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         val floatColor = Float.fromBits(color.rgba)
 
         drawLineQuad(start, end, normal1, normal2, directionWidth, floatColor)
-        drawLineQuad(start, end, normal1, invertedNormal2, directionWidth, floatColor)
-        drawLineQuad(start, end, invertedNormal1, normal2, directionWidth, floatColor)
+        drawLineQuad(start, end, invertedNormal2, normal1, directionWidth, floatColor)
+        drawLineQuad(start, end, normal2, invertedNormal1, directionWidth, floatColor)
         drawLineQuad(start, end, invertedNormal1, invertedNormal2, directionWidth, floatColor)
     }
 
@@ -68,7 +68,7 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
             end + normal1 + directionWidth,
             end + normal2 + directionWidth,
         )
-        for ((_, positionIndex) in order) {
+        for ((positionIndex, _) in order) {
             addVertex(positions[positionIndex], color)
         }
     }

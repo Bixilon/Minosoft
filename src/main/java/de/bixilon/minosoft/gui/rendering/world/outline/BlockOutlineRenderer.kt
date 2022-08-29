@@ -72,7 +72,7 @@ class BlockOutlineRenderer(
     }
 
     override fun setupOther() {
-        renderWindow.renderSystem.reset(faceCulling = false)
+        renderWindow.renderSystem.reset()
         if (profile.showThroughWalls) {
             renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
