@@ -23,7 +23,6 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
@@ -81,9 +80,8 @@ class FluidCullSectionPreparer(
                     blockState = blocks.unsafeGet(x, y, z) ?: continue
                     val block = blockState.block
                     val fluid = when {
-                        block is FluidBlock -> (blockState.block as FluidBlock).fluid
-                        blockState.properties[BlockProperties.WATERLOGGED] == true && water != null -> water
                         block is FluidFillable -> block.fluid
+                        blockState.properties[BlockProperties.WATERLOGGED] == true && water != null -> water
                         else -> continue
                     }
                     val stillTexture = fluid.stillTexture ?: continue
@@ -233,10 +231,10 @@ class FluidCullSectionPreparer(
                             Vec3(position.x + faceXEnd, position.y + v2, position.z + faceZEnd),
                         )
                         val texturePositions = arrayOf(
-                            Vec2(0.0f, 0.5f),
+                            TEXTURE_1,
                             Vec2(0.0f, (1 - v1) / 2),
                             Vec2(0.5f, (1 - v2) / 2),
-                            Vec2(0.5f, 0.5f),
+                            TEXTURE_2,
                         )
 
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
@@ -332,6 +330,10 @@ class FluidCullSectionPreparer(
     private companion object {
         private const val TEXTURE_CENTER = 1.0f / 2.0f
         private const val FLUID_TINT_INDEX = 0
+
+        private val TEXTURE_1 = Vec2(0.0f, 0.5f)
+        private val TEXTURE_2 = Vec2(0.5f, 0.5f)
+
         private val FLUID_FACE_PROPERTY = FaceProperties(
             Vec2.EMPTY,
             Vec2(1.0f, 1.0f),
