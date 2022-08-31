@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.chunk.light.BorderSectionLight
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
@@ -336,6 +337,7 @@ class Chunk(
             }
             section.light.recalculate()
         }
+        recalculateSkylight()
     }
 
     fun calculateLight() {
@@ -346,6 +348,7 @@ class Chunk(
             }
             section.light.calculate()
         }
+        recalculateSkylight()
     }
 
     fun resetLight() {
@@ -418,13 +421,14 @@ class Chunk(
 
     @Synchronized
     private fun updateHeightmap() {
-        val maxY = ((highestSection + 1) * ProtocolDefinition.SECTION_MAX_Y) - 1
+        val maxY = highestSection * ProtocolDefinition.SECTION_HEIGHT_Y
 
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             z@ for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 checkHeightmapY(x, maxY, z)
             }
         }
+        recalculateSkylight()
     }
 
     private fun checkHeightmapY(x: Int, startY: Int, z: Int) {
@@ -443,7 +447,8 @@ class Chunk(
                 y -= ProtocolDefinition.SECTION_HEIGHT_Y
                 continue
             }
-            if (section.blocks[x, y.inSectionHeight, z]?.isSolid == true) {
+            val block = section.blocks[x, y.inSectionHeight, z]
+            if (block == null || !block.isSolid) {
                 y--
                 continue
             }
@@ -479,5 +484,34 @@ class Chunk(
         // we used to be the highest block, find out the block below us
         checkHeightmapY(x, y - 1, z)
     }
+
+    private fun recalculateSkylight() {
+        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+                calculateSkylight(x, z)
+            }
+        }
+    }
+
+    private fun calculateSkylight(x: Int, z: Int) {
+        val maxHeight = heightmap[(z shl 4) or x]
+        for (sectionHeight in highestSection - 1 downTo maxHeight.sectionHeight + 1) {
+            val section = sections?.get(sectionHeight - lowestSection) ?: continue
+            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+                val index = getIndex(x, y, z)
+                section.light.light[index] = (section.light.light[index].toInt() and 0x0F or 0xF0).toByte()
+            }
+            section.light.update = true
+        }
+        val maxSection = sections?.get(maxHeight.sectionHeight - lowestSection)
+        if (maxSection != null) {
+            for (y in ProtocolDefinition.SECTION_MAX_Y downTo maxHeight.inSectionHeight) {
+                val index = getIndex(x, y, z)
+                maxSection.light.light[index] = (maxSection.light.light[index].toInt() and 0x0F or 0xF0).toByte()
+            }
+            maxSection.light.update = true
+        }
+    }
 }
+
 

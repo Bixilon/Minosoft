@@ -41,6 +41,7 @@ data class StatusEffect(
     }
 
     companion object : ResourceLocationCodec<StatusEffect> {
+
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): StatusEffect {
             val attributes: MutableMap<ResourceLocation, EntityAttributeModifier> = mutableMapOf()
             val uuidAttributes: MutableMap<UUID, EntityAttributeModifier> = mutableMapOf()

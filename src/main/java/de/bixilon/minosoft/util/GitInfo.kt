@@ -127,6 +127,5 @@ ${intend}Build version: $GIT_BUILD_VERSION
 ${intend}Commit: $GIT_COMMIT_ID_DESCRIBE_SHORT
 ${intend}Dirty: $GIT_DIRTY
 """.removeSuffix("\n")
-
     }
 }

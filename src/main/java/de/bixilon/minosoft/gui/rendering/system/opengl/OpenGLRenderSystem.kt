@@ -152,7 +152,7 @@ class OpenGLRenderSystem(
 
     override fun set(capability: RenderingCapabilities, status: Boolean) {
         val enabled = capabilities.contains(capability)
-        if ((enabled && status) || (!status && !enabled)) {
+        if (enabled == status) {
             return
         }
 

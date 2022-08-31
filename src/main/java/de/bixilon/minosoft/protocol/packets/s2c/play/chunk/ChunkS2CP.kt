@@ -106,6 +106,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             when {
                 buffer.versionId < V_1_9_4 -> {
                 }
+
                 buffer.versionId < V_21W37A -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
                     val positionOffset = Vec3i.of(chunkPosition, dimension.minSection, Vec3i.EMPTY)
@@ -113,16 +114,18 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                         val resourceLocation = (nbt["id"]?.toResourceLocation() ?: continue).fix()
-                        val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
+                        val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation]
+                        if (type == null) {
                             Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
-                            null
-                        } ?: continue
+                            continue
+                        }
                         val entity = type.build(buffer.connection)
                         entity.updateNBT(nbt)
                         blockEntities[position] = entity
                     }
                     this.chunkData.blockEntities = blockEntities
                 }
+
                 else -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
 
