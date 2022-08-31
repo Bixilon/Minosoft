@@ -29,6 +29,8 @@ import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -82,13 +84,21 @@ class SolidCullSectionPreparer(
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    blockState = blocks.unsafeGet(x, y, z) ?: continue
+                    val baseIndex = (z shl 4) or x
+                    val index = (y shl 8) or baseIndex
+                    blockState = blocks.unsafeGet(index) ?: continue
                     if (blockState.block is FluidBlock) {
                         continue
                     }
-                    light[SELF_LIGHT_INDEX] = sectionLight[y shl 8 or (z shl 4) or x]
+                    light[SELF_LIGHT_INDEX] = sectionLight[index]
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    blockEntity = section.blockEntities.unsafeGet(x, y, z)
+
+                    val maxHeight = chunk.heightmap[baseIndex]
+                    if (position.y >= maxHeight) {
+                        light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
+                    }
+
+                    blockEntity = section.blockEntities.unsafeGet(index)
                     val blockEntityModel = blockEntity?.getRenderer(renderWindow, blockState, position, light[SELF_LIGHT_INDEX].toInt())
                     if (blockEntityModel != null && (blockEntityModel !is OnlyMeshedBlockEntityRenderer)) {
                         blockEntities += blockEntityModel
@@ -110,11 +120,11 @@ class SolidCullSectionPreparer(
                                 chunk.bottomLight
                             } else {
                                 neighbours[O_DOWN]?.light
-                            }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or (z shl 4) or x) ?: 0x00
+                            }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or baseIndex) ?: 0x00
                         }
                     } else {
-                        neighbourBlocks[O_DOWN] = blocks.unsafeGet(x, y - 1, z)
-                        light[O_DOWN] = sectionLight[(y - 1) shl 8 or (z shl 4) or x]
+                        neighbourBlocks[O_DOWN] = blocks.unsafeGet((y - 1) shl 8 or baseIndex)
+                        light[O_DOWN] = sectionLight[(y - 1) shl 8 or baseIndex]
                     }
                     if (y == ProtocolDefinition.SECTION_MAX_Y) {
                         neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.unsafeGet(x, 0, z)
@@ -124,38 +134,23 @@ class SolidCullSectionPreparer(
                             neighbours[O_UP]?.light
                         }?.get((z shl 4) or x) ?: 0x00
                     } else {
-                        neighbourBlocks[O_UP] = blocks.unsafeGet(x, y + 1, z)
-                        light[O_UP] = sectionLight[(y + 1) shl 8 or (z shl 4) or x]
+                        neighbourBlocks[O_UP] = blocks.unsafeGet((y + 1) shl 8 or baseIndex)
+                        light[O_UP] = sectionLight[(y + 1) shl 8 or baseIndex]
                     }
 
-                    if (z == 0) {
-                        neighbourBlocks[O_NORTH] = neighbours[O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
-                        light[O_NORTH] = neighbours[O_NORTH]?.light?.get(y shl 8 or (ProtocolDefinition.SECTION_MAX_Z shl 4) or x) ?: 0x00
-                    } else {
-                        neighbourBlocks[O_NORTH] = blocks.unsafeGet(x, y, z - 1)
-                        light[O_NORTH] = sectionLight[y shl 8 or ((z - 1) shl 4) or x]
-                    }
-                    if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                        neighbourBlocks[O_SOUTH] = neighbours[O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
-                        light[O_SOUTH] = neighbours[O_SOUTH]?.light?.get(y shl 8 or x) ?: 0x00
-                    } else {
-                        neighbourBlocks[O_SOUTH] = blocks.unsafeGet(x, y, z + 1)
-                        light[O_SOUTH] = sectionLight[y shl 8 or ((z + 1) shl 4) or x]
+                    checkNorth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
+                    checkSouth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
+                    checkWest(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
+                    checkEast(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
+
+                    if (position.y > maxHeight) {
+                        light[O_DOWN] = (light[O_DOWN].toInt() or 0xF0).toByte()
+                    } else if (position.y - 1 > maxHeight) {
+                        light[O_DOWN] = (light[O_DOWN].toInt() or 0xF0).toByte()
                     }
 
-                    if (x == 0) {
-                        neighbourBlocks[O_WEST] = neighbours[O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
-                        light[O_WEST] = neighbours[O_WEST]?.light?.get(y shl 8 or (z shl 4) or ProtocolDefinition.SECTION_MAX_X) ?: 0x00
-                    } else {
-                        neighbourBlocks[O_WEST] = blocks.unsafeGet(x - 1, y, z)
-                        light[O_WEST] = sectionLight[y shl 8 or (z shl 4) or (x - 1)]
-                    }
-                    if (x == ProtocolDefinition.SECTION_MAX_X) {
-                        neighbourBlocks[O_EAST] = neighbours[O_EAST]?.blocks?.unsafeGet(0, y, z)
-                        light[O_EAST] = neighbours[O_EAST]?.light?.get(y shl 8 or (z shl 4)) ?: 0x00
-                    } else {
-                        neighbourBlocks[O_EAST] = blocks.unsafeGet(x + 1, y, z)
-                        light[O_EAST] = sectionLight[y shl 8 or (z shl 4) or (x + 1)]
+                    if (position.y + 1 > maxHeight) {
+                        light[O_UP] = (light[O_UP].toInt() or 0xF0).toByte()
                     }
 
                     if (randomBlockModels) {
@@ -177,6 +172,48 @@ class SolidCullSectionPreparer(
             }
         }
         mesh.blockEntities = blockEntities
+    }
+
+    private inline fun checkNorth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+        if (z == 0) {
+            setNeighbour(neighbourBlocks, x, y, ProtocolDefinition.SECTION_MAX_Z, light, position, neighbours[O_NORTH]?.blocks, sectionLight, neighbourChunks[3], O_NORTH)
+        } else {
+            setNeighbour(neighbourBlocks, x, y, z - 1, light, position, blocks, sectionLight, chunk, O_NORTH)
+        }
+    }
+
+    private inline fun checkSouth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+        if (z == ProtocolDefinition.SECTION_MAX_Z) {
+            setNeighbour(neighbourBlocks, x, y, 0, light, position, neighbours[O_SOUTH]?.blocks, sectionLight, neighbourChunks[4], O_SOUTH)
+        } else {
+            setNeighbour(neighbourBlocks, x, y, z + 1, light, position, blocks, sectionLight, chunk, O_SOUTH)
+        }
+    }
+
+    private inline fun checkWest(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+        if (x == 0) {
+            setNeighbour(neighbourBlocks, ProtocolDefinition.SECTION_MAX_X, y, z, light, position, neighbours[O_WEST]?.blocks, sectionLight, neighbourChunks[1], O_WEST)
+        } else {
+            setNeighbour(neighbourBlocks, x - 1, y, z, light, position, blocks, sectionLight, chunk, O_WEST)
+        }
+    }
+
+    private inline fun checkEast(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+        if (x == ProtocolDefinition.SECTION_MAX_X) {
+            setNeighbour(neighbourBlocks, 0, y, z, light, position, neighbours[O_EAST]?.blocks, sectionLight, neighbourChunks[6], O_EAST)
+        } else {
+            setNeighbour(neighbourBlocks, x + 1, y, z, light, position, blocks, sectionLight, chunk, O_EAST)
+        }
+    }
+
+    private inline fun setNeighbour(neighbourBlocks: Array<BlockState?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, blocks: BlockSectionDataProvider?, sectionLight: SectionLight, chunk: Chunk, ordinal: Int) {
+        val nextBaseIndex = (z shl 4) or x
+        val neighbourIndex = y shl 8 or nextBaseIndex
+        neighbourBlocks[ordinal] = blocks?.unsafeGet(neighbourIndex)
+        light[ordinal] = sectionLight[neighbourIndex]
+        if (position.y > chunk.heightmap[nextBaseIndex]) {
+            light[ordinal] = (light[ordinal].toInt() or 0xF0).toByte()
+        }
     }
 
     override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {

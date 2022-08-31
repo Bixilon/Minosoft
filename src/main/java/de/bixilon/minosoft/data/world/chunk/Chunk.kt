@@ -24,16 +24,12 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
-import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.chunk.light.BorderSectionLight
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
@@ -60,7 +56,7 @@ class Chunk(
     var blocksInitialized = false // All block data was received
     var biomesInitialized = false // All biome data is initialized (aka. cache built, or similar)
 
-    private val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
     var neighbours: Array<Chunk>? = null
         set(value) {
@@ -276,28 +272,26 @@ class Chunk(
     }
 
     fun getLight(position: Vec3i): Int {
-        val sectionHeight = position.sectionHeight
-        val index = position.inChunkSectionPosition.index
-        if (sectionHeight == lowestSection - 1) {
-            return bottomLight[index].toInt()
-        }
-        if (sectionHeight == highestSection + 1) {
-            return topLight[index].toInt()
-        }
-        return this[position.sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
+        return getLight(position.x, position.y, position.z)
     }
 
     fun getLight(x: Int, y: Int, z: Int): Int {
         val sectionHeight = y.sectionHeight
         val inSectionHeight = y.inSectionHeight
-        val index = inSectionHeight shl 8 or (z shl 4) or x
+        val heightmapIndex = (z shl 4) or x
+        val index = inSectionHeight shl 8 or heightmapIndex
         if (sectionHeight == lowestSection - 1) {
             return bottomLight[index].toInt()
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight[index].toInt()
+            return topLight[index].toInt() or 0xF0 // top has always sky=15
         }
-        return this[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
+        var light = this[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
+        if (y >= heightmap[heightmapIndex]) {
+            // set sky=15
+            light = light or 0xF0
+        }
+        return light
     }
 
     fun buildBiomeCache() {
@@ -486,6 +480,10 @@ class Chunk(
     }
 
     private fun recalculateSkylight() {
+        if (world.dimension?.hasSkyLight != true) {
+            // no need to calculate it
+            return
+        }
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 calculateSkylight(x, z)
@@ -494,19 +492,18 @@ class Chunk(
     }
 
     private fun calculateSkylight(x: Int, z: Int) {
-        val maxHeight = heightmap[(z shl 4) or x]
+        val heightmapIndex = (z shl 4) or x
+        val maxHeight = heightmap[heightmapIndex]
+
+        // ToDo: only update changed ones
         for (sectionHeight in highestSection - 1 downTo maxHeight.sectionHeight + 1) {
             val section = sections?.get(sectionHeight - lowestSection) ?: continue
-            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-                val index = getIndex(x, y, z)
-                section.light.light[index] = (section.light.light[index].toInt() and 0x0F or 0xF0).toByte()
-            }
             section.light.update = true
         }
         val maxSection = sections?.get(maxHeight.sectionHeight - lowestSection)
         if (maxSection != null) {
             for (y in ProtocolDefinition.SECTION_MAX_Y downTo maxHeight.inSectionHeight) {
-                val index = getIndex(x, y, z)
+                val index = (y shl 8) or heightmapIndex
                 maxSection.light.light[index] = (maxSection.light.light[index].toInt() and 0x0F or 0xF0).toByte()
             }
             maxSection.light.update = true
