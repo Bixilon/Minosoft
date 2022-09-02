@@ -135,6 +135,7 @@ class FogManager(
         val start = interpolatedFogStart * interpolatedFogStart
         val end = interpolatedFogEnd * interpolatedFogEnd
         val color = interpolatedFogColor
+        val distance = end - start
 
         for (shader in renderWindow.renderSystem.shaders) {
             if (FOG_COLOR !in shader.uniforms) {
@@ -145,6 +146,7 @@ class FogManager(
 
             shader["uFogStart"] = start
             shader["uFogEnd"] = end
+            shader["uFogDistance"] = distance
             if (color == null) {
                 shader[USE_FOG_COLOR] = false
             } else {

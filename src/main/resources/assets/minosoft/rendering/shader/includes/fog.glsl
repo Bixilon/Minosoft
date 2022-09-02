@@ -17,6 +17,7 @@ in vec3 finFragmentPosition;
 uniform vec3 uCameraPosition;
 uniform float uFogStart = 60.0f * 60.0f;
 uniform float uFogEnd = 75.0f * 75.0f;
+uniform float uFogDistance = 15.0f * 15.0f;
 uniform vec4 uFogColor;
 uniform bool uUseFogColor = false;
 
@@ -28,7 +29,7 @@ float calulate_fog_alpha(float distance2) {
         return 0.0f;
     }
 
-    return pow(1.0f - (distance2 - uFogStart) / (uFogEnd - uFogStart), 2);
+    return pow(1.0f - (distance2 - uFogStart) / uFogDistance, 2);
 }
 
 float calculate_fog() {
