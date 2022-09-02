@@ -23,6 +23,8 @@ import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -33,6 +35,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(
     private val matrixHandler: MatrixHandler,
+    private val world: World,
 ) {
     private lateinit var data: FrustumData
     var revision = 0
@@ -138,11 +141,19 @@ class Frustum(
         return false
     }
 
-    fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
+    fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
         val base = Vec3i.of(chunkPosition, sectionHeight)
         val min = base + minPosition
         val max = base + maxPosition + 1
         return containsRegion(Vec3(min), Vec3(max))
+    }
+
+    fun containsChunk(chunkPosition: Vec2i): Boolean {
+        val dimension = world.dimension
+        val minY = dimension?.minY ?: 0
+        val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
+        val base = Vec2i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z)
+        return containsRegion(Vec3(base.x, minY, base.y), Vec3(base.x + ProtocolDefinition.SECTION_WIDTH_X, maxY, base.y + ProtocolDefinition.SECTION_WIDTH_Z))
     }
 
     fun containsRegion(min: Vec3i, max: Vec3i): Boolean {

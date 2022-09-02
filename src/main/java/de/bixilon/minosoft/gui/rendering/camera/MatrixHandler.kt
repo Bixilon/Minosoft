@@ -39,7 +39,7 @@ class MatrixHandler(
 ) {
     private val connection = renderWindow.connection
     private val profile = renderWindow.connection.profiles.rendering.camera
-    val frustum = Frustum(this)
+    val frustum = Frustum(this, connection.world)
     var entity: Entity = renderWindow.connection.player
         set(value) {
             field = value

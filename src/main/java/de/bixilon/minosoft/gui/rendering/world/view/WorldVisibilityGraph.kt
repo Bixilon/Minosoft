@@ -151,7 +151,7 @@ class WorldVisibilityGraph(
             }
         }
 
-        if (!frustum.containsChunk(chunkPosition, sectionHeight, minPosition, maxPosition)) {
+        if (!frustum.containsChunkSection(chunkPosition, sectionHeight, minPosition, maxPosition)) {
             return false
         }
         return true
@@ -192,7 +192,7 @@ class WorldVisibilityGraph(
         val x = chunkPosition.x - chunkMin.x
 
         if (x >= frustumCache.size || x < 0) {
-            return frustum.containsChunk(chunkPosition, sectionHeight)
+            return frustum.containsChunkSection(chunkPosition, sectionHeight)
         }
         var array = frustumCache[x]
         if (array == null) {
@@ -201,14 +201,17 @@ class WorldVisibilityGraph(
         }
         val y = chunkPosition.y - chunkMin.y
         if (y >= array.size || y < 0) {
-            return frustum.containsChunk(chunkPosition, sectionHeight)
+            return frustum.containsChunkSection(chunkPosition, sectionHeight)
         }
         var visibility = array[y]
         if (visibility == 0.toByte()) {
-            visibility = if (frustum.containsChunk(chunkPosition, sectionHeight)) 1 else 0
+            visibility = if (frustum.containsChunk(chunkPosition)) 1 else 2
             array[y] = visibility
         }
-        return visibility == 1.toByte()
+        if (visibility == 2.toByte()) {
+            return false
+        }
+        return frustum.containsChunkSection(chunkPosition, sectionHeight)
     }
 
     private fun checkSection(graph: Array<Array<BooleanArray?>?>, chunkPosition: Vec2i, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, directionX: Int, directionY: Int, directionZ: Int, ignoreVisibility: Boolean) {
@@ -316,8 +319,8 @@ class WorldVisibilityGraph(
             this.chunkMin = chunkMin
             this.chunkMax = chunkMin + worldSize - 1
             this.worldSize = worldSize
-            this.frustumCache = arrayOfNulls(worldSize.x)
         }
+        this.frustumCache = arrayOfNulls(worldSize.x)
 
         val graph: Array<Array<BooleanArray?>?> = arrayOfNulls(worldSize.x)
         graph.getVisibility(chunkPosition)[cameraSectionIndex] = true
