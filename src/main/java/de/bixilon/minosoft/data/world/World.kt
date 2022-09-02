@@ -309,7 +309,7 @@ class World(
         val offset = Vec3i.EMPTY + { random.nextInt(-radius, radius) }
         val blockPosition = origin + offset
 
-        val blockState = chunk.getWorld(offset, origin, blockPosition) ?: return
+        val blockState = chunk.traceBlock(offset, origin, blockPosition) ?: return
 
         blockState.block.randomTick(connection, blockState, blockPosition, random)
     }

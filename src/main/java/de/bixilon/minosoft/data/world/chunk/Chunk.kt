@@ -377,16 +377,16 @@ class Chunk(
         }
     }
 
-    fun getWorld(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {
+    fun traceBlock(offset: Vec3i, origin: Vec3i, blockPosition: Vec3i = origin + offset): BlockState? {
         val originChunkPosition = origin.chunkPosition
         val targetChunkPosition = blockPosition.chunkPosition
 
         val deltaChunkPosition = targetChunkPosition - originChunkPosition
 
-        return getWorld(blockPosition.inChunkPosition, deltaChunkPosition)
+        return traceBlock(blockPosition.inChunkPosition, deltaChunkPosition)
     }
 
-    private fun getWorld(inChunkSectionPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
+    private fun traceBlock(inChunkSectionPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
         if (chunkOffset.x == 0 && chunkOffset.y == 0) {
             return this[inChunkSectionPosition]
         }
@@ -394,19 +394,19 @@ class Chunk(
 
         if (chunkOffset.x > 0) {
             chunkOffset.x--
-            return neighbours[6].getWorld(inChunkSectionPosition, chunkOffset)
+            return neighbours[6].traceBlock(inChunkSectionPosition, chunkOffset)
         }
         if (chunkOffset.x < 0) {
             chunkOffset.x++
-            return neighbours[1].getWorld(inChunkSectionPosition, chunkOffset)
+            return neighbours[1].traceBlock(inChunkSectionPosition, chunkOffset)
         }
         if (chunkOffset.y > 0) {
             chunkOffset.y--
-            return neighbours[4].getWorld(inChunkSectionPosition, chunkOffset)
+            return neighbours[4].traceBlock(inChunkSectionPosition, chunkOffset)
         }
         if (chunkOffset.y < 0) {
             chunkOffset.y++
-            return neighbours[3].getWorld(inChunkSectionPosition, chunkOffset)
+            return neighbours[3].traceBlock(inChunkSectionPosition, chunkOffset)
         }
 
         Broken("Can not get chunk from offset: $chunkOffset")
