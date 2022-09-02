@@ -119,7 +119,7 @@ class AtlasManager(private val renderWindow: RenderWindow) {
     }
 
     companion object {
-        private val ATLAS_DATA = "minosoft:mapping/atlas.json".toResourceLocation()
+        private val ATLAS_DATA = "minosoft:rendering/atlas.json".toResourceLocation()
 
         private val ATLAS_DEFAULT_SIZE = Vec2i(256, 256)
         private val ATLAS_SINGLE_DEFAULT_PIXEL_SIZE = Vec2(1.0f) / ATLAS_DEFAULT_SIZE
