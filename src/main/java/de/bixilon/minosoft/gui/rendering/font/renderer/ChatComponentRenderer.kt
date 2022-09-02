@@ -69,7 +69,7 @@ interface ChatComponentRenderer<T : ChatComponent> {
 
             val textMesh = mesh.textMesh!!
             val primitives = calculatePrimitiveCount(text)
-            textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX)
+            textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
             val consumer = WorldGUIConsumer(textMesh, matrix, light)
             render3dFlat(renderWindow, Vec2i(), scale, maxSize, consumer, text, light)

@@ -20,10 +20,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand) {
+class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDemand: Boolean = false) : Mesh(renderWindow, WorldMeshStruct, initialCacheSize = initialCacheSize, onDemand = onDemand) {
     var distance: Float = 0.0f // Used for sorting
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
+        data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
         val transformedUV = texture.renderData.transformUV(uv)
         data.add(position[0])
         data.add(position[1])
@@ -34,13 +35,25 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDeman
         data.add(Float.fromBits(tintColor or (light shl 24)))
     }
 
+    fun addVertex(x: Float, y: Float, z: Float, uv: Vec2, texture: AbstractTexture, shaderTextureId: Float, tintLight: Float) {
+        data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
+        val transformedUV = texture.renderData.transformUV(uv)
+        data.add(x)
+        data.add(y)
+        data.add(z)
+        data.add(transformedUV.x)
+        data.add(transformedUV.y)
+        data.add(shaderTextureId)
+        data.add(tintLight)
+    }
 
-    data class SectionArrayMeshStruct(
+
+    data class WorldMeshStruct(
         val position: Vec3,
         val uv: Vec2,
         val indexLayerAnimation: Int,
         val tintLight: Int,
     ) {
-        companion object : MeshStruct(SectionArrayMeshStruct::class)
+        companion object : MeshStruct(WorldMeshStruct::class)
     }
 }
