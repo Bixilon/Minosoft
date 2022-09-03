@@ -134,10 +134,11 @@ abstract class Entity(
         }
     open val positionInfo = EntityPositionInfo(connection, this)
 
-    val eyePosition: Vec3
-        get() = cameraPosition + Vec3(0.0f, eyeHeight, 0.0f)
 
     var cameraPosition: Vec3 = position.toVec3
+        private set
+
+    var eyePosition: Vec3 = cameraPosition
         private set
 
     open val spawnSprintingParticles: Boolean
@@ -315,6 +316,7 @@ abstract class Entity(
 
     open fun draw(time: Long) {
         cameraPosition = interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+        eyePosition = cameraPosition + Vec3(0.0f, eyeHeight, 0.0f)
         cameraAABB = defaultAABB + cameraPosition
     }
 
