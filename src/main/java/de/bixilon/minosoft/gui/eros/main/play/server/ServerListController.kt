@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -440,7 +441,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "unknown" },
             "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.lastServerStatus?.serverBrand },
             "minosoft:server_info.players_online".toResourceLocation() to { it.ping.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
-            "minosoft:server_info.ping".toResourceLocation() to { it.ping.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
+            "minosoft:server_info.ping".toResourceLocation() to { it.ping.lastPongEvent?.latency?.formatNanos() },
 
 
             "minosoft:general.empty".toResourceLocation() to { " " },
