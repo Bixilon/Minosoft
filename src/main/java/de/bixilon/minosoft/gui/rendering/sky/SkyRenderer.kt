@@ -52,6 +52,7 @@ class SkyRenderer(
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val fogManager = renderWindow.camera.fogManager
+    private var _color: RGBColor = ChatColors.BLACK
 
     override fun init(latch: CountUpAndDownLatch) {
         skyboxShader.load()
@@ -119,7 +120,7 @@ class SkyRenderer(
         skySunMesh.draw()
     }
 
-    private fun checkSkyColor() {
+    private fun calculateSkyColor(): RGBColor {
         // ToDo: Calculate correct
         val brightness = 1.0f
         var skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
@@ -136,12 +137,16 @@ class SkyRenderer(
 
         fogManager.interpolatedFogColor?.let { skyColor = it }
 
-        skyboxShader.use().setRGBColor(SKY_COLOR, skyColor)
+        return skyColor
     }
 
     private fun drawSkybox() {
-        checkSkyColor()
+        val color = calculateSkyColor()
         skyboxShader.use()
+        if (color != _color) {
+            _color = color
+            skyboxShader.setRGBColor(SKY_COLOR, color)
+        }
         skyboxMesh.draw()
     }
 
