@@ -35,7 +35,7 @@ class StatisticsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 val name = buffer.readResourceLocation()
                 val value = buffer.readVarInt()
             } else {
-                val type = buffer.connection.registries.statisticRegistry[buffer.readVarInt()]
+                val type = buffer.readRegistryItem(buffer.connection.registries.statisticRegistry)
                 val keyId = buffer.readVarInt()
                 val key: Any = when (type.unit) {
                     StatisticUnits.BLOCK -> buffer.connection.registries.blockRegistry[keyId]

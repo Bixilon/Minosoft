@@ -25,7 +25,7 @@ object TitleS2CF : PlayPacketFactory {
     override val direction: PacketDirection = PacketDirection.SERVER_TO_CLIENT
 
     override fun createPacket(buffer: PlayInByteBuffer): TitleS2CP {
-        return when (buffer.connection.registries.titleActionsRegistry[buffer.readVarInt()]!!) {
+        return when (buffer.readEnum(buffer.connection.registries.titleActionsRegistry)!!) {
             TitleActions.TITLE_TEXT -> TitleTextS2CP(buffer)
             TitleActions.SUBTITLE -> SubtitleS2CP(buffer)
             TitleActions.HOTBAR_TEXT -> HotbarTextS2CP(buffer)

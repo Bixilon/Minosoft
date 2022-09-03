@@ -27,7 +27,7 @@ object GlobalPositionEntityDataType : EntityDataType<GlobalPosition> {
         if (buffer.versionId < ProtocolVersions.V_1_19_PRE2) { // ToDo: find out version
             return buffer.readNBT()?.toJsonObject()?.toGlobalPosition(buffer.connection)
         }
-        val dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]
+        val dimension = buffer.readLegacyRegistryItem(buffer.connection.registries.dimensionRegistry)
         val position = buffer.readBlockPosition()
         return GlobalPosition(dimension, position)
     }

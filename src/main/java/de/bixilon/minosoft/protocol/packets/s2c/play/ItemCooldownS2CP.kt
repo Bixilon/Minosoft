@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class ItemCooldownS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val item = buffer.connection.registries.itemRegistry[buffer.readVarInt()]
+    val item = buffer.readRegistryItem(buffer.connection.registries.itemRegistry)
     val time = buffer.readVarInt()
 
     override fun handle(connection: PlayConnection) {

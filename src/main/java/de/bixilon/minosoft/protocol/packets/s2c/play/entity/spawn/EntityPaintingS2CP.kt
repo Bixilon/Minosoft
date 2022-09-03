@@ -42,9 +42,9 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val motif: Motif? = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.connection.registries.motifRegistry[buffer.readResourceLocation()]
+            buffer.readLegacyRegistryItem(buffer.connection.registries.motifRegistry)
         } else {
-            buffer.connection.registries.motifRegistry[buffer.readVarInt()]
+            buffer.readRegistryItem(buffer.connection.registries.motifRegistry)
         }
         val position: Vec3i
         val direction: Directions

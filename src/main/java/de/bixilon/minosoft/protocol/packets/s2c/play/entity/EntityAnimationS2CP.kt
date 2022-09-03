@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class EntityAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readVarInt()
-    val animation: EntityAnimations = buffer.connection.registries.entityAnimationRegistry[buffer.readVarInt()]!!
+    val animation: EntityAnimations = buffer.readEnum(buffer.connection.registries.entityAnimationRegistry)!!
 
 
     override fun log(reducedLog: Boolean) {

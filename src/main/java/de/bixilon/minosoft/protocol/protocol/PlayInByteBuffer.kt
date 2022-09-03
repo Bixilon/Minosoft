@@ -32,6 +32,10 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.EnumRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -257,6 +261,7 @@ class PlayInByteBuffer : InByteBuffer {
                     }
                     textures = PlayerTextures.of(value, signature)
                 }
+
                 else -> Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown player property $name: $value" }
             }
         }
@@ -337,5 +342,17 @@ class PlayInByteBuffer : InByteBuffer {
         } else {
             BitSet.valueOf(readLongArray())
         }
+    }
+
+    fun <T> readRegistryItem(registry: AbstractRegistry<T>): T {
+        return registry[readVarInt()]
+    }
+
+    fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>): T? {
+        return registry[readResourceLocation()]
+    }
+
+    fun <T : Enum<*>> readEnum(registry: EnumRegistry<T>): T? {
+        return registry[readVarInt()]
     }
 }
