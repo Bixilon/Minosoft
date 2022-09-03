@@ -24,9 +24,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable

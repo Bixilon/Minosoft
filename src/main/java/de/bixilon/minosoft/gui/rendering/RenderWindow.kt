@@ -30,8 +30,8 @@ import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
-import de.bixilon.minosoft.gui.rendering.renderer.RendererManager
-import de.bixilon.minosoft.gui.rendering.renderer.RendererManager.Companion.registerDefault
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager.Companion.registerDefault
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats

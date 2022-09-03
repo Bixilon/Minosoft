@@ -11,9 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.renderer
+package de.bixilon.minosoft.gui.rendering.renderer.drawable
 
-interface AsyncRenderer : Renderer {
+interface AsyncDrawable : DeltaAsyncDrawable {
 
-    fun prepareDrawAsync() = Unit
+    /**
+     * Functions gets called every frame
+     */
+    fun drawAsync() {}
+
+    override fun drawAsync(millis: Long) {
+        drawAsync()
+    }
 }

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.AbstractLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 abstract class AbstractChatElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Initializable, Drawable, AbstractLayout<Element> {
     protected val connection = renderWindow.connection

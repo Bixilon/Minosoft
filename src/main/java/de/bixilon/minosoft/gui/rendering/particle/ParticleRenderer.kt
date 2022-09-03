@@ -28,8 +28,8 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.renderer.AsyncRenderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable

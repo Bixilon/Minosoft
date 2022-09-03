@@ -14,42 +14,71 @@
 package de.bixilon.minosoft.gui.rendering.gui
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 interface GUIElementDrawer {
     val guiRenderer: GUIRenderer
     var lastTickTime: Long
 
-    fun drawElements(elements: Collection<GUIElement>) {
+    fun tickElements(elements: Collection<GUIElement>) {
         val time = TimeUtil.millis
-        val tickLatch = CountUpAndDownLatch(1)
+        val latch = CountUpAndDownLatch(1)
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
             for (element in elements) {
                 if (!element.enabled) {
                     continue
                 }
-                tickLatch.inc()
-                DefaultThreadPool += {
+                latch.inc()
+                DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGH) {
                     element.tick()
                     if (element is Pollable) {
                         if (element.poll()) {
                             element.apply()
                         }
                     }
-                    tickLatch.dec()
+                    latch.dec()
                 }
             }
 
             lastTickTime = time
         }
-        tickLatch.dec()
-        tickLatch.await()
+        latch.dec()
+        latch.await()
+    }
 
+    fun prepareElements(elements: Collection<GUIElement>) {
+        val latch = CountUpAndDownLatch(1)
+        for (element in elements) {
+            if (!element.enabled) {
+                continue
+            }
+            if (element !is AsyncDrawable) {
+                continue
+            }
+            if (element.skipDraw) {
+                continue
+            }
+            element.drawAsync()
+
+            if (element is LayoutedGUIElement<*>) {
+                latch.inc()
+                element.prepare()
+                DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGH) { element.prepareAsync(); latch.dec() }
+            }
+        }
+        latch.dec()
+        latch.await()
+    }
+
+    fun drawElements(elements: Collection<GUIElement>) {
         val latch = CountUpAndDownLatch(1)
         for (element in elements) {
             if (!element.enabled) {
@@ -62,12 +91,6 @@ interface GUIElementDrawer {
                 continue
             }
             element.draw()
-
-            if (element is LayoutedGUIElement<*>) {
-                latch.inc()
-                element.prepare()
-                DefaultThreadPool += { element.prepareAsync(); latch.dec() }
-            }
         }
         latch.dec()
         latch.await()

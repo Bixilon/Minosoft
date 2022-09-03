@@ -38,8 +38,8 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities

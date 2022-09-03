@@ -11,30 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.renderer
+package de.bixilon.minosoft.gui.rendering.renderer.drawable
 
-import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+interface DeltaAsyncDrawable : BaseDrawable {
 
-interface MeshSwapper : Renderer {
-    var mesh: LineMesh?
-    var nextMesh: LineMesh?
-    var unload: Boolean
-
-
-    override fun postPrepareDraw() {
-        if (unload) {
-            this.mesh?.unload()
-            this.mesh = null
-            unload = false
-        }
-        val nextMesh = this.nextMesh ?: return
-        nextMesh.load()
-        if (this.mesh?.state == Mesh.MeshStates.LOADED) {
-            this.mesh?.unload()
-        }
-        this.mesh = nextMesh
-        this.nextMesh = null
-    }
+    /**
+     * Functions gets called every frame
+     */
+    fun drawAsync(millis: Long) = Unit
 }

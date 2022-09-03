@@ -24,7 +24,6 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.gui.GUIElement
-import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.LayoutedElement
@@ -39,20 +38,23 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.input.DraggableHandler
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GUIManager(
-    override val guiRenderer: GUIRenderer,
-) : Initializable, InputHandler, GUIElementDrawer, DraggableHandler {
+    private val guiRenderer: GUIRenderer,
+) : Initializable, InputHandler, DraggableHandler, Drawable, AsyncDrawable {
     private val elementCache: MutableMap<GUIBuilder<*>, GUIElement> = mutableMapOf()
     private var orderLock = SimpleLock()
     var elementOrder: MutableList<GUIElement> = mutableListOf()
     private val renderWindow = guiRenderer.renderWindow
     internal var paused = false
-    override var lastTickTime: Long = -1L
+    private var lastTickTime: Long = -1L
+
+    private var order: Collection<GUIElement> = emptyList()
 
     override fun init() {
         for (element in elementCache.values) {
@@ -104,10 +106,11 @@ class GUIManager(
         orderLock.release()
     }
 
-    fun draw() {
+    override fun drawAsync() {
         orderLock.acquire()
-        val order = elementOrder.reversed()
+        this.order = elementOrder.reversed()
         orderLock.release()
+
         val time = TimeUtil.millis
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
         if (tick) {
@@ -132,8 +135,8 @@ class GUIManager(
                 lastTickTime = time
             }
 
-            if (element is Drawable && !element.skipDraw) {
-                element.draw()
+            if (element is AsyncDrawable && !element.skipDraw) {
+                element.drawAsync()
             }
             if (element is LayoutedGUIElement<*>) {
                 element.prepare()
@@ -143,13 +146,18 @@ class GUIManager(
         }
         latch.dec()
         latch.await()
+    }
 
+    override fun draw() {
         for ((index, element) in order.withIndex()) {
             if (!element.enabled) {
                 continue
             }
             if (index != order.size - 1 && !element.activeWhenHidden) {
                 continue
+            }
+            if (element is Drawable && !element.skipDraw) {
+                element.draw()
             }
             if (element is LayoutedGUIElement<*>) {
                 element.postPrepare()

@@ -54,7 +54,7 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
         }
     override var skipDraw: Boolean
         // skips hud draw and draws it in gui stage
-        get() = chatProfile.hidden || active
+        get() = active || chatProfile.hidden
         set(value) {
             chatProfile.hidden = !value
         }

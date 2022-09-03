@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal.model.animations
 
-import de.bixilon.minosoft.gui.rendering.renderer.DeltaDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.DeltaDrawable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 abstract class CustomSkeletalAnimation(override val name: String) : SkeletalAnimation, DeltaDrawable {

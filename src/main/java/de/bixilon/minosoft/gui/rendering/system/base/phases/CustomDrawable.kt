@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.phases
 
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 
 interface CustomDrawable : Renderer {
     val skipCustom: Boolean

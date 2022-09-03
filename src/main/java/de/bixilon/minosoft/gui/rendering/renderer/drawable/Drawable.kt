@@ -11,14 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.renderer
+package de.bixilon.minosoft.gui.rendering.renderer.drawable
 
-interface DeltaDrawable {
-    val skipDraw: Boolean
-        get() = false
+interface Drawable : DeltaDrawable {
 
     /**
      * Functions gets called every frame
      */
-    fun draw(millis: Long) = Unit
+    fun draw() {}
+
+    override fun draw(millis: Long) {
+        draw()
+    }
 }

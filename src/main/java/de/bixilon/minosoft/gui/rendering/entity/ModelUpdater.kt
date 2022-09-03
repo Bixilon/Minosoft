@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entity
 
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 interface ModelUpdater : Drawable {
 

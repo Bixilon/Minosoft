@@ -28,7 +28,7 @@ import kotlin.math.max
 interface Shader {
     val loaded: Boolean
     val renderWindow: RenderWindow
-    val uniforms: List<String>
+    val uniforms: Set<String>
     val defines: MutableMap<String, Any>
 
     val log: String

@@ -26,10 +26,10 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Drawable {
+class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, AsyncDrawable {
     private val textElement = TextElement(guiRenderer, "").apply { parent = this@BreakProgressHUDElement }
     private val breakInteractionHandler = guiRenderer.renderWindow.inputHandler.interactionManager.`break`
     private var previousProgress = -1.0
@@ -40,7 +40,7 @@ class BreakProgressHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), 
 
     private var percent = -1
 
-    override fun draw() {
+    override fun drawAsync() {
         val breakProgress = breakInteractionHandler.breakProgress
         if (this.previousProgress == breakProgress) {
             return
