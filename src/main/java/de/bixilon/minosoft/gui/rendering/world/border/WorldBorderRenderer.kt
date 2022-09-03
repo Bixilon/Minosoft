@@ -38,7 +38,7 @@ class WorldBorderRenderer(
 ) : Renderer, TranslucentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader(minosoft("world/border"))
-    private var borderMesh = WorldBorderMesh(renderWindow)
+    private val borderMesh = WorldBorderMesh(renderWindow)
     private val border = renderWindow.connection.world.border
     private lateinit var texture: AbstractTexture
     private var offsetReset = TimeUtil.millis
@@ -93,9 +93,6 @@ class WorldBorderRenderer(
 
     override fun drawTranslucent() {
         borderMesh.draw()
-        borderMesh.unload()
-        borderMesh = WorldBorderMesh(renderWindow)
-        borderMesh.load()
     }
 
     companion object : RendererBuilder<WorldBorderRenderer> {
