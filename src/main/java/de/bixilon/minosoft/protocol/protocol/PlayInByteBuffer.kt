@@ -49,11 +49,13 @@ import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.BitByte.isBitMask
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.time.Instant
+import java.util.*
 
 
 class PlayInByteBuffer : InByteBuffer {
@@ -327,5 +329,13 @@ class PlayInByteBuffer : InByteBuffer {
         }
 
         return builder
+    }
+
+    fun readBitSet(): BitSet {
+        return if (versionId < ProtocolVersions.V_20W49A) {
+            KUtil.bitSetOf(readVarLong())
+        } else {
+            BitSet.valueOf(readLongArray())
+        }
     }
 }
