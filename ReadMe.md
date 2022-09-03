@@ -14,7 +14,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Rendering
 - Connect with any version to any server  (1.7 - latest)
 - ~~Modding~~
-- Bleeding edge performance (incredible start time of 3 - 5 seconds on modern hardware)
+- Bleeding edge performance (e.g. incredible start time)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
 - Multiple connections to servers in 1 process
@@ -29,27 +29,26 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 
 ## System requirements
 
-- CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
+- CPU: Multiple (4+) cores, high clock speed (2Ghz +)
 - RAM: Minimum 500 MiB, 1 GiB recommended
-- Disk space: Minosoft itself is pretty small (a couple of MiB), the libraries take to most binary space (around 80 MiB). Minecraft itself (with its assets) takes about 300 MiB per version.
+- Disk space: 80 Mib + assets (~ 300 MiB per version)
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
 - Java 11+, 16+ recommended (Java 8 is **not** supported).
+- A minecraft server (local or online)
 
 ## Rendering
 
 ### Features
 
-- Block rendering
-- Particles
-- Basic light
-- Block place, break, mining
-- Item and block interaction
-- HUD
-- GUI (inventory, menus)
+- Blocks
+- Entities (hitboxes and players for now)
 - Block entities (e.g. signs, chests)
-- Basic entity rendering (hitboxes)
-- Light
+- HUD and GUI (inventory, menus, ...)
+- Particles
+- Basic block and skylight (custom light engine)
+- Block and item interactions (e.g. place, break, mining)
 - ~~Original physics~~
+- A lot more, only listing major things here
 
 ![Rendering](doc/img/rendering5.png)  
 A world, with a ton of hud features exposed

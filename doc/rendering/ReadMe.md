@@ -58,6 +58,7 @@ It basically lets all renderers draw their opaque objects first and then draw tr
 
 ## Lighting
 
-All lighting data is received from the server and not reliable. A light engine is needed in the future.
+Lighting is done as soon as a block changes in the world. Increasing light is a lot faster than decreasing light.
+A custom light engine is included, all server light is ignored by default (documentation needed).
 
 The lighting on the render side is done via a lightmap, basically another uniform buffer.
