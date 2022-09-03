@@ -102,7 +102,6 @@ object OpenGLTextureUtil {
     }
 
     private fun InputStream.readFallbackTexture(): Pair<Vec2i, ByteBuffer> {
-        // ToDo: This somehow crashes with some resource packs
         val image: BufferedImage = ImageIO.read(this)
         val rgb = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
 
@@ -126,6 +125,7 @@ object OpenGLTextureUtil {
 
             Pair(Vec2i(decoder.width, decoder.height), data)
         } catch (exception: Throwable) {
+            this.reset()
             readFallbackTexture()
         }
     }
