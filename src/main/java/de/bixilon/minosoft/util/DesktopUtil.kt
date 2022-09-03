@@ -36,7 +36,10 @@ object DesktopUtil {
     }
 
     fun openFile(path: String) {
-        val file = File(path)
+        openFile(File(path))
+    }
+
+    fun openFile(file: File) {
         if (!file.exists()) {
             Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "Can not open file $file: File does not exist!" }
             return
@@ -49,7 +52,7 @@ object DesktopUtil {
         // Desktop.getDesktop().open(File(path))
 
         try {
-            JavaFXUtil.HOST_SERVICES.showDocument(File(path).absolutePath)
+            JavaFXUtil.HOST_SERVICES.showDocument(file.absolutePath)
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }

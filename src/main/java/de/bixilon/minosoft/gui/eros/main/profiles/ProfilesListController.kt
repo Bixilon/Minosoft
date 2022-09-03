@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.watcher.map.MapChange.Companion.values
 import de.bixilon.minosoft.Minosoft
@@ -28,6 +29,7 @@ import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
+import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeBiMapFX
 import javafx.fxml.FXML
@@ -169,8 +171,8 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                 ctext = TranslatableComponents.GENERAL_DELETE
             }, 0, 0)
             it.add(Button("Edit").apply {
-                // ToDo: Profile editing
-                isDisable = true
+                // ToDo: proper profile editing
+                setOnAction { DefaultThreadPool += { DesktopUtil.openFile(profile.manager.getPath(profile.name)) } }
                 ctext = EDIT
             }, 1, 0)
 
