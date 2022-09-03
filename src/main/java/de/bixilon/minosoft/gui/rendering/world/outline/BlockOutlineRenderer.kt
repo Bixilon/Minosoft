@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
+import de.bixilon.minosoft.gui.rendering.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -38,7 +38,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class BlockOutlineRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OtherDrawable, MeshSwapper {
+) : AsyncRenderer, OtherDrawable, MeshSwapper {
     private val profile = connection.profiles.block.outline
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var currentOutlinePosition: Vec3i? = null

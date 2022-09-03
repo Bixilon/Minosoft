@@ -125,6 +125,9 @@ class RendererManager(
 
         val latch = CountUpAndDownLatch(1)
         for (renderer in rendererList) {
+            if (renderer !is AsyncRenderer) {
+                continue
+            }
             latch.inc()
             DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync(); latch.dec() }
         }

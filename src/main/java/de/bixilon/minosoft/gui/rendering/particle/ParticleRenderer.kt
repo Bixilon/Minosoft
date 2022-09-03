@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
@@ -49,7 +49,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 class ParticleRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
+) : AsyncRenderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val profile = connection.profiles.particle
     private val transparentShader: Shader = renderSystem.createShader(minosoft("particle"))

@@ -34,6 +34,5 @@ interface Renderer {
     fun postAsyncInit(latch: CountUpAndDownLatch) = Unit
 
     fun prePrepareDraw() = Unit
-    fun prepareDrawAsync() = Unit
     fun postPrepareDraw() = Unit
 }
