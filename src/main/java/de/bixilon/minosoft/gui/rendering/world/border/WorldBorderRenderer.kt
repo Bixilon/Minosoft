@@ -42,6 +42,8 @@ class WorldBorderRenderer(
     private val border = renderWindow.connection.world.border
     private lateinit var texture: AbstractTexture
     private var offsetReset = TimeUtil.millis
+    override val skipTranslucent: Boolean
+        get() = border.getDistanceTo(renderWindow.connection.player.position) > MAX_DISTANCE
 
     override fun init(latch: CountUpAndDownLatch) {
         shader.load()
@@ -102,6 +104,7 @@ class WorldBorderRenderer(
         val SHRINKING_COLOR = "#FF3030".asColor()
         val STATIC_COLOR = "#20A0FF".asColor()
         const val ANIMATION_SPEED = 2000
+        const val MAX_DISTANCE = 1000
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
 

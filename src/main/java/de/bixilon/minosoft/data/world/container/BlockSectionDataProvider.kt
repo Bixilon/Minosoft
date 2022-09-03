@@ -98,7 +98,7 @@ class BlockSectionDataProvider(
         return false
     }
 
-    private fun BlockState?.isSolid(): Boolean {
+    private inline fun BlockState?.isSolid(): Boolean {
         if (this == null) {
             return false
         }
