@@ -53,27 +53,37 @@ class Frustum(
             matrix[3] + matrix[2],
             matrix[3] - matrix[2],
         )
+        val planesVec3 = arrayOf(
+            Vec3(planes[0]),
+            Vec3(planes[1]),
+
+            Vec3(planes[2]),
+            Vec3(planes[3]),
+
+            Vec3(planes[4]),
+            Vec3(planes[5]),
+        )
 
         val crosses = arrayOf(
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.RIGHT]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.BOTTOM]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.TOP]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.RIGHT],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.BOTTOM],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.TOP],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.BOTTOM]),
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.TOP]),
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.BOTTOM],
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.TOP],
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.BOTTOM]) cross Vec3(planes[Planes.TOP]),
-            Vec3(planes[Planes.BOTTOM]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.BOTTOM]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.BOTTOM] cross planesVec3[Planes.TOP],
+            planesVec3[Planes.BOTTOM] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.BOTTOM] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.TOP]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.TOP]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.TOP] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.TOP] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.NEAR]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.NEAR] cross planesVec3[Planes.FAR],
         )
 
         fun ij2k(i: Planes, j: Planes): Int {
@@ -81,7 +91,7 @@ class Frustum(
         }
 
         fun intersections(a: Planes, b: Planes, c: Planes): Vec3 {
-            val d = Vec3(planes[a]) dot crosses[ij2k(b, c)]
+            val d = planesVec3[a] dot crosses[ij2k(b, c)]
             val res = Mat3(crosses[ij2k(b, c)], -crosses[ij2k(a, c)], crosses[ij2k(a, b)]) * Vec3(planes[a].w, planes[b].w, planes[c].w)
             return res * (-1.0f / d)
         }
