@@ -111,17 +111,17 @@ class BlockSectionDataProvider(
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
         var nextFloodId = 1.toShort()
 
-        fun trace(x: Int, y: Int, z: Int, nextId: Short) {
-            val index = y shl 8 or (z shl 4) or x
-            val id = regions[index]
-            if (id > 0) {
-                return
-            }
-            val blockState = unsafeGet(index)
-            if (blockState.isSolid()) {
-                if (nextId == nextFloodId) {
-                    nextFloodId++
-                }
+       fun trace(x: Int, y: Int, z: Int, nextId: Short) {
+           val index = y shl 8 or (z shl 4) or x
+           val id = regions[index]
+           if (id > 0) {
+               return
+           }
+           val blockState = unsafeGet(index)
+           if (blockState.isSolid()) {
+               if (nextId == nextFloodId) {
+                   nextFloodId++
+               }
                 return
             }
             regions[index] = nextId

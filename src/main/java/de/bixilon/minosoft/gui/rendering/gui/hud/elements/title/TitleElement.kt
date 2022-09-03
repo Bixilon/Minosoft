@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.title
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -85,6 +86,10 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     }
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        val time = TimeUtil.millis
+        if (time > fadeOutTime) {
+            return
+        }
         val size = size
         title.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, title.size.x), 0), consumer, options)
         subtitle.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, subtitle.size.x), title.size.y + SUBTITLE_VERTICAL_OFFSET), consumer, options)
