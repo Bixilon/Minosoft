@@ -296,7 +296,7 @@ abstract class Entity(
     open var cameraAABB: AABB = AABB.EMPTY
         protected set
 
-    open val hitBoxColor: RGBColor
+    open val hitboxColor: RGBColor
         get() = when {
             isInvisible -> ChatColors.GREEN
             else -> ChatColors.WHITE

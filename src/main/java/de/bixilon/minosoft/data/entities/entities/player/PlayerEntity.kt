@@ -130,7 +130,7 @@ abstract class PlayerEntity(
         }
     }
 
-    override val hitBoxColor: RGBColor
+    override val hitboxColor: RGBColor
         get() {
             if (this.isInvisible) {
                 return ChatColors.GREEN

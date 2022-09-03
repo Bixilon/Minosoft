@@ -31,7 +31,7 @@ class EntityHitbox(
     private var _mesh: LineMesh? = null
     private var mesh: LineMesh? = null
     private var aabb = AABB.EMPTY
-    private var hitBoxColor = ChatColors.WHITE
+    private var color = ChatColors.WHITE
     private var velocity = Vec3d.EMPTY
     private var rotation = EntityRotation.EMPTY
 
@@ -50,14 +50,14 @@ class EntityHitbox(
             return !lastEnabled
         }
         val entity = model.entity
-        val hitBoxColor = entity.hitBoxColor
+        val color = entity.hitboxColor
         val velocity = entity.velocity
         val rotation = entity.rotation
-        val equals = hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation && !lastEnabled
+        val equals = color == this.color && this.velocity == velocity && this.rotation == rotation && !lastEnabled
         if (equals) {
             return false
         }
-        this.hitBoxColor = hitBoxColor
+        this.color = color
         this.velocity = velocity
         this.rotation = rotation
         update = true
@@ -85,9 +85,9 @@ class EntityHitbox(
         val shrunk = aabb.shrink(0.01f)
         val mesh = LineMesh(model.renderWindow)
         if (model.renderer.profile.hitbox.lazy) {
-            mesh.drawLazyAABB(shrunk, color = hitBoxColor)
+            mesh.drawLazyAABB(shrunk, color = color)
         } else {
-            mesh.drawAABB(aabb = shrunk, color = hitBoxColor, margin = 0.1f)
+            mesh.drawAABB(aabb = shrunk, color = color, margin = 0.1f)
         }
         val center = Vec3(shrunk.center)
 
