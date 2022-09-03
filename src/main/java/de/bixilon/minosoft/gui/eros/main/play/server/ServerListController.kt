@@ -436,7 +436,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.tryAddress },
             "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
-            "minosoft:general.empty".toResourceLocation() to { " " },
+            TranslatableComponents.GENERAL_EMPTY to { " " },
 
             "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "unknown" },
             "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.lastServerStatus?.serverBrand },
@@ -444,7 +444,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             "minosoft:server_info.ping".toResourceLocation() to { it.ping.lastPongEvent?.latency?.formatNanos() },
 
 
-            "minosoft:general.empty".toResourceLocation() to { " " },
+            TranslatableComponents.GENERAL_EMPTY to { " " },
 
             "minosoft:server_info.active_connections".toResourceLocation() to { it.connections.size },
         )
