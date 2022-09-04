@@ -48,7 +48,7 @@ open class OutByteBuffer() {
         writeShort(int)
     }
 
-    open fun writeUnprefixedByteArray(data: ByteArray) {
+    open fun writeBareByteArray(data: ByteArray) {
         bytes.addAll(data)
     }
 
@@ -74,7 +74,7 @@ open class OutByteBuffer() {
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
         val bytes = string.encodeNetwork()
         writeVarInt(bytes.size)
-        writeUnprefixedByteArray(bytes)
+        writeBareByteArray(bytes)
     }
 
     fun writeVarLong(long: Long) {
@@ -181,7 +181,7 @@ open class OutByteBuffer() {
             is Double -> writeDouble(tag)
             is ByteArray -> {
                 writeInt(tag.size)
-                writeUnprefixedByteArray(tag)
+                writeBareByteArray(tag)
             }
             is CharSequence -> {
                 val bytes = tag.toString().toByteArray(Charsets.UTF_8)
@@ -189,7 +189,7 @@ open class OutByteBuffer() {
                     error("String exceeds max length!")
                 }
                 writeShort(bytes.size)
-                writeUnprefixedByteArray(bytes)
+                writeBareByteArray(bytes)
             }
             is Collection<*> -> {
                 this.writeNBTTagType(
@@ -220,11 +220,11 @@ open class OutByteBuffer() {
             }
             is IntArray -> {
                 writeInt(tag.size)
-                writeUnprefixedIntArray(tag)
+                writeBareIntArray(tag)
             }
             is LongArray -> {
                 writeInt(tag.size)
-                writeUnprefixedLongArray(tag)
+                writeBareLongArray(tag)
             }
         }
     }
@@ -239,8 +239,8 @@ open class OutByteBuffer() {
         )
     }
 
-    fun writeUnprefixedString(string: String) {
-        writeUnprefixedByteArray(string.toByteArray(StandardCharsets.UTF_8))
+    fun writeBareString(string: String) {
+        writeBareByteArray(string.toByteArray(StandardCharsets.UTF_8))
     }
 
     fun writeByteBlockPosition(blockPosition: Vec3i?) {
@@ -253,7 +253,7 @@ open class OutByteBuffer() {
         return bytes.toArray()
     }
 
-    fun writeUnprefixedIntArray(data: IntArray) {
+    fun writeBareIntArray(data: IntArray) {
         for (i in data) {
             writeInt(i)
         }
@@ -261,10 +261,10 @@ open class OutByteBuffer() {
 
     fun writeIntArray(data: IntArray) {
         writeVarInt(data.size)
-        writeUnprefixedIntArray(data)
+        writeBareIntArray(data)
     }
 
-    fun writeUnprefixedLongArray(data: LongArray) {
+    fun writeBareLongArray(data: LongArray) {
         for (l in data) {
             writeLong(l)
         }
@@ -272,7 +272,7 @@ open class OutByteBuffer() {
 
     fun writeLongArray(data: LongArray) {
         writeVarInt(data.size)
-        writeUnprefixedLongArray(data)
+        writeBareLongArray(data)
     }
 
     fun writeTo(buffer: ByteBuffer) {

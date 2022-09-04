@@ -30,10 +30,10 @@ class PacketInflater(
         if (compress) {
             val compressed = data.compress()
             prefixed.writeVarInt(data.size)
-            prefixed.writeUnprefixedByteArray(compressed)
+            prefixed.writeBareByteArray(compressed)
         } else {
             prefixed.writeVarInt(0)
-            prefixed.writeUnprefixedByteArray(data)
+            prefixed.writeBareByteArray(data)
         }
 
         out += prefixed.toArray()
