@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.matthiasmann.twl.utils.PNGDecoder
+import org.lwjgl.BufferUtils
+import org.lwjgl.system.MemoryUtil
+import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
+import java.io.InputStream
+import javax.imageio.ImageIO
 
 object TextureUtil {
 
@@ -74,5 +84,34 @@ object TextureUtil {
             resolveTexture(key, value)
         }
         return resolvedTextures
+    }
+
+    private fun InputStream.readFallbackTexture(): TextureData {
+        val image: BufferedImage = ImageIO.read(this)
+        val rgb = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
+
+        val byteOutput = ByteArrayOutputStream()
+        val dataOutput = DataOutputStream(byteOutput)
+        for (color in rgb) {
+            dataOutput.writeInt((color shl 8) or 0xFF)
+        }
+
+        val buffer = MemoryUtil.memAlloc(byteOutput.size())
+        buffer.put(byteOutput.toByteArray())
+
+        return TextureData(Vec2i(image.width, image.height), buffer)
+    }
+
+    fun InputStream.readTexture(): TextureData {
+        return try {
+            val decoder = PNGDecoder(this)
+            val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
+            decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+
+            TextureData(Vec2i(decoder.width, decoder.height), data)
+        } catch (exception: Throwable) {
+            this.reset()
+            readFallbackTexture()
+        }
     }
 }

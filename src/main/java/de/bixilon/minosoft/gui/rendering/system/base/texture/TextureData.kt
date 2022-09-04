@@ -11,20 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArray
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
-import java.io.ByteArrayInputStream
-import java.util.*
+import de.bixilon.kotlinglm.vec2.Vec2i
+import java.nio.ByteBuffer
 
-interface DynamicTextureArray : TextureArray {
-    val size: Int
-
-    fun pushBuffer(identifier: UUID, force: Boolean = false, data: () -> TextureData): DynamicTexture
-
-    fun pushRawArray(identifier: UUID, force: Boolean = false, data: () -> ByteArray): DynamicTexture {
-        return pushBuffer(identifier, force) { ByteArrayInputStream(data()).readTexture() }
-    }
+data class TextureData(
+    val size: Vec2i,
+    val buffer: ByteBuffer,
+) {
+    constructor(size: Vec2i, array: ByteArray) : this(size, ByteBuffer.wrap(array))
 }

@@ -14,10 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.texture.dynamic
 
 import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -42,6 +44,7 @@ class OpenGLDynamicTexture(
             }
             callbackLock.release()
         }
+    override var size: Vec2i = Vec2i.EMPTY
 
     override var shaderId: Int = shaderId
         get() {
