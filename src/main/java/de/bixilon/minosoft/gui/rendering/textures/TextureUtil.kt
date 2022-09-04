@@ -86,12 +86,18 @@ object TextureUtil {
         return resolvedTextures
     }
 
-    private fun InputStream.readFallbackTexture(): TextureData {
+    /**
+     * Other way of reading a texture if the first (preferred one) method does not work
+     * Only happens to some weird textures (seen in PureBDCraft)
+     * Ignores the alpha channel
+     */
+    private fun InputStream.readTexture2(): TextureData {
         val image: BufferedImage = ImageIO.read(this)
         val rgb = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
 
         val byteOutput = ByteArrayOutputStream()
         val dataOutput = DataOutputStream(byteOutput)
+
         for (color in rgb) {
             dataOutput.writeInt((color shl 8) or 0xFF)
         }
@@ -111,7 +117,7 @@ object TextureUtil {
             TextureData(Vec2i(decoder.width, decoder.height), data)
         } catch (exception: Throwable) {
             this.reset()
-            readFallbackTexture()
+            readTexture2()
         }
     }
 }
