@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
-@Deprecated("Use in ever class", level = DeprecationLevel.ERROR)
+@Deprecated("Use in every class", level = DeprecationLevel.ERROR)
 object VersionTweaker {
 
     @JvmStatic
