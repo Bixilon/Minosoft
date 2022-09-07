@@ -14,21 +14,21 @@ package de.bixilon.minosoft.util
 
 object BitByte {
 
-    fun isBitSet(`in`: Int, pos: Int): Boolean {
+    inline fun isBitSet(`in`: Int, pos: Int): Boolean {
         val mask = 1 shl pos
+        return (`in` and mask) == mask
+    }
+
+    inline fun isBitMask(`in`: Int, mask: Int): Boolean {
         return `in` and mask == mask
     }
 
-    fun isBitMask(`in`: Int, mask: Int): Boolean {
-        return `in` and mask == mask
-    }
-
-    infix fun Int.isBit(bit: Int): Boolean {
+    inline infix fun Int.isBit(bit: Int): Boolean {
         return isBitSet(this, bit)
     }
 
     @JvmName("isBitMask1")
-    infix fun Int.isBitMask(bitMask: Int): Boolean {
+    inline infix fun Int.isBitMask(bitMask: Int): Boolean {
         return isBitMask(this, bitMask)
     }
 }
