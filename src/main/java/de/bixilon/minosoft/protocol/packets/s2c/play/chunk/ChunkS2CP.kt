@@ -169,11 +169,11 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        readingData.readChunkData()
         if (unloadChunk) {
             connection.world.unloadChunk(chunkPosition)
             return
         }
+        readingData.readChunkData()
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
         chunk.setData(chunkData)
     }

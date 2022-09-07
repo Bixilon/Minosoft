@@ -23,6 +23,11 @@ class PalettedContainer<T>(
     val data: PaletteData,
 ) {
 
+    val isEmpty: Boolean
+        get() {
+            return palette.isEmpty || data.size == 0
+        }
+
     fun get(x: Int, y: Int, z: Int): T {
         return palette.get(data.get((((y shl edgeBits) or z) shl edgeBits) or x))
     }

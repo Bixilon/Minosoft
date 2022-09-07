@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 interface Palette<T> {
     val bits: Int
+    val isEmpty: Boolean
 
     fun read(buffer: PlayInByteBuffer)
 

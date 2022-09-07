@@ -21,6 +21,9 @@ class SingularPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T
     var item: T? = null
         private set
 
+    override val isEmpty: Boolean
+        get() = item == null
+
     override fun read(buffer: PlayInByteBuffer) {
         item = registry.getOrNull(buffer.readVarInt())
     }

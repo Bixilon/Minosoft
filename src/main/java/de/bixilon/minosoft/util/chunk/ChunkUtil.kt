@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -28,7 +29,6 @@ import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
-import de.bixilon.minosoft.data.world.container.palette.palettes.SingularPalette
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -173,12 +173,20 @@ object ChunkUtil {
 
             val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockStateRegistry, paletteFactory = BlockStatePaletteFactory)
 
-            if (blockContainer.palette !is SingularPalette<*> || blockContainer.palette.item != null) {
-                sectionBlocks[sectionHeight - dimension.minSection] = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
+            if (!blockContainer.isEmpty) {
+                val unpacked = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
+                if (!unpacked.isEmpty) {
+                    sectionBlocks[sectionHeight - dimension.minSection] = unpacked
+                }
             }
+
+
             if (buffer.versionId >= V_21W37A) {
                 val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry.unsafeCast(), paletteFactory = BiomePaletteFactory)
-                biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
+
+                if (!biomeContainer.isEmpty) {
+                    biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
+                }
             }
 
 
@@ -188,8 +196,10 @@ object ChunkUtil {
                 if (containsSkyLight) {
                     skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
-                light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
-                lightReceived++
+                if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
+                    light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
+                    lightReceived++
+                }
             }
         }
 
