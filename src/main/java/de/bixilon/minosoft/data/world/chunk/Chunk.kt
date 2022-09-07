@@ -256,7 +256,16 @@ class Chunk(
                     neighbour.updateNeighbours(neighbourNeighbours, sectionHeight)
                 }
             }
+
             sections[sectionIndex] = section
+
+            if (sectionIndex > 0) {
+                sections[sectionIndex - 1]?.neighbours?.set(Directions.O_UP, section)
+            }
+            val highestIndex = highestSection - 1
+            if (sectionIndex < highestIndex) {
+                sections[sectionIndex + 1]?.neighbours?.set(Directions.O_DOWN, section)
+            }
 
             // check light of neighbours to check if their light needs to be traced into our own chunk
             section.light.propagateFromNeighbours()
