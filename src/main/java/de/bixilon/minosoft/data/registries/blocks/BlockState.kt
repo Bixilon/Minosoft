@@ -19,6 +19,10 @@ import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty
+import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
+import de.bixilon.minosoft.data.registries.blocks.light.SolidProperty
+import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
@@ -36,6 +40,7 @@ data class BlockState(
     val requiresTool: Boolean,
     val isSolid: Boolean,
     val luminance: Int,
+    val lightProperties: LightProperties,
 ) {
     var blockModel: BakedBlockModel? = null
 
@@ -123,6 +128,15 @@ data class BlockState(
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
 
+            val lightProperties: LightProperties
+
+            if (outlineShape == VoxelShape.FULL) {
+                lightProperties = if (data["is_opaque"]?.toBoolean() != false) SolidProperty else TransparentProperty
+            } else {
+                lightProperties = DirectedProperty.of(outlineShape)
+            }
+
+
             return BlockState(
                 block = block,
                 properties = properties,
@@ -133,6 +147,7 @@ data class BlockState(
                 requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
                 isSolid = data["solid_render"]?.toBoolean() ?: false,
                 luminance = data["luminance"]?.toInt() ?: 0,
+                lightProperties = lightProperties,
             )
         }
 

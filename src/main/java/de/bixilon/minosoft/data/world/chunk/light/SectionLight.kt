@@ -28,7 +28,7 @@ class SectionLight(
         val previousLuminance = previous?.luminance ?: 0
         val luminance = now?.luminance ?: 0
 
-        if (previousLuminance == luminance && previous?.isSolid == now?.isSolid) {
+        if (previousLuminance == luminance && previous?.lightProperties?.propagatesBlockLight == now?.lightProperties?.propagatesBlockLight && previous?.lightProperties?.propagatesSkylight == now?.lightProperties?.propagatesSkylight) {
             // no change for light data
             return
         }
@@ -90,7 +90,7 @@ class SectionLight(
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
-        if (block != null && block.isSolid && blockLuminance == 0) {
+        if (block != null && !block.lightProperties.propagatesBlockLight && blockLuminance == 0) {
             // light can not pass through the block
             return
         }
@@ -101,7 +101,7 @@ class SectionLight(
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((this.light[index].toInt() and 0xF0) or nextLuminance).toByte()
+        this.light[index] = ((this.light[index].toInt() and SKY_LIGHT_MASK) or nextLuminance).toByte() // keep the sky light set
         if (!update) {
             update = true
         }
@@ -222,6 +222,10 @@ class SectionLight(
                 neighbours[Directions.O_UP]?.let { traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, it.light[0, y, z].toInt() and BLOCK_LIGHT_MASK) }
             }
         }
+    }
+
+    fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int) {
+
     }
 
     companion object {
