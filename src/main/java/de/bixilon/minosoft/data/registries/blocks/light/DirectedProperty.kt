@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.light
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
@@ -57,7 +58,52 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
         }
 
         fun VoxelShape.canPropagate(`in`: Directions, out: Directions): Boolean {
-            TODO("Not yet implemented")
+            return isSideCovered(`in`) && isSideCovered(out) // ToDo: That could go wrong
+        }
+
+        fun VoxelShape.isSideCovered(side: Directions): Boolean {
+            // ToDo: This whole calculation is technically wrong, it could be that 2 different sides of 2 blocks are "free". That means that light can still not pass the blocks, but
+            // this algorithm does not cover it. Let's see it as performance hack
+
+            var min1 = 0.0
+            var min2 = 0.0
+            var max1 = 0.0
+            var max2 = 0.0
+
+            for (aabb in this) {
+                when (side.axis) {
+                    Axes.Y -> {
+                        if ((side == Directions.DOWN && aabb.min.y != 0.0) || (side == Directions.UP && aabb.max.y != 1.0)) {
+                            continue
+                        }
+                        min1 = minOf(min1, aabb.min.x)
+                        min2 = minOf(min2, aabb.min.z)
+                        max1 = maxOf(max1, aabb.max.x)
+                        max2 = maxOf(max2, aabb.max.z)
+                    }
+
+                    Axes.X -> {
+                        if ((side == Directions.WEST && aabb.min.x != 0.0) || (side == Directions.EAST && aabb.max.x != 1.0)) {
+                            continue
+                        }
+                        min1 = minOf(min1, aabb.min.y)
+                        min2 = minOf(min2, aabb.min.z)
+                        max1 = maxOf(max1, aabb.max.y)
+                        max2 = maxOf(max2, aabb.max.z)
+                    }
+
+                    Axes.Z -> {
+                        if ((side == Directions.NORTH && aabb.min.z != 0.0) || (side == Directions.SOUTH && aabb.max.z != 1.0)) {
+                            continue
+                        }
+                        min1 = minOf(min1, aabb.min.x)
+                        min2 = minOf(min2, aabb.min.y)
+                        max1 = maxOf(max1, aabb.max.x)
+                        max2 = maxOf(max2, aabb.max.y)
+                    }
+                }
+            }
+            return min1 == 0.0 && min2 == 0.0 && max1 == 1.0 && max2 == 1.0
         }
     }
 }

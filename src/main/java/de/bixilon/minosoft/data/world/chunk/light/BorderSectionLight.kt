@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -68,9 +69,9 @@ class BorderSectionLight(
         val neighbourLuminance = nextLuminance - 1
 
         if (top) {
-            chunk.sections?.last()?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
+            chunk.sections?.last()?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
         } else {
-            chunk.sections?.first()?.light?.traceIncrease(x, 0, z, neighbourLuminance)
+            chunk.sections?.first()?.light?.traceIncrease(x, 0, z, neighbourLuminance, Directions.UP)
         }
 
         if (z > 0) {

@@ -34,7 +34,7 @@ class SectionLight(
         }
 
         if (luminance > previousLuminance) {
-            traceIncrease(x, y, z, luminance)
+            traceIncrease(x, y, z, luminance, null)
         } else {
             startDecreaseTrace(x, y, z)
         }
@@ -86,7 +86,7 @@ class SectionLight(
         }
     }
 
-    fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int) {
+    fun traceIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, source: Directions?) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
         val blockLuminance = block?.luminance ?: 0
@@ -127,41 +127,52 @@ class SectionLight(
 
         val neighbourLuminance = nextLuminance - 1
 
-        if (y > 0) {
-            traceIncrease(x, y - 1, z, neighbourLuminance)
-        } else if (section.sectionHeight == section.chunk?.lowestSection) {
-            section.chunk?.bottomLight?.traceIncrease(x, z, neighbourLuminance)
-        } else {
-            neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance)
+        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.DOWN) != false) {
+            if (y > 0) {
+                traceIncrease(x, y - 1, z, neighbourLuminance, Directions.UP)
+            } else if (section.sectionHeight == section.chunk?.lowestSection) {
+                section.chunk?.bottomLight?.traceIncrease(x, z, neighbourLuminance)
+            } else {
+                neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.UP)
+            }
         }
-        if (y < ProtocolDefinition.SECTION_MAX_Y) {
-            traceIncrease(x, y + 1, z, neighbourLuminance)
-        } else if (section.sectionHeight == section.chunk?.highestSection) {
-            section.chunk?.topLight?.traceIncrease(x, z, neighbourLuminance)
-        } else {
-            neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance)
-        }
-
-        if (z > 0) {
-            traceIncrease(x, y, z - 1, neighbourLuminance)
-        } else {
-            neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
-        }
-        if (z < ProtocolDefinition.SECTION_MAX_Y) {
-            traceIncrease(x, y, z + 1, neighbourLuminance)
-        } else {
-            neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance)
+        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.UP) != false) {
+            if (y < ProtocolDefinition.SECTION_MAX_Y) {
+                traceIncrease(x, y + 1, z, neighbourLuminance, Directions.DOWN)
+            } else if (section.sectionHeight == section.chunk?.highestSection) {
+                section.chunk?.topLight?.traceIncrease(x, z, neighbourLuminance)
+            } else {
+                neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance, Directions.DOWN)
+            }
         }
 
-        if (x > 0) {
-            traceIncrease(x - 1, y, z, neighbourLuminance)
-        } else {
-            neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance)
+        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.NORTH) != false) {
+            if (z > 0) {
+                traceIncrease(x, y, z - 1, neighbourLuminance, Directions.SOUTH)
+            } else {
+                neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, Directions.SOUTH)
+            }
         }
-        if (x < ProtocolDefinition.SECTION_MAX_X) {
-            traceIncrease(x + 1, y, z, neighbourLuminance)
-        } else {
-            neighbours[Directions.O_EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance)
+        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.SOUTH) != false) {
+            if (z < ProtocolDefinition.SECTION_MAX_Y) {
+                traceIncrease(x, y, z + 1, neighbourLuminance, Directions.NORTH)
+            } else {
+                neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance, Directions.NORTH)
+            }
+        }
+        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.WEST) != false) {
+            if (x > 0) {
+                traceIncrease(x - 1, y, z, neighbourLuminance, Directions.EAST)
+            } else {
+                neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, Directions.EAST)
+            }
+        }
+        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.EAST) != false) {
+            if (x < ProtocolDefinition.SECTION_MAX_X) {
+                traceIncrease(x + 1, y, z, neighbourLuminance, Directions.WEST)
+            } else {
+                neighbours[Directions.O_EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance, Directions.WEST)
+            }
         }
     }
 
@@ -191,7 +202,7 @@ class SectionLight(
                         // block is not emitting light, ignore it
                         continue
                     }
-                    traceIncrease(x, y, z, luminance)
+                    traceIncrease(x, y, z, luminance, null)
                 }
             }
         }
@@ -206,20 +217,22 @@ class SectionLight(
     fun propagateFromNeighbours() {
         val neighbours = section.neighbours ?: return
         // ToDo(p): this::traceIncrease checks als the block light level, not needed
+
+        // ToDo: Check if current block can propagate into that direction
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                neighbours[Directions.O_DOWN]?.let { traceIncrease(x, 0, z, it.light[x, ProtocolDefinition.SECTION_MAX_Y, z].toInt() and BLOCK_LIGHT_MASK) }
-                neighbours[Directions.O_UP]?.let { traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, it.light[x, 0, z].toInt() and BLOCK_LIGHT_MASK) }
+                neighbours[Directions.O_DOWN]?.let { traceIncrease(x, 0, z, it.light[x, ProtocolDefinition.SECTION_MAX_Y, z].toInt() and BLOCK_LIGHT_MASK, Directions.UP) }
+                neighbours[Directions.O_UP]?.let { traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, it.light[x, 0, z].toInt() and BLOCK_LIGHT_MASK, Directions.DOWN) }
             }
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-                neighbours[Directions.O_NORTH]?.let { traceIncrease(x, y, 0, it.light[x, y, ProtocolDefinition.SECTION_MAX_Z].toInt() and BLOCK_LIGHT_MASK) }
-                neighbours[Directions.O_SOUTH]?.let { traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, it.light[x, y, 0].toInt() and BLOCK_LIGHT_MASK) }
+                neighbours[Directions.O_NORTH]?.let { traceIncrease(x, y, 0, it.light[x, y, ProtocolDefinition.SECTION_MAX_Z].toInt() and BLOCK_LIGHT_MASK, Directions.SOUTH) }
+                neighbours[Directions.O_SOUTH]?.let { traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, it.light[x, y, 0].toInt() and BLOCK_LIGHT_MASK, Directions.NORTH) }
             }
         }
         for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-                neighbours[Directions.O_WEST]?.let { traceIncrease(0, y, z, it.light[ProtocolDefinition.SECTION_MAX_Z, y, z].toInt() and BLOCK_LIGHT_MASK) }
-                neighbours[Directions.O_UP]?.let { traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, it.light[0, y, z].toInt() and BLOCK_LIGHT_MASK) }
+                neighbours[Directions.O_WEST]?.let { traceIncrease(0, y, z, it.light[ProtocolDefinition.SECTION_MAX_Z, y, z].toInt() and BLOCK_LIGHT_MASK, Directions.EAST) }
+                neighbours[Directions.O_EAST]?.let { traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, it.light[0, y, z].toInt() and BLOCK_LIGHT_MASK, Directions.WEST) }
             }
         }
     }
