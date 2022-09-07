@@ -14,7 +14,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Rendering
 - Connect with any version to any server  (1.7 - 1.19)
 - ~~Modding~~
-- Bleeding edge performance (e.g. incredible start time)
+- [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
 - Multiple connections to servers in 1 process
