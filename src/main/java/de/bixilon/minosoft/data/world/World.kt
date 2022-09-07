@@ -376,23 +376,26 @@ class World(
         val neighboursPositions = getChunkNeighbourPositions(chunkPosition)
         val neighbours = getChunkNeighbours(neighboursPositions)
 
-        if (neighbours.received) {
+        val neighboursReceived = neighbours.received
+        if (neighboursReceived) {
             chunk.neighbours = neighbours.cast()
 
             if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
                 chunk.buildBiomeCache()
             }
+        }
+
+
+        if (checkNeighbours) {
+            for (index in 0 until 8) {
+                val neighbour = neighbours[index] ?: continue
+                onChunkUpdate(neighboursPositions[index], neighbour, false)
+            }
+        }
+
+        if (neighboursReceived) {
+            chunk.recalculateLight()
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
-        }
-
-
-        if (!checkNeighbours) {
-            return
-        }
-
-        for (index in 0 until 8) {
-            val neighbour = neighbours[index] ?: continue
-            onChunkUpdate(neighboursPositions[index], neighbour, false)
         }
     }
 

@@ -42,7 +42,7 @@ class SectionLight(
 
     private fun startDecreaseTrace(x: Int, y: Int, z: Int) {
         // that is kind of hacky, but far easier and kind of faster
-        val light = this.light[getIndex(x, y, z)].toInt() and 0x0F
+        val light = this.light[getIndex(x, y, z)].toInt() and BLOCK_LIGHT_MASK
 
         decreaseLight(x, y, z, light, true) // just clear the light
         decreaseLight(x, y, z, light, false) // increase the light in all sections
@@ -96,7 +96,7 @@ class SectionLight(
         }
 
         // get block or next luminance level
-        val currentLight = light[index].toInt() and 0x0F // we just care about block light
+        val currentLight = light[index].toInt() and BLOCK_LIGHT_MASK // we just care about block light
         if (currentLight >= nextLuminance) {
             // light is already higher, no need to trace
             return
@@ -201,5 +201,31 @@ class SectionLight(
 
     override operator fun get(index: Int): Byte {
         return light[index]
+    }
+
+    fun propagateFromNeighbours() {
+        val neighbours = section.neighbours ?: return
+        // ToDo(p): this::traceIncrease checks als the block light level, not needed
+        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+                neighbours[Directions.O_DOWN]?.let { traceIncrease(x, 0, z, it.light[x, ProtocolDefinition.SECTION_MAX_Y, z].toInt() and BLOCK_LIGHT_MASK) }
+                neighbours[Directions.O_UP]?.let { traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, it.light[x, 0, z].toInt() and BLOCK_LIGHT_MASK) }
+            }
+            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+                neighbours[Directions.O_NORTH]?.let { traceIncrease(x, y, 0, it.light[x, y, ProtocolDefinition.SECTION_MAX_Z].toInt() and BLOCK_LIGHT_MASK) }
+                neighbours[Directions.O_SOUTH]?.let { traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, it.light[x, y, 0].toInt() and BLOCK_LIGHT_MASK) }
+            }
+        }
+        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+                neighbours[Directions.O_WEST]?.let { traceIncrease(0, y, z, it.light[ProtocolDefinition.SECTION_MAX_Z, y, z].toInt() and BLOCK_LIGHT_MASK) }
+                neighbours[Directions.O_UP]?.let { traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, it.light[0, y, z].toInt() and BLOCK_LIGHT_MASK) }
+            }
+        }
+    }
+
+    companion object {
+        const val BLOCK_LIGHT_MASK = 0x0F
+        const val SKY_LIGHT_MASK = 0xF0
     }
 }

@@ -59,14 +59,13 @@ class Chunk(
     val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
 
     var neighbours: Array<Chunk>? = null
-        set(value) {
+        @Synchronized set(value) {
             if (field.contentEquals(value)) {
                 return
             }
             field = value
             if (value != null) {
                 updateSectionNeighbours(value)
-                recalculateLight()
             }
         }
 
@@ -104,6 +103,7 @@ class Chunk(
         if (blockEntity == null) {
             getOrPutBlockEntity(x, y, z)
         }
+        // ToDo: Remove section if isEmpty
 
         val neighbours = this.neighbours ?: return
 
@@ -250,12 +250,16 @@ class Chunk(
                 if (cacheBiomeAccessor != null && biomesInitialized) {
                     section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
                 }
+                section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, this, sectionHeight)
                 for (neighbour in neighbours) {
                     val neighbourNeighbours = neighbour.neighbours ?: continue
                     neighbour.updateNeighbours(neighbourNeighbours, sectionHeight)
                 }
             }
             sections[sectionIndex] = section
+
+            // check light of neighbours to check if their light needs to be traced into our own chunk
+            section.light.propagateFromNeighbours()
         }
         return section
     }

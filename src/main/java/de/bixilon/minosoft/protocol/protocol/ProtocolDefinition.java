@@ -51,11 +51,12 @@ public final class ProtocolDefinition {
 
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
 
-    public static final int SECTION_WIDTH_X = 16;
+    public static final int SECTION_LENGTH = 16;
+    public static final int SECTION_WIDTH_X = SECTION_LENGTH;
     public static final int SECTION_MAX_X = SECTION_WIDTH_X - 1;
-    public static final int SECTION_WIDTH_Z = 16;
+    public static final int SECTION_WIDTH_Z = SECTION_LENGTH;
     public static final int SECTION_MAX_Z = SECTION_WIDTH_Z - 1;
-    public static final int SECTION_HEIGHT_Y = 16;
+    public static final int SECTION_HEIGHT_Y = SECTION_LENGTH;
     public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
     public static final Vec3i CHUNK_SECTION_SIZE = new Vec3i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_HEIGHT_Y, ProtocolDefinition.SECTION_WIDTH_Z);
