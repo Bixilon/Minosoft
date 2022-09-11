@@ -488,11 +488,11 @@ class WorldRenderer(
             if (section.blocks.fluidCount > 0) {
                 fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
             }
+            runnable.interruptable = false
             if (mesh.clearEmpty() == 0) {
                 return queueItemUnload(item)
             }
             item.mesh = mesh
-            runnable.interruptable = false
             meshesToLoadLock.lock()
             if (meshesToLoadSet.remove(item)) {
                 meshesToLoad.remove(item) // Remove duplicates
@@ -647,10 +647,10 @@ class WorldRenderer(
         }
 
         var addedMeshes = 0
-        val time = TimeUtil.millis
+        val start = TimeUtil.millis
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((TimeUtil.millis - time < maxTime) && meshesToLoad.isNotEmpty()) {
+        while ((TimeUtil.millis - start < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
             meshesToLoadSet.remove(item)
             val mesh = item.mesh ?: continue
