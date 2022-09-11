@@ -172,7 +172,7 @@ class FluidCullSectionPreparer(
 
 
                         val tint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
-                        val light = chunk.getLight(position)
+                        val light = chunk.getLight(x, position.y, z)
                         for ((positionIndex, textureIndex) in meshToUse.order) {
                             meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tint, light)
                         }
