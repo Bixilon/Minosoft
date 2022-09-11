@@ -24,6 +24,7 @@ import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -56,6 +57,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -562,7 +564,7 @@ abstract class Entity(
             updateFluidState(fluid.resourceLocation)
         }
 
-        submergedFluid = null
+        var submergedFluid: Fluid? = null
 
         // ToDo: Boat
         val eyeHeight = eyePosition.y - 0.1111111119389534
@@ -572,11 +574,12 @@ abstract class Entity(
         if (blockState.block !is FluidBlock) {
             return
         }
-        val height = eyePosition.y + blockState.block.fluid.getHeight(blockState)
+        val up = connection.world[eyePosition + Directions.UP]?.block
 
-        if (height > eyeHeight) {
+        if ((up is FluidBlock && up.fluid == blockState.block.fluid) || blockState.block.fluid.getHeight(blockState) > eyeHeight) {
             submergedFluid = blockState.block.fluid
         }
+        this.submergedFluid = submergedFluid
     }
 
     val protectionLevel: Float
