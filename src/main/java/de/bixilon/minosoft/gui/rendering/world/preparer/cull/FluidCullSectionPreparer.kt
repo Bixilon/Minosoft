@@ -28,7 +28,6 @@ import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.Colors
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -48,21 +47,18 @@ import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.isTrue
-import de.bixilon.minosoft.util.chunk.ChunkUtil.acquire
-import de.bixilon.minosoft.util.chunk.ChunkUtil.release
 import java.util.*
 import kotlin.math.atan2
 
 class FluidCullSectionPreparer(
     val renderWindow: RenderWindow,
 ) : FluidSectionPreparer {
-    private val world: World = renderWindow.connection.world
     private val water = renderWindow.connection.registries.fluidRegistry[DefaultFluids.WATER]
     private val tintManager = renderWindow.tintManager
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    private fun _prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val blocks = section.blocks
 
         val random = Random(0L)
@@ -197,6 +193,7 @@ class FluidCullSectionPreparer(
                                 v1 = cornerHeights[0]
                                 v2 = cornerHeights[1]
                             }
+
                             1 -> {
                                 faceX = 1.0f
                                 faceZ = 1.0f
@@ -204,11 +201,13 @@ class FluidCullSectionPreparer(
                                 v1 = cornerHeights[2]
                                 v2 = cornerHeights[3]
                             }
+
                             2 -> {
                                 faceZ = 1.0f
                                 v1 = cornerHeights[3]
                                 v2 = cornerHeights[0]
                             }
+
                             3 -> {
                                 faceX = 1.0f
                                 faceXEnd = 1.0f
@@ -313,17 +312,6 @@ class FluidCullSectionPreparer(
 
 
         return totalHeight / count
-    }
-
-    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
-        section.acquire()
-        neighbours.acquire()
-        try {
-            _prepareFluid(chunkPosition, sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
-        } finally {
-            section.release()
-            neighbours.release()
-        }
     }
 
     private companion object {

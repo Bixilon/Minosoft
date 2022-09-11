@@ -40,8 +40,6 @@ import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRen
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.chunk.ChunkUtil.acquire
-import de.bixilon.minosoft.util.chunk.ChunkUtil.release
 import java.util.*
 
 class SolidCullSectionPreparer(
@@ -58,7 +56,7 @@ class SolidCullSectionPreparer(
         profile.performance::fastBedrock.profileWatch(this, true, profile) { this.fastBedrock = it }
     }
 
-    private fun _prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
+    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val random = Random(0L)
 
         val randomBlockModels = profile.antiMoirePattern
@@ -213,17 +211,6 @@ class SolidCullSectionPreparer(
         light[ordinal] = sectionLight[neighbourIndex]
         if (position.y > chunk.heightmap[nextBaseIndex]) {
             light[ordinal] = (light[ordinal].toInt() or 0xF0).toByte()
-        }
-    }
-
-    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
-        section.acquire()
-        neighbours.acquire()
-        try {
-            _prepareSolid(chunkPosition, sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
-        } finally {
-            section.release()
-            neighbours.release()
         }
     }
 
