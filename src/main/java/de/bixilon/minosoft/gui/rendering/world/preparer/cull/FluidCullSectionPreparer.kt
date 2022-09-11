@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -173,13 +174,7 @@ class FluidCullSectionPreparer(
 
                         val tint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
                         val light = chunk.getLight(x, position.y, z)
-                        for ((positionIndex, textureIndex) in meshToUse.order) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tint, light)
-                        }
-                        // ToDo: Sides that are connecting with non full cubes (e.g. air) also have cullface disabled
-                        for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tint, light)
-                        }
+                        addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light)
                         rendered = true
                     }
                     // ToDo: Sides: Minecraft uses (for water) an overlay texture (with cullface) that is used, when the face fits to a non opaque block
@@ -240,12 +235,7 @@ class FluidCullSectionPreparer(
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
                         val fluidTint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
                         val fluidLight = chunk.getLight(x, offsetY + y, z)
-                        for ((positionIndex, textureIndex) in meshToUse.order) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
-                        }
-                        for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
-                        }
+                        addFluidVertices(meshToUse, positions, texturePositions, flowingTexture, fluidTint, fluidLight)
                         rendered = true
                     }
 
@@ -255,6 +245,15 @@ class FluidCullSectionPreparer(
                     }
                 }
             }
+        }
+    }
+
+    private inline fun addFluidVertices(meshToUse: SingleWorldMesh, positions: Array<Vec3>, texturePositions: Array<Vec2>, flowingTexture: AbstractTexture, fluidTint: Int, fluidLight: Int) {
+        for ((positionIndex, textureIndex) in meshToUse.order) {
+            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
+        }
+        for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
+            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
         }
     }
 
