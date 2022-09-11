@@ -108,12 +108,22 @@ enum class Directions(
         }
     }
 
-    fun getSize(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
-        return when (this) {
+    fun getSize(rotated: Directions, from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
+        var pair = when (this) {
             DOWN, UP -> Pair(from.xz, to.xz)
             NORTH, SOUTH -> Pair(from.xy, to.xy)
             WEST, EAST -> Pair(from.yz, to.yz)
         }
+        if (rotated.negative != negative) {
+            pair = Pair(Vec2(1.0f) - pair.first, Vec2(1.0f) - pair.second)
+
+            pair = Pair(
+                Vec2(minOf(pair.first.x, pair.second.x), minOf(pair.first.y, pair.second.y)),
+                Vec2(maxOf(pair.first.x, pair.second.x), maxOf(pair.first.y, pair.second.y)),
+            )
+        }
+
+        return pair
     }
 
     fun getFallbackUV(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
@@ -144,6 +154,7 @@ enum class Directions(
                     section.blocks.unsafeGet(x, y - 1, z)
                 }
             }
+
             UP -> {
                 if (y == ProtocolDefinition.SECTION_MAX_Y) {
                     neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
@@ -151,6 +162,7 @@ enum class Directions(
                     section.blocks.unsafeGet(x, y + 1, z)
                 }
             }
+
             NORTH -> {
                 if (z == 0) {
                     neighbours[Directions.O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
@@ -158,6 +170,7 @@ enum class Directions(
                     section.blocks.unsafeGet(x, y, z - 1)
                 }
             }
+
             SOUTH -> {
                 if (z == ProtocolDefinition.SECTION_MAX_Z) {
                     neighbours[Directions.O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
@@ -165,6 +178,7 @@ enum class Directions(
                     section.blocks.unsafeGet(x, y, z + 1)
                 }
             }
+
             WEST -> {
                 if (x == 0) {
                     neighbours[Directions.O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
@@ -172,6 +186,7 @@ enum class Directions(
                     section.blocks.unsafeGet(x - 1, y, z)
                 }
             }
+
             EAST -> {
                 if (x == ProtocolDefinition.SECTION_MAX_X) {
                     neighbours[Directions.O_EAST]?.blocks?.unsafeGet(0, y, z)

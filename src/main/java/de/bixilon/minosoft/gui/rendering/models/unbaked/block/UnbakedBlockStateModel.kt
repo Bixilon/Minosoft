@@ -113,7 +113,7 @@ class UnbakedBlockStateModel(
                     }
                 }
 
-                val (sizeStart, sizeEnd) = face.direction.getSize(element.from, element.to)
+                val (sizeStart, sizeEnd) = face.direction.getSize(direction, element.from, element.to)
 
                 var touching = true
                 rotation?.let {
