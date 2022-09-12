@@ -298,12 +298,12 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-        <javafx.version>20-ea+1</javafx.version>
+        <javafx.version>20-ea+2</javafx.version>
         <kotlin.version>1.7.10</kotlin.version>
         <lwjgl.version>3.3.1</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
-        <netty.version>4.1.79.Final</netty.version>
-        <jackson.version>2.13.3</jackson.version>
+        <netty.version>4.1.80.Final</netty.version>
+        <jackson.version>2.13.4</jackson.version>
     </properties>
 
 
@@ -453,7 +453,7 @@
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.2-3</version>
+            <version>1.5.2-4</version>
             <classifier>${zstd.natives}</classifier>
         </dependency>
         <dependency>
