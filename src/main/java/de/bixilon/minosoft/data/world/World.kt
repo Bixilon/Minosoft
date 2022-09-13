@@ -213,7 +213,7 @@ class World(
 
     fun isValidPosition(blockPosition: Vec3i): Boolean {
         val dimension = connection.world.dimension!!
-        return (blockPosition.y >= dimension.minY && blockPosition.y < dimension.maxY)
+        return (blockPosition.y >= dimension.minY && blockPosition.y <= dimension.maxY)
     }
 
     fun forceSetBlockState(blockPosition: Vec3i, blockState: BlockState?, check: Boolean = false) {
@@ -265,8 +265,8 @@ class World(
             inChunkPosition.y = minY
         }
         val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
-        if (inChunkPosition.y >= maxY) {
-            inChunkPosition.y = maxY - 1
+        if (inChunkPosition.y > maxY) {
+            inChunkPosition.y = maxY
         }
         return this[blockPosition.chunkPosition]?.getBiome(inChunkPosition)
     }

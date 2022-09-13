@@ -32,28 +32,24 @@ data class DimensionProperties(
     val bedWorks: Boolean = true,
     val skyProperties: ResourceLocation = ResourceLocation("overworld"),
     val hasRaids: Boolean = true,
-    val logicalHeight: Int = DEFAULT_MAX_Y,
+    val logicalHeight: Int = DEFAULT_HEIGHT,
     val coordinateScale: Double = 0.0,
     val minY: Int = 0,
     val hasCeiling: Boolean = false,
     val ultraWarm: Boolean = false,
-    val dataHeight: Int = DEFAULT_MAX_Y,
+    val dataHeight: Int = DEFAULT_HEIGHT,
     val supports3DBiomes: Boolean = true,
 ) {
-    val maxY = dataHeight + minY
+    val maxY = dataHeight + minY - 1
+    val sections = dataHeight / ProtocolDefinition.SECTION_HEIGHT_Y
     val minSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
         minY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-    val maxSection = if (maxY < 0) {
-        (maxY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
-    } else {
-        maxY / ProtocolDefinition.SECTION_HEIGHT_Y
-    }
+    val maxSection = minSection + sections
 
     val lightLevels = FloatArray(16)
-    val sections = maxSection - minSection
 
     init {
         check(maxSection > minSection) { "Upper section can not be lower that the lower section ($minSection > $maxSection)" }
@@ -71,7 +67,8 @@ data class DimensionProperties(
 
 
     companion object {
-        const val DEFAULT_MAX_Y = 256
+        const val DEFAULT_HEIGHT = 256
+        const val DEFAULT_MAX_Y = DEFAULT_HEIGHT - 1
 
         fun deserialize(data: Map<String, Any>): DimensionProperties {
             return DimensionProperties(
