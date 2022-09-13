@@ -265,8 +265,8 @@ class World(
             inChunkPosition.y = minY
         }
         val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
-        if (inChunkPosition.y > maxY) {
-            inChunkPosition.y = maxY
+        if (inChunkPosition.y >= maxY) {
+            inChunkPosition.y = maxY - 1
         }
         return this[blockPosition.chunkPosition]?.getBiome(inChunkPosition)
     }
