@@ -84,6 +84,7 @@ object KUtil {
                 }
                 map.unsafeCast()
             }
+
             is List<*> -> {
                 val list: MutableList<Any?> = synchronizedListOf()
 
@@ -93,6 +94,7 @@ object KUtil {
 
                 list.unsafeCast()
             }
+
             is Set<*> -> {
                 val set: MutableSet<Any?> = synchronizedSetOf()
 
@@ -102,6 +104,7 @@ object KUtil {
 
                 set.unsafeCast()
             }
+
             is ItemStack -> this.copy().unsafeCast()
             is ChatComponent -> this
             is String -> this
@@ -163,6 +166,7 @@ object KUtil {
                         }
                     ).color(ChatColors.YELLOW)
                 }
+
                 is Float -> "§d%.3f".format(this)
                 is Double -> "§d%.4f".format(this)
                 is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
@@ -293,5 +297,21 @@ object KUtil {
         ShutdownManager += {
             Platform.exit()
         }
+    }
+
+    inline fun <T> Array<T>.trySet(index: Int, value: T): Boolean {
+        if (index < 0 || index >= size) {
+            return false
+        }
+        this[index] = value
+        return true
+    }
+
+    inline fun BooleanArray.trySet(index: Int, value: Boolean): Boolean {
+        if (index < 0 || index >= size) {
+            return false
+        }
+        this[index] = value
+        return true
     }
 }

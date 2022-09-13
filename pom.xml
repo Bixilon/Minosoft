@@ -302,7 +302,7 @@
         <kotlin.version>1.7.10</kotlin.version>
         <lwjgl.version>3.3.1</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
-        <netty.version>4.1.80.Final</netty.version>
+        <netty.version>4.1.81.Final</netty.version>
         <jackson.version>2.13.4</jackson.version>
     </properties>
 
@@ -453,7 +453,7 @@
         <dependency>
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.2-4</version>
+            <version>1.5.2-3</version>
             <classifier>${zstd.natives}</classifier>
         </dependency>
         <dependency>
