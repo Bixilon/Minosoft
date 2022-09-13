@@ -39,14 +39,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.concurrent.TimeoutException
 
 class StatusConnection(
-    address: String,
+    var address: String,
     var forcedVersion: Version? = null,
 ) : Connection() {
-    var address = address
-        set(value) {
-            check(state == StatusConnectionStates.ERROR || state == StatusConnectionStates.ERROR) { "Can not change address while being connected!" }
-            field = value
-        }
     var lastServerStatus: ServerStatus? by watched(null)
     var pingQuery: PingQuery? by watched(null)
     var lastPongEvent: StatusPongReceiveEvent? = null
