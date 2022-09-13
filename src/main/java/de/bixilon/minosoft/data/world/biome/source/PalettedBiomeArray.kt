@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.biome.source
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 class PalettedBiomeArray(
@@ -24,6 +25,6 @@ class PalettedBiomeArray(
     private val mask = (1 shl edgeBits) - 1
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        return containers.getOrNull(y.sectionHeight - lowestSection)?.get(((((y.sectionHeight and mask) shl edgeBits) or (z and mask)) shl edgeBits) or (x and mask))
+        return containers.getOrNull(y.sectionHeight - lowestSection)?.get(((((y.inSectionHeight and mask) shl edgeBits) or (z and mask)) shl edgeBits) or (x and mask))
     }
 }
