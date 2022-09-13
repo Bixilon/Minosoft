@@ -88,7 +88,7 @@ class ChunkBorderRenderer(
 
         mesh.drawInnerChunkLines(basePosition, dimension)
 
-        if (sectionHeight in dimension.minSection..dimension.maxSection) {
+        if (sectionHeight in dimension.minSection until dimension.maxSection) {
             mesh.drawSectionLines(Vec3i(basePosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, basePosition.y))
         }
 
