@@ -127,7 +127,7 @@ class SectionLight(
 
         val neighbourLuminance = nextLuminance - 1
 
-        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.DOWN) != false) {
+        if (source == null || (source != Directions.DOWN && block?.lightProperties?.propagatesBlockLight(source, Directions.DOWN) != false)) {
             if (y > 0) {
                 traceIncrease(x, y - 1, z, neighbourLuminance, Directions.UP)
             } else if (section.sectionHeight == section.chunk?.lowestSection) {
@@ -136,7 +136,7 @@ class SectionLight(
                 neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.UP)
             }
         }
-        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.UP) != false) {
+        if (source == null || (source != Directions.UP && block?.lightProperties?.propagatesBlockLight(source, Directions.UP) != false)) {
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceIncrease(x, y + 1, z, neighbourLuminance, Directions.DOWN)
             } else if (section.sectionHeight == section.chunk?.highestSection) {
@@ -146,28 +146,28 @@ class SectionLight(
             }
         }
 
-        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.NORTH) != false) {
+        if (source == null || (source != Directions.NORTH && block?.lightProperties?.propagatesBlockLight(source, Directions.NORTH) != false)) {
             if (z > 0) {
                 traceIncrease(x, y, z - 1, neighbourLuminance, Directions.SOUTH)
             } else {
                 neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, Directions.SOUTH)
             }
         }
-        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.SOUTH) != false) {
+        if (source == null || (source != Directions.SOUTH && block?.lightProperties?.propagatesBlockLight(source, Directions.SOUTH) != false)) {
             if (z < ProtocolDefinition.SECTION_MAX_Y) {
                 traceIncrease(x, y, z + 1, neighbourLuminance, Directions.NORTH)
             } else {
                 neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance, Directions.NORTH)
             }
         }
-        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.WEST) != false) {
+        if (source == null || (source != Directions.WEST && block?.lightProperties?.propagatesBlockLight(source, Directions.WEST) != false)) {
             if (x > 0) {
                 traceIncrease(x - 1, y, z, neighbourLuminance, Directions.EAST)
             } else {
                 neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, Directions.EAST)
             }
         }
-        if (source == null || block?.lightProperties?.propagatesBlockLight(source, Directions.EAST) != false) {
+        if (source == null || (source != Directions.EAST && block?.lightProperties?.propagatesBlockLight(source, Directions.EAST) != false)) {
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 traceIncrease(x + 1, y, z, neighbourLuminance, Directions.WEST)
             } else {
