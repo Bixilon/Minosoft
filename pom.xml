@@ -298,7 +298,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
-        <javafx.version>20-ea+2</javafx.version>
+        <javafx.version>19</javafx.version>
         <kotlin.version>1.7.10</kotlin.version>
         <lwjgl.version>3.3.1</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
