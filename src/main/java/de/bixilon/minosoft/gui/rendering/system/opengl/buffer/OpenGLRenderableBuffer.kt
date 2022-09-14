@@ -50,7 +50,7 @@ abstract class OpenGLRenderableBuffer(
     }
 
     override fun unload() {
-        check(state == RenderableBufferStates.UPLOADED) { "Can not unload $state buffer!" }
+        check(state == RenderableBufferStates.UPLOADED) { "Buffer is not uploaded: $state" }
         glDeleteBuffers(id)
         if (renderSystem.boundBuffer == id) {
             renderSystem.boundBuffer = -1

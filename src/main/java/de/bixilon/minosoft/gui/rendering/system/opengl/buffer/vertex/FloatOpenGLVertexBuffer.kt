@@ -73,7 +73,7 @@ class FloatOpenGLVertexBuffer(
     }
 
     override fun draw() {
-        check(state == RenderableBufferStates.UPLOADED) { "Can not draw $state vertex buffer!" }
+        check(state == RenderableBufferStates.UPLOADED) { "Vertex buffer is not uploaded: $state" }
         bindVao()
         glDrawArrays(primitiveType.gl, 0, vertices)
     }

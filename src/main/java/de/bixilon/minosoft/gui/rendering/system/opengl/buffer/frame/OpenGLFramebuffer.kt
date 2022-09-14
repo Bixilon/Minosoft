@@ -53,12 +53,13 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         //depthTexture.init()
         //attach(depthTexture)
 
-        check(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete!" }
-        state = FramebufferState.COMPLETE
+        val state = glCheckFramebufferStatus(GL_FRAMEBUFFER)
+        check(state == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete: $state" }
+        this.state = FramebufferState.COMPLETE
     }
 
     fun bind() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         unsafeBind()
     }
 
@@ -80,14 +81,14 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
     }
 
     override fun delete() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         glDeleteFramebuffers(id)
         id = -1
         state = FramebufferState.DELETED
     }
 
     override fun bindTexture() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         colorTexture.bind(0)
         if (this::depthTexture.isInitialized) {
             depthTexture.bind(1)
