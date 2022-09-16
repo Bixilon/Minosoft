@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -133,7 +134,7 @@ class SectionLight(
             } else if (section.sectionHeight == section.chunk?.lowestSection) {
                 section.chunk?.bottomLight?.traceIncrease(x, z, neighbourLuminance)
             } else {
-                neighbours[Directions.O_DOWN]?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.UP)
+                (neighbours[Directions.O_DOWN] ?: section.chunk?.getOrPut(section.sectionHeight - 1, false))?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.UP)
             }
         }
         if (source == null || (source != Directions.UP && block?.lightProperties?.propagatesBlockLight(source, Directions.UP) != false)) {
@@ -142,7 +143,7 @@ class SectionLight(
             } else if (section.sectionHeight == section.chunk?.highestSection) {
                 section.chunk?.topLight?.traceIncrease(x, z, neighbourLuminance)
             } else {
-                neighbours[Directions.O_UP]?.light?.traceIncrease(x, 0, z, neighbourLuminance, Directions.DOWN)
+                (neighbours[Directions.O_UP] ?: section.chunk?.getOrPut(section.sectionHeight + 1, false))?.light?.traceIncrease(x, 0, z, neighbourLuminance, Directions.DOWN)
             }
         }
 
@@ -150,28 +151,28 @@ class SectionLight(
             if (z > 0) {
                 traceIncrease(x, y, z - 1, neighbourLuminance, Directions.SOUTH)
             } else {
-                neighbours[Directions.O_NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, Directions.SOUTH)
+                (neighbours[Directions.O_NORTH] ?: section.chunk?.neighbours?.get(ChunkNeighbours.NORTH)?.getOrPut(section.sectionHeight - 1, false))?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, Directions.SOUTH)
             }
         }
         if (source == null || (source != Directions.SOUTH && block?.lightProperties?.propagatesBlockLight(source, Directions.SOUTH) != false)) {
             if (z < ProtocolDefinition.SECTION_MAX_Y) {
                 traceIncrease(x, y, z + 1, neighbourLuminance, Directions.NORTH)
             } else {
-                neighbours[Directions.O_SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance, Directions.NORTH)
+                (neighbours[Directions.O_SOUTH] ?: section.chunk?.neighbours?.get(ChunkNeighbours.SOUTH)?.getOrPut(section.sectionHeight, false))?.light?.traceIncrease(x, y, 0, neighbourLuminance, Directions.NORTH)
             }
         }
         if (source == null || (source != Directions.WEST && block?.lightProperties?.propagatesBlockLight(source, Directions.WEST) != false)) {
             if (x > 0) {
                 traceIncrease(x - 1, y, z, neighbourLuminance, Directions.EAST)
             } else {
-                neighbours[Directions.O_WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, Directions.EAST)
+                (neighbours[Directions.O_WEST] ?: section.chunk?.neighbours?.get(ChunkNeighbours.WEST)?.getOrPut(section.sectionHeight, false))?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, Directions.EAST)
             }
         }
         if (source == null || (source != Directions.EAST && block?.lightProperties?.propagatesBlockLight(source, Directions.EAST) != false)) {
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 traceIncrease(x + 1, y, z, neighbourLuminance, Directions.WEST)
             } else {
-                neighbours[Directions.O_EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance, Directions.WEST)
+                (neighbours[Directions.O_EAST] ?: section.chunk?.neighbours?.get(ChunkNeighbours.EAST)?.getOrPut(section.sectionHeight, false))?.light?.traceIncrease(0, y, z, neighbourLuminance, Directions.WEST)
             }
         }
     }

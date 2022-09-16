@@ -234,7 +234,7 @@ class Chunk(
     }
 
     @Synchronized
-    private fun getOrPut(sectionHeight: Int): ChunkSection? {
+    fun getOrPut(sectionHeight: Int, calculateLight: Boolean = true): ChunkSection? {
         val sections = sections ?: return null
         val sectionIndex = sectionHeight - lowestSection
         if (sectionIndex < 0 || sectionIndex >= sections.size) {
@@ -268,7 +268,9 @@ class Chunk(
             }
 
             // check light of neighbours to check if their light needs to be traced into our own chunk
-            section.light.propagateFromNeighbours()
+            if (calculateLight) {
+                section.light.propagateFromNeighbours()
+            }
         }
         return section
     }
