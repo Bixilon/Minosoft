@@ -46,6 +46,7 @@ class JarAssetsManager(
     val clientJarHash: String,
     val profile: ResourcesProfile,
     val version: Version,
+    val expectedTarBytes: Int = DEFAULT_TAR_BYTES,
 ) : MinecraftAssetsManager {
     override var loaded: Boolean = false
         private set
@@ -75,7 +76,7 @@ class JarAssetsManager(
             }
 
             val buildingJarAsset: MutableMap<String, ByteArray> = mutableMapOf()
-            val byteOutputStream = ByteArrayOutputStream(10_000_0000) // ToDo: Memory optimize this
+            val byteOutputStream = ByteArrayOutputStream(expectedTarBytes)
             val tarOutputStream = TarOutputStream(byteOutputStream)
             for ((filename, data) in clientJar) {
                 if (!filename.startsWith("assets/")) {
@@ -111,10 +112,11 @@ class JarAssetsManager(
                 tarOutputStream.flush()
             }
             tarOutputStream.close()
-            val savedHash = FileAssetsUtil.saveAsset(byteOutputStream.toByteArray())
+            val tarBytes = byteOutputStream.toByteArray()
+            val savedHash = FileAssetsUtil.saveAsset(tarBytes)
             File(FileAssetsUtil.getPath(clientJarHash)).delete()
             if (savedHash != jarAssetsHash) {
-                throw InvalidAssetException("jar_assets".toResourceLocation(), savedHash, jarAssetsHash)
+                throw InvalidAssetException("jar_assets".toResourceLocation(), savedHash, jarAssetsHash, tarBytes.size)
             }
 
             this.jarAssets = buildingJarAsset
@@ -147,6 +149,7 @@ class JarAssetsManager(
     }
 
     companion object {
+        const val DEFAULT_TAR_BYTES = 10_000_000
         private val REQUIRED_FILE_PREFIXES = arrayOf(
             "blockstates/",
             "font/",

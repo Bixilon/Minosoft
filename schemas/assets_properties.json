@@ -25,6 +25,10 @@
         },
         "pixlyzer_hash": {
           "$ref": "#/definitions/hash"
+        },
+        "jar_assets_tar_bytes": {
+          "type": "number",
+          "minimum": 0
         }
       },
       "required": [

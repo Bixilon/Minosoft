@@ -42,7 +42,7 @@ object AssetsPropertiesGenerator {
             assetsManager.load(CountUpAndDownLatch(1))
         } catch (exception: InvalidAssetException) {
             // this exception is thrown, because our initial hash is "dummy"
-            stream.print(exception.hash)
+            stream.print(exception.hash + ":" + exception.tarBytes)
             exitProcess(0)
         }
         exitProcess(1)
