@@ -140,6 +140,21 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         return shouldDrawLine(start.toVec3d, end.toVec3d)
     }
 
+    override fun toString(): String {
+        return aabbs.toString()
+    }
+
+    override fun hashCode(): Int {
+        return aabbs.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is VoxelShape) return false
+        if (other.hashCode() != hashCode()) return false
+        return aabbs == other.aabbs
+    }
+
     companion object {
         val EMPTY = VoxelShape()
         val FULL = VoxelShape(mutableListOf(AABB.BLOCK))
