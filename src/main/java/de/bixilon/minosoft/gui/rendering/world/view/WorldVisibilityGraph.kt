@@ -218,7 +218,7 @@ class WorldVisibilityGraph(
     }
 
     private fun VisibilityGraph.checkSection(chunkPosition: Vec2i, sectionIndex: Int, chunk: Chunk, visibilities: BooleanArray, direction: Directions, directionX: Int, directionY: Int, directionZ: Int, ignoreVisibility: Boolean) {
-        if ((direction == Directions.UP && sectionIndex >= maxIndex) || (direction == Directions.DOWN && sectionIndex <= 0)) {
+        if ((direction == Directions.UP && sectionIndex >= maxIndex) || (direction == Directions.DOWN && sectionIndex < 0)) {
             return
         }
         if (!isInViewDistance(chunkPosition)) {
