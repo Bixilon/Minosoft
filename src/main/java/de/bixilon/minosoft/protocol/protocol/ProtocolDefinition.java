@@ -100,4 +100,7 @@ public final class ProtocolDefinition {
         }
         LAN_SERVER_BROADCAST_INET_ADDRESS = inetAddress;
     }
+
+    public static final String VANILLA_BRAND = "vanilla";
+    public static final String MINOSOFT_BRAND = "minosoft";
 }

@@ -37,7 +37,6 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
         }
         val latency = TimeUtil.nanos - pingQuery.nanos
         connection.network.disconnect()
-        // ToDo: Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
         val pongEvent = StatusPongReceiveEvent(connection, EventInitiators.SERVER, pingId, latency)
         connection.lastPongEvent = pongEvent
         connection.fireEvent(pongEvent)

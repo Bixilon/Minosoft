@@ -16,9 +16,11 @@ package de.bixilon.minosoft.protocol.network.connection.play.plugin
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
+import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PluginC2SP
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 object DefaultPluginHandler {
 
@@ -31,13 +33,13 @@ object DefaultPluginHandler {
         connection.pluginManager[brandChannel] = {
             connection.serverInfo.brand = it.readString()
 
-            sendBrand(brandChannel, connection) // ToDo: Option to set brand
+            sendBrand(brandChannel, connection, if (connection.profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
         }
     }
 
-    private fun sendBrand(channel: ResourceLocation, connection: PlayConnection, brand: String = "vanilla") {
+    private fun sendBrand(channel: ResourceLocation, connection: PlayConnection, brand: String) {
         val buffer = PlayOutByteBuffer(connection)
-        buffer.writeString(brand) // ToDo: Remove length prefix
+        buffer.writeByteArray(brand.encodeNetwork())
         connection.sendPacket(PluginC2SP(channel, buffer))
     }
 }

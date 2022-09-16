@@ -54,7 +54,6 @@ object ChunkUtil {
 
     private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData {
         val chunkData = ChunkData()
-        // ToDo chunkData.lightAccessor = DummyLightAccessor
 
         val totalBytes = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val halfBytes = totalBytes / 2
@@ -122,7 +121,6 @@ object ChunkUtil {
             return readLegacyChunkWithAddBitSet(buffer, dimension, sectionBitMask, addBitMask!!, isFullChunk, containsSkyLight)
         }
         val chunkData = ChunkData()
-        // ToDo: chunkData.lightAccessor = DummyLightAccessor
 
         val totalEntries: Int = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2

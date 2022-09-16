@@ -401,7 +401,7 @@ open class InByteBuffer {
         }
         val type = NBTTagTypes[readUnsignedByte()]
         if (type === NBTTagTypes.COMPOUND) {
-            var name = readString(readUnsignedShort()) // ToDo
+            var name = readString(readUnsignedShort()) // ToDo: Should this name be ignored?
         }
         return readNBTTag(type)
     }
