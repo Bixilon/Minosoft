@@ -29,7 +29,7 @@ class CreditsScreen(
     guiRenderer: GUIRenderer,
 ) : Screen(guiRenderer) {
     private val headerElement = TextElement(guiRenderer, "Minecraft", background = false, scale = 3.0f, parent = this)
-    private val textElement = TextElement(guiRenderer, "Ähm, yes. This is not yet implemented -/-\nI am so sorry...", background = false, parent = this)
+    private val textElement = TextElement(guiRenderer, "Ähm, yes. This is not yet implemented -/-\nI don't know how to make moving text in the current gui system.\nI am so sorry...", background = false, parent = this)
 
 
     override fun forceRender(offset: Vec2i, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
