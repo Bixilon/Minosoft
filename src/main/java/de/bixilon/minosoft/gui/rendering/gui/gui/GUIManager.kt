@@ -296,25 +296,27 @@ class GUIManager(
             return
         }
 
-        orderLock.acquire()
+        orderLock.lock()
         val index = elementOrder.indexOf(element)
-        orderLock.release()
+        elementOrder.removeAt(index)
+        var first: GUIElement? = null
+        if (index == 0) {
+            first = elementOrder.firstOrNull()
+        }
+        orderLock.unlock()
         if (index < 0) {
             return
         }
         element.onClose()
-        orderLock.lock()
-        elementOrder.removeAt(index)
-        orderLock.unlock()
-        if (index == 0) {
-            elementOrder.firstOrNull()?.onOpen()
-        }
+        first?.onOpen()
 
+        orderLock.acquire()
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
         }
+        orderLock.release()
     }
 
     fun pop() {
@@ -332,13 +334,17 @@ class GUIManager(
             return
         }
         previous.onClose()
+        orderLock.acquire()
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
             guiRenderer.popper.clear()
             guiRenderer.dragged.element = null
+            orderLock.release()
+        } else {
+            val first = elementOrder.firstOrNull()
+            orderLock.release()
+            first?.onOpen()
         }
-        val now = elementOrder.firstOrNull() ?: return
-        now.onOpen()
     }
 
     fun clear() {
