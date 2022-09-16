@@ -104,13 +104,13 @@ class ChunkSection(
 
     companion object {
 
-        val Vec3i.index: Int
+        inline val Vec3i.index: Int
             get() = getIndex(x, y, z)
 
-        val Int.indexPosition: Vec3i
+        inline val Int.indexPosition: Vec3i
             get() = Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
 
-        fun getIndex(x: Int, y: Int, z: Int): Int {
+        inline fun getIndex(x: Int, y: Int, z: Int): Int {
             return y shl 8 or (z shl 4) or x
         }
     }
