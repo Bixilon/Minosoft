@@ -66,7 +66,7 @@ object KUtil {
         return when (this) {
             is String -> ResourceLocation(this)
             is ResourceLocation -> this
-            else -> TODO("Don't know how to turn $this into a resource location!")
+            else -> throw IllegalArgumentException("Don't know how to turn $this into a resource location!")
         }
     }
 
@@ -217,6 +217,17 @@ object KUtil {
         return null
     }
 
+    private inline fun String.checkInt(): Int? {
+        var first = true
+        for (point in codePoints()) {
+            if (point < '0'.code || point > '9'.code || (first && point == '-'.code)) {
+                return null
+            }
+            first = false
+        }
+        return this.toInt()
+    }
+
     fun Any?.autoType(): Any? {
         if (this == null) {
             return null
@@ -233,10 +244,7 @@ object KUtil {
             return false
         }
 
-        // ToDo: Optimize
-        if (string.matches("\\d+".toRegex())) {
-            return string.toInt()
-        }
+        string.checkInt()?.let { return it }
 
         return string
     }

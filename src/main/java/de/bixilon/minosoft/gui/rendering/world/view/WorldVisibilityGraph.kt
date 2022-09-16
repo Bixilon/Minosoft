@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
+import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -140,7 +141,7 @@ class WorldVisibilityGraph(
         return frustum.containsAABB(aabb)
     }
 
-    fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = DEFAULT_MIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE, checkChunk: Boolean = true): Boolean {
+    fun isSectionVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: InChunkSectionPosition = DEFAULT_MIN_POSITION, maxPosition: InChunkSectionPosition = ProtocolDefinition.CHUNK_SECTION_SIZE, checkChunk: Boolean = true): Boolean {
         if (checkChunk && !isChunkVisible(chunkPosition)) {
             return false
         }
