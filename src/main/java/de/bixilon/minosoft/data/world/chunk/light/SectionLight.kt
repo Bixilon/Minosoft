@@ -211,7 +211,7 @@ class SectionLight(
     }
 
 
-    override operator fun get(index: Int): Byte {
+    override inline operator fun get(index: Int): Byte {
         return light[index]
     }
 
@@ -238,8 +238,41 @@ class SectionLight(
         }
     }
 
-    fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int) {
+    fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions) {
+        val index = getIndex(x, y, z)
+        val currentLight = this[index].toInt()
+        val currentSkylight = (currentLight and SKY_LIGHT_MASK) shr 4
+        if (currentSkylight >= nextLevel) {
+            return
+        }
 
+        val light = section.blocks[index]?.lightProperties
+
+        if (light != null && !light.propagatesSkylight) {
+            return
+        }
+        this.light[index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
+
+        val nextNeighbourLevel = nextLevel - 1
+        // ToDo: Neighbours
+        if (y > 0 && (light == null || light.propagatesSkylight(direction, Directions.DOWN))) {
+            traceSkylight(x, y - 1, z, nextNeighbourLevel, Directions.DOWN)
+        }
+        if (y < ProtocolDefinition.SECTION_MAX_Y && (light == null || light.propagatesSkylight(direction, Directions.UP))) {
+            traceSkylight(x, y + 1, z, nextNeighbourLevel, Directions.UP)
+        }
+        if (z > 0 && (light == null || light.propagatesSkylight(direction, Directions.NORTH))) {
+            traceSkylight(x, y, z - 1, nextNeighbourLevel, Directions.NORTH)
+        }
+        if (z < ProtocolDefinition.SECTION_MAX_Z && (light == null || light.propagatesSkylight(direction, Directions.SOUTH))) {
+            traceSkylight(x, y, z + 1, nextNeighbourLevel, Directions.SOUTH)
+        }
+        if (x > 0 && (light == null || light.propagatesSkylight(direction, Directions.WEST))) {
+            traceSkylight(x - 1, y, z, nextNeighbourLevel, Directions.WEST)
+        }
+        if (x < ProtocolDefinition.SECTION_MAX_X && (light == null || light.propagatesSkylight(direction, Directions.EAST))) {
+            traceSkylight(x + 1, y, z, nextNeighbourLevel, Directions.EAST)
+        }
     }
 
     companion object {

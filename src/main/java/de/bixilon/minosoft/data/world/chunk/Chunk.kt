@@ -524,6 +524,7 @@ class Chunk(
                 maxSection.light.light[index] = (maxSection.light.light[index].toInt() and 0x0F or 0xF0).toByte()
             }
             maxSection.light.update = true
+            maxSection.light.traceSkylight(x, maxHeight.inSectionHeight, z, ProtocolDefinition.LIGHT_LEVELS - 1, Directions.UP)
         }
     }
 }
