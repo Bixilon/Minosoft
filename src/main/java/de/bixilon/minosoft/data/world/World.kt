@@ -38,6 +38,8 @@ import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.view.WorldView
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -87,16 +89,16 @@ class World(
     var chunkMax = Vec2i(Int.MIN_VALUE)
     var chunkSize = Vec2i.EMPTY
 
-    operator fun get(blockPosition: Vec3i): BlockState? {
+    operator fun get(blockPosition: BlockPosition): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
     }
 
-    operator fun get(chunkPosition: Vec2i): Chunk? {
+    operator fun get(chunkPosition: ChunkPosition): Chunk? {
         return chunks[chunkPosition]
     }
 
     @Synchronized
-    private fun updateChunkExtreme(chunkPosition: Vec2i, mass: Boolean = false) {
+    private fun updateChunkExtreme(chunkPosition: ChunkPosition, mass: Boolean = false) {
         var changes = 0
         if (chunkPosition.x < chunkMin.x) {
             chunkMin.x = chunkPosition.x
@@ -166,12 +168,12 @@ class World(
         chunks.lock.unlock()
     }
 
-    fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
+    fun getOrCreateChunk(chunkPosition: ChunkPosition): Chunk {
         updateChunkExtreme(chunkPosition)
         return chunks.synchronizedGetOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
     }
 
-    private fun _set(chunk: Chunk, blockPosition: Vec3i, blockState: BlockState?) {
+    private fun _set(chunk: Chunk, blockPosition: BlockPosition, blockState: BlockState?) {
         val inChunkPosition = blockPosition.inChunkPosition
         val previousBlock = chunk[inChunkPosition]
         if (previousBlock == blockState) {
@@ -190,40 +192,40 @@ class World(
         )
     }
 
-    fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
+    fun setBlockState(blockPosition: BlockPosition, blockState: BlockState?) {
         this[blockPosition] = blockState
     }
 
-    operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
+    operator fun set(blockPosition: BlockPosition, blockState: BlockState?) {
         val chunk = chunks[blockPosition.chunkPosition] ?: return
         _set(chunk, blockPosition, blockState)
     }
 
-    fun forceSet(blockPosition: Vec3i, blockState: BlockState?) {
+    fun forceSet(blockPosition: BlockPosition, blockState: BlockState?) {
         val chunk = getOrCreateChunk(blockPosition.chunkPosition)
         _set(chunk, blockPosition, blockState)
     }
 
-    fun isPositionChangeable(blockPosition: Vec3i): Boolean {
+    fun isPositionChangeable(blockPosition: BlockPosition): Boolean {
         if (border.isOutside(blockPosition)) {
             return false
         }
         return isValidPosition(blockPosition)
     }
 
-    fun isValidPosition(blockPosition: Vec3i): Boolean {
+    fun isValidPosition(blockPosition: BlockPosition): Boolean {
         val dimension = connection.world.dimension!!
         return (blockPosition.y >= dimension.minY && blockPosition.y <= dimension.maxY)
     }
 
-    fun forceSetBlockState(blockPosition: Vec3i, blockState: BlockState?, check: Boolean = false) {
+    fun forceSetBlockState(blockPosition: BlockPosition, blockState: BlockState?, check: Boolean = false) {
         if (check && !isPositionChangeable(blockPosition)) {
             return
         }
         chunks[blockPosition.chunkPosition]?.set(blockPosition.inChunkPosition, blockState)
     }
 
-    fun unloadChunk(chunkPosition: Vec2i) {
+    fun unloadChunk(chunkPosition: ChunkPosition) {
         val chunk = chunks.remove(chunkPosition) ?: return
         val neighbourPositions = getChunkNeighbourPositions(chunkPosition)
         for (neighbourPosition in neighbourPositions) {
@@ -239,26 +241,26 @@ class World(
         occlusionUpdateCallback?.onOcclusionChange()
     }
 
-    fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
+    fun getBlockEntity(blockPosition: BlockPosition): BlockEntity? {
         return get(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
     }
 
-    fun getOrPutBlockEntity(blockPosition: Vec3i): BlockEntity? {
+    fun getOrPutBlockEntity(blockPosition: BlockPosition): BlockEntity? {
         return get(blockPosition.chunkPosition)?.getOrPutBlockEntity(blockPosition.inChunkPosition)
     }
 
-    fun setBlockEntity(blockPosition: Vec3i, blockEntity: BlockEntity?) {
+    fun setBlockEntity(blockPosition: BlockPosition, blockEntity: BlockEntity?) {
         get(blockPosition.chunkPosition)?.setBlockEntity(blockPosition.inChunkPosition, blockEntity)
     }
 
 
-    fun setBlockEntities(blockEntities: Map<Vec3i, BlockEntity>) {
+    fun setBlockEntities(blockEntities: Map<BlockPosition, BlockEntity>) {
         for ((blockPosition, blockEntity) in blockEntities) {
             setBlockEntity(blockPosition, blockEntity)
         }
     }
 
-    override fun getBiome(blockPosition: Vec3i): Biome? {
+    override fun getBiome(blockPosition: BlockPosition): Biome? {
         val inChunkPosition = blockPosition.inChunkPosition
         val minY = dimension?.minY ?: 0
         if (inChunkPosition.y < minY) {
@@ -305,7 +307,7 @@ class World(
         }
     }
 
-    private fun randomTick(radius: Int, origin: Vec3i, chunk: Chunk) {
+    private fun randomTick(radius: Int, origin: BlockPosition, chunk: Chunk) {
         val offset = Vec3i.EMPTY + { random.nextInt(-radius, radius) }
         val blockPosition = origin + offset
 
@@ -314,7 +316,7 @@ class World(
         blockState.block.randomTick(connection, blockState, blockPosition, random)
     }
 
-    operator fun get(aabb: AABB): Map<Vec3i, BlockState> {
+    operator fun get(aabb: AABB): Map<BlockPosition, BlockState> {
         val ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
         var run = 0
         var chunk: Chunk? = null
@@ -348,14 +350,14 @@ class World(
         return true
     }
 
-    fun getLight(blockPosition: Vec3i): Int {
+    fun getLight(blockPosition: BlockPosition): Int {
         return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0x00
     }
 
     /**
      * @return All 8 neighbour chunks
      */
-    fun getChunkNeighbours(neighbourPositions: Array<Vec2i>): Array<Chunk?> {
+    fun getChunkNeighbours(neighbourPositions: Array<ChunkPosition>): Array<Chunk?> {
         val chunks: Array<Chunk?> = arrayOfNulls(neighbourPositions.size)
         for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
             chunks[index] = this[neighbourPosition] ?: continue
@@ -363,11 +365,11 @@ class World(
         return chunks
     }
 
-    fun getChunkNeighbours(chunkPosition: Vec2i): Array<Chunk?> {
+    fun getChunkNeighbours(chunkPosition: ChunkPosition): Array<Chunk?> {
         return getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
     }
 
-    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk, checkNeighbours: Boolean = true) {
+    fun onChunkUpdate(chunkPosition: ChunkPosition, chunk: Chunk, checkNeighbours: Boolean = true) {
         if (chunk.isFullyLoaded) {
             return
         }
@@ -399,9 +401,10 @@ class World(
         }
     }
 
-    fun getBrightness(position: Vec3i): Float {
-        val light = getLight(position) and 0x0F
-        return dimension?.lightLevels?.get(light) ?: 0.0f
+    fun getBrightness(position: BlockPosition): Float {
+        val light = getLight(position)
+        val level = maxOf(light and 0x0F, light and 0xF0)
+        return dimension?.lightLevels?.get(level) ?: 0.0f
     }
 
     fun recalculateLight() {

@@ -155,12 +155,12 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         return aabbs == other.aabbs
     }
 
-    companion object {
-        val EMPTY = VoxelShape()
-        val FULL = VoxelShape(mutableListOf(AABB.BLOCK))
-    }
-
     override fun iterator(): Iterator<AABB> {
         return aabbs.iterator()
+    }
+
+    companion object {
+        val EMPTY = VoxelShape()
+        val FULL = VoxelShape(AABB.BLOCK)
     }
 }

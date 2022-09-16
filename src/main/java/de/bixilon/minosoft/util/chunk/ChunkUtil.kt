@@ -29,6 +29,8 @@ import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -272,7 +274,7 @@ object ChunkUtil {
         }
 
 
-    fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
+    fun getChunkNeighbourPositions(chunkPosition: ChunkPosition): Array<ChunkPosition> {
         return arrayOf(
             chunkPosition + Vec2i(-1, -1), // 0
             chunkPosition + Vec2i(-1, +0), // 1
@@ -288,7 +290,7 @@ object ChunkUtil {
     /**
      * @param neighbourChunks: **Fully loaded** direct neighbour chunks
      */
-    fun getDirectNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
+    fun getDirectNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
         return arrayOf(
             chunk[sectionHeight - 1],
             chunk[sectionHeight + 1],
@@ -302,7 +304,7 @@ object ChunkUtil {
     /**
      * @param neighbourChunks: **Fully loaded** direct neighbour chunks
      */
-    fun getAllNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
+    fun getAllNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
         return arrayOf(
             neighbourChunks[0][sectionHeight - 1], // 0, (-1 | -1)
             neighbourChunks[1][sectionHeight - 1], // 1, (-1 | +0)
@@ -348,7 +350,7 @@ object ChunkUtil {
         }
     }
 
-    fun Vec2i.isInViewDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
+    fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
         return abs(this.x - cameraPosition.x) <= viewDistance && abs(this.y - cameraPosition.y) <= viewDistance
     }
 }

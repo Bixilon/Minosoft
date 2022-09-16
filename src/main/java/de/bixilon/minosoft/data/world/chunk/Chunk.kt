@@ -26,6 +26,8 @@ import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.light.BorderSectionLight
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
+import de.bixilon.minosoft.data.world.positions.InChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
@@ -79,7 +81,7 @@ class Chunk(
         // connection.world.view.updateServerViewDistance(chunkPosition, true)
     }
 
-    operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
+    operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
     fun unsafeGet(x: Int, y: Int, z: Int): BlockState? {
         return this[y.sectionHeight]?.blocks?.unsafeGet(x, y.inSectionHeight, z)
@@ -89,7 +91,7 @@ class Chunk(
         return this[y.sectionHeight]?.blocks?.get(x, y.inSectionHeight, z)
     }
 
-    operator fun get(position: Vec3i): BlockState? = get(position.x, position.y, position.z)
+    operator fun get(position: InChunkPosition): BlockState? = get(position.x, position.y, position.z)
 
     fun unsafeGet(position: Vec3i): BlockState? = unsafeGet(position.x, position.y, position.z)
 

@@ -128,12 +128,10 @@ data class BlockState(
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
 
-            val lightProperties: LightProperties
-
-            if (outlineShape == VoxelShape.FULL) {
-                lightProperties = if (data["is_opaque"]?.toBoolean() != false) SolidProperty else TransparentProperty
+            val lightProperties = if (outlineShape == VoxelShape.FULL) {
+                if (data["is_opaque"]?.toBoolean() != false) SolidProperty else TransparentProperty
             } else {
-                lightProperties = DirectedProperty.of(outlineShape)
+                DirectedProperty.of(outlineShape)
             }
 
 
@@ -144,7 +142,7 @@ data class BlockState(
                 collisionShape = collisionShape,
                 outlineShape = outlineShape,
                 hardness = data["hardness"]?.toFloat() ?: 1.0f,
-                requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
+                requiresTool = data["requires_tool"]?.toBoolean() ?: !material.soft,
                 isSolid = data["solid_render"]?.toBoolean() ?: false,
                 luminance = data["luminance"]?.toInt() ?: 0,
                 lightProperties = lightProperties,
