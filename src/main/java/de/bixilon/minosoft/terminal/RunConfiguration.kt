@@ -20,7 +20,6 @@ import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.io.File
-import java.lang.management.ManagementFactory
 
 object RunConfiguration {
     var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes
@@ -57,8 +56,7 @@ object RunConfiguration {
 
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/minosoft/"
 
-    @Deprecated("Check is not working. ToDo")
-    val X_START_ON_FIRST_THREAD_SET = ManagementFactory.getRuntimeMXBean().inputArguments.contains("-XstartOnFirstThread")
+    val X_START_ON_FIRST_THREAD_SET = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_${ProcessHandle.current().pid()}") == "1"
 
     var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
 
