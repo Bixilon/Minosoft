@@ -126,6 +126,7 @@ object Log {
                 message.printStackTrace(PrintWriter(stringWriter))
                 ChatComponent.of(stringWriter.toString(), ignoreJson = true)
             }
+
             is String -> {
                 if (message.isBlank()) {
                     return

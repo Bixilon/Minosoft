@@ -20,6 +20,7 @@ import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.io.File
+import java.io.IOException
 
 object RunConfiguration {
     var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes
@@ -49,7 +50,7 @@ object RunConfiguration {
         val folder = File(homeDir)
         if (!folder.exists() && !folder.mkdirs()) {
             // failed creating folder
-            throw RuntimeException("Could not create home folder ($homeDir)!")
+            throw IOException("Could not create home folder ($homeDir)!")
         }
         folder.slashPath + "/"
     }
