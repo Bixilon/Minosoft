@@ -40,14 +40,6 @@ class OtherProfile(
      */
     var nativeNetwork by delegate(true)
 
-
-    /**
-     * MacOS only: Ignores the warning if the jvm argument
-     * -XStartOnFirstThread is not set.
-     * See [#29](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29) for more details
-     */
-    var ignoreXStartOnFirstThreadWarning by delegate(false)
-
     /**
      * Listens for servers on your LAN network
      */

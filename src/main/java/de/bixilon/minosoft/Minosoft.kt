@@ -22,6 +22,8 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
@@ -33,7 +35,6 @@ import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
-import de.bixilon.minosoft.gui.eros.XStartOnFirstThreadWarning
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -94,7 +95,6 @@ object Minosoft {
         if (!RunConfiguration.DISABLE_EROS) {
             taskWorker += Task(identifier = BootTasks.JAVAFX, executor = { JavaFXInitializer.start() })
             DefaultThreadPool += { javafx.scene.text.Font::class.java.forceInit() }
-            taskWorker += Task(identifier = BootTasks.X_START_ON_FIRST_THREAD_WARNING, executor = { XStartOnFirstThreadWarning.show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
             taskWorker += Task(identifier = BootTasks.STARTUP_PROGRESS, executor = { StartingDialog(BOOT_LATCH).show() }, dependencies = arrayOf(BootTasks.LANGUAGE_FILES, BootTasks.JAVAFX))
 
@@ -134,8 +134,9 @@ object Minosoft {
     }
 
     private fun warnMacOS() {
-        if (PlatformInfo.OS == OSTypes.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
-            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you have to add the jvm argument §9-XstartOnFirstThread§r. Please ensure it is set!" }
+        if (PlatformInfo.OS == OSTypes.MAC && RunConfiguration.X_START_ON_FIRST_THREAD_SET && (!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) {
+            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
+            ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
         }
     }
 }

@@ -151,16 +151,6 @@ minosoft:error.header=An error occurred!
 minosoft:error.description=An error in minosoft occurred. You can continue like before, but the behavior might not be the expected one. If this error persists, feel free to open an issue here: https://gitlab.bixilon.de/bixilon/minosoft/-/issues/
 minosoft:error.fatal_crash=Fatal crash
 
-
-minosoft:x_start_on_first_thread_warning.title=-XstartOnFirstThread not set
-minosoft:x_start_on_first_thread_warning.header=-XstartOnFirstThread is not set
-minosoft:x_start_on_first_thread_warning.description=It looks like you are using MacOS. Due to some design decisions made by apple, you have to set §7-XstartOnFirstThread§r as JVM Argument if you plan to use rendering. If you don't know how or just think this is shit, take a look at https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
-
-minosoft:x_start_on_first_thread_warning.eros_running.title=Eros is running
-minosoft:x_start_on_first_thread_warning.eros_running.header=Eros is running
-minosoft:x_start_on_first_thread_warning.eros_running.description=It looks like eros is running and you plan to use rendering. This is (on MacOS) currently not possible. You have to set §7-XstartOnFirstThread §ras jvm argument and use the §7auto-connect §rcommand line option to connect to a server. Sorry for this. If you don't know how or just think that this is shit. take a look at https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
-
-
 minosoft:general.dialog.profile.select.title=Select profiles
 minosoft:general.dialog.profile.select.header=Select profiles
 

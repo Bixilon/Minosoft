@@ -111,15 +111,6 @@ minosoft:error.description=Ha ocurrido un error en Minosoft. Puedes continuar co
 minosoft:error.fatal_crash=Cierre inesperado
 
 
-minosoft:x_start_on_first_thread_warning.title=-XstartOnFirstThread no especificado
-minosoft:x_start_on_first_thread_warning.header=-XstartOnFirstThread no especificado
-minosoft:x_start_on_first_thread_warning.description=Parece que estas en MacOS; Debido a unas decisiones hechas por Apple, tendras que poner §7-XstartOnFirstThread§r como un argumento de Java si deseas usar el renderizado. Si no sabes como o no te gusta este comportamiento echa un vistazo a https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
-
-minosoft:x_start_on_first_thread_warning.eros_running.title=Eros ejecutandose
-minosoft:x_start_on_first_thread_warning.eros_running.header=Eros ejecutandose
-minosoft:x_start_on_first_thread_warning.eros_running.description=Parece que Eros se esta ejecutando y planeas usar el renderizado. Esto (en MacOS) no es posible actualmente. Tienes que añadir §7-XstartOnFirstThread §rcomo un argumento de Java y el comando §7auto-connect §rpara conectarte a un servidor. Lo sentimos por esto. Si no te gusta este comportamiento echa un vistazo a https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29
-
-
 minosoft:general.dialog.profile.select.title=Seleccionar perfiles
 minosoft:general.dialog.profile.select.header=Seleccionar perfiles
 
