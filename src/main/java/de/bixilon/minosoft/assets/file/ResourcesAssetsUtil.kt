@@ -26,13 +26,14 @@ object ResourcesAssetsUtil {
         val rootResources = clazz.classLoader.getResource(prefix) ?: throw FileNotFoundException("Can not find assets folder in $clazz")
 
         return when (rootResources.protocol) {
-            "file" -> DirectoryAssetsManager(rootResources.path, canUnload, prefix) // Read them directly from the folder
+            "file" -> DirectoryAssetsManager(rootResources.path.removeSuffix("/").removeSuffix(prefix), canUnload, prefix) // Read them directly from the folder
             "jar" -> {
                 val path: String = rootResources.path
                 val jarPath = path.substring(5, path.indexOf("!"))
                 val zip = URLDecoder.decode(jarPath, StandardCharsets.UTF_8)
                 ZipAssetsManager(zip, canUnload = canUnload, prefix = prefix)
             }
+
             else -> throw IllegalStateException("Can not read resources: $rootResources")
         }
     }

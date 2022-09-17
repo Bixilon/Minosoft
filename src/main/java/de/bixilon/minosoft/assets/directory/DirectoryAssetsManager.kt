@@ -33,7 +33,7 @@ class DirectoryAssetsManager(
     private val canUnload: Boolean = true,
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : AssetsManager {
-    private val basePath = File(basePath).slashPath
+    private val basePath = File(basePath).slashPath + "/" + prefix
     override val namespaces: MutableSet<String> = mutableSetOf()
     private var assets: MutableSet<ResourceLocation> = mutableSetOf()
     override var loaded: Boolean = false
