@@ -208,6 +208,20 @@ class GLFWWindow(
         glfwSetWindowFocusCallback(window, this::onFocusChange)
         glfwSetWindowIconifyCallback(window, this::onIconify)
         glfwSetScrollCallback(window, this::onScroll)
+
+        when (PlatformInfo.OS) {
+            OSTypes.MAC -> {
+                glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, true.glfw)
+                glfwWindowHintString(GLFW_COCOA_FRAME_NAME, "Minosoft")
+            }
+
+            OSTypes.LINUX -> {
+                glfwWindowHintString(GLFW_X11_CLASS_NAME, "de.bixilon.minosoft")
+                glfwWindowHintString(GLFW_X11_INSTANCE_NAME, "Minosoft")
+            }
+
+            else -> {}
+        }
     }
 
     override fun destroy() {
