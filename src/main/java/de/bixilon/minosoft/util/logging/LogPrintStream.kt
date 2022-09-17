@@ -34,4 +34,8 @@ class LogPrintStream(
         }
         Log.log(message = string, type = type, level = level)
     }
+
+    override fun write(buf: ByteArray, off: Int, len: Int) {
+        print(String(buf).substring(off, len)) // ToDo: Optimize
+    }
 }

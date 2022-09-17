@@ -80,7 +80,7 @@ object Log {
                         messageToSend.message.setFallbackColor(messageColor)
                     }
 
-                    val stream = if (messageToSend.logMessageType.error) {
+                    val stream = if (messageToSend.level.error) {
                         SYSTEM_ERR_STREAM
                     } else {
                         SYSTEM_OUT_STREAM

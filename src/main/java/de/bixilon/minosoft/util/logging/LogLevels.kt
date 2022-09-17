@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
-enum class LogLevels(val levelColors: RGBColor) {
-    FATAL(Colors.DARK_RED),
-    WARN(ChatColors.RED),
+enum class LogLevels(val levelColors: RGBColor, val error: Boolean = false) {
+    FATAL(Colors.DARK_RED, true),
+    WARN(ChatColors.RED, true),
     INFO(ChatColors.WHITE),
     VERBOSE(ChatColors.YELLOW),
     ;

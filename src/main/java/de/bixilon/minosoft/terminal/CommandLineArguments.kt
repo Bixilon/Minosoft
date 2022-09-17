@@ -13,14 +13,17 @@
 
 package de.bixilon.minosoft.terminal
 
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
 import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.impl.Arguments
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
-import kotlin.system.exitProcess
+import java.io.PrintWriter
 
 object CommandLineArguments {
     lateinit var ARGUMENTS: List<String>
@@ -92,8 +95,8 @@ object CommandLineArguments {
         try {
             namespace = PARSER.parseArgs(args)
         } catch (exception: ArgumentParserException) {
-            PARSER.handleError(exception)
-            exitProcess(1)
+            PARSER.handleError(exception, PrintWriter(Log.FATAL_PRINT_STREAM))
+            return ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
         }
 
         RunConfiguration.LOG_COLOR_MESSAGE = namespace.getBoolean("disable_log_color_message")

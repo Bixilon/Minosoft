@@ -21,7 +21,6 @@ enum class LogMessageType(
     val defaultColor: RGBColor,
     val colorMap: Map<LogLevels, RGBColor> = emptyMap(),
     val defaultLevel: LogLevels = LogLevels.INFO,
-    val error: Boolean = false,
 ) {
     AUTO_CONNECT(ChatColors.WHITE),
     GENERAL(ChatColors.WHITE),
