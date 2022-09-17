@@ -210,7 +210,7 @@ class PlayConnection(
                 val renderer = Rendering(this)
                 this.rendering = renderer
                 val renderLatch = CountUpAndDownLatch(0, latch)
-                renderer.init(renderLatch)
+                renderer.start(renderLatch)
                 renderLatch.awaitWithChange()
             }
             latch.dec() // remove initial value

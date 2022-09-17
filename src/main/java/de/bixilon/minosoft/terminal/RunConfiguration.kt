@@ -64,7 +64,6 @@ object RunConfiguration {
     var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
 
     var SKIP_RENDERERS: List<ResourceLocation> = emptyList()
-    var OPEN_Gl_ON_FIRST_THREAD = PlatformInfo.OS == OSTypes.MAC
 
     var VERBOSE_LOGGING = false
 }

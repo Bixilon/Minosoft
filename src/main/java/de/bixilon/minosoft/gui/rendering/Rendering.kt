@@ -17,37 +17,20 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.RenderPolling
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.Version
 
 class Rendering(private val connection: PlayConnection) {
-    private var latch: CountUpAndDownLatch? = null
     val renderWindow: RenderWindow = RenderWindow(connection, this)
     val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
-    fun init(latch: CountUpAndDownLatch) {
+    fun start(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
         latch.inc()
-        this.latch = latch
-        if (RenderPolling.ENABLED) {
-            RenderPolling.rendering = this
-            RenderPolling.RENDERING_LATCH.dec()
-            return
-        }
-        start()
-    }
-
-    fun start() {
-        val latch = this.latch ?: throw IllegalStateException("Rendering not initialized yet!")
         startAudioPlayerThread(latch)
-        if (RenderPolling.ENABLED) {
-            startRenderWindow(latch)
-        } else {
-            startRenderWindowThread(latch)
-        }
+        startRenderWindowThread(latch)
     }
 
     private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {

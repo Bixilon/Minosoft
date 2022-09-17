@@ -69,10 +69,6 @@ object CommandLineArguments {
                 .action(Arguments.store())
                 .help("Automatically connects to a specific server. Full format: hostname.whatever<:port><,version><,account>\nPort is by default ${ProtocolDefinition.DEFAULT_PORT}, version is automatic and account is the current selected one")
 
-            addArgument("--opengl_on_first_thread")
-                .action(Arguments.storeTrue())
-                .help("Forces OpenGL to use the main thread. Can not be disabled on MacOS. Defaults to false")
-
             addArgument("--disable_profile_hot_reloading")
                 .action(Arguments.storeTrue())
                 .help("Disables profile hot reloading")
@@ -117,9 +113,6 @@ object CommandLineArguments {
         }
 
         RunConfiguration.AUTO_CONNECT_TO = namespace.getString("connect")
-
-        RunConfiguration.OPEN_Gl_ON_FIRST_THREAD = RunConfiguration.OPEN_Gl_ON_FIRST_THREAD || namespace.getBoolean("opengl_on_first_thread")
-
 
         RunConfiguration.PROFILES_HOT_RELOADING = !namespace.getBoolean("disable_profile_hot_reloading")
         RunConfiguration.VERBOSE_LOGGING = namespace.getBoolean("verbose")

@@ -50,7 +50,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.RenderPolling
 import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -114,8 +113,6 @@ object Minosoft {
 
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }
-
-        RenderPolling.pollRendering()
     }
 
     private fun startFileWatcherService(latch: CountUpAndDownLatch) {
