@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.terminal
 
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
+import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
@@ -44,11 +46,11 @@ object AutoConnect {
             connection::state.observe(this) {
                 if (it.disconnected) {
                     Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
-                    exitProcess(0)
+                    ShutdownManager.shutdown()
                 }
             }
         }
-        connection.registerEvent(CallbackEventInvoker.of<ConnectionErrorEvent> { exitProcess(1) })
+        connection.registerEvent(CallbackEventInvoker.of<ConnectionErrorEvent> { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) })
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
         connection.connect()
     }
