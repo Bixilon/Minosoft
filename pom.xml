@@ -300,7 +300,7 @@
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <javafx.version>19-ea+8</javafx.version>
         <kotlin.version>1.7.0</kotlin.version>
-        <lwjgl.version>3.3.1</lwjgl.version>
+        <lwjgl.version>3.3.2-SNAPSHOT</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
         <netty.version>4.1.77.Final</netty.version>
         <jackson.version>2.13.3</jackson.version>
