@@ -111,17 +111,15 @@ If you want to get notified when cool new features arrive or other interesting s
 
 ## Downloads / Installation
 
-### Linux, Windows
+### Linux, Windows, macOS
 
 The latest x64 build gets uploaded to github actions. See [github actions](https://github.com/Bixilon/Minosoft/actions)
+
+(macOS support is not fully done yet, see [#29](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29))
 
 #### Arch
 
 Thanks to @jugendhacker you can get minosoft directly from the arch user repository (AUR): https://aur.archlinux.org/packages/minosoft-git/
-
-### macOS
-
-Support for macOS is a delicate topic. Let's say it works for now, but it is not convenient to use. Take a look at issue [#29](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29) for details.
 
 ## Building
 
