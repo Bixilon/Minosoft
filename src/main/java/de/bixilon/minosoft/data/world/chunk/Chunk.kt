@@ -519,12 +519,17 @@ class Chunk(
         }
         val maxSection = sections?.get(maxHeight.sectionHeight - lowestSection)
         if (maxSection != null) {
-            for (y in ProtocolDefinition.SECTION_MAX_Y downTo maxHeight.inSectionHeight) {
+            for (y in ProtocolDefinition.SECTION_MAX_Y downTo maxHeight.inSectionHeight + 2) {
                 val index = (y shl 8) or heightmapIndex
+                val block = maxSection.blocks[index]?.lightProperties
+                if (block != null && (!block.propagatesSkylight || block.propagatesSkylight(Directions.UP, Directions.DOWN))) {
+                    continue
+                }
                 maxSection.light.light[index] = (maxSection.light.light[index].toInt() and 0x0F or 0xF0).toByte()
             }
             maxSection.light.update = true
-            maxSection.light.traceSkylight(x, maxHeight.inSectionHeight, z, ProtocolDefinition.LIGHT_LEVELS - 1, Directions.UP)
+            // ToDo: This must run for every block
+            maxSection.light.traceSkylight(x, maxHeight.inSectionHeight + 1, z, ProtocolDefinition.LIGHT_LEVELS - 1, Directions.UP, true)
         }
     }
 }
