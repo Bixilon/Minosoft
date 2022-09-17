@@ -132,6 +132,10 @@ Support for macOS is a delicate topic. Let's say it works for now, but it is not
 5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete its configuration files
 6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
 
+Using IntelliJ IDEA for building or developing is strongly recommended. There you have features
+like build caching. You might need to increase heap memory for the compiler (`File` -> `Settings` -> `Build, Execution and Compiler` -> `Compiler` -> `Shared build process heap size`).
+Allow at least 1500 MBytes.
+
 ## Code mirrors
 
 - [gitlab.bixilon.de](https://gitlab.bixilon.de/bixilon/minosoft/) (Main repository)
