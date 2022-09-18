@@ -55,7 +55,7 @@ jobs:
           name: minosoft-win64
           path: target/Minosoft-*.jar
   build-mac:
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -66,9 +66,8 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-      - name: Upload macOS build
+      - name: Upload macOS x64 build
         uses: actions/upload-artifact@v2
         with:
-          name: macos-build
+          name: minosoft-macos-x64
           path: target/Minosoft-*.jar
-
