@@ -93,9 +93,17 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
             playerCountFX.ctext = "${it.status.usedSlots?.thousands()} / ${it.status.slots?.thousands()}"
             serverVersionFX.ctext = it.connection.serverVersion?.name
 
-            faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
+            val favicon = it.status.favicon
 
-            it.status.favicon?.let { favicon -> DefaultThreadPool += { item.server.saveFavicon(favicon) } } // ToDo: This is running every event?
+            if (favicon == null) {
+                item.server.faviconHash = null
+            } else {
+                DefaultThreadPool += { item.server.saveFavicon(favicon) }  // ToDo: This is running every event?
+            }
+
+            faviconFX.image = favicon?.let { Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
+
+
             serverList?.onPingUpdate(item)
         }
 
