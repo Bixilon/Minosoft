@@ -19,12 +19,9 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 
 class DirectedProperty(private val directions: BooleanArray) : LightProperties {
+    override val propagatesSkylight: Boolean = propagatesLight(Directions.UP, Directions.DOWN)
 
-    override fun propagatesSkylight(from: Directions, to: Directions): Boolean {
-        return directions[CubeDirections.getIndex(from, to)]
-    }
-
-    override fun propagatesBlockLight(from: Directions, to: Directions): Boolean {
+    override fun propagatesLight(from: Directions, to: Directions): Boolean {
         return directions[CubeDirections.getIndex(from, to)]
     }
 

@@ -16,10 +16,9 @@ package de.bixilon.minosoft.data.registries.blocks.light
 import de.bixilon.minosoft.data.direction.Directions
 
 interface LightProperties {
-    val propagatesBlockLight: Boolean get() = false
+    val propagatesLight: Boolean get() = false
     val propagatesSkylight: Boolean get() = false
 
 
-    fun propagatesSkylight(from: Directions, to: Directions): Boolean = propagatesSkylight
-    fun propagatesBlockLight(from: Directions, to: Directions): Boolean = propagatesBlockLight
+    fun propagatesLight(from: Directions, to: Directions): Boolean = propagatesLight
 }

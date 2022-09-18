@@ -171,6 +171,9 @@ class GLFWWindow(
         initLatch.await() // wait for async glfw init
         glfwDefaultWindowHints()
         if (renderWindow.preferQuads) {
+            // yes, this is dirty. for using a geometry shader we need 3.3+. The thing is 3.3+ does not allow us to use GL_QUAD.
+            // we can still bind it to a lower version and use features that need a more recent version of opengl.
+            // most drivers allow us to do this, if not it'll crash
             setOpenGLVersion(3, 0, false)
         } else {
             setOpenGLVersion(3, 3, true)

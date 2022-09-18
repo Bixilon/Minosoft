@@ -91,7 +91,7 @@ class SolidCullSectionPreparer(
                     light[SELF_LIGHT_INDEX] = sectionLight[index]
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
 
-                    val maxHeight = chunk.heightmap[baseIndex]
+                    val maxHeight = chunk.skylightHeightmap[baseIndex]
                     if (position.y >= maxHeight) {
                         light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
                     }
@@ -209,7 +209,7 @@ class SolidCullSectionPreparer(
         val neighbourIndex = y shl 8 or nextBaseIndex
         neighbourBlocks[ordinal] = blocks?.unsafeGet(neighbourIndex)
         light[ordinal] = sectionLight[neighbourIndex]
-        if (position.y > chunk.heightmap[nextBaseIndex]) {
+        if (position.y > chunk.skylightHeightmap[nextBaseIndex]) {
             light[ordinal] = (light[ordinal].toInt() or 0xF0).toByte()
         }
     }

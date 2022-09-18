@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.light
 
 object TransparentProperty : LightProperties {
-    override val propagatesBlockLight: Boolean
+    override val propagatesLight: Boolean
         get() = true
     override val propagatesSkylight: Boolean
         get() = true

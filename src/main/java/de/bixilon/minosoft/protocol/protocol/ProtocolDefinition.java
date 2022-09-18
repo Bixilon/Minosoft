@@ -89,6 +89,7 @@ public final class ProtocolDefinition {
     public static final float TICKS_PER_DAYf = (float) TICKS_PER_DAY;
 
     public static final byte LIGHT_LEVELS = 16;
+    public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
 
     static {
         InetAddress inetAddress;
