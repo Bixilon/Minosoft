@@ -180,8 +180,11 @@ class GLFWWindow(
 
         window = glfwCreateWindow(size.x, size.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
-            destroy()
-            throw RuntimeException("Failed to create the GLFW window")
+            try {
+                destroy()
+            } catch (ignored: Throwable) {
+            }
+            throw IllegalStateException("Failed to create the GLFW window. Check the console for details. BEFORE opening any issue check that your GPU supports OpenGL 3.3+ and the most recent drivers are installed!")
         }
 
         glfwMakeContextCurrent(window)
@@ -359,7 +362,7 @@ class GLFWWindow(
 
         init {
             DefaultThreadPool += {
-                GLFWErrorCallback.createPrint(System.err).set()
+                GLFWErrorCallback.createPrint(Log.FATAL_PRINT_STREAM).set()
                 check(glfwInit()) { "Unable to initialize GLFW" }
                 initLatch.dec()
             }
