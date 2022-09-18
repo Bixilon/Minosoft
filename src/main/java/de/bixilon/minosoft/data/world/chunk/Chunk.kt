@@ -460,7 +460,7 @@ class Chunk(
 
         var y = minY
 
-        sectionLoop@ for (sectionIndex in (sections.size - 1) downTo 0) {
+        sectionLoop@ for (sectionIndex in startY.sectionHeight downTo 0) {
             val section = sections[sectionIndex] ?: continue
 
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
@@ -549,10 +549,39 @@ class Chunk(
     }
 
     private fun startSkylightFloodFill(x: Int, z: Int) {
+        val neighbours = this.neighbours ?: return
         val heightmapIndex = (z shl 4) or x
         val maxHeight = skylightHeightmap[heightmapIndex]
 
-        for (sectionHeight in highestSection - 1 downTo maxHeight.sectionHeight + 1) {
+        var skylightStart: Int
+        skylightStart = if (x > 0) {
+            skylightHeightmap[heightmapIndex + 1]
+        } else {
+            neighbours[ChunkNeighbours.EAST].skylightHeightmap[(z shl 4) or 0]
+        }
+        skylightStart = maxOf(
+            skylightStart, if (x < ProtocolDefinition.SECTION_MAX_X) {
+                skylightHeightmap[heightmapIndex - 1]
+            } else {
+                neighbours[ChunkNeighbours.WEST].skylightHeightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X]
+            }
+        )
+        skylightStart = maxOf(
+            skylightStart, if (z > 0) {
+                skylightHeightmap[((z + 1) shl 4) or x]
+            } else {
+                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(0 shl 4) or x]
+            }
+        )
+        skylightStart = maxOf(
+            skylightStart, if (z < ProtocolDefinition.SECTION_MAX_Z) {
+                skylightHeightmap[((z - 1) shl 4) or x]
+            } else {
+                neighbours[ChunkNeighbours.NORTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
+            }
+        )
+
+        for (sectionHeight in skylightStart.sectionHeight downTo maxHeight.sectionHeight + 1) {
             val section = sections?.get(sectionHeight - lowestSection) ?: continue
             section.light.update = true
             // ToDo: bare tracing

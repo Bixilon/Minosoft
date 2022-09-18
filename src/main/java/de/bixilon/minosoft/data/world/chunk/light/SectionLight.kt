@@ -259,22 +259,22 @@ class SectionLight(
 
         val nextNeighbourLevel = nextLevel - 1
         // ToDo: Neighbours
-        if (y > 0 && direction != Directions.DOWN && (direction == null || light.propagatesLight(direction, Directions.DOWN))) {
+        if (y > 0 && direction != Directions.UP && (direction == null || light.propagatesLight(direction, Directions.DOWN))) {
             traceSkylight(x, y - 1, z, nextNeighbourLevel, Directions.DOWN, totalY - 1, false)
         }
-        if (y < ProtocolDefinition.SECTION_MAX_Y && direction != Directions.UP && direction != null && (light.propagatesLight(direction, Directions.UP))) {
+        if (y < ProtocolDefinition.SECTION_MAX_Y && direction != Directions.DOWN && direction != null && (light.propagatesLight(direction, Directions.UP))) {
             traceSkylight(x, y + 1, z, nextNeighbourLevel, Directions.UP, totalY + 1, false)
         }
-        if (z > 0 && direction != Directions.NORTH && (direction == null || light.propagatesLight(direction, Directions.NORTH))) {
+        if (z > 0 && direction != Directions.SOUTH && (direction == null || light.propagatesLight(direction, Directions.NORTH))) {
             traceSkylight(x, y, z - 1, nextNeighbourLevel, Directions.NORTH, totalY, false)
         }
-        if (z < ProtocolDefinition.SECTION_MAX_Z && direction != Directions.SOUTH && (direction == null || light.propagatesLight(direction, Directions.SOUTH))) {
+        if (z < ProtocolDefinition.SECTION_MAX_Z && direction != Directions.NORTH && (direction == null || light.propagatesLight(direction, Directions.SOUTH))) {
             traceSkylight(x, y, z + 1, nextNeighbourLevel, Directions.SOUTH, totalY, false)
         }
-        if (x > 0 && direction != Directions.WEST && (direction == null || light.propagatesLight(direction, Directions.WEST))) {
+        if (x > 0 && direction != Directions.EAST && (direction == null || light.propagatesLight(direction, Directions.WEST))) {
             traceSkylight(x - 1, y, z, nextNeighbourLevel, Directions.WEST, totalY, false)
         }
-        if (x < ProtocolDefinition.SECTION_MAX_X && direction != Directions.EAST && (direction == null || light.propagatesLight(direction, Directions.EAST))) {
+        if (x < ProtocolDefinition.SECTION_MAX_X && direction != Directions.WEST && (direction == null || light.propagatesLight(direction, Directions.EAST))) {
             traceSkylight(x + 1, y, z, nextNeighbourLevel, Directions.EAST, totalY, false)
         }
     }
