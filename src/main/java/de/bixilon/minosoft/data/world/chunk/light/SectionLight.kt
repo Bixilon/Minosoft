@@ -179,6 +179,7 @@ class SectionLight(
     }
 
     fun resetLight() {
+        update = true
         for (index in light.indices) {
             light[index] = 0x00.toByte()
         }
@@ -192,6 +193,7 @@ class SectionLight(
     }
 
     fun calculate() {
+        update = true
         val blocks = section.blocks
 
         blocks.acquire()
