@@ -403,7 +403,7 @@ class World(
 
     fun getBrightness(position: BlockPosition): Float {
         val light = getLight(position)
-        val level = maxOf(light and 0x0F, light and 0xF0)
+        val level = maxOf(light and 0x0F, light and 0xF0 shr 4)
         return dimension?.lightLevels?.get(level) ?: 0.0f
     }
 
