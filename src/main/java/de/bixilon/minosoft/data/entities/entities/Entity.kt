@@ -564,22 +564,24 @@ abstract class Entity(
             updateFluidState(fluid.resourceLocation)
         }
 
-        var submergedFluid: Fluid? = null
+        this.submergedFluid = _getSubmergedFluid()
+    }
 
+    private fun _getSubmergedFluid(): Fluid? {
         // ToDo: Boat
         val eyeHeight = eyePosition.y - 0.1111111119389534
 
         val eyePosition = (Vec3d(position.x, eyeHeight, position.z)).blockPosition
-        val blockState = connection.world[eyePosition] ?: return
+        val blockState = connection.world[eyePosition] ?: return null
         if (blockState.block !is FluidBlock) {
-            return
+            return null
         }
         val up = connection.world[eyePosition + Directions.UP]?.block
 
         if ((up is FluidBlock && up.fluid == blockState.block.fluid) || blockState.block.fluid.getHeight(blockState) > eyeHeight) {
-            submergedFluid = blockState.block.fluid
+            return blockState.block.fluid
         }
-        this.submergedFluid = submergedFluid
+        return null
     }
 
     val protectionLevel: Float
