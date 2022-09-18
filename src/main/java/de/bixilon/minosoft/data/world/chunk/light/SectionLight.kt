@@ -246,7 +246,7 @@ class SectionLight(
             return
         }
 
-        val light = section.blocks[index]?.lightProperties
+        val light = section.blocks.unsafeGet(index)?.lightProperties
 
         if (light != null && !light.propagatesLight) {
             return
