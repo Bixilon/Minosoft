@@ -514,18 +514,18 @@ class Chunk(
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 traceSkylightDown(x, z)
-            }
-        }
-        for (x in 1 until ProtocolDefinition.SECTION_WIDTH_X - 1) {
-            for (z in 1 until ProtocolDefinition.SECTION_WIDTH_Z - 1) {
                 startSkylightFloodFill(x, z)
             }
         }
         lock.unlock()
     }
 
-    private fun traceSkylightDown(x: Int, z: Int) {
+    private inline fun traceSkylightDown(x: Int, z: Int) {
         val heightmapIndex = (z shl 4) or x
+        traceSkylightDown(heightmapIndex)
+    }
+
+    private fun traceSkylightDown(heightmapIndex: Int): Int {
         val maxHeight = skylightHeightmap[heightmapIndex]
 
         // ToDo: only update changed ones
@@ -546,6 +546,8 @@ class Chunk(
             }
             maxSection.light.update = true
         }
+
+        return maxHeight
     }
 
     private fun startSkylightFloodFill(x: Int, z: Int) {
@@ -553,31 +555,34 @@ class Chunk(
         val heightmapIndex = (z shl 4) or x
         val maxHeight = skylightHeightmap[heightmapIndex]
 
+
         var skylightStart: Int
+
+        // ToDo: Don't traceSkylightDown 5x
         skylightStart = if (x > 0) {
-            skylightHeightmap[heightmapIndex + 1]
+            traceSkylightDown(heightmapIndex - 1)
         } else {
-            neighbours[ChunkNeighbours.EAST].skylightHeightmap[(z shl 4) or 0]
+            neighbours[ChunkNeighbours.EAST].traceSkylightDown((z shl 4) or ProtocolDefinition.SECTION_MAX_X)
         }
         skylightStart = maxOf(
             skylightStart, if (x < ProtocolDefinition.SECTION_MAX_X) {
-                skylightHeightmap[heightmapIndex - 1]
+                traceSkylightDown(heightmapIndex + 1)
             } else {
-                neighbours[ChunkNeighbours.WEST].skylightHeightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X]
+                neighbours[ChunkNeighbours.WEST].traceSkylightDown(((z shl 4) or 0))
             }
         )
         skylightStart = maxOf(
             skylightStart, if (z > 0) {
-                skylightHeightmap[((z + 1) shl 4) or x]
+                traceSkylightDown(((z - 1) shl 4) or x)
             } else {
-                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(0 shl 4) or x]
+                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
             }
         )
         skylightStart = maxOf(
             skylightStart, if (z < ProtocolDefinition.SECTION_MAX_Z) {
-                skylightHeightmap[((z - 1) shl 4) or x]
+                traceSkylightDown(((z + 1) shl 4) or x)
             } else {
-                neighbours[ChunkNeighbours.NORTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
+                neighbours[ChunkNeighbours.NORTH].traceSkylightDown((0 shl 4) or x)
             }
         )
 
