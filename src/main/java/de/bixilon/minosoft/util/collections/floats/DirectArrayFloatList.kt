@@ -41,7 +41,6 @@ class DirectArrayFloatList(
     private var output: FloatArray = FloatArray(0)
     private var outputUpToDate = false
 
-    @Synchronized
     override fun ensureSize(needed: Int) {
         checkFinished()
         if (limit - size >= needed) {
