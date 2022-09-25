@@ -43,6 +43,7 @@ data class Biome(
 ) : RegistryItem() {
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
+    val colorMapPixelIndex = downfallColorMapCoordinate shl 8 or temperatureColorMapCoordinate
 
 
     fun getClampedTemperature(height: Int): Int {

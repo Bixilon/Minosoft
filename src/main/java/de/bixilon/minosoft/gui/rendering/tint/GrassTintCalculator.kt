@@ -27,8 +27,11 @@ class GrassTintCalculator : TintProvider {
         colorMap = assetsManager["minecraft:colormap/grass".toResourceLocation().texture()].readRGBArray()
     }
 
-    fun getColor(downfall: Int, temperature: Int): Int {
-        val colorMapPixelIndex = downfall shl 8 or temperature
+    inline fun getColor(downfall: Int, temperature: Int): Int {
+        return getColor(downfall shl 8 or temperature)
+    }
+
+    fun getColor(colorMapPixelIndex: Int): Int {
         if (colorMapPixelIndex > colorMap.size) {
             return 0xFF00FF // ToDo: Is this correct? Was used in my old implementation
         }
@@ -44,7 +47,7 @@ class GrassTintCalculator : TintProvider {
         if (biome == null) {
             return getColor(127, 127)
         }
-        val color = getColor(biome.downfallColorMapCoordinate, biome.temperatureColorMapCoordinate)
+        val color = getColor(biome.colorMapPixelIndex)
 
         return when (biome.grassColorModifier) {
             Biome.GrassColorModifiers.NONE -> color
