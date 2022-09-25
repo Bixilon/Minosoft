@@ -274,14 +274,14 @@ class SectionLight(
         val neighbours = this.section.neighbours ?: return
         val nextNeighbourLevel = nextLevel - 1
 
-        if (direction != Directions.UP && (direction == null || lightProperties.propagatesLight(direction, Directions.DOWN))) {
+        if (direction != Directions.UP && (direction == null || lightProperties.propagatesLight(direction, Directions.UP))) {
             if (y > 0) {
                 traceSkylight(x, y - 1, z, nextNeighbourLevel, Directions.DOWN, totalY - 1)
             } else if (section.sectionHeight != chunk.highestSection) {
                 (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.sectionHeight + 1, false))?.light?.traceSkylight(x, 0, z, nextLevel, direction, totalY)
             }
         }
-        if (direction != Directions.DOWN && direction != null && (lightProperties.propagatesLight(direction, Directions.UP))) {
+        if (direction != Directions.DOWN && direction != null && (lightProperties.propagatesLight(direction, Directions.DOWN))) {
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceSkylight(x, y + 1, z, nextNeighbourLevel, Directions.UP, totalY + 1)
             } else if (section.sectionHeight == chunk.lowestSection) {
@@ -290,28 +290,28 @@ class SectionLight(
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkylight(x, ProtocolDefinition.SECTION_MAX_Y, z, nextLevel, direction, totalY)
             }
         }
-        if (direction != Directions.NORTH && (direction == null || lightProperties.propagatesLight(direction, Directions.SOUTH))) {
+        if (direction != Directions.NORTH && (direction == null || lightProperties.propagatesLight(direction, Directions.NORTH))) {
             if (z > 0) {
                 traceSkylight(x, y, z - 1, nextNeighbourLevel, Directions.SOUTH, totalY)
             } else {
                 neighbours[Directions.O_NORTH, ChunkNeighbours.NORTH, chunkNeighbours]?.light?.traceSkylight(x, y, ProtocolDefinition.SECTION_MAX_Z, nextNeighbourLevel, Directions.SOUTH, totalY)
             }
         }
-        if (direction != Directions.SOUTH && (direction == null || lightProperties.propagatesLight(direction, Directions.NORTH))) {
+        if (direction != Directions.SOUTH && (direction == null || lightProperties.propagatesLight(direction, Directions.SOUTH))) {
             if (z < ProtocolDefinition.SECTION_MAX_Z) {
                 traceSkylight(x, y, z + 1, nextNeighbourLevel, Directions.NORTH, totalY)
             } else {
                 neighbours[Directions.O_SOUTH, ChunkNeighbours.SOUTH, chunkNeighbours]?.light?.traceSkylight(x, y, 0, nextNeighbourLevel, Directions.NORTH, totalY)
             }
         }
-        if (direction != Directions.WEST && (direction == null || lightProperties.propagatesLight(direction, Directions.EAST))) {
+        if (direction != Directions.WEST && (direction == null || lightProperties.propagatesLight(direction, Directions.WEST))) {
             if (x > 0) {
                 traceSkylight(x - 1, y, z, nextNeighbourLevel, Directions.EAST, totalY)
             } else {
                 neighbours[Directions.O_WEST, ChunkNeighbours.WEST, chunkNeighbours]?.light?.traceSkylight(ProtocolDefinition.SECTION_MAX_X, y, z, nextLevel, direction, totalY)
             }
         }
-        if (direction != Directions.EAST && (direction == null || lightProperties.propagatesLight(direction, Directions.WEST))) {
+        if (direction != Directions.EAST && (direction == null || lightProperties.propagatesLight(direction, Directions.EAST))) {
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 traceSkylight(x + 1, y, z, nextNeighbourLevel, Directions.WEST, totalY)
             } else {

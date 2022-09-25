@@ -570,7 +570,7 @@ class Chunk(
             if (z > 0) {
                 traceSkylightDown(((z - 1) shl 4) or x)
             } else {
-                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
+                neighbours[ChunkNeighbours.SOUTH].traceSkylightDown((ProtocolDefinition.SECTION_MAX_Z shl 4) or x)
             },
 
             if (z < ProtocolDefinition.SECTION_MAX_Z) {
@@ -593,7 +593,7 @@ class Chunk(
         val maxSection = sections?.get(maxHeight.sectionHeight - lowestSection)
         val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         if (maxSection != null) {
-            for (y in skylightStart.inSectionHeight downTo maxHeight.inSectionHeight) {
+            for (y in (if (skylightStart.sectionHeight != sectionHeight) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
                 val index = (y shl 8) or heightmapIndex
                 val block = maxSection.blocks.unsafeGet(index)?.lightProperties
                 if (block != null && !block.propagatesSkylight) {
