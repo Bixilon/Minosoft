@@ -264,11 +264,14 @@ class SectionLight(
             return
         }
 
-        val lightProperties = section.blocks.unsafeGet(index)?.lightProperties ?: TransparentProperty
+        var lightProperties = section.blocks.unsafeGet(index)?.lightProperties
 
-        if (!lightProperties.propagatesLight) {
+        if (lightProperties == null) {
+            lightProperties = TransparentProperty
+        } else if (!lightProperties.propagatesLight) {
             return
         }
+
         this.light[index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
 
         val neighbours = this.section.neighbours ?: return

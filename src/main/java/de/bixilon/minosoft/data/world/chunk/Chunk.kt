@@ -533,7 +533,7 @@ class Chunk(
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 skylightHeightmap[heightmapIndex + 1]
             } else {
-                neighbours[ChunkNeighbours.WEST].skylightHeightmap[((z shl 4) or 0)]
+                neighbours[ChunkNeighbours.WEST].skylightHeightmap[(z shl 4) or 0]
             },
 
             if (z > 0) {
@@ -569,7 +569,7 @@ class Chunk(
         }
     }
 
-    fun getMaxHeight(x: Int, z: Int): Int {
+    inline fun getMaxHeight(x: Int, z: Int): Int {
         return skylightHeightmap[(z shl 4) or x]
     }
 }
