@@ -247,20 +247,20 @@ class SectionLight(
     }
 
     private inline fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int) {
-        return traceSkylight(x, y, z, nextLevel, direction, totalY, false)
+        return traceSkylight(x, y, z, nextLevel, direction, totalY, true)
     }
 
 
-    fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int, force: Boolean) {
+    fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int, noForce: Boolean) {
         val chunk = section.chunk ?: Broken("chunk == null")
-        if (direction == Directions.UP && totalY >= chunk.getMaxHeight(x, z)) {
+        if (noForce && totalY >= chunk.getMaxHeight(x, z)) {
             // this light level will be 15, don't care
             return
         }
         val chunkNeighbours = chunk.neighbours ?: return
         val index = getIndex(x, y, z)
         val currentLight = this[index].toInt()
-        if (!force && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
+        if (noForce && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
         }
 

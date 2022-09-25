@@ -586,7 +586,7 @@ class Chunk(
             // ToDo: bare tracing
             val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
             for (y in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                section.light.traceSkylight(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, true)
+                section.light.traceSkylight(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
             }
         }
         val sectionHeight = maxHeight.sectionHeight
@@ -599,7 +599,7 @@ class Chunk(
                 if (block != null && !block.propagatesSkylight) {
                     continue
                 }
-                maxSection.light.traceSkylight(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, true)
+                maxSection.light.traceSkylight(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
 
             }
             maxSection.light.update = true
