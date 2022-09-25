@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -93,7 +94,10 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         renderWindow.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=${loadedMeshesSize.format()}, cQ=${culledQueuedSize.format()}, q=${queueSize.format()}, pT=${preparingTasksSize.format()}/${maxPreparingTasks.format()}, l=${meshesToLoadSize.format()}/${maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
         }
-        layout += AutoTextElement(guiRenderer, 1) { "E t=${connection.world.entities.size.format()}" }
+
+        layout += renderWindow.renderer[EntityRenderer]?.let {
+            AutoTextElement(guiRenderer, 1) { "E v=${it.visibleCount}, m=${it.modelCount}, w=${connection.world.entities.size.format()}" }
+        } ?: AutoTextElement(guiRenderer, 1) { "E w=${connection.world.entities.size.format()}" }
 
         renderWindow.renderer[ParticleRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "P t=${size.format()}" }

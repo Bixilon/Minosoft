@@ -39,6 +39,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.util.concurrent.atomic.AtomicInteger
 
 class EntityRenderer(
     val connection: PlayConnection,
@@ -52,6 +53,10 @@ class EntityRenderer(
     private var toUnload: MutableList<EntityModel<*>> = synchronizedListOf()
 
     var hitboxes = profile.hitbox.enabled
+
+    val modelCount: Int get() = models.size
+    var visibleCount: Int = 0
+        private set
 
     override fun init(latch: CountUpAndDownLatch) {
         connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> { event ->
@@ -93,11 +98,16 @@ class EntityRenderer(
     }
 
     override fun prePrepareDraw() {
+        val count = AtomicInteger()
         runAsync {
             it.entity.draw(TimeUtil.millis)
             it.update = it.checkUpdate()
             it.prepareAsync()
+            if (it.visible) {
+                count.incrementAndGet()
+            }
         }
+        this.visibleCount = count.get()
     }
 
     override fun postPrepareDraw() {
