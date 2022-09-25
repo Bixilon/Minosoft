@@ -521,14 +521,13 @@ class Chunk(
     }
 
     private inline fun traceSkylightDown(x: Int, z: Int) {
-        val heightmapIndex = (z shl 4) or x
-        traceSkylightDown(heightmapIndex)
+        traceSkylightDown((z shl 4) or x)
     }
 
     private fun traceSkylightDown(heightmapIndex: Int): Int {
         val maxHeight = skylightHeightmap[heightmapIndex]
 
-        // ToDo: only update changed ones
+        // ToDo: only mark changed ones as updated
         for (sectionHeight in highestSection - 1 downTo maxHeight.sectionHeight + 1) {
             val section = sections?.get(sectionHeight - lowestSection) ?: continue
             section.light.update = true
@@ -556,30 +555,27 @@ class Chunk(
         val maxHeight = skylightHeightmap[heightmapIndex]
 
 
-        var skylightStart: Int
-
         // ToDo: Don't traceSkylightDown 5x
-        skylightStart = if (x > 0) {
-            traceSkylightDown(heightmapIndex - 1)
-        } else {
-            neighbours[ChunkNeighbours.EAST].traceSkylightDown((z shl 4) or ProtocolDefinition.SECTION_MAX_X)
-        }
-        skylightStart = maxOf(
-            skylightStart, if (x < ProtocolDefinition.SECTION_MAX_X) {
+        val skylightStart: Int = maxOf(
+            if (x > 0) {
+                traceSkylightDown(heightmapIndex - 1)
+            } else {
+                neighbours[ChunkNeighbours.EAST].traceSkylightDown((z shl 4) or ProtocolDefinition.SECTION_MAX_X)
+            },
+
+            if (x < ProtocolDefinition.SECTION_MAX_X) {
                 traceSkylightDown(heightmapIndex + 1)
             } else {
                 neighbours[ChunkNeighbours.WEST].traceSkylightDown(((z shl 4) or 0))
-            }
-        )
-        skylightStart = maxOf(
-            skylightStart, if (z > 0) {
+            },
+
+            if (z > 0) {
                 traceSkylightDown(((z - 1) shl 4) or x)
             } else {
                 neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
-            }
-        )
-        skylightStart = maxOf(
-            skylightStart, if (z < ProtocolDefinition.SECTION_MAX_Z) {
+            },
+
+            if (z < ProtocolDefinition.SECTION_MAX_Z) {
                 traceSkylightDown(((z + 1) shl 4) or x)
             } else {
                 neighbours[ChunkNeighbours.NORTH].traceSkylightDown((0 shl 4) or x)
