@@ -260,25 +260,22 @@ class FluidCullSectionPreparer(
         var totalHeight = 0.0f
         var count = 0
 
+        val neighbours = providedChunk.neighbours ?: Broken("neighbours == null")
+
         for (side in 0 until 4) {
             val blockPosition = position + Vec3i(-(side and 0x01), 0, -(side shr 1 and 0x01))
-            val chunkPositionOffset = blockPosition.chunkPosition - providedChunkPosition
+            val offset = blockPosition.chunkPosition - providedChunkPosition
             val chunk = when {
-                chunkPositionOffset.x == 0 && chunkPositionOffset.y == 0 -> providedChunk // most likely, doing this one first
-                chunkPositionOffset.x == -1 && chunkPositionOffset.y == -1 -> providedChunk.neighbours?.get(0)
-                chunkPositionOffset.x == -1 && chunkPositionOffset.y == 0 -> providedChunk.neighbours?.get(1)
-                chunkPositionOffset.x == -1 && chunkPositionOffset.y == 1 -> providedChunk.neighbours?.get(2)
-                chunkPositionOffset.x == 0 && chunkPositionOffset.y == -1 -> providedChunk.neighbours?.get(3)
-                chunkPositionOffset.x == 0 && chunkPositionOffset.y == 1 -> providedChunk.neighbours?.get(4)
-                chunkPositionOffset.x == 1 && chunkPositionOffset.y == -1 -> providedChunk.neighbours?.get(5)
-                chunkPositionOffset.x == 1 && chunkPositionOffset.y == 0 -> providedChunk.neighbours?.get(6)
-                chunkPositionOffset.x == 1 && chunkPositionOffset.y == 1 -> providedChunk.neighbours?.get(7)
-                else -> Broken("Can not get neighbour chunk from offset $chunkPositionOffset")
-            }
-
-            if (chunk == null) {
-                count++
-                continue
+                offset.x == 0 && offset.y == 0 -> providedChunk // most likely, doing this one first
+                offset.x == -1 && offset.y == -1 -> neighbours[0]
+                offset.x == -1 && offset.y == 0 -> neighbours[1]
+                offset.x == -1 && offset.y == 1 -> neighbours[2]
+                offset.x == 0 && offset.y == -1 -> neighbours[3]
+                offset.x == 0 && offset.y == 1 -> neighbours[4]
+                offset.x == 1 && offset.y == -1 -> neighbours[5]
+                offset.x == 1 && offset.y == 0 -> neighbours[6]
+                offset.x == 1 && offset.y == 1 -> neighbours[7]
+                else -> Broken("Can not get neighbour chunk from offset $offset")
             }
 
             val inChunkPosition = blockPosition.inChunkPosition

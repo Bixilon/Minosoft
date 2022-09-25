@@ -88,9 +88,6 @@ data class BlockState(
         out.append(block.resourceLocation.toString())
         out.append(" (")
         if (properties.isNotEmpty()) {
-            if (out.isNotEmpty()) {
-                out.append(", ")
-            }
             out.append("properties=")
             out.append(properties)
         }
