@@ -49,7 +49,7 @@ class Chunk(
     var sections: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
-    private val lock = ThreadLock()
+   private val lock = ThreadLock()
     private val world = connection.world
     var bottomLight = BorderSectionLight(false, this)
     var topLight = BorderSectionLight(true, this)
@@ -192,16 +192,15 @@ class Chunk(
 
     fun setBlockEntity(position: Vec3i, blockEntity: BlockEntity?) = setBlockEntity(position.x, position.y, position.z, blockEntity)
 
-    @Synchronized
-    private fun initialize(): Array<ChunkSection?> {
-        val sections: Array<ChunkSection?> = arrayOfNulls(world.dimension!!.sections)
-        this.sections = sections
-        return sections
+    private fun initialize() {
+        lock.lock()
+        this.sections = arrayOfNulls(world.dimension!!.sections)
+        lock.unlock()
     }
 
 
-    @Synchronized
     fun setData(data: ChunkData) {
+        lock.lock()
         if (sections == null) {
             initialize()
         }
@@ -236,6 +235,7 @@ class Chunk(
                 biomesInitialized = true
             }
         }
+        lock.unlock()
         world.onChunkUpdate(chunkPosition, this)
         connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, this))
     }
@@ -440,9 +440,8 @@ class Chunk(
         Broken("Can not get chunk from offset: $chunkOffset")
     }
 
-
-    @Synchronized
     private fun updateHeightmap() {
+        lock.lock()
         val maxY = highestSection * ProtocolDefinition.SECTION_HEIGHT_Y
 
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
@@ -450,6 +449,7 @@ class Chunk(
                 checkHeightmapY(x, maxY, z)
             }
         }
+        lock.unlock()
         recalculateSkylight()
     }
 
@@ -506,18 +506,16 @@ class Chunk(
     }
 
     private fun recalculateSkylight() {
-        if (world.dimension?.hasSkyLight != true) {
+        if (world.dimension?.hasSkyLight != true || this.neighbours == null) {
             // no need to calculate it
             return
         }
-        lock.lock()
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 traceSkylightDown(x, z)
                 startSkylightFloodFill(x, z)
             }
         }
-        lock.unlock()
     }
 
     private inline fun traceSkylightDown(x: Int, z: Int) {

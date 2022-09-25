@@ -152,28 +152,28 @@ class SectionLight(
             if (z > 0) {
                 traceIncrease(x, y, z - 1, neighbourLuminance, Directions.SOUTH)
             } else {
-                (neighbours[Directions.O_NORTH] ?: section.chunk?.neighbours?.get(ChunkNeighbours.NORTH)?.getOrPut(section.sectionHeight - 1, false))?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, Directions.SOUTH)
+                neighbours[Directions.O_NORTH, ChunkNeighbours.NORTH]?.light?.traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance, Directions.SOUTH)
             }
         }
         if (source == null || (source != Directions.SOUTH && block?.lightProperties?.propagatesLight(source, Directions.SOUTH) != false)) {
             if (z < ProtocolDefinition.SECTION_MAX_Y) {
                 traceIncrease(x, y, z + 1, neighbourLuminance, Directions.NORTH)
             } else {
-                (neighbours[Directions.O_SOUTH] ?: section.chunk?.neighbours?.get(ChunkNeighbours.SOUTH)?.getOrPut(section.sectionHeight, false))?.light?.traceIncrease(x, y, 0, neighbourLuminance, Directions.NORTH)
+                neighbours[Directions.O_SOUTH, ChunkNeighbours.SOUTH]?.light?.traceIncrease(x, y, 0, neighbourLuminance, Directions.NORTH)
             }
         }
         if (source == null || (source != Directions.WEST && block?.lightProperties?.propagatesLight(source, Directions.WEST) != false)) {
             if (x > 0) {
                 traceIncrease(x - 1, y, z, neighbourLuminance, Directions.EAST)
             } else {
-                (neighbours[Directions.O_WEST] ?: section.chunk?.neighbours?.get(ChunkNeighbours.WEST)?.getOrPut(section.sectionHeight, false))?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, Directions.EAST)
+                neighbours[Directions.O_WEST, ChunkNeighbours.WEST]?.light?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, neighbourLuminance, Directions.EAST)
             }
         }
         if (source == null || (source != Directions.EAST && block?.lightProperties?.propagatesLight(source, Directions.EAST) != false)) {
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 traceIncrease(x + 1, y, z, neighbourLuminance, Directions.WEST)
             } else {
-                (neighbours[Directions.O_EAST] ?: section.chunk?.neighbours?.get(ChunkNeighbours.EAST)?.getOrPut(section.sectionHeight, false))?.light?.traceIncrease(0, y, z, neighbourLuminance, Directions.WEST)
+                neighbours[Directions.O_EAST, ChunkNeighbours.EAST]?.light?.traceIncrease(0, y, z, neighbourLuminance, Directions.WEST)
             }
         }
     }
@@ -265,46 +265,51 @@ class SectionLight(
         if (direction != Directions.UP && (direction == null || light.propagatesLight(direction, Directions.DOWN))) {
             if (y > 0) {
                 traceSkylight(x, y - 1, z, nextNeighbourLevel, Directions.DOWN, totalY - 1, false)
-            } else {
-                neighbours[Directions.O_UP]?.light?.traceSkylight(x, 0, z, nextLevel, direction, totalY, false)
+            } else if (section.sectionHeight != section.chunk?.highestSection) {
+                (neighbours[Directions.O_UP] ?: section.chunk?.getOrPut(section.sectionHeight + 1, false))?.light?.traceSkylight(x, 0, z, nextLevel, direction, totalY, false)
             }
         }
         if (direction != Directions.DOWN && direction != null && (light.propagatesLight(direction, Directions.UP))) {
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceSkylight(x, y + 1, z, nextNeighbourLevel, Directions.UP, totalY + 1, false)
-            } else {
+            } else if (section.sectionHeight == section.chunk?.lowestSection) {
                 // ToDo: Trace through bottom light
-                neighbours[Directions.O_DOWN]?.light?.traceSkylight(x, ProtocolDefinition.SECTION_MAX_Y, z, nextLevel, direction, totalY, false)
+            } else {
+                (neighbours[Directions.O_DOWN] ?: section.chunk?.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkylight(x, ProtocolDefinition.SECTION_MAX_Y, z, nextLevel, direction, totalY, false)
             }
         }
         if (direction != Directions.NORTH && (direction == null || light.propagatesLight(direction, Directions.SOUTH))) {
             if (z > 0) {
                 traceSkylight(x, y, z - 1, nextNeighbourLevel, Directions.SOUTH, totalY, false)
             } else {
-                neighbours[Directions.O_NORTH]?.light?.traceSkylight(x, y, ProtocolDefinition.SECTION_MAX_Z, nextNeighbourLevel, Directions.SOUTH, totalY, false)
+                neighbours[Directions.O_NORTH, ChunkNeighbours.NORTH]?.light?.traceSkylight(x, y, ProtocolDefinition.SECTION_MAX_Z, nextNeighbourLevel, Directions.SOUTH, totalY, false)
             }
         }
         if (direction != Directions.SOUTH && (direction == null || light.propagatesLight(direction, Directions.NORTH))) {
             if (z < ProtocolDefinition.SECTION_MAX_Z) {
                 traceSkylight(x, y, z + 1, nextNeighbourLevel, Directions.NORTH, totalY, false)
             } else {
-                neighbours[Directions.O_SOUTH]?.light?.traceSkylight(x, y, 0, nextNeighbourLevel, Directions.NORTH, totalY, false)
+                neighbours[Directions.O_SOUTH, ChunkNeighbours.SOUTH]?.light?.traceSkylight(x, y, 0, nextNeighbourLevel, Directions.NORTH, totalY, false)
             }
         }
         if (direction != Directions.WEST && (direction == null || light.propagatesLight(direction, Directions.EAST))) {
             if (x > 0) {
                 traceSkylight(x - 1, y, z, nextNeighbourLevel, Directions.EAST, totalY, false)
             } else {
-                neighbours[Directions.O_WEST]?.light?.traceSkylight(ProtocolDefinition.SECTION_MAX_X, y, z, nextLevel, direction, totalY, false)
+                neighbours[Directions.O_WEST, ChunkNeighbours.WEST]?.light?.traceSkylight(ProtocolDefinition.SECTION_MAX_X, y, z, nextLevel, direction, totalY, false)
             }
         }
         if (direction != Directions.EAST && (direction == null || light.propagatesLight(direction, Directions.WEST))) {
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 traceSkylight(x + 1, y, z, nextNeighbourLevel, Directions.WEST, totalY, false)
             } else {
-                neighbours[Directions.O_EAST]?.light?.traceSkylight(0, y, z, nextLevel, direction, totalY, false)
+                neighbours[Directions.O_EAST, ChunkNeighbours.EAST]?.light?.traceSkylight(0, y, z, nextLevel, direction, totalY, false)
             }
         }
+    }
+
+    private operator fun Array<ChunkSection?>.get(direction: Int, neighbour: Int): ChunkSection? {
+        return this[direction] ?: section.chunk?.neighbours?.get(neighbour)?.getOrPut(section.sectionHeight, false)
     }
 
     companion object {
