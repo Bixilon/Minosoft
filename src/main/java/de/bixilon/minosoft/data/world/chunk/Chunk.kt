@@ -593,7 +593,7 @@ class Chunk(
         val maxSection = sections?.get(maxHeight.sectionHeight - lowestSection)
         val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         if (maxSection != null) {
-            for (y in ProtocolDefinition.SECTION_MAX_Y downTo maxHeight.inSectionHeight) {
+            for (y in skylightStart.inSectionHeight downTo maxHeight.inSectionHeight) {
                 val index = (y shl 8) or heightmapIndex
                 val block = maxSection.blocks.unsafeGet(index)?.lightProperties
                 if (block != null && !block.propagatesSkylight) {
