@@ -11,15 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.base.buffer.render
+package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-
-interface Renderbuffer {
-    val mode: RenderbufferModes
-    val size: Vec2i
-    val state: RenderbufferStates
-
-    fun init()
-    fun unload()
-}
+class MemoryLeakException(message: String? = null) : Exception(message)

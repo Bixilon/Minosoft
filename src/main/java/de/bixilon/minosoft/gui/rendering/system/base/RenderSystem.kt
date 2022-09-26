@@ -37,7 +37,10 @@ interface RenderSystem {
     var shader: Shader?
     var framebuffer: Framebuffer?
 
+    val active: Boolean
+
     fun init()
+    fun destroy()
 
     fun reset(
         depthTest: Boolean = true,

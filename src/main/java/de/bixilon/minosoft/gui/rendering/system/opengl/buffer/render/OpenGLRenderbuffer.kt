@@ -16,28 +16,49 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferStates
+import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL30.*
 
 class OpenGLRenderbuffer(
+    private val renderSystem: OpenGLRenderSystem,
     override val mode: RenderbufferModes,
     override val size: Vec2i,
 ) : Renderbuffer {
+    override var state: RenderbufferStates = RenderbufferStates.PREPARING
+        private set
     var id = -1
         private set
 
     override fun init() {
+        check(state == RenderbufferStates.PREPARING) { "Can not init renderbuffer in $state" }
         id = glGenRenderbuffers()
-        bind()
+        unsafeBind()
         glRenderbufferStorage(GL_RENDERBUFFER, mode.gl, size.x, size.y)
+        state = RenderbufferStates.GENERATED
     }
 
     fun bind() {
+        check(state == RenderbufferStates.GENERATED) { "Can not bind renderbuffer in $state" }
+        unsafeBind()
+    }
+
+    fun unsafeBind() {
         glBindRenderbuffer(GL_RENDERBUFFER, id)
     }
 
     override fun unload() {
+        check(state == RenderbufferStates.GENERATED) { "Can not unload renderbuffer in $state" }
         glDeleteRenderbuffers(id)
         id = -1
+        state = RenderbufferStates.UNLOADED
+    }
+
+    protected fun finalize() {
+        if (state == RenderbufferStates.GENERATED && renderSystem.active) {
+            throw MemoryLeakException("Renderbuffer has not been unloaded!")
+        }
     }
 
     companion object {

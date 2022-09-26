@@ -55,6 +55,8 @@ class OpenGLRenderSystem(
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     override lateinit var vendor: OpenGLVendor
         private set
+    override var active: Boolean = false
+        private set
 
     var blendingSource = BlendingFunctions.ONE
         private set
@@ -140,6 +142,11 @@ class OpenGLRenderSystem(
                 Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
             }, 0)
         }
+        active = true
+    }
+
+    override fun destroy() {
+        active = false
     }
 
     override fun enable(capability: RenderingCapabilities) {
@@ -184,6 +191,7 @@ class OpenGLRenderSystem(
     private var destinationRGB: BlendingFunctions = BlendingFunctions.ONE
     private var sourceAlpha: BlendingFunctions = BlendingFunctions.ONE
     private var destinationAlpha: BlendingFunctions = BlendingFunctions.ONE
+
     override fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions) {
         if (this.sourceRGB == sourceRGB && this.destinationRGB == destinationRGB && this.sourceAlpha == sourceAlpha && this.destinationAlpha == destinationAlpha) {
             return
@@ -261,7 +269,7 @@ class OpenGLRenderSystem(
     }
 
     override fun createFramebuffer(): OpenGLFramebuffer {
-        return OpenGLFramebuffer(renderWindow.window.size)
+        return OpenGLFramebuffer(this, renderWindow.window.size)
     }
 
     override fun createTextureManager(): OpenGLTextureManager {

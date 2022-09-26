@@ -27,7 +27,8 @@ import java.nio.FloatBuffer
 
 class FloatOpenGLVertexBuffer(
     renderSystem: OpenGLRenderSystem,
-    override val structure: MeshStruct, data: FloatBuffer,
+    override val structure: MeshStruct,
+    data: FloatBuffer,
     override val primitiveType: PrimitiveTypes,
 ) : FloatOpenGLBuffer(renderSystem, data), FloatVertexBuffer {
     override var vertices = -1
@@ -88,7 +89,6 @@ class FloatOpenGLVertexBuffer(
         }
         super.unload()
     }
-
 
     private companion object {
         val PrimitiveTypes.gl: Int

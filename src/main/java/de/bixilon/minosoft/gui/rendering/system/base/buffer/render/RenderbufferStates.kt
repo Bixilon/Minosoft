@@ -13,13 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.render
 
-import de.bixilon.kotlinglm.vec2.Vec2i
-
-interface Renderbuffer {
-    val mode: RenderbufferModes
-    val size: Vec2i
-    val state: RenderbufferStates
-
-    fun init()
-    fun unload()
+enum class RenderbufferStates {
+    PREPARING,
+    GENERATED,
+    UNLOADED,
+    ;
 }
