@@ -322,4 +322,11 @@ object KUtil {
         this[index] = value
         return true
     }
+
+    inline fun IntArray.getOrElse(index: Int, `else`: Int): Int {
+        if (index < 0 || index >= this.size) {
+            return `else`
+        }
+        return this[index]
+    }
 }

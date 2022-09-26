@@ -17,10 +17,10 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import java.util.*
 import kotlin.math.abs
@@ -64,7 +64,7 @@ class WeightedBakedModel(
     }
 
     override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
-        random.setSeed(VecUtil.generatePositionHash(blockPosition.x, blockPosition.y, blockPosition.z))
+        random.setSeed(blockPosition.positionHash)
         return getModel(random)?.getParticleTexture(random, blockPosition)
     }
 }

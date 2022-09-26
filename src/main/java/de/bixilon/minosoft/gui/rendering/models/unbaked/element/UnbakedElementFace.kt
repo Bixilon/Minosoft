@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 data class UnbakedElementFace(
@@ -48,7 +49,7 @@ data class UnbakedElementFace(
                 texture = data["texture"].toString(),
                 cullFace = cullFace,
                 rotation = data["rotation"]?.toInt() ?: 0,
-                tintIndex = data["tintindex"]?.toInt() ?: -1,
+                tintIndex = data["tintindex"]?.toInt() ?: TintManager.DEFAULT_TINT_INDEX,
             )
         }
     }

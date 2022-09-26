@@ -107,6 +107,7 @@ class TintManager(private val connection: PlayConnection) {
     }
 
     companion object {
+        const val DEFAULT_TINT_INDEX = -1
 
         fun getJsonColor(color: Int): RGBColor? {
             if (color == 0) {

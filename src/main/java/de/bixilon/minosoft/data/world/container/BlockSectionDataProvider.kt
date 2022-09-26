@@ -109,7 +109,6 @@ class BlockSectionDataProvider(
     private fun floodFill(): ShortArray {
         // mark regions and check direct neighbours
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
-        var nextFloodId = 1.toShort()
 
         fun trace(x: Int, y: Int, z: Int, nextId: Short) {
             val index = y shl 8 or (z shl 4) or x
@@ -119,9 +118,6 @@ class BlockSectionDataProvider(
             }
             val blockState = unsafeGet(index)
             if (blockState.isSolid()) {
-                if (nextId == nextFloodId) {
-                    nextFloodId++
-                }
                 return
             }
             regions[index] = nextId
@@ -133,10 +129,11 @@ class BlockSectionDataProvider(
             if (z < ProtocolDefinition.SECTION_MAX_Z) trace(x, y, z + 1, nextId)
         }
 
+        var nextFloodId = 1.toShort()
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    trace(x, y, z, nextFloodId)
+                    trace(x, y, z, nextFloodId++)
                 }
             }
         }

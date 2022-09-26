@@ -31,9 +31,10 @@ import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
+import de.bixilon.minosoft.data.world.positions.BlockPosition
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.SingleBlockRenderable
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.MeshedBlockEntityRenderer
 import de.bixilon.minosoft.gui.rendering.world.entities.OnlyMeshedBlockEntityRenderer
@@ -68,7 +69,7 @@ class SolidCullSectionPreparer(
         var blockEntity: BlockEntity?
         var model: SingleBlockRenderable
         var blockState: BlockState
-        var position: Vec3i
+        val position = BlockPosition()
         var rendered: Boolean
         var tints: IntArray?
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
@@ -79,8 +80,10 @@ class SolidCullSectionPreparer(
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+            position.y = offsetY + y
             val fastBedrock = y == 0 && isLowestSection && fastBedrock
             for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+                position.x = offsetX + x
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                     val baseIndex = (z shl 4) or x
                     val index = (y shl 8) or baseIndex
@@ -89,7 +92,7 @@ class SolidCullSectionPreparer(
                         continue
                     }
                     light[SELF_LIGHT_INDEX] = sectionLight[index]
-                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
+                    position.z = offsetZ + z
 
                     val maxHeight = chunk.skylightHeightmap[baseIndex]
                     if (position.y >= maxHeight) {
@@ -152,7 +155,7 @@ class SolidCullSectionPreparer(
                     }
 
                     if (randomBlockModels) {
-                        random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
+                        random.setSeed(position.positionHash)
                     } else {
                         random.setSeed(0L)
                     }
@@ -205,11 +208,11 @@ class SolidCullSectionPreparer(
     }
 
     private inline fun setNeighbour(neighbourBlocks: Array<BlockState?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, blocks: BlockSectionDataProvider?, sectionLight: SectionLight, chunk: Chunk, ordinal: Int) {
-        val nextBaseIndex = (z shl 4) or x
-        val neighbourIndex = y shl 8 or nextBaseIndex
+        val heightmapIndex = (z shl 4) or x
+        val neighbourIndex = y shl 8 or heightmapIndex
         neighbourBlocks[ordinal] = blocks?.unsafeGet(neighbourIndex)
         light[ordinal] = sectionLight[neighbourIndex]
-        if (position.y > chunk.skylightHeightmap[nextBaseIndex]) {
+        if (position.y > chunk.skylightHeightmap[heightmapIndex]) {
             light[ordinal] = (light[ordinal].toInt() or 0xF0).toByte()
         }
     }

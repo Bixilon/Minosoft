@@ -463,14 +463,17 @@ class Chunk(
         sectionLoop@ for (sectionIndex in startY.sectionHeight downTo 0) {
             val section = sections[sectionIndex] ?: continue
 
+            section.acquire()
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                val light = section.blocks[x, sectionY, z]?.lightProperties ?: continue
+                val light = section.blocks.unsafeGet(x, sectionY, z)?.lightProperties ?: continue
                 if (light.propagatesSkylight) {
                     continue
                 }
                 y = (sectionIndex + lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
+                section.release()
                 break@sectionLoop
             }
+            section.release()
         }
         skylightHeightmap[(z shl 4) or x] = y
     }

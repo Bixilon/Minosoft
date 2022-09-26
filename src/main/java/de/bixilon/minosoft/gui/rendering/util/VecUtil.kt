@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -191,7 +192,7 @@ object VecUtil {
             return Vec3.EMPTY
         }
 
-        val positionHash = generatePositionHash(x, 0, z)
+        val positionHash = BlockPositionUtil.generatePositionHash(x, 0, z)
         val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
 
         fun horizontal(axisHash: Long): Float {
@@ -229,12 +230,6 @@ object VecUtil {
 
     val Vec3d.empty: Boolean
         get() = this.length() < 0.001
-
-    fun generatePositionHash(x: Int, y: Int, z: Int): Long {
-        var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
-        hash = hash * hash * 42317861L + hash * 11L
-        return hash shr 16
-    }
 
     fun getDistanceToNextIntegerAxisInDirection(position: Vec3d, direction: Vec3d): Double {
         fun getTarget(direction: Vec3d, position: Vec3d, axis: Axes): Int {
