@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.world.entities
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -36,5 +38,19 @@ class EntityModels(val renderWindow: RenderWindow) {
 
     fun cleanup() {
         unbakedModels.clear()
+    }
+
+    fun loadSkeletal() {
+        val latch = CountUpAndDownLatch(1)
+        for (model in skeletal.values) {
+            latch.inc()
+            DefaultThreadPool += { model.preload(renderWindow); latch.dec() }
+        }
+        latch.dec()
+        latch.await()
+
+        for (model in skeletal.values) {
+            model.load()
+        }
     }
 }

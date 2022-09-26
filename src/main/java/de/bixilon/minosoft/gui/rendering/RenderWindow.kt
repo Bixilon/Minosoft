@@ -189,10 +189,7 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
-
-        for (model in modelLoader.entities.skeletal.values) {
-            model.loadMesh(this)
-        }
+        modelLoader.entities.loadSkeletal()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
+import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity: E) : EntityModel<E>(renderer, entity) {
@@ -24,7 +25,10 @@ abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity:
 
     override fun prepare() {
         super.prepare()
-        instance.model.loadMesh(renderWindow)
+        if (instance.model.state != SkeletalModelStates.LOADED) {
+            instance.model.preload(renderWindow) // ToDo: load async
+            instance.model.load()
+        }
     }
 
     override fun draw() {
