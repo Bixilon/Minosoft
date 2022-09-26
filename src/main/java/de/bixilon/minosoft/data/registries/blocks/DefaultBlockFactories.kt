@@ -49,6 +49,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.water.SeagrassBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 
 object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
+    AirBlock,
     FluidBlock,
     DoorBlock,
     LeverBlock,

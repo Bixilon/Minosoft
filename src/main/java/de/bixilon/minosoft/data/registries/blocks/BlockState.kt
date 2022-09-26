@@ -125,7 +125,9 @@ data class BlockState(
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
 
-            val lightProperties = if (outlineShape == VoxelShape.FULL) {
+            val lightProperties = if (outlineShape == VoxelShape.EMPTY) {
+                TransparentProperty
+            } else if (outlineShape == VoxelShape.FULL) {
                 if (data["is_opaque"]?.toBoolean() != false) SolidProperty else TransparentProperty
             } else {
                 DirectedProperty.of(outlineShape)
