@@ -87,7 +87,7 @@ object Log {
                     }
 
                     val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
-                    for (line in messageToSend.message.ansiColoredMessage.lines()) {
+                    for (line in messageToSend.message.ansiColoredMessage.lineSequence()) {
                         stream.println(prefix + line)
                     }
 

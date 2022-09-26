@@ -65,7 +65,7 @@ class LanguageManager(
                         data[ResourceLocation(key)] = value.toString()
                     }
                 } else {
-                    val lines = assetsManager[ResourceLocation(path.namespace, path.path + "${language.lowercase()}.lang")].readAsString().lines()
+                    val lines = assetsManager[ResourceLocation(path.namespace, path.path + "${language.lowercase()}.lang")].readAsString().lineSequence()
 
                     for (line in lines) {
                         if (line.isBlank() || line.startsWith("#")) {
