@@ -307,6 +307,7 @@ object KUtil {
         }
     }
 
+    @Deprecated("Kutil 1.16")
     inline fun <T> Array<T>.trySet(index: Int, value: T): Boolean {
         if (index < 0 || index >= size) {
             return false
@@ -315,6 +316,7 @@ object KUtil {
         return true
     }
 
+    @Deprecated("Kutil 1.16")
     inline fun BooleanArray.trySet(index: Int, value: Boolean): Boolean {
         if (index < 0 || index >= size) {
             return false
@@ -323,10 +325,21 @@ object KUtil {
         return true
     }
 
+    @Deprecated("Kutil 1.16")
     inline fun IntArray.getOrElse(index: Int, `else`: Int): Int {
         if (index < 0 || index >= this.size) {
             return `else`
         }
         return this[index]
+    }
+
+    @Deprecated("Kutil 1.16")
+    fun <T> Array<T?>.isEmptyOrOnlyNull(): Boolean {
+        for (entry in this) {
+            if (entry != null) {
+                return false
+            }
+        }
+        return true
     }
 }

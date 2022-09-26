@@ -39,6 +39,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
+import de.bixilon.minosoft.util.KUtil.isEmptyOrOnlyNull
 import java.lang.StrictMath.abs
 import java.util.*
 
@@ -203,7 +204,9 @@ object ChunkUtil {
             }
         }
 
-        chunkData.blocks = sectionBlocks
+        if (!sectionBlocks.isEmptyOrOnlyNull()) {
+            chunkData.blocks = sectionBlocks
+        }
         if (lightReceived > 0) {
             chunkData.light = light
         }
