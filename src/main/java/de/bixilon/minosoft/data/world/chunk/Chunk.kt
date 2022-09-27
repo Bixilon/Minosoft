@@ -104,7 +104,11 @@ class Chunk(
         val section = getOrPut(y.sectionHeight) ?: return
         val inSectionHeight = y.inSectionHeight
         section[x, inSectionHeight, z] = blockState
+
+        val heightmapIndex = (z shl 4) or x
+        val previous = skylightHeightmap[heightmapIndex]
         updateHeightmap(x, y, z, blockState != null)
+        onHeightmapUpdate(x, y, z, previous, skylightHeightmap[heightmapIndex])
 
         section.blockEntities[x, inSectionHeight, z] = blockEntity
         if (blockEntity == null) {
@@ -475,7 +479,22 @@ class Chunk(
             }
             section.release()
         }
-        skylightHeightmap[(z shl 4) or x] = y
+        val heightmapIndex = (z shl 4) or x
+        skylightHeightmap[heightmapIndex] = y
+    }
+
+    private fun onHeightmapUpdate(x: Int, y: Int, z: Int, previous: Int, now: Int) {
+        if (previous == now) {
+            return
+        }
+
+        if (previous < y) {
+            // block is now higher
+            // ToDo: Clear light
+        } else if (previous > y) {
+            // block is lower
+            startSkylightFloodFill(x, z)
+        }
     }
 
     private fun updateHeightmap(x: Int, y: Int, z: Int, place: Boolean) {
