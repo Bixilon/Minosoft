@@ -396,7 +396,9 @@ class World(
         }
 
         if (neighboursReceived) {
+            chunk.resetLight()
             chunk.recalculateLight()
+            chunk.propagateLightFromNeighbours()
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
         }
     }

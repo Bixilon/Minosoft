@@ -387,6 +387,16 @@ class Chunk(
         }
     }
 
+    fun propagateLightFromNeighbours() {
+        val sections = sections ?: Broken("Sections is null")
+        for (section in sections) {
+            if (section == null) {
+                continue
+            }
+            section.light.propagateFromNeighbours()
+        }
+    }
+
     private fun updateSectionNeighbours(neighbours: Array<Chunk>) {
         for ((index, section) in sections!!.withIndex()) {
             if (section == null) {
@@ -573,6 +583,7 @@ class Chunk(
 
         for (sectionHeight in skylightStart.sectionHeight downTo maxHeight.sectionHeight + 1) {
             val section = sections?.get(sectionHeight - lowestSection) ?: continue
+            // ToDo: Only update if affected by heightmap change
             section.light.update = true
             // ToDo: bare tracing
             val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y

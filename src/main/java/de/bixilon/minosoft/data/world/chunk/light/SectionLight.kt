@@ -238,39 +238,57 @@ class SectionLight(
         // ToDo: Check if current block can propagate into that direction
         val baseY = section.sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-            for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                neighbours[Directions.O_DOWN]?.light?.get(x, ProtocolDefinition.SECTION_MAX_Y, z)?.toInt()?.dec()?.let {
-                    traceIncrease(x, 0, z, it and BLOCK_LIGHT_MASK, Directions.UP)
-                    traceSkylight(x, 0, z, it and SKY_LIGHT_MASK shr 4, Directions.UP, baseY + 0) // ToDo: Is that possible?
-                }
-                neighbours[Directions.O_UP]?.light?.get(x, 0, z)?.toInt()?.dec()?.let {
-                    traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, it and BLOCK_LIGHT_MASK, Directions.DOWN)
-                    traceSkylight(x, ProtocolDefinition.SECTION_MAX_Y, z, it and SKY_LIGHT_MASK shr 4, Directions.DOWN, baseY + ProtocolDefinition.SECTION_MAX_Y)
-                }
+            if (neighbours[Directions.O_DOWN] != null || neighbours[Directions.O_UP] != null) {
+                propagateY(neighbours, x, baseY)
             }
-            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-                val totalY = baseY + y
-                neighbours[Directions.O_NORTH]?.light?.get(x, y, ProtocolDefinition.SECTION_MAX_Z)?.toInt()?.dec()?.let {
-                    traceIncrease(x, y, 0, it and BLOCK_LIGHT_MASK, Directions.SOUTH)
-                    traceSkylight(x, y, 0, it and SKY_LIGHT_MASK shr 4, Directions.SOUTH, totalY)
-                }
-                neighbours[Directions.O_SOUTH]?.light?.get(x, y, 0)?.toInt()?.dec()?.let {
-                    traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, it and BLOCK_LIGHT_MASK, Directions.NORTH)
-                    traceSkylight(x, y, ProtocolDefinition.SECTION_MAX_Z, it and SKY_LIGHT_MASK shr 4, Directions.NORTH, totalY)
-                }
+            if (neighbours[Directions.O_NORTH] != null || neighbours[Directions.O_SOUTH] != null) {
+                propagateZ(baseY, neighbours, x)
             }
         }
+        if (neighbours[Directions.O_WEST] != null || neighbours[Directions.O_EAST] != null) {
+            propagateX(baseY, neighbours)
+        }
+    }
+
+    private fun propagateX(baseY: Int, neighbours: Array<ChunkSection?>) {
         for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                 val totalY = baseY + y
-                neighbours[Directions.O_WEST]?.light?.get(ProtocolDefinition.SECTION_MAX_Z, y, z)?.toInt()?.dec()?.let {
-                    traceIncrease(0, y, z, it and BLOCK_LIGHT_MASK, Directions.EAST)
-                    traceSkylight(0, y, z, it and SKY_LIGHT_MASK shr 4, Directions.EAST, totalY)
+                neighbours[Directions.O_WEST]?.light?.get(ProtocolDefinition.SECTION_MAX_Z, y, z)?.toInt()?.let {
+                    traceIncrease(0, y, z, (it and BLOCK_LIGHT_MASK).dec(), Directions.EAST)
+                    traceSkylight(0, y, z, (it and SKY_LIGHT_MASK shr 4).dec(), Directions.EAST, totalY)
                 }
                 neighbours[Directions.O_EAST]?.light?.get(0, y, z)?.toInt()?.dec()?.let {
-                    traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, it and BLOCK_LIGHT_MASK, Directions.WEST)
-                    traceSkylight(ProtocolDefinition.SECTION_MAX_X, y, z, it and SKY_LIGHT_MASK shr 4, Directions.WEST, totalY)
+                    traceIncrease(ProtocolDefinition.SECTION_MAX_X, y, z, (it and BLOCK_LIGHT_MASK).dec(), Directions.WEST)
+                    traceSkylight(ProtocolDefinition.SECTION_MAX_X, y, z, (it and SKY_LIGHT_MASK shr 4).dec(), Directions.WEST, totalY)
                 }
+            }
+        }
+    }
+
+    private fun propagateZ(baseY: Int, neighbours: Array<ChunkSection?>, x: Int) {
+        for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+            val totalY = baseY + y
+            neighbours[Directions.O_NORTH]?.light?.get(x, y, ProtocolDefinition.SECTION_MAX_Z)?.toInt()?.let {
+                traceIncrease(x, y, 0, (it and BLOCK_LIGHT_MASK).dec(), Directions.SOUTH)
+                traceSkylight(x, y, 0, (it and SKY_LIGHT_MASK shr 4).dec(), Directions.SOUTH, totalY)
+            }
+            neighbours[Directions.O_SOUTH]?.light?.get(x, y, 0)?.toInt()?.let {
+                traceIncrease(x, y, ProtocolDefinition.SECTION_MAX_Z, (it and BLOCK_LIGHT_MASK).dec(), Directions.NORTH)
+                traceSkylight(x, y, ProtocolDefinition.SECTION_MAX_Z, (it and SKY_LIGHT_MASK shr 4).dec(), Directions.NORTH, totalY)
+            }
+        }
+    }
+
+    private fun propagateY(neighbours: Array<ChunkSection?>, x: Int, baseY: Int) {
+        for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
+            neighbours[Directions.O_DOWN]?.light?.get(x, ProtocolDefinition.SECTION_MAX_Y, z)?.toInt()?.let {
+                traceIncrease(x, 0, z, (it and BLOCK_LIGHT_MASK).dec(), Directions.UP)
+                traceSkylight(x, 0, z, (it and SKY_LIGHT_MASK shr 4).dec(), Directions.UP, baseY + 0) // ToDo: Is that possible?
+            }
+            neighbours[Directions.O_UP]?.light?.get(x, 0, z)?.toInt()?.let {
+                traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, (it and BLOCK_LIGHT_MASK).dec(), Directions.DOWN)
+                traceSkylight(x, ProtocolDefinition.SECTION_MAX_Y, z, (it and SKY_LIGHT_MASK shr 4).dec(), Directions.DOWN, baseY + ProtocolDefinition.SECTION_MAX_Y)
             }
         }
     }
@@ -278,7 +296,6 @@ class SectionLight(
     private inline fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int) {
         return traceSkylight(x, y, z, nextLevel, direction, totalY, true)
     }
-
 
     fun traceSkylight(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int, noForce: Boolean) {
         val chunk = section.chunk ?: Broken("chunk == null")
@@ -302,6 +319,10 @@ class SectionLight(
         }
 
         this.light[index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
+
+        if (!update) {
+            update = true
+        }
 
         if (nextLevel <= 1) {
             return
