@@ -530,25 +530,25 @@ class Chunk(
             if (x > 0) {
                 skylightHeightmap[heightmapIndex - 1]
             } else {
-                neighbours[ChunkNeighbours.EAST].skylightHeightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X]
+                neighbours[ChunkNeighbours.WEST].skylightHeightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X]
             },
 
             if (x < ProtocolDefinition.SECTION_MAX_X) {
                 skylightHeightmap[heightmapIndex + 1]
             } else {
-                neighbours[ChunkNeighbours.WEST].skylightHeightmap[(z shl 4) or 0]
+                neighbours[ChunkNeighbours.EAST].skylightHeightmap[(z shl 4) or 0]
             },
 
             if (z > 0) {
                 skylightHeightmap[((z - 1) shl 4) or x]
             } else {
-                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
+                neighbours[ChunkNeighbours.NORTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
             },
 
             if (z < ProtocolDefinition.SECTION_MAX_Z) {
                 skylightHeightmap[((z + 1) shl 4) or x]
             } else {
-                neighbours[ChunkNeighbours.NORTH].skylightHeightmap[(0 shl 4) or x]
+                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(0 shl 4) or x]
             }
         )
 
