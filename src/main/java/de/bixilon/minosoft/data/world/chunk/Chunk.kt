@@ -117,23 +117,25 @@ class Chunk(
         fireLightChange(section, y.sectionHeight, neighbours)
     }
 
-    private fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: Array<Chunk>) {
+    private fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: Array<Chunk>, fireSameChunkEvent: Boolean = true) {
         if (!section.light.update) {
             return
         }
         section.light.update = false
 
-        connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight, true))
+        if (fireSameChunkEvent) {
+            connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight, true))
 
-        val down = section.neighbours?.get(Directions.O_DOWN)?.light
-        if (down != null && down.update) {
-            down.update = false
-            connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight - 1, false))
-        }
-        val up = section.neighbours?.get(Directions.O_UP)?.light
-        if (up?.update == true) {
-            up.update = false
-            connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight + 1, false))
+            val down = section.neighbours?.get(Directions.O_DOWN)?.light
+            if (down != null && down.update) {
+                down.update = false
+                connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight - 1, false))
+            }
+            val up = section.neighbours?.get(Directions.O_UP)?.light
+            if (up?.update == true) {
+                up.update = false
+                connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight + 1, false))
+            }
         }
 
 
@@ -157,10 +159,10 @@ class Chunk(
         }
     }
 
-    private fun fireLightChange(sections: Array<ChunkSection?>) {
+    private fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {
         val neighbours = neighbours ?: return
         for ((index, section) in sections.withIndex()) {
-            fireLightChange(section ?: continue, index + lowestSection, neighbours)
+            fireLightChange(section ?: continue, index + lowestSection, neighbours, fireSameChunkEvent)
         }
     }
 
@@ -361,7 +363,7 @@ class Chunk(
         return biomeSource?.getBiome(x and 0x0F, y, z and 0x0F)
     }
 
-    fun recalculateLight() {
+    fun recalculateLight(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
         val sections = sections ?: Broken("Sections is null")
         for (section in sections) {
             if (section == null) {
@@ -370,10 +372,12 @@ class Chunk(
             section.light.recalculate()
         }
         recalculateSkylight()
-        fireLightChange(sections)
+        if (fireEvent) {
+            fireLightChange(sections, fireSameChunkEvent)
+        }
     }
 
-    fun calculateLight() {
+    fun calculateLight(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
         val sections = sections ?: Broken("Sections is null")
         for (section in sections) {
             if (section == null) {
@@ -382,7 +386,9 @@ class Chunk(
             section.light.calculate()
         }
         recalculateSkylight()
-        fireLightChange(sections)
+        if (fireEvent) {
+            fireLightChange(sections, fireSameChunkEvent)
+        }
     }
 
     fun resetLight() {
@@ -395,7 +401,7 @@ class Chunk(
         }
     }
 
-    fun propagateLightFromNeighbours() {
+    fun propagateLightFromNeighbours(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
         val sections = sections ?: Broken("Sections is null")
         for (section in sections) {
             if (section == null) {
@@ -403,7 +409,9 @@ class Chunk(
             }
             section.light.propagateFromNeighbours()
         }
-        fireLightChange(sections)
+        if (fireEvent) {
+            fireLightChange(sections, fireSameChunkEvent)
+        }
     }
 
     private fun updateSectionNeighbours(neighbours: Array<Chunk>) {

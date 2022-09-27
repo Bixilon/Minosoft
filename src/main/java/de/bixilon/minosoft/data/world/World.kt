@@ -388,7 +388,7 @@ class World(
         }
 
         if (neighboursReceived) {
-            chunk.recalculateLight()
+            chunk.recalculateLight(false)
             chunk.propagateLightFromNeighbours()
         }
 
