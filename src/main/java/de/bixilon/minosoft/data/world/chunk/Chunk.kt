@@ -82,10 +82,6 @@ class Chunk(
     val isFullyLoaded: Boolean
         get() = isLoaded && neighbours != null
 
-    init {
-        // connection.world.view.updateServerViewDistance(chunkPosition, true)
-    }
-
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
     fun unsafeGet(x: Int, y: Int, z: Int): BlockState? {
@@ -118,11 +114,14 @@ class Chunk(
 
         val neighbours = this.neighbours ?: return
 
+        fireLightChange(section, y.sectionHeight, neighbours)
+    }
+
+    private fun fireLightChange(section: ChunkSection, sectionHeight: Int, neighbours: Array<Chunk>) {
         if (!section.light.update) {
             return
         }
         section.light.update = false
-        val sectionHeight = y.sectionHeight
 
         connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, this, sectionHeight, true))
 
@@ -155,6 +154,13 @@ class Chunk(
                     connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight + chunkY, false))
                 }
             }
+        }
+    }
+
+    private fun fireLightChange(sections: Array<ChunkSection?>) {
+        val neighbours = neighbours ?: return
+        for ((index, section) in sections.withIndex()) {
+            fireLightChange(section ?: continue, index + lowestSection, neighbours)
         }
     }
 
@@ -364,6 +370,7 @@ class Chunk(
             section.light.recalculate()
         }
         recalculateSkylight()
+        fireLightChange(sections)
     }
 
     fun calculateLight() {
@@ -375,6 +382,7 @@ class Chunk(
             section.light.calculate()
         }
         recalculateSkylight()
+        fireLightChange(sections)
     }
 
     fun resetLight() {
@@ -395,6 +403,7 @@ class Chunk(
             }
             section.light.propagateFromNeighbours()
         }
+        fireLightChange(sections)
     }
 
     private fun updateSectionNeighbours(neighbours: Array<Chunk>) {

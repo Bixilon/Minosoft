@@ -387,6 +387,10 @@ class World(
             }
         }
 
+        if (neighboursReceived) {
+            chunk.recalculateLight()
+            chunk.propagateLightFromNeighbours()
+        }
 
         if (checkNeighbours) {
             for (index in 0 until 8) {
@@ -396,9 +400,6 @@ class World(
         }
 
         if (neighboursReceived) {
-            chunk.resetLight()
-            chunk.recalculateLight()
-            chunk.propagateLightFromNeighbours()
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
         }
     }
