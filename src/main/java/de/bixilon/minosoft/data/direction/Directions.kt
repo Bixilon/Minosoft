@@ -47,7 +47,7 @@ enum class Directions(
     val vectorf = Vec3(vector)
     val vectord = Vec3d(vector)
 
-    val axis: Axes get() = Axes[this] // ToDo
+    inline val axis: Axes get() = Axes[this] // ToDo
     val debugColor = ChatColors[ordinal]
 
     val rotatedMatrix: Mat4 by lazy {

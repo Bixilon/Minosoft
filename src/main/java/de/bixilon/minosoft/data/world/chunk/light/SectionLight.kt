@@ -32,9 +32,17 @@ class SectionLight(
         val previousLuminance = previous?.luminance ?: 0
         val luminance = now?.luminance ?: 0
 
-        if (previousLuminance == luminance && previous?.lightProperties?.propagatesLight == now?.lightProperties?.propagatesLight && previous?.lightProperties?.propagatesSkylight == now?.lightProperties?.propagatesSkylight) {
-            // no change for light data
-            return
+        if (previousLuminance == luminance) {
+            if (previous?.lightProperties?.propagatesLight == now?.lightProperties?.propagatesLight) {
+                // no change for light data
+                return
+            }
+            if (now == null || now.lightProperties.propagatesLight) {
+                // block got destroyed/is propagating light now
+                propagateFromNeighbours(x, y, z)
+                return
+            }
+            // ToDo: else decrease light around placed block
         }
 
         if (luminance > previousLuminance) {
@@ -350,6 +358,64 @@ class SectionLight(
 
     private inline operator fun Array<ChunkSection?>.get(direction: Int, neighbour: Int, neighbours: Array<Chunk>): ChunkSection? {
         return this[direction] ?: neighbours[neighbour].getOrPut(section.sectionHeight, false)
+    }
+
+    fun propagateFromNeighbours(x: Int, y: Int, z: Int) {
+        val neighbours = section.neighbours ?: return
+
+        var skylight = 0
+        var blockLight = 0
+
+
+        fun pushLight(light: Byte) {
+            val nextSkylight = light.toInt() and SKY_LIGHT_MASK shr 4
+            if (skylight > nextSkylight) {
+                skylight = nextSkylight
+            }
+            val nextBlockLight = light.toInt() and BLOCK_LIGHT_MASK
+            if (blockLight > nextBlockLight) {
+                blockLight = nextBlockLight
+            }
+        }
+
+        // ToDo: check if light can exit block at side or can enter block at neighbpu
+
+        if (x > 0) {
+            pushLight(this[x - 1, y, z])
+        } else {
+            neighbours[Directions.O_WEST]?.light?.get(ProtocolDefinition.SECTION_MAX_X, y, z)?.let { pushLight(it) }
+        }
+        if (x < ProtocolDefinition.SECTION_MAX_X) {
+            pushLight(this[x + 1, y, z])
+        } else {
+            neighbours[Directions.O_EAST]?.light?.get(0, y, z)?.let { pushLight(it) }
+        }
+
+        if (y > 0) {
+            pushLight(this[x, y - 1, z])
+        } else {
+            neighbours[Directions.O_DOWN]?.light?.get(x, ProtocolDefinition.SECTION_MAX_Y, z)?.let { pushLight(it) }
+        }
+
+        if (y < ProtocolDefinition.SECTION_MAX_Y) {
+            pushLight(this[x, y + 1, z])
+        } else {
+            neighbours[Directions.O_UP]?.light?.get(x, 0, z)?.let { pushLight(it) }
+        }
+
+        if (z > 0) {
+            pushLight(this[x, y, z - 1])
+        } else {
+            neighbours[Directions.O_NORTH]?.light?.get(x, y, ProtocolDefinition.SECTION_MAX_Z)?.let { pushLight(it) }
+        }
+        if (z < ProtocolDefinition.SECTION_MAX_Z) {
+            pushLight(this[x, y, z + 1])
+        } else {
+            neighbours[Directions.O_SOUTH]?.light?.get(x, y, 0)?.let { pushLight(it) }
+        }
+
+        traceIncrease(x, y, z, blockLight - 1, null)
+        traceSkylight(x, y, z, skylight - 1, null, section.sectionHeight * ProtocolDefinition.SECTION_MAX_Y + y)
     }
 
     companion object {
