@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.ConnectingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
+import de.bixilon.minosoft.gui.eros.dialog.connection.LoadingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.VerifyAssetsDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
@@ -181,8 +182,19 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             })
             val latch = CountUpAndDownLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
-            connection::state.observeFX(this) { if (it.disconnected) assetsDialog.close() }
-            ConnectingDialog(connection).show()
+            connection::state.observeFX(this) {
+                if (it == PlayConnectionStates.LOADING || it.disconnected) {
+                    assetsDialog.close()
+                }
+                if (it == PlayConnectionStates.LOADING) {
+                    LoadingDialog(latch, connection).show()
+                }
+                if (it == PlayConnectionStates.ESTABLISHING) {
+                    ConnectingDialog(connection).show()
+                }
+            }
+
+
             connection.connect(latch)
         }
     }

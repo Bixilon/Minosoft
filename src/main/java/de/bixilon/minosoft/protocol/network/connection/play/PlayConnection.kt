@@ -45,7 +45,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
+import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
@@ -173,6 +173,7 @@ class PlayConnection(
                 fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
                 registries.parentRegistries = version.registries
+                fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             }
 
             taskWorker += {
@@ -203,7 +204,6 @@ class PlayConnection(
 
             language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
-            fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this, privateKey)
 
             if (!RunConfiguration.DISABLE_RENDERING) {

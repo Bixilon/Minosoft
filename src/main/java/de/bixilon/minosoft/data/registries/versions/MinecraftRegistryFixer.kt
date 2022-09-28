@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.versions
 
 import de.bixilon.minosoft.data.entities.block.FlowerPotBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
-import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
+import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
