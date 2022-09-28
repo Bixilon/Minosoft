@@ -272,8 +272,8 @@ class RenderWindow(
             renderStats.endDraw()
 
 
-            window.swapBuffers()
             window.pollEvents()
+            window.swapBuffers()
 
             inputHandler.draw(deltaFrameTime)
             camera.draw()
