@@ -87,6 +87,7 @@ class PlayConnection(
     lateinit var language: LanguageManager
 
 
+    @Deprecated("will be removed once split into modules")
     var rendering: Rendering? = null
         private set
     lateinit var player: LocalPlayerEntity
@@ -205,10 +206,10 @@ class PlayConnection(
             player = LocalPlayerEntity(account, this, privateKey)
 
             if (!RunConfiguration.DISABLE_RENDERING) {
-                val renderer = Rendering(this)
-                this.rendering = renderer
+                val rendering = Rendering(this)
+                this.rendering = rendering
                 val renderLatch = CountUpAndDownLatch(0, latch)
-                renderer.init(renderLatch)
+                rendering.init(renderLatch)
                 renderLatch.awaitWithChange()
             }
             latch.dec() // remove initial value
