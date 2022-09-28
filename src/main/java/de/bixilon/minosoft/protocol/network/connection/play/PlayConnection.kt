@@ -135,15 +135,16 @@ class PlayConnection(
                 }
             }
         }
-        network::state.observe(this) {
-            when (it) {
+        network::state.observe(this) { state ->
+            when (state) {
                 ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
-                    state = PlayConnectionStates.LOGGING_IN
+                    this.state = PlayConnectionStates.LOGGING_IN
                     this.network.send(StartC2SP(this.player))
                 }
+
                 ProtocolStates.PLAY -> {
-                    state = PlayConnectionStates.JOINING
+                    this.state = PlayConnectionStates.JOINING
 
                     if (CLI.connection == null) {
                         CLI.connection = this

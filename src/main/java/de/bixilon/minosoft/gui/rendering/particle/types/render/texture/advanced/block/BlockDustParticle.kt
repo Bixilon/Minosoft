@@ -41,7 +41,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         color = 0.6f.asGray()
 
         if (data.blockState.block.resourceLocation != MinecraftBlocks.GRASS_BLOCK) { // Just the overlay is tinted
-            connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.getOrNull(0)?.asRGBColor()?.let {
+            connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.getOrNull(PARTICLE_TINT_INDEX)?.asRGBColor()?.let {
                 color = RGBColor(color.floatRed * it.floatRed, color.floatGreen * it.floatGreen, color.floatBlue * it.floatBlue)
             }
         }
@@ -57,6 +57,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
     companion object : ParticleFactory<BlockDustParticle> {
         private const val GRAY = 153 shl 16 or (153 shl 8) or 153
+        private const val PARTICLE_TINT_INDEX = 0
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {

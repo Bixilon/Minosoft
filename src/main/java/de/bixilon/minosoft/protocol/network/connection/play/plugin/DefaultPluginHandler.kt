@@ -33,13 +33,13 @@ object DefaultPluginHandler {
         connection.pluginManager[brandChannel] = {
             connection.serverInfo.brand = it.readString()
 
-            sendBrand(brandChannel, connection, if (connection.profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
+            connection.sendBrand(brandChannel, if (connection.profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
         }
     }
 
-    private fun sendBrand(channel: ResourceLocation, connection: PlayConnection, brand: String) {
-        val buffer = PlayOutByteBuffer(connection)
+    private fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
+        val buffer = PlayOutByteBuffer(this)
         buffer.writeByteArray(brand.encodeNetwork())
-        connection.sendPacket(PluginC2SP(channel, buffer))
+        sendPacket(PluginC2SP(channel, buffer))
     }
 }

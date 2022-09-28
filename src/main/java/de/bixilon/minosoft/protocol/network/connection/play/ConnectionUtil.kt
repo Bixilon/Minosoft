@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import com.fasterxml.jackson.core.io.JsonStringEncoder
 import com.google.common.primitives.Longs
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
+import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.stack.CommandStack
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -32,7 +32,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
-import de.bixilon.minosoft.terminal.cli.CLI.removeDuplicatedWhitespaces
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -58,12 +57,15 @@ class ConnectionUtil(
     }
 
     fun sendChatMessage(message: String) {
-        val message = message.removeDuplicatedWhitespaces().removeTrailingWhitespaces()
+        val message = message.trimWhitespaces()
         if (message.isBlank()) {
             throw IllegalArgumentException("Chat message can not be blank!")
         }
         if (message.contains(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)) {
             throw IllegalArgumentException("Chat message must not contain chat formatting (${ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR}): $message")
+        }
+        if (message.length > connection.version.maxChatMessageSize) {
+            throw IllegalArgumentException("Message length (${message.length} can not exceed ${connection.version.maxChatMessageSize})")
         }
         if (connection.fireEvent(ChatMessageSendEvent(connection, message))) {
             return

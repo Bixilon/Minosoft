@@ -16,6 +16,7 @@ package de.bixilon.minosoft.terminal.cli
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.commands.nodes.RootNode
@@ -68,7 +69,7 @@ object CLI {
 
         while (true) {
             try {
-                val line: String = reader.readLine().removeDuplicatedWhitespaces()
+                val line: String = reader.readLine().trimWhitespaces()
                 if (line.isBlank()) {
                     continue
                 }
@@ -80,10 +81,6 @@ object CLI {
                 exception.printStackTrace()
             }
         }
-    }
-
-    fun String.removeDuplicatedWhitespaces(): String {
-        return this.replace("\\s{2,}".toRegex(), "")
     }
 
     object NodeCompleter : Completer {
