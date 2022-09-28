@@ -16,8 +16,8 @@ package de.bixilon.minosoft.util.account.minecraft
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.base64.Base64Util.fromBase64
-import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
+import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 
@@ -34,9 +34,14 @@ data class MinecraftPrivateKey(
         return now.isAfter(expiresAt) || now.isAfter(refreshedAfter)
     }
 
-    fun isSignatureCorrect(): Boolean {
-        val bytes = (expiresAt.toEpochMilli().toString() + pair.public).toByteArray(StandardCharsets.US_ASCII)
+    private val getSignedBytes: ByteArray
+        get() = (expiresAt.toEpochMilli().toString() + pair.public).toByteArray(StandardCharsets.US_ASCII)
 
-        return YggdrasilUtil.verify(bytes, signatureBytes)
+    fun isSignatureCorrect(): Boolean {
+        return YggdrasilUtil.verify(getSignedBytes, signatureBytes)
+    }
+
+    fun requireSignature() {
+        YggdrasilUtil.requireSignature(getSignedBytes, signatureBytes)
     }
 }

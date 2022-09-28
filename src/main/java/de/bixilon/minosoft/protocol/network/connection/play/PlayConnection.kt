@@ -186,9 +186,7 @@ class PlayConnection(
             if (version.requiresSignedChat) {
                 taskWorker += Task(optional = true) {
                     val minecraftKey = account.fetchKey(latch) ?: return@Task
-                    if (!minecraftKey.isSignatureCorrect()) {
-                        throw IllegalArgumentException("Yggdrasil signature mismatch!")
-                    }
+                    minecraftKey.requireSignature()
                     privateKey = PlayerPrivateKey(
                         expiresAt = minecraftKey.expiresAt,
                         signature = minecraftKey.signatureBytes,

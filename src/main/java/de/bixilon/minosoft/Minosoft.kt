@@ -50,10 +50,10 @@ import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.RenderPolling
-import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 
 
 object Minosoft {

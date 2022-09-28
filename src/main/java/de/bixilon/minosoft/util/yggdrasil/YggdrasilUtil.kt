@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util
+package de.bixilon.minosoft.util.yggdrasil
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -51,10 +51,22 @@ object YggdrasilUtil {
         return signatureInstance.verify(signature)
     }
 
+    fun requireSignature(data: ByteArray, signature: ByteArray) {
+        if (!verify(data, signature)) {
+            throw YggdrasilException()
+        }
+    }
+
     fun verify(data: String, signature: String): Boolean {
         if (RunConfiguration.IGNORE_YGGDRASIL) {
             return true
         }
         return verify(data.toByteArray(), Base64.getDecoder().decode(signature))
+    }
+
+    fun requireSignature(data: String, signature: String) {
+        if (!verify(data, signature)) {
+            throw YggdrasilException()
+        }
     }
 }
