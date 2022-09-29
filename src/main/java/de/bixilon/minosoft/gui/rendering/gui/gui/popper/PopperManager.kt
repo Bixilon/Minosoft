@@ -136,8 +136,9 @@ class PopperManager(
     }
 
     fun add(popper: Popper) {
-        poppers += PopperGUIElement(popper)
-        popper.onOpen()
+        val guiElement = PopperGUIElement(popper)
+        poppers += guiElement
+        guiElement.onOpen()
     }
 
     operator fun plusAssign(popper: Popper) {

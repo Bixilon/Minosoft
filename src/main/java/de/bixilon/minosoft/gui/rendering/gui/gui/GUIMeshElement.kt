@@ -54,10 +54,13 @@ open class GUIMeshElement<T : Element>(
                 return
             }
             field = value
-            if (!value) {
-                element.onClose()
+            if (!value && state != ElementStates.CLOSED) {
+                onClose()
             }
         }
+    var state: ElementStates = ElementStates.CLOSED
+        private set
+
     override val activeWhenHidden: Boolean
         get() = element.activeWhenHidden
     override val canPop: Boolean
@@ -177,17 +180,23 @@ open class GUIMeshElement<T : Element>(
 
 
     override fun onClose() {
+        check(state != ElementStates.CLOSED) { "Element not active!" }
+        state = ElementStates.CLOSED
         element.onClose()
         element.onMouseLeave()
         lastPosition = null
     }
 
     override fun onOpen() {
+        check(state != ElementStates.OPENED) { "Element already active!" }
+        state = ElementStates.OPENED
         element.onOpen()
         onMouseMove(guiRenderer.currentMousePosition)
     }
 
     override fun onHide() {
+        check(state == ElementStates.OPENED) { "Can not hide in $state" }
+        state = ElementStates.HIDDEN
         element.onHide()
         element.onMouseLeave()
     }

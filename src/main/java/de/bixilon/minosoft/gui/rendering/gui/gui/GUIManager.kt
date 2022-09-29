@@ -298,15 +298,16 @@ class GUIManager(
 
         orderLock.lock()
         val index = elementOrder.indexOf(element)
+        if (index < 0) {
+            orderLock.unlock()
+            throw IllegalArgumentException("Can not pop element $element: Not opened!")
+        }
         elementOrder.removeAt(index)
         var first: GUIElement? = null
         if (index == 0) {
             first = elementOrder.firstOrNull()
         }
         orderLock.unlock()
-        if (index < 0) {
-            return
-        }
         element.onClose()
         first?.onOpen()
 
@@ -328,12 +329,12 @@ class GUIManager(
             return
         }
         orderLock.lock()
-        val previous = elementOrder.removeFirstOrNull()
+        val toPop = elementOrder.removeFirstOrNull()
         orderLock.unlock()
-        if (previous == null) {
+        if (toPop == null) {
             return
         }
-        previous.onClose()
+        toPop.onClose()
         orderLock.acquire()
         if (elementOrder.isEmpty()) {
             renderWindow.inputHandler.inputHandler = null
@@ -341,9 +342,9 @@ class GUIManager(
             guiRenderer.dragged.element = null
             orderLock.release()
         } else {
-            val first = elementOrder.firstOrNull()
+            val toOpen = elementOrder.firstOrNull()
             orderLock.release()
-            first?.onOpen()
+            toOpen?.onOpen()
         }
     }
 

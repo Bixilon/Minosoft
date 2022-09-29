@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.SpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.gui.ElementStates
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
@@ -64,12 +65,18 @@ class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
                     guiRenderer.gui.open(this)
                 } else {
                     val element = guiRenderer.gui[this]
+                    if (element.state == ElementStates.CLOSED) {
+                        return@observe
+                    }
                     element.layout.canPop = true
                     guiRenderer.gui.pop(element)
                 }
             }
             guiRenderer.connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> {
                 val element = guiRenderer.gui[this]
+                if (element.state == ElementStates.CLOSED) {
+                    return@of
+                }
                 element.layout.canPop = true
                 guiRenderer.gui.pop(element)
             })
