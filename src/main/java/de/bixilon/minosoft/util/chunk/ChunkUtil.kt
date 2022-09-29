@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.array.ArrayUtil.isEmptyOrOnlyNull
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -39,7 +40,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W36A
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
-import de.bixilon.minosoft.util.KUtil.isEmptyOrOnlyNull
 import java.lang.StrictMath.abs
 import java.util.*
 

@@ -242,6 +242,7 @@ class FluidCullSectionPreparer(
                     if (rendered) {
                         mesh.addBlock(x, y, z)
                     }
+                    if (Thread.interrupted()) throw InterruptedException()
                 }
             }
         }

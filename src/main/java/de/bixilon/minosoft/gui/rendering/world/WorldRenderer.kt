@@ -489,6 +489,7 @@ class WorldRenderer(
                 fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
             }
             runnable.interruptable = false
+            if (Thread.interrupted()) return
             if (mesh.clearEmpty() == 0) {
                 return queueItemUnload(item)
             }
@@ -512,6 +513,7 @@ class WorldRenderer(
             }
         } finally {
             task.runnable.interruptable = false
+            if (Thread.interrupted()) throw InterruptedException()
             preparingTasksLock.lock()
             preparingTasks -= task
             preparingTasksLock.unlock()

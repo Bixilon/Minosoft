@@ -411,16 +411,16 @@ class World(
     }
 
     fun recalculateLight() {
+        val reset = TaskWorker()
+        val calculate = TaskWorker()
         lock.acquire()
-        val worker = TaskWorker()
         for (chunk in chunks.unsafe.values) {
-            worker += { chunk.resetLight() }
+            reset += { chunk.resetLight() }
+            calculate += { chunk.calculateLight() }
         }
-        for (chunk in chunks.unsafe.values) {
-            worker += { chunk.calculateLight() }
-        }
-        worker.work()
         lock.release()
+        reset.work()
+        calculate.work()
     }
 
     companion object {

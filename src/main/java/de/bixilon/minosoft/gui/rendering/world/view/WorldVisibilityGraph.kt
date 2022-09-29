@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.view
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.BooleanArrayUtil.trySet
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.trySet
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 

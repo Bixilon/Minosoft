@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.IntArrayUtil.getOrElse
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
-import de.bixilon.minosoft.util.KUtil.getOrElse
 import java.util.*
 
 class BakedBlockStateModel(

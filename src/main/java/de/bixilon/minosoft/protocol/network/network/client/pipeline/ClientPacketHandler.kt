@@ -53,7 +53,7 @@ class ClientPacketHandler(
     }
 
     override fun channelRead0(context: ChannelHandlerContext, queued: QueuedS2CP<*>) {
-        if (queued.type.threadSafe && (DefaultThreadPool.queueSize <= DefaultThreadPool.threadCount || queued.type.lowPriority)) { // only handle async when thread pool not busy
+        if (queued.type.threadSafe && (DefaultThreadPool.queueSize < DefaultThreadPool.threadCount - 1 || queued.type.lowPriority)) { // only handle async when thread pool not busy
             val runnable = ThreadPoolRunnable(priority = if (queued.type.lowPriority) ThreadPool.Priorities.HIGH else ThreadPool.Priorities.HIGHER)
             runnable.runnable = Runnable { tryHandle(context, queued.type, queued.packet);handlers -= runnable }
             handlers += runnable

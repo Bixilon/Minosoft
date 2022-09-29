@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -63,9 +64,11 @@ class LightMap(private val renderWindow: RenderWindow) {
                 KeyActions.PRESS to setOf(KeyCodes.KEY_A),
             )
         ) {
-            connection.world.recalculateLight()
-            renderWindow.renderer[WorldRenderer]?.silentlyClearChunkCache()
-            connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
+            DefaultThreadPool += {
+                connection.world.recalculateLight()
+                renderWindow.renderer[WorldRenderer]?.silentlyClearChunkCache()
+                connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
+            }
         }
     }
 
