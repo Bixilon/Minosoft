@@ -49,7 +49,6 @@ object DesktopUtil {
             Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Can not open file: $file: Eros is disabled!" }
             return
         }
-        // Desktop.getDesktop().open(File(path))
 
         try {
             JavaFXUtil.HOST_SERVICES.showDocument(file.absolutePath)

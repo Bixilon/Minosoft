@@ -56,6 +56,10 @@ class ItemEntity(connection: PlayConnection, entityType: EntityType, data: Entit
         }
     }
 
+    override fun onAttack(attacker: Entity): Boolean {
+        return false
+    }
+
 
     companion object : EntityFactory<ItemEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item")
