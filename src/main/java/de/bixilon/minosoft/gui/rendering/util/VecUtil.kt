@@ -119,7 +119,7 @@ object VecUtil {
     }
 
     inline val Int.inSectionHeight: Int
-        get() = this and 4
+        get() = this and 0x0F
 
     inline val Int.sectionHeight: Int
         get() = this shr 4
