@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
-import de.bixilon.minosoft.data.registries.items.DefaultItems
+import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.registries.other.containers.ContainerFactory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -75,7 +75,7 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
 
     private object LapislazuliSlot : SlotType {
         override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-            return stack.item.item.resourceLocation == DefaultItems.LAPISLAZULI
+            return stack.item.item.resourceLocation == MinecraftItems.LAPISLAZULI
         }
     }
 

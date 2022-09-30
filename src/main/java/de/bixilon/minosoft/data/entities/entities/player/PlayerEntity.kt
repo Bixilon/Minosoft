@@ -31,7 +31,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.World

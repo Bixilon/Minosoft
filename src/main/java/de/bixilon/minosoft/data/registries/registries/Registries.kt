@@ -40,8 +40,8 @@ import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
 import de.bixilon.minosoft.data.registries.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.items.Item
-import de.bixilon.minosoft.data.registries.items.ItemRegistry
+import de.bixilon.minosoft.data.registries.item.ItemRegistry
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.particle.ParticleType

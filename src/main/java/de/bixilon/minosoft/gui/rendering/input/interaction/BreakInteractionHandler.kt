@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
+import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget

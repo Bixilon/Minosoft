@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
@@ -43,7 +43,7 @@ class Horse(connection: PlayConnection, entityType: EntityType, data: EntityData
     @get:SynchronizedEntityData
     val armor: Item?
         get() {
-            if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
+            if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
                 return connection.registries.itemRegistry[when (this.data.get(LEGACY_ARMOR_DATA, 0)) {
                     1 -> LEGACY_IRON_ARMOR
                     2 -> LEGACY_GOLD_ARMOR

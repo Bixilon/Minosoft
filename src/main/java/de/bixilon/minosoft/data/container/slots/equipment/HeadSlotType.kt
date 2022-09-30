@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 
 object HeadSlotType : EquipmentSlotType {
 

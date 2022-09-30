@@ -54,8 +54,8 @@ import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffec
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
-import de.bixilon.minosoft.data.registries.items.DefaultItems
-import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.registries.item.MinecraftItems
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
@@ -359,7 +359,7 @@ class LocalPlayerEntity(
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.item?.resourceLocation == MinecraftItems.LEATHER_BOOTS)) {
             return Vec3d(velocity.x, 0.2, velocity.z)
         }
         return velocity
