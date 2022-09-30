@@ -652,7 +652,7 @@ class WorldRenderer(
         val start = TimeUtil.millis
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((TimeUtil.millis - start < maxTime) && meshesToLoad.isNotEmpty()) {
+        while (meshesToLoad.isNotEmpty() && (TimeUtil.millis - start < maxTime)) {
             val item = meshesToLoad.removeAt(0)
             meshesToLoadSet.remove(item)
             val mesh = item.mesh ?: continue
@@ -691,7 +691,7 @@ class WorldRenderer(
         val time = TimeUtil.millis
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((TimeUtil.millis - time < maxTime) && meshesToUnload.isNotEmpty()) {
+        while (meshesToUnload.isNotEmpty() && (TimeUtil.millis - time < maxTime)) {
             val mesh = meshesToUnload.removeAt(0)
             visible.removeMesh(mesh)
             mesh.unload()
