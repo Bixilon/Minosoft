@@ -180,49 +180,50 @@ class FluidCullSectionPreparer(
                         if (skip[Directions.SIDE_OFFSET + direction]) {
                             continue
                         }
-                        var faceX = 0.0f
-                        var faceXEnd = 0.0f
-                        var faceZ = 0.0f
-                        var faceZEnd = 0.0f
-                        var v1 = 0.0f
-                        var v2 = 0.0f
+                        var faceX = position.x.toFloat()
+                        var faceXEnd = faceX
+                        var faceZ = position.z.toFloat()
+                        var faceZEnd = faceZ
+                        var v1 = position.y.toFloat()
+                        var v2 = v1
 
                         when (direction) {
                             0 -> {
-                                faceXEnd = 1.0f
-                                v1 = cornerHeights[0]
-                                v2 = cornerHeights[1]
+                                faceXEnd += 1.0f
+                                v1 += cornerHeights[0]
+                                v2 += cornerHeights[1]
                             }
 
                             1 -> {
-                                faceX = 1.0f
-                                faceZ = 1.0f
-                                faceZEnd = 1.0f
-                                v1 = cornerHeights[2]
-                                v2 = cornerHeights[3]
+                                faceX += 1.0f
+                                faceZ = +1.0f
+                                faceZEnd += 1.0f
+                                v1 += cornerHeights[2]
+                                v2 += cornerHeights[3]
                             }
 
                             2 -> {
-                                faceZ = 1.0f
-                                v1 = cornerHeights[3]
-                                v2 = cornerHeights[0]
+                                faceZ += 1.0f
+                                v1 += cornerHeights[3]
+                                v2 += cornerHeights[0]
                             }
 
                             3 -> {
-                                faceX = 1.0f
-                                faceXEnd = 1.0f
-                                faceZEnd = 1.0f
-                                v1 = cornerHeights[1]
-                                v2 = cornerHeights[2]
+                                faceX += 1.0f
+                                faceXEnd += 1.0f
+                                faceZEnd += 1.0f
+                                v1 += cornerHeights[1]
+                                v2 += cornerHeights[2]
                             }
                         }
                         // ToDo: Prevent face fighting with transparent neighbours
 
+
                         val positions = arrayOf(
-                            Vec3(position.x + faceX, position.y + v1, position.z + faceZ),
-                            Vec3(position.x + faceX, position.y, position.z + faceZ),
-                            Vec3(position.x + faceXEnd, position.y, position.z + faceZEnd),
-                            Vec3(position.x + faceXEnd, position.y + v2, position.z + faceZEnd),
+                            Vec3(faceX, v1, faceZ),
+                            Vec3(faceX, position.y, faceZ),
+                            Vec3(faceXEnd, position.y, faceZEnd),
+                            Vec3(faceXEnd, v2, faceZEnd),
                         )
                         val texturePositions = arrayOf(
                             TEXTURE_1,
