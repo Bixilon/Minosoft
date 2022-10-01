@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -86,15 +86,15 @@ class SectionLight(
 
     private fun decreaseCheckX(z: Int, light: Int, reset: Boolean) {
         val neighbours = section.neighbours ?: return
-        if (reset) resetLight() else calculate()
+        if (reset) reset() else calculate()
 
         if (z - light < 0) {
             val neighbour = neighbours[Directions.O_NORTH]?.light
-            if (reset) neighbour?.resetLight() else neighbour?.calculate()
+            if (reset) neighbour?.reset() else neighbour?.calculate()
         }
         if (z + light > ProtocolDefinition.SECTION_MAX_Z) {
             val neighbour = neighbours[Directions.O_SOUTH]?.light
-            if (reset) neighbour?.resetLight() else neighbour?.calculate()
+            if (reset) neighbour?.reset() else neighbour?.calculate()
         }
     }
 
@@ -191,7 +191,7 @@ class SectionLight(
         }
     }
 
-    fun resetLight() {
+    fun reset() {
         update = true
         for (index in light.indices) {
             light[index] = 0x00.toByte()
@@ -201,7 +201,7 @@ class SectionLight(
 
     fun recalculate() {
         update = true
-        resetLight()
+        reset()
         calculate()
     }
 
@@ -436,7 +436,17 @@ class SectionLight(
         }
 
         traceIncrease(x, y, z, blockLight - 1, null)
-        traceSkylight(x, y, z, skylight - 1, null, section.sectionHeight * ProtocolDefinition.SECTION_MAX_Y + y)
+
+        val totalY = section.sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + y
+        section.chunk?.let {
+            // check if neighbours are above heightmap, if so set light level to max
+            val chunkNeighbours = it.neighbours ?: return@let
+            val minHeight = it.getNeighbourMinHeight(chunkNeighbours, x, z)
+            if (minHeight <= totalY) {
+                skylight = ProtocolDefinition.MAX_LIGHT_LEVEL.toInt()
+            }
+        }
+        traceSkylight(x, y, z, skylight - 1, null, totalY)
     }
 
     companion object {

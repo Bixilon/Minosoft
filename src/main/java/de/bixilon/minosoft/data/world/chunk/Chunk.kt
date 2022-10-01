@@ -371,7 +371,7 @@ class Chunk(
             }
             section.light.recalculate()
         }
-        recalculateSkylight()
+        calculateSkylight()
         if (fireEvent) {
             fireLightChange(sections, fireSameChunkEvent)
         }
@@ -385,7 +385,7 @@ class Chunk(
             }
             section.light.calculate()
         }
-        recalculateSkylight()
+        calculateSkylight()
         if (fireEvent) {
             fireLightChange(sections, fireSameChunkEvent)
         }
@@ -397,7 +397,7 @@ class Chunk(
             if (section == null) {
                 continue
             }
-            section.light.resetLight()
+            section.light.reset()
         }
     }
 
@@ -481,7 +481,7 @@ class Chunk(
             }
         }
         lock.unlock()
-        recalculateSkylight()
+        calculateSkylight()
     }
 
     private fun checkHeightmapY(x: Int, startY: Int, z: Int) {
@@ -554,7 +554,7 @@ class Chunk(
         lock.unlock()
     }
 
-    private fun recalculateSkylight() {
+    private fun calculateSkylight() {
         if (world.dimension?.hasSkyLight != true || this.neighbours == null) {
             // no need to calculate it
             return
@@ -566,13 +566,8 @@ class Chunk(
         }
     }
 
-    private fun startSkylightFloodFill(x: Int, z: Int) {
-        val neighbours = this.neighbours ?: return
-        val heightmapIndex = (z shl 4) or x
-        val maxHeight = skylightHeightmap[heightmapIndex]
-
-
-        val skylightStart: Int = maxOf(
+    fun getNeighbourMaxHeight(neighbours: Array<Chunk>, x: Int, z: Int, heightmapIndex: Int = (z shl 4) or x): Int {
+        return maxOf(
             if (x > 0) {
                 skylightHeightmap[heightmapIndex - 1]
             } else {
@@ -597,6 +592,42 @@ class Chunk(
                 neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(0 shl 4) or x]
             }
         )
+    }
+
+    fun getNeighbourMinHeight(neighbours: Array<Chunk>, x: Int, z: Int, heightmapIndex: Int = (z shl 4) or x): Int {
+        return minOf(
+            if (x > 0) {
+                skylightHeightmap[heightmapIndex - 1]
+            } else {
+                neighbours[ChunkNeighbours.WEST].skylightHeightmap[(z shl 4) or ProtocolDefinition.SECTION_MAX_X]
+            },
+
+            if (x < ProtocolDefinition.SECTION_MAX_X) {
+                skylightHeightmap[heightmapIndex + 1]
+            } else {
+                neighbours[ChunkNeighbours.EAST].skylightHeightmap[(z shl 4) or 0]
+            },
+
+            if (z > 0) {
+                skylightHeightmap[((z - 1) shl 4) or x]
+            } else {
+                neighbours[ChunkNeighbours.NORTH].skylightHeightmap[(ProtocolDefinition.SECTION_MAX_Z shl 4) or x]
+            },
+
+            if (z < ProtocolDefinition.SECTION_MAX_Z) {
+                skylightHeightmap[((z + 1) shl 4) or x]
+            } else {
+                neighbours[ChunkNeighbours.SOUTH].skylightHeightmap[(0 shl 4) or x]
+            }
+        )
+    }
+
+    private fun startSkylightFloodFill(x: Int, z: Int) {
+        val neighbours = this.neighbours ?: return
+        val heightmapIndex = (z shl 4) or x
+        val maxHeight = skylightHeightmap[heightmapIndex]
+        val skylightStart = getNeighbourMaxHeight(neighbours, x, z, heightmapIndex)
+
 
         for (sectionHeight in skylightStart.sectionHeight downTo maxHeight.sectionHeight + 1) {
             val section = sections?.get(sectionHeight - lowestSection) ?: continue
