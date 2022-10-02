@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,11 +17,9 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.concurrent.worker.TaskWorker
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.concurrent.worker.tasks.Task
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -36,6 +34,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -281,18 +280,17 @@ class World(
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.positionInfo.chunkPosition
         chunks.lock.acquire()
-        val latch = CountUpAndDownLatch(chunks.unsafe.size)
+        val worker = TaskWorker()
         for ((chunkPosition, chunk) in chunks.unsafe) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
-                latch.dec()
                 continue
             }
-            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition); latch.dec() }
+            worker += Task(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition) }
         }
         chunks.lock.release()
+        worker.work()
         border.tick()
-        latch.await()
     }
 
     fun randomTick() {
@@ -406,7 +404,7 @@ class World(
 
     fun getBrightness(position: BlockPosition): Float {
         val light = getLight(position)
-        val level = maxOf(light and 0x0F, light and 0xF0 shr 4)
+        val level = maxOf(light and SectionLight.BLOCK_LIGHT_MASK, light and SectionLight.SKY_LIGHT_MASK shr 4)
         return dimension?.lightLevels?.get(level) ?: 0.0f
     }
 

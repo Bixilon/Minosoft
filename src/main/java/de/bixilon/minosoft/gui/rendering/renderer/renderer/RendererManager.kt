@@ -15,9 +15,9 @@ package de.bixilon.minosoft.gui.rendering.renderer.renderer
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.concurrent.worker.TaskWorker
+import de.bixilon.kutil.concurrent.worker.tasks.Task
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -64,38 +64,34 @@ class RendererManager(
     }
 
     fun init(latch: CountUpAndDownLatch) {
-        val inner = CountUpAndDownLatch(1, latch)
+        val inner = CountUpAndDownLatch(0, latch)
+        var worker = TaskWorker()
         for (renderer in renderers.values) {
-            inner.inc()
-            DefaultThreadPool += { renderer.preAsyncInit(inner); inner.dec() }
+            worker += { renderer.preAsyncInit(inner) }
         }
-        inner.dec()
-        inner.await()
+        worker.work(inner)
 
         for (renderer in renderers.values) {
-            renderer.init(latch)
+            renderer.init(inner)
         }
 
-        val inner2 = CountUpAndDownLatch(1, latch)
+        worker = TaskWorker()
         for (renderer in renderers.values) {
-            inner2.inc()
-            DefaultThreadPool += { renderer.asyncInit(inner2); inner2.dec() }
+            worker += { renderer.asyncInit(inner) }
         }
-        inner2.dec()
-        inner2.await()
+        worker.work(inner)
     }
 
     fun postInit(latch: CountUpAndDownLatch) {
         for (renderer in renderers.values) {
             renderer.postInit(latch)
         }
-        val inner = CountUpAndDownLatch(1, latch)
+        val inner = CountUpAndDownLatch(0, latch)
+        val worker = TaskWorker()
         for (renderer in renderers.values) {
-            inner.inc()
-            DefaultThreadPool += { renderer.postAsyncInit(inner); inner.dec() }
+            worker += { renderer.postAsyncInit(inner) }
         }
-        inner.dec()
-        inner.await()
+        worker.work(inner)
     }
 
     private fun renderNormal(rendererList: Collection<Renderer>) {
@@ -123,16 +119,15 @@ class RendererManager(
             renderer.prePrepareDraw()
         }
 
-        val latch = CountUpAndDownLatch(1)
+        val latch = CountUpAndDownLatch(0)
+        val worker = TaskWorker()
         for (renderer in rendererList) {
             if (renderer !is AsyncRenderer) {
                 continue
             }
-            latch.inc()
-            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync(); latch.dec() }
+            worker += Task(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
         }
-        latch.dec()
-        latch.await()
+        worker.work(latch)
 
         for (renderer in rendererList) {
             renderer.postPrepareDraw()

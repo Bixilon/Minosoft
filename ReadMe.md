@@ -134,7 +134,7 @@ Support for macOS is a delicate topic. Let's say it works for now, but it is not
 
 Using IntelliJ IDEA for building or developing is strongly recommended. There you have features like build caching.
 If you run into errors, please ensure you have the latest version of it.
-You might need to increase heap memory for the compiler (`File` -> `Settings` -> `Build, Execution and Compiler` -> `Compiler` -> `Shared build process heap size`).
+You might need to increase heap memory for the compiler (`File` -> `Settings` -> `Build, Execution, Deployment` -> `Compiler` -> `Shared build process heap size`).
 Allow at least 1500 MBytes.
 
 ## Code mirrors

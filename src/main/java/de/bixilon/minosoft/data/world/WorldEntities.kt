@@ -15,10 +15,9 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
-import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.concurrent.worker.TaskWorker
+import de.bixilon.kutil.concurrent.worker.tasks.Task
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -185,12 +184,12 @@ class WorldEntities : Iterable<Entity> {
 
     fun tick() {
         lock.acquire()
-        val latch = CountUpAndDownLatch(entities.size)
+        val worker = TaskWorker()
         for (entity in entities) {
-            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGH) { entity.tryTick(); latch.dec() }
+            worker += Task(priority = ThreadPool.Priorities.HIGH) { entity.tryTick() }
         }
         lock.release()
-        latch.await()
+        worker.work()
     }
 
     companion object {
