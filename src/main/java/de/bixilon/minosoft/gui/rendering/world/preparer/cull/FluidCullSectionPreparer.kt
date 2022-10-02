@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -184,46 +184,46 @@ class FluidCullSectionPreparer(
                         var faceXEnd = faceX
                         var faceZ = position.z.toFloat()
                         var faceZEnd = faceZ
-                        var v1 = position.y.toFloat()
-                        var v2 = v1
+                        var v1 = 0.0f
+                        var v2 = 0.0f
 
                         when (direction) {
                             0 -> {
                                 faceXEnd += 1.0f
-                                v1 += cornerHeights[0]
-                                v2 += cornerHeights[1]
+                                v1 = cornerHeights[0]
+                                v2 = cornerHeights[1]
                             }
 
                             1 -> {
                                 faceX += 1.0f
-                                faceZ = +1.0f
+                                faceZ += +1.0f
                                 faceZEnd += 1.0f
-                                v1 += cornerHeights[2]
-                                v2 += cornerHeights[3]
+                                v1 = cornerHeights[2]
+                                v2 = cornerHeights[3]
                             }
 
                             2 -> {
                                 faceZ += 1.0f
-                                v1 += cornerHeights[3]
-                                v2 += cornerHeights[0]
+                                v1 = cornerHeights[3]
+                                v2 = cornerHeights[0]
                             }
 
                             3 -> {
                                 faceX += 1.0f
                                 faceXEnd += 1.0f
                                 faceZEnd += 1.0f
-                                v1 += cornerHeights[1]
-                                v2 += cornerHeights[2]
+                                v1 = cornerHeights[1]
+                                v2 = cornerHeights[2]
                             }
                         }
                         // ToDo: Prevent face fighting with transparent neighbours
 
 
                         val positions = arrayOf(
-                            Vec3(faceX, v1, faceZ),
+                            Vec3(faceX, position.y + v1, faceZ),
                             Vec3(faceX, position.y, faceZ),
                             Vec3(faceXEnd, position.y, faceZEnd),
-                            Vec3(faceXEnd, v2, faceZEnd),
+                            Vec3(faceXEnd, position.y + v2, faceZEnd),
                         )
                         val texturePositions = arrayOf(
                             TEXTURE_1,
