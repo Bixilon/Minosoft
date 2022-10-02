@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.text
 
 import com.fasterxml.jackson.core.JacksonException
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.string.WhitespaceUtil.removeTrailingWhitespaces
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.language.Translatable
 import de.bixilon.minosoft.data.language.Translator
@@ -118,13 +117,19 @@ interface ChatComponent {
                 return EMPTY
             }
             if (!ignoreJson) {
-                val whitespaceLess = string.removeTrailingWhitespaces()
-                if (whitespaceLess.startsWith('{') || whitespaceLess.startsWith('[')) {
-                    try {
-                        val read: Any = Jackson.MAPPER.readValue(whitespaceLess, Any::class.java)
-                        return of(read, translator, parent, ignoreJson = true, restrictedMode)
-                    } catch (ignored: JacksonException) {
+                for (codePoint in string.codePoints()) {
+                    if (Character.isWhitespace(codePoint)) {
+                        continue
                     }
+                    if (codePoint == '{'.code || codePoint == '['.code) {
+                        try {
+                            val read: Any = Jackson.MAPPER.readValue(string, Any::class.java)
+                            return of(read, translator, parent, ignoreJson = true, restrictedMode)
+                        } catch (ignored: JacksonException) {
+                            break
+                        }
+                    }
+                    break
                 }
             }
 
