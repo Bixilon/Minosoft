@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -94,7 +94,7 @@ class SolidCullSectionPreparer(
                     light[SELF_LIGHT_INDEX] = sectionLight[index]
                     position.z = offsetZ + z
 
-                    val maxHeight = chunk.skylightHeightmap[baseIndex]
+                    val maxHeight = chunk.light.heightmap[baseIndex]
                     if (position.y >= maxHeight) {
                         light[SELF_LIGHT_INDEX] = (light[SELF_LIGHT_INDEX].toInt() or 0xF0).toByte()
                     }
@@ -118,7 +118,7 @@ class SolidCullSectionPreparer(
                         } else {
                             neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
                             light[O_DOWN] = if (isLowestSection) {
-                                chunk.bottomLight
+                                chunk.light.bottom
                             } else {
                                 neighbours[O_DOWN]?.light
                             }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or baseIndex) ?: 0x00
@@ -130,7 +130,7 @@ class SolidCullSectionPreparer(
                     if (y == ProtocolDefinition.SECTION_MAX_Y) {
                         neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.unsafeGet(x, 0, z)
                         light[O_UP] = if (isHighestSection) {
-                            chunk.topLight
+                            chunk.light.top
                         } else {
                             neighbours[O_UP]?.light
                         }?.get((z shl 4) or x) ?: 0x00
@@ -213,7 +213,7 @@ class SolidCullSectionPreparer(
         val neighbourIndex = y shl 8 or heightmapIndex
         neighbourBlocks[ordinal] = blocks?.unsafeGet(neighbourIndex)
         light[ordinal] = sectionLight[neighbourIndex]
-        if (position.y > chunk.skylightHeightmap[heightmapIndex]) {
+        if (position.y > chunk.light.heightmap[heightmapIndex]) {
             light[ordinal] = (light[ordinal].toInt() or 0xF0).toByte()
         }
     }

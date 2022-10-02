@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.container
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -60,7 +61,7 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     fun unsafeGet(x: Int, y: Int, z: Int): T {
-        return data?.get(y shl 8 or (z shl 4) or x) as T
+        return data?.get(ChunkSection.getIndex(x, y, z)) as T
     }
 
 
@@ -123,15 +124,18 @@ open class SectionDataProvider<T>(
     }
 
     operator fun get(x: Int, y: Int, z: Int): T {
-        return get(y shl 8 or (z shl 4) or x)
+        return get(ChunkSection.getIndex(x, y, z))
     }
 
     operator fun set(x: Int, y: Int, z: Int, value: T): T? {
-        return set(y shl 8 or (z shl 4) or x, value)
+        return set(ChunkSection.getIndex(x, y, z), value)
     }
 
-    open operator fun set(index: Int, value: T): T? {
-        lock()
+    fun unsafeSet(x: Int, y: Int, z: Int, value: T): T? {
+        return unsafeSet(ChunkSection.getIndex(x, y, z), value)
+    }
+
+    open fun unsafeSet(index: Int, value: T): T? {
         var data = data
         val previous = data?.get(index)
         if (value == null) {
@@ -173,8 +177,14 @@ open class SectionDataProvider<T>(
                 if (maxPosition.z < z) maxPosition.z = z
             }
         }
-        unlock()
         return previous.unsafeCast()
+    }
+
+    open fun set(index: Int, value: T): T? {
+        lock()
+        val previous = unsafeSet(index, value)
+        unlock()
+        return previous
     }
 
     fun acquire() {

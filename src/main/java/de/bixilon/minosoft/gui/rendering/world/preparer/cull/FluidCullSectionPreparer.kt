@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -169,7 +169,7 @@ class FluidCullSectionPreparer(
 
 
                         val tint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
-                        val light = chunk.getLight(x, position.y, z)
+                        val light = chunk.light[x, position.y, z]
                         addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light)
                         rendered = true
                     }
@@ -234,7 +234,7 @@ class FluidCullSectionPreparer(
 
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
                         val fluidTint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
-                        val fluidLight = chunk.getLight(x, offsetY + y, z)
+                        val fluidLight = chunk.light[x, offsetY + y, z]
                         addFluidVertices(meshToUse, positions, texturePositions, flowingTexture, fluidTint, fluidLight)
                         rendered = true
                     }

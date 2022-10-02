@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import javafx.collections.ObservableList
 import javafx.scene.Node
 object EmptyComponent : ChatComponent {
-    override val ansiColoredMessage: String = ""
-    override val legacyText: String = ""
-    override val message: String = ""
+    override val ansiColoredMessage: String get() = ""
+    override val legacyText: String get() = ""
+    override val message: String get() = ""
 
     override fun getJson(): Any = emptyList<Any>()
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -351,7 +351,7 @@ class World(
     }
 
     fun getLight(blockPosition: BlockPosition): Int {
-        return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0x00
+        return get(blockPosition.chunkPosition)?.light?.get(blockPosition.inChunkPosition) ?: 0x00
     }
 
     /**
@@ -388,8 +388,8 @@ class World(
         }
 
         if (neighboursReceived) {
-            chunk.recalculateLight(false)
-            chunk.propagateLightFromNeighbours()
+            chunk.light.recalculate(false)
+            chunk.light.propagateFromNeighbours()
         }
 
         if (checkNeighbours) {
@@ -415,8 +415,8 @@ class World(
         val calculate = TaskWorker()
         lock.acquire()
         for (chunk in chunks.unsafe.values) {
-            reset += { chunk.resetLight() }
-            calculate += { chunk.calculateLight() }
+            reset += { chunk.light.reset() }
+            calculate += { chunk.light.calculate() }
         }
         lock.release()
         reset.work()

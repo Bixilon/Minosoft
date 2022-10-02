@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -69,35 +69,35 @@ class BorderSectionLight(
         val neighbourLuminance = nextLuminance - 1
 
         if (top) {
-            chunk.sections?.last()?.light?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
+            chunk.sections?.last()?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
         } else {
-            chunk.sections?.first()?.light?.traceIncrease(x, 0, z, neighbourLuminance, Directions.UP)
+            chunk.sections?.first()?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
         }
 
         if (z > 0) {
             traceIncrease(x, z - 1, neighbourLuminance)
         } else {
             val neighbour = chunk.neighbours?.get(3)
-            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
             traceIncrease(x, z + 1, neighbourLuminance)
         } else {
             val neighbour = chunk.neighbours?.get(4)
-            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(x, 0, neighbourLuminance)
+            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(x, 0, neighbourLuminance)
         }
 
         if (x > 0) {
             traceIncrease(x - 1, z, neighbourLuminance)
         } else {
             val neighbour = chunk.neighbours?.get(1)
-            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
+            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
             traceIncrease(x + 1, z, neighbourLuminance)
         } else {
             val neighbour = chunk.neighbours?.get(6)
-            (if (top) neighbour?.topLight else neighbour?.bottomLight)?.traceIncrease(0, z, neighbourLuminance)
+            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(0, z, neighbourLuminance)
         }
     }
 
