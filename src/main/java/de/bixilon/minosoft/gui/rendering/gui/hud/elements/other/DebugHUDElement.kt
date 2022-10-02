@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -140,7 +140,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
-                Directions.byDirection(guiRenderer.renderWindow.camera.matrixHandler.cameraFront).apply {
+                Directions.byDirection(guiRenderer.renderWindow.camera.matrixHandler.entity.rotation.front).apply {
                     text += this
                     text += " "
                     text += vector
