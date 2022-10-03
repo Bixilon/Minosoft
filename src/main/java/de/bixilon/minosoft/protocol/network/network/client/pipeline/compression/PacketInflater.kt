@@ -13,30 +13,30 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.compression
 
-import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
+import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
+import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.exception.SizeMismatchInflaterException
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import io.netty.channel.ChannelHandlerContext
-import io.netty.handler.codec.MessageToMessageEncoder
+import io.netty.handler.codec.MessageToMessageDecoder
 
 
-class PacketInflater(
-    var threshold: Int,
-) : MessageToMessageEncoder<ByteArray>() {
+class PacketInflater : MessageToMessageDecoder<ByteArray>() {
 
-    override fun encode(context: ChannelHandlerContext, data: ByteArray, out: MutableList<Any>) {
-        val compress = data.size >= threshold
+    override fun decode(context: ChannelHandlerContext?, data: ByteArray, out: MutableList<Any>) {
+        val buffer = InByteBuffer(data)
 
-        val prefixed = OutByteBuffer()
-        if (compress) {
-            val compressed = data.compress()
-            prefixed.writeVarInt(data.size)
-            prefixed.writeBareByteArray(compressed)
-        } else {
-            prefixed.writeVarInt(0)
-            prefixed.writeBareByteArray(data)
+        val uncompressedLength = buffer.readVarInt()
+        val rest = buffer.readRest()
+        if (uncompressedLength == 0) {
+            out += rest
+            return
         }
 
-        out += prefixed.toArray()
+        val decompressed = rest.decompress() // ToDo: Kutil 1.17: passthrough expected
+        if (decompressed.size != uncompressedLength) {
+            throw SizeMismatchInflaterException()
+        }
+        out += decompressed
     }
 
     companion object {

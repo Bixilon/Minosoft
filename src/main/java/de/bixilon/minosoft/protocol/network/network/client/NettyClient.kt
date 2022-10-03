@@ -58,23 +58,23 @@ class NettyClient(
             val pipeline = channel.pipeline()
             if (value < 0) {
                 // disable
-                if (pipeline.get(PacketInflater.NAME) != null) {
-                    channel.pipeline().remove(PacketInflater.NAME)
-                }
                 if (pipeline.get(PacketDeflater.NAME) != null) {
                     channel.pipeline().remove(PacketDeflater.NAME)
                 }
+                if (pipeline.get(PacketInflater.NAME) != null) {
+                    channel.pipeline().remove(PacketInflater.NAME)
+                }
             } else {
                 // enable or update
-                val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
-                if (deflater == null) {
-                    channel.pipeline().addAfter(LengthDecoder.NAME, PacketDeflater.NAME, PacketDeflater())
-                }
                 val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
-                if (inflater != null) {
-                    inflater.threshold = value
+                if (inflater == null) {
+                    channel.pipeline().addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater())
+                }
+                val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
+                if (deflater != null) {
+                    deflater.threshold = value
                 } else {
-                    channel.pipeline().addAfter(LengthEncoder.NAME, PacketInflater.NAME, PacketInflater(value))
+                    channel.pipeline().addAfter(LengthEncoder.NAME, PacketDeflater.NAME, PacketDeflater(value))
                 }
             }
         }
