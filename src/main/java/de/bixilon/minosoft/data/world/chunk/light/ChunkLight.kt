@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -192,7 +192,11 @@ class ChunkLight(private val chunk: Chunk) {
 
         var y = minY
 
-        sectionLoop@ for (sectionIndex in startY.sectionHeight downTo 0) {
+        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.lowestSection) downTo chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y) {
+            if (sectionIndex >= sections.size) {
+                // starting from above world
+                continue
+            }
             val section = sections[sectionIndex] ?: continue
 
             section.acquire()
@@ -368,6 +372,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun recalculateSkylight(sectionHeight: Int) {
-// TODO
+        val minY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
+        // TODO
     }
 }
