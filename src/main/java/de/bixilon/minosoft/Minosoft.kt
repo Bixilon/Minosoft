@@ -22,6 +22,8 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
+import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
@@ -65,6 +67,7 @@ object Minosoft {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        val start = TimeUtil.nanos
         Log::class.java.forceInit()
         CommandLineArguments.parse(args)
         KUtil.initUtilClasses()
@@ -109,7 +112,8 @@ object Minosoft {
 
         BOOT_LATCH.dec() // remove initial count
         BOOT_LATCH.await()
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished!" }
+        val end = TimeUtil.nanos
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fireEvent(FinishInitializingEvent())
 
 
