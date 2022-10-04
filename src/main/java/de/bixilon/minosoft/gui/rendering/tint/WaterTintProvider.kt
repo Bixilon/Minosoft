@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 
 object WaterTintProvider : TintProvider {
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    override fun getFluidTint(fluid: Fluid, biome: Biome?, height: Float, x: Int, y: Int, z: Int): Int {
         return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
     }
 }

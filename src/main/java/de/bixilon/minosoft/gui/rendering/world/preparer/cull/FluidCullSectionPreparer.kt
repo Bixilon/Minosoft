@@ -65,7 +65,7 @@ class FluidCullSectionPreparer(
         var blockState: BlockState
         var position: Vec3i
         var rendered = false
-        var tints: IntArray?
+        var tint: Int
 
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
@@ -83,9 +83,10 @@ class FluidCullSectionPreparer(
                     }
                     val stillTexture = fluid.stillTexture ?: continue
                     val flowingTexture = fluid.flowingTexture ?: continue
+                    val height = fluid.getHeight(blockState)
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    tints = tintManager.getAverageBlockTint(chunk, neighbourChunks, blockState, fluid, position.x, position.y, position.z)
+                    tint = tintManager.getFluidTint(chunk, fluid, height, position.x, position.y, position.z) ?: Colors.WHITE
 
 
                     fun isSideCovered(direction: Directions): Boolean {
@@ -168,7 +169,6 @@ class FluidCullSectionPreparer(
                         )
 
 
-                        val tint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
                         val light = chunk.light[x, position.y, z]
                         addFluidVertices(meshToUse, positions, texturePositions, texture, tint, light)
                         rendered = true
@@ -233,9 +233,8 @@ class FluidCullSectionPreparer(
                         )
 
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
-                        val fluidTint = tints?.get(FLUID_TINT_INDEX) ?: Colors.WHITE
                         val fluidLight = chunk.light[x, offsetY + y, z]
-                        addFluidVertices(meshToUse, positions, texturePositions, flowingTexture, fluidTint, fluidLight)
+                        addFluidVertices(meshToUse, positions, texturePositions, flowingTexture, tint, fluidLight)
                         rendered = true
                     }
 
@@ -315,7 +314,6 @@ class FluidCullSectionPreparer(
 
     private companion object {
         private const val TEXTURE_CENTER = 1.0f / 2.0f
-        private const val FLUID_TINT_INDEX = 0
 
         private val TEXTURE_1 = Vec2(0.0f, 0.5f)
         private val TEXTURE_2 = Vec2(0.5f, 0.5f)
