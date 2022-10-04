@@ -17,8 +17,11 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+
+private const val FALLBACK_COLOR = 0x48B518
 
 class FoliageTintCalculator : TintProvider {
     private lateinit var colorMap: IntArray
@@ -27,11 +30,15 @@ class FoliageTintCalculator : TintProvider {
         colorMap = assetsManager["minecraft:colormap/foliage".toResourceLocation().texture()].readRGBArray()
     }
 
-    override fun getColor(blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        if (blockState == null || biome == null) {
-            return 0x48B518
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        if (biome == null) {
+            return FALLBACK_COLOR
         }
         // ToDo: Override
         return colorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(y)]
+    }
+
+    override fun getItemColor(item: Item, tintIndex: Int): Int {
+        return FALLBACK_COLOR
     }
 }

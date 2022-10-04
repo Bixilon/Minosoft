@@ -19,8 +19,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
@@ -44,65 +42,63 @@ class TintManager(private val connection: PlayConnection) {
         }
     }
 
-    private fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray {
+    private fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray {
         val inChunkX = x and 0x0F
         val inChunkZ = z and 0x0F
         val biome = chunk.getBiome(inChunkX, y, inChunkZ)
         val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 
         for (tintIndex in tints.indices) {
-            tints[tintIndex] = tintProvider.getColor(blockState, biome, x, y, z, tintIndex)
+            tints[tintIndex] = tintProvider.getBlockColor(blockState, biome, x, y, z, tintIndex)
         }
         return tints
     }
 
-    fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, x: Int, y: Int, z: Int): IntArray? {
-        return getAverageTint(chunk, neighbours, blockState, blockState.block.tintProvider ?: return null, x, y, z)
+    fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, x: Int, y: Int, z: Int): IntArray? {
+        return getAverageBlockTint(chunk, neighbours, blockState, blockState.block.tintProvider ?: return null, x, y, z)
     }
 
-    fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, fluid: Fluid, x: Int, y: Int, z: Int): IntArray? {
-        return getAverageTint(chunk, neighbours, blockState, fluid.tintProvider ?: return null, x, y, z)
+    fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, fluid: Fluid, x: Int, y: Int, z: Int): IntArray? {
+        return getAverageBlockTint(chunk, neighbours, blockState, fluid.tintProvider ?: return null, x, y, z)
     }
 
-    fun getTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
+    fun getBlockTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
         val tintProvider = blockState.block.tintProvider ?: return null
-        connection.world.getBiome(x, y, z)
         val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
 
         for (tintIndex in tints.indices) {
-            tints[tintIndex] = tintProvider.getColor(blockState, biome, x, y, z, tintIndex)
+            tints[tintIndex] = tintProvider.getBlockColor(blockState, biome, x, y, z, tintIndex)
         }
         return tints
     }
 
-    fun getTint(blockState: BlockState, biome: Biome? = null, blockPosition: Vec3i): IntArray? {
-        return getTint(blockState, biome, blockPosition.x, blockPosition.y, blockPosition.z)
+    fun getParticleTint(blockState: BlockState, x: Int, y: Int, z: Int): Int? {
+        val tintProvider = blockState.block.tintProvider ?: return null
+        val biome = connection.world.getBiome(x, y, z)
+        return tintProvider.getParticleColor(blockState, biome, x, y, z)
+    }
+
+    fun getParticleTint(blockState: BlockState, position: Vec3i): Int? {
+        return getParticleTint(blockState, position.x, position.y, position.z)
+    }
+
+    fun getBlockTint(blockState: BlockState, biome: Biome? = null, blockPosition: Vec3i): IntArray? {
+        return getBlockTint(blockState, biome, blockPosition.x, blockPosition.y, blockPosition.z)
     }
 
 
     private fun createDefaultTints(): Map<Set<ResourceLocation>, TintProvider> {
         return mapOf(
             setOf(MinecraftBlocks.GRASS_BLOCK, MinecraftBlocks.FERN, MinecraftBlocks.GRASS, MinecraftBlocks.POTTED_FERN) to grassTintCalculator,
-            setOf(MinecraftBlocks.LARGE_FERN, MinecraftBlocks.TALL_GRASS) to TintProvider { blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int ->
-                return@TintProvider if (blockState?.properties?.get(BlockProperties.STAIR_HALF) == Halves.UPPER) {
-                    grassTintCalculator.getColor(blockState, biome, x, y - 1, z, tintIndex)
-                } else {
-                    grassTintCalculator.getColor(blockState, biome, x, y, z, tintIndex)
-                }
-            },
+            setOf(MinecraftBlocks.LARGE_FERN, MinecraftBlocks.TALL_GRASS) to TallGrassTintCalculator(grassTintCalculator),
             setOf(MinecraftBlocks.SPRUCE_LEAVES) to StaticTintProvider(0x619961),
             setOf(MinecraftBlocks.BIRCH_LEAVES) to StaticTintProvider(0x80A755),
             setOf(MinecraftBlocks.OAK_LEAVES, MinecraftBlocks.JUNGLE_LEAVES, MinecraftBlocks.ACACIA_LEAVES, MinecraftBlocks.DARK_OAK_LEAVES, MinecraftBlocks.VINE) to foliageTintCalculator, setOf(MinecraftBlocks.REDSTONE_WIRE) to RedstoneWireTintCalculator,
             setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON, MinecraftBlocks.WATER) to WaterTintProvider,
-            setOf(MinecraftBlocks.SUGAR_CANE) to TintProvider { blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int ->
-                if (blockState == null || biome == null) {
-                    return@TintProvider -1
-                }
-                return@TintProvider grassTintCalculator.getColor(blockState, biome, x, y, z, tintIndex)
-            },
+            setOf(MinecraftBlocks.SUGAR_CANE) to SugarCaneTintCalculator(grassTintCalculator),
             setOf(MinecraftBlocks.ATTACHED_MELON_STEM, MinecraftBlocks.ATTACHED_PUMPKIN_STEM) to StaticTintProvider(0xE0C71C),
             setOf(MinecraftBlocks.MELON_STEM, MinecraftBlocks.PUMPKIN_STEM) to StemTintCalculator,
-            setOf(MinecraftBlocks.LILY_PAD) to TintProvider { blockState: BlockState?, biome: Biome?, _: Int, _: Int, _: Int, _: Int -> if (blockState == null || biome == null) 0x71C35C else 0x208030 },
+            setOf(MinecraftBlocks.LILY_PAD) to StaticTintProvider(block = 0x208030, item = 0x71C35C),
         )
     }
 

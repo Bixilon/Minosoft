@@ -85,7 +85,7 @@ class FluidCullSectionPreparer(
                     val flowingTexture = fluid.flowingTexture ?: continue
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
-                    tints = tintManager.getAverageTint(chunk, neighbourChunks, blockState, fluid, position.x, position.y, position.z)
+                    tints = tintManager.getAverageBlockTint(chunk, neighbourChunks, blockState, fluid, position.x, position.y, position.z)
 
 
                     fun isSideCovered(direction: Directions): Boolean {

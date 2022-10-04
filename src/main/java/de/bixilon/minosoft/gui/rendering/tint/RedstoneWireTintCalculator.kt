@@ -30,7 +30,7 @@ object RedstoneWireTintCalculator : TintProvider {
     }
 
 
-    override fun getColor(blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return COLORS[blockState?.properties?.get(BlockProperties.REDSTONE_POWER)?.toInt() ?: return -1]
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        return COLORS[blockState.properties[BlockProperties.REDSTONE_POWER]?.toInt() ?: return -1]
     }
 }

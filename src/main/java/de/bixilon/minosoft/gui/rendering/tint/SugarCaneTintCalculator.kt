@@ -13,16 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.tint
 
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 
-object StemTintCalculator : TintProvider {
+class SugarCaneTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
 
     override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        val age = blockState.properties[BlockProperties.AGE]?.toInt() ?: return -1
+        return grassTintCalculator.getBlockColor(blockState, biome, x, y, z, tintIndex)
+    }
 
-        return ((age * 32) shl 16) or ((0xFF - age * 8) shl 8) or (age * 4)
+    override fun getItemColor(item: Item, tintIndex: Int): Int {
+        return Colors.WHITE
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -43,7 +44,7 @@ class GrassTintCalculator : TintProvider {
         return color
     }
 
-    override fun getColor(blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
         if (biome == null) {
             return getColor(127, 127)
         }
@@ -54,5 +55,9 @@ class GrassTintCalculator : TintProvider {
             Biome.GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
             Biome.GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
         }
+    }
+
+    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
+        return Colors.WHITE
     }
 }

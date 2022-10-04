@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 
 object WaterTintProvider : TintProvider {
 
-    override fun getColor(blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
         return biome?.waterColor?.rgb ?: 0xFFFFFF // ToDo: Fallback color
     }
 }

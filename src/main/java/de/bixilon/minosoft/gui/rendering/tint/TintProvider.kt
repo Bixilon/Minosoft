@@ -10,14 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.gui.rendering.tint
 
-package de.bixilon.minosoft.gui.rendering.tint;
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.text.formatting.color.Colors
 
-import de.bixilon.minosoft.data.registries.biomes.Biome;
-import de.bixilon.minosoft.data.registries.blocks.BlockState;
+interface TintProvider {
+    fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int = Colors.WHITE
 
-import javax.annotation.Nullable;
+    fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
+        return getBlockColor(blockState, biome, x, y, z, 1)
+    }
 
-public interface TintProvider {
-    int getColor(@Nullable BlockState blockState, @Nullable Biome biome, int x, int y, int z, int tintIndex);
+    fun getItemColor(item: Item, tintIndex: Int): Int = Colors.WHITE
 }
