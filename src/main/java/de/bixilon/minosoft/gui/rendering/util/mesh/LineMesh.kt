@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 
 open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow) {
@@ -46,7 +47,7 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         val invertedNormal1 = normal1 * -1
         val invertedNormal2 = normal2 * -1
 
-        val floatColor = Float.fromBits(color.rgba)
+        val floatColor = color.rgba.buffer()
 
         drawLineQuad(start, end, normal1, normal2, directionWidth, floatColor)
         drawLineQuad(start, end, invertedNormal2, normal1, directionWidth, floatColor)

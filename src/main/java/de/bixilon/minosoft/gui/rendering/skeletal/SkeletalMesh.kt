@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.skeletal
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -29,9 +30,9 @@ class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
         data.add(position[2])
         data.add(transformedUV.x)
         data.add(transformedUV.y)
-        data.add(Float.fromBits(transform))
-        data.add(Float.fromBits(texture.shaderId))
-        data.add(Float.fromBits(flags))
+        data.add(transform.buffer())
+        data.add(texture.shaderId.buffer())
+        data.add(flags.buffer())
     }
 
     @Deprecated("Pretty rendering specific")

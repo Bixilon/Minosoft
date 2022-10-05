@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.C
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -105,9 +106,9 @@ class BakedSkeletalModel(
                 }
 
                 val texture = textures[face.texture]!!
-                val transform = Float.fromBits(outlinerId)
-                val textureShaderId = Float.fromBits(texture.shaderId)
-                val floatFlags = Float.fromBits(flags)
+                val transform = outlinerId.buffer()
+                val textureShaderId = texture.shaderId.buffer()
+                val floatFlags = flags.buffer()
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
                     val transformedUV = texture.transformUV(texturePositions[textureIndex])

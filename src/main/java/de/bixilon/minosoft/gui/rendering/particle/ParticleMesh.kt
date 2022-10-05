@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -39,9 +40,9 @@ class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mes
         data.add(position.z.toFloat())
         data.addAll(minTransformedUV)
         data.addAll(maxTransformedUV)
-        data.add(Float.fromBits(texture.renderData.shaderTextureId))
+        data.add(texture.renderData.shaderTextureId.buffer())
         data.add(scale)
-        data.add(Float.fromBits(tintColor.rgba))
+        data.add(tintColor.rgba.buffer())
     }
 
 

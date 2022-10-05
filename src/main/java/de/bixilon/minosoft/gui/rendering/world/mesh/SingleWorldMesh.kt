@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.mesh
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -31,8 +32,8 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDeman
         data.add(position[2])
         data.add(transformedUV.x)
         data.add(transformedUV.y)
-        data.add(Float.fromBits(texture.renderData.shaderTextureId))
-        data.add(Float.fromBits(tintColor or (light shl 24)))
+        data.add(texture.renderData.shaderTextureId.buffer())
+        data.add((tintColor or (light shl 24)).buffer())
     }
 
     fun addVertex(x: Float, y: Float, z: Float, uv: Vec2, texture: AbstractTexture, shaderTextureId: Float, tintLight: Float) {
