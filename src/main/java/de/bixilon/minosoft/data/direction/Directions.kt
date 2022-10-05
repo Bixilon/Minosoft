@@ -19,9 +19,11 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kotlinglm.vec3.swizzle.*
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.kutil.reflection.ReflectionUtil.setValue
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
@@ -61,10 +63,9 @@ enum class Directions(
         }
     }
 
-    lateinit var inverted: Directions
-        private set
+    val inverted: Directions = unsafeNull()
 
-    private fun inverse(): Directions {
+    private fun invert(): Directions {
         val ordinal = ordinal
         return if (ordinal % 2 == 0) {
             byId(ordinal + 1)
@@ -258,8 +259,9 @@ enum class Directions(
 
 
         init {
+            val field = Directions::class.java.getDeclaredField("inverted")
             for (direction in VALUES) {
-                direction.inverted = direction.inverse()
+                field.setValue(direction, direction.invert())
             }
         }
     }
