@@ -152,7 +152,7 @@ data class BlockState(
             val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
             for ((propertyGroup, propertyJsonValue) in json) {
                 val propertyValue: Any = when (propertyJsonValue) {
-                    is String -> propertyJsonValue.lowercase(Locale.getDefault())
+                    is String -> propertyJsonValue.lowercase()
                     else -> propertyJsonValue
                 }
                 try {

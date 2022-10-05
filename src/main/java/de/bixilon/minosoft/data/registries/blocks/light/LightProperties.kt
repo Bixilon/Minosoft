@@ -20,5 +20,5 @@ interface LightProperties {
     val propagatesSkylight: Boolean get() = false
 
 
-    fun propagatesLight(from: Directions, to: Directions): Boolean = propagatesLight
+    fun propagatesLight(direction: Directions): Boolean = propagatesLight
 }

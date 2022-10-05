@@ -16,13 +16,12 @@ package de.bixilon.minosoft.data.registries.blocks.light
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.VoxelShape
-import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 
 class DirectedProperty(private val directions: BooleanArray) : LightProperties {
-    override val propagatesSkylight: Boolean = propagatesLight(Directions.UP, Directions.DOWN)
+    override val propagatesSkylight: Boolean = propagatesLight(Directions.UP) && propagatesLight(Directions.DOWN)
 
-    override fun propagatesLight(from: Directions, to: Directions): Boolean {
-        return directions[CubeDirections.getIndex(from, to)]
+    override fun propagatesLight(direction: Directions): Boolean {
+        return directions[direction.ordinal]
     }
 
     companion object {
@@ -43,19 +42,15 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
             }
 
         fun of(shape: VoxelShape): LightProperties {
-            val directions = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
+            val directions = BooleanArray(Directions.SIZE)
 
-            for ((index, pair) in CubeDirections.PAIRS.withIndex()) {
-                directions[index] = shape.canPropagate(pair.`in`, pair.out)
+            for ((index, direction) in Directions.VALUES.withIndex()) {
+                directions[index] = shape.isSideCovered(direction)
             }
 
             val simple = directions.isSimple ?: return DirectedProperty(directions)
 
             return if (simple) TransparentProperty else SolidProperty
-        }
-
-        fun VoxelShape.canPropagate(`in`: Directions, out: Directions): Boolean {
-            return isSideCovered(`in`) && isSideCovered(out) // ToDo: That could go wrong
         }
 
         @Deprecated("Absolutely trash")
