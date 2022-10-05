@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -95,8 +95,7 @@ class Chunk(
     fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
         val section = getOrPut(y.sectionHeight) ?: return
         val inSectionHeight = y.inSectionHeight
-        val sectionIndex = ChunkSection.getIndex(x, inSectionHeight, z)
-        val previous = section.blocks.set(sectionIndex, blockState)
+        section[x, inSectionHeight, z] = blockState
 
         section.blockEntities[x, inSectionHeight, z] = blockEntity
         if (blockEntity == null) {

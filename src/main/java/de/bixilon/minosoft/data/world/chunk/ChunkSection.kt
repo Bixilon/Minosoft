@@ -94,7 +94,15 @@ class ChunkSection(
 
 
     operator fun set(x: Int, y: Int, z: Int, block: BlockState?): BlockState? {
-        val previous = blocks.set(x, y, z, block)
+        blocks.lock()
+        val previous = unsafeSet(x, y, z, block)
+        blocks.unlock()
+
+        return previous
+    }
+
+    fun unsafeSet(x: Int, y: Int, z: Int, block: BlockState?): BlockState? {
+        val previous = blocks.unsafeSet(x, y, z, block)
 
         light.onBlockChange(x, y, z, previous, block)
 
