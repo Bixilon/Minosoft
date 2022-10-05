@@ -153,6 +153,7 @@ object KUtil {
         return ChatComponent.of(
             when (this) {
                 is ChatComponent -> return this
+                is CharSequence -> this.toString()
                 null -> TextComponent("null").color(ChatColors.DARK_RED)
                 is TextFormattable -> this.toText()
                 is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
@@ -306,4 +307,11 @@ object KUtil {
             Platform.exit()
         }
     }
+
+    val Any.length: Int
+        get() {
+            if (this is ChatComponent) return this.length
+            if (this is CharSequence) return this.length
+            return toString().length
+        }
 }

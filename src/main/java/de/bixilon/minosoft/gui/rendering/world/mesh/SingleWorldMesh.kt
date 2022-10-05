@@ -26,24 +26,22 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDeman
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
-        val transformedUV = texture.renderData.transformUV(uv)
+        val transformedUV = texture.renderData.transformUV(uv).array
         data.add(position[0])
         data.add(position[1])
         data.add(position[2])
-        data.add(transformedUV.x)
-        data.add(transformedUV.y)
+        data.addAll(transformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add((tintColor or (light shl 24)).buffer())
     }
 
     fun addVertex(x: Float, y: Float, z: Float, uv: Vec2, texture: AbstractTexture, shaderTextureId: Float, tintLight: Float) {
         data.ensureSize(WorldMeshStruct.FLOATS_PER_VERTEX)
-        val transformedUV = texture.renderData.transformUV(uv)
+        val transformedUV = texture.renderData.transformUV(uv.array)
         data.add(x)
         data.add(y)
         data.add(z)
-        data.add(transformedUV.x)
-        data.add(transformedUV.y)
+        data.addAll(transformedUV)
         data.add(shaderTextureId)
         data.add(tintLight)
     }

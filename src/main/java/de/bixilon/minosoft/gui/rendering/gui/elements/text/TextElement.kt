@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.CursorShapes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
+import de.bixilon.minosoft.util.KUtil.length
 
 open class TextElement(
     guiRenderer: GUIRenderer,
@@ -49,7 +50,7 @@ open class TextElement(
     parent: Element? = null,
     scale: Float = 1.0f,
     shadow: Boolean = true,
-) : Element(guiRenderer, text.toString().length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
+) : Element(guiRenderer, text.length * 6 * GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX), Labeled {
     private var activeElement: TextComponent? = null
     lateinit var renderInfo: TextRenderInfo
         private set
