@@ -192,7 +192,7 @@ class ChunkLight(private val chunk: Chunk) {
 
         var y = minY
 
-        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.lowestSection) downTo chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y) {
+        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.lowestSection) downTo 0) {
             if (sectionIndex >= sections.size) {
                 // starting from above world
                 continue
