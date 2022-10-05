@@ -505,7 +505,7 @@
         <dependency>
             <groupId>de.bixilon.javafx</groupId>
             <artifactId>javafx-svg</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
         </dependency>
         <dependency>
             <groupId>de.bixilon</groupId>
