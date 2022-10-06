@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeighbours
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidBlock
+import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidLight
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.fillBottom
 import de.bixilon.minosoft.util.benchmark.BenchmarkUtil
 import org.junit.jupiter.api.Test
+import kotlin.system.measureNanoTime
 
 
 internal class LightBenchmark {
@@ -37,5 +40,49 @@ internal class LightBenchmark {
         BenchmarkUtil.benchmark(1000000) {
             chunk.light.recalculate()
         }.println()
+    }
+
+    // same tests like https://github.com/PaperMC/Starlight
+    @Test
+    fun calculateSimplePlace() {
+        val chunk = createChunkWithNeighbours()
+        val solid = createSolidBlock().defaultState
+        val light = createSolidLight().defaultState
+        for (index in 0 until 256) {
+            chunk.getOrPut(0)!!.blocks.unsafeSet(index, solid)
+        }
+        for (index in 0 until 256) {
+            chunk.getOrPut(15)!!.blocks.unsafeSet(index or (0x0F shl 8), solid)
+        }
+        var totalPlace = 0L
+        var totalBreak = 0L
+        val benchmark = BenchmarkUtil.benchmark(50000) {
+            totalPlace += measureNanoTime { chunk.set(7, 1, 7, light) }
+            totalBreak += measureNanoTime { chunk.set(7, 1, 7, null) }
+        }
+
+        println("Placing light took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
+        println("Breaking light took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
+    }
+
+    @Test
+    fun calculateChangeAtY255() {
+        val chunk = createChunkWithNeighbours()
+        val solid = createSolidBlock().defaultState
+        for (index in 0 until 256) {
+            chunk.getOrPut(0)!!.blocks.unsafeSet(index, solid)
+        }
+        for (index in 0 until 256) {
+            chunk.getOrPut(15)!!.blocks.unsafeSet(index or (0x0F shl 8), solid)
+        }
+        var totalPlace = 0L
+        var totalBreak = 0L
+        val benchmark = BenchmarkUtil.benchmark(50000) {
+            totalBreak += measureNanoTime { chunk.set(7, 255, 7, null) }
+            totalPlace += measureNanoTime { chunk.set(7, 255, 7, solid) }
+        }
+
+        println("Placing block took ${totalPlace.formatNanos()}, avg=${(totalPlace / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
+        println("Breaking block took ${totalBreak.formatNanos()}, avg=${(totalBreak / benchmark.runs).formatNanos()}, runs=${benchmark.runs}")
     }
 }

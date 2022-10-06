@@ -373,6 +373,7 @@ class ChunkLight(private val chunk: Chunk) {
 
     fun recalculateSkylight(sectionHeight: Int) {
         val minY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
+
         // TODO
     }
 }
