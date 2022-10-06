@@ -68,7 +68,7 @@ class NettyClient(
                 // enable or update
                 val inflater = channel.pipeline()[PacketInflater.NAME]?.nullCast<PacketInflater>()
                 if (inflater == null) {
-                    channel.pipeline().addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater())
+                    channel.pipeline().addAfter(LengthDecoder.NAME, PacketInflater.NAME, PacketInflater(connection.version!!.maxPacketLength))
                 }
                 val deflater = channel.pipeline()[PacketDeflater.NAME]?.nullCast<PacketDeflater>()
                 if (deflater != null) {

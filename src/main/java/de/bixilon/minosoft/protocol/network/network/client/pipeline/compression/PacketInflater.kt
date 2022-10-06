@@ -14,13 +14,16 @@
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.compression
 
 import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
+import de.bixilon.minosoft.protocol.network.network.client.exceptions.ciritical.PacketTooLongException
 import de.bixilon.minosoft.protocol.network.network.client.pipeline.compression.exception.SizeMismatchInflaterException
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 
 
-class PacketInflater : MessageToMessageDecoder<ByteArray>() {
+class PacketInflater(
+    private val maxPacketSize: Int,
+) : MessageToMessageDecoder<ByteArray>() {
 
     override fun decode(context: ChannelHandlerContext?, data: ByteArray, out: MutableList<Any>) {
         val buffer = InByteBuffer(data)
@@ -30,6 +33,9 @@ class PacketInflater : MessageToMessageDecoder<ByteArray>() {
         if (uncompressedLength == 0) {
             out += rest
             return
+        }
+        if (uncompressedLength > maxPacketSize) {
+            throw PacketTooLongException(uncompressedLength, maxPacketSize)
         }
 
         val decompressed = rest.decompress() // ToDo: Kutil 1.17: passthrough expected
