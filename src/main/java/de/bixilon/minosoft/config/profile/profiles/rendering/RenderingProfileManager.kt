@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object RenderingProfileManager : ProfileManager<RenderingProfile> {
     override val namespace = "minosoft:rendering".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
     override val profileClass = RenderingProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)

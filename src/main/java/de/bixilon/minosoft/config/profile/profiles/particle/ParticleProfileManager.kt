@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object ParticleProfileManager : ProfileManager<ParticleProfile> {
     override val namespace = "minosoft:particle".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
     override val profileClass = ParticleProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
