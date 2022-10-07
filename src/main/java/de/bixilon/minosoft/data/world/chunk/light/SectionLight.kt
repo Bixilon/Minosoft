@@ -113,12 +113,13 @@ class SectionLight(
         }
 
         // get block or next luminance level
-        val currentLight = light[index].toInt() and BLOCK_LIGHT_MASK // we just care about block light
+        val blockSkyLight = this.light[index].toInt()
+        val currentLight = blockSkyLight and BLOCK_LIGHT_MASK // we just care about block light
         if (currentLight >= nextLuminance) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((this.light[index].toInt() and SKY_LIGHT_MASK) or nextLuminance).toByte() // keep the sky light set
+        this.light[index] = ((blockSkyLight and SKY_LIGHT_MASK) or nextLuminance).toByte() // keep the sky light set
         if (!update) {
             update = true
         }
@@ -304,12 +305,13 @@ class SectionLight(
 
     fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int, noForce: Boolean) {
         val chunk = section.chunk ?: Broken("chunk == null")
-        if (noForce && totalY >= chunk.light.getMaxHeight(x, z)) {
+        val heightmapIndex = (z shl 4) or x
+        if (noForce && totalY >= chunk.light.heightmap[heightmapIndex]) {
             // this light level will be 15, don't care
             return
         }
         val chunkNeighbours = chunk.neighbours ?: return
-        val index = getIndex(x, y, z)
+        val index = heightmapIndex or (y shl 8)
         val currentLight = this[index].toInt()
         if (noForce && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
             return
@@ -404,7 +406,7 @@ class SectionLight(
             }
         }
 
-        // ToDo: check if light can exit block at side or can enter block at neighbpu
+        // ToDo: check if light can exit block at side or can enter block at neighbour
 
         if (x > 0) {
             pushLight(this[x - 1, y, z])
