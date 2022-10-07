@@ -20,6 +20,9 @@ import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class SoundManager(
@@ -30,7 +33,11 @@ class SoundManager(
 
 
     fun load() {
-        val soundsIndex = connection.assetsManager[SOUNDS_INDEX_FILE].readJsonObject()
+        val soundsIndex = connection.assetsManager.getOrNull(SOUNDS_INDEX_FILE)?.readJsonObject()
+        if (soundsIndex == null) {
+            Log.log(LogMessageType.AUDIO, LogLevels.WARN) { "Can not find $SOUNDS_INDEX_FILE. Can not load audio files!" }
+            return
+        }
 
         for ((name, data) in soundsIndex) {
             val resourceLocation = name.toResourceLocation()
