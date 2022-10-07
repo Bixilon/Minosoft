@@ -28,7 +28,7 @@ internal class LightBenchmark {
     @Test
     fun calculateEmptyLight() {
         val chunk = createChunkWithNeighbours()
-        BenchmarkUtil.benchmark(1000000) {
+        BenchmarkUtil.benchmark(100000) {
             chunk.light.recalculate()
         }.println()
     }
@@ -37,7 +37,7 @@ internal class LightBenchmark {
     fun calculateWithSolidBottom() {
         val chunk = createChunkWithNeighbours()
         chunk.fillBottom(createSolidBlock().defaultState)
-        BenchmarkUtil.benchmark(1000000) {
+        BenchmarkUtil.benchmark(100000) {
             chunk.light.recalculate()
         }.println()
     }
@@ -48,15 +48,17 @@ internal class LightBenchmark {
         val chunk = createChunkWithNeighbours()
         val solid = createSolidBlock().defaultState
         val light = createSolidLight().defaultState
+        val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
-            chunk.getOrPut(0)!!.blocks.unsafeSet(index, solid)
+            lowest.unsafeSet(index, solid)
         }
+        val highest = chunk.getOrPut(15)!!.blocks
         for (index in 0 until 256) {
-            chunk.getOrPut(15)!!.blocks.unsafeSet(index or (0x0F shl 8), solid)
+            highest.unsafeSet(index or (0x0F shl 8), solid)
         }
         var totalPlace = 0L
         var totalBreak = 0L
-        val benchmark = BenchmarkUtil.benchmark(50000) {
+        val benchmark = BenchmarkUtil.benchmark(10000) {
             totalPlace += measureNanoTime { chunk.set(7, 1, 7, light) }
             totalBreak += measureNanoTime { chunk.set(7, 1, 7, null) }
         }
@@ -69,15 +71,17 @@ internal class LightBenchmark {
     fun calculateChangeAtY255() {
         val chunk = createChunkWithNeighbours()
         val solid = createSolidBlock().defaultState
+        val lowest = chunk.getOrPut(0)!!.blocks
         for (index in 0 until 256) {
-            chunk.getOrPut(0)!!.blocks.unsafeSet(index, solid)
+            lowest.unsafeSet(index, solid)
         }
+        val highest = chunk.getOrPut(15)!!.blocks
         for (index in 0 until 256) {
-            chunk.getOrPut(15)!!.blocks.unsafeSet(index or (0x0F shl 8), solid)
+            highest.unsafeSet(index or (0x0F shl 8), solid)
         }
         var totalPlace = 0L
         var totalBreak = 0L
-        val benchmark = BenchmarkUtil.benchmark(50000) {
+        val benchmark = BenchmarkUtil.benchmark(10000) {
             totalBreak += measureNanoTime { chunk.set(7, 255, 7, null) }
             totalPlace += measureNanoTime { chunk.set(7, 255, 7, solid) }
         }
