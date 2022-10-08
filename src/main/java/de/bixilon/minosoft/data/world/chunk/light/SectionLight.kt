@@ -151,7 +151,7 @@ class SectionLight(
             if (y > 0) {
                 traceBlockIncrease(x, y - 1, z, neighbourLuminance, Directions.DOWN)
             } else if (section.sectionHeight == chunk.lowestSection) {
-                chunk.light.bottom.traceIncrease(x, z, neighbourLuminance)
+                chunk.light.bottom.traceBlockIncrease(x, z, neighbourLuminance)
             } else {
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
             }
@@ -160,7 +160,7 @@ class SectionLight(
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceBlockIncrease(x, y + 1, z, neighbourLuminance, Directions.UP)
             } else if (section.sectionHeight == chunk.highestSection) {
-                chunk.light.top.traceIncrease(x, z, neighbourLuminance)
+                chunk.light.top.traceBlockIncrease(x, z, neighbourLuminance)
             } else {
                 (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.sectionHeight + 1, false))?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
             }
@@ -287,6 +287,7 @@ class SectionLight(
     }
 
     private fun propagateY(neighbours: Array<ChunkSection?>, x: Int, baseY: Int) {
+        // ToDo: Border light
         for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
             neighbours[Directions.O_DOWN]?.light?.get(x, ProtocolDefinition.SECTION_MAX_Y, z)?.toInt()?.let { light ->
                 (light and BLOCK_LIGHT_MASK).let { if (it > 1) traceBlockIncrease(x, 0, z, it - 1, Directions.DOWN) }
@@ -299,7 +300,7 @@ class SectionLight(
         }
     }
 
-    private inline fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int) {
+    internal inline fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, direction: Directions?, totalY: Int) {
         return traceSkylightIncrease(x, y, z, nextLevel, direction, totalY, true)
     }
 
@@ -349,7 +350,7 @@ class SectionLight(
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceSkylightIncrease(x, y + 1, z, nextNeighbourLevel, Directions.UP, totalY + 1)
             } else if (section.sectionHeight == chunk.lowestSection) {
-                // ToDo: Trace through bottom light
+                chunk.light.bottom.traceSkyIncrease(x, z, nextLevel)
             } else {
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, nextNeighbourLevel, Directions.UP, totalY)
             }

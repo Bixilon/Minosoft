@@ -374,6 +374,8 @@ class ChunkLight(private val chunk: Chunk) {
     fun recalculateSkylight(sectionHeight: Int) {
         val minY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
 
-        // TODO
+        // TODO: clear neighbours and let them propagate?
+        // TODO: Optimize for specific section height (i.e. not trace everything above)
+        calculateSkylight()
     }
 }

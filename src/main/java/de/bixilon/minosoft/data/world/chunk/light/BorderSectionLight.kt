@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class BorderSectionLight(
@@ -43,14 +44,23 @@ class BorderSectionLight(
         return z shl 4 or x
     }
 
-    internal fun traceIncrease(x: Int, z: Int, nextLuminance: Int) {
+    private fun updateY() {
+        // we can not further increase the light
+        if (top) {
+            chunk.sections?.last()?.light?.update = true
+        } else {
+            chunk.sections?.first()?.light?.update = true
+        }
+    }
+
+    fun traceBlockIncrease(x: Int, z: Int, nextLuminance: Int) {
         val index = z shl 4 or x
-        val currentLight = light[index].toInt() and 0x0F
+        val currentLight = light[index].toInt() and SectionLight.BLOCK_LIGHT_MASK
         if (currentLight >= nextLuminance) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((this.light[index].toInt() and 0xF0) or nextLuminance).toByte()
+        this.light[index] = ((this.light[index].toInt() and SectionLight.SKY_LIGHT_MASK) or nextLuminance).toByte()
 
         if (!update) {
             update = true
@@ -58,13 +68,7 @@ class BorderSectionLight(
 
 
         if (nextLuminance == 1) {
-            // we can not further increase the light
-            if (top) {
-                chunk.sections?.last()?.light?.update = true
-            } else {
-                chunk.sections?.first()?.light?.update = true
-            }
-            return
+            return updateY()
         }
         val neighbourLuminance = nextLuminance - 1
 
@@ -75,29 +79,77 @@ class BorderSectionLight(
         }
 
         if (z > 0) {
-            traceIncrease(x, z - 1, neighbourLuminance)
+            traceBlockIncrease(x, z - 1, neighbourLuminance)
         } else {
-            val neighbour = chunk.neighbours?.get(3)
-            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            chunk.neighbours?.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
-            traceIncrease(x, z + 1, neighbourLuminance)
+            traceBlockIncrease(x, z + 1, neighbourLuminance)
         } else {
-            val neighbour = chunk.neighbours?.get(4)
-            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(x, 0, neighbourLuminance)
+            chunk.neighbours?.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
         }
 
         if (x > 0) {
-            traceIncrease(x - 1, z, neighbourLuminance)
+            traceBlockIncrease(x - 1, z, neighbourLuminance)
         } else {
-            val neighbour = chunk.neighbours?.get(1)
-            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
+            chunk.neighbours?.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
-            traceIncrease(x + 1, z, neighbourLuminance)
+            traceBlockIncrease(x + 1, z, neighbourLuminance)
         } else {
-            val neighbour = chunk.neighbours?.get(6)
-            (if (top) neighbour?.light?.top else neighbour?.light?.bottom)?.traceIncrease(0, z, neighbourLuminance)
+            chunk.neighbours?.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
+        }
+    }
+
+    private fun Chunk.getBorderLight(): BorderSectionLight {
+        return if (top) light.top else light.bottom
+    }
+
+    fun traceSkyIncrease(x: Int, z: Int, nextLevel: Int) {
+        val index = z shl 4 or x
+        val currentLight = light[index].toInt() and SectionLight.SKY_LIGHT_MASK shl 4
+        if (currentLight >= nextLevel) {
+            // light is already higher, no need to trace
+            return
+        }
+        this.light[index] = ((this.light[index].toInt() and SectionLight.BLOCK_LIGHT_MASK) or nextLevel).toByte()
+
+        if (!update) {
+            update = true
+        }
+
+
+        if (nextLevel == 1) {
+            return updateY()
+        }
+        val neighbourLevel = nextLevel - 1
+
+        if (top) {
+            chunk.sections?.last()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
+        } else {
+            chunk.sections?.first()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y)
+        }
+
+        if (z > 0) {
+            traceSkyIncrease(x, z - 1, neighbourLevel)
+        } else {
+            chunk.neighbours?.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceSkyIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLevel)
+        }
+        if (z < ProtocolDefinition.SECTION_MAX_Y) {
+            traceSkyIncrease(x, z + 1, neighbourLevel)
+        } else {
+            chunk.neighbours?.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceSkyIncrease(x, 0, neighbourLevel)
+        }
+
+        if (x > 0) {
+            traceSkyIncrease(x - 1, z, neighbourLevel)
+        } else {
+            chunk.neighbours?.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceSkyIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLevel)
+        }
+        if (x < ProtocolDefinition.SECTION_MAX_X) {
+            traceSkyIncrease(x + 1, z, neighbourLevel)
+        } else {
+            chunk.neighbours?.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceSkyIncrease(0, z, neighbourLevel)
         }
     }
 
