@@ -18,8 +18,8 @@ import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.TaskWorker
-import de.bixilon.kutil.concurrent.worker.tasks.Task
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
@@ -280,13 +280,13 @@ class World(
         val simulationDistance = view.simulationDistance
         val cameraPosition = connection.player.positionInfo.chunkPosition
         chunks.lock.acquire()
-        val worker = TaskWorker()
+        val worker = UnconditionalWorker()
         for ((chunkPosition, chunk) in chunks.unsafe) {
             // ToDo: Cache (improve performance)
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 continue
             }
-            worker += Task(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition) }
+            worker += UnconditionalTask(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition) }
         }
         chunks.lock.release()
         worker.work()
@@ -409,8 +409,8 @@ class World(
     }
 
     fun recalculateLight() {
-        val reset = TaskWorker()
-        val calculate = TaskWorker()
+        val reset = UnconditionalWorker()
+        val calculate = UnconditionalWorker()
         lock.acquire()
         for (chunk in chunks.unsafe.values) {
             reset += { chunk.light.reset() }

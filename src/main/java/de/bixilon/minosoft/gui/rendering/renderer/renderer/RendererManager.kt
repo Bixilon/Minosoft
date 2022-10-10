@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.renderer.renderer
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.ThreadPool
-import de.bixilon.kutil.concurrent.worker.TaskWorker
-import de.bixilon.kutil.concurrent.worker.tasks.Task
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -65,7 +65,7 @@ class RendererManager(
 
     fun init(latch: CountUpAndDownLatch) {
         val inner = CountUpAndDownLatch(0, latch)
-        var worker = TaskWorker()
+        var worker = UnconditionalWorker()
         for (renderer in renderers.values) {
             worker += { renderer.preAsyncInit(inner) }
         }
@@ -75,7 +75,7 @@ class RendererManager(
             renderer.init(inner)
         }
 
-        worker = TaskWorker()
+        worker = UnconditionalWorker()
         for (renderer in renderers.values) {
             worker += { renderer.asyncInit(inner) }
         }
@@ -87,7 +87,7 @@ class RendererManager(
             renderer.postInit(latch)
         }
         val inner = CountUpAndDownLatch(0, latch)
-        val worker = TaskWorker()
+        val worker = UnconditionalWorker()
         for (renderer in renderers.values) {
             worker += { renderer.postAsyncInit(inner) }
         }
@@ -120,12 +120,12 @@ class RendererManager(
         }
 
         val latch = CountUpAndDownLatch(0)
-        val worker = TaskWorker()
+        val worker = UnconditionalWorker()
         for (renderer in rendererList) {
             if (renderer !is AsyncRenderer) {
                 continue
             }
-            worker += Task(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
+            worker += UnconditionalTask(priority = ThreadPool.HIGHER) { renderer.prepareDrawAsync() }
         }
         worker.work(latch)
 

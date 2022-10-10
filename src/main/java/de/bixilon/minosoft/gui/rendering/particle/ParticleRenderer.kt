@@ -19,7 +19,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -159,7 +159,7 @@ class ParticleRenderer(
 
             particlesLock.acquire()
             try {
-                val time = TimeUtil.millis
+                val time = millis()
                 for (particle in particles) {
                     if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) { // ToDo: Check fog distance
                         particle.dead = true
@@ -207,7 +207,7 @@ class ParticleRenderer(
             particle.dead = true
             return
         }
-        particle.tryTick(TimeUtil.millis)
+        particle.tryTick(millis())
 
         particleQueueLock.lock()
         particleQueue += particle
@@ -227,7 +227,7 @@ class ParticleRenderer(
 
         particlesLock.acquire()
 
-        val time = TimeUtil.millis
+        val time = millis()
         for (particle in particles) {
             particle.tryTick(time)
             if (particle.dead) {

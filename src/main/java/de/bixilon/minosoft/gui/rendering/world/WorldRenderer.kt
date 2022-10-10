@@ -22,7 +22,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -649,10 +649,10 @@ class WorldRenderer(
         }
 
         var addedMeshes = 0
-        val start = TimeUtil.millis
+        val start = millis()
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while (meshesToLoad.isNotEmpty() && (TimeUtil.millis - start < maxTime)) {
+        while (meshesToLoad.isNotEmpty() && (millis() - start < maxTime)) {
             val item = meshesToLoad.removeAt(0)
             meshesToLoadSet.remove(item)
             val mesh = item.mesh ?: continue
@@ -688,10 +688,10 @@ class WorldRenderer(
             return
         }
 
-        val time = TimeUtil.millis
+        val time = millis()
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while (meshesToUnload.isNotEmpty() && (TimeUtil.millis - time < maxTime)) {
+        while (meshesToUnload.isNotEmpty() && (millis() - time < maxTime)) {
             val mesh = meshesToUnload.removeAt(0)
             visible.removeMesh(mesh)
             mesh.unload()

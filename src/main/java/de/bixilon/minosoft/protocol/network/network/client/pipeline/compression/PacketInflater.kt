@@ -38,7 +38,7 @@ class PacketInflater(
             throw PacketTooLongException(uncompressedLength, maxPacketSize)
         }
 
-        val decompressed = rest.decompress() // ToDo: Kutil 1.17: passthrough expected
+        val decompressed = rest.decompress(uncompressedLength)
         if (decompressed.size != uncompressedLength) {
             throw SizeMismatchInflaterException()
         }

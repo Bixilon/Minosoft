@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.worker.TaskWorker
-import de.bixilon.kutil.concurrent.worker.tasks.Task
+import de.bixilon.kutil.concurrent.worker.task.TaskWorker
+import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -187,8 +187,8 @@ class PlayConnection(
             }
             var privateKey: PlayerPrivateKey? = null
             if (version.requiresSignedChat) {
-                taskWorker += Task(optional = true) {
-                    val minecraftKey = account.fetchKey(latch) ?: return@Task
+                taskWorker += WorkerTask(optional = true) {
+                    val minecraftKey = account.fetchKey(latch) ?: return@WorkerTask
                     minecraftKey.requireSignature()
                     privateKey = PlayerPrivateKey(
                         expiresAt = minecraftKey.expiresAt,

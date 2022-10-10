@@ -299,7 +299,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <javafx.version>19</javafx.version>
-        <kotlin.version>1.7.10</kotlin.version>
+        <kotlin.version>1.7.20</kotlin.version>
         <lwjgl.version>3.3.1</lwjgl.version>
         <ikonli.version>12.3.1</ikonli.version>
         <netty.version>4.1.82.Final</netty.version>
@@ -510,7 +510,7 @@
         <dependency>
             <groupId>de.bixilon</groupId>
             <artifactId>kutil</artifactId>
-            <version>1.16</version>
+            <version>1.17</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
