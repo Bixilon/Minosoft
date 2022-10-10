@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.effects
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.data.language.Translatable
+import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.registries.Registries

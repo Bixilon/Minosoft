@@ -29,8 +29,8 @@ import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.data.language.LanguageManager.Companion.load
-import de.bixilon.minosoft.data.language.MultiLanguageManager
+import de.bixilon.minosoft.data.language.LanguageUtil
+import de.bixilon.minosoft.data.language.manager.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
@@ -132,7 +132,7 @@ object Minosoft {
         val language = ErosProfileManager.selected.general.language
         ErosProfileManager.selected.general::language.profileWatch(this, true) {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
-            LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = load(it, null, MINOSOFT_ASSETS_MANAGER, minosoft("language/"))
+            LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = LanguageUtil.load(it, null, MINOSOFT_ASSETS_MANAGER, minosoft("language/"))
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }
         }
     }

@@ -51,6 +51,24 @@ interface AssetsManager {
      */
     fun getOrNull(path: ResourceLocation): InputStream?
 
+    fun getAllOrNull(path: ResourceLocation): List<InputStream>? {
+        val list = mutableListOf<InputStream>()
+        getAll(path, list)
+        if (list.isEmpty()) {
+            return null
+        }
+        return list
+    }
+
+    @Throws(FileNotFoundException::class)
+    fun getAll(path: ResourceLocation): List<InputStream> {
+        return getAllOrNull(path) ?: throw FileNotFoundException("Can not find any assets matching $path!")
+    }
+
+    fun getAll(path: ResourceLocation, list: MutableList<InputStream>) {
+        list += getOrNull(path) ?: return
+    }
+
     /**
      * Loads all assets
      */

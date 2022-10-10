@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.language
+package de.bixilon.minosoft.data.language.translate
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 
-interface Translatable {
-    val translationKey: ResourceLocation?
+interface Translator {
+
+    fun canTranslate(key: ResourceLocation?): Boolean
+
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent
+
+
+    fun translate(translatable: Any?): ChatComponent {
+        return when (translatable) {
+            is ChatComponent -> translatable
+            is Translatable -> translate(translatable.translationKey)
+            else -> ChatComponent.of(translatable)
+        }
+    }
 }

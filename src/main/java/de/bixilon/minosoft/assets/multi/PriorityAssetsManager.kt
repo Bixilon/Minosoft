@@ -75,6 +75,13 @@ class PriorityAssetsManager(
         return null
     }
 
+    override fun getAll(path: ResourceLocation, list: MutableList<InputStream>) {
+        val managers = this.managers[path.namespace] ?: return
+        for (manager in managers) {
+            manager.getAll(path, list)
+        }
+    }
+
     override fun load(latch: CountUpAndDownLatch) {
         for ((_, managers) in managers) {
             for (manager in managers) {

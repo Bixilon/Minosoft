@@ -30,7 +30,8 @@ import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
-import de.bixilon.minosoft.data.language.LanguageManager
+import de.bixilon.minosoft.data.language.LanguageUtil
+import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
@@ -84,7 +85,7 @@ class PlayConnection(
     lateinit var assetsManager: AssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
-    lateinit var language: LanguageManager
+    lateinit var language: Translator
 
 
     @Deprecated("will be removed once split into modules")
@@ -202,7 +203,7 @@ class PlayConnection(
 
             state = PlayConnectionStates.LOADING
 
-            language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
+            language = LanguageUtil.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
             player = LocalPlayerEntity(account, this, privateKey)
 

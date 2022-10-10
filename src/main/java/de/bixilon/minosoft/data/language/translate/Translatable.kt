@@ -11,9 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.language
+package de.bixilon.minosoft.data.language.translate
 
-annotation class Description(
-    val nameKey: String,
-    val translationKey: String,
-)
+import de.bixilon.minosoft.data.registries.ResourceLocation
+
+interface Translatable {
+    val translationKey: ResourceLocation?
+}

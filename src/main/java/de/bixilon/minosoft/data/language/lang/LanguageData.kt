@@ -11,27 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.main.play.server.type.types
+package de.bixilon.minosoft.data.language.lang
 
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
-import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
-import org.kordamp.ikonli.Ikon
-
-interface ServerType : Translatable {
-    val icon: Ikon
-    val hidden: Boolean
-    var readOnly: Boolean
-
-    val servers: MutableList<Server>
-
-    fun refresh(cards: List<ServerCard>)
-
-
-    companion object {
-        val TYPES = setOf(
-            CustomServerType,
-            LANServerType,
-        )
-    }
-}
+typealias LanguageData = MutableMap<String, String>

@@ -18,7 +18,7 @@ import de.bixilon.kutil.json.JsonUtil.toJsonList
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.url.URLUtil.toURL
-import de.bixilon.minosoft.data.language.Translator
+import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.click.ClickEvents
 import de.bixilon.minosoft.data.text.events.click.OpenURLClickEvent

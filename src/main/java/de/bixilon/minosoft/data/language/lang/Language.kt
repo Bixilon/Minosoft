@@ -10,8 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.language
+package de.bixilon.minosoft.data.language.lang
 
+import de.bixilon.minosoft.data.language.LanguageUtil
+import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -19,21 +21,15 @@ import de.bixilon.minosoft.data.text.TextComponent
 
 class Language(
     val name: String,
-    private val data: Map<ResourceLocation, String>,
+    private val data: LanguageData,
 ) : Translator {
 
     override fun canTranslate(key: ResourceLocation?): Boolean {
-        return data.containsKey(key)
+        return data.containsKey(key?.namespace)
     }
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        val placeholder = this.data[key]
-        if (placeholder == null) {
-            if (data.isEmpty()) {
-                return ChatComponent.of(key.toString(), null, parent)
-            }
-            return ChatComponent.of(key.toString() + "->" + data.contentToString(), null, parent)
-        }
+        val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, data)
 
         val ret = BaseComponent()
 

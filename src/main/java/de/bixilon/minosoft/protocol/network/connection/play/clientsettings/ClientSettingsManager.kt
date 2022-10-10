@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.play.clientsettings
 
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
-import de.bixilon.minosoft.data.language.LanguageManager
+import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
@@ -64,7 +64,7 @@ class ClientSettingsManager(
             return
         }
         this.language = language
-        connection.language = LanguageManager.load(language, connection.version, connection.assetsManager)
+        connection.language = LanguageUtil.load(language, connection.version, connection.assetsManager)
         sendClientSettings()
     }
 
