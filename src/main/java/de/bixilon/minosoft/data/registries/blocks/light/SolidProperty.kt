@@ -13,4 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.blocks.light
 
-object SolidProperty : LightProperties
+import de.bixilon.minosoft.data.direction.Directions
+
+object SolidProperty : LightProperties {
+    override val propagatesLight: Boolean get() = false
+    override val propagatesSkylight: Boolean get() = false
+
+    override fun propagatesLight(direction: Directions): Boolean {
+        return false
+    }
+}

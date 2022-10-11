@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.VoxelShape
 
 class DirectedProperty(private val directions: BooleanArray) : LightProperties {
+    override val propagatesLight: Boolean = true
     override val propagatesSkylight: Boolean = propagatesLight(Directions.UP) && propagatesLight(Directions.DOWN)
 
     override fun propagatesLight(direction: Directions): Boolean {
@@ -45,7 +46,7 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
             val directions = BooleanArray(Directions.SIZE)
 
             for ((index, direction) in Directions.VALUES.withIndex()) {
-                directions[index] = shape.isSideCovered(direction)
+                directions[index] = !shape.isSideCovered(direction)
             }
 
             val simple = directions.isSimple ?: return DirectedProperty(directions)
