@@ -398,11 +398,11 @@ class SectionLight(
 
         fun pushLight(light: Byte) {
             val nextSkylight = light.toInt() and SKY_LIGHT_MASK shr 4
-            if (skylight > nextSkylight) {
+            if (nextSkylight > skylight) {
                 skylight = nextSkylight
             }
             val nextBlockLight = light.toInt() and BLOCK_LIGHT_MASK
-            if (blockLight > nextBlockLight) {
+            if (nextBlockLight > blockLight) {
                 blockLight = nextBlockLight
             }
         }
