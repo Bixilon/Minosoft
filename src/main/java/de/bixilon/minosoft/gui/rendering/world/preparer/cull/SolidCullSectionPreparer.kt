@@ -28,9 +28,9 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
-import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -139,10 +139,10 @@ class SolidCullSectionPreparer(
                         light[O_UP] = sectionLight[(y + 1) shl 8 or baseIndex]
                     }
 
-                    checkNorth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
-                    checkSouth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
-                    checkWest(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
-                    checkEast(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, blocks, sectionLight, chunk)
+                    checkNorth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
+                    checkSouth(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
+                    checkWest(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
+                    checkEast(neighbourBlocks, neighbours, x, y, z, light, position, neighbourChunks, section, chunk)
 
                     if (position.y > maxHeight) {
                         light[O_DOWN] = (light[O_DOWN].toInt() or 0xF0).toByte()
@@ -176,45 +176,45 @@ class SolidCullSectionPreparer(
         mesh.blockEntities = blockEntities
     }
 
-    private inline fun checkNorth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+    private inline fun checkNorth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {
         if (z == 0) {
-            setNeighbour(neighbourBlocks, x, y, ProtocolDefinition.SECTION_MAX_Z, light, position, neighbours[O_NORTH]?.blocks, sectionLight, neighbourChunks[3], O_NORTH)
+            setNeighbour(neighbourBlocks, x, y, ProtocolDefinition.SECTION_MAX_Z, light, position, neighbours[O_NORTH], neighbourChunks[ChunkNeighbours.NORTH], O_NORTH)
         } else {
-            setNeighbour(neighbourBlocks, x, y, z - 1, light, position, blocks, sectionLight, chunk, O_NORTH)
+            setNeighbour(neighbourBlocks, x, y, z - 1, light, position, section, chunk, O_NORTH)
         }
     }
 
-    private inline fun checkSouth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+    private inline fun checkSouth(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {
         if (z == ProtocolDefinition.SECTION_MAX_Z) {
-            setNeighbour(neighbourBlocks, x, y, 0, light, position, neighbours[O_SOUTH]?.blocks, sectionLight, neighbourChunks[4], O_SOUTH)
+            setNeighbour(neighbourBlocks, x, y, 0, light, position, neighbours[O_SOUTH], neighbourChunks[ChunkNeighbours.SOUTH], O_SOUTH)
         } else {
-            setNeighbour(neighbourBlocks, x, y, z + 1, light, position, blocks, sectionLight, chunk, O_SOUTH)
+            setNeighbour(neighbourBlocks, x, y, z + 1, light, position, section, chunk, O_SOUTH)
         }
     }
 
-    private inline fun checkWest(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+    private inline fun checkWest(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {
         if (x == 0) {
-            setNeighbour(neighbourBlocks, ProtocolDefinition.SECTION_MAX_X, y, z, light, position, neighbours[O_WEST]?.blocks, sectionLight, neighbourChunks[1], O_WEST)
+            setNeighbour(neighbourBlocks, ProtocolDefinition.SECTION_MAX_X, y, z, light, position, neighbours[O_WEST], neighbourChunks[ChunkNeighbours.WEST], O_WEST)
         } else {
-            setNeighbour(neighbourBlocks, x - 1, y, z, light, position, blocks, sectionLight, chunk, O_WEST)
+            setNeighbour(neighbourBlocks, x - 1, y, z, light, position, section, chunk, O_WEST)
         }
     }
 
-    private inline fun checkEast(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, blocks: BlockSectionDataProvider, sectionLight: SectionLight, chunk: Chunk) {
+    private inline fun checkEast(neighbourBlocks: Array<BlockState?>, neighbours: Array<ChunkSection?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, neighbourChunks: Array<Chunk>, section: ChunkSection, chunk: Chunk) {
         if (x == ProtocolDefinition.SECTION_MAX_X) {
-            setNeighbour(neighbourBlocks, 0, y, z, light, position, neighbours[O_EAST]?.blocks, sectionLight, neighbourChunks[6], O_EAST)
+            setNeighbour(neighbourBlocks, 0, y, z, light, position, neighbours[O_EAST], neighbourChunks[ChunkNeighbours.EAST], O_EAST)
         } else {
-            setNeighbour(neighbourBlocks, x + 1, y, z, light, position, blocks, sectionLight, chunk, O_EAST)
+            setNeighbour(neighbourBlocks, x + 1, y, z, light, position, section, chunk, O_EAST)
         }
     }
 
-    private inline fun setNeighbour(neighbourBlocks: Array<BlockState?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, blocks: BlockSectionDataProvider?, sectionLight: SectionLight, chunk: Chunk, ordinal: Int) {
+    private inline fun setNeighbour(neighbourBlocks: Array<BlockState?>, x: Int, y: Int, z: Int, light: ByteArray, position: Vec3i, section: ChunkSection?, chunk: Chunk, ordinal: Int) {
         val heightmapIndex = (z shl 4) or x
         val neighbourIndex = y shl 8 or heightmapIndex
-        neighbourBlocks[ordinal] = blocks?.unsafeGet(neighbourIndex)
-        light[ordinal] = sectionLight[neighbourIndex]
+        neighbourBlocks[ordinal] = section?.blocks?.unsafeGet(neighbourIndex)
+        light[ordinal] = section?.light?.get(neighbourIndex) ?: 0x00
         if (position.y > chunk.light.heightmap[heightmapIndex]) {
-            light[ordinal] = (light[ordinal].toInt() or 0xF0).toByte()
+            light[ordinal] = (light[ordinal].toInt() or SectionLight.SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
         }
     }
 
