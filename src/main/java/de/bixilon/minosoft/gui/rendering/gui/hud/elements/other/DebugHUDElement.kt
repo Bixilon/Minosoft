@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -29,6 +29,7 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -280,9 +281,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 clear()
 
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[entity.positionInfo.chunkPosition]?.isFullyLoaded) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[chunkPosition]?.isFullyLoaded) }
 
                 lastChunk = chunk
             }

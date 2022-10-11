@@ -21,7 +21,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
@@ -134,14 +134,15 @@ abstract class Entity(
             field = value
             positionInfo.update()
         }
-    open val positionInfo = EntityPositionInfo(connection, this)
-
 
     var cameraPosition: Vec3 = position.toVec3
         private set
 
     var eyePosition: Vec3 = cameraPosition
         private set
+
+    open val positionInfo = EntityPositionInfo(connection, this)
+
 
     open val spawnSprintingParticles: Boolean
         get() = isSprinting && !isSneaking // ToDo: Touching fluids
@@ -307,7 +308,7 @@ abstract class Entity(
 
     @Synchronized
     fun tryTick() {
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
 
         if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
             tick()
