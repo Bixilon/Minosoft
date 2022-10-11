@@ -114,7 +114,7 @@ class ChunkLight(private val chunk: Chunk) {
             return top[index].toInt() or 0xF0 // top has always sky=15
         }
         var light = chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
-        if (y >= heightmap[heightmapIndex]) {
+        if (y > heightmap[heightmapIndex]) {
             // set sky=15
             light = light or 0xF0
         }
@@ -203,9 +203,14 @@ class ChunkLight(private val chunk: Chunk) {
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
                 val light = section.blocks.unsafeGet(x, sectionY, z)?.lightProperties ?: continue
                 if (light.propagatesSkylight) {
+                    // can go through block
                     continue
                 }
                 y = (sectionIndex + chunk.lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
+                if (light.propagatesLight(Directions.UP)) {
+                    // can enter the block, but not leave
+                    y--
+                }
                 section.release()
                 break@sectionLoop
             }
@@ -360,7 +365,7 @@ class ChunkLight(private val chunk: Chunk) {
         val maxSection = chunk.sections?.get(maxHeight.sectionHeight - chunk.lowestSection)
         val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         if (maxSection != null) {
-            for (y in (if (skylightStart.sectionHeight != sectionHeight) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight + 1) {
+            for (y in (if (skylightStart.sectionHeight != sectionHeight) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
                 maxSection.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
             }
             maxSection.light.update = true
