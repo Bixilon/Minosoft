@@ -107,19 +107,19 @@ class BorderSectionLight(
 
     fun traceSkyIncrease(x: Int, z: Int, nextLevel: Int) {
         val index = z shl 4 or x
-        val currentLight = light[index].toInt() and SectionLight.SKY_LIGHT_MASK shl 4
-        if (currentLight >= nextLevel) {
+        val light = light[index].toInt()
+        if ((light and SectionLight.SKY_LIGHT_MASK shr 4) >= nextLevel) {
             // light is already higher, no need to trace
             return
         }
-        this.light[index] = ((this.light[index].toInt() and SectionLight.BLOCK_LIGHT_MASK) or nextLevel).toByte()
+        this.light[index] = ((light and SectionLight.BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
 
         if (!update) {
             update = true
         }
 
 
-        if (nextLevel == 1) {
+        if (nextLevel <= 1) {
             return updateY()
         }
         val neighbourLevel = nextLevel - 1
