@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.entity.models
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitbox
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.ModelUpdater

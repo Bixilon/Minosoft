@@ -11,14 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.physics
+package de.bixilon.minosoft.data.registries.shapes.side
 
-import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.registries.shapes.AABB
+class VoxelSideSet(
+    val sides: Set<VoxelSide>,
+) : Iterable<VoxelSide> {
 
-interface PhysicsEntity {
-    val position: Vec3d
-    val velocity: Vec3d
-    var onGround: Boolean
-    val aabb: AABB
+    fun isEmpty(): Boolean = sides.isEmpty()
+
+    override fun iterator(): Iterator<VoxelSide> {
+        return sides.iterator()
+    }
+
+    fun compact(): VoxelSideSet {
+        if (this.sides.size <= 1) {
+            return this
+        }
+
+        val next: MutableSet<VoxelSide> = mutableSetOf()
+
+        val array = this.sides.toTypedArray()
+        for (i in 1 until sides.size) {
+            next += array[i - 1].compact(array[i])
+        }
+        val set = VoxelSideSet(next)
+
+        if (next.size < this.sides.size) {
+            return set.compact()
+        }
+
+        return set
+    }
 }

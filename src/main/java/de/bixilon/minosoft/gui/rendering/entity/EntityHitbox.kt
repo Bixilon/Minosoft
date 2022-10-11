@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.entity
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel

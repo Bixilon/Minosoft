@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow

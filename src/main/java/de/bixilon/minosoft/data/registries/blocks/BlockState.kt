@@ -18,7 +18,6 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.SolidProperty
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import java.util.*
 
@@ -103,6 +103,10 @@ data class BlockState(
             val properties = data["properties"]?.toJsonObject()?.let {
                 getProperties(it)
             } ?: emptyMap()
+
+            if (block.resourceLocation.path == "oak_stairs") {
+                println()
+            }
 
             val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
 

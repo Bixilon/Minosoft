@@ -15,7 +15,9 @@ package de.bixilon.minosoft.data.registries.blocks.light
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.registries.shapes.side.VoxelSide
+import de.bixilon.minosoft.data.registries.shapes.side.VoxelSideSet
 
 class DirectedProperty(private val directions: BooleanArray) : LightProperties {
     override val propagatesLight: Boolean = true
@@ -26,6 +28,7 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
     }
 
     companion object {
+        private val FULL_SIDE = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
 
         private val BooleanArray.isSimple: Boolean?
             get() {
@@ -54,15 +57,12 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
             return if (simple) TransparentProperty else SolidProperty
         }
 
-        @Deprecated("Absolutely trash")
-        fun VoxelShape.isSideCovered(side: Directions): Boolean {
+
+        private fun VoxelShape.getSide(side: Directions): VoxelSideSet {
             // ToDo: This whole calculation is technically wrong, it could be that 2 different sides of 2 blocks are "free". That means that light can still not pass the blocks, but
             // this algorithm does not cover it. Let's see it as performance hack
 
-            var min1 = 0.0
-            var min2 = 0.0
-            var max1 = 0.0
-            var max2 = 0.0
+            val sides: MutableSet<VoxelSide> = mutableSetOf()
 
             for (aabb in this) {
                 when (side.axis) {
@@ -70,34 +70,41 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
                         if ((side == Directions.DOWN && aabb.min.y != 0.0) || (side == Directions.UP && aabb.max.y != 1.0)) {
                             continue
                         }
-                        min1 = minOf(min1, aabb.min.x)
-                        min2 = minOf(min2, aabb.min.z)
-                        max1 = maxOf(max1, aabb.max.x)
-                        max2 = maxOf(max2, aabb.max.z)
+                        sides += VoxelSide(aabb.min.x, aabb.min.z, aabb.max.x, aabb.max.z)
                     }
 
                     Axes.X -> {
                         if ((side == Directions.WEST && aabb.min.x != 0.0) || (side == Directions.EAST && aabb.max.x != 1.0)) {
                             continue
                         }
-                        min1 = minOf(min1, aabb.min.y)
-                        min2 = minOf(min2, aabb.min.z)
-                        max1 = maxOf(max1, aabb.max.y)
-                        max2 = maxOf(max2, aabb.max.z)
+                        sides += VoxelSide(aabb.min.y, aabb.min.z, aabb.max.y, aabb.max.z)
                     }
 
                     Axes.Z -> {
                         if ((side == Directions.NORTH && aabb.min.z != 0.0) || (side == Directions.SOUTH && aabb.max.z != 1.0)) {
                             continue
                         }
-                        min1 = minOf(min1, aabb.min.x)
-                        min2 = minOf(min2, aabb.min.y)
-                        max1 = maxOf(max1, aabb.max.x)
-                        max2 = maxOf(max2, aabb.max.y)
+                        sides += VoxelSide(aabb.min.x, aabb.min.y, aabb.max.x, aabb.max.y)
                     }
                 }
             }
-            return min1 == 0.0 && min2 == 0.0 && max1 == 1.0 && max2 == 1.0
+
+            return VoxelSideSet(sides)
+        }
+
+        fun VoxelShape.isSideCovered(direction: Directions): Boolean {
+            val side = getSide(direction)
+            if (side.isEmpty()) {
+                return false
+            }
+
+            val rest = FULL_SIDE - side
+            var compacted = rest.compact()
+            if (rest != compacted) {
+                compacted = FULL_SIDE - compacted
+            }
+
+            return !FULL_SIDE.touches(compacted)
         }
     }
 }

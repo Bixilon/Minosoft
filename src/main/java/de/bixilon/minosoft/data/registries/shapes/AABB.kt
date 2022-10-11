@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries
+package de.bixilon.minosoft.data.registries.shapes
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
@@ -39,6 +39,8 @@ class AABB {
     constructor(aabb: AABB) : this(aabb.min, aabb.max)
 
     constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))
+
+    constructor(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float) : this(Vec3d(minX, minY, minZ), Vec3d(maxX, maxY, maxZ))
 
     constructor(min: Vec3d, max: Vec3d) {
         this.min = min(min, max)

@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.registries
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import org.junit.jupiter.api.Test

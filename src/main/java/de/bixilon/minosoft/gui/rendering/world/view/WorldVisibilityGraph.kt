@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.array.BooleanArrayUtil.trySet
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
