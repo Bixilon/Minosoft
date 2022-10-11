@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.getFirst
+import de.bixilon.minosoft.util.KUtil.getLast
 
 class BorderSectionLight(
     val top: Boolean,
@@ -47,9 +49,9 @@ class BorderSectionLight(
     private fun updateY() {
         // we can not further increase the light
         if (top) {
-            chunk.sections?.last()?.light?.update = true
+            chunk.sections?.getLast()?.light?.apply { if (!update) update = true }
         } else {
-            chunk.sections?.first()?.light?.update = true
+            chunk.sections?.getFirst()?.light?.apply { if (!update) update = true }
         }
     }
 
@@ -73,9 +75,9 @@ class BorderSectionLight(
         val neighbourLuminance = nextLuminance - 1
 
         if (top) {
-            chunk.sections?.last()?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
+            chunk.sections?.getLast()?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
         } else {
-            chunk.sections?.first()?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
+            chunk.sections?.getFirst()?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
         }
 
         if (z > 0) {
@@ -125,9 +127,9 @@ class BorderSectionLight(
         val neighbourLevel = nextLevel - 1
 
         if (top) {
-            chunk.sections?.last()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
+            chunk.sections?.getLast()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
         } else {
-            chunk.sections?.first()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y)
+            chunk.sections?.getFirst()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y)
         }
 
         if (z > 0) {

@@ -314,4 +314,14 @@ object KUtil {
             if (this is CharSequence) return this.length
             return toString().length
         }
+
+    @Deprecated("Kutil 1.18")
+    inline fun <T> Array<T>.getFirst(): T {
+        return this[0]
+    }
+
+    @Deprecated("Kutil 1.18")
+    inline fun <T> Array<T>.getLast(): T {
+        return this[lastIndex]
+    }
 }
