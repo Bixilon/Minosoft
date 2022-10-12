@@ -51,11 +51,12 @@ object DefaultParticleBehavior {
                         return@add
                     }
                     fun spawn(position: Vec3d, velocity: Vec3d) {
-                        val particle = it.data.type.factory?.build(connection, position, velocity, it.data) ?: let { _ ->
+                        val factory = it.data.type.factory
+                        if (factory == null) {
                             Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
                             return
                         }
-                        particleRenderer += particle
+                        particleRenderer += factory.build(connection, position, velocity, it.data) ?: return
                     }
                     // ToDo: long distance = always spawn?
                     if (it.count == 0) {

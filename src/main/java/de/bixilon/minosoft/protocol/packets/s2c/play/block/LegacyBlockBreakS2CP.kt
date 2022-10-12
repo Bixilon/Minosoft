@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class LegacyBlockBreakS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val blockPosition: Vec3i = buffer.readBlockPosition()
-    val blockState: BlockState? = buffer.connection.registries.blockStateRegistry[buffer.readVarInt()]
+    val blockState: BlockState? = buffer.connection.registries.blockStateRegistry.getOrNull(buffer.readVarInt())
     val actions: Actions = Actions[buffer.readVarInt()]
     val successful: Boolean = buffer.readBoolean()
 

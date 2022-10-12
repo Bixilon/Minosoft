@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -52,10 +56,8 @@ class Camera(
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:camera_debug_view".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_V),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_V),
             )
         ) {
             debugView = it
@@ -70,8 +72,10 @@ class Camera(
             entity._draw(TimeUtil.millis)
         }
         matrixHandler.draw()
-        visibilityGraph.draw()
-        targetHandler.raycast()
+        val latch = CountUpAndDownLatch(2)
+        DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER) { visibilityGraph.draw();latch.dec() }
+        DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER) { targetHandler.raycast();latch.dec() }
         fogManager.draw()
+        latch.await()
     }
 }

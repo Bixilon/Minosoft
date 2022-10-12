@@ -31,10 +31,8 @@ object DefaultKeyCombinations {
 
         inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_P),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_P),
             )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderWindow.framebufferManager.world.polygonMode = nextMode
@@ -43,18 +41,14 @@ object DefaultKeyCombinations {
 
         inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_F2),
-                ),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_F2),
                 ignoreConsumer = true,
             )) { renderWindow.screenshotTaker.takeScreenshot() }
 
         inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_I),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_I),
                 ignoreConsumer = true,
             )) {
             connection.util.sendDebugMessage("Pausing incoming packets: ${it.format()}")
@@ -63,10 +57,8 @@ object DefaultKeyCombinations {
 
         inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.STICKY to setOf(KeyCodes.KEY_O),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.STICKY to setOf(KeyCodes.KEY_O),
                 ignoreConsumer = true,
             )) {
             connection.util.sendDebugMessage("Pausing outgoing packets: ${it.format()}")
@@ -75,9 +67,7 @@ object DefaultKeyCombinations {
 
         inputHandler.registerKeyCallback("minosoft:toggle_fullscreen".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_F11),
-                ),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_F11),
                 ignoreConsumer = true,
             )) {
             window.fullscreen = !window.fullscreen

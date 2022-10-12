@@ -16,7 +16,7 @@ package de.bixilon.minosoft.commands.parser.minecraft.color
 import de.bixilon.minosoft.commands.errors.parser.ParserError
 import de.bixilon.minosoft.commands.util.ReadResult
 import de.bixilon.minosoft.commands.util.StringReader
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 class ColorParseError(
     reader: StringReader,

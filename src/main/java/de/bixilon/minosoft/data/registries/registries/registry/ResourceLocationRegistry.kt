@@ -42,7 +42,7 @@ class ResourceLocationRegistry(
         valueIdMap.clear()
     }
 
-    override operator fun get(any: Any?): ResourceLocation? {
+    override operator fun get(any: Any?): ResourceLocation {
         check(any is Int) { "Don't know how to get $any" }
         return this[any]
     }

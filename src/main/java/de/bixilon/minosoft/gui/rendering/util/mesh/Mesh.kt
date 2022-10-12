@@ -34,7 +34,7 @@ abstract class Mesh(
     private var _data: DirectArrayFloatList? = data ?: if (onDemand) null else DirectArrayFloatList(initialCacheSize)
     var data: DirectArrayFloatList
         get() {
-            if (onDemand && _data == null) {
+            if (_data == null && onDemand) {
                 _data = DirectArrayFloatList(initialCacheSize)
             }
             return _data as DirectArrayFloatList

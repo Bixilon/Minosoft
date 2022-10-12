@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.DefaultOverlays
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 
 class OverlayManager(
     private val renderWindow: RenderWindow,

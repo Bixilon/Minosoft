@@ -80,14 +80,14 @@ object Log {
                         messageToSend.message.setFallbackColor(messageColor)
                     }
 
-                    val stream = if (messageToSend.logMessageType.error) {
+                    val stream = if (messageToSend.level.error) {
                         SYSTEM_ERR_STREAM
                     } else {
                         SYSTEM_OUT_STREAM
                     }
 
                     val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
-                    for (line in messageToSend.message.ansiColoredMessage.lines()) {
+                    for (line in messageToSend.message.ansiColoredMessage.lineSequence()) {
                         stream.println(prefix + line)
                     }
 
@@ -126,6 +126,7 @@ object Log {
                 message.printStackTrace(PrintWriter(stringWriter))
                 ChatComponent.of(stringWriter.toString(), ignoreJson = true)
             }
+
             is String -> {
                 if (message.isBlank()) {
                     return

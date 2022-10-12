@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.accounts
 
-import de.bixilon.minosoft.data.language.Translatable
+import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 

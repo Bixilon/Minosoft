@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.elements.input.node
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.array.ArrayUtil
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement

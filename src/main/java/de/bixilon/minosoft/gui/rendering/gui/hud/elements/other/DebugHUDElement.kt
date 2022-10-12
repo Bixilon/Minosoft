@@ -26,9 +26,11 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -93,7 +95,10 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         renderWindow.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=${loadedMeshesSize.format()}, cQ=${culledQueuedSize.format()}, q=${queueSize.format()}, pT=${preparingTasksSize.format()}/${maxPreparingTasks.format()}, l=${meshesToLoadSize.format()}/${maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }
         }
-        layout += AutoTextElement(guiRenderer, 1) { "E t=${connection.world.entities.size.format()}" }
+
+        layout += renderWindow.renderer[EntityRenderer]?.let {
+            AutoTextElement(guiRenderer, 1) { "E v=${it.visibleCount}, m=${it.modelCount}, w=${connection.world.entities.size.format()}" }
+        } ?: AutoTextElement(guiRenderer, 1) { "E w=${connection.world.entities.size.format()}" }
 
         renderWindow.renderer[ParticleRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "P t=${size.format()}" }
@@ -109,9 +114,11 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 } else {
                     val audioPlayer = renderWindow.rendering.audioPlayer
 
-                    this += audioPlayer.availableSources
+                    val sources = audioPlayer.sourcesCount
+
+                    this += sources - audioPlayer.availableSources
                     this += " / "
-                    this += audioPlayer.sourcesCount
+                    this += sources
                 }
             }
         }
@@ -134,7 +141,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             layout += AutoTextElement(guiRenderer, 1) {
                 val text = BaseComponent("Facing ")
 
-                Directions.byDirection(guiRenderer.renderWindow.camera.matrixHandler.cameraFront).apply {
+                Directions.byDirection(guiRenderer.renderWindow.camera.matrixHandler.entity.rotation.front).apply {
                     text += this
                     text += " "
                     text += vector
@@ -274,9 +281,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 clear()
 
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[entity.positionInfo.chunkPosition]?.isFullyLoaded) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[chunkPosition]?.isFullyLoaded) }
 
                 lastChunk = chunk
             }
@@ -312,9 +319,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
         override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
-            mapOf(
-                KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
-            ),
+            KeyActions.STICKY to setOf(KeyCodes.KEY_F3),
         )
 
         override fun build(guiRenderer: GUIRenderer): LayoutedGUIElement<DebugHUDElement> {

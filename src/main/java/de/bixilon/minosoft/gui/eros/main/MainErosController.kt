@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
@@ -117,7 +117,7 @@ class MainErosController : JavaFXWindowController() {
             clickable()
             setOnMouseClicked {
                 stage.close()
-                ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+                ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
             }
         }
 
@@ -144,7 +144,7 @@ class MainErosController : JavaFXWindowController() {
 
     override fun postInit() {
         stage.scene.window.addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST) {
-            ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+            ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
         }
     }
 

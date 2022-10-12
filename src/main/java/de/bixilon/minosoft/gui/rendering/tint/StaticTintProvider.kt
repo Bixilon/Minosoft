@@ -15,10 +15,19 @@ package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.item.items.Item
 
-class StaticTintProvider(val color: Int) : TintProvider {
+class StaticTintProvider(val block: Int, val item: Int = block, val particle: Int = block) : TintProvider {
 
-    override fun getColor(blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
-        return color
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        return this.block
+    }
+
+    override fun getItemColor(item: Item, tintIndex: Int): Int {
+        return this.item
+    }
+
+    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
+        return this.particle
     }
 }

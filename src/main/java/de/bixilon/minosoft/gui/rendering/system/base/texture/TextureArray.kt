@@ -15,10 +15,11 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 
 interface TextureArray {
     fun load(latch: CountUpAndDownLatch)
 
     fun activate()
-    fun use(shader: Shader, name: String = "uTextures")
+    fun use(shader: Shader, name: String = ShaderUniforms.TEXTURES)
 }

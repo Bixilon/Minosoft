@@ -26,20 +26,23 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.blocks.BlockFactories
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.DefaultBlockFactories
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import kotlin.random.Random
 
 open class Block(
@@ -108,7 +111,13 @@ open class Block(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
             check(registries != null) { "Registries is null!" }
 
-            val block = DefaultBlockFactories[data["class"].unsafeCast()]?.build(resourceLocation, registries, data) ?: Block(resourceLocation, registries, data)
+            val className = data["class"].toString()
+            var factory = BlockFactories[className]
+            if (factory == null) {
+                Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Block for class $className not found, defaulting..." }
+                factory = Block
+            }
+            val block = factory.build(resourceLocation, registries, data)
 
             val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
@@ -132,6 +141,7 @@ open class Block(
             block.states = states
             block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"].unsafeCast())!!
             block.properties = propertiesOut
+
             return block
         }
 

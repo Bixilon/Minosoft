@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.world.border
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -23,33 +24,33 @@ class WorldBorderMesh(renderWindow: RenderWindow) : Mesh(renderWindow, WorldBord
 
     init {
         data.addAll(floatArrayOf(
-            -1.0f, +1.0f, -1.0f, Float.fromBits(1),
-            +1.0f, -1.0f, -1.0f, Float.fromBits(0),
-            -1.0f, -1.0f, -1.0f, Float.fromBits(3),
-            +1.0f, -1.0f, -1.0f, Float.fromBits(0),
-            -1.0f, +1.0f, -1.0f, Float.fromBits(1),
-            +1.0f, +1.0f, -1.0f, Float.fromBits(2),
+            -1.0f, +1.0f, -1.0f, 1.buffer(),
+            +1.0f, -1.0f, -1.0f, 0.buffer(),
+            -1.0f, -1.0f, -1.0f, 3.buffer(),
+            +1.0f, -1.0f, -1.0f, 0.buffer(),
+            -1.0f, +1.0f, -1.0f, 1.buffer(),
+            +1.0f, +1.0f, -1.0f, 2.buffer(),
 
-            -1.0f, -1.0f, +1.0f, Float.fromBits(3),
-            -1.0f, +1.0f, -1.0f, Float.fromBits(2),
-            -1.0f, -1.0f, -1.0f, Float.fromBits(0),
-            -1.0f, +1.0f, -1.0f, Float.fromBits(2),
-            -1.0f, -1.0f, +1.0f, Float.fromBits(3),
-            -1.0f, +1.0f, +1.0f, Float.fromBits(1),
+            -1.0f, -1.0f, +1.0f, 3.buffer(),
+            -1.0f, +1.0f, -1.0f, 2.buffer(),
+            -1.0f, -1.0f, -1.0f, 0.buffer(),
+            -1.0f, +1.0f, -1.0f, 2.buffer(),
+            -1.0f, -1.0f, +1.0f, 3.buffer(),
+            -1.0f, +1.0f, +1.0f, 1.buffer(),
 
-            +1.0f, -1.0f, -1.0f, Float.fromBits(3),
-            +1.0f, +1.0f, +1.0f, Float.fromBits(2),
-            +1.0f, -1.0f, +1.0f, Float.fromBits(0),
-            +1.0f, +1.0f, +1.0f, Float.fromBits(2),
-            +1.0f, -1.0f, -1.0f, Float.fromBits(3),
-            +1.0f, +1.0f, -1.0f, Float.fromBits(1),
+            +1.0f, -1.0f, -1.0f, 3.buffer(),
+            +1.0f, +1.0f, +1.0f, 2.buffer(),
+            +1.0f, -1.0f, +1.0f, 0.buffer(),
+            +1.0f, +1.0f, +1.0f, 2.buffer(),
+            +1.0f, -1.0f, -1.0f, 3.buffer(),
+            +1.0f, +1.0f, -1.0f, 1.buffer(),
 
-            -1.0f, -1.0f, +1.0f, Float.fromBits(0),
-            +1.0f, +1.0f, +1.0f, Float.fromBits(1),
-            -1.0f, +1.0f, +1.0f, Float.fromBits(2),
-            +1.0f, +1.0f, +1.0f, Float.fromBits(1),
-            -1.0f, -1.0f, +1.0f, Float.fromBits(0),
-            +1.0f, -1.0f, +1.0f, Float.fromBits(3),
+            -1.0f, -1.0f, +1.0f, 0.buffer(),
+            +1.0f, +1.0f, +1.0f, 1.buffer(),
+            -1.0f, +1.0f, +1.0f, 2.buffer(),
+            +1.0f, +1.0f, +1.0f, 1.buffer(),
+            -1.0f, -1.0f, +1.0f, 0.buffer(),
+            +1.0f, -1.0f, +1.0f, 3.buffer(),
         ))
     }
 

@@ -45,9 +45,7 @@ class AttackInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerKeyCallback(ATTACK_ENTITY_KEYBINDING, KeyBinding(
-            mapOf(
                 KeyActions.PRESS to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
-            ),
         ), false) { tryAttack() }
     }
 
@@ -75,17 +73,18 @@ class AttackInteractionHandler(
             return // ToDo: set cooldown
         }
 
-        renderWindow.connection.sendPacket(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
-        if (player.gamemode == Gamemodes.SPECTATOR) {
-            return
-        }
-
         // ToDo set cooldown
 
         val entity = target.entity
         if (!entity.onAttack(player)) {
             return
         }
+
+        renderWindow.connection.sendPacket(EntityAttackC2SP(target.entity.id ?: return, player.isSneaking))
+        if (player.gamemode == Gamemodes.SPECTATOR) {
+            return
+        }
+
         val sharpnessLevel = player.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(sharpness) ?: 0
 
         val critical = cooldown.progress > 0.9f && player.fallDistance != 0.0 && !player.onGround && !player.isClimbing && (player.fluidHeights[DefaultFluids.WATER] ?: 0.0f) <= 0.0f && player.activeStatusEffects[blindness] == null && player.vehicle == null && entity is LivingEntity

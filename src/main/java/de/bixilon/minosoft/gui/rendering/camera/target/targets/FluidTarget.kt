@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.TextFormattable
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import java.util.*
 
 class FluidTarget(

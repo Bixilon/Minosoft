@@ -16,8 +16,9 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2t
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderIdentifiable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -69,8 +70,8 @@ class GUIMesh(
             data.add(outPosition.y)
             data.add(uv.x)
             data.add(uv.y)
-            data.add(Float.fromBits(texture.shaderId))
-            data.add(Float.fromBits(color))
+            data.add(texture.shaderId.buffer())
+            data.add(color.buffer())
         }
     }
 

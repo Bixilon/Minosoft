@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.IntUtil.thousands
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.kutil.watcher.WatcherReference
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -92,9 +93,17 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
             playerCountFX.ctext = "${it.status.usedSlots?.thousands()} / ${it.status.slots?.thousands()}"
             serverVersionFX.ctext = it.connection.serverVersion?.name
 
-            faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
+            val favicon = it.status.favicon
 
-            it.status.favicon?.let { favicon -> DefaultThreadPool += { item.server.saveFavicon(favicon) } } // ToDo: This is running every event?
+            if (favicon == null) {
+                item.server.faviconHash = null
+            } else {
+                DefaultThreadPool += { item.server.saveFavicon(favicon) }  // ToDo: This is running every event?
+            }
+
+            faviconFX.image = favicon?.let { Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
+
+
             serverList?.onPingUpdate(item)
         }
 
@@ -123,7 +132,7 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
                 // error already occurred, not setting any data
                 return@of
             }
-            pingFX.text = "${it.latency} ms"
+            pingFX.text = it.latency.formatNanos()
             serverList?.onPingUpdate(item)
         }
     }

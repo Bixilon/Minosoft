@@ -54,38 +54,25 @@ class WorldMesh(
     @Synchronized
     fun clearEmpty(): Int {
         var meshes = 0
-        opaqueMesh?.let {
-            if (it.data.isEmpty) {
-                it.data.unload()
-                opaqueMesh = null
-            } else {
-                meshes++
+
+        fun processMesh(mesh: SingleWorldMesh?): Boolean {
+            if (mesh == null) {
+                return false
             }
-        }
-        translucentMesh?.let {
-            if (it.data.isEmpty) {
-                it.data.unload()
-                translucentMesh = null
-            } else {
-                meshes++
+            if (mesh.data.isEmpty) {
+                mesh.data.unload()
+                return true
             }
+            meshes++
+            return false
         }
-        transparentMesh?.let {
-            if (it.data.isEmpty) {
-                it.data.unload()
-                transparentMesh = null
-            } else {
-                meshes++
-            }
-        }
-        textMesh?.let {
-            if (it.data.isEmpty) {
-                it.data.unload()
-                textMesh = null
-            } else {
-                meshes++
-            }
-        }
+
+        if (processMesh(opaqueMesh)) opaqueMesh = null
+        if (processMesh(translucentMesh)) translucentMesh = null
+        if (processMesh(transparentMesh)) transparentMesh = null
+
+        if (processMesh(textMesh)) textMesh = null
+
         blockEntities?.let {
             if (it.isEmpty()) {
                 blockEntities = null

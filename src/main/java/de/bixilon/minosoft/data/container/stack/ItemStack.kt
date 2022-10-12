@@ -18,7 +18,7 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.property.*
-import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*

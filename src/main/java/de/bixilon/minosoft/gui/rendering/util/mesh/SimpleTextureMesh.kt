@@ -15,8 +15,10 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
@@ -28,8 +30,8 @@ open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: Primitiv
         data.add(position.z)
         data.add(uv.x)
         data.add(uv.y)
-        data.add(Float.fromBits(texture.renderData.shaderTextureId))
-        data.add(Float.fromBits(tintColor?.rgba ?: 0xFFFFFFFF.toInt()))
+        data.add(texture.renderData.shaderTextureId.buffer())
+        data.add((tintColor?.rgba ?: Colors.WHITE).buffer())
     }
 
 

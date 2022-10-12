@@ -13,25 +13,30 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.pipeline.compression
 
-import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.kutil.compression.zlib.ZlibUtil.compress
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import io.netty.channel.ChannelHandlerContext
-import io.netty.handler.codec.MessageToMessageDecoder
+import io.netty.handler.codec.MessageToMessageEncoder
 
 
-class PacketDeflater : MessageToMessageDecoder<ByteArray>() {
+class PacketDeflater(
+    var threshold: Int,
+) : MessageToMessageEncoder<ByteArray>() {
 
-    override fun decode(context: ChannelHandlerContext?, data: ByteArray, out: MutableList<Any>) {
-        val buffer = InByteBuffer(data)
+    override fun encode(context: ChannelHandlerContext, data: ByteArray, out: MutableList<Any>) {
+        val compress = data.size >= threshold
 
-        val uncompressedLength = buffer.readVarInt()
-        val rest = buffer.readRest()
-        if (uncompressedLength == 0) {
-            out += rest
-            return
+        val prefixed = OutByteBuffer()
+        if (compress) {
+            val compressed = data.compress()
+            prefixed.writeVarInt(data.size)
+            prefixed.writeBareByteArray(compressed)
+        } else {
+            prefixed.writeVarInt(0)
+            prefixed.writeBareByteArray(data)
         }
 
-        out += rest.decompress()
+        out += prefixed.toArray()
     }
 
     companion object {

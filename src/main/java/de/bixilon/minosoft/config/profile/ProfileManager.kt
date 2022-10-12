@@ -300,6 +300,6 @@ interface ProfileManager<T : Profile> {
     companion object {
         const val DEFAULT_PROFILE_NAME = "Default"
 
-        val PROFILE_REGEX = "[\\w\\d_ ]{1,32}".toRegex()
+        val PROFILE_REGEX = "[\\w_ ]{1,32}".toRegex()
     }
 }

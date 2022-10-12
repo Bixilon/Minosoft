@@ -14,16 +14,20 @@
 package de.bixilon.minosoft.gui.rendering.world.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPool
+import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
 import de.bixilon.minosoft.util.KUtil.format
 
-class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
-    val opaque: MutableList<SingleWorldMesh> = mutableListOf()
-    val translucent: MutableList<SingleWorldMesh> = mutableListOf()
-    val transparent: MutableList<SingleWorldMesh> = mutableListOf()
-    val text: MutableList<SingleWorldMesh> = mutableListOf()
-    val blockEntities: MutableList<BlockEntityRenderer<*>> = mutableListOf()
+class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY, previous: VisibleMeshes? = null) {
+    val opaque: ArrayList<SingleWorldMesh> = ArrayList(previous?.opaque?.size ?: 128)
+    val translucent: ArrayList<SingleWorldMesh> = ArrayList(previous?.translucent?.size ?: 16)
+    val transparent: ArrayList<SingleWorldMesh> = ArrayList(previous?.transparent?.size ?: 128)
+    val text: ArrayList<SingleWorldMesh> = ArrayList(previous?.text?.size ?: 16)
+    val blockEntities: ArrayList<BlockEntityRenderer<*>> = ArrayList(previous?.blockEntities?.size ?: 128)
 
     val sizeString: String
         get() = "${opaque.size.format()}|${translucent.size.format()}|${transparent.size.format()}|${text.size.format()}|${blockEntities.size.format()}"
@@ -54,10 +58,12 @@ class VisibleMeshes(val cameraPosition: Vec3 = Vec3.EMPTY) {
 
 
     fun sort() {
-        opaque.sortBy { it.distance }
-        translucent.sortBy { -it.distance }
-        transparent.sortBy { it.distance }
-        text.sortBy { it.distance }
+        val latch = CountUpAndDownLatch(4)
+        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { opaque.sortBy { it.distance };latch.dec() }
+        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { translucent.sortBy { -it.distance };latch.dec() }
+        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { transparent.sortBy { it.distance };latch.dec() }
+        DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.Priorities.HIGHER) { text.sortBy { it.distance };latch.dec() }
+        latch.await()
     }
 
 

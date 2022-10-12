@@ -31,15 +31,19 @@ object Vec3iUtil {
     val Vec3i.Companion.MAX: Vec3i
         get() = Vec3i(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
 
+    @Deprecated("chunk data types")
     val Vec3i.sectionHeight: Int
         get() = y.sectionHeight
 
+    @Deprecated("chunk data types")
     val Vec3i.chunkPosition: Vec2i
         get() = Vec2i(x shr 4, z shr 4)
 
+    @Deprecated("chunk data types")
     val Vec3i.inChunkPosition: Vec3i
         get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
+    @Deprecated("chunk data types")
     val Vec3i.inChunkSectionPosition: Vec3i
         get() = Vec3i(x and 0x0F, y.inSectionHeight, z and 0x0F)
 

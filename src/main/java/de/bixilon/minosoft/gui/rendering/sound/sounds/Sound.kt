@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -45,13 +45,13 @@ data class Sound(
         if (data != null) {
             return
         }
-        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Loading audio file: $path" }
+        Log.log(LogMessageType.AUDIO, LogLevels.VERBOSE) { "Loading audio file: $path" }
         try {
             val data = SoundData(assetsManager, this)
             this.data = data
             this.buffer = OpenALBuffer(data)
         } catch (exception: FileNotFoundException) {
-            Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not load sound: $path: $exception" }
+            Log.log(LogMessageType.AUDIO, LogLevels.WARN) { "Can not load sound: $path: $exception" }
         }
     }
 

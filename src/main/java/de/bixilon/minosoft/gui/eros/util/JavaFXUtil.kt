@@ -17,6 +17,7 @@ import com.sun.javafx.util.WeakReferenceQueue
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.reflection.ReflectionUtil.setValue
+import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -24,6 +25,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.util.DesktopUtil
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.css.StyleableProperty
@@ -38,8 +41,6 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
-import java.net.CookieHandler
-import java.net.CookieManager
 import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
@@ -50,6 +51,8 @@ object JavaFXUtil {
     lateinit var HOST_SERVICES: HostServices
     lateinit var BIXILON_LOGO: Group
     private var watchingTheme = false
+
+    val THEME_ASSETS_MANAGER = Minosoft.MINOSOFT_ASSETS_MANAGER
 
     private fun startThemeWatcher() {
         if (watchingTheme) {
@@ -62,8 +65,7 @@ object JavaFXUtil {
                 stage ?: continue
                 stage.scene.stylesheets.clear()
                 stage.scene.stylesheets.add(DEFAULT_STYLE)
-                val theme = ErosProfileManager.selected.theme.theme
-                stage.scene.stylesheets.add("resource:minosoft:eros/themes/$theme.css")
+                stage.scene.stylesheets.add(getThemeURL(it))
             }
         }
         watchingTheme = true
@@ -78,7 +80,7 @@ object JavaFXUtil {
 
         stage.scene.stylesheets.add(DEFAULT_STYLE)
         val theme = ErosProfileManager.selected.theme.theme
-        stage.scene.stylesheets.add("resource:minosoft:eros/themes/$theme.css")
+        stage.scene.stylesheets.add(getThemeURL(theme))
 
         stages.cleanup()
         stages.add(stage)
@@ -159,14 +161,15 @@ object JavaFXUtil {
         }
 
     fun Text.hyperlink(link: String) {
-        this.setOnMouseClicked { HOST_SERVICES.showDocument(link) }
+        val url = link.toURL()
+        this.setOnMouseClicked { DefaultThreadPool += { DesktopUtil.openURL(url) } }
         this.accessibleRole = AccessibleRole.HYPERLINK
         this.styleClass.setAll("hyperlink")
         this.clickable()
     }
 
     fun Text.file(path: String) {
-        // ToDo: Open in file browser/default program
+        this.setOnMouseClicked { DefaultThreadPool += { DesktopUtil.openFile(path) } }
         this.accessibleRole = AccessibleRole.HYPERLINK
         this.styleClass.setAll("hyperlink")
         this.clickable()
@@ -175,14 +178,6 @@ object JavaFXUtil {
     fun Node.clickable() {
         this.styleClass.add("button")
         this.cursorProperty().unsafeCast<StyleableProperty<Cursor>>().applyStyle(null, Cursor.HAND)
-    }
-
-    fun resetWebView() {
-        // ToDo
-        CookieManager().apply {
-            CookieHandler.setDefault(this)
-            this.cookieStore.removeAll()
-        }
     }
 
     fun runLater(runnable: Runnable) {
@@ -196,8 +191,17 @@ object JavaFXUtil {
 
     fun Stage.bringToFront() {
         isAlwaysOnTop = true
-        isAlwaysOnTop = false
         this.requestFocus()
         this.toFront()
+        isAlwaysOnTop = false
+    }
+
+    private fun getThemeURL(name: String): String {
+        val path = "minosoft:eros/themes/$name.css"
+        if (path.toResourceLocation() !in THEME_ASSETS_MANAGER) {
+            throw Exception("Can not load theme: $name")
+        }
+
+        return "resource:$path"
     }
 }

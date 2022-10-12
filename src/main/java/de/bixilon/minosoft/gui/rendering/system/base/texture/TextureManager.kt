@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.readTexture
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -59,8 +59,8 @@ abstract class TextureManager {
     }
 
     fun loadDefaultSkins(connection: PlayConnection) {
-        steveTexture = dynamicTextures.pushBuffer(UUID(0L, 0L), true) { connection.assetsManager["minecraft:entity/steve".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
-        alexTexture = dynamicTextures.pushBuffer(UUID(1L, 0L), true) { connection.assetsManager["minecraft:entity/alex".toResourceLocation().texture()].readTexture().second }.apply { usages.incrementAndGet() }
+        steveTexture = dynamicTextures.pushBuffer(UUID(0L, 0L), true) { connection.assetsManager["minecraft:entity/steve".toResourceLocation().texture()].readTexture() }.apply { usages.incrementAndGet() }
+        alexTexture = dynamicTextures.pushBuffer(UUID(1L, 0L), true) { connection.assetsManager["minecraft:entity/alex".toResourceLocation().texture()].readTexture() }.apply { usages.incrementAndGet() }
         skin = getSkin(connection.account.supportsSkins, connection.account.uuid, connection.account.properties, force = true).apply { usages.incrementAndGet() }
     }
 

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -20,29 +20,27 @@ import org.xbill.DNS.Type
 object DNSUtil {
 
     fun resolveServerAddress(hostname: String): List<ServerAddress> {
-        val fallbackAddress = getServerAddress(hostname)
-        val addresses: MutableList<ServerAddress> = mutableListOf()
-        if (hostname.contains(":")) {
+        val originalAddress = getServerAddress(hostname)
+        if (":" in hostname) {
             // port provided, skip srv check
-            addresses.add(fallbackAddress)
-            return addresses
+            return listOf(originalAddress)
         }
+
         val query = "_minecraft._tcp.$hostname"
-        val records = Lookup(query, Type.SRV).run()
-        if (records == null) {
-            addresses.add(fallbackAddress)
-            return addresses
-        }
+        val records = Lookup(query, Type.SRV).run() ?: return listOf(originalAddress)
+
+        val addresses: MutableList<ServerAddress> = mutableListOf()
         for (record in records) {
-            check(record is SRVRecord)
-            addresses.add(ServerAddress(record.target.toString(true), record.port))
+            if (record !is SRVRecord) continue
+            addresses += ServerAddress(record.target.toString(true), record.port)
         }
-        addresses.add(fallbackAddress)
+        addresses += originalAddress
         return addresses
     }
 
     fun getServerAddress(hostname: String): ServerAddress {
-        val splitHostname = fixAddress(hostname).split(":", limit = 2).toTypedArray()
+        val splitHostname = fixAddress(hostname).split(":", limit = 2)
+
         return if (splitHostname.size == 1) {
             ServerAddress(splitHostname[0], ProtocolDefinition.DEFAULT_PORT)
         } else {
@@ -55,8 +53,9 @@ object DNSUtil {
      */
     fun fixAddress(hostname: String): String {
         return hostname
-            .replace("\\s+|\"|'|((https|http):/{2})+|/".toRegex(), "")
-            .replace(',', '.')
             .lowercase()
+            .replace("\\s+|\"|'|((https|http)://)+|/".toRegex(), "")
+            .replace(',', '.')
+            .removePrefix(":")
     }
 }

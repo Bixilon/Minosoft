@@ -18,29 +18,32 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.world.border.WorldBorderState
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class WorldBorderRenderer(
     override val renderWindow: RenderWindow,
 ) : Renderer, TranslucentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world/border"))
-    private var borderMesh = WorldBorderMesh(renderWindow)
+    private val shader = renderSystem.createShader(minosoft("world/border"))
+    private val borderMesh = WorldBorderMesh(renderWindow)
     private val border = renderWindow.connection.world.border
     private lateinit var texture: AbstractTexture
     private var offsetReset = TimeUtil.millis
+    override val skipTranslucent: Boolean
+        get() = border.getDistanceTo(renderWindow.connection.player.position) > MAX_DISTANCE
 
     override fun init(latch: CountUpAndDownLatch) {
         shader.load()
@@ -72,8 +75,8 @@ class WorldBorderRenderer(
             offsetReset = time
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
-        shader.setFloat("uTextureOffset", 1.0f - textureOffset)
-        shader.setFloat("uCameraHeight", renderWindow.camera.matrixHandler.eyePosition.y)
+        shader.setFloat(ShaderUniforms.TEXTURE_OFFSET, 1.0f - textureOffset)
+        shader.setFloat(ShaderUniforms.CAMERA_HEIGHT, renderWindow.camera.matrixHandler.eyePosition.y)
 
         val distance = border.getDistanceTo(renderWindow.connection.player.position)
         val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)
@@ -90,9 +93,6 @@ class WorldBorderRenderer(
 
     override fun drawTranslucent() {
         borderMesh.draw()
-        borderMesh.unload()
-        borderMesh = WorldBorderMesh(renderWindow)
-        borderMesh.load()
     }
 
     companion object : RendererBuilder<WorldBorderRenderer> {
@@ -101,6 +101,7 @@ class WorldBorderRenderer(
         val SHRINKING_COLOR = "#FF3030".asColor()
         val STATIC_COLOR = "#20A0FF".asColor()
         const val ANIMATION_SPEED = 2000
+        const val MAX_DISTANCE = 1000
 
         private val TEXTURE = "minecraft:misc/forcefield".toResourceLocation().texture()
 

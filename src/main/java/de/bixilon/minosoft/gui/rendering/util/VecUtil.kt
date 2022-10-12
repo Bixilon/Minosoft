@@ -23,9 +23,10 @@ import de.bixilon.kutil.math.simple.DoubleMath.ceil
 import de.bixilon.kutil.math.simple.DoubleMath.floor
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -117,14 +118,10 @@ object VecUtil {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
 
-    val Int.inSectionHeight: Int
-        get() = if (this < 0) {
-            ((ProtocolDefinition.SECTION_HEIGHT_Y + (this % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
-        } else {
-            this % ProtocolDefinition.SECTION_HEIGHT_Y
-        }
+    inline val Int.inSectionHeight: Int
+        get() = this and 0x0F
 
-    val Int.sectionHeight: Int
+    inline val Int.sectionHeight: Int
         get() = this shr 4
 
     val Vec3i.entityPosition: Vec3d
@@ -152,37 +149,37 @@ object VecUtil {
         ) // ToDo: Confirm
     }
 
-    infix operator fun Vec3i.plus(vec3: Vec3i?): Vec3i {
+    inline infix operator fun Vec3i.plus(vec3: Vec3i?): Vec3i {
         if (vec3 == null) {
             return this
         }
         return Vec3i((x + vec3.x), (y + vec3.y), (z + vec3.z))
     }
 
-    infix operator fun Vec3i.plus(vec2: Vec2i?): Vec3i {
+    inline infix operator fun Vec3i.plus(vec2: Vec2i?): Vec3i {
         if (vec2 == null) {
             return this
         }
         return Vec3i((x + vec2.x), y, (z + vec2.y))
     }
 
-    infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
+    inline infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
         return this + direction?.vector
     }
 
-    infix operator fun Vec3i.plusAssign(direction: Directions?) {
+    inline infix operator fun Vec3i.plusAssign(direction: Directions?) {
         this += direction?.vector ?: return
     }
 
-    infix operator fun Vec3i.plus(input: Vec3): Vec3 {
+    inline infix operator fun Vec3i.plus(input: Vec3): Vec3 {
         return Vec3(input.x + x, input.y + y, input.z + z)
     }
 
-    infix operator fun Vec2i.plus(vec3: Vec3i): Vec2i {
+    inline infix operator fun Vec2i.plus(vec3: Vec3i): Vec2i {
         return Vec2i(x + vec3.x, y + vec3.z)
     }
 
-    infix operator fun Vec2i.plus(direction: Directions): Vec2i {
+    inline infix operator fun Vec2i.plus(direction: Directions): Vec2i {
         return this + direction.vector
     }
 
@@ -191,7 +188,7 @@ object VecUtil {
             return Vec3.EMPTY
         }
 
-        val positionHash = generatePositionHash(x, 0, z)
+        val positionHash = BlockPositionUtil.generatePositionHash(x, 0, z)
         val maxModelOffset = 0.25f // ToDo: PixLyzer: use block.model.max_model_offset
 
         fun horizontal(axisHash: Long): Float {
@@ -229,12 +226,6 @@ object VecUtil {
 
     val Vec3d.empty: Boolean
         get() = this.length() < 0.001
-
-    fun generatePositionHash(x: Int, y: Int, z: Int): Long {
-        var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
-        hash = hash * hash * 42317861L + hash * 11L
-        return hash shr 16
-    }
 
     fun getDistanceToNextIntegerAxisInDirection(position: Vec3d, direction: Vec3d): Double {
         fun getTarget(direction: Vec3d, position: Vec3d, axis: Axes): Int {

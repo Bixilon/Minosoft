@@ -29,9 +29,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
-        buffer.connection.registries.particleTypeRegistry[buffer.readResourceLocation()]!!
+        buffer.readLegacyRegistryItem(buffer.connection.registries.particleTypeRegistry)!!
     } else if (buffer.versionId >= ProtocolVersions.V_22W17A) { // ToDo: maybe this was even earlier, should only differ some snapshots
-        buffer.connection.registries.particleTypeRegistry[buffer.readVarInt()]
+        buffer.readRegistryItem(buffer.connection.registries.particleTypeRegistry)
     } else {
         buffer.connection.registries.particleTypeRegistry[buffer.readInt()]
     }

@@ -18,8 +18,9 @@ import com.fasterxml.jackson.module.kotlin.convertValue
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.kutil.uuid.UUIDUtil.toUUID
-import de.bixilon.minosoft.util.YggdrasilUtil
 import de.bixilon.minosoft.util.json.Jackson
+import de.bixilon.minosoft.util.yggdrasil.YggdrasilException
+import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.util.*
 
 data class PlayerTextures(
@@ -34,7 +35,9 @@ data class PlayerTextures(
     companion object {
 
         fun of(encoded: String, signature: String): PlayerTextures {
-            check(YggdrasilUtil.verify(encoded, signature)) { "Texture signature is invalid!" }
+            if (!YggdrasilUtil.verify(encoded, signature)) {
+                throw YggdrasilException("Texture signature is invalid!")
+            }
 
             val json: Map<String, Any> = Jackson.MAPPER.readValue(Base64.getDecoder().decode(encoded), Jackson.JSON_MAP_TYPE)
 

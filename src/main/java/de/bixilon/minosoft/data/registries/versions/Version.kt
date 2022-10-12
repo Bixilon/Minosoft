@@ -57,6 +57,10 @@ class Version(
         return name
     }
 
+    operator fun compareTo(versionId: Int): Int {
+        return this.versionId.compareTo(versionId)
+    }
+
     val flattened: Boolean get() = versionId >= ProtocolDefinition.FLATTING_VERSION_ID
     val hasOffhand: Boolean get() = versionId >= V_15W31A
     val maxPacketLength get() = if (versionId < ProtocolVersions.V_1_17_1_RC2) 1 shl 21 else 1 shl 23
@@ -64,4 +68,5 @@ class Version(
     val hasAttackCooldown get() = versionId >= ProtocolVersions.V_15W34A
     val requiresSignedChat get() = versionId >= ProtocolVersions.V_22W17A
     val supportsRGBChat get() = versionId >= ProtocolVersions.V_20W17A
+    val jsonLanguage get() = versionId >= ProtocolVersions.V_18W02A
 }

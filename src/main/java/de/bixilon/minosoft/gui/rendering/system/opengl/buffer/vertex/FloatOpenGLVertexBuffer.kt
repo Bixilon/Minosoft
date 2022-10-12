@@ -27,7 +27,8 @@ import java.nio.FloatBuffer
 
 class FloatOpenGLVertexBuffer(
     renderSystem: OpenGLRenderSystem,
-    override val structure: MeshStruct, data: FloatBuffer,
+    override val structure: MeshStruct,
+    data: FloatBuffer,
     override val primitiveType: PrimitiveTypes,
 ) : FloatOpenGLBuffer(renderSystem, data), FloatVertexBuffer {
     override var vertices = -1
@@ -73,7 +74,7 @@ class FloatOpenGLVertexBuffer(
     }
 
     override fun draw() {
-        check(state == RenderableBufferStates.UPLOADED) { "Can not draw $state vertex buffer!" }
+        check(state == RenderableBufferStates.UPLOADED) { "Vertex buffer is not uploaded: $state" }
         bindVao()
         glDrawArrays(primitiveType.gl, 0, vertices)
     }
@@ -88,7 +89,6 @@ class FloatOpenGLVertexBuffer(
         }
         super.unload()
     }
-
 
     private companion object {
         val PrimitiveTypes.gl: Int

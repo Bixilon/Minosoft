@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.confirmation
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement

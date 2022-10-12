@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.concurrent.lock.thread.ThreadMissmatchException
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.Colors
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
@@ -54,6 +54,8 @@ class OpenGLRenderSystem(
     override val shaders: MutableSet<Shader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     override lateinit var vendor: OpenGLVendor
+        private set
+    override var active: Boolean = false
         private set
 
     var blendingSource = BlendingFunctions.ONE
@@ -140,6 +142,11 @@ class OpenGLRenderSystem(
                 Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.VERBOSE) { "OpenGL error: source=$source, type=$type, id=$id, severity=$severity, length=$length, message=$message, userParameter=$userParameter" }
             }, 0)
         }
+        active = true
+    }
+
+    override fun destroy() {
+        active = false
     }
 
     override fun enable(capability: RenderingCapabilities) {
@@ -152,7 +159,7 @@ class OpenGLRenderSystem(
 
     override fun set(capability: RenderingCapabilities, status: Boolean) {
         val enabled = capabilities.contains(capability)
-        if ((enabled && status) || (!status && !enabled)) {
+        if (enabled == status) {
             return
         }
 
@@ -184,6 +191,7 @@ class OpenGLRenderSystem(
     private var destinationRGB: BlendingFunctions = BlendingFunctions.ONE
     private var sourceAlpha: BlendingFunctions = BlendingFunctions.ONE
     private var destinationAlpha: BlendingFunctions = BlendingFunctions.ONE
+
     override fun setBlendFunction(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlpha: BlendingFunctions, destinationAlpha: BlendingFunctions) {
         if (this.sourceRGB == sourceRGB && this.destinationRGB == destinationRGB && this.sourceAlpha == sourceAlpha && this.destinationAlpha == destinationAlpha) {
             return
@@ -261,7 +269,7 @@ class OpenGLRenderSystem(
     }
 
     override fun createFramebuffer(): OpenGLFramebuffer {
-        return OpenGLFramebuffer(renderWindow.window.size)
+        return OpenGLFramebuffer(this, renderWindow.window.size)
     }
 
     override fun createTextureManager(): OpenGLTextureManager {

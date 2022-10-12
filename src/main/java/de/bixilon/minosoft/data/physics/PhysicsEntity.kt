@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.physics
 
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.shapes.AABB
 
 interface PhysicsEntity {
     val position: Vec3d

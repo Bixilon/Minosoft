@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.input.interaction
 import de.bixilon.kotlinglm.pow
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -26,7 +27,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
+import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
@@ -138,7 +139,7 @@ class BreakInteractionHandler(
         fun finishDigging() {
             connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, target.blockPosition, target.direction))
             clearDigging()
-            connection.world[target.blockPosition] = null
+            DefaultThreadPool += { connection.world[target.blockPosition] = null }
 
             BlockDestroyedHandler.handleDestroy(connection, target.blockPosition, target.blockState)
         }
@@ -249,9 +250,7 @@ class BreakInteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(DESTROY_BLOCK_KEYBINDING to KeyBinding(
-            mapOf(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
-            ),
         ))
 
         connection.registerEvent(CallbackEventInvoker.of<LegacyBlockBreakAckEvent> {

@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object ErosProfileManager : ProfileManager<ErosProfile> {
     override val namespace = "minosoft:eros".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
     override val profileClass = ErosProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)

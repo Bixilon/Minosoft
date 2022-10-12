@@ -20,6 +20,9 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 class RegistryPalette<T>(private val registry: AbstractRegistry<T?>) : Palette<T> {
     override val bits = registry.size.binaryBase
 
+    override val isEmpty: Boolean
+        get() = false
+
     override fun read(buffer: PlayInByteBuffer) {}
 
     @Suppress("UNCHECKED_CAST")

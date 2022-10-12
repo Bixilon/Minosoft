@@ -62,7 +62,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }].type
             }
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A -> {
-                buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!.type
+                buffer.readLegacyRegistryItem(buffer.connection.registries.dimensionRegistry)!!.type
             }
             else -> {
                 DimensionProperties.deserialize(buffer.readNBT().asJsonObject()) // current dimension data

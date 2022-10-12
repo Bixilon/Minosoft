@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object GUIProfileManager : ProfileManager<GUIProfile> {
     override val namespace = "minosoft:gui".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
     override val profileClass = GUIProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)

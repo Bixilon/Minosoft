@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object EntityProfileManager : ProfileManager<EntityProfile> {
     override val namespace = "minosoft:entity".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
     override val profileClass = EntityProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)

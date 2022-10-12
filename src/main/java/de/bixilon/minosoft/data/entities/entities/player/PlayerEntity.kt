@@ -31,9 +31,9 @@ import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.registries.item.items.armor.DyeableArmorItem
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
@@ -130,7 +130,7 @@ abstract class PlayerEntity(
         }
     }
 
-    override val hitBoxColor: RGBColor
+    override val hitboxColor: RGBColor
         get() {
             if (this.isInvisible) {
                 return ChatColors.GREEN

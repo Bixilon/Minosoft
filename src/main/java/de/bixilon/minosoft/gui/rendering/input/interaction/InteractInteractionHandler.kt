@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
-import de.bixilon.minosoft.data.registries.items.UsableItem
+import de.bixilon.minosoft.data.registries.item.items.UsableItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
@@ -50,11 +50,11 @@ class InteractInteractionHandler(
 
 
     fun init() {
-        renderWindow.inputHandler.registerCheckCallback(USE_ITEM_KEYBINDING to KeyBinding(
-            mapOf(
+        renderWindow.inputHandler.registerCheckCallback(
+            USE_ITEM_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_RIGHT),
-            ),
-        ))
+            )
+        )
     }
 
     fun stopUsingItem() {
@@ -80,14 +80,15 @@ class InteractInteractionHandler(
         }
         // if out of world (border): return CONSUME
 
+        var result: InteractionResults = InteractionResults.PASS
         try {
             if (connection.player.gamemode == Gamemodes.SPECTATOR) {
                 return InteractionResults.SUCCESS
             }
 
-            val result = target.blockState.block.onUse(connection, target, hand, stack)
-            if (result == InteractionResults.SUCCESS) {
-                return InteractionResults.SUCCESS
+            result = target.blockState.block.onUse(connection, target, hand, stack)
+            if (result != InteractionResults.PASS) {
+                return result
             }
 
             if (stack == null) {
@@ -97,17 +98,22 @@ class InteractInteractionHandler(
                 return InteractionResults.PASS // ToDo: Check
             }
 
-            return stack.item.item.interactBlock(connection, target, hand, stack)
+            result = stack.item.item.interactBlock(connection, target, hand, stack)
         } finally {
-            connection.sendPacket(BlockInteractC2SP(
-                position = target.blockPosition,
-                direction = target.direction,
-                cursorPosition = Vec3(target.hitPosition),
-                item = stack,
-                hand = hand,
-                insideBlock = false, // ToDo: insideBlock
-            ))
+            if (result != InteractionResults.ERROR) {
+                connection.sendPacket(
+                    BlockInteractC2SP(
+                        position = target.blockPosition,
+                        direction = target.direction,
+                        cursorPosition = Vec3(target.hitPosition),
+                        item = stack,
+                        hand = hand,
+                        insideBlock = false, // ToDo: insideBlock
+                    )
+                )
+            }
         }
+        return result
     }
 
     fun interactEntityAt(target: EntityTarget, hand: Hands): InteractionResults {
@@ -187,7 +193,11 @@ class InteractInteractionHandler(
                         return
                     }
                 }
+
                 is BlockTarget -> {
+                    if (!connection.world.isValidPosition(target.blockPosition)) {
+                        return
+                    }
                     val result = interactBlock(target, item, hand)
                     if (result == InteractionResults.SUCCESS) {
                         interactionManager.swingHand(hand)

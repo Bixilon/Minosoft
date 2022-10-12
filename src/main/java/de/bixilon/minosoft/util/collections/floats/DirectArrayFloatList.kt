@@ -41,25 +41,24 @@ class DirectArrayFloatList(
     private var output: FloatArray = FloatArray(0)
     private var outputUpToDate = false
 
-    private fun checkFinalized() {
-        if (finished) {
-            throw IllegalStateException("ArrayFloatList is already finalized!")
-        }
-    }
-
-    @Synchronized
     override fun ensureSize(needed: Int) {
-        checkFinalized()
+        checkFinished()
         if (limit - size >= needed) {
             return
         }
         var newSize = limit
-        while (newSize - size < needed) {
-            newSize += nextGrowStep
+        newSize += if (nextGrowStep < needed) {
+            (needed / nextGrowStep + 1) * nextGrowStep
+        } else {
+            nextGrowStep
         }
+        grow(newSize)
+    }
+
+    private fun grow(size: Int) {
         val oldBuffer = buffer
-        buffer = memAllocFloat(newSize)
-        limit = newSize
+        buffer = memAllocFloat(size)
+        limit = size
         if (FLOAT_PUT_METHOD == null) { // Java < 16
             for (i in 0 until oldBuffer.position()) {
                 buffer.put(oldBuffer.get(i))
@@ -74,7 +73,9 @@ class DirectArrayFloatList(
     override fun add(value: Float) {
         ensureSize(1)
         buffer.put(value)
-        outputUpToDate = false
+        if (outputUpToDate) {
+            outputUpToDate = false
+        }
     }
 
     override fun addAll(floats: FloatArray) {
@@ -86,7 +87,9 @@ class DirectArrayFloatList(
 
             exception.printStackTrace()
         }
-        outputUpToDate = false
+        if (outputUpToDate) {
+            outputUpToDate = false
+        }
     }
 
     override fun addAll(floatList: AbstractFloatList) {

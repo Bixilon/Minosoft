@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.ChunkData
+import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions

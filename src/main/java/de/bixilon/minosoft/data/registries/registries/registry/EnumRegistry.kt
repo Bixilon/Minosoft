@@ -16,15 +16,16 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.datafixer.enumeration.EnumFixer
 import de.bixilon.minosoft.util.collections.Clearable
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import java.util.*
 
 class EnumRegistry<T : Enum<*>>(
     override var parent: EnumRegistry<T>? = null,
     var values: ValuesEnum<T>,
     private val mutable: Boolean = true,
+    private val fixer: EnumFixer<T>? = null,
 ) : Clearable, Parentable<EnumRegistry<T>> {
 
     private var initialized = false
@@ -42,7 +43,7 @@ class EnumRegistry<T : Enum<*>>(
     private fun getEnum(data: Any): T {
         return when (data) {
             is Int -> values[data]
-            is String -> values.NAME_MAP[data.lowercase(Locale.getDefault())] ?: error("Can not find enum: $data")
+            is String -> fixer?.fix(data) ?: values[data]
             else -> throw IllegalArgumentException("Unknown enum value: $data")
         }
     }

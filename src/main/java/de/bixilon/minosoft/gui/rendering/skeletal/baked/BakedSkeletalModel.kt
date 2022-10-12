@@ -23,8 +23,8 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.C
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalMesh
 import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.outliner.SkeletalOutliner
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -35,8 +35,8 @@ class BakedSkeletalModel(
     val textures: Int2ObjectOpenHashMap<ShaderTexture>,
 ) {
     lateinit var mesh: SkeletalMesh
-    val loaded: Boolean
-        get() = this::mesh.isInitialized && mesh.state == Mesh.MeshStates.LOADED
+    var state: SkeletalModelStates = SkeletalModelStates.DECLARED
+        private set
 
     private fun calculateOutlinerMapping(): Map<UUID, Int> {
         val mapping: Object2IntOpenHashMap<UUID> = Object2IntOpenHashMap()
@@ -68,10 +68,8 @@ class BakedSkeletalModel(
         return mapping
     }
 
-    fun loadMesh(renderWindow: RenderWindow) {
-        if (loaded) {
-            return
-        }
+    fun preload(renderWindow: RenderWindow) {
+        check(state == SkeletalModelStates.DECLARED) { "Can not preload model in $state" }
         val mesh = SkeletalMesh(renderWindow, 1000)
 
         val outlinerMapping = calculateOutlinerMapping()
@@ -108,20 +106,30 @@ class BakedSkeletalModel(
                 }
 
                 val texture = textures[face.texture]!!
+                val transform = outlinerId.buffer()
+                val textureShaderId = texture.shaderId.buffer()
+                val floatFlags = flags.buffer()
                 for ((index, textureIndex) in mesh.order) {
                     val indexPosition = positions[index].array
-                    mesh.addVertex(indexPosition, texturePositions[textureIndex], outlinerId, texture, flags)
+                    val transformedUV = texture.transformUV(texturePositions[textureIndex])
+                    mesh.addVertex(indexPosition, transformedUV, transform, textureShaderId, floatFlags)
                 }
             }
         }
-        mesh.load()
         this.mesh = mesh
+        state = SkeletalModelStates.PRE_LOADED
+    }
+
+    fun load() {
+        check(state == SkeletalModelStates.PRE_LOADED) { "Can not load model in state: $state" }
+        mesh.load()
+        state = SkeletalModelStates.LOADED
     }
 
     fun unload() {
-        if (loaded) {
-            mesh.unload()
-        }
+        check(state == SkeletalModelStates.LOADED) { "Can not unload model in state $state" }
+        mesh.unload()
+        state = SkeletalModelStates.UNLOADED
     }
 
     companion object {

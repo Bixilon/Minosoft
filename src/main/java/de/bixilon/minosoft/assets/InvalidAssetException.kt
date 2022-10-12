@@ -20,4 +20,5 @@ class InvalidAssetException(
     val path: ResourceLocation,
     val hash: String,
     val expectedHash: String,
+    val tarBytes: Int,
 ) : IOException("Assets verification exception ($path): Got $hash, expected $expectedHash")

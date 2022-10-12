@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.container.palette.palettes
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 
 object BlockStatePaletteFactory : PaletteFactory {
-    override val edgeBits = 4
+    override val edgeBits get() = 4
 
     override fun <T : Any?> createPalette(registry: AbstractRegistry<T?>, bits: Int): Palette<T> {
         return when (bits) {

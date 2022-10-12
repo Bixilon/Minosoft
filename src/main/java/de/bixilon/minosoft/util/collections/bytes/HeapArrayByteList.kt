@@ -1,15 +1,15 @@
 /*
-* Minosoft
-* Copyright (C) 2021 Moritz Zwerger
-*
-* This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-*
-* This software is not affiliated with Mojang AB, the original developer of Minecraft.
-*/
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
 package de.bixilon.minosoft.util.collections.bytes
 
 class HeapArrayByteList(
@@ -53,22 +53,30 @@ class HeapArrayByteList(
         while (newSize - size < needed) {
             newSize += nextGrowStep
         }
+        grow(newSize)
+    }
+
+    private fun grow(size: Int) {
         val oldData = data
-        data = ByteArray(newSize)
+        data = ByteArray(size)
         System.arraycopy(oldData, 0, data, 0, oldData.size)
     }
 
     override fun add(value: Byte) {
         ensureSize(1)
         data[size++] = value
-        outputUpToDate = false
+        if (outputUpToDate) {
+            outputUpToDate = false
+        }
     }
 
     override fun addAll(bytes: ByteArray) {
         ensureSize(bytes.size)
         System.arraycopy(bytes, 0, data, size, bytes.size)
         size += bytes.size
-        outputUpToDate = false
+        if (outputUpToDate) {
+            outputUpToDate = false
+        }
     }
 
     override fun addAll(byteList: AbstractByteList) {
@@ -84,6 +92,10 @@ class HeapArrayByteList(
         }
         System.arraycopy(source, 0, data, size, byteList.size)
         size += byteList.size
+
+        if (outputUpToDate) {
+            outputUpToDate = false
+        }
     }
 
     private fun checkOutputArray() {

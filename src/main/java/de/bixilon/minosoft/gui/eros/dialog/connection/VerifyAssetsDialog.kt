@@ -14,77 +14,20 @@
 package de.bixilon.minosoft.gui.eros.dialog.connection
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.eros.controller.DialogController
-import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.dialog.progress.ProgressDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.ProgressBar
 import javafx.scene.text.TextFlow
 
 class VerifyAssetsDialog(
-    val latch: CountUpAndDownLatch,
-) : DialogController() {
-    @FXML private lateinit var headerFX: TextFlow
-    @FXML private lateinit var countTextFX: TextFlow
+    latch: CountUpAndDownLatch,
+) : ProgressDialog(title = TITLE, header = HEADER, latch = latch, layout = LAYOUT) {
     @FXML private lateinit var mibTextFX: TextFlow
-    @FXML private lateinit var progressFX: ProgressBar
-    @FXML private lateinit var cancelButtonFX: Button
 
-    private var progress = Int.MAX_VALUE
-
-    public override fun show() {
-        JavaFXUtil.runLater {
-            JavaFXUtil.openModal(TITLE, LAYOUT, this)
-            latch += { update() }
-            update()
-            super.show()
-        }
-    }
-
-
-    override fun init() {
-        headerFX.text = HEADER
-        cancelButtonFX.isDisable = true
-    }
-
-    private fun update() {
-        val count = latch.count
-        val total = latch.total
-        val progress = getProgress(count, total)
-        val int = (progress * 100).toInt()
-        if (int == this.progress) {
-            return
-        }
-        this.progress = int
-        JavaFXUtil.runLater { _update(count, total, progress) }
-    }
-
-    private fun _update(count: Int, total: Int, progress: Double) {
-        if ((progress * 100).toInt() != this.progress) {
-            return
-        }
-        if (count <= 0 && total > 0) {
-            stage.close()
-            return
-        }
-        countTextFX.text = "${total - count}/${total}"
-        mibTextFX.text = "No clue how much MiB :)"
-        progressFX.progress = progress
-    }
-
-    private fun getProgress(count: Int, total: Int): Double {
-        return if (total <= 0) {
-            0.0
-        } else {
-            (total - count.toDouble()) / total.toDouble()
-        }
-    }
-
-    @FXML
-    fun cancel() {
-        TODO("Not yet implemented")
+    override fun updateUI(count: Int, total: Int, progress: Double) {
+        super.updateUI(count, total, progress)
+        mibTextFX.text = "<TBA> MiB"
     }
 
     companion object {

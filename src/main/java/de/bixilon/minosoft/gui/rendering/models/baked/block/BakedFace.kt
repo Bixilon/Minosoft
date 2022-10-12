@@ -16,8 +16,9 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
@@ -47,9 +48,12 @@ class BakedFace(
             color.g *= ((tint shr 8) and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
             color.b *= (tint and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
         }
+
+        val textureShaderId = texture.renderData.shaderTextureId.buffer()
+        val tintLight = (color.rgb or (light shl 24)).buffer()
         for ((index, textureIndex) in meshToUse.order) {
             val indexOffset = index * 3
-            meshToUse.addVertex(floatArrayOf(positions[indexOffset + 0] + position[0], positions[indexOffset + 1] + position[1], positions[indexOffset + 2] + position[2]), uv[textureIndex], texture, color.rgb, light)
+            meshToUse.addVertex(positions[indexOffset + 0] + position[0], positions[indexOffset + 1] + position[1], positions[indexOffset + 2] + position[2], uv[textureIndex], texture, textureShaderId, tintLight)
         }
     }
 }

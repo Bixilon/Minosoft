@@ -64,7 +64,7 @@ class SignBlockEntityRenderer(
         for (line in sign.lines) {
             primitives += ChatComponentRenderer.calculatePrimitiveCount(line)
         }
-        textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX)
+        textMesh.data.ensureSize(primitives * textMesh.order.size * SingleWorldMesh.WorldMeshStruct.FLOATS_PER_VERTEX)
 
         for (line in sign.lines) {
             ChatComponentRenderer.render3dFlat(renderWindow, textPosition, TEXT_SCALE, Vec3(0.0f, -yRotation, 0.0f), Vec2i(SIGN_MAX_WIDTH * TEXT_SCALE, Font.TOTAL_CHAR_HEIGHT * TEXT_SCALE), mesh, line, light)

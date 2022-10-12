@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.registries.fluid
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
-import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -73,11 +73,14 @@ open class Fluid(
         return matches(other.block.fluid)
     }
 
-    fun getHeight(blockState: BlockState): Float {
-        if (blockState.block is FluidFillable && blockState.block.fluid == this) {
-            return 0.9f
+    open fun getHeight(blockState: BlockState): Float {
+        val level = blockState.properties[BlockProperties.FLUID_LEVEL]?.toInt()
+        if (level == null) {
+            if (blockState.block is FluidFillable && blockState.block.fluid == this) {
+                return 0.9f
+            }
+            throw IllegalArgumentException("Can not get height of non fluid: $blockState")
         }
-        val level = blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>() ?: 8
         if (level < 0 || level >= 8) {
             return 0.9f
         }

@@ -16,12 +16,14 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import java.util.*
 
@@ -34,6 +36,8 @@ data class BlockState(
     val hardness: Float,
     val requiresTool: Boolean,
     val isSolid: Boolean,
+    val luminance: Int,
+    val lightProperties: LightProperties,
 ) {
     var blockModel: BakedBlockModel? = null
 
@@ -79,19 +83,15 @@ data class BlockState(
     override fun toString(): String {
         val out = StringBuilder()
         out.append(block.resourceLocation.toString())
+        out.append(" (")
         if (properties.isNotEmpty()) {
-            if (out.isNotEmpty()) {
-                out.append(", ")
-            } else {
-                out.append(" (")
-            }
             out.append("properties=")
             out.append(properties)
         }
         if (out.isNotEmpty()) {
             out.append(")")
         }
-        return out.toString()
+        return out.toString().removeSuffix("()")
     }
 
     companion object {
@@ -121,6 +121,22 @@ data class BlockState(
 
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
+            val opaque = data["is_opaque"]?.toBoolean() ?: true
+            val translucent = data["translucent"]?.toBoolean() ?: true
+
+
+            var lightProperties = if (outlineShape == VoxelShape.EMPTY || (!opaque && translucent)) {
+                TransparentProperty
+            } else if (outlineShape == VoxelShape.FULL) {
+                SolidProperty
+            } else {
+                DirectedProperty.of(outlineShape, false)
+            }
+
+            if (lightProperties is SolidProperty && !opaque) {
+                lightProperties = CustomLightProperties(propagatesLight = true, propagatesSkylight = false)
+            }
+
 
             return BlockState(
                 block = block,
@@ -129,8 +145,10 @@ data class BlockState(
                 collisionShape = collisionShape,
                 outlineShape = outlineShape,
                 hardness = data["hardness"]?.toFloat() ?: 1.0f,
-                requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
+                requiresTool = data["requires_tool"]?.toBoolean() ?: !material.soft,
                 isSolid = data["solid_render"]?.toBoolean() ?: false,
+                luminance = data["luminance"]?.toInt() ?: 0,
+                lightProperties = lightProperties,
             )
         }
 
@@ -138,7 +156,7 @@ data class BlockState(
             val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
             for ((propertyGroup, propertyJsonValue) in json) {
                 val propertyValue: Any = when (propertyJsonValue) {
-                    is String -> propertyJsonValue.lowercase(Locale.getDefault())
+                    is String -> propertyJsonValue.lowercase()
                     else -> propertyJsonValue
                 }
                 try {

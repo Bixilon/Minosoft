@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.protocol
 
+import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager.encodeNetwork
-import de.bixilon.minosoft.util.KUtil.fromBase64
-import de.bixilon.minosoft.util.YggdrasilUtil
+import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.nio.charset.StandardCharsets
 import java.security.PublicKey
 import java.time.Instant

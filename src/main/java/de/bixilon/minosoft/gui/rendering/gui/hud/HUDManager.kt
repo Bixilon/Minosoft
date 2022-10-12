@@ -37,18 +37,21 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.PerformanceHUDEl
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardSideElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleElement
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HUDManager(
     override val guiRenderer: GUIRenderer,
-) : GUIElementDrawer, Initializable {
+) : GUIElementDrawer, Initializable, AsyncDrawable, Drawable {
     val renderWindow = guiRenderer.renderWindow
-
     private val hudElements: LockMap<ResourceLocation, HUDElement> = lockMapOf()
 
     override var lastTickTime = 0L
 
     var enabled: Boolean = true
+
+    private var values: Collection<HUDElement> = emptyList()
 
     fun registerElement(hudBuilder: HUDBuilder<*>) {
         val hudElement = hudBuilder.build(guiRenderer)
@@ -91,9 +94,7 @@ class HUDManager(
 
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:enable_hud".toResourceLocation(), KeyBinding(
-                mapOf(
                     KeyActions.STICKY to setOf(KeyCodes.KEY_F1),
-                ),
             ), defaultPressed = enabled
         ) { enabled = it }
     }
@@ -107,10 +108,16 @@ class HUDManager(
         }
     }
 
-    fun draw() {
+    override fun drawAsync() {
         hudElements.lock.acquire()
-        drawElements(hudElements.values)
+        this.values = hudElements.values
         hudElements.lock.release()
+        tickElements(values)
+        prepareElements(values)
+    }
+
+    override fun draw() {
+        drawElements(values)
     }
 
     operator fun <T : HUDElement> get(hudBuilder: HUDBuilder<T>): T? {

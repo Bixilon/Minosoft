@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.world.container
 
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
@@ -64,8 +64,8 @@ class BlockSectionDataProvider(
         calculateOcclusion(regions)
     }
 
-    override fun set(index: Int, value: BlockState?): BlockState? {
-        val previous = super.set(index, value)
+    override fun unsafeSet(index: Int, value: BlockState?): BlockState? {
+        val previous = super.unsafeSet(index, value)
         val previousFluid = previous.isFluid()
         val valueFluid = value.isFluid()
 
@@ -76,9 +76,7 @@ class BlockSectionDataProvider(
         }
 
         if (previous.isSolid() != value.isSolid()) {
-            lock.acquire()
             recalculateOcclusion()
-            lock.release()
         }
 
         return previous
@@ -98,7 +96,7 @@ class BlockSectionDataProvider(
         return false
     }
 
-    private fun BlockState?.isSolid(): Boolean {
+    private inline fun BlockState?.isSolid(): Boolean {
         if (this == null) {
             return false
         }
@@ -109,7 +107,6 @@ class BlockSectionDataProvider(
     private fun floodFill(): ShortArray {
         // mark regions and check direct neighbours
         val regions = ShortArray(ProtocolDefinition.BLOCKS_PER_SECTION)
-        var nextFloodId = 1.toShort()
 
         fun trace(x: Int, y: Int, z: Int, nextId: Short) {
             val index = y shl 8 or (z shl 4) or x
@@ -119,9 +116,6 @@ class BlockSectionDataProvider(
             }
             val blockState = unsafeGet(index)
             if (blockState.isSolid()) {
-                if (nextId == nextFloodId) {
-                    nextFloodId++
-                }
                 return
             }
             regions[index] = nextId
@@ -133,10 +127,11 @@ class BlockSectionDataProvider(
             if (z < ProtocolDefinition.SECTION_MAX_Z) trace(x, y, z + 1, nextId)
         }
 
+        var nextFloodId = 1.toShort()
         for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                 for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-                    trace(x, y, z, nextFloodId)
+                    trace(x, y, z, nextFloodId++)
                 }
             }
         }
@@ -183,27 +178,10 @@ class BlockSectionDataProvider(
             }
         }
 
-        val occlusion = BooleanArray(CUBE_DIRECTION_COMBINATIONS)
-        occlusion[0] = sideRegions.canOcclude(Directions.DOWN, Directions.UP)
-        occlusion[1] = sideRegions.canOcclude(Directions.DOWN, Directions.NORTH)
-        occlusion[2] = sideRegions.canOcclude(Directions.DOWN, Directions.SOUTH)
-        occlusion[3] = sideRegions.canOcclude(Directions.DOWN, Directions.WEST)
-        occlusion[4] = sideRegions.canOcclude(Directions.DOWN, Directions.EAST)
-
-        occlusion[5] = sideRegions.canOcclude(Directions.UP, Directions.NORTH)
-        occlusion[6] = sideRegions.canOcclude(Directions.UP, Directions.SOUTH)
-        occlusion[7] = sideRegions.canOcclude(Directions.UP, Directions.WEST)
-        occlusion[8] = sideRegions.canOcclude(Directions.UP, Directions.EAST)
-
-        occlusion[9] = sideRegions.canOcclude(Directions.NORTH, Directions.SOUTH)
-        occlusion[10] = sideRegions.canOcclude(Directions.NORTH, Directions.WEST)
-        occlusion[11] = sideRegions.canOcclude(Directions.NORTH, Directions.EAST)
-
-        occlusion[12] = sideRegions.canOcclude(Directions.SOUTH, Directions.WEST)
-        occlusion[13] = sideRegions.canOcclude(Directions.SOUTH, Directions.EAST)
-
-        occlusion[14] = sideRegions.canOcclude(Directions.WEST, Directions.EAST)
-
+        val occlusion = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
+        for ((index, pair) in CubeDirections.PAIRS.withIndex()) {
+            occlusion[index] = sideRegions.canOcclude(pair.`in`, pair.out)
+        }
 
         updateOcclusionState(occlusion)
     }
@@ -241,7 +219,7 @@ class BlockSectionDataProvider(
         if (`in` == out) {
             return false
         }
-        return occlusion[getIndex(`in`, out)]
+        return occlusion[CubeDirections.getIndex(`in`, out)]
     }
 
     fun isOccluded(index: Int): Boolean {
@@ -250,55 +228,6 @@ class BlockSectionDataProvider(
 
 
     companion object {
-        const val CUBE_DIRECTION_COMBINATIONS = 15 // 5+4+3+2+1
-        private val NO_OCCLUSION = BooleanArray(CUBE_DIRECTION_COMBINATIONS)
-
-        fun getIndex(`in`: Directions, out: Directions): Int {
-            // ToDo: Calculate this far better
-            val preferIn = `in`.ordinal < out.ordinal
-
-            val first: Directions
-            val second: Directions
-
-            if (preferIn) {
-                first = `in`
-                second = out
-            } else {
-                first = out
-                second = `in`
-            }
-
-            when (first) {
-                Directions.DOWN -> return when (second) {
-                    Directions.UP -> 0
-                    Directions.NORTH -> 1
-                    Directions.SOUTH -> 2
-                    Directions.WEST -> 3
-                    Directions.EAST -> 4
-                    else -> Broken()
-                }
-                Directions.UP -> return when (second) {
-                    Directions.NORTH -> 5
-                    Directions.SOUTH -> 6
-                    Directions.WEST -> 7
-                    Directions.EAST -> 8
-                    else -> Broken()
-                }
-                Directions.NORTH -> return when (second) {
-                    Directions.SOUTH -> 9
-                    Directions.WEST -> 10
-                    Directions.EAST -> 11
-                    else -> Broken()
-                }
-                Directions.SOUTH -> return when (second) {
-                    Directions.WEST -> 12
-                    Directions.EAST -> 13
-                    else -> Broken()
-                }
-                else -> return 14 // WEST->EAST
-            }
-
-            return -1 // Broken("Can not get index for occlusion culling $`in` -> $out!")
-        }
+        private val NO_OCCLUSION = BooleanArray(CubeDirections.CUBE_DIRECTION_COMBINATIONS)
     }
 }

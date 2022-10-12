@@ -35,16 +35,16 @@ class StatisticsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 val name = buffer.readResourceLocation()
                 val value = buffer.readVarInt()
             } else {
-                val category = buffer.connection.registries.statisticRegistry[buffer.readVarInt()]
-                val statisticId = buffer.readVarInt()
-                val statistic = when (category.unit) {
-                    StatisticUnits.BLOCK -> buffer.connection.registries.blockRegistry[statisticId]
-                    StatisticUnits.ITEM -> buffer.connection.registries.itemRegistry[statisticId]
-                    StatisticUnits.ENTITY_TYPE -> buffer.connection.registries.entityTypeRegistry[statisticId]
-                    StatisticUnits.CUSTOM -> continue // ToDo: Get correct value by id
+                val type = buffer.readRegistryItem(buffer.connection.registries.statisticRegistry)
+                val keyId = buffer.readVarInt()
+                val key: Any = when (type.unit) {
+                    StatisticUnits.BLOCK -> buffer.connection.registries.blockRegistry[keyId]
+                    StatisticUnits.ITEM -> buffer.connection.registries.itemRegistry[keyId]
+                    StatisticUnits.ENTITY_TYPE -> buffer.connection.registries.entityTypeRegistry[keyId]
+                    StatisticUnits.CUSTOM -> keyId
                 }
                 val value = buffer.readVarInt()
-                statistics.getOrPut(category) { mutableMapOf() }[statistic] = value
+                statistics.getOrPut(type) { mutableMapOf() }[key] = value
             }
         }
 

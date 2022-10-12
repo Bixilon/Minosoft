@@ -18,11 +18,12 @@ import de.bixilon.kutil.compression.zlib.ZlibUtil.decompress
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
-import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
+import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.datafixer.rls.BlockEntityFixer.fix
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -105,6 +106,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             when {
                 buffer.versionId < V_1_9_4 -> {
                 }
+
                 buffer.versionId < V_21W37A -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
                     val positionOffset = Vec3i.of(chunkPosition, dimension.minSection, Vec3i.EMPTY)
@@ -112,16 +114,18 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
                         val resourceLocation = (nbt["id"]?.toResourceLocation() ?: continue).fix()
-                        val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
+                        val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation]
+                        if (type == null) {
                             Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
-                            null
-                        } ?: continue
+                            continue
+                        }
                         val entity = type.build(buffer.connection)
                         entity.updateNBT(nbt)
                         blockEntities[position] = entity
                     }
                     this.chunkData.blockEntities = blockEntities
                 }
+
                 else -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
 
@@ -142,7 +146,11 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
 
             if (buffer.versionId >= V_21W37A) {
-                this.chunkData.replace(ChunkLightS2CP(buffer) { chunkPosition }.chunkData)
+                if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
+                    buffer.pointer = buffer.size
+                } else {
+                    this.chunkData.replace(ChunkLightS2CP(buffer) { chunkPosition }.chunkData)
+                }
             }
         }
     }
@@ -161,11 +169,11 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        readingData.readChunkData()
         if (unloadChunk) {
             connection.world.unloadChunk(chunkPosition)
             return
         }
+        readingData.readChunkData()
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
         chunk.setData(chunkData)
     }

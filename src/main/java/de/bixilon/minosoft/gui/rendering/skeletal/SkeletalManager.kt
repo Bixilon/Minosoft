@@ -13,17 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.skeletal
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
 class SkeletalManager(
     val renderWindow: RenderWindow,
 ) {
-    val shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "skeletal"))
+    val shader = renderWindow.renderSystem.createShader(minosoft("skeletal"))
     private val uniformBuffer = renderWindow.renderSystem.createFloatUniformBuffer(memAllocFloat(TRANSFORMS * MAT4_SIZE))
 
     fun init() {
@@ -35,7 +34,7 @@ class SkeletalManager(
         shader.loadAnimated()
         renderWindow.textureManager.dynamicTextures.use(shader)
         shader["uSkeletalBuffer"] = uniformBuffer
-        shader.setUInt("uLight", 0xFF)
+        shader.setUInt(LIGHT, 0xFF)
         renderWindow.lightMap.use(shader)
     }
 
@@ -50,7 +49,7 @@ class SkeletalManager(
 
     fun draw(instance: SkeletalInstance, light: Int) {
         prepareDraw()
-        shader.setUInt("uLight", light)
+        shader.setUInt(LIGHT, light)
         val transforms = instance.calculateTransforms()
         var stride = 0
         for (transform in transforms) {
@@ -66,5 +65,7 @@ class SkeletalManager(
     private companion object {
         private const val TRANSFORMS = 32
         private const val MAT4_SIZE = 4 * 4
+
+        private const val LIGHT = "uLight"
     }
 }

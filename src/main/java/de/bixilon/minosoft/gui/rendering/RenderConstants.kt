@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 
 object RenderConstants {
     val DEFAULT_SKY_COLOR = "#ecff89".asColor()
@@ -42,7 +42,6 @@ object RenderConstants {
 
 
     val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
-    const val DEBUG_TEXTURE_ID = 0 // always add the debug texture to the texture array first to ensure the id is 0
 
 
     const val CAMPFIRE_ITEMS = 4

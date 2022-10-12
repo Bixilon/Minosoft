@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.registries
 
 import de.bixilon.kutil.string.StringUtil.isLowercase
-import de.bixilon.minosoft.data.language.Translatable
+import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 

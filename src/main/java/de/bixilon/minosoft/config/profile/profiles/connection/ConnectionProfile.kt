@@ -58,6 +58,11 @@ class ConnectionProfile(
 
     var autoRespawn by delegate(false)
 
+    /**
+     * If set, the client will respond with "vanilla" as brand and not "minosoft"
+     */
+    var fakeBrand by delegate(false)
+
     override fun toString(): String {
         return ConnectionProfileManager.getName(this)
     }

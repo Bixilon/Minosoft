@@ -16,14 +16,13 @@ package de.bixilon.minosoft.gui.rendering.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.kutil.concurrent.pool.ThreadPool.Priorities.LOW
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -32,16 +31,15 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegate
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
-import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.view.ViewDistanceChangeEvent
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
@@ -67,15 +65,20 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
-import de.bixilon.minosoft.modding.event.events.*
+import de.bixilon.minosoft.modding.event.events.RespawnEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
+import de.bixilon.minosoft.modding.event.events.blocks.BlocksSetEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
-import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 
@@ -100,6 +103,7 @@ class WorldRenderer(
     private val preparingTasks: MutableSet<SectionPrepareTask> = mutableSetOf() // current running section preparing tasks
     private val preparingTasksLock = SimpleLock()
 
+    @Volatile
     private var workingOnQueue = false
     private val queue: MutableList<WorldQueueItem> = mutableListOf() // queue, that is visible, and should be rendered
     private val queueSet: MutableSet<WorldQueueItem> = HashSet() // queue, that is visible, and should be rendered
@@ -107,8 +111,7 @@ class WorldRenderer(
     private val culledQueue: MutableMap<Vec2i, IntOpenHashSet> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val culledQueueLock = SimpleLock()
 
-    // ToDo: Sometimes if you clear the chunk cache a ton of times, the workers are maxed out and nothing happens anymore
-    val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
+    val maxMeshesToLoad = if (SystemInformation.RUNTIME.maxMemory() > 1_000_000_000) 150 else 80
     private val meshesToLoad: MutableList<WorldQueueItem> = mutableListOf() // prepared meshes, that can be loaded in the (next) frame
     private val meshesToLoadSet: MutableSet<WorldQueueItem> = HashSet()
     private val meshesToLoadLock = SimpleLock()
@@ -170,7 +173,7 @@ class WorldRenderer(
             val chunkPosition = it.blockPosition.chunkPosition
             val sectionHeight = it.blockPosition.sectionHeight
             val chunk = world[chunkPosition] ?: return@of
-            val neighbours = world.getChunkNeighbours(chunkPosition)
+            val neighbours = chunk.neighbours ?: return@of
             queueSection(chunkPosition, sectionHeight, chunk, neighbours = neighbours)
             val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
 
@@ -189,6 +192,14 @@ class WorldRenderer(
             } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
                 queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight, chunk = neighbours[6])
             }
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<LightChangeEvent> {
+            if (it.blockChange) {
+                // change is already covered
+                return@of
+            }
+            queueSection(it.chunkPosition, it.sectionHeight, it.chunk)
         })
 
         connection.registerEvent(CallbackEventInvoker.of<BlocksSetEvent> {
@@ -216,7 +227,7 @@ class WorldRenderer(
                     neighbours[5] = true
                 }
             }
-            val neighbours = world.getChunkNeighbours(it.chunkPosition)
+            val neighbours = chunk.neighbours ?: return@of
             for ((sectionHeight, neighbourUpdates) in sectionHeights) {
                 queueSection(it.chunkPosition, sectionHeight, chunk, neighbours = neighbours)
 
@@ -255,10 +266,8 @@ class WorldRenderer(
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:clear_chunk_cache".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F3),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
             )
         ) { clearChunkCache() }
 
@@ -266,8 +275,9 @@ class WorldRenderer(
         val rendering = connection.profiles.rendering
         rendering.performance::fastBedrock.profileWatch(this, false, rendering) { clearChunkCache() }
 
-        connection.registerEvent(CallbackEventInvoker.of<ViewDistanceChangeEvent> { event ->
-            if (event.viewDistance < this.previousViewDistance) {
+        profile::viewDistance.profileWatch(this) { viewDistance ->
+            val distance = maxOf(viewDistance, profile.simulationDistance)
+            if (distance < this.previousViewDistance) {
                 // Unload all chunks(-sections) that are out of view distance
                 culledQueueLock.lock()
                 queueLock.lock()
@@ -277,7 +287,7 @@ class WorldRenderer(
 
                 val loadedMeshesToRemove: MutableSet<Vec2i> = HashSet()
                 for ((chunkPosition, sections) in loadedMeshes) {
-                    if (visibilityGraph.isChunkVisible(chunkPosition)) {
+                    if (visibilityGraph.isInViewDistance(chunkPosition)) {
                         continue
                     }
                     loadedMeshesToRemove += chunkPosition
@@ -322,19 +332,23 @@ class WorldRenderer(
                 prepareWorld()
             }
 
-            this.previousViewDistance = event.viewDistance
-        })
+            this.previousViewDistance = distance
+        }
     }
 
-    private fun clearChunkCache() {
+    fun silentlyClearChunkCache() {
         unloadWorld()
         prepareWorld()
+    }
+
+    fun clearChunkCache() {
+        silentlyClearChunkCache()
         connection.util.sendDebugMessage("Chunk cache cleared!")
     }
 
     private fun prepareWorld() {
         world.lock.acquire()
-        for ((chunkPosition, chunk) in world.chunks) {
+        for ((chunkPosition, chunk) in world.chunks.unsafe) {
             queueChunk(chunkPosition, chunk)
         }
         world.lock.release()
@@ -435,21 +449,22 @@ class WorldRenderer(
         }
         workingOnQueue = true
 
+
         val items: MutableList<WorldQueueItem> = mutableListOf()
         queueLock.lock()
         for (i in 0 until maxPreparingTasks - size) {
             if (queue.isEmpty()) {
                 break
             }
-            val item = queue.removeAt(0)
+            val item = queue.removeFirst()
             queueSet.remove(item)
             items += item
         }
         queueLock.unlock()
         for (item in items) {
-            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW, interuptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            val task = SectionPrepareTask(item.chunkPosition, item.sectionHeight, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW, interruptable = true)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
             task.runnable.runnable = Runnable {
-                prepareItem(item, task)
+                prepareItem(item, task, task.runnable)
             }
             preparingTasksLock.lock()
             preparingTasks += task
@@ -459,33 +474,27 @@ class WorldRenderer(
         workingOnQueue = false
     }
 
-    private fun prepareItem(item: WorldQueueItem, task: SectionPrepareTask) {
-        var locked = false
+    private fun prepareItem(item: WorldQueueItem, task: SectionPrepareTask, runnable: ThreadPoolRunnable) {
         try {
             val chunk = item.chunk ?: world[item.chunkPosition] ?: return
             val section = chunk[item.sectionHeight] ?: return
             if (section.blocks.isEmpty) {
                 return queueItemUnload(item)
             }
-            val neighbourChunks: Array<Chunk>
-            world.getChunkNeighbours(item.chunkPosition).let {
-                if (!it.loaded) {
-                    return queueSection(item.chunkPosition, item.sectionHeight, chunk, section)
-                }
-                neighbourChunks = it.unsafeCast()
-            }
+            val neighbourChunks: Array<Chunk> = chunk.neighbours ?: return queueSection(item.chunkPosition, item.sectionHeight, chunk, section, neighbours = null)
             val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
             val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
             solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
             if (section.blocks.fluidCount > 0) {
                 fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
             }
+            runnable.interruptable = false
+            if (Thread.interrupted()) return
             if (mesh.clearEmpty() == 0) {
                 return queueItemUnload(item)
             }
             item.mesh = mesh
             meshesToLoadLock.lock()
-            locked = true
             if (meshesToLoadSet.remove(item)) {
                 meshesToLoad.remove(item) // Remove duplicates
             }
@@ -498,14 +507,13 @@ class WorldRenderer(
             meshesToLoadSet += item
             meshesToLoadLock.unlock()
         } catch (exception: Throwable) {
-            if (locked) {
-                meshesToLoadLock.unlock()
-            }
             if (exception !is InterruptedException) {
                 // otherwise task got interrupted (probably because of chunk unload)
                 throw exception
             }
         } finally {
+            task.runnable.interruptable = false
+            if (Thread.interrupted()) throw InterruptedException()
             preparingTasksLock.lock()
             preparingTasks -= task
             preparingTasksLock.unlock()
@@ -556,7 +564,7 @@ class WorldRenderer(
         meshesToUnloadLock.unlock()
     }
 
-    private fun internalQueueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, ignoreFrustum: Boolean, neighbours: Array<Chunk?> = world.getChunkNeighbours(chunkPosition)): Boolean {
+    private fun internalQueueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, ignoreFrustum: Boolean, neighbours: Array<Chunk>): Boolean {
         if (chunkPosition != chunk.chunkPosition) {
             throw IllegalStateException("Chunk position mismatch!")
         }
@@ -569,13 +577,9 @@ class WorldRenderer(
             return false
         }
 
-        if (!neighbours.received) {
-            return false
-        }
-
         val visible = ignoreFrustum || visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition, true)
         if (visible) {
-            item.neighbours = ChunkUtil.getDirectNeighbours(neighbours.unsafeCast(), chunk, sectionHeight)
+            item.neighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, sectionHeight)
             queueLock.lock()
             if (queueSet.remove(item)) {
                 queue.remove(item) // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
@@ -596,11 +600,11 @@ class WorldRenderer(
         return false
     }
 
-    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk?> = world.getChunkNeighbours(chunkPosition)) {
-        if (chunk == null || section == null || renderWindow.renderingState == RenderingStates.PAUSED) {
+    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk>? = chunk?.neighbours) {
+        if (chunk == null || neighbours == null || section == null || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
-        val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, ignoreFrustum, neighbours = neighbours)
+        val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, ignoreFrustum, neighbours)
 
         if (queued) {
             sortQueue()
@@ -609,7 +613,8 @@ class WorldRenderer(
     }
 
     private fun queueChunk(chunkPosition: Vec2i, chunk: Chunk = world.chunks[chunkPosition]!!) {
-        if (!chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
+        val neighbours = chunk.neighbours
+        if (neighbours == null || !chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
         this.loadedMeshesLock.acquire()
@@ -620,7 +625,7 @@ class WorldRenderer(
         }
         this.loadedMeshesLock.release()
 
-        val neighbours = world.getChunkNeighbours(chunkPosition)
+
         // ToDo: Check if chunk is visible (not section, chunk)
         var queueChanges = 0
         for (sectionHeight in chunk.lowestSection until chunk.highestSection) {
@@ -644,10 +649,10 @@ class WorldRenderer(
         }
 
         var addedMeshes = 0
-        val time = TimeUtil.millis
+        val start = millis()
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((TimeUtil.millis - time < maxTime) && meshesToLoad.isNotEmpty()) {
+        while (meshesToLoad.isNotEmpty() && (millis() - start < maxTime)) {
             val item = meshesToLoad.removeAt(0)
             meshesToLoadSet.remove(item)
             val mesh = item.mesh ?: continue
@@ -683,10 +688,10 @@ class WorldRenderer(
             return
         }
 
-        val time = TimeUtil.millis
+        val time = millis()
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((TimeUtil.millis - time < maxTime) && meshesToUnload.isNotEmpty()) {
+        while (meshesToUnload.isNotEmpty() && (millis() - time < maxTime)) {
             val mesh = meshesToUnload.removeAt(0)
             visible.removeMesh(mesh)
             mesh.unload()
@@ -694,8 +699,7 @@ class WorldRenderer(
         meshesToUnloadLock.release()
     }
 
-    override fun prepareDraw() {
-        renderWindow.textureManager.staticTextures.use(shader)
+    override fun postPrepareDraw() {
         if (clearVisibleNextFrame) {
             visible.clear()
             clearVisibleNextFrame = false
@@ -767,7 +771,7 @@ class WorldRenderer(
             this.cameraPosition = cameraPosition
         }
 
-        val visible = VisibleMeshes(cameraPosition)
+        val visible = VisibleMeshes(cameraPosition, this.visible)
 
         loadedMeshesLock.acquire()
         for ((chunkPosition, meshes) in this.loadedMeshes) {
@@ -809,7 +813,7 @@ class WorldRenderer(
 
         for ((chunkPosition, pair) in nextQueue) {
             val (chunk, sectionHeights) = pair
-            val neighbours = world.getChunkNeighbours(chunkPosition)
+            val neighbours = chunk.neighbours ?: continue
             for (sectionHeight in sectionHeights.intIterator()) {
                 queueSection(chunkPosition, sectionHeight, chunk = chunk, ignoreFrustum = true, neighbours = neighbours)
             }

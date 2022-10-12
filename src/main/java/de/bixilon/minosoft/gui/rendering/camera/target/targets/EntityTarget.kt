@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.TextFormattable
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import java.util.*
 
 class EntityTarget(

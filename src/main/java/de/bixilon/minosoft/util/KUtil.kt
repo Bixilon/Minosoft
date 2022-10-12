@@ -18,7 +18,6 @@ import de.bixilon.jiibles.TableStyles
 import de.bixilon.kotlinglm.vec2.Vec2t
 import de.bixilon.kotlinglm.vec3.Vec3t
 import de.bixilon.kotlinglm.vec4.Vec4t
-import de.bixilon.kutil.base64.Base64Util
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
@@ -36,10 +35,10 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.data.text.TextFormattable
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -67,8 +66,12 @@ object KUtil {
         return when (this) {
             is String -> ResourceLocation(this)
             is ResourceLocation -> this
-            else -> TODO("Don't know how to turn $this into a resource location!")
+            else -> throw IllegalArgumentException("Don't know how to turn $this into a resource location!")
         }
+    }
+
+    fun minosoft(path: String): ResourceLocation {
+        return ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
     }
 
     fun <T> T.synchronizedDeepCopy(): T {
@@ -81,6 +84,7 @@ object KUtil {
                 }
                 map.unsafeCast()
             }
+
             is List<*> -> {
                 val list: MutableList<Any?> = synchronizedListOf()
 
@@ -90,6 +94,7 @@ object KUtil {
 
                 list.unsafeCast()
             }
+
             is Set<*> -> {
                 val set: MutableSet<Any?> = synchronizedSetOf()
 
@@ -99,6 +104,7 @@ object KUtil {
 
                 set.unsafeCast()
             }
+
             is ItemStack -> this.copy().unsafeCast()
             is ChatComponent -> this
             is String -> this
@@ -147,6 +153,7 @@ object KUtil {
         return ChatComponent.of(
             when (this) {
                 is ChatComponent -> return this
+                is CharSequence -> this.toString()
                 null -> TextComponent("null").color(ChatColors.DARK_RED)
                 is TextFormattable -> this.toText()
                 is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
@@ -160,6 +167,7 @@ object KUtil {
                         }
                     ).color(ChatColors.YELLOW)
                 }
+
                 is Float -> "§d%.3f".format(this)
                 is Double -> "§d%.4f".format(this)
                 is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
@@ -210,6 +218,17 @@ object KUtil {
         return null
     }
 
+    private inline fun String.checkInt(): Int? {
+        var first = true
+        for (point in codePoints()) {
+            if (point < '0'.code || point > '9'.code || (first && point == '-'.code)) {
+                return null
+            }
+            first = false
+        }
+        return this.toInt()
+    }
+
     fun Any?.autoType(): Any? {
         if (this == null) {
             return null
@@ -226,10 +245,7 @@ object KUtil {
             return false
         }
 
-        // ToDo: Optimize
-        if (string.matches("\\d+".toRegex())) {
-            return string.toInt()
-        }
+        string.checkInt()?.let { return it }
 
         return string
     }
@@ -292,8 +308,20 @@ object KUtil {
         }
     }
 
-    @Deprecated("KUtil 1.14")
-    fun String.fromBase64(): ByteArray {
-        return Base64Util.DECODER.decode(this)
+    val Any.length: Int
+        get() {
+            if (this is ChatComponent) return this.length
+            if (this is CharSequence) return this.length
+            return toString().length
+        }
+
+    @Deprecated("Kutil 1.18")
+    inline fun <T> Array<T>.getFirst(): T {
+        return this[0]
+    }
+
+    @Deprecated("Kutil 1.18")
+    inline fun <T> Array<T>.getLast(): T {
+        return this[lastIndex]
     }
 }

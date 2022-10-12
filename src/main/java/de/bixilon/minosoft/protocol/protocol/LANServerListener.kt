@@ -126,7 +126,7 @@ object LANServerListener {
             rawAddress = rawAddress.split(":").toTypedArray()[1]
         }
         val port = rawAddress.toInt()
-        check(port in 1 until 65535) { "Invalid port: $port" }
+        check(port in 1024 until 65535) { "Invalid port: $port" }
         val motd = broadcast.getBetween(MOTD_START_STRING, MOTD_END_STRING)
         return Server(address = address.hostAddress + ":" + rawAddress, name = BaseComponent("LAN: #${SERVERS.size}: ", ChatComponent.of(motd)))
     }

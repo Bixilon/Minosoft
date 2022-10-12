@@ -17,6 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
+import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -31,6 +32,7 @@ import de.bixilon.minosoft.gui.eros.dialog.ServerModifyDialog
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.ConnectingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
+import de.bixilon.minosoft.gui.eros.dialog.connection.LoadingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.VerifyAssetsDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
@@ -180,8 +182,19 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             })
             val latch = CountUpAndDownLatch(1)
             val assetsDialog = VerifyAssetsDialog(latch = latch).apply { show() }
-            connection::state.observeFX(this) { if (it.disconnected) assetsDialog.close() }
-            ConnectingDialog(connection).show()
+            connection::state.observeFX(this) {
+                if (it == PlayConnectionStates.LOADING || it.disconnected) {
+                    assetsDialog.close()
+                }
+                if (it == PlayConnectionStates.LOADING) {
+                    LoadingDialog(latch, connection).show()
+                }
+                if (it == PlayConnectionStates.ESTABLISHING) {
+                    ConnectingDialog(connection).show()
+                }
+            }
+
+
             connection.connect(latch)
         }
     }
@@ -435,15 +448,15 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping.tryAddress },
             "minosoft:server_info.forced_version".toResourceLocation() to { it.server.forcedVersion },
 
-            "minosoft:general.empty".toResourceLocation() to { " " },
+            TranslatableComponents.GENERAL_EMPTY to { " " },
 
             "minosoft:server_info.remote_version".toResourceLocation() to { it.ping.serverVersion ?: "unknown" },
             "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping.lastServerStatus?.serverBrand },
             "minosoft:server_info.players_online".toResourceLocation() to { it.ping.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
-            "minosoft:server_info.ping".toResourceLocation() to { it.ping.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
+            "minosoft:server_info.ping".toResourceLocation() to { it.ping.lastPongEvent?.latency?.formatNanos() },
 
 
-            "minosoft:general.empty".toResourceLocation() to { " " },
+            TranslatableComponents.GENERAL_EMPTY to { " " },
 
             "minosoft:server_info.active_connections".toResourceLocation() to { it.connections.size },
         )

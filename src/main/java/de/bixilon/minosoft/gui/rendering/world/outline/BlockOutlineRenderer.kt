@@ -24,8 +24,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.MeshSwapper
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
@@ -37,21 +38,24 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class BlockOutlineRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OtherDrawable {
+) : AsyncRenderer, OtherDrawable, MeshSwapper {
     private val profile = connection.profiles.block.outline
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
 
-    private var currentMesh: LineMesh? = null
+    override var mesh: LineMesh? = null
     override val skipOther: Boolean
-        get() = currentMesh == null
+        get() = mesh == null
 
     /**
      * Unloads the current mesh and creates a new one
      * Uses when the profile changed
      */
     private var reload = false
+
+    override var nextMesh: LineMesh? = null
+    override var unload: Boolean = false
 
     override fun init(latch: CountUpAndDownLatch) {
         val profile = connection.profiles.block
@@ -63,44 +67,43 @@ class BlockOutlineRenderer(
 
 
     override fun drawOther() {
-        val currentMesh = currentMesh ?: return
-        currentMesh.draw()
+        val mesh = mesh ?: return
+        mesh.draw()
     }
 
     override fun setupOther() {
-        renderWindow.renderSystem.reset(faceCulling = false)
+        renderWindow.renderSystem.reset()
         if (profile.showThroughWalls) {
             renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
         renderWindow.shaderManager.genericColorShader.use()
     }
 
-    private fun unload() {
-        currentMesh ?: return
-        currentMesh?.unload()
-        this.currentMesh = null
-        this.currentOutlinePosition = null
-        this.currentOutlineBlockState = null
+    override fun postPrepareDraw() {
+        if (unload) {
+            this.currentOutlinePosition = null
+            this.currentOutlineBlockState = null
+        }
+        super<MeshSwapper>.postPrepareDraw()
     }
 
-    override fun prepareDraw() {
+
+    override fun prepareDrawAsync() {
         val target = renderWindow.camera.targetHandler.target.nullCast<BlockTarget>()
 
-        var currentMesh = currentMesh
-
         if (target == null || connection.world.border.isOutside(target.blockPosition)) {
-            unload()
+            unload = true
             return
         }
 
         if (target.distance >= connection.player.reachDistance) {
-            unload()
+            unload = true
             return
         }
 
         if (connection.player.gamemode == Gamemodes.ADVENTURE || connection.player.gamemode == Gamemodes.SPECTATOR) {
             if (target.blockState.block !is BlockWithEntity<*>) {
-                unload()
+                unload = true
                 return
             }
         }
@@ -113,24 +116,21 @@ class BlockOutlineRenderer(
             return
         }
 
-        currentMesh?.unload()
-        currentMesh = LineMesh(renderWindow)
+        val mesh = LineMesh(renderWindow)
 
         val blockOffset = target.blockPosition.toVec3d + target.blockPosition.getWorldOffset(target.blockState.block)
 
-        currentMesh.drawVoxelShape(target.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
+        mesh.drawVoxelShape(target.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
 
 
         if (profile.showCollisionBoxes) {
-            currentMesh.drawVoxelShape(target.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
+            mesh.drawVoxelShape(target.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
         }
-
-        currentMesh.load()
+        this.nextMesh = mesh
 
 
         this.currentOutlinePosition = target.blockPosition
         this.currentOutlineBlockState = target.blockState
-        this.currentMesh = currentMesh
         this.reload = false
     }
 

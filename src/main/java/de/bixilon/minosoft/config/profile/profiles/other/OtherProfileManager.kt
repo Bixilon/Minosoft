@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object OtherProfileManager : ProfileManager<OtherProfile> {
     override val namespace = "minosoft:other".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 2
     override val saveLock = ReentrantLock()
     override val profileClass = OtherProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
@@ -52,5 +52,11 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
         profiles[name] = profile
 
         return profile
+    }
+
+    override fun migrate(from: Int, data: MutableMap<String, Any?>) {
+        when (from) {
+            1 -> OtherProfileMigration.migrate1(data)
+        }
     }
 }

@@ -30,8 +30,8 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
@@ -45,7 +45,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 class GUIRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, InputHandler, OtherDrawable {
+) : AsyncRenderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
     override val renderSystem = renderWindow.renderSystem
     var scaledSize: Vec2i by watched(renderWindow.window.size)
@@ -129,6 +129,13 @@ class GUIRenderer(
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
         return popper.onScroll(scrollOffset) || dragged.onScroll(scrollOffset) || gui.onScroll(scrollOffset)
+    }
+
+    override fun prepareDrawAsync() {
+        hud.drawAsync()
+        gui.drawAsync()
+        popper.drawAsync()
+        dragged.drawAsync()
     }
 
     override fun drawOther() {

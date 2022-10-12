@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.particle.types
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.physics.PhysicsEntity
-import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
@@ -60,7 +60,7 @@ abstract class Particle(
 
     // moving
     val cameraPosition: Vec3d
-        get() = getCameraPosition(TimeUtil.millis)
+        get() = getCameraPosition(millis())
 
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position

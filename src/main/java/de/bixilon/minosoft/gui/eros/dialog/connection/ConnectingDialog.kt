@@ -40,6 +40,7 @@ class ConnectingDialog(
 
     override fun init() {
         headerFX.text = HEADER
+        cancelButtonFX.isDisable = true
         connection::state.observeFX(this) { update(it) }
     }
 

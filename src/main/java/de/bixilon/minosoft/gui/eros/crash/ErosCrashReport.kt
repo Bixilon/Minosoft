@@ -20,11 +20,11 @@ import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.kutil.unsafe.UnsafeUtil
-import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -79,7 +79,7 @@ class ErosCrashReport : JavaFXWindowController() {
         }
 
     fun exit() {
-        ShutdownManager.shutdown(exception?.message, ShutdownReasons.CRITICAL_EXCEPTION)
+        ShutdownManager.shutdown(exception?.message, AbstractShutdownReason.CRASH)
     }
 
     fun hardCrash() {
@@ -172,7 +172,7 @@ class ErosCrashReport : JavaFXWindowController() {
             }
 
             if (RunConfiguration.DISABLE_EROS) {
-                ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION)
+                ShutdownManager.shutdown(this?.message, AbstractShutdownReason.CRASH)
                 return
             }
 
@@ -204,7 +204,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 crashReport.crashReportPath = crashReportPath
                 crashReport.stage = stage
 
-                stage.setOnCloseRequest { ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION) }
+                stage.setOnCloseRequest { ShutdownManager.shutdown(this?.message, AbstractShutdownReason.CRASH) }
                 stage.show()
             }
         }

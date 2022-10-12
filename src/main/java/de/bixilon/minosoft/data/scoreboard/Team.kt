@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.scoreboard
 
 import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.ChatCode
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
 data class Team(
     val name: String,

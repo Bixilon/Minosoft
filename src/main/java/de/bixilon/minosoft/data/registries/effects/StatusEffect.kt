@@ -15,15 +15,15 @@ package de.bixilon.minosoft.data.registries.effects
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
-import de.bixilon.minosoft.data.language.Translatable
+import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
-import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
@@ -41,6 +41,7 @@ data class StatusEffect(
     }
 
     companion object : ResourceLocationCodec<StatusEffect> {
+
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): StatusEffect {
             val attributes: MutableMap<ResourceLocation, EntityAttributeModifier> = mutableMapOf()
             val uuidAttributes: MutableMap<UUID, EntityAttributeModifier> = mutableMapOf()

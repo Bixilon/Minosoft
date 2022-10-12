@@ -14,10 +14,11 @@
 package de.bixilon.minosoft.terminal.cli
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
+import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
@@ -68,22 +69,18 @@ object CLI {
 
         while (true) {
             try {
-                val line: String = reader.readLine().removeDuplicatedWhitespaces()
+                val line: String = reader.readLine().trimWhitespaces()
                 if (line.isBlank()) {
                     continue
                 }
                 terminal.flush()
                 ROOT_NODE.execute(line, connection)
             } catch (exception: UserInterruptException) {
-                ShutdownManager.shutdown(reason = ShutdownReasons.ALL_FINE)
+                ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
             } catch (exception: Throwable) {
                 exception.printStackTrace()
             }
         }
-    }
-
-    fun String.removeDuplicatedWhitespaces(): String {
-        return this.replace("\\s{2,}".toRegex(), "")
     }
 
     object NodeCompleter : Completer {

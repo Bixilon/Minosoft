@@ -75,6 +75,13 @@ class PriorityAssetsManager(
         return null
     }
 
+    override fun getAll(path: ResourceLocation, list: MutableList<InputStream>) {
+        val managers = this.managers[path.namespace] ?: return
+        for (manager in managers) {
+            manager.getAll(path, list)
+        }
+    }
+
     override fun load(latch: CountUpAndDownLatch) {
         for ((_, managers) in managers) {
             for (manager in managers) {
@@ -84,5 +91,19 @@ class PriorityAssetsManager(
                 manager.load(latch)
             }
         }
+    }
+
+    override fun contains(path: ResourceLocation): Boolean {
+        for ((namespace, managers) in managers) {
+            if (path.namespace != namespace) {
+                continue
+            }
+            for (manager in managers) {
+                if (path in manager) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

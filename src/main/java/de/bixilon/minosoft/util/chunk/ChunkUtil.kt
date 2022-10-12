@@ -14,21 +14,24 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.array.ArrayUtil.isEmptyOrOnlyNull
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
 import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
-import de.bixilon.minosoft.data.world.container.palette.palettes.SingularPalette
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
+import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W26A
@@ -52,7 +55,6 @@ object ChunkUtil {
 
     private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData {
         val chunkData = ChunkData()
-        // ToDo chunkData.lightAccessor = DummyLightAccessor
 
         val totalBytes = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val halfBytes = totalBytes / 2
@@ -120,7 +122,6 @@ object ChunkUtil {
             return readLegacyChunkWithAddBitSet(buffer, dimension, sectionBitMask, addBitMask!!, isFullChunk, containsSkyLight)
         }
         val chunkData = ChunkData()
-        // ToDo: chunkData.lightAccessor = DummyLightAccessor
 
         val totalEntries: Int = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2
@@ -173,12 +174,20 @@ object ChunkUtil {
 
             val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockStateRegistry, paletteFactory = BlockStatePaletteFactory)
 
-            if (blockContainer.palette !is SingularPalette<*> || blockContainer.palette.item != null) {
-                sectionBlocks[sectionHeight - dimension.minSection] = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
+            if (!blockContainer.isEmpty) {
+                val unpacked = BlockSectionDataProvider(blockContainer.unpack(), buffer.connection.world.occlusionUpdateCallback)
+                if (!unpacked.isEmpty) {
+                    sectionBlocks[sectionHeight - dimension.minSection] = unpacked
+                }
             }
+
+
             if (buffer.versionId >= V_21W37A) {
                 val biomeContainer: PalettedContainer<Biome?> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry.unsafeCast(), paletteFactory = BiomePaletteFactory)
-                biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
+
+                if (!biomeContainer.isEmpty) {
+                    biomes[sectionHeight - dimension.minSection] = biomeContainer.unpack()
+                }
             }
 
 
@@ -188,12 +197,16 @@ object ChunkUtil {
                 if (containsSkyLight) {
                     skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
-                light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
-                lightReceived++
+                if (!StaticConfiguration.IGNORE_SERVER_LIGHT) {
+                    light[sectionHeight - dimension.minSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
+                    lightReceived++
+                }
             }
         }
 
-        chunkData.blocks = sectionBlocks
+        if (!sectionBlocks.isEmptyOrOnlyNull()) {
+            chunkData.blocks = sectionBlocks
+        }
         if (lightReceived > 0) {
             chunkData.light = light
         }
@@ -208,15 +221,15 @@ object ChunkUtil {
 
 
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
-        val biomes: MutableList<Biome?> = mutableListOf()
-        for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
-            biomes.add(i, buffer.connection.registries.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
+        val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+        for (i in biomes.indices) {
+            biomes[i] = buffer.connection.registries.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
                 buffer.readUnsignedByte()
             } else {
                 buffer.readInt()
-            }])
+            }]
         }
-        return XZBiomeArray(biomes.toTypedArray())
+        return XZBiomeArray(biomes)
     }
 
     val Array<Chunk?>.fullyLoaded: Boolean
@@ -260,7 +273,7 @@ object ChunkUtil {
         }
 
 
-    fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
+    fun getChunkNeighbourPositions(chunkPosition: ChunkPosition): Array<ChunkPosition> {
         return arrayOf(
             chunkPosition + Vec2i(-1, -1), // 0
             chunkPosition + Vec2i(-1, +0), // 1
@@ -276,7 +289,7 @@ object ChunkUtil {
     /**
      * @param neighbourChunks: **Fully loaded** direct neighbour chunks
      */
-    fun getDirectNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
+    fun getDirectNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
         return arrayOf(
             chunk[sectionHeight - 1],
             chunk[sectionHeight + 1],
@@ -284,6 +297,43 @@ object ChunkUtil {
             neighbourChunks[4][sectionHeight],
             neighbourChunks[1][sectionHeight],
             neighbourChunks[6][sectionHeight],
+        )
+    }
+
+    /**
+     * @param neighbourChunks: **Fully loaded** direct neighbour chunks
+     */
+    fun getAllNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: SectionHeight): Array<ChunkSection?> {
+        return arrayOf(
+            neighbourChunks[0][sectionHeight - 1], // 0, (-1 | -1)
+            neighbourChunks[1][sectionHeight - 1], // 1, (-1 | +0)
+            neighbourChunks[2][sectionHeight - 1], // 2, (-1 | +1)
+            neighbourChunks[3][sectionHeight - 1], // 3, (+0 | -1)
+            chunk[sectionHeight - 1],              // 4, (+0 | +0)
+            neighbourChunks[4][sectionHeight - 1], // 5, (+0 | +1)
+            neighbourChunks[5][sectionHeight - 1], // 6, (-1 | -1)
+            neighbourChunks[6][sectionHeight - 1], // 7, (-1 | -1)
+            neighbourChunks[7][sectionHeight - 1], // 8, (-1 | -1)
+
+            neighbourChunks[0][sectionHeight + 0], // 9, (-1 | -1)
+            neighbourChunks[1][sectionHeight + 0], // 10, (-1 | +0)
+            neighbourChunks[2][sectionHeight + 0], // 11, (-1 | +1)
+            neighbourChunks[3][sectionHeight + 0], // 12, (+0 | -1)
+            chunk[sectionHeight + 0],              // 13, (+0 | +0)
+            neighbourChunks[4][sectionHeight + 0], // 14, (+0 | +1)
+            neighbourChunks[5][sectionHeight + 0], // 15, (+1 | -1)
+            neighbourChunks[6][sectionHeight + 0], // 16, (+1 | +0)
+            neighbourChunks[7][sectionHeight + 0], // 17, (+1 | +1)
+
+            neighbourChunks[0][sectionHeight + 1], // 18, (-1 | -1)
+            neighbourChunks[1][sectionHeight + 1], // 19, (-1 | +0)
+            neighbourChunks[2][sectionHeight + 1], // 20, (-1 | +1)
+            neighbourChunks[3][sectionHeight + 1], // 21, (+0 | -1)
+            chunk[sectionHeight + 1],              // 22, (+0 | +0)
+            neighbourChunks[4][sectionHeight + 1], // 23, (+0 | +1)
+            neighbourChunks[5][sectionHeight + 1], // 24, (+1 | -1)
+            neighbourChunks[6][sectionHeight + 1], // 25, (+1 | +0)
+            neighbourChunks[7][sectionHeight + 1], // 26, (+1 | +1)
         )
     }
 
@@ -299,7 +349,7 @@ object ChunkUtil {
         }
     }
 
-    fun Vec2i.isInViewDistance(viewDistance: Int, cameraPosition: Vec2i): Boolean {
+    fun ChunkPosition.isInViewDistance(viewDistance: Int, cameraPosition: ChunkPosition): Boolean {
         return abs(this.x - cameraPosition.x) <= viewDistance && abs(this.y - cameraPosition.y) <= viewDistance
     }
 }

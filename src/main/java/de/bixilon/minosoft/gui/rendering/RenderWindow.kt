@@ -30,8 +30,8 @@ import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
-import de.bixilon.minosoft.gui.rendering.renderer.RendererManager
-import de.bixilon.minosoft.gui.rendering.renderer.RendererManager.Companion.registerDefault
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager.Companion.registerDefault
 import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalManager
 import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.stats.ExperimentalRenderStats
@@ -144,17 +144,17 @@ class RenderWindow(
         tintManager.init(connection.assetsManager)
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating context (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Creating context (after ${stopwatch.labTime()})..." }
 
         renderSystem.init()
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Enabling all open gl features (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Enabling all open gl features (after ${stopwatch.labTime()})..." }
 
         renderSystem.reset()
 
         // Init stage
         val initLatch = CountUpAndDownLatch(1, latch)
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Generating font and gathering textures (after ${stopwatch.labTime()})..." }
         textureManager.dynamicTextures.load(initLatch)
         textureManager.loadDefaultSkins(connection)
         textureManager.loadDefaultTextures()
@@ -164,7 +164,7 @@ class RenderWindow(
         framebufferManager.init()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
         lightMap.init()
         skeletalManager.init()
         renderer.init(initLatch)
@@ -174,27 +174,24 @@ class RenderWindow(
         initLatch.await()
 
         // Post init stage
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading textures (after ${stopwatch.labTime()})..." }
         textureManager.staticTextures.preLoad(latch)
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading textures (after ${stopwatch.labTime()})..." }
         textureManager.staticTextures.load(latch)
         font.postInit(latch)
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Post loading renderer (after ${stopwatch.labTime()})..." }
         shaderManager.postInit()
         skeletalManager.postInit()
         renderer.postInit(latch)
         framebufferManager.postInit()
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading skeletal meshes (after ${stopwatch.labTime()})" }
+        modelLoader.entities.loadSkeletal()
 
-        for (model in modelLoader.entities.skeletal.values) {
-            model.loadMesh(this)
-        }
-
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
             renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
@@ -231,20 +228,19 @@ class RenderWindow(
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
-        var closed = false
-        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { closed = true })
+        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { renderingState = RenderingStates.QUITTING })
         while (true) {
-            if (connection.wasConnected || closed) {
-                break
-            }
-
             if (renderingState == RenderingStates.PAUSED) {
                 window.title = "Minosoft | Paused"
             }
 
             while (renderingState == RenderingStates.PAUSED) {
-                Thread.sleep(100L)
+                Thread.sleep(20L)
                 window.pollEvents()
+            }
+
+            if (connection.wasConnected || !renderingState.active) {
+                break
             }
 
             renderStats.startFrame()
@@ -276,8 +272,8 @@ class RenderWindow(
             renderStats.endDraw()
 
 
-            window.swapBuffers()
             window.pollEvents()
+            window.swapBuffers()
 
             inputHandler.draw(deltaFrameTime)
             camera.draw()
@@ -305,6 +301,7 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
         renderingState = RenderingStates.STOPPED
+        renderSystem.destroy()
         window.destroy()
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect

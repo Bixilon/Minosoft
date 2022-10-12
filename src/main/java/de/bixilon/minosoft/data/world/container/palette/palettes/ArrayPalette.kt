@@ -19,11 +19,18 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 class ArrayPalette<T>(private val registry: AbstractRegistry<T?>, override val bits: Int) : Palette<T> {
     private var array: Array<Any?> = arrayOfNulls(0)
 
+    override var isEmpty: Boolean = true
+        private set
+
     override fun read(buffer: PlayInByteBuffer) {
         array = arrayOfNulls(buffer.readVarInt())
 
         for (i in array.indices) {
-            array[i] = registry.getOrNull(buffer.readVarInt())
+            val item = registry.getOrNull(buffer.readVarInt()) ?: continue
+            if (isEmpty) {
+                isEmpty = false
+            }
+            array[i] = item
         }
     }
 

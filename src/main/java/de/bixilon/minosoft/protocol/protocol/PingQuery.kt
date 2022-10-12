@@ -17,5 +17,5 @@ import java.util.concurrent.ThreadLocalRandom
 
 class PingQuery(
     val pingId: Long = ThreadLocalRandom.current().nextLong(),
-    val time: Long = TimeUtil.millis,
+    val nanos: Long = TimeUtil.nanos,
 )

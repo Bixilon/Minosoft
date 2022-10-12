@@ -14,18 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArray
-import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureUtil.readTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
 import java.io.ByteArrayInputStream
-import java.nio.ByteBuffer
 import java.util.*
 
 interface DynamicTextureArray : TextureArray {
     val size: Int
 
-    fun pushBuffer(identifier: UUID, force: Boolean = false, data: () -> ByteBuffer): DynamicTexture
-    fun pushArray(identifier: UUID, force: Boolean = false, data: () -> ByteArray): DynamicTexture
+    fun pushBuffer(identifier: UUID, force: Boolean = false, data: () -> TextureData): DynamicTexture
 
     fun pushRawArray(identifier: UUID, force: Boolean = false, data: () -> ByteArray): DynamicTexture {
-        return pushBuffer(identifier, force) { ByteArrayInputStream(data()).readTexture().second }
+        return pushBuffer(identifier, force) { ByteArrayInputStream(data()).readTexture() }
     }
 }

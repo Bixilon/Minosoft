@@ -14,18 +14,19 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.chunk
 
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.minosoft.data.world.ChunkData
+import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.world.chunk.ChunkData
+import de.bixilon.minosoft.protocol.PacketSkipper
+import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.*
 
 @LoadPacket(lowPriority = true)
 class ChunkLightS2CP @JvmOverloads constructor(buffer: PlayInByteBuffer, chunkPositionGetter: () -> Vec2i = { Vec2i(buffer.readVarInt(), buffer.readVarInt()) }) : PlayS2CPacket {
@@ -39,22 +40,10 @@ class ChunkLightS2CP @JvmOverloads constructor(buffer: PlayInByteBuffer, chunkPo
             trustEdges = buffer.readBoolean()
         }
 
-        val skyLightMask: BitSet
-        val blockLightMask: BitSet
-        val emptySkyLightMask: BitSet
-        val emptyBlockLightMask: BitSet
-
-        if (buffer.versionId < ProtocolVersions.V_20W49A) {
-            skyLightMask = KUtil.bitSetOf(buffer.readVarLong())
-            blockLightMask = KUtil.bitSetOf(buffer.readVarLong())
-            emptySkyLightMask = KUtil.bitSetOf(buffer.readVarLong())
-            emptyBlockLightMask = KUtil.bitSetOf(buffer.readVarLong())
-        } else {
-            skyLightMask = BitSet.valueOf(buffer.readLongArray())
-            blockLightMask = BitSet.valueOf(buffer.readLongArray())
-            emptySkyLightMask = BitSet.valueOf(buffer.readLongArray())
-            emptyBlockLightMask = BitSet.valueOf(buffer.readLongArray())
-        }
+        val skyLightMask = buffer.readBitSet()
+        val blockLightMask = buffer.readBitSet()
+        val emptySkyLightMask = buffer.readBitSet()
+        val emptyBlockLightMask = buffer.readBitSet()
 
         chunkData = readLightPacket(buffer, skyLightMask, emptySkyLightMask, blockLightMask, emptyBlockLightMask, buffer.connection.world.dimension!!)
     }
@@ -69,5 +58,12 @@ class ChunkLightS2CP @JvmOverloads constructor(buffer: PlayInByteBuffer, chunkPo
     override fun handle(connection: PlayConnection) {
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
         chunk.setData(chunkData)
+    }
+
+    companion object : PacketSkipper {
+
+        override fun canSkip(connection: Connection): Boolean {
+            return StaticConfiguration.IGNORE_SERVER_LIGHT
+        }
     }
 }

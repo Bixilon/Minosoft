@@ -21,9 +21,10 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
-import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
@@ -44,11 +44,12 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.DummyModel
 import de.bixilon.minosoft.gui.rendering.entity.models.EntityModel
@@ -56,6 +57,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -132,13 +134,15 @@ abstract class Entity(
             field = value
             positionInfo.update()
         }
-    open val positionInfo = EntityPositionInfo(connection, this)
-
-    val eyePosition: Vec3
-        get() = cameraPosition + Vec3(0.0f, eyeHeight, 0.0f)
 
     var cameraPosition: Vec3 = position.toVec3
         private set
+
+    var eyePosition: Vec3 = cameraPosition
+        private set
+
+    open val positionInfo = EntityPositionInfo(connection, this)
+
 
     open val spawnSprintingParticles: Boolean
         get() = isSprinting && !isSneaking // ToDo: Touching fluids
@@ -295,7 +299,7 @@ abstract class Entity(
     open var cameraAABB: AABB = AABB.EMPTY
         protected set
 
-    open val hitBoxColor: RGBColor
+    open val hitboxColor: RGBColor
         get() = when {
             isInvisible -> ChatColors.GREEN
             else -> ChatColors.WHITE
@@ -304,7 +308,7 @@ abstract class Entity(
 
     @Synchronized
     fun tryTick() {
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
 
         if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
             tick()
@@ -315,6 +319,7 @@ abstract class Entity(
 
     open fun draw(time: Long) {
         cameraPosition = interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEf, Vec3(previousPosition), Vec3(position))
+        eyePosition = cameraPosition + Vec3(0.0f, eyeHeight, 0.0f)
         cameraAABB = defaultAABB + cameraPosition
     }
 
@@ -560,21 +565,24 @@ abstract class Entity(
             updateFluidState(fluid.resourceLocation)
         }
 
-        submergedFluid = null
+        this.submergedFluid = _getSubmergedFluid()
+    }
 
+    private fun _getSubmergedFluid(): Fluid? {
         // ToDo: Boat
         val eyeHeight = eyePosition.y - 0.1111111119389534
 
         val eyePosition = (Vec3d(position.x, eyeHeight, position.z)).blockPosition
-        val blockState = connection.world[eyePosition] ?: return
+        val blockState = connection.world[eyePosition] ?: return null
         if (blockState.block !is FluidBlock) {
-            return
+            return null
         }
-        val height = eyePosition.y + blockState.block.fluid.getHeight(blockState)
+        val up = connection.world[eyePosition + Directions.UP]?.block
 
-        if (height > eyeHeight) {
-            submergedFluid = blockState.block.fluid
+        if ((up is FluidBlock && up.fluid == blockState.block.fluid) || blockState.block.fluid.getHeight(blockState) > eyeHeight) {
+            return blockState.block.fluid
         }
+        return null
     }
 
     val protectionLevel: Float

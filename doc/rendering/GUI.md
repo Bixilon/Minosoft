@@ -23,7 +23,7 @@
   - Text
   - Items
   - Container (list with items, the inventory and their positions)
-- GUI
+  - GUI
   - Buttons
   - TextField
   - Label

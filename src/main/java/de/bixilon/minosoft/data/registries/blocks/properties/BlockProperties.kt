@@ -142,32 +142,31 @@ enum class BlockProperties {
             val map: MutableMap<String, MutableList<BlockProperties>> = mutableMapOf()
 
             for (value in values()) {
-                val list = map.getOrPut(value.group) { mutableListOf() }
-                list.add(value)
+                map.getOrPut(value.group) { mutableListOf() } += value
             }
 
             return@run map
         }
 
         fun parseProperty(group: String, value: Any): Pair<BlockProperties, Any> {
-            PROPERTIES[group]?.let {
-                var retProperty: BlockProperties? = null
-                var retValue: Any? = null
+            val properties = PROPERTIES[group] ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
 
-                for (blockProperty in it) {
-                    retValue = try {
-                        blockProperty.serializer.deserialize(value)
-                    } catch (exception: Throwable) {
-                        continue
-                    }
-                    retProperty = blockProperty
-                }
+            var property: BlockProperties? = null
+            var retValue: Any? = null
 
-                if (retProperty == null || retValue == null) {
-                    throw IllegalArgumentException("Can not parse value $value for group $group")
+            for (blockProperty in properties) {
+                retValue = try {
+                    blockProperty.serializer.deserialize(value)
+                } catch (exception: Throwable) {
+                    continue
                 }
-                return Pair(retProperty, retValue)
-            } ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
+                property = blockProperty
+            }
+
+            if (property == null || retValue == null) {
+                throw IllegalArgumentException("Can not parse value $value for group $group")
+            }
+            return Pair(property, retValue)
         }
     }
 }

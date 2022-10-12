@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
     override val namespace = "minosoft:connection".toResourceLocation()
-    override val latestVersion = 1
+    override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
     override val profileClass = ConnectionProfile::class.java
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)

@@ -19,28 +19,29 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.renderer.Renderer
-import de.bixilon.minosoft.gui.rendering.renderer.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
@@ -48,11 +49,11 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 class ParticleRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
+) : AsyncRenderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val profile = connection.profiles.particle
-    private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
-    private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
+    private val transparentShader: Shader = renderSystem.createShader(minosoft("particle"))
+    private val translucentShader: Shader = renderSystem.createShader(minosoft("particle"))
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
     private var transparentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
@@ -112,9 +113,9 @@ class ParticleRenderer(
                 fun applyToShader(shader: Shader) {
                     shader.apply {
                         use()
-                        setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
-                        setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
-                        setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
+                        setMat4(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4(it.viewProjectionMatrix))
+                        setVec3(ShaderUniforms.CAMERA_RIGHT, Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
+                        setVec3(ShaderUniforms.CAMERA_UP, Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
                     }
                 }
 
@@ -148,7 +149,7 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled || connection.state != PlayConnectionStates.PLAYING) {
+            if (!renderWindow.renderingState.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
                 return@TimeWorkerTask
             }
             val cameraPosition = connection.player.positionInfo.chunkPosition
@@ -158,7 +159,7 @@ class ParticleRenderer(
 
             particlesLock.acquire()
             try {
-                val time = TimeUtil.millis
+                val time = millis()
                 for (particle in particles) {
                     if (!particle.chunkPosition.isInViewDistance(particleViewDistance, cameraPosition)) { // ToDo: Check fog distance
                         particle.dead = true
@@ -194,7 +195,7 @@ class ParticleRenderer(
     }
 
     override fun addParticle(particle: Particle) {
-        if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED || !enabled) {
+        if (!renderWindow.renderingState.running || !enabled) {
             return
         }
         val particleCount = particles.size + particleQueue.size
@@ -206,18 +207,19 @@ class ParticleRenderer(
             particle.dead = true
             return
         }
-        particle.tryTick(TimeUtil.millis)
+        particle.tryTick(millis())
 
         particleQueueLock.lock()
         particleQueue += particle
         particleQueueLock.unlock()
     }
 
-    override fun prepareDraw() {
+    override fun prePrepareDraw() {
         transparentMesh.unload()
         translucentMesh.unload()
+    }
 
-
+    override fun prepareDrawAsync() {
         transparentMesh.data.clear()
         translucentMesh.data.clear()
         transparentMesh = ParticleMesh(renderWindow, transparentMesh.data)
@@ -225,7 +227,7 @@ class ParticleRenderer(
 
         particlesLock.acquire()
 
-        val time = TimeUtil.millis
+        val time = millis()
         for (particle in particles) {
             particle.tryTick(time)
             if (particle.dead) {
@@ -235,7 +237,9 @@ class ParticleRenderer(
         }
 
         particlesLock.release()
+    }
 
+    override fun postPrepareDraw() {
         transparentMesh.load()
         translucentMesh.load()
     }

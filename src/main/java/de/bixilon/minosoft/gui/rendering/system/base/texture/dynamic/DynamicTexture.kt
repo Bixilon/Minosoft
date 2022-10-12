@@ -13,12 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 interface DynamicTexture : ShaderTexture {
     val uuid: UUID
+    val size: Vec2i
     val usages: AtomicInteger
 
     val state: DynamicTextureState

@@ -133,8 +133,8 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
                 entity.tabListItem = tabListItem
             }
-
         }
+
         connection.fireEvent(TabListEntryChangeEvent(connection, this))
     }
 

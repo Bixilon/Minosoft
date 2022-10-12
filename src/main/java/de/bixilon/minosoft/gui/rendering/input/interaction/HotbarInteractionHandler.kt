@@ -79,9 +79,7 @@ class HotbarInteractionHandler(
     fun init() {
         for (i in 1..PlayerInventory.HOTBAR_SLOTS) {
             renderWindow.inputHandler.registerKeyCallback("minosoft:hotbar_slot_$i".toResourceLocation(), KeyBinding(
-                mapOf(
                     KeyActions.PRESS to setOf(KeyCodes.KEY_CODE_MAP["$i"]!!),
-                ),
             )) { selectSlot(i - 1) }
         }
 
@@ -109,9 +107,7 @@ class HotbarInteractionHandler(
 
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:swap_items".toResourceLocation(), KeyBinding(
-            mapOf(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_F),
-            ),
         )) { swapItems() }
     }
 

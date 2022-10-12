@@ -32,15 +32,11 @@ class DropInteractionManager(
         // ToDo: This creates a weird condition, because we first drop the stack and then the single item
         // ToDo: Does this swing the arm?
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_STACK_KEYBINDING, KeyBinding(
-            mapOf(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_Q),
                 KeyActions.MODIFIER to setOf(KeyCodes.KEY_LEFT_CONTROL)
-            ),
         )) { dropItem(true) }
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_KEYBINDING, KeyBinding(
-            mapOf(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_Q),
-            ),
         )) { dropItem(false) }
     }
 

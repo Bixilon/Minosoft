@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -38,7 +38,7 @@ class PowderSnowOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(re
         private val OVERLAY_TEXTURE = "misc/powder_snow_outline".toResourceLocation().texture()
 
         override fun build(renderWindow: RenderWindow, z: Float): PowderSnowOverlay? {
-            if (renderWindow.connection.assetsManager.getOrNull(OVERLAY_TEXTURE) == null) { // ToDo: Don't get twice
+            if (!renderWindow.connection.assetsManager.contains(OVERLAY_TEXTURE)) {
                 // overlay not yet available (< 1.17)
                 return null
             }

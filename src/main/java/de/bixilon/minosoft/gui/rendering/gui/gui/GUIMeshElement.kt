@@ -27,7 +27,9 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
-import de.bixilon.minosoft.gui.rendering.renderer.Drawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.BaseDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
@@ -35,13 +37,13 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 open class GUIMeshElement<T : Element>(
     val element: T,
-) : HUDElement, Drawable {
+) : HUDElement, AsyncDrawable, Drawable {
     override val guiRenderer: GUIRenderer = element.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
     private val clickCounter = MouseClickCounter()
     var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
     override val skipDraw: Boolean
-        get() = if (element is Drawable) element.skipDraw else false
+        get() = if (element is BaseDrawable) element.skipDraw else false
     protected var lastRevision = 0L
     protected var lastPosition: Vec2i? = null
     protected var lastDragPosition: Vec2i? = null
@@ -52,10 +54,13 @@ open class GUIMeshElement<T : Element>(
                 return
             }
             field = value
-            if (!value) {
-                element.onClose()
+            if (!value && state != ElementStates.CLOSED) {
+                onClose()
             }
         }
+    var state: ElementStates = ElementStates.CLOSED
+        private set
+
     override val activeWhenHidden: Boolean
         get() = element.activeWhenHidden
     override val canPop: Boolean
@@ -114,6 +119,12 @@ open class GUIMeshElement<T : Element>(
         }
     }
 
+    override fun drawAsync() {
+        if (element is AsyncDrawable) {
+            element.drawAsync()
+        }
+    }
+
     fun initMesh() {
         mesh.load()
     }
@@ -169,17 +180,23 @@ open class GUIMeshElement<T : Element>(
 
 
     override fun onClose() {
+        check(state != ElementStates.CLOSED) { "Element not active!" }
+        state = ElementStates.CLOSED
         element.onClose()
         element.onMouseLeave()
         lastPosition = null
     }
 
     override fun onOpen() {
+        check(state != ElementStates.OPENED) { "Element already active!" }
+        state = ElementStates.OPENED
         element.onOpen()
         onMouseMove(guiRenderer.currentMousePosition)
     }
 
     override fun onHide() {
+        check(state == ElementStates.OPENED) { "Can not hide in $state" }
+        state = ElementStates.HIDDEN
         element.onHide()
         element.onMouseLeave()
     }

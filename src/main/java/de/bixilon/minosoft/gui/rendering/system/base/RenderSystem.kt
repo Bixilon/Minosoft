@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.Colors
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
@@ -37,7 +37,10 @@ interface RenderSystem {
     var shader: Shader?
     var framebuffer: Framebuffer?
 
+    val active: Boolean
+
     fun init()
+    fun destroy()
 
     fun reset(
         depthTest: Boolean = true,

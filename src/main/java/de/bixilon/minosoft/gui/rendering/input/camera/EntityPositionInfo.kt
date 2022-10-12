@@ -14,9 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkSectionPosition
@@ -39,6 +41,10 @@ class EntityPositionInfo(
         private set
     var biome: Biome? = null
         private set
+    lateinit var eyePosition: Vec3
+        private set
+    lateinit var eyeBlockPosition: Vec3i
+        private set
 
     init {
         update()
@@ -51,5 +57,7 @@ class EntityPositionInfo(
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
         sectionHeight = blockPosition.sectionHeight
         biome = connection.world.getBiome(blockPosition)
+        eyePosition = entity.eyePosition
+        eyeBlockPosition = eyePosition.blockPosition
     }
 }

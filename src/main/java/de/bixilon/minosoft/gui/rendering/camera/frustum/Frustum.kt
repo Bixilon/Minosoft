@@ -22,7 +22,9 @@ import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.collections.CollectionUtil.get
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -33,10 +35,11 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 // Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(
     private val matrixHandler: MatrixHandler,
+    private val world: World,
 ) {
     private lateinit var data: FrustumData
     var revision = 0
-    private set
+        private set
 
     fun recalculate() {
         val matrix = matrixHandler.viewProjectionMatrix.transpose()
@@ -50,27 +53,37 @@ class Frustum(
             matrix[3] + matrix[2],
             matrix[3] - matrix[2],
         )
+        val planesVec3 = arrayOf(
+            Vec3(planes[0]),
+            Vec3(planes[1]),
+
+            Vec3(planes[2]),
+            Vec3(planes[3]),
+
+            Vec3(planes[4]),
+            Vec3(planes[5]),
+        )
 
         val crosses = arrayOf(
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.RIGHT]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.BOTTOM]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.TOP]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.RIGHT],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.BOTTOM],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.TOP],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.LEFT] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.BOTTOM]),
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.TOP]),
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.RIGHT]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.BOTTOM],
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.TOP],
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.RIGHT] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.BOTTOM]) cross Vec3(planes[Planes.TOP]),
-            Vec3(planes[Planes.BOTTOM]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.BOTTOM]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.BOTTOM] cross planesVec3[Planes.TOP],
+            planesVec3[Planes.BOTTOM] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.BOTTOM] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.TOP]) cross Vec3(planes[Planes.NEAR]),
-            Vec3(planes[Planes.TOP]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.TOP] cross planesVec3[Planes.NEAR],
+            planesVec3[Planes.TOP] cross planesVec3[Planes.FAR],
 
-            Vec3(planes[Planes.NEAR]) cross Vec3(planes[Planes.FAR]),
+            planesVec3[Planes.NEAR] cross planesVec3[Planes.FAR],
         )
 
         fun ij2k(i: Planes, j: Planes): Int {
@@ -78,7 +91,7 @@ class Frustum(
         }
 
         fun intersections(a: Planes, b: Planes, c: Planes): Vec3 {
-            val d = Vec3(planes[a]) dot crosses[ij2k(b, c)]
+            val d = planesVec3[a] dot crosses[ij2k(b, c)]
             val res = Mat3(crosses[ij2k(b, c)], -crosses[ij2k(a, c)], crosses[ij2k(a, b)]) * Vec3(planes[a].w, planes[b].w, planes[c].w)
             return res * (-1.0f / d)
         }
@@ -138,10 +151,19 @@ class Frustum(
         return false
     }
 
-    fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
-        val min = Vec3i.of(chunkPosition, sectionHeight, minPosition)
-        val max = Vec3i.of(chunkPosition, sectionHeight, maxPosition + 1)
+    fun containsChunkSection(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i = CHUNK_NIN_POSITION, maxPosition: Vec3i = ProtocolDefinition.CHUNK_SECTION_SIZE): Boolean {
+        val base = Vec3i.of(chunkPosition, sectionHeight)
+        val min = base + minPosition
+        val max = base + maxPosition + 1
         return containsRegion(Vec3(min), Vec3(max))
+    }
+
+    fun containsChunk(chunkPosition: Vec2i): Boolean {
+        val dimension = world.dimension
+        val minY = dimension?.minY ?: 0
+        val maxY = dimension?.maxY ?: DimensionProperties.DEFAULT_MAX_Y
+        val base = Vec2i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z)
+        return containsRegion(Vec3(base.x, minY, base.y), Vec3(base.x + ProtocolDefinition.SECTION_WIDTH_X, maxY, base.y + ProtocolDefinition.SECTION_WIDTH_Z))
     }
 
     fun containsRegion(min: Vec3i, max: Vec3i): Boolean {

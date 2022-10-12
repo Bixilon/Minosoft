@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.array.IntArrayUtil.getOrElse
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -54,7 +56,7 @@ class BakedBlockStateModel(
             val neighboursModel = neighbour?.blockModel
             var neighbourProperties: Array<AbstractFaceProperties>? = null
             if (neighboursModel != null) {
-                random.setSeed(VecUtil.generatePositionHash(position.x + direction.vector.x, position.y + direction.vector.y, position.z + direction.vector.z))
+                random.setSeed(BlockPositionUtil.generatePositionHash(position.x + direction.vector.x, position.y + direction.vector.y, position.z + direction.vector.z))
                 neighbourProperties = neighboursModel.getTouchingFaceProperties(random, direction.inverted)
             }
             for (face in faces) {
@@ -66,7 +68,7 @@ class BakedBlockStateModel(
                         continue
                     }
                 }
-                tint = tints?.getOrNull(face.tintIndex) ?: -1
+                tint = tints?.getOrElse(face.tintIndex, TintManager.DEFAULT_TINT_INDEX) ?: TintManager.DEFAULT_TINT_INDEX
                 currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[SolidCullSectionPreparer.SELF_LIGHT_INDEX]).toInt()
                 face.singleRender(positionArray, mesh, currentLight, tint)
                 if (!rendered) {

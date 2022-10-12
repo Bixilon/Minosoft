@@ -25,4 +25,10 @@ abstract class AbstractPrimitiveList<T> : Clearable {
 
     abstract fun finish()
 
+
+    protected fun checkFinished() {
+        if (finished) {
+            throw IllegalStateException("List is already finished!")
+        }
+    }
 }

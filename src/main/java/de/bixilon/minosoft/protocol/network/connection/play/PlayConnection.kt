@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
-import de.bixilon.kutil.concurrent.worker.TaskWorker
-import de.bixilon.kutil.concurrent.worker.tasks.Task
+import de.bixilon.kutil.concurrent.worker.task.TaskWorker
+import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
@@ -30,7 +30,8 @@ import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.local.PlayerPrivateKey
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabList
-import de.bixilon.minosoft.data.language.LanguageManager
+import de.bixilon.minosoft.data.language.LanguageUtil
+import de.bixilon.minosoft.data.language.translate.Translator
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
@@ -45,7 +46,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
+import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
@@ -84,9 +85,10 @@ class PlayConnection(
     lateinit var assetsManager: AssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
-    lateinit var language: LanguageManager
+    lateinit var language: Translator
 
 
+    @Deprecated("will be removed once split into modules")
     var rendering: Rendering? = null
         private set
     lateinit var player: LocalPlayerEntity
@@ -134,15 +136,16 @@ class PlayConnection(
                 }
             }
         }
-        network::state.observe(this) {
-            when (it) {
+        network::state.observe(this) { state ->
+            when (state) {
                 ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
-                    state = PlayConnectionStates.LOGGING_IN
+                    this.state = PlayConnectionStates.LOGGING_IN
                     this.network.send(StartC2SP(this.player))
                 }
+
                 ProtocolStates.PLAY -> {
-                    state = PlayConnectionStates.JOINING
+                    this.state = PlayConnectionStates.JOINING
 
                     if (CLI.connection == null) {
                         CLI.connection = this
@@ -173,6 +176,7 @@ class PlayConnection(
                 fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
                 registries.parentRegistries = version.registries
+                fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             }
 
             taskWorker += {
@@ -183,11 +187,9 @@ class PlayConnection(
             }
             var privateKey: PlayerPrivateKey? = null
             if (version.requiresSignedChat) {
-                taskWorker += Task(optional = true) {
-                    val minecraftKey = account.fetchKey(latch) ?: return@Task
-                    if (!minecraftKey.isSignatureCorrect()) {
-                        throw IllegalArgumentException("Yggdrasil signature mismatch!")
-                    }
+                taskWorker += WorkerTask(optional = true) {
+                    val minecraftKey = account.fetchKey(latch) ?: return@WorkerTask
+                    minecraftKey.requireSignature()
                     privateKey = PlayerPrivateKey(
                         expiresAt = minecraftKey.expiresAt,
                         signature = minecraftKey.signatureBytes,
@@ -201,16 +203,15 @@ class PlayConnection(
 
             state = PlayConnectionStates.LOADING
 
-            language = LanguageManager.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
+            language = LanguageUtil.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
-            fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this, privateKey)
 
             if (!RunConfiguration.DISABLE_RENDERING) {
-                val renderer = Rendering(this)
-                this.rendering = renderer
+                val rendering = Rendering(this)
+                this.rendering = rendering
                 val renderLatch = CountUpAndDownLatch(0, latch)
-                renderer.start(renderLatch)
+                rendering.start(renderLatch)
                 renderLatch.awaitWithChange()
             }
             latch.dec() // remove initial value

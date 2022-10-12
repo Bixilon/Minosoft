@@ -17,20 +17,21 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.gui.GUIElementDrawer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
 import de.bixilon.minosoft.gui.rendering.input.count.MouseClickCounter
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
+import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class DraggedManager(
-    override val guiRenderer: GUIRenderer,
-) : Initializable, InputHandler, GUIElementDrawer {
+    private val guiRenderer: GUIRenderer,
+) : Initializable, InputHandler, AsyncDrawable, Drawable {
     private val clickCounter = MouseClickCounter()
     var element: DraggedGUIElement<*>? = null
         set(value) {
@@ -50,7 +51,7 @@ class DraggedManager(
             }
             applyCursor()
         }
-    override var lastTickTime: Long = -1L
+    private var lastTickTime: Long = -1L
 
     override fun init() {
     }
@@ -70,7 +71,7 @@ class DraggedManager(
         window.cursorMode = if (element == null) CursorModes.NORMAL else CursorModes.HIDDEN
     }
 
-    fun draw() {
+    override fun drawAsync() {
         val element = element ?: return
         val time = TimeUtil.millis
         val tick = time - lastTickTime > ProtocolDefinition.TICK_TIME
@@ -91,10 +92,17 @@ class DraggedManager(
         }
         element.prepare()
         element.prepareAsync()
+    }
+
+    override fun draw() {
+        val element = element ?: return
+        if (!element.enabled) {
+            return
+        }
         element.postPrepare()
 
         guiRenderer.setup()
-        if (!element.enabled || element.mesh.data.isEmpty) {
+        if (element.mesh.data.isEmpty) {
             return
         }
         element.mesh.draw()

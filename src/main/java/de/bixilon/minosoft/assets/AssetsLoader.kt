@@ -40,7 +40,7 @@ object AssetsLoader {
             assetsManager += IndexAssetsManager(profile, property.indexVersion, property.indexHash, profile.assets.indexAssetsTypes.toSet())
         }
         if (!profile.assets.disableJarAssets) {
-            assetsManager += JarAssetsManager(property.jarAssetsHash, property.clientJarHash, profile, version)
+            assetsManager += JarAssetsManager(property.jarAssetsHash, property.clientJarHash, profile, version, property.jarAssetsTarBytes ?: JarAssetsManager.DEFAULT_TAR_BYTES)
         }
         assetsManager += Minosoft.MINOSOFT_ASSETS_MANAGER
 

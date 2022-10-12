@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.world.container
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -60,7 +61,7 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     fun unsafeGet(x: Int, y: Int, z: Int): T {
-        return data?.get(y shl 8 or (z shl 4) or x) as T
+        return data?.get(ChunkSection.getIndex(x, y, z)) as T
     }
 
 
@@ -72,9 +73,9 @@ open class SectionDataProvider<T>(
         }
         var count = 0
 
-        var minX = 16
-        var minY = 16
-        var minZ = 16
+        var minX = ProtocolDefinition.SECTION_WIDTH_X
+        var minY = ProtocolDefinition.SECTION_HEIGHT_Y
+        var minZ = ProtocolDefinition.SECTION_WIDTH_Z
 
         var maxX = 0
         var maxY = 0
@@ -112,8 +113,8 @@ open class SectionDataProvider<T>(
             if (z > maxZ) {
                 maxZ = z
             }
-
         }
+
         this.minPosition = Vec3i(minX, minY, minZ)
         this.maxPosition = Vec3i(maxX, maxY, maxZ)
         this.count = count
@@ -123,26 +124,27 @@ open class SectionDataProvider<T>(
     }
 
     operator fun get(x: Int, y: Int, z: Int): T {
-        return get(y shl 8 or (z shl 4) or x)
+        return get(ChunkSection.getIndex(x, y, z))
     }
 
-    operator fun set(x: Int, y: Int, z: Int, value: T) {
-        set(y shl 8 or (z shl 4) or x, value)
+    operator fun set(x: Int, y: Int, z: Int, value: T): T? {
+        return set(ChunkSection.getIndex(x, y, z), value)
     }
 
-    open operator fun set(index: Int, value: T): T? {
-        lock()
+    fun unsafeSet(x: Int, y: Int, z: Int, value: T): T? {
+        return unsafeSet(ChunkSection.getIndex(x, y, z), value)
+    }
+
+    open fun unsafeSet(index: Int, value: T): T? {
         var data = data
         val previous = data?.get(index)
         if (value == null) {
             if (previous == null) {
-                unlock()
                 return null
             }
             count--
             if (count == 0) {
                 this.data = null
-                unlock()
                 return previous.unsafeCast()
             }
         } else if (previous == null) {
@@ -159,12 +161,28 @@ open class SectionDataProvider<T>(
             val z = (index shr 4) and 0x0F
             val y = index shr 8
 
-            if ((minPosition.x == x && minPosition.y == y && minPosition.z == z) || (maxPosition.x == x && maxPosition.y == y && maxPosition.z == z)) {
-                recalculate()
+            if (value == null) {
+                if ((minPosition.x == x && minPosition.y == y && minPosition.z == z) || (maxPosition.x == x && maxPosition.y == y && maxPosition.z == z)) {
+                    recalculate()
+                }
+            } else {
+                if (minPosition.x > x) minPosition.x = x
+                if (minPosition.y > y) minPosition.y = y
+                if (minPosition.z > z) minPosition.z = z
+
+                if (maxPosition.x < x) maxPosition.x = x
+                if (maxPosition.y < y) maxPosition.y = y
+                if (maxPosition.z < z) maxPosition.z = z
             }
         }
-        unlock()
         return previous.unsafeCast()
+    }
+
+    open fun set(index: Int, value: T): T? {
+        lock()
+        val previous = unsafeSet(index, value)
+        unlock()
+        return previous
     }
 
     fun acquire() {
@@ -209,6 +227,6 @@ open class SectionDataProvider<T>(
 
 
     companion object {
-        private val EMPTY_ITERATOR = listOf<Any>().iterator()
+        private val EMPTY_ITERATOR = emptyArray<Any>().iterator()
     }
 }

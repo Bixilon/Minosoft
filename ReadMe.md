@@ -4,17 +4,17 @@
 <img src="https://img.shields.io/badge/license-GPLv3-brightgreen?style=for-the-badge">
 
 Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.  
-(To be clear: This is not clone of minecraft, it is a reimplementation)
+(To be clear: This is not clone of minecraft, it is a reimplementation)  
+(This software is not affiliated with Mojang AB, the original developer of Minecraft)
 
 <h2><span style="color:red">Notice: I am **not** responsible for anti cheat banned accounts, this project is heavily in development!</span></h2>
-(Also this software is not affiliated with Mojang AB)
 
 ## Feature overview
 
 - Rendering
-- Connect with any version to any server  (1.7 - latest)
+- Connect with any version to any server  (1.7 - 1.19)
 - ~~Modding~~
-- Bleeding edge performance (incredible start time of 3 - 5 seconds on modern hardware)
+- [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
 - Multiple connections to servers in 1 process
@@ -25,30 +25,30 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Independent, I will probably accept almost all patches
 - Way more stuff
 
-(some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md))
+(some ~~technical~~ explanation about the render system is [here](/doc/rendering/ReadMe.md)). You can find information about the architecture design [here](/doc/Architecture.md)
 
 ## System requirements
 
-- CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
+- CPU: Multiple (4+) cores, high clock speed (2+ GHz)
 - RAM: Minimum 500 MiB, 1 GiB recommended
-- Disk space: Minosoft itself is pretty small (a couple of MiB), the libraries take to most binary space (around 80 MiB). Minecraft itself (with its assets) takes about 300 MiB per version.
+- Disk space: 80 MiB + assets (~ 300 MiB per version)
 - GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
 - Java 11+, 16+ recommended (Java 8 is **not** supported).
+- A minecraft server (local or online)
 
 ## Rendering
 
 ### Features
 
-- Block rendering
+- Blocks
+- Entities (hitboxes and players for now)
+- Block entities (e.g. signs, chests)
+- HUD and GUI (inventory, menus, ...)
 - Particles
-- Basic light
-- Block place, break, mining
-- Item and block interaction
-- HUD
-- GUI (inventory, menus)
-- block entities (e.g. signs, chests)
-- basic entity rendering (hitboxes)
-- ~~original physics~~
+- Basic block and skylight (custom light engine)
+- Block and item interactions (e.g. place, break, mining)
+- ~~Original physics~~
+- A lot more, only listing major things here
 
 ![Rendering](doc/img/rendering5.png)  
 A world, with a ton of hud features exposed
@@ -123,12 +123,17 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 
 ## Building
 
-1. Install Maven and java 11+ (On Ubuntu based distributions: `sudo apt install maven openjdk-11-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along
+1. Install Maven and java 11+ (e.g. `sudo apt install maven openjdk-11-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along
 2. Clone this repository (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
-5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the config file
+5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete its configuration files
 6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
+
+Using IntelliJ IDEA for building or developing is strongly recommended. There you have features like build caching.
+If you run into errors, please ensure you have the latest version of it.
+You might need to increase heap memory for the compiler (`File` -> `Settings` -> `Build, Execution, Deployment` -> `Compiler` -> `Shared build process heap size`).
+Allow at least 1500 MBytes.
 
 ## Code mirrors
 

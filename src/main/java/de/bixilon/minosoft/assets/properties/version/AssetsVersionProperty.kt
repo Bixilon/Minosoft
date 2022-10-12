@@ -18,5 +18,6 @@ data class AssetsVersionProperty(
     val indexHash: String,
     val clientJarHash: String,
     val jarAssetsHash: String,
+    val jarAssetsTarBytes: Int?,
     val pixlyzerHash: String?,
 )

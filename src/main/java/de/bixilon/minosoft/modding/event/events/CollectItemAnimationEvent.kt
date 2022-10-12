@@ -14,7 +14,6 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -24,9 +23,9 @@ class CollectItemAnimationEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val collectedEntity: Entity,
-    val collector: LivingEntity,
+    val collector: Entity,
     val count: Int,
 ) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
-    constructor(connection: PlayConnection, packet: EntityCollectS2CP) : this(connection, EventInitiators.SERVER, connection.world.entities[packet.itemEntityId].unsafeCast<Entity>(), connection.world.entities[packet.collectorEntityId].unsafeCast<LivingEntity>(), packet.count)
+    constructor(connection: PlayConnection, packet: EntityCollectS2CP) : this(connection, EventInitiators.SERVER, connection.world.entities[packet.itemEntityId].unsafeCast<Entity>(), connection.world.entities[packet.collectorEntityId].unsafeCast<Entity>(), packet.count)
 }

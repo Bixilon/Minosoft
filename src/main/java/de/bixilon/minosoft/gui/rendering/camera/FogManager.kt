@@ -13,11 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.camera
 
+import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
+import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
+import de.bixilon.minosoft.data.text.formatting.color.Colors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -27,46 +31,41 @@ class FogManager(
     private val blindness = renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.BLINDNESS]
     private val player = renderWindow.connection.player
 
-    var fogColor: RGBColor? = null
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            updateShaders = true
-        }
-    var fogStart = 0.0f
-        private set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            updateShaders = true
-        }
-    var fogEnd = 0.0f
-        private set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
-            updateShaders = true
-        }
+    private var fogChange = -1L
 
-    private var updateShaders = true
+    private var _fogStart = 0.0f
+    private var _fogEnd = 0.0f
+    private var _fogColor: RGBColor? = null
+
+    private var fogStart = 0.0f
+    private var fogEnd = 0.0f
+    private var fogColor: RGBColor? = null
+
+
+    var interpolatedFogStart = 0.0f
+        private set
+    var interpolatedFogEnd = 0.0f
+        private set
+    var interpolatedFogColor: RGBColor? = null
+        private set
+    var interpolatedRevision = 0L
+        private set
+
+
+    private var shaderRevision = -1L
 
     fun draw() {
-        calculateFog()
-        if (!updateShaders) {
-            return
+        if (!calculateFog()) {
+            updateValues()
         }
         updateShaders()
     }
 
-    private fun calculateFog() {
+    private fun calculateFog(): Boolean {
         var fogStart = if (!renderWindow.connection.profiles.rendering.fog.enabled) {
             Float.MAX_VALUE
         } else {
-            renderWindow.connection.world.view.viewDistance * ProtocolDefinition.SECTION_WIDTH_X - (ProtocolDefinition.SECTION_WIDTH_X / 2.0f) // could be improved? basically view distance in blocks and then the center of that chunk
+            (renderWindow.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk
         }
         var fogEnd = fogStart + 15.0f
         var color: RGBColor? = null
@@ -87,18 +86,59 @@ class FogManager(
             fogEnd = 5.0f
         }
 
+        if (fogStart == this.fogStart && fogEnd == this.fogEnd && color == this.fogColor) {
+            return false
+        }
+
+        saveFog()
         this.fogStart = fogStart
         this.fogEnd = fogEnd
         this.fogColor = color
+        return true
+    }
+
+    private fun saveFog() {
+        val time = TimeUtil.millis
+        updateValues(time)
+        fogChange = time
+        _fogStart = interpolatedFogStart
+        _fogEnd = interpolatedFogEnd
+        _fogColor = interpolatedFogColor
+    }
+
+    private fun updateValues(time: Long = TimeUtil.millis) {
+        val delta = time - fogChange
+        if (delta > FOG_INTERPOLATION_TIME) {
+            // already up to date
+            return
+        }
+        val progress = delta / FOG_INTERPOLATION_TIME.toFloat()
+        this.interpolatedFogStart = interpolateLinear(progress, _fogStart, fogStart)
+        this.interpolatedFogEnd = interpolateLinear(progress, _fogEnd, fogEnd)
+        var color: RGBColor? = interpolateSine(progress, _fogColor ?: Colors.TRANSPARENT, fogColor ?: Colors.TRANSPARENT)
+        if (color == Colors.TRANSPARENT) {
+            color = null
+        }
+        this.interpolatedFogColor = color
+
+        this.interpolatedRevision++
     }
 
 
     private fun updateShaders() {
-        val start = fogStart
-        val end = fogEnd
-        val color = fogColor
+        val revision = interpolatedRevision
+
+        if (revision == this.shaderRevision) {
+            return
+        }
+
+        val start = interpolatedFogStart * interpolatedFogStart
+        val end = interpolatedFogEnd * interpolatedFogEnd
+        val color = interpolatedFogColor
+        val distance = end - start
+
         for (shader in renderWindow.renderSystem.shaders) {
-            if (!shader.uniforms.contains("uFogColor")) {
+            if (FOG_COLOR !in shader.uniforms) {
                 continue
             }
 
@@ -106,17 +146,22 @@ class FogManager(
 
             shader["uFogStart"] = start
             shader["uFogEnd"] = end
+            shader["uFogDistance"] = distance
             if (color == null) {
-                shader["uUseFogColor"] = false
+                shader[USE_FOG_COLOR] = false
             } else {
-                shader["uFogColor"] = color
-                shader["uUseFogColor"] = true
+                shader[FOG_COLOR] = color
+                shader[USE_FOG_COLOR] = true
             }
         }
-        updateShaders = false
+        this.shaderRevision = revision
     }
 
     companion object {
         private val LAVA_FOG_COLOR = RGBColor(0.6f, 0.1f, 0.0f)
+        private const val FOG_INTERPOLATION_TIME = 300
+
+        private const val FOG_COLOR = "uFogColor"
+        private const val USE_FOG_COLOR = "uUseFogColor"
     }
 }

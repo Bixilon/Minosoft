@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
@@ -38,7 +39,7 @@ class MatrixHandler(
 ) {
     private val connection = renderWindow.connection
     private val profile = renderWindow.connection.profiles.rendering.camera
-    val frustum = Frustum(this)
+    val frustum = Frustum(this, connection.world)
     var entity: Entity = renderWindow.connection.player
         set(value) {
             field = value
@@ -51,7 +52,6 @@ class MatrixHandler(
     var rotation = EntityRotation(0.0, 0.0)
         private set
     private var previousFOV = 0.0
-    private var fogEnd = 0.0f
 
     var cameraFront = Vec3(0.0, 0.0, -1.0)
         private set
@@ -115,7 +115,6 @@ class MatrixHandler(
         val fov = fov
         val eyePosition = entity.eyePosition
         val rotation = entity.rotation
-        val fogEnd = fogManager.fogEnd
         val debugPosition = debugPosition
         val debugRotation = debugRotation
         if ((upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) && previousDebugView == debugView && (!debugView || (previousDebugPosition == debugPosition && previousDebugRotation == debugRotation))) {
@@ -127,8 +126,7 @@ class MatrixHandler(
         this.eyePosition = eyePosition
         this.rotation = rotation
         val cameraBlockPosition = eyePosition.blockPosition
-        if (fov != previousFOV || fogEnd != this.fogEnd) {
-            this.fogEnd = fogEnd
+        if (fov != previousFOV) {
             calculateProjectionMatrix()
         }
         previousFOV = fov
@@ -172,11 +170,11 @@ class MatrixHandler(
 
     private fun updateShaders(cameraPosition: Vec3) {
         for (shader in renderWindow.renderSystem.shaders) {
-            if ("uViewProjectionMatrix" in shader.uniforms) {
-                shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
+            if (ShaderUniforms.VIEW_PROJECTION_MATRIX in shader.uniforms) {
+                shader.use().setMat4(ShaderUniforms.VIEW_PROJECTION_MATRIX, viewProjectionMatrix)
             }
-            if ("uCameraPosition" in shader.uniforms) {
-                shader.use().setVec3("uCameraPosition", cameraPosition)
+            if (ShaderUniforms.CAMERA_POSITION in shader.uniforms) {
+                shader.use().setVec3(ShaderUniforms.CAMERA_POSITION, cameraPosition)
             }
         }
     }

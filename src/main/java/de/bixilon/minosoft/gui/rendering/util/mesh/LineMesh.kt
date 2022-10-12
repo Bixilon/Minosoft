@@ -15,19 +15,20 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.kutil.primitive.BooleanUtil.one
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.VoxelShape
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.registries.shapes.AABB
+import de.bixilon.minosoft.data.registries.shapes.VoxelShape
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.util.BitByte.isBit
 
 open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow) {
 
     fun drawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor) {
+        data.ensureSize(4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
+
         val direction = (end - start).normalize()
         val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
         if (normal1 == Vec3.EMPTY) {
@@ -36,31 +37,49 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         }
         normal1.normalizeAssign()
         val normal2 = (direction cross normal1).normalize()
-        for (i in 0..4) {
-            drawLineQuad(start, end, direction, normal1, normal2, i.isBit(0), i.isBit(1), lineWidth, color)
-        }
+
+        val halfLineWidth = lineWidth / 2
+        val directionWidth = direction * halfLineWidth
+
+        normal1 *= halfLineWidth
+        normal2 *= halfLineWidth
+
+        val invertedNormal1 = normal1 * -1
+        val invertedNormal2 = normal2 * -1
+
+        val floatColor = color.rgba.buffer()
+
+        drawLineQuad(start, end, normal1, normal2, directionWidth, floatColor)
+        drawLineQuad(start, end, invertedNormal2, normal1, directionWidth, floatColor)
+        drawLineQuad(start, end, normal2, invertedNormal1, directionWidth, floatColor)
+        drawLineQuad(start, end, invertedNormal1, invertedNormal2, directionWidth, floatColor)
     }
 
-    private fun drawLineQuad(start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean, lineWidth: Float, color: RGBColor) {
-        val halfLineWidth = lineWidth / 2
-        val normal1Multiplier = invertNormal1.one
-        val normal2Multiplier = invertNormal2.one
+    fun tryDrawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, shape: VoxelShape? = null) {
+        if (shape != null && !shape.shouldDrawLine(start, end)) {
+            return
+        }
+        drawLine(start, end, lineWidth, color)
+    }
+
+    private fun drawLineQuad(start: Vec3, end: Vec3, normal1: Vec3, normal2: Vec3, directionWidth: Vec3, color: Float) {
         val positions = arrayOf(
-            start + normal2 * normal2Multiplier * halfLineWidth - direction * halfLineWidth,
-            start + normal1 * normal1Multiplier * halfLineWidth - direction * halfLineWidth,
-            end + normal1 * normal1Multiplier * halfLineWidth + direction * halfLineWidth,
-            end + normal2 * normal2Multiplier * halfLineWidth + direction * halfLineWidth,
+            start + normal2 - directionWidth,
+            start + normal1 - directionWidth,
+            end + normal1 + directionWidth,
+            end + normal2 + directionWidth,
         )
-        for ((_, positionIndex) in order) {
+        for ((positionIndex, _) in order) {
             addVertex(positions[positionIndex], color)
         }
     }
 
-    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
-        drawAABB(aabb + position, lineWidth, color, margin)
+    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f, shape: VoxelShape? = null) {
+        drawAABB(aabb + position, lineWidth, color, margin, shape)
     }
 
     fun drawLazyAABB(aabb: AABB, color: RGBColor) {
+        data.ensureSize(6 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         for (direction in Directions.VALUES) {
             val positions = direction.getPositions(Vec3(aabb.min), Vec3(aabb.max))
             for ((positionIndex, _) in order) {
@@ -69,15 +88,20 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         }
     }
 
-    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f) {
+    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f, shape: VoxelShape? = null) {
+        data.ensureSize(12 * 4 * order.size * GenericColorMeshStruct.FLOATS_PER_VERTEX)
         val min = aabb.min - margin
         val max = aabb.max + margin
 
+        fun tryDrawLine(start: Vec3, end: Vec3) {
+            tryDrawLine(start, end, lineWidth, color, shape)
+        }
+
         fun drawSideQuad(x: Double) {
-            drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), lineWidth, color)
-            drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), lineWidth, color)
-            drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), lineWidth, color)
-            drawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z), lineWidth, color)
+            tryDrawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z))
+            tryDrawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z))
+            tryDrawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z))
+            tryDrawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z))
         }
 
         // left quad
@@ -87,15 +111,24 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         drawSideQuad(max.x)
 
         // connections between 2 quads
-        drawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z), lineWidth, color)
-        drawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z), lineWidth, color)
-        drawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z), lineWidth, color)
-        drawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z), lineWidth, color)
+        tryDrawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z))
+        tryDrawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z))
+        tryDrawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z))
+        tryDrawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z))
     }
 
     fun drawVoxelShape(shape: VoxelShape, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
+        val aabbs = shape.aabbCount
+        if (aabbs == 0) {
+            return
+        }
+        if (aabbs == 1) {
+            return drawAABB(shape.first(), position, lineWidth, color)
+        }
+        val positionedShape = shape + position
+
         for (aabb in shape) {
-            drawAABB(aabb, position, lineWidth, color, margin)
+            drawAABB(aabb + position, lineWidth, color, margin, positionedShape)
         }
     }
 }

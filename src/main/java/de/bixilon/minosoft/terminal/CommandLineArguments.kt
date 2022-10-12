@@ -18,10 +18,12 @@ import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.logging.Log
 import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.impl.Arguments
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
+import java.io.PrintWriter
 
 object CommandLineArguments {
     lateinit var ARGUMENTS: List<String>
@@ -76,6 +78,10 @@ object CommandLineArguments {
             addArgument("--verbose")
                 .action(Arguments.storeTrue())
                 .help("Enables verbose logging (only affects pre profiles loading stage)")
+
+            addArgument("--ignore_yggdrasil")
+                .action(Arguments.storeTrue())
+                .help("Disable all yggdrasil (mojang) signature checking")
         }
 
     fun parse(args: Array<String>) {
@@ -85,7 +91,7 @@ object CommandLineArguments {
         try {
             namespace = PARSER.parseArgs(args)
         } catch (exception: ArgumentParserException) {
-            PARSER.handleError(exception)
+            PARSER.handleError(exception, PrintWriter(Log.FATAL_PRINT_STREAM))
             return ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
         }
 
@@ -114,7 +120,10 @@ object CommandLineArguments {
 
         RunConfiguration.AUTO_CONNECT_TO = namespace.getString("connect")
 
+
         RunConfiguration.PROFILES_HOT_RELOADING = !namespace.getBoolean("disable_profile_hot_reloading")
         RunConfiguration.VERBOSE_LOGGING = namespace.getBoolean("verbose")
+
+        RunConfiguration.IGNORE_YGGDRASIL = namespace.getBoolean("ignore_yggdrasil")
     }
 }

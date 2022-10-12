@@ -32,6 +32,10 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.EnumRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -49,11 +53,13 @@ import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.BitByte.isBitMask
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.time.Instant
+import java.util.*
 
 
 class PlayInByteBuffer : InByteBuffer {
@@ -105,7 +111,7 @@ class PlayInByteBuffer : InByteBuffer {
         return readParticleData(type)
     }
 
-    @Deprecated("Should be makde with factories")
+    @Deprecated("Should be made with factories")
     fun readParticleData(type: ParticleType): ParticleData {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
@@ -255,6 +261,7 @@ class PlayInByteBuffer : InByteBuffer {
                     }
                     textures = PlayerTextures.of(value, signature)
                 }
+
                 else -> Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown player property $name: $value" }
             }
         }
@@ -327,5 +334,25 @@ class PlayInByteBuffer : InByteBuffer {
         }
 
         return builder
+    }
+
+    fun readBitSet(): BitSet {
+        return if (versionId < ProtocolVersions.V_20W49A) {
+            KUtil.bitSetOf(readVarLong())
+        } else {
+            BitSet.valueOf(readLongArray())
+        }
+    }
+
+    fun <T> readRegistryItem(registry: AbstractRegistry<T>): T {
+        return registry[readVarInt()]
+    }
+
+    fun <T : RegistryItem> readLegacyRegistryItem(registry: Registry<T>): T? {
+        return registry[readResourceLocation()]
+    }
+
+    fun <T : Enum<*>> readEnum(registry: EnumRegistry<T>): T? {
+        return registry[readVarInt()]
     }
 }

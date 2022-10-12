@@ -77,10 +77,8 @@ class RenderWindowInputHandler(
     init {
         registerKeyCallback("minosoft:debug_change_cursor_mode".toResourceLocation(),
             KeyBinding(
-                mapOf(
-                    KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_M),
-                ),
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_M),
                 ignoreConsumer = true,
             ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
             val nextMode = when (renderWindow.window.cursorMode) {

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
@@ -50,7 +51,7 @@ abstract class OpenGLRenderableBuffer(
     }
 
     override fun unload() {
-        check(state == RenderableBufferStates.UPLOADED) { "Can not unload $state buffer!" }
+        check(state == RenderableBufferStates.UPLOADED) { "Buffer is not uploaded: $state" }
         glDeleteBuffers(id)
         if (renderSystem.boundBuffer == id) {
             renderSystem.boundBuffer = -1
@@ -59,6 +60,11 @@ abstract class OpenGLRenderableBuffer(
         state = RenderableBufferStates.UNLOADED
     }
 
+    protected fun finalize() {
+        if (state == RenderableBufferStates.UPLOADED && renderSystem.active) {
+            throw MemoryLeakException("Buffer has not been unloaded!")
+        }
+    }
 
     protected companion object {
         val RenderableBufferTypes.gl: Int

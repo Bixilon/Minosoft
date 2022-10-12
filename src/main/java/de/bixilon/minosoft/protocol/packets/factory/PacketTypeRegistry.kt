@@ -24,6 +24,7 @@ import de.bixilon.kutil.reflection.KotlinReflection.kClass
 import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.string.StringUtil.toSnakeCase
 import de.bixilon.minosoft.protocol.PacketErrorHandler
+import de.bixilon.minosoft.protocol.PacketSkipper
 import de.bixilon.minosoft.protocol.packets.Packet
 import de.bixilon.minosoft.protocol.packets.PacketsRoot
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
@@ -122,6 +123,7 @@ object PacketTypeRegistry {
         val objectInstance: Any? = kClass.objectInstance ?: kClass.companionObjectInstance
         val annotation = clazz.getAnnotation(LoadPacket::class.java)
         val errorHandler = if (objectInstance is PacketErrorHandler) objectInstance else null
+        val packetSkipper = if (objectInstance is PacketSkipper) objectInstance else null
 
         val direction = when {
             objectInstance is PacketFactory -> objectInstance.direction
@@ -142,14 +144,15 @@ object PacketTypeRegistry {
 
         if (direction == PacketDirection.SERVER_TO_CLIENT) {
             val s2cClass = clazz.unsafeCast<Class<out S2CPacket>>()
-            val type = S2CPacketType(annotation.state, s2cClass, errorHandler, annotation, factory)
+            val type = S2CPacketType(annotation.state, s2cClass, errorHandler, packetSkipper, annotation, factory)
             s2cClassMap[s2cClass] = type
             s2cStateMap.synchronizedGetOrPut(annotation.state) { mutableMapOf() }.put(name, type)?.let { throw IllegalStateException("Packet already mapped: $it (name=$name)") }
             if (parentClass != null && parentClass != s2cClass) {
                 val parentKClass = parentClass.kClass
                 val parentObject = parentKClass.objectInstance ?: parentKClass.companionObjectInstance
                 val parentErrorHandler = parentObject.nullCast<PacketErrorHandler>()
-                s2cClassMap[parentClass.unsafeCast()] = S2CPacketType(annotation.state, parentClass.unsafeCast(), parentErrorHandler, annotation)
+                val parentPacketSkipper = parentObject.nullCast<PacketSkipper>()
+                s2cClassMap[parentClass.unsafeCast()] = S2CPacketType(annotation.state, parentClass.unsafeCast(), parentErrorHandler, parentPacketSkipper, annotation)
                 s2cStateMap[annotation.state]!!.putIfAbsent(parentClass.getPacketName(null), type)
             }
         } else {

@@ -150,4 +150,8 @@ class IndexAssetsManager(
     override fun getOrNull(path: ResourceLocation): InputStream? {
         return FileAssetsUtil.readVerified(assets[path]?.hash ?: return null, verify, hashType = FileAssetsUtil.HashTypes.SHA1) ?: throw AssetCorruptedError(path)
     }
+
+    override fun contains(path: ResourceLocation): Boolean {
+        return path in assets
+    }
 }

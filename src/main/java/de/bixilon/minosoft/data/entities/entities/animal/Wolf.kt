@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.entities.entities.TamableAnimal
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
@@ -39,7 +39,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData,
     // ToDo
     @get:SynchronizedEntityData
     val angerTime: Int
-        get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
+        get() = if (connection.version.versionId <= ProtocolVersions.V_1_8_9) { // ToDo
             // ToDo if (data.sets.getBitMask(EntityDataFields.TAMABLE_ENTITY_FLAGS, 0x02)) 1 else 0
             0
         } else {
@@ -48,7 +48,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, data: EntityData,
 
     @get:SynchronizedEntityData
     override val health: Double
-        get() = if (versionId > ProtocolVersions.V_19W45B) {
+        get() = if (connection.version.versionId > ProtocolVersions.V_19W45B) {
             super.health
         } else {
             data.get<Number>(HEALTH_DATA, 0.0f).toDouble()

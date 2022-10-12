@@ -12,18 +12,47 @@
  */
 package de.bixilon.minosoft.data.registries.statistics
 
-import de.bixilon.minosoft.data.language.Translatable
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-data class Statistic(
+open class Statistic(
     override val resourceLocation: ResourceLocation,
     override val translationKey: ResourceLocation?,
     val unit: StatisticUnits,
-    @Deprecated("TODO") val subStatistics: Map<ResourceLocation, SubStatistic>,
 ) : RegistryItem(), Translatable {
 
     override fun toString(): String {
         return resourceLocation.full
+    }
+
+    companion object : ResourceLocationCodec<Statistic> {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Statistic {
+            val translationKey = data["translation_id"]?.toResourceLocation()
+            val unit = StatisticUnits[data["unit"]!!]!!
+
+            data["sub_statistics"]?.unsafeCast<Set<*>>()?.let {
+                val custom: MutableSet<ResourceLocation> = mutableSetOf()
+                for (value in it) {
+                    custom += value.toResourceLocation()
+                }
+                return OtherStatistic(
+                    resourceLocation = resourceLocation,
+                    translationKey = translationKey,
+                    unit = unit,
+                    custom = custom,
+                )
+            }
+
+            return Statistic(
+                resourceLocation = resourceLocation,
+                translationKey = translationKey,
+                unit = unit,
+            )
+        }
     }
 }

@@ -56,7 +56,7 @@ class PacketEncoder(
 
         val data = OutByteBuffer()
         data.writeVarInt(packetId)
-        data.writeUnprefixedByteArray(packetData.toArray())
+        data.writeBareByteArray(packetData.toArray())
 
         out += data.toArray()
     }

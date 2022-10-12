@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -70,7 +70,7 @@ class StartingDialog(
 
     @FXML
     fun exit() {
-        ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+        ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
     }
 
     companion object {

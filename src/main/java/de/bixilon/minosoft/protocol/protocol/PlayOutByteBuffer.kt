@@ -30,7 +30,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
         } else {
             writeVarInt(data.size)
         }
-        super.writeUnprefixedByteArray(data)
+        super.writeBareByteArray(data)
     }
 
     fun writePosition(position: Vec3i?) {

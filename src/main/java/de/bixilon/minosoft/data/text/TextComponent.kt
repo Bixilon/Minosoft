@@ -16,6 +16,9 @@ import de.bixilon.kutil.json.MutableJsonObject
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.text.events.click.ClickEvent
 import de.bixilon.minosoft.data.text.events.hover.HoverEvent
+import de.bixilon.minosoft.data.text.formatting.*
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import javafx.animation.Animation
 import javafx.animation.KeyFrame

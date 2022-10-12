@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
+@LoadPacket(threadSafe = true)
 class CommandsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val nodes = buffer.readArray { buffer.readCommandNode() }.build()
     val rootNode = nodes[buffer.readVarInt()].nullCast<RootNode>()

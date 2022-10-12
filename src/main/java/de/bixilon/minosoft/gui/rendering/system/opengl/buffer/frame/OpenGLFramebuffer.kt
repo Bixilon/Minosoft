@@ -19,12 +19,14 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.FramebufferSta
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.texture.FramebufferTexture
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.Renderbuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.render.RenderbufferModes
+import de.bixilon.minosoft.gui.rendering.system.opengl.MemoryLeakException
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferColorTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.texture.OpenGLFramebufferDepthTexture
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.render.OpenGLRenderbuffer
 import org.lwjgl.opengl.GL30.*
 
-class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
+class OpenGLFramebuffer(val renderSystem: OpenGLRenderSystem, var size: Vec2i) : Framebuffer {
     override var state: FramebufferState = FramebufferState.PREPARING
         private set
 
@@ -45,7 +47,7 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         colorTexture.init()
         attach(colorTexture)
 
-        renderbuffer = OpenGLRenderbuffer(RenderbufferModes.DEPTH_COMPONENT24, size)
+        renderbuffer = OpenGLRenderbuffer(renderSystem, RenderbufferModes.DEPTH_COMPONENT24, size)
         renderbuffer.init()
         attach(renderbuffer)
 
@@ -53,12 +55,13 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         //depthTexture.init()
         //attach(depthTexture)
 
-        check(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete!" }
-        state = FramebufferState.COMPLETE
+        val state = glCheckFramebufferStatus(GL_FRAMEBUFFER)
+        check(state == GL_FRAMEBUFFER_COMPLETE) { "Framebuffer is incomplete: $state" }
+        this.state = FramebufferState.COMPLETE
     }
 
     fun bind() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         unsafeBind()
     }
 
@@ -80,14 +83,14 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
     }
 
     override fun delete() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         glDeleteFramebuffers(id)
         id = -1
         state = FramebufferState.DELETED
     }
 
     override fun bindTexture() {
-        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete!" }
+        check(state == FramebufferState.COMPLETE) { "Framebuffer is incomplete: $state" }
         colorTexture.bind(0)
         if (this::depthTexture.isInitialized) {
             depthTexture.bind(1)
@@ -107,5 +110,11 @@ class OpenGLFramebuffer(var size: Vec2i) : Framebuffer {
         this.size = size
         delete()
         init()
+    }
+
+    protected fun finalize() {
+        if (state == FramebufferState.COMPLETE && renderSystem.active) {
+            throw MemoryLeakException("Buffer has not been unloaded!")
+        }
     }
 }

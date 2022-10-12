@@ -172,6 +172,9 @@ class GLFWWindow(
         initLatch.await() // wait for async glfw init
         glfwDefaultWindowHints()
         if (renderWindow.preferQuads) {
+            // yes, this is dirty. for using a geometry shader we need 3.3+. The thing is 3.3+ does not allow us to use GL_QUAD.
+            // we can still bind it to a lower version and use features that need a more recent version of opengl.
+            // most drivers allow us to do this, if not it'll crash
             setOpenGLVersion(3, 0, false)
         } else {
             setOpenGLVersion(3, 3, true)
@@ -181,8 +184,11 @@ class GLFWWindow(
 
         window = glfwCreateWindow(size.x, size.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
-            destroy()
-            throw RuntimeException("Failed to create the GLFW window")
+            try {
+                destroy()
+            } catch (ignored: Throwable) {
+            }
+            throw IllegalStateException("Failed to create the GLFW window. Check the console for details. BEFORE opening any issue check that your GPU supports OpenGL 3.3+ and the most recent drivers are installed!")
         }
 
         glfwMakeContextCurrent(window)
@@ -377,7 +383,7 @@ class GLFWWindow(
                 Configuration.GLFW_LIBRARY_NAME.set("glfw_async")
             }
             DefaultThreadPool += {
-                GLFWErrorCallback.createPrint(System.err).set()
+                GLFWErrorCallback.createPrint(Log.FATAL_PRINT_STREAM).set()
                 check(glfwInit()) { "Unable to initialize GLFW" }
                 initLatch.dec()
             }

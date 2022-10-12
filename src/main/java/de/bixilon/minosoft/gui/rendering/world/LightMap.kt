@@ -15,6 +15,11 @@ package de.bixilon.minosoft.gui.rendering.world
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.key.KeyActions
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -23,13 +28,16 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.random.Random
 
 @Deprecated("Needs refactoring")
-class LightMap(renderWindow: RenderWindow) {
+class LightMap(private val renderWindow: RenderWindow) {
     private val connection = renderWindow.connection
     private val profile = connection.profiles.rendering.light
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
@@ -38,12 +46,39 @@ class LightMap(renderWindow: RenderWindow) {
 
 
     fun init() {
+        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
+            initDebugLight()
+        }
+
         // Set Alpha for all of them
         for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
             uniformBuffer.buffer.put(i * 4 + 3, 1.0f)
         }
         uniformBuffer.init()
         update()
+
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:recalculate_light".toResourceLocation(),
+            KeyBinding(
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
+            )
+        ) {
+            DefaultThreadPool += {
+                connection.world.recalculateLight()
+                renderWindow.renderer[WorldRenderer]?.silentlyClearChunkCache()
+                connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
+            }
+        }
+    }
+
+    private fun initDebugLight() {
+        val random = Random(10000L)
+        for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
+            uniformBuffer.buffer.put(i * 4 + 0, random.nextFloat())
+            uniformBuffer.buffer.put(i * 4 + 1, random.nextFloat())
+            uniformBuffer.buffer.put(i * 4 + 2, random.nextFloat())
+        }
     }
 
     fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {
@@ -51,6 +86,9 @@ class LightMap(renderWindow: RenderWindow) {
     }
 
     fun update() {
+        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
+            return
+        }
         val skyGradient = connection.world.time.lightBase.toFloat()
 
         // ToDo: Lightning
@@ -75,8 +113,8 @@ class LightMap(renderWindow: RenderWindow) {
         var skyGradientColor = Vec3(skyGradient, skyGradient, 1.0f)
         skyGradientColor = interpolateLinear(0.35f, skyGradientColor, Vec3.ONE)
 
-        for (skyLight in 0 until 16) {
-            for (blockLight in 0 until 16) {
+        for (skyLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+            for (blockLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
                 val index = ((skyLight shl 4) or blockLight) * 4
 
 
@@ -120,6 +158,6 @@ class LightMap(renderWindow: RenderWindow) {
     }
 
     private companion object {
-        private const val UNIFORM_BUFFER_SIZE = 16 * 16 * 4 // skyLight * blockLight * RGBA
+        private const val UNIFORM_BUFFER_SIZE = ProtocolDefinition.LIGHT_LEVELS * ProtocolDefinition.LIGHT_LEVELS * 4 // skyLight * blockLight * RGBA
     }
 }

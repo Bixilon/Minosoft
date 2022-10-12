@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
+import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.watcher.map.MapChange.Companion.values
 import de.bixilon.minosoft.Minosoft
@@ -28,6 +29,7 @@ import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
+import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeBiMapFX
 import javafx.fxml.FXML
@@ -59,7 +61,9 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                 if (it.clickCount != 2) {
                     return@setOnMouseClicked
                 }
-                profileManager?.selected = controller.item ?: return@setOnMouseClicked
+                val item = controller.item ?: return@setOnMouseClicked
+                profileManager?.selected = item
+                setProfileInfo(item)
             }
             return@setCellFactory controller
         }
@@ -167,8 +171,8 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                 ctext = TranslatableComponents.GENERAL_DELETE
             }, 0, 0)
             it.add(Button("Edit").apply {
-                // ToDo: Profile editing
-                isDisable = true
+                // ToDo: proper profile editing
+                setOnAction { DefaultThreadPool += { DesktopUtil.openFile(profile.manager.getPath(profile.name)) } }
                 ctext = EDIT
             }, 1, 0)
 
@@ -216,11 +220,11 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
             "minosoft:profiles.profile.name".toResourceLocation() to { it.name },
             "minosoft:profiles.profile.description".toResourceLocation() to { it.description },
 
-            "minosoft:general.empty".toResourceLocation() to { " " },
+            TranslatableComponents.GENERAL_EMPTY to { " " },
 
             "minosoft:profiles.profile.disk_path".toResourceLocation() to {
                 val path = it.manager.getPath(it.name)
-                TextComponent(it.manager.getPath(it.name), clickEvent = OpenFileClickEvent(path))
+                TextComponent(path, clickEvent = OpenFileClickEvent(path))
             },
         )
     }
