@@ -104,10 +104,6 @@ data class BlockState(
                 getProperties(it)
             } ?: emptyMap()
 
-            if (block.resourceLocation.path == "oak_stairs") {
-                println()
-            }
-
             val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
 
 

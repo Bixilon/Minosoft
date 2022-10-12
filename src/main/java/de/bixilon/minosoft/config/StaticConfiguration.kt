@@ -22,5 +22,5 @@ object StaticConfiguration {
 
 
     const val IGNORE_SERVER_LIGHT = true
-    const val LIGHT_DEBUG_MODE = true
+    const val LIGHT_DEBUG_MODE = false
 }

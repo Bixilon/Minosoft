@@ -72,7 +72,7 @@ internal class VoxelSideTest {
         assertEquals(emptySet<VoxelSide>(), result.sides)
     }
 
-    fun testOr1() {
+    private fun testOr1() {
         val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
         val b = VoxelSide(0.0f, 0.0f, 0.5f, 0.5f)
 
@@ -80,7 +80,7 @@ internal class VoxelSideTest {
         assertEquals(or, b)
     }
 
-    fun testOr2() {
+    private fun testOr2() {
         val a = VoxelSide(0.0f, 0.0f, 3.0f, 3.0f)
         val b = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
 
@@ -88,7 +88,7 @@ internal class VoxelSideTest {
         assertEquals(or, b)
     }
 
-    fun testOr3() {
+    private fun testOr3() {
         val a = VoxelSide(1.0f, 1.0f, 2.0f, 2.0f)
         val b = VoxelSide(0.0f, 0.0f, 3.0f, 3.0f)
 
@@ -96,7 +96,7 @@ internal class VoxelSideTest {
         assertEquals(or, a)
     }
 
-    fun testOr4() {
+    private fun testOr4() {
         val a = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
         val b = VoxelSide(0.0f, 0.0f, 0.5f, 1.0f)
 

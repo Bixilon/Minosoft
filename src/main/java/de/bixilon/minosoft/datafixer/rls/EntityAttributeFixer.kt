@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer.rsl
+package de.bixilon.minosoft.datafixer.rls
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
