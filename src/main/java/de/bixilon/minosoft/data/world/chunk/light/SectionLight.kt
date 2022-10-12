@@ -64,11 +64,20 @@ class SectionLight(
         decreaseCheckLevel(x, z, light, reset)
 
         val neighbours = section.neighbours ?: return
+        val chunk = section.chunk
         if (y - light < 0) {
-            neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y, reset)
+            if (section.sectionHeight == chunk?.lowestSection) {
+                chunk.light.bottom.decreaseCheckLevel(x, z, light - y, reset)
+            } else {
+                neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y, reset)
+            }
         }
         if (y + light > ProtocolDefinition.SECTION_MAX_Y) {
-            neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
+            if (section.sectionHeight == chunk?.highestSection) {
+                chunk.light.top.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
+            } else {
+                neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
+            }
         }
     }
 

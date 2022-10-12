@@ -155,6 +155,38 @@ class BorderSectionLight(
         }
     }
 
+    internal fun decreaseCheckLevel(x: Int, z: Int, light: Int, reset: Boolean) {
+        decreaseCheckX(z, light, reset)
+        val neighbours = chunk.neighbours ?: return
+
+        if (x - light < 0) {
+            neighbours[ChunkNeighbours.WEST].getBorderLight().decreaseCheckX(z, light - x, reset)
+        }
+        if (x + light > ProtocolDefinition.SECTION_MAX_X) {
+            neighbours[ChunkNeighbours.EAST].getBorderLight().decreaseCheckX(z, light - (ProtocolDefinition.SECTION_MAX_X - x), reset)
+        }
+    }
+
+    private fun decreaseCheckX(z: Int, light: Int, reset: Boolean) {
+        val neighbours = chunk.neighbours ?: return
+        if (reset) reset()
+
+        if (z - light < 0) {
+            val neighbour = neighbours[ChunkNeighbours.NORTH].getBorderLight()
+            if (reset) neighbour.reset()
+        }
+        if (z + light > ProtocolDefinition.SECTION_MAX_Z) {
+            val neighbour = neighbours[ChunkNeighbours.SOUTH].getBorderLight()
+            if (reset) neighbour.reset()
+        }
+    }
+
+    fun reset() {
+        for (i in light.indices) {
+            light[i] = 0x00
+        }
+    }
+
     fun update(array: ByteArray) {
         // ToDo: Save light from server
     }

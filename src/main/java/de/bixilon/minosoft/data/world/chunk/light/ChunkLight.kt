@@ -122,6 +122,8 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun recalculate(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
+        bottom.reset()
+        top.reset()
         val sections = chunk.sections ?: Broken("Sections is null")
         for (section in sections) {
             if (section == null) {
@@ -157,6 +159,8 @@ class ChunkLight(private val chunk: Chunk) {
             }
             section.light.reset()
         }
+        bottom.reset()
+        top.reset()
     }
 
     fun propagateFromNeighbours(fireEvent: Boolean = true, fireSameChunkEvent: Boolean = true) {
