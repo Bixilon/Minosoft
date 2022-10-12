@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.config
 
 object DebugOptions {
-    const val INFINITE_TORCHES = true
+    const val INFINITE_TORCHES = false
 }
