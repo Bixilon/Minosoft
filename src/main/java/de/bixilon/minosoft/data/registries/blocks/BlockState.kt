@@ -18,10 +18,7 @@ import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.light.DirectedProperty
-import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
-import de.bixilon.minosoft.data.registries.blocks.light.SolidProperty
-import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
+import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
@@ -124,13 +121,20 @@ data class BlockState(
 
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
+            val opaque = data["is_opaque"]?.toBoolean() ?: true
+            val translucent = data["translucent"]?.toBoolean() ?: true
 
-            val lightProperties = if (outlineShape == VoxelShape.EMPTY || data["is_opaque"]?.toBoolean() == false) {
+
+            var lightProperties = if (outlineShape == VoxelShape.EMPTY || (!opaque && translucent)) {
                 TransparentProperty
             } else if (outlineShape == VoxelShape.FULL) {
                 SolidProperty
             } else {
-                DirectedProperty.of(outlineShape)
+                DirectedProperty.of(outlineShape, false)
+            }
+
+            if (lightProperties is SolidProperty && !opaque) {
+                lightProperties = CustomLightProperties(propagatesLight = true, propagatesSkylight = false)
             }
 
 

@@ -19,15 +19,20 @@ import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.registries.shapes.side.VoxelSide
 import de.bixilon.minosoft.data.registries.shapes.side.VoxelSideSet
 
-class DirectedProperty(private val directions: BooleanArray) : LightProperties {
+class DirectedProperty(
+    private val directions: BooleanArray,
+    propagatesSkylight: Boolean,
+) : LightProperties {
     override val propagatesLight: Boolean = true
-    override val propagatesSkylight: Boolean = propagatesLight(Directions.UP) && propagatesLight(Directions.DOWN)
+    override val propagatesSkylight: Boolean = propagatesSkylight && propagatesLight(Directions.UP) && propagatesLight(Directions.DOWN)
 
     override fun propagatesLight(direction: Directions): Boolean {
         return directions[direction.ordinal]
     }
 
     companion object {
+        private val TRUE = BooleanArray(Directions.SIZE) { true }
+        private val FALSE = BooleanArray(Directions.SIZE) { false }
         private val FULL_SIDE = VoxelSide(0.0f, 0.0f, 1.0f, 1.0f)
 
         private val BooleanArray.isSimple: Boolean?
@@ -45,14 +50,19 @@ class DirectedProperty(private val directions: BooleanArray) : LightProperties {
                 return value
             }
 
-        fun of(shape: VoxelShape): LightProperties {
+        fun of(shape: VoxelShape, propagatesSkylight: Boolean): LightProperties {
             val directions = BooleanArray(Directions.SIZE)
 
             for ((index, direction) in Directions.VALUES.withIndex()) {
                 directions[index] = !shape.isSideCovered(direction)
             }
 
-            val simple = directions.isSimple ?: return DirectedProperty(directions)
+
+            val simple = directions.isSimple ?: return DirectedProperty(directions, propagatesSkylight)
+
+            if (!propagatesSkylight) {
+                return DirectedProperty(if (simple) TRUE else FALSE, false)
+            }
 
             return if (simple) TransparentProperty else SolidProperty
         }

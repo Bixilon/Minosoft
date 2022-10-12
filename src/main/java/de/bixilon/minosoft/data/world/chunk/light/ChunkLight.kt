@@ -206,11 +206,7 @@ class ChunkLight(private val chunk: Chunk) {
                     // can go through block
                     continue
                 }
-                y = (sectionIndex + chunk.lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
-                if (light.propagatesLight(Directions.UP)) {
-                    // can enter the block, but not leave
-                    y--
-                }
+                y = (sectionIndex + chunk.lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY + 1
                 section.release()
                 break@sectionLoop
             }
