@@ -2,7 +2,8 @@
   "862": {
     "name": "1.19.2",
     "protocol_id": 760,
-    "packets": 855
+    "packets": 855,
+    "type": "release"
   },
   "861": {
     "name": "1.19.2-rc2",
