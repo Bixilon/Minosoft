@@ -25,6 +25,7 @@ import java.time.Instant
 class CommandC2SP(
     val command: String,
     val time: Instant = Instant.now(),
+    val salt: Long,
     val signature: CommandArgumentSignature,
     val signedPreview: Boolean,
 ) : PlayC2SPacket {
@@ -32,7 +33,7 @@ class CommandC2SP(
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(command)
         buffer.writeInstant(time)
-        buffer.writeLong(signature.salt)
+        buffer.writeLong(salt)
         buffer.writeVarInt(signature.signatures.size)
         for ((argument, signature) in signature.signatures) {
             buffer.writeString(argument)
@@ -44,12 +45,11 @@ class CommandC2SP(
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Chat message (message=$command, time=$time, signature=$signature)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Command (message=$command, time=$time, signature=$signature)" }
     }
 
 
     data class CommandArgumentSignature(
-        val salt: Long,
         val signatures: Map<String, ByteArray>,
     )
 }

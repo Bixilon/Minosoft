@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -22,17 +20,12 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(threadSafe = false)
-class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val message = buffer.readSignedMessage()
-
-    override fun handle(connection: PlayConnection) {
-        val event = ChatMessageReceiveEvent(connection, this)
-        if (connection.fireEvent(event)) {
-            return
-        }
-    }
+class MessageHeaderS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val header = buffer.readMessageHeader()
+    val signature = buffer.readByteArray()
+    val bodyDigest = buffer.readByteArray()
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat message (message=$message)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Message header (header=$header, signature=$signature, bodyDigest=$bodyDigest)" }
     }
 }

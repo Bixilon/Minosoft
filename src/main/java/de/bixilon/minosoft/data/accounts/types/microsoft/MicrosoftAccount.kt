@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.accounts.types.microsoft
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -80,7 +80,7 @@ class MicrosoftAccount(
             // already checking
             return
         }
-        if (minecraft.expires >= TimeUtil.millis / 1000) {
+        if (minecraft.expires >= millis() / 1000) {
             return check(latch, "null")
         }
         if (state == AccountStates.WORKING) {
@@ -99,7 +99,7 @@ class MicrosoftAccount(
 
     private fun refreshMinecraftToken(latch: CountUpAndDownLatch?) {
         state = AccountStates.REFRESHING
-        val time = TimeUtil.millis / 1000
+        val time = millis() / 1000
         if (time >= msa.expires) {
             // token expired
             refreshMicrosoftToken(latch)
@@ -123,7 +123,7 @@ class MicrosoftAccount(
 
     private fun checkMinecraftToken(latch: CountUpAndDownLatch?) {
         state = AccountStates.CHECKING
-        val time = TimeUtil.millis / 1000
+        val time = millis() / 1000
         if (time >= minecraft.expires) {
             // token expired
             refreshMinecraftToken(latch)
@@ -143,7 +143,7 @@ class MicrosoftAccount(
 
     override fun fetchKey(latch: CountUpAndDownLatch?): MinecraftPrivateKey {
         var key = key
-        if (key == null || key.isExpired()) {
+        if (key == null || key.isExpired() || key.signatureV2 == null) {
             key = AccountUtil.fetchPrivateKey(minecraft)
             this.key = key
             save()

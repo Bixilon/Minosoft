@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat
+package de.bixilon.minosoft.data.chat.type
 
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.data.chat.ChatTextPositions
 
-enum class ChatMessageTypes(val position: ChatTextPositions = ChatTextPositions.CHAT) {
+enum class DefaultMessageTypes(val position: ChatTextPositions = ChatTextPositions.CHAT) {
     CHAT_MESSAGE,
     SYSTEM_MESSAGE,
     GAME_MESSAGE,
@@ -28,8 +29,8 @@ enum class ChatMessageTypes(val position: ChatTextPositions = ChatTextPositions.
     COMMAND_TELLRAW,
     ;
 
-    companion object : ValuesEnum<ChatMessageTypes> {
-        override val VALUES: Array<ChatMessageTypes> = values()
-        override val NAME_MAP: Map<String, ChatMessageTypes> = EnumUtil.getEnumValues(VALUES)
+    companion object : ValuesEnum<DefaultMessageTypes> {
+        override val VALUES: Array<DefaultMessageTypes> = values()
+        override val NAME_MAP: Map<String, DefaultMessageTypes> = EnumUtil.getEnumValues(VALUES)
     }
 }

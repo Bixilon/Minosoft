@@ -56,7 +56,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicke
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
 import de.bixilon.minosoft.util.ServerAddress
@@ -189,12 +188,12 @@ class PlayConnection(
             if (version.requiresSignedChat) {
                 taskWorker += WorkerTask(optional = true) {
                     val minecraftKey = account.fetchKey(latch) ?: return@WorkerTask
-                    minecraftKey.requireSignature()
+                    minecraftKey.requireSignature(account.uuid)
                     privateKey = PlayerPrivateKey(
                         expiresAt = minecraftKey.expiresAt,
-                        signature = minecraftKey.signatureBytes,
-                        private = CryptManager.getPlayerPrivateKey(minecraftKey.pair.private),
-                        public = CryptManager.getPlayerPublicKey(minecraftKey.pair.public),
+                        signature = minecraftKey.getSignature(version.versionId),
+                        private = minecraftKey.pair.private,
+                        public = minecraftKey.pair.public,
                     )
                 }
             }

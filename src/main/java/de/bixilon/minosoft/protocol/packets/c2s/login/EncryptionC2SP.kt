@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
+import de.bixilon.minosoft.protocol.protocol.encryption.EncryptionSignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -31,7 +31,7 @@ class EncryptionC2SP private constructor(
 ) : PlayC2SPacket {
 
     constructor(secret: ByteArray, nonce: ByteArray) : this(secret, nonce as Any)
-    constructor(secret: ByteArray, nonce: SignatureData) : this(secret, nonce as Any)
+    constructor(secret: ByteArray, nonce: EncryptionSignatureData) : this(secret, nonce as Any)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByteArray(secret)
@@ -43,7 +43,9 @@ class EncryptionC2SP private constructor(
                 buffer.writeByteArray(nonce)
             } else {
                 buffer.writeBoolean(false)
-                buffer.writeSignatureData(nonce as SignatureData)
+                val nonce = nonce as EncryptionSignatureData
+                buffer.writeLong(nonce.salt)
+                buffer.writeSignatureData(nonce.signatureData)
             }
         }
     }

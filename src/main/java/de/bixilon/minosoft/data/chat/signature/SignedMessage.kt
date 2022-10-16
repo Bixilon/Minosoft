@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.chat.signature
 
+import de.bixilon.minosoft.data.chat.type.MessageType
 import de.bixilon.minosoft.data.text.ChatComponent
 
 data class SignedMessage(
@@ -20,4 +21,5 @@ data class SignedMessage(
     val signature: ByteArray,
     val body: MessageBody,
     val unsigned: ChatComponent? = null,
+    val type: MessageType? = null,
 )

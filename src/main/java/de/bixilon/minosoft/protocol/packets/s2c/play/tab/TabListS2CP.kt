@@ -53,6 +53,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         null
                     }
                     val publicKey = if (buffer.versionId >= ProtocolVersions.V_22W18A) buffer.readOptional { buffer.readPlayerPublicKey() } else null
+                    publicKey?.requireSignature(buffer.versionId, uuid)
                     data = TabListItemData(
                         name = name,
                         properties = properties,
@@ -62,12 +63,15 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         publicKey = publicKey,
                     )
                 }
+
                 TabListItemActions.UPDATE_GAMEMODE -> {
                     data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
                 }
+
                 TabListItemActions.UPDATE_LATENCY -> {
                     data = TabListItemData(ping = buffer.readVarInt())
                 }
+
                 TabListItemActions.UPDATE_DISPLAY_NAME -> {
                     val hasDisplayName = buffer.readBoolean()
                     val displayName = if (hasDisplayName) {
@@ -80,6 +84,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         displayName = displayName,
                     )
                 }
+
                 TabListItemActions.REMOVE_PLAYER -> {
                     data = null
                 }

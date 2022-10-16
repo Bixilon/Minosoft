@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.chat.ChatMessageTypes
+import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
@@ -26,14 +26,14 @@ class ChatMessageReceiveEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val message: ChatComponent,
-    val type: ChatMessageTypes,
+    val type: DefaultMessageTypes,
     val sender: UUID?,
 ) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
 
     constructor(connection: PlayConnection, packet: ChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message, packet.type, packet.sender)
 
-    constructor(connection: PlayConnection, packet: HotbarTextS2CP) : this(connection, EventInitiators.SERVER, packet.text, ChatMessageTypes.GAME_MESSAGE, null)
+    constructor(connection: PlayConnection, packet: HotbarTextS2CP) : this(connection, EventInitiators.SERVER, packet.text, DefaultMessageTypes.GAME_MESSAGE, null)
 
-    constructor(connection: PlayConnection, packet: SignedChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message, packet.type, packet.sender.uuid)
+    constructor(connection: PlayConnection, packet: SignedChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message.body.text, DefaultMessageTypes.CHAT_MESSAGE, packet.message.header.sender)
 }

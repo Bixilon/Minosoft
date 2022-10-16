@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.protocol.protocol.encryption
 
 data class SignatureData(
-    val salt: Long,
     val signature: ByteArray,
 ) {
     companion object {
-        val EMPTY = SignatureData(0L, byteArrayOf())
+        val EMPTY = SignatureData(byteArrayOf())
     }
 }

@@ -26,6 +26,8 @@ import de.bixilon.minosoft.data.chat.signature.LastSeenMessage
 import de.bixilon.minosoft.data.chat.signature.MessageBody
 import de.bixilon.minosoft.data.chat.signature.MessageHeader
 import de.bixilon.minosoft.data.chat.signature.SignedMessage
+import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
+import de.bixilon.minosoft.data.chat.type.MessageType
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
@@ -282,21 +284,6 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    fun readChatMessageSender(): ChatMessageSender {
-        return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
-    }
-
-    fun readSignatureData(): SignatureData {
-        return SignatureData(readLong(), readByteArray())
-    }
-
-    fun readPlayerPublicKey(): PlayerPublicKey? {
-        if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
-            return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
-        }
-        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
-    }
-
     fun readInstant(): Instant {
         val time = readLong()
         if (versionId >= ProtocolVersions.V_22W19A) {
@@ -360,6 +347,22 @@ class PlayInByteBuffer : InByteBuffer {
         return registry[readVarInt()]
     }
 
+
+    fun readChatMessageSender(): ChatMessageSender {
+        return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
+    }
+
+    fun readSignatureData(): SignatureData {
+        return SignatureData(readByteArray())
+    }
+
+    fun readPlayerPublicKey(): PlayerPublicKey? {
+        if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
+            return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
+        }
+        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
+    }
+
     fun readMessageHeader(): MessageHeader {
         return MessageHeader(readOptional { readByteArray() }, readUUID())
     }
@@ -377,7 +380,22 @@ class PlayInByteBuffer : InByteBuffer {
         )
     }
 
+    fun readMessageType(): MessageType {
+        return MessageType(readVarInt(), readChatComponent(), readOptional { readChatComponent() })
+    }
+
     fun readSignedMessage(): SignedMessage {
-        return SignedMessage(readMessageHeader(), readByteArray(), readMessageBody(), readOptional { readChatComponent() })
+        if (versionId < ProtocolVersions.V_1_19_1_PRE4) {
+            val message = readChatComponent()
+            val unsignedContent = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readChatComponent() } else null
+            var type = DefaultMessageTypes[readVarInt()]
+            val sender = readChatMessageSender()
+            val sendingTime = readInstant()
+            val salt = readLong()
+            val signatureData = readSignatureData()
+
+            TODO("return message, refactor")
+        }
+        return SignedMessage(readMessageHeader(), readByteArray(), readMessageBody(), readOptional { readChatComponent() }, readMessageType())
     }
 }

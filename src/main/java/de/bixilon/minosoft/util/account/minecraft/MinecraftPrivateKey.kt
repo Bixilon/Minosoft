@@ -16,32 +16,39 @@ package de.bixilon.minosoft.util.account.minecraft
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.base64.Base64Util.fromBase64
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
 import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.nio.charset.StandardCharsets
 import java.time.Instant
+import java.util.*
 
 data class MinecraftPrivateKey(
     @JsonProperty("keyPair") val pair: MinecraftKeyPair,
-    @JsonProperty("publicKeySignature") val signature: String,
+    @JsonProperty("publicKeySignature") val signature: String?,
+    @JsonProperty("publicKeySignatureV2") val signatureV2: String?,
     @JsonProperty("expiresAt") val expiresAt: Instant,
     @JsonProperty("refreshedAfter") val refreshedAfter: Instant,
 ) {
-    @get:JsonIgnore val signatureBytes: ByteArray by lazy { signature.fromBase64() }
+    @get:JsonIgnore val signatureBytes: ByteArray? by lazy { signature?.fromBase64() }
+    @get:JsonIgnore val signatureBytesV2: ByteArray by lazy { signatureV2!!.fromBase64() }
 
+    @JsonIgnore
     fun isExpired(): Boolean {
         val now = Instant.now()
         return now.isAfter(expiresAt) || now.isAfter(refreshedAfter)
     }
 
-    private val getSignedBytes: ByteArray
-        get() = (expiresAt.toEpochMilli().toString() + pair.public).toByteArray(StandardCharsets.US_ASCII)
-
-    fun isSignatureCorrect(): Boolean {
-        return YggdrasilUtil.verify(getSignedBytes, signatureBytes)
+    @JsonIgnore
+    fun requireSignature(uuid: UUID) {
+        MinecraftKeyPair.requireSignature(uuid, expiresAt, pair.public, signatureBytesV2)
+        signatureBytes?.let { YggdrasilUtil.requireSignature((expiresAt.toEpochMilli().toString() + pair.publicString).toByteArray(StandardCharsets.US_ASCII), it) }
     }
 
-    fun requireSignature() {
-        YggdrasilUtil.requireSignature(getSignedBytes, signatureBytes)
+    fun getSignature(versionId: Int): ByteArray {
+        if (versionId < ProtocolVersions.V_1_19_1_PRE4) {
+            return signatureBytes ?: throw IllegalStateException("v1 signature required")
+        }
+        return signatureBytesV2
     }
 }

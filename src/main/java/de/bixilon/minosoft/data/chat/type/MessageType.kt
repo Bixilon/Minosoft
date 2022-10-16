@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.message
+package de.bixilon.minosoft.data.chat.type
 
-import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.text.ChatComponent
 
-open class SimpleChatMessage(
-    override val text: ChatComponent,
-    val type: DefaultMessageTypes,
-) : ChatMessage
+@Deprecated("Refactor")
+class MessageType(
+    val id: Int,
+    val text: ChatComponent,
+    val targetName: ChatComponent?,
+)

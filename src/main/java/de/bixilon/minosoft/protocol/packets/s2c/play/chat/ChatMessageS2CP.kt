@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
-import de.bixilon.minosoft.data.chat.ChatMessageTypes
+import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -29,7 +29,7 @@ import java.util.*
 @LoadPacket(threadSafe = false)
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val message: ChatComponent = buffer.readChatComponent()
-    var type: ChatMessageTypes = ChatMessageTypes.CHAT_MESSAGE
+    var type: DefaultMessageTypes = DefaultMessageTypes.CHAT_MESSAGE
         private set
     var sender: UUID? = null
         private set
@@ -42,7 +42,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
                 overlay = buffer.readBoolean()
             } else {
-                type = ChatMessageTypes[buffer.readVarInt()]
+                type = DefaultMessageTypes[buffer.readVarInt()]
                 if (buffer.versionId >= ProtocolVersions.V_20W21A && buffer.versionId < ProtocolVersions.V_22W17A) {
                     sender = buffer.readUUID()
                 }

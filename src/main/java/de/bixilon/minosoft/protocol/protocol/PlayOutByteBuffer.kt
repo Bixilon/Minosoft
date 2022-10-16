@@ -87,7 +87,6 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     }
 
     fun writeSignatureData(signature: SignatureData) {
-        writeLong(signature.salt)
         writeByteArray(signature.signature)
     }
 

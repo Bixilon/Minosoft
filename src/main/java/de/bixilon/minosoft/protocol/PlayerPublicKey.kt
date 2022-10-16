@@ -17,22 +17,22 @@ import de.bixilon.kutil.base64.Base64Util.fromBase64
 import de.bixilon.kutil.base64.Base64Util.toBase64
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.primitive.LongUtil.toLong
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager.encodeNetwork
+import de.bixilon.minosoft.util.account.minecraft.key.MinecraftKeyPair
+import de.bixilon.minosoft.util.yggdrasil.YggdrasilException
 import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 import java.nio.charset.StandardCharsets
 import java.security.PublicKey
 import java.time.Instant
+import java.util.*
 
 class PlayerPublicKey(
     val expiresAt: Instant,
     val publicKey: PublicKey,
     val signature: ByteArray,
 ) {
-
-    init {
-        check(isSignatureCorrect()) { "Yggdrasil signature invalid" }
-    }
 
     constructor(nbt: JsonObject) : this(Instant.ofEpochMilli(nbt["expires_at"].toLong()), CryptManager.getPlayerPublicKey(nbt["key"].toString()), nbt["signature"].toString().fromBase64())
 
@@ -44,9 +44,21 @@ class PlayerPublicKey(
         )
     }
 
-    private fun isSignatureCorrect(): Boolean {
+    fun isLegacySignatureCorrect(): Boolean {
         val bytes = (expiresAt.toEpochMilli().toString() + publicKey.encodeNetwork()).toByteArray(StandardCharsets.US_ASCII)
 
         return YggdrasilUtil.verify(bytes, signature)
+    }
+
+    fun isSignatureCorrect(uuid: UUID): Boolean {
+        return MinecraftKeyPair.isSignatureCorrect(uuid, expiresAt, publicKey, signature)
+    }
+
+    fun requireSignature(versionId: Int, uuid: UUID) {
+        if (versionId < ProtocolVersions.V_1_19_1_PRE4) {
+            if (!isLegacySignatureCorrect()) throw YggdrasilException()
+        } else {
+            if (!isSignatureCorrect(uuid)) throw YggdrasilException()
+        }
     }
 }

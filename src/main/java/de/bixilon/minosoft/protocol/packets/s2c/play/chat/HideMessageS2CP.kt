@@ -10,13 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
-package de.bixilon.minosoft.data.chat.message
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
-import de.bixilon.minosoft.data.text.ChatComponent
+@LoadPacket(threadSafe = false)
+class HideMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val signature = buffer.readByteArray()
 
-open class SimpleChatMessage(
-    override val text: ChatComponent,
-    val type: DefaultMessageTypes,
-) : ChatMessage
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hide message (signature=$signature)" }
+    }
+}
