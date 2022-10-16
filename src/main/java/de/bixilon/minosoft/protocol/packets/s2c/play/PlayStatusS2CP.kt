@@ -16,6 +16,7 @@ import de.bixilon.kutil.image.ImageEncodingUtil.toFavicon
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -25,8 +26,9 @@ class PlayStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val motd = buffer.readOptional { buffer.readChatComponent() }
     val favicon = buffer.readOptional { buffer.readString().toFavicon() }
     val previewsChat = buffer.readBoolean()
+    val forcesSecureChat = if (buffer.versionId >= ProtocolVersions.V_1_19_1_RC2) buffer.readBoolean() else null
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Play status (motd=\"$motd§r\", favicon=$favicon, previewsChat=$previewsChat)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Play status (motd=\"$motd§r\", favicon=$favicon, previewsChat=$previewsChat, forcesSecureChat=$forcesSecureChat)" }
     }
 }

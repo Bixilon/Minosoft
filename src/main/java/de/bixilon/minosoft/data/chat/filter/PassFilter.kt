@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger and contributors
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,17 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.signature
+package de.bixilon.minosoft.data.chat.filter
 
-import de.bixilon.minosoft.data.chat.filter.Filter
-import de.bixilon.minosoft.data.chat.type.MessageType
-import de.bixilon.minosoft.data.text.ChatComponent
-
-data class SignedMessage(
-    val header: MessageHeader,
-    val signature: ByteArray,
-    val body: MessageBody,
-    val unsigned: ChatComponent? = null,
-    val type: MessageType? = null,
-    val filter: Filter? = null,
-)
+class PassFilter : Filter

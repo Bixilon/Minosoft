@@ -1,4 +1,34 @@
 {
+  "862": {
+    "name": "1.19.2",
+    "protocol_id": 760,
+    "packets": 855
+  },
+  "861": {
+    "name": "1.19.2-rc2",
+    "protocol_id": 1073741927,
+    "packets": 855
+  },
+  "860": {
+    "name": "1.19.2-rc1",
+    "protocol_id": 1073741926,
+    "packets": 855
+  },
+  "858": {
+    "name": "1.19.1-rc3",
+    "protocol_id": 1073741925,
+    "packets": 855
+  },
+  "857": {
+    "name": "1.19.1-rc2",
+    "protocol_id": 1073741924,
+    "packets": 855
+  },
+  "856": {
+    "name": "1.19.1-pre6",
+    "protocol_id": 1073741923,
+    "packets": 855
+  },
   "855": {
     "name": "1.19.1-pre5",
     "protocol_id": 1073741922,

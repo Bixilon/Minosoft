@@ -22,6 +22,8 @@ import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
 import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
+import de.bixilon.minosoft.data.chat.filter.ChatFilter
+import de.bixilon.minosoft.data.chat.filter.Filter
 import de.bixilon.minosoft.data.chat.signature.*
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.chat.type.MessageType
@@ -397,6 +399,15 @@ class PlayInByteBuffer : InByteBuffer {
 
             TODO("return message, refactor")
         }
-        return SignedMessage(readMessageHeader(), readByteArray(), readMessageBody(), readOptional { readChatComponent() }, readMessageType())
+        val header = readMessageHeader()
+        val signature = readByteArray()
+        val body = readMessageBody()
+        val unsigned = readOptional { readChatComponent() }
+        var filter: Filter? = null
+        if (versionId >= ProtocolVersions.V_1_19_1_RC3) {
+            filter = ChatFilter[readVarInt()].reader.invoke(this)
+        }
+        val type = readMessageType()
+        return SignedMessage(header, signature, body, unsigned, type, filter)
     }
 }

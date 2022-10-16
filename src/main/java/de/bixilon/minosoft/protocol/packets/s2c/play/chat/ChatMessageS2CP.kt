@@ -37,7 +37,6 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
 
     init {
-        val text = buffer.readChatComponent()
         if (buffer.versionId >= ProtocolVersions.V_14W04A) {
             if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
                 overlay = buffer.readBoolean()

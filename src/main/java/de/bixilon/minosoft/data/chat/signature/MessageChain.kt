@@ -44,11 +44,16 @@ class MessageChain {
             val buffer = OutByteBuffer()
             buffer.writeLong(salt)
             buffer.writeLong(time.epochSecond)
-            buffer.writeBareByteArray(message.getSignatureBytes())
+            if (version.versionId >= ProtocolVersions.V_1_19_2) { // ToDo: This changed somewhere after 1.19.1-pre5
+                buffer.writeBareString(message)
+            } else {
+                buffer.writeBareByteArray(message.getSignatureBytes())
+            }
 
             if (version.versionId >= ProtocolVersions.V_1_19_1_PRE5) {
                 buffer.writeByte(0x46)
                 // ToDo: send preview text (optional)
+
                 for (entry in lastSeen.messages) {
                     buffer.writeByte(0x46)
                     buffer.writeUUID(entry.profile)
