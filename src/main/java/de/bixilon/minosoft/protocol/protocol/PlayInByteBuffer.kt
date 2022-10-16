@@ -22,10 +22,7 @@ import de.bixilon.minosoft.commands.nodes.builder.CommandNodeBuilder
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactories
 import de.bixilon.minosoft.commands.parser.minosoft.dummy.DummyParser
 import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
-import de.bixilon.minosoft.data.chat.signature.LastSeenMessage
-import de.bixilon.minosoft.data.chat.signature.MessageBody
-import de.bixilon.minosoft.data.chat.signature.MessageHeader
-import de.bixilon.minosoft.data.chat.signature.SignedMessage
+import de.bixilon.minosoft.data.chat.signature.*
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.chat.type.MessageType
 import de.bixilon.minosoft.data.container.ItemStackUtil
@@ -372,8 +369,12 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readMessageBody(): MessageBody {
+        val text: ChatComponent = readChatComponent()
+        if (versionId >= ProtocolVersions.V_1_19_1_PRE5) {
+            readOptional { readChatComponent() } // decorated content
+        }
         return MessageBody(
-            text = readChatComponent(),
+            text = text,
             time = readInstant(),
             salt = readLong(),
             lastSeen = readArray { readLastSeenMessage() }

@@ -29,7 +29,7 @@ import java.util.*
 class MessageChain {
     private var previous: ByteArray? = null
 
-    fun signMessage(version: Version, privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant): ByteArray {
+    fun signMessage(version: Version, privateKey: PrivateKey, message: String, preview: ChatComponent?, salt: Long, sender: UUID, time: Instant, lastSeen: LastSeenMessageList): ByteArray {
         val signature = CryptManager.createSignature(version)
 
         signature.initSign(privateKey)
@@ -45,8 +45,18 @@ class MessageChain {
             buffer.writeLong(salt)
             buffer.writeLong(time.epochSecond)
             buffer.writeBareByteArray(message.getSignatureBytes())
-            // TODo: lastseen
+
+            if (version.versionId >= ProtocolVersions.V_1_19_1_PRE5) {
+                buffer.writeByte(0x46)
+                // ToDo: send preview text (optional)
+                for (entry in lastSeen.messages) {
+                    buffer.writeByte(0x46)
+                    buffer.writeUUID(entry.profile)
+                    buffer.writeBareByteArray(entry.signature)
+                }
+            }
             val hash = Hashing.sha256().hashBytes(buffer.toArray()).asBytes()
+
             previous?.let { signature.update(it) }
             signature.update(Longs.toByteArray(sender.mostSignificantBits))
             signature.update(Longs.toByteArray(sender.leastSignificantBits))

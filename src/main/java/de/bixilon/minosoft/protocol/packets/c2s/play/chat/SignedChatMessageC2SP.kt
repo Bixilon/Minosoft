@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.chat
 
+import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -29,6 +30,7 @@ class SignedChatMessageC2SP(
     val salt: Long,
     val signature: SignatureData? = null,
     val previewed: Boolean = false,
+    val acknowledgement: Acknowledgement?,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -43,6 +45,9 @@ class SignedChatMessageC2SP(
         buffer.writeSignatureData(signature ?: SignatureData.EMPTY)
         if (buffer.versionId >= ProtocolVersions.V_22W19A) {
             buffer.writeBoolean(previewed)
+        }
+        if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE5) {
+            buffer.writeAcknowledgement(acknowledgement!!)
         }
     }
 

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.MessageChain
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -83,9 +84,11 @@ class ConnectionUtil(
         val time = Instant.now()
         val uuid = connection.player.uuid
 
-        val signature = chain.signMessage(connection.version, privateKey, message, null, salt, uuid, time)
+        val acknowledgement = Acknowledgement.EMPTY
 
-        connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = SignatureData(signature), false))
+        val signature = chain.signMessage(connection.version, privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
+
+        connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = SignatureData(signature), false, acknowledgement))
     }
 
     @Deprecated("message will re removed as soon as brigadier is fully implemented")

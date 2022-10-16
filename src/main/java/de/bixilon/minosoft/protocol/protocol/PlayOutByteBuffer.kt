@@ -13,6 +13,9 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.data.chat.signature.Acknowledgement
+import de.bixilon.minosoft.data.chat.signature.LastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -96,5 +99,19 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
         } else {
             writeLong(instant.epochSecond)
         }
+    }
+
+    fun writeLastSeenMessage(lastSeenMessage: LastSeenMessage) {
+        writeUUID(lastSeenMessage.profile)
+        writeByteArray(lastSeenMessage.signature)
+    }
+
+    fun writeLastSeenMessageList(list: LastSeenMessageList) {
+        writeArray(list.messages) { writeLastSeenMessage(it) }
+    }
+
+    fun writeAcknowledgement(acknowledgement: Acknowledgement) {
+        writeLastSeenMessageList(acknowledgement.lastSeen)
+        writeOptional(acknowledgement.lastReceived) { writeLastSeenMessage(it) }
     }
 }
