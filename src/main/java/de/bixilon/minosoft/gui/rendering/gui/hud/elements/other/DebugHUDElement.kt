@@ -53,9 +53,10 @@ import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.properties.MinosoftProperties
+import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.SystemInformation
@@ -228,11 +229,11 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             layout += TextElement(guiRenderer, "Version $version", HorizontalAlignments.RIGHT)
         }
 
-        if (GitInfo.IS_INITIALIZED) {
+        MinosoftProperties.git?.let {
             layout += LineSpacerElement(guiRenderer)
 
-            GitInfo.apply {
-                layout += TextElement(guiRenderer, "Git $GIT_COMMIT_ID_ABBREV: $GIT_COMMIT_MESSAGE_SHORT", HorizontalAlignments.RIGHT)
+            MinosoftPropertiesLoader.apply {
+                layout += TextElement(guiRenderer, "Git ${it.commit}/${it.branch}", HorizontalAlignments.RIGHT)
             }
         }
 

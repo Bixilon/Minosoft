@@ -22,16 +22,16 @@ import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.kutil.unsafe.UnsafeUtil
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -160,7 +160,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 val crashReportFolder = File(RunConfiguration.HOME_DIRECTORY + "crash-reports")
                 crashReportFolder.mkdirs()
 
-                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(TimeUtil.millis)}.txt"
+                crashReportPath = "${crashReportFolder.slashPath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(millis())}.txt"
 
                 val stream = FileOutputStream(crashReportPath)
 
@@ -249,7 +249,7 @@ ${exception.toStackTrace()}"""
 // ${CRASH_REPORT_COMMENTS.random()}
 
 -- General Information --
-    Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(TimeUtil.millis)} (${TimeUtil.millis / 1000L})
+    Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(millis())} (${millis() / 1000L})
     Crash thread: ${Thread.currentThread().name}
 $stackTraceText
 $connections
@@ -270,7 +270,7 @@ $connections
     CPU: ${SystemInformation.PROCESSOR_TEXT}
  
 -- Git Info --
-${GitInfo.formatForCrashReport()}
+${tryCatch { MinosoftProperties.git?.format() }}
 """.removeSuffix("\n")
         }
     }

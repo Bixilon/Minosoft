@@ -42,6 +42,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -49,7 +50,6 @@ import de.bixilon.minosoft.terminal.AutoConnect
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
-import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.logging.Log
@@ -76,7 +76,7 @@ object Minosoft {
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         warnMacOS()
-        GitInfo.load()
+        MinosoftPropertiesLoader.load()
 
         val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
 

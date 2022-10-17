@@ -14,6 +14,7 @@
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import org.ajoberstar.grgit.Grgit
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.configurationcache.extensions.capitalized
@@ -25,6 +26,7 @@ plugins {
     kotlin("jvm") version "1.7.20"
     `jvm-test-suite`
     application
+    id("org.ajoberstar.grgit") version "2.3.0"
 }
 
 fun getProperty(name: String): String {
@@ -34,6 +36,7 @@ fun getProperty(name: String): String {
 
 group = "de.bixilon.minosoft"
 version = "0.1-pre"
+var stable = false
 
 val javafxVersion = getProperty("javafx.version")
 val lwjglVersion = getProperty("lwjgl.version")
@@ -302,6 +305,57 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+lateinit var git: Grgit
+
+fun loadGit() {
+    git = Grgit.open(mapOf("currentDir" to project.rootDir))
+    val commit = git.log().last()
+    val tag = git.tag.list().find { it.commit == commit }
+    project.version = if (tag != null) {
+        stable = true
+        tag.name
+    } else {
+        commit.abbreviatedId
+    }
+
+    println("Version changed to ${project.version}")
+}
+loadGit()
+
+
+val task = tasks.register("versions.json") {
+    outputs.upToDateWhen { false }
+
+    doFirst {
+        fun generateGit(): Map<String, Any> {
+            val commit = git.log().last()
+            return mapOf(
+                "branch" to git.branch.current().name,
+                "commit" to commit.id,
+                "commit_short" to commit.abbreviatedId,
+                "dirty" to git.status().isClean,
+            )
+        }
+
+        val versionInfo: MutableMap<String, Any> = mutableMapOf(
+            "general" to mutableMapOf(
+                "name" to project.version,
+                "stable" to stable,
+            )
+        )
+        try {
+            versionInfo["git"] = generateGit()
+        } catch (exception: Throwable) {
+            exception.printStackTrace()
+        }
+        val file = File(project.buildDir.path + "/resources/main/assets/minosoft/version.json")
+        file.writeText(groovy.json.JsonOutput.toJson(versionInfo))
+    }
+}
+
+tasks.getByName("processResources").finalizedBy(task)
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11

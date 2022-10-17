@@ -10,16 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.config
 
-object StaticConfiguration {
-    const val DEBUG_MODE = true // if true, additional checks will be made to validate data, ... Decreases performance
-    const val DEBUG_SLOW_LOADING = false // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)
-    const val REPLACE_SYSTEM_OUT_STREAMS = true // Replace System.out and System.err with the custom Log system ones
+package de.bixilon.minosoft.properties.git
 
-    const val LOG_DELEGATE = false
-
-
-    const val IGNORE_SERVER_LIGHT = true
-    const val LIGHT_DEBUG_MODE = false
+data class GitP(
+    val branch: String,
+    val commit: String,
+    val commitShort: String,
+    val dirty: Boolean,
+) {
+    fun format(intend: String = "    "): String {
+        return """${intend}Branch: $branch
+${intend}Commit: $commit
+${intend}Dirty: $dirty
+""".removeSuffix("\n")
+    }
 }
