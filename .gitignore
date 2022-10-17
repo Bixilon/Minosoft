@@ -3,3 +3,9 @@ out/
 .idea/
 *.iml
 hs_err_pid*.log
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
