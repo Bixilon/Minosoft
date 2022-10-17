@@ -91,7 +91,7 @@ object PacketTypeRegistry {
         val innerLatch = CountUpAndDownLatch(1, latch)
         for (info in ClassPath.from(classLoader).getTopLevelClassesRecursive(PacketsRoot::class.java.packageName)) {
             innerLatch.inc()
-            DefaultThreadPool += { loadClass(s2cClassMap, s2cStateMap, c2sClassMap, c2sStateMap, info);innerLatch.dec() }
+            DefaultThreadPool += { loadClass(s2cClassMap, s2cStateMap, c2sClassMap, c2sStateMap, info); innerLatch.dec() }
         }
         innerLatch.dec()
         innerLatch.await()

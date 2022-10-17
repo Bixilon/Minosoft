@@ -11,12 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.test.data.registries.versions
+package de.bixilon.minosoft.data.registries.versions
 
-import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import org.testng.Assert.assertEquals
+import org.testng.annotations.Test
 
 internal class VersionsIT {
 

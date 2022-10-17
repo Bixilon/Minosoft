@@ -11,20 +11,39 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.setup
+package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.Minosoft
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Order
-import org.junit.jupiter.api.Test
+import de.bixilon.minosoft.data.registries.versions.Versions
+import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
+import org.testng.annotations.Test
+
 
 internal class MinosoftSIT {
 
-    @Test
-    @Order(1)
+    @Test(priority = 0)
+    fun disableGC() {
+        Thread {
+            val reference = Minosoft
+            reference.hashCode()
+            while (true) {
+                Thread.sleep(100L)
+            }
+        }.start()
+    }
+
+    @Test(priority = 1)
     fun initAssetsManager() {
         Minosoft.MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
-        print("Initialized assets manager")
+    }
+
+    @Test(priority = 2)
+    fun setupPacketRegistry() {
+        PacketTypeRegistry.init(CountUpAndDownLatch(0))
+    }
+
+    @Test(priority = 3)
+    fun loadVersionsJson() {
+        Versions.load(CountUpAndDownLatch(0))
     }
 }

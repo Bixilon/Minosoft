@@ -14,12 +14,14 @@
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 
 plugins {
     kotlin("jvm") version "1.7.20"
     id("org.openjfx.javafxplugin") version "0.0.13"
+    `jvm-test-suite`
     application
 }
 
@@ -120,6 +122,83 @@ when (PlatformInfo.OS) {
     }
 }
 
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            targets {
+                all {
+                    testTask.configure {
+                        filter {
+                            isFailOnNoMatchingTests = true
+                        }
+                        testLogging {
+                            exceptionFormat = TestExceptionFormat.FULL
+                            showExceptions = true
+                            showStandardStreams = true
+                            events(
+                                TestLogEvent.PASSED,
+                                TestLogEvent.FAILED,
+                                TestLogEvent.SKIPPED,
+                                TestLogEvent.STANDARD_OUT,
+                                TestLogEvent.STANDARD_ERROR,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        val integrationTest by registering(JvmTestSuite::class) {
+            testType.set(TestSuiteType.INTEGRATION_TEST)
+            useTestNG()
+
+            dependencies {
+                implementation(project)
+                // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+                implementation("de.bixilon:kutil:$kutilVersion")
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        filter {
+                            isFailOnNoMatchingTests = true
+                        }
+                        testLogging {
+                            exceptionFormat = TestExceptionFormat.FULL
+                            showExceptions = true
+                            showStandardStreams = true
+                            events(
+                                TestLogEvent.PASSED,
+                                TestLogEvent.FAILED,
+                                TestLogEvent.SKIPPED,
+                                TestLogEvent.STANDARD_OUT,
+                                TestLogEvent.STANDARD_ERROR,
+                            )
+                        }
+                        options {
+                            val options = this as TestNGOptions
+                            options.preserveOrder = true
+                        }
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+            sources {
+                kotlin {
+                    setSrcDirs(listOf("src/integration-test/kotlin"))
+                }
+            }
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn(testing.suites.named("integrationTest"))
+}
+
 fun DependencyHandler.javafx(name: String) {
     implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives)
 }
@@ -197,6 +276,8 @@ dependencies {
     // kotlin
     implementation(kotlin("reflect"))
     testImplementation(kotlin("test"))
+    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 
 
     // platform specific
@@ -228,6 +309,7 @@ tasks.withType<KotlinCompile> {
 application {
     mainClass.set("de.bixilon.minosoft.Minosoft")
 }
+
 javafx {
     version = javafxVersion
     modules("javafx.controls", "javafx.fxml")
