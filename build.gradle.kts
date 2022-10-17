@@ -23,7 +23,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.7.20"
-    id("org.openjfx.javafxplugin") version "0.0.13"
     `jvm-test-suite`
     application
 }
@@ -203,7 +202,9 @@ tasks.named("check") {
 }
 
 fun DependencyHandler.javafx(name: String) {
-    implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives)
+    implementation("org.openjfx", "javafx-$name", javafxVersion, classifier = javafxNatives) {
+        version { strictly(javafxVersion) }
+    }
 }
 
 fun DependencyHandler.ikonli(name: String) {
@@ -242,10 +243,6 @@ dependencies {
     implementation("it.unimi.dsi", "fastutil-core", "8.5.9")
     testImplementation("org.objenesis", "objenesis", "3.3")
 
-    // javafx
-    javafx("graphics")
-    javafx("controls")
-    javafx("fxml")
 
     // ikonli
     ikonli("fontawesome5-pack")
@@ -261,7 +258,7 @@ dependencies {
     implementation("de.bixilon", "jiibles", "1.1.1")
     implementation("de.bixilon", "kotlin-glm", "0.9.9.1-6")
     implementation("de.bixilon", "mbf-kotlin", "0.2.1") { exclude("com.github.luben", "zstd-jni") }
-    implementation("de.bixilon.javafx", "javafx-svg", "0.3") { exclude("org.openjfx", "javafx-controls") }
+    implementation("de.bixilon.javafx", "javafx-svg", "0.3")
 
     // netty
     netty("buffer")
@@ -294,6 +291,12 @@ dependencies {
     } else {
         compileOnly("io.netty", "netty-transport-native-epoll", nettyVersion)
     }
+
+    // javafx
+    javafx("base")
+    javafx("graphics")
+    javafx("controls")
+    javafx("fxml")
 }
 
 tasks.test {
@@ -311,11 +314,6 @@ tasks.withType<KotlinCompile> {
 
 application {
     mainClass.set("de.bixilon.minosoft.Minosoft")
-}
-
-javafx {
-    version = javafxVersion
-    modules("javafx.controls", "javafx.fxml")
 }
 
 val fatJar = task("fatJar", type = Jar::class) {
