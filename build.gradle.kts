@@ -372,7 +372,7 @@ application {
 }
 
 val fatJar = task("fatJar", type = Jar::class) {
-    archiveBaseName.set("${project.name}-fat")
+    archiveBaseName.set("${project.name}-fat-${PlatformInfo.OS.name.toLowerCase()}-${PlatformInfo.ARCHITECTURE.name.toLowerCase()}")
     manifest {
         attributes["Implementation-Title"] = project.name.capitalized()
         attributes["Implementation-Version"] = project.version
