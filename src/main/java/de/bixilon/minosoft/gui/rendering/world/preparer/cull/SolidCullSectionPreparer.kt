@@ -213,7 +213,7 @@ class SolidCullSectionPreparer(
         val neighbourIndex = y shl 8 or heightmapIndex
         neighbourBlocks[ordinal] = section?.blocks?.unsafeGet(neighbourIndex)
         light[ordinal] = section?.light?.get(neighbourIndex) ?: 0x00
-        if (position.y > chunk.light.heightmap[heightmapIndex]) {
+        if (position.y >= chunk.light.heightmap[heightmapIndex]) {
             light[ordinal] = (light[ordinal].toInt() or SectionLight.SKY_LIGHT_MASK).toByte() // set sky light to 0x0F
         }
     }
