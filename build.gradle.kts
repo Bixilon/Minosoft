@@ -130,6 +130,7 @@ when (PlatformInfo.OS) {
 testing {
     suites {
         val test by getting(JvmTestSuite::class) {
+            testType.set(TestSuiteType.UNIT_TEST)
             useJUnitJupiter()
 
             targets {
