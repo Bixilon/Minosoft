@@ -14,21 +14,31 @@
 package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
+import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import org.testng.Assert
 import org.testng.annotations.Test
 
 
-internal class MinosoftSIT {
+internal object MinosoftSIT {
 
+    /**
+     * This function starts a thread to keep references to important test classes (otherwise they might get collected)
+     */
     @Test(priority = 0)
     fun disableGC() {
         Thread {
-            val reference = Minosoft
-            reference.hashCode()
-            while (true) {
-                Thread.sleep(100L)
+            val references = listOf(Minosoft, IT)
+            // basically while (true)
+            for (i in 0 until Int.MAX_VALUE) {
+                Thread.sleep(100000L)
             }
+            references.hashCode()
         }.start()
     }
 
@@ -45,5 +55,26 @@ internal class MinosoftSIT {
     @Test(priority = 3)
     fun loadVersionsJson() {
         Versions.load(CountUpAndDownLatch(0))
+    }
+
+    @Test(priority = 4)
+    fun loadAssetsProperties() {
+        AssetsVersionProperties.load(CountUpAndDownLatch(0))
+    }
+
+    @Test(priority = 5)
+    fun loadDefaultRegistries() {
+        DefaultRegistries.load(CountUpAndDownLatch(0))
+    }
+
+    @Test(priority = 6)
+    fun `load 1_18_2 PixLyzer data`() {
+        val version = Versions["1.18.2"]!!
+        Assert.assertEquals(version.versionId, ProtocolVersions.V_1_18_2)
+        IT.V_1_18_2 = version
+        ResourcesProfileManager.currentLoadingPath = "dummy"
+        val profile = ResourcesProfile()
+        ResourcesProfileManager.currentLoadingPath = null
+        version.load(profile, CountUpAndDownLatch(0))
     }
 }
