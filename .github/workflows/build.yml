@@ -58,5 +58,5 @@ jobs:
       - name: Upload build
         uses: actions/upload-artifact@v2
         with:
-          name: 'minosoft-${{ contains(matrix.os, "windows") ? "win-x64" : contains(matrix.os, "linux") ? "linux-x64" : "macos-x64) }}'
+          name: 'minosoft-${{ matrix.os }}'
           path: build/libs/minosoft-fat-*.jar
