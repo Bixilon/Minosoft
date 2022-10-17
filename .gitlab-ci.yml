@@ -49,11 +49,10 @@ test:
 package:
   stage: package
   script:
-    - chmod 660 .gradle/ build/ -R
-    - ./gradlew fatJar
+    - ./gradlew fatJar --stacktrace
   only:
     - master
-    - merge_requests
+    - test/gradle
   artifacts:
     paths:
       - build/libs/minosoft-fat-*.jar
