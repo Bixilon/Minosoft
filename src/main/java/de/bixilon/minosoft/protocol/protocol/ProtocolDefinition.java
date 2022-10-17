@@ -42,7 +42,7 @@ public final class ProtocolDefinition {
 
     public static final String DEFAULT_NAMESPACE = "minecraft";
     public static final String MINOSOFT_NAMESPACE = "minosoft";
-    public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
+    public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '\u00A7';
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 

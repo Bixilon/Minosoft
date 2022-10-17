@@ -16,7 +16,10 @@ import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.configurationcache.extensions.capitalized
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 
 plugins {
     kotlin("jvm") version "1.7.20"
@@ -313,4 +316,16 @@ application {
 javafx {
     version = javafxVersion
     modules("javafx.controls", "javafx.fxml")
+}
+
+val fatJar = task("fatJar", type = Jar::class) {
+    archiveBaseName.set("${project.name}-fat")
+    manifest {
+        attributes["Implementation-Title"] = project.name.capitalized()
+        attributes["Implementation-Version"] = project.version
+        attributes["Main-Class"] = application.mainClass
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    with(tasks["jar"] as CopySpec)
 }
