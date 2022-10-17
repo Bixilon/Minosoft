@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Gradle CI
 
 on:
   push:
@@ -11,8 +11,12 @@ on:
 jobs:
   gradle:
     strategy:
+      fail-fast: false
       matrix:
-        config:
+        name: [ "" ]
+        os: [ "" ]
+        output: [ "" ]
+        include:
           - name: Ubuntu latest
             os: ubuntu-latest
             output: linux64
@@ -23,6 +27,7 @@ jobs:
             os: macos-latest
             output: macos-x64
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v3
 
