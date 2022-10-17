@@ -23,6 +23,9 @@ import de.bixilon.minosoft.commands.nodes.RootNode
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.terminal.commands.Commands
 import de.bixilon.minosoft.terminal.commands.connection.ConnectionCommand
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.jline.reader.*
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
@@ -75,6 +78,10 @@ object CLI {
                 }
                 terminal.flush()
                 ROOT_NODE.execute(line, connection)
+            } catch (exception: EndOfFileException) {
+                Log.log(LogMessageType.GENERAL, LogLevels.VERBOSE) { exception.printStackTrace() }
+                Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "End of file error in cli thread. Disabling cli." }
+                break
             } catch (exception: UserInterruptException) {
                 ShutdownManager.shutdown(reason = AbstractShutdownReason.DEFAULT)
             } catch (exception: Throwable) {
