@@ -43,10 +43,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: assemble
-      - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assemble
       - name: Test
         uses: gradle/gradle-build-action@v2
         with:
