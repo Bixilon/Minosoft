@@ -127,13 +127,8 @@ Thanks to @jugendhacker you can get minosoft directly from the arch user reposit
 2. Clone this repository (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
-5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete its configuration files
-6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
+5. Build and run Minosoft with `./gradlew run` (or on windows `./gradlew.bat run`). If any errors occur, feel free to open an issue
 
-Using IntelliJ IDEA for building or developing is strongly recommended. There you have features like build caching.
-If you run into errors, please ensure you have the latest version of it.
-You might need to increase heap memory for the compiler (`File` -> `Settings` -> `Build, Execution, Deployment` -> `Compiler` -> `Shared build process heap size`).
-Allow at least 1500 MBytes.
 
 ## Code mirrors
 
