@@ -25,6 +25,6 @@ internal object StoneTest : BlockTest<Block>() {
 
     @Test
     fun testLightProperties() {
-        super.testLightProperties(0, false, false, true, booleanArrayOf(false, false, false, false, false, false))
+        state.testLightProperties(0, false, false, true, booleanArrayOf(false, false, false, false, false, false))
     }
 }

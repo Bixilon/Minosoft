@@ -25,6 +25,6 @@ internal object TorchTest : BlockTest<Block>() {
 
     @Test
     fun testLightProperties() {
-        super.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
+        state.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
     }
 }

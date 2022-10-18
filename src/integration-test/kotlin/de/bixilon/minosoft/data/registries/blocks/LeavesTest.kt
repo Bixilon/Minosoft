@@ -25,6 +25,6 @@ internal object LeavesTest : BlockTest<LeavesBlock>() {
 
     @Test
     fun testLightProperties() {
-        super.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
+        state.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
     }
 }

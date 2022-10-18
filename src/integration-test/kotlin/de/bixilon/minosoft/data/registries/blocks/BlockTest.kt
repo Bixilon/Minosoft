@@ -36,15 +36,15 @@ abstract class BlockTest<T : Block> {
         this.state = block.defaultState
     }
 
-    fun testLightProperties(
+    fun BlockState.testLightProperties(
         luminance: Int,
         propagatesLight: Boolean,
         skylightEnters: Boolean,
         filtersSkylight: Boolean,
         propagates: BooleanArray,
     ) {
-        assertEquals(state.luminance, luminance)
-        val light = state.lightProperties
+        assertEquals(this.luminance, luminance)
+        val light = this.lightProperties
         assertEquals(light.propagatesLight, propagatesLight)
         assertEquals(light.skylightEnters, skylightEnters)
         assertEquals(light.filtersSkylight, filtersSkylight)
