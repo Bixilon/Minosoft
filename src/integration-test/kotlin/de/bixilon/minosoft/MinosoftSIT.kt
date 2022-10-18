@@ -20,11 +20,9 @@ import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileMan
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.testng.Assert
 import org.testng.annotations.BeforeTest
 
 
@@ -38,7 +36,7 @@ internal object MinosoftSIT {
         loadVersionsJson()
         loadAssetsProperties()
         loadDefaultRegistries()
-        `load 1_18_2 PixLyzer data`()
+        loadPixlyzerData()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
     }
 
@@ -74,13 +72,17 @@ internal object MinosoftSIT {
         DefaultRegistries.load(CountUpAndDownLatch(0))
     }
 
-    fun `load 1_18_2 PixLyzer data`() {
-        val version = Versions["1.18.2"]!!
-        Assert.assertEquals(version.versionId, ProtocolVersions.V_1_18_2)
-        IT.V_1_18_2 = version
+    private fun createResourcesProfile(): ResourcesProfile {
         ResourcesProfileManager.currentLoadingPath = "dummy"
         val profile = ResourcesProfile()
         ResourcesProfileManager.currentLoadingPath = null
-        version.load(profile, CountUpAndDownLatch(0))
+        return profile
+    }
+
+    fun loadPixlyzerData() {
+        val version = Versions[IT.VERSION_NAME]!!
+        IT.VERSION = version
+
+        version.load(createResourcesProfile(), CountUpAndDownLatch(0))
     }
 }

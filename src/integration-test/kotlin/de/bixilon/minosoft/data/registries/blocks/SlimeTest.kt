@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.SlimeBlock
 import org.testng.annotations.Test
 
-internal object GlassTest : BlockTest<Block>() {
+internal object SlimeTest : BlockTest<SlimeBlock>() {
 
     @Test
-    private fun getGlass() {
-        super.retrieveBlock(MinecraftBlocks.GLASS)
+    private fun getSlimeBlock() {
+        super.retrieveBlock(MinecraftBlocks.SLIME_BLOCK)
     }
 
     @Test
     fun testLightProperties() {
-        super.testLightProperties(0, true, true, false, booleanArrayOf(true, true, true, true, true, true))
+        super.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
     }
 }

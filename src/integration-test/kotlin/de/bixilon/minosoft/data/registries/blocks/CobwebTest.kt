@@ -19,7 +19,7 @@ import org.testng.annotations.Test
 internal object CobwebTest : BlockTest<Block>() {
 
     @Test
-    private fun getOakLeaves() {
+    private fun getCobweb() {
         super.retrieveBlock(MinecraftBlocks.COBWEB)
     }
 

@@ -17,5 +17,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.versions.Version
 
 object IT {
-    var V_1_18_2: Version = unsafeNull()
+    const val VERSION_NAME = "1.18.2"
+    var VERSION: Version = unsafeNull()
 }

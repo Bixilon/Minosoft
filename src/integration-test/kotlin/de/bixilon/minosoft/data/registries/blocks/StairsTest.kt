@@ -19,7 +19,7 @@ import org.testng.annotations.Test
 internal object StairsTest : BlockTest<Block>() {
 
     @Test
-    private fun getOakLeaves() {
+    private fun getOakStairs() {
         super.retrieveBlock(MinecraftBlocks.OAK_STAIRS)
     }
 
