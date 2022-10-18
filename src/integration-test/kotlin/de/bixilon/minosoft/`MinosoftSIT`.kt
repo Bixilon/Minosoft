@@ -21,16 +21,28 @@ import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.testng.Assert
-import org.testng.annotations.Test
+import org.testng.annotations.BeforeTest
 
 
 internal object MinosoftSIT {
 
-    /**
-     * This function starts a thread to keep references to important test classes (otherwise they might get collected)
-     */
-    @Test(priority = 0)
+    @BeforeTest
+    fun setup() {
+        disableGC()
+        initAssetsManager()
+        setupPacketRegistry()
+        loadVersionsJson()
+        loadAssetsProperties()
+        loadDefaultRegistries()
+        `load 1_18_2 PixLyzer data`()
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Integration tests setup successfully!" }
+    }
+
+
     fun disableGC() {
         Thread {
             val references = listOf(Minosoft, IT)
@@ -42,32 +54,26 @@ internal object MinosoftSIT {
         }.start()
     }
 
-    @Test(priority = 1)
     fun initAssetsManager() {
         Minosoft.MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
     }
 
-    @Test(priority = 2)
     fun setupPacketRegistry() {
         PacketTypeRegistry.init(CountUpAndDownLatch(0))
     }
 
-    @Test(priority = 3)
     fun loadVersionsJson() {
         Versions.load(CountUpAndDownLatch(0))
     }
 
-    @Test(priority = 4)
     fun loadAssetsProperties() {
         AssetsVersionProperties.load(CountUpAndDownLatch(0))
     }
 
-    @Test(priority = 5)
     fun loadDefaultRegistries() {
         DefaultRegistries.load(CountUpAndDownLatch(0))
     }
 
-    @Test(priority = 6)
     fun `load 1_18_2 PixLyzer data`() {
         val version = Versions["1.18.2"]!!
         Assert.assertEquals(version.versionId, ProtocolVersions.V_1_18_2)

@@ -25,6 +25,6 @@ internal object StairsTest : BlockTest<Block>() {
 
     @Test
     fun testLightProperties() {
-        super.testLightProperties(0, true, false, false, booleanArrayOf(false, true, true, true, true, true)) // ToDo: one side needs to be false
+        super.testLightProperties(0, true, false, false, booleanArrayOf(false, true, false, true, true, true))
     }
 }
