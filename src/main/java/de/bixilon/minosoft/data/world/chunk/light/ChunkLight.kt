@@ -206,11 +206,15 @@ class ChunkLight(private val chunk: Chunk) {
             section.acquire()
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
                 val light = section.blocks.unsafeGet(x, sectionY, z)?.lightProperties ?: continue
-                if (light.propagatesSkylight) {
+
+                if (light.skylightEnters && !light.filtersSkylight) {
                     // can go through block
                     continue
                 }
-                y = (sectionIndex + chunk.lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY + 1
+                y = (sectionIndex + chunk.lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
+                if (!light.skylightEnters) {
+                    y++
+                }
                 section.release()
                 break@sectionLoop
             }

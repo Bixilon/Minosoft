@@ -15,5 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.light
 
 object SolidProperty : SimpleLightProperties {
     override val propagatesLight: Boolean get() = false
-    override val propagatesSkylight: Boolean get() = false
+    override val skylightEnters: Boolean get() = false
+    override val filtersSkylight: Boolean get() = true
 }

@@ -11,10 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.light
+package de.bixilon.minosoft.data.registries.blocks
 
-class CustomLightProperties(
-    override val propagatesLight: Boolean,
-    override val skylightEnters: Boolean,
-    override val filtersSkylight: Boolean,
-) : SimpleLightProperties
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import org.testng.annotations.Test
+
+internal object GlassTest : BlockTest<Block>() {
+
+    @Test
+    private fun getOakLeaves() {
+        super.retrieveBlock(MinecraftBlocks.GLASS)
+    }
+
+    @Test
+    fun testLightProperties() {
+        super.testLightProperties(0, true, true, false, booleanArrayOf(true, true, true, true, true, true))
+    }
+}

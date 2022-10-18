@@ -21,10 +21,10 @@ import de.bixilon.minosoft.data.registries.shapes.side.VoxelSideSet
 
 class DirectedProperty(
     private val directions: BooleanArray,
-    propagatesSkylight: Boolean,
+    override val skylightEnters: Boolean,
+    override val filtersSkylight: Boolean,
 ) : LightProperties {
     override val propagatesLight: Boolean = true
-    override val propagatesSkylight: Boolean = propagatesSkylight && propagatesLight(Directions.UP) && propagatesLight(Directions.DOWN)
 
     override fun propagatesLight(direction: Directions): Boolean {
         return directions[direction.ordinal]
@@ -50,7 +50,7 @@ class DirectedProperty(
                 return value
             }
 
-        fun of(shape: VoxelShape, propagatesSkylight: Boolean): LightProperties {
+        fun of(shape: VoxelShape, skylightEnters: Boolean, filtersLight: Boolean): LightProperties {
             val directions = BooleanArray(Directions.SIZE)
 
             for ((index, direction) in Directions.VALUES.withIndex()) {
@@ -58,10 +58,10 @@ class DirectedProperty(
             }
 
 
-            val simple = directions.isSimple ?: return DirectedProperty(directions, propagatesSkylight)
+            val simple = directions.isSimple ?: return DirectedProperty(directions, skylightEnters, filtersLight)
 
-            if (!propagatesSkylight) {
-                return DirectedProperty(if (simple) TRUE else FALSE, false)
+            if (!filtersLight) {
+                return DirectedProperty(if (simple) TRUE else FALSE, simple, !simple)
             }
 
             return if (simple) TransparentProperty else SolidProperty

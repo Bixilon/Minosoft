@@ -17,7 +17,9 @@ import de.bixilon.minosoft.data.direction.Directions
 
 interface LightProperties {
     val propagatesLight: Boolean
-    val propagatesSkylight: Boolean
+
+    val skylightEnters: Boolean
+    val filtersSkylight: Boolean
 
 
     fun propagatesLight(direction: Directions): Boolean

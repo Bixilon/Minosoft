@@ -130,11 +130,11 @@ data class BlockState(
             } else if (outlineShape == VoxelShape.FULL) {
                 SolidProperty
             } else {
-                DirectedProperty.of(outlineShape, false)
+                DirectedProperty.of(outlineShape, false, false)
             }
 
             if (lightProperties is SolidProperty && !opaque) {
-                lightProperties = CustomLightProperties(propagatesLight = true, propagatesSkylight = false)
+                lightProperties = CustomLightProperties(propagatesLight = true, skylightEnters = false, false)
             }
 
 
