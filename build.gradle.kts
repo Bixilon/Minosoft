@@ -127,11 +127,20 @@ when (PlatformInfo.OS) {
     }
 }
 
+
 testing {
     suites {
+
         val test by getting(JvmTestSuite::class) {
             testType.set(TestSuiteType.UNIT_TEST)
             useJUnitJupiter()
+
+            dependencies {
+                implementation(project)
+                // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+                implementation("de.bixilon:kutil:$kutilVersion")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+            }
 
             targets {
                 all {
@@ -154,7 +163,13 @@ testing {
                     }
                 }
             }
+            sources {
+                kotlin {
+                    setSrcDirs(listOf("src/test/java"))
+                }
+            }
         }
+
 
         val integrationTest by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.INTEGRATION_TEST)
@@ -195,6 +210,48 @@ testing {
             sources {
                 kotlin {
                     setSrcDirs(listOf("src/integration-test/kotlin"))
+                }
+            }
+        }
+        val benchmarkTest by registering(JvmTestSuite::class) {
+            testType.set(TestSuiteType.PERFORMANCE_TEST)
+            useJUnitJupiter()
+
+            dependencies {
+                implementation(project)
+                // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+                implementation("de.bixilon:kutil:$kutilVersion")
+
+                implementation("org.objenesis:objenesis:3.3")
+
+                // ToDo: Include dependencies from project
+                implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        filter {
+                            isFailOnNoMatchingTests = false
+                        }
+                        testLogging {
+                            exceptionFormat = TestExceptionFormat.FULL
+                            showExceptions = true
+                            showStandardStreams = true
+                            events(
+                                TestLogEvent.PASSED,
+                                TestLogEvent.FAILED,
+                                TestLogEvent.SKIPPED,
+                                TestLogEvent.STANDARD_OUT,
+                                TestLogEvent.STANDARD_ERROR,
+                            )
+                        }
+                    }
+                }
+            }
+            sources {
+                kotlin {
+                    setSrcDirs(listOf("src/benchmark/kotlin"))
                 }
             }
         }
@@ -245,7 +302,6 @@ dependencies {
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.9")
-    testImplementation("org.objenesis", "objenesis", "3.3")
 
 
     // ikonli
@@ -279,9 +335,6 @@ dependencies {
 
     // kotlin
     implementation(kotlin("reflect"))
-    testImplementation(kotlin("test"))
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
 
 
     // platform specific
