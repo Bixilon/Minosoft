@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeig
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidBlock
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createSolidLight
 import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.fillBottom
-import org.junit.jupiter.api.Test
+import org.testng.annotations.Test
 import kotlin.system.measureNanoTime
 
 

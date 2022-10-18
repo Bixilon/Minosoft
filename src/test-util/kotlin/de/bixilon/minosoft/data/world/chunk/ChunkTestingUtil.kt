@@ -35,8 +35,8 @@ import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minosoft
-import org.junit.jupiter.api.Test
 import org.objenesis.ObjenesisStd
+import org.testng.annotations.Test
 import kotlin.reflect.jvm.javaField
 
 const val SECTIONS = 16

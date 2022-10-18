@@ -178,7 +178,12 @@ testing {
             dependencies {
                 implementation(project)
                 // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+
+                implementation("org.objenesis:objenesis:3.3")
+
+                // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
+                implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
             }
 
             targets {
@@ -209,22 +214,22 @@ testing {
             }
             sources {
                 kotlin {
-                    setSrcDirs(listOf("src/integration-test/kotlin"))
+                    setSrcDirs(listOf("src/integration-test/kotlin", "src/test-util/kotlin"))
                 }
             }
         }
         val benchmarkTest by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.PERFORMANCE_TEST)
-            useJUnitJupiter()
+            useTestNG()
 
             dependencies {
                 implementation(project)
                 // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
-                implementation("de.bixilon:kutil:$kutilVersion")
 
                 implementation("org.objenesis:objenesis:3.3")
 
                 // ToDo: Include dependencies from project
+                implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
             }
 
@@ -251,7 +256,7 @@ testing {
             }
             sources {
                 kotlin {
-                    setSrcDirs(listOf("src/benchmark/kotlin"))
+                    setSrcDirs(listOf("src/benchmark/kotlin", "src/test-util/kotlin"))
                 }
             }
         }
