@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.latestVersion
+import de.bixilon.minosoft.config.profile.profiles.connection.signature.SignatureC
 import de.bixilon.minosoft.config.profile.profiles.connection.skin.SkinC
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 
@@ -55,6 +56,7 @@ class ConnectionProfile(
     var mainArm by delegate(Arms.RIGHT)
 
     val skin = SkinC()
+    val signature = SignatureC()
 
     var autoRespawn by delegate(false)
 

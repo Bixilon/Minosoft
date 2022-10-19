@@ -94,7 +94,7 @@ class ConnectionUtil(
 
     @Deprecated("message will re removed as soon as brigadier is fully implemented")
     fun sendCommand(message: String, stack: CommandStack) {
-        if (!connection.version.requiresSignedChat) {
+        if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
             return sendChatMessage(message)
         }
         TODO("Can not send signed chat!")

@@ -185,7 +185,7 @@ class PlayConnection(
                 Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Assets verified!" }
             }
             var privateKey: PlayerPrivateKey? = null
-            if (version.requiresSignedChat) {
+            if (version.requiresSignedChat && !profiles.connection.signature.disableKeys) {
                 taskWorker += WorkerTask(optional = true) {
                     val minecraftKey = account.fetchKey(latch) ?: return@WorkerTask
                     minecraftKey.requireSignature(account.uuid)

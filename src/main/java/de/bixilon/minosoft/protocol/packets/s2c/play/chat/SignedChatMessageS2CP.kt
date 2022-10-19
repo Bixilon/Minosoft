@@ -110,6 +110,14 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
+        if (message.error != null) {
+            // failed
+            Log.log(LogMessageType.CHAT_IN, LogLevels.WARN) { "Signature error: ${message.error}: ${message.text}" }
+
+            if (connection.profiles.connection.signature.ignoreBadSignedMessages) {
+                return
+            }
+        }
         connection.fireEvent(ChatMessageReceiveEvent(connection, EventInitiators.SERVER, message))
     }
 
