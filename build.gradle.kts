@@ -369,16 +369,18 @@ lateinit var git: Grgit
 
 fun loadGit() {
     git = Grgit.open(mapOf("currentDir" to project.rootDir))
-    val commit = git.log().last()
+    val commit = git.log().first()
     val tag = git.tag.list().find { it.commit == commit }
-    project.version = if (tag != null) {
+    val nextVersion = if (tag != null) {
         stable = true
         tag.name
     } else {
         commit.abbreviatedId
     }
-
-    println("Version changed to ${project.version}")
+    if (project.version != nextVersion) {
+        project.version = nextVersion
+        println("Version changed to ${project.version}")
+    }
 }
 loadGit()
 
@@ -387,8 +389,10 @@ val task = tasks.register("versions.json") {
     outputs.upToDateWhen { false }
 
     doFirst {
+        loadGit()
+
         fun generateGit(): Map<String, Any> {
-            val commit = git.log().last()
+            val commit = git.log().first()
             return mapOf(
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
