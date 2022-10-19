@@ -316,7 +316,7 @@ class SectionLight(
     fun traceSkylightIncrease(x: Int, y: Int, z: Int, nextLevel: Int, target: Directions?, totalY: Int, noForce: Boolean) {
         val chunk = section.chunk ?: Broken("chunk == null")
         val heightmapIndex = (z shl 4) or x
-        if (noForce && totalY > chunk.light.heightmap[heightmapIndex]) {
+        if (noForce && totalY >= chunk.light.heightmap[heightmapIndex]) {
             // this light level will be 15, don't care
             return
         }

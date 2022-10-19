@@ -108,6 +108,7 @@ class BorderSectionLight(
     }
 
     fun traceSkyIncrease(x: Int, z: Int, nextLevel: Int) {
+        // TODO: check heightmap
         val index = z shl 4 or x
         val light = light[index].toInt()
         if ((light and SectionLight.SKY_LIGHT_MASK shr 4) >= nextLevel) {
