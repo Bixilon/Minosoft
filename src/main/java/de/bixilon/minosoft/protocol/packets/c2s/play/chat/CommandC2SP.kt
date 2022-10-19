@@ -27,7 +27,7 @@ class CommandC2SP(
     val command: String,
     val time: Instant = Instant.now(),
     val salt: Long,
-    val signature: CommandArgumentSignature,
+    val signature: Map<String, ByteArray>,
     val signedPreview: Boolean,
     val acknowledgement: Acknowledgement?,
 ) : PlayC2SPacket {
@@ -36,8 +36,8 @@ class CommandC2SP(
         buffer.writeString(command)
         buffer.writeInstant(time)
         buffer.writeLong(salt)
-        buffer.writeVarInt(signature.signatures.size)
-        for ((argument, signature) in signature.signatures) {
+        buffer.writeVarInt(signature.size)
+        for ((argument, signature) in signature) {
             buffer.writeString(argument)
             buffer.writeByteArray(signature)
         }
@@ -52,9 +52,4 @@ class CommandC2SP(
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Command (message=$command, time=$time, signature=$signature)" }
     }
-
-
-    data class CommandArgumentSignature(
-        val signatures: Map<String, ByteArray>,
-    )
 }

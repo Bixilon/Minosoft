@@ -31,4 +31,9 @@ class SignatureC {
      * Send commands as message
      */
     val sendCommandAsMessage by delegate(false)
+
+    /**
+     * Signs commands
+     */
+    val signCommands by delegate(true)
 }

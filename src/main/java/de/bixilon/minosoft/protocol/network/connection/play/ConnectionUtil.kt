@@ -31,6 +31,7 @@ import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
@@ -98,11 +99,21 @@ class ConnectionUtil(
         connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = SignatureData(signature), false, acknowledgement))
     }
 
-    fun sendCommand(message: String, stack: CommandStack) {
+    fun sendCommand(command: String, stack: CommandStack) {
         if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
-            return sendChatMessage(message)
+            return sendChatMessage(command)
         }
-        TODO("Can not send signed commands!")
+        val seed = SecureRandom().nextLong()
+        val time = Instant.now()
+        val acknowledgement = Acknowledgement.EMPTY
+
+        val signature: MutableMap<String, ByteArray> = mutableMapOf()
+
+        if (connection.profiles.connection.signature.signCommands) {
+            Log.log(LogMessageType.CHAT_OUT, LogLevels.WARN) { "Can not sign commands yet!" }
+        }
+
+        connection.sendPacket(CommandC2SP(command.trimWhitespaces().removePrefix("/"), time, seed, signature, false, acknowledgement))
     }
 
     fun prepareSpawn() {
