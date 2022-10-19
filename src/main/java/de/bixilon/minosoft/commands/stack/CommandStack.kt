@@ -16,14 +16,17 @@ package de.bixilon.minosoft.commands.stack
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.commands.stack.print.PrintTarget
 import de.bixilon.minosoft.commands.stack.print.SystemPrintTarget
+import de.bixilon.minosoft.data.chat.signature.MessageChain
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.security.PrivateKey
+import java.time.Instant
 
 class CommandStack(
     connection: PlayConnection? = null,
     val print: PrintTarget = SystemPrintTarget,
 ) {
-    private val stack: MutableList<StackEntry> = mutableListOf()
+    private val stack: MutableList<CommandStackEntry> = mutableListOf()
     val size: Int get() = stack.size
 
     var executor: Entity? = null
@@ -49,11 +52,14 @@ class CommandStack(
     }
 
     fun push(name: String, data: Any?) {
-        stack.add(StackEntry(name, data))
+        stack.add(CommandStackEntry(name, data))
     }
 
-    private data class StackEntry(
-        val name: String,
-        val data: Any?,
-    )
+    fun sign(chain: MessageChain, key: PrivateKey, salt: Long, time: Instant): Map<String, ByteArray> {
+        val output: MutableMap<String, ByteArray> = mutableMapOf()
+        for (entry in stack) {
+            output[entry.name] = entry.sign(connection, chain, key, salt, time)
+        }
+        return output
+    }
 }

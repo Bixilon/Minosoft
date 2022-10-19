@@ -103,17 +103,18 @@ class ConnectionUtil(
         if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
             return sendChatMessage(command)
         }
-        val seed = SecureRandom().nextLong()
+        val salt = SecureRandom().nextLong()
         val time = Instant.now()
         val acknowledgement = Acknowledgement.EMPTY
 
-        val signature: MutableMap<String, ByteArray> = mutableMapOf()
+        var signature: Map<String, ByteArray> = emptyMap()
 
-        if (connection.profiles.connection.signature.signCommands) {
-            Log.log(LogMessageType.CHAT_OUT, LogLevels.WARN) { "Can not sign commands yet!" }
+        val key = connection.player.privateKey
+        if (key != null && connection.profiles.connection.signature.signCommands) {
+            signature = stack.sign(chain, key.private, salt, time)
         }
 
-        connection.sendPacket(CommandC2SP(command.trimWhitespaces().removePrefix("/"), time, seed, signature, false, acknowledgement))
+        connection.sendPacket(CommandC2SP(command.trimWhitespaces().removePrefix("/"), time, salt, signature, false, acknowledgement))
     }
 
     fun prepareSpawn() {
