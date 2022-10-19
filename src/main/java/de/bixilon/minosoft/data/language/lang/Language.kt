@@ -25,52 +25,12 @@ class Language(
 ) : Translator {
 
     override fun canTranslate(key: ResourceLocation?): Boolean {
-        return data.containsKey(key?.namespace)
+        return data.containsKey(key?.path)
     }
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
         val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, data)
-
-        val ret = BaseComponent()
-
-        val arguments: MutableList<Any?> = mutableListOf()
-        var splitPlaceholder: List<String> = emptyList()
-
-        // Bring arguments in correct oder
-        FORMATTER_ORDER_REGEX.findAll(placeholder).toList().let {
-            if (it.isEmpty()) {
-                // this is not the correct formatter
-                return@let
-            }
-            splitPlaceholder = placeholder.split(FORMATTER_ORDER_REGEX)
-            for (matchResult in it) {
-                // 2 groups: Full, index. We don't care about the full value, just skip it
-                val dataIndex = matchResult.groupValues[1].toInt() - 1
-                if (dataIndex < 0 || dataIndex > data.size) {
-                    arguments += null
-                    continue
-                }
-                arguments += data[dataIndex]
-            }
-        }
-
-        // check if other splitter already did the job for us
-        if (splitPlaceholder.isEmpty()) {
-            placeholder.split(FORMATTER_SPLIT_REGEX).let {
-                splitPlaceholder = it
-                arguments.addAll(data.toList())
-            }
-        }
-
-        // create base component
-        for ((index, part) in splitPlaceholder.withIndex()) {
-            ret += ChatComponent.of(part, this, parent)
-            if (index < data.size) {
-                ret += ChatComponent.of(arguments[index], this, parent)
-            }
-        }
-
-        return ret
+        return Companion.translate(placeholder, parent, this, *data)
     }
 
     override fun toString(): String {
@@ -80,5 +40,50 @@ class Language(
     companion object {
         private val FORMATTER_ORDER_REGEX = "%(\\w+)\\\$[sd]".toRegex() // %1$s fell from a high place
         private val FORMATTER_SPLIT_REGEX = "%[ds]".toRegex() // %s fell from a high place
+
+
+        fun translate(placeholder: String, parent: TextComponent? = null, translator: Translator? = null, vararg data: Any?): ChatComponent {
+
+            val ret = BaseComponent()
+
+            val arguments: MutableList<Any?> = mutableListOf()
+            var splitPlaceholder: List<String> = emptyList()
+
+            // Bring arguments in correct oder
+            FORMATTER_ORDER_REGEX.findAll(placeholder).toList().let {
+                if (it.isEmpty()) {
+                    // this is not the correct formatter
+                    return@let
+                }
+                splitPlaceholder = placeholder.split(FORMATTER_ORDER_REGEX)
+                for (matchResult in it) {
+                    // 2 groups: Full, index. We don't care about the full value, just skip it
+                    val dataIndex = matchResult.groupValues[1].toInt() - 1
+                    if (dataIndex < 0 || dataIndex > data.size) {
+                        arguments += null
+                        continue
+                    }
+                    arguments += data[dataIndex]
+                }
+            }
+
+            // check if other splitter already did the job for us
+            if (splitPlaceholder.isEmpty()) {
+                placeholder.split(FORMATTER_SPLIT_REGEX).let {
+                    splitPlaceholder = it
+                    arguments.addAll(data.toList())
+                }
+            }
+
+            // create base component
+            for ((index, part) in splitPlaceholder.withIndex()) {
+                ret += ChatComponent.of(part, translator, parent)
+                if (index < data.size) {
+                    ret += ChatComponent.of(arguments[index], translator, parent)
+                }
+            }
+
+            return ret
+        }
     }
 }

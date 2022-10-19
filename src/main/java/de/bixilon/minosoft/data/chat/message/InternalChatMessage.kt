@@ -13,10 +13,25 @@
 
 package de.bixilon.minosoft.data.chat.message
 
+import de.bixilon.minosoft.data.chat.ChatTextPositions
+import de.bixilon.minosoft.data.chat.ChatUtil
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
+import de.bixilon.minosoft.data.registries.chat.ChatParameter
+import de.bixilon.minosoft.data.registries.chat.TypeProperties
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.util.KUtil.minosoft
 
-interface ChatMessage {
-    val text: ChatComponent
-    val type: ChatMessageType
+class InternalChatMessage(
+    override val text: ChatComponent,
+) : ChatMessage {
+    override val type: ChatMessageType get() = TYPE
+
+    init {
+        text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
+    }
+
+    companion object {
+
+        val TYPE = ChatMessageType(minosoft("internal"), TypeProperties("%s", listOf(ChatParameter.CONTENT), mapOf()), narration = null, position = ChatTextPositions.CHAT)
+    }
 }

@@ -28,6 +28,10 @@ class ChatMessageType(
     val position: ChatTextPositions,
 ) : RegistryItem() {
 
+    override fun toString(): String {
+        return resourceLocation.toString()
+    }
+
     companion object : ResourceLocationCodec<ChatMessageType> {
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ChatMessageType {

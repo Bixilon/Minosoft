@@ -13,10 +13,15 @@
 
 package de.bixilon.minosoft.data.chat.message
 
-import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
+import de.bixilon.minosoft.data.chat.ChatUtil
+import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.text.ChatComponent
 
 open class SimpleChatMessage(
     override val text: ChatComponent,
-    val type: DefaultMessageTypes,
-) : ChatMessage
+    override val type: ChatMessageType,
+) : ChatMessage {
+    init {
+        text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
+    }
+}

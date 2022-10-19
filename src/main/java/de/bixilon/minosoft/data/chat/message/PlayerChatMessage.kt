@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.chat.message
 
-import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
+import de.bixilon.minosoft.data.chat.sender.MessageSender
+import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.text.ChatComponent
-import java.util.*
 
 open class PlayerChatMessage(
     text: ChatComponent,
-    type: DefaultMessageTypes,
-    val sender: UUID,
-) : SimpleChatMessage(text, type)
+    type: ChatMessageType,
+    override val sender: MessageSender,
+) : SimpleChatMessage(text, type), PlayerSentMessage

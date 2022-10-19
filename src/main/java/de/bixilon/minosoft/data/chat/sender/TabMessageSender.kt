@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.message
+package de.bixilon.minosoft.data.chat.sender
 
-import de.bixilon.minosoft.data.registries.chat.ChatMessageType
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
+import java.util.*
 
-interface ChatMessage {
-    val text: ChatComponent
-    val type: ChatMessageType
-}
+@Deprecated("Bad name")
+class TabMessageSender(
+    uuid: UUID,
+    val tab: TabListItem,
+) : PlayerMessageSender(uuid, tab.name)

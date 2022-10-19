@@ -11,12 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.message
+package de.bixilon.minosoft.data.chat.signature.errors
 
-import de.bixilon.minosoft.data.registries.chat.ChatMessageType
-import de.bixilon.minosoft.data.text.ChatComponent
+import java.time.Instant
 
-interface ChatMessage {
-    val text: ChatComponent
-    val type: ChatMessageType
-}
+class MessageExpiredError(
+    val sent: Instant,
+    val received: Instant,
+) : Exception("Message expired: Sent at $sent, but received to late at $received")

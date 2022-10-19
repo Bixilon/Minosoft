@@ -45,7 +45,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -151,12 +151,12 @@ class PlayConnection(
                     }
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
-                        val additionalPrefix = when (it.type.position) {
+                        val additionalPrefix = when (it.message.type.position) {
                             ChatTextPositions.SYSTEM -> "[SYSTEM] "
                             ChatTextPositions.HOTBAR -> "[HOTBAR] "
                             else -> ""
                         }
-                        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message }
+                        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message.text }
                     })
                 }
             }

@@ -10,14 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.chat.message.InternalChatMessage
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+package de.bixilon.minosoft.data.chat
+
+import de.bixilon.minosoft.data.chat.sender.*
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
-class InternalMessageReceiveEvent(
-    connection: PlayConnection,
-    val message: InternalChatMessage,
-) : PlayConnectionEvent(connection, EventInitiators.CLIENT), CancelableEvent
+object ChatUtil {
+    val DEFAULT_CHAT_COLOR = ChatColors.WHITE
+
+    fun PlayConnection.getMessageSender(uuid: UUID): MessageSender {
+        val entity = this.world.entities[uuid]
+        if (entity == null) {
+            val tab = tabList.tabListItemsByUUID[uuid] ?: return UnknownMessageSender(uuid)
+            return TabMessageSender(uuid, tab)
+        }
+        if (entity !is PlayerEntity) {
+            return InvalidSender(uuid)
+        }
+        return PlayerEntityMessageSender(uuid, entity.name, entity)
+    }
+}

@@ -51,7 +51,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
             if (profile.chat.internal.hidden) {
                 return@of
             }
-            DefaultThreadPool += { messages += it.message }
+            DefaultThreadPool += { messages += it.message.text }
         })
     }
 

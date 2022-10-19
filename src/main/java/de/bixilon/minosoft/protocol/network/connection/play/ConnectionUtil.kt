@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.data.chat.message.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.MessageChain
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -23,8 +24,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageSendEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
@@ -46,14 +47,14 @@ class ConnectionUtil(
 
     fun sendDebugMessage(message: Any) {
         val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
-        connection.fireEvent(InternalMessageReceiveEvent(connection, component))
+        connection.fireEvent(InternalMessageReceiveEvent(connection, InternalChatMessage(component)))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
     }
 
     fun sendInternal(message: Any) {
         val component = ChatComponent.of(message)
         val prefixed = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, component)
-        connection.fireEvent(InternalMessageReceiveEvent(connection, if (connection.profiles.gui.chat.internal.hidden) prefixed else component))
+        connection.fireEvent(InternalMessageReceiveEvent(connection, InternalChatMessage(if (connection.profiles.gui.chat.internal.hidden) prefixed else component)))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
     }
 

@@ -33,8 +33,8 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -82,16 +82,16 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
-            if (it.type.position == ChatTextPositions.HOTBAR) {
+            if (it.message.type.position == ChatTextPositions.HOTBAR) {
                 return@of
             }
-            DefaultThreadPool += { messages += it.message }
+            DefaultThreadPool += { messages += it.message.text }
         })
         connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
             if (!profile.chat.internal.hidden) {
                 return@of
             }
-            DefaultThreadPool += { messages += it.message }
+            DefaultThreadPool += { messages += it.message.text }
         })
 
         renderWindow.inputHandler.registerKeyCallback(

@@ -35,9 +35,9 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.lang.Integer.max
@@ -179,7 +179,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
 
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
-            if (it.type.position != ChatTextPositions.HOTBAR) {
+            if (it.message.type.position != ChatTextPositions.HOTBAR) {
                 return@of
             }
             hoverText.text = it.message

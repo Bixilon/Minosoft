@@ -10,13 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events.chat
 
-package de.bixilon.minosoft.data.chat.message
+import de.bixilon.minosoft.data.chat.message.ChatMessage
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.CancelableEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-import de.bixilon.minosoft.data.registries.chat.ChatMessageType
-import de.bixilon.minosoft.data.text.ChatComponent
-
-interface ChatMessage {
-    val text: ChatComponent
-    val type: ChatMessageType
-}
+class ChatMessageReceiveEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val message: ChatMessage,
+) : PlayConnectionEvent(connection, initiator), CancelableEvent

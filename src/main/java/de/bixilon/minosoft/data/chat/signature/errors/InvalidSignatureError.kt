@@ -11,12 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.message
+package de.bixilon.minosoft.data.chat.signature.errors
 
-import de.bixilon.minosoft.data.registries.chat.ChatMessageType
-import de.bixilon.minosoft.data.text.ChatComponent
-
-interface ChatMessage {
-    val text: ChatComponent
-    val type: ChatMessageType
-}
+class InvalidSignatureError : Exception("Signature does not match")

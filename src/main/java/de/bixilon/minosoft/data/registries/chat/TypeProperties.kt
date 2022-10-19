@@ -16,12 +16,23 @@ package de.bixilon.minosoft.data.registries.chat
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonList
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
+import de.bixilon.minosoft.data.text.ChatComponent
 
 class TypeProperties(
     val translationKey: String,
     val parameters: List<ChatParameter>,
     val style: Map<String, Any>,
 ) {
+
+    fun formatParameters(parameters: Map<ChatParameter, ChatComponent>): Array<ChatComponent> {
+        val output: MutableList<ChatComponent> = mutableListOf()
+
+        for (parameter in this.parameters) {
+            output += parameters[parameter] ?: continue
+        }
+
+        return output.toTypedArray()
+    }
 
     companion object {
 

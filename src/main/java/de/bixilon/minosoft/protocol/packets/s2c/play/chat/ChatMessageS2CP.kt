@@ -12,10 +12,15 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.chat
 
+import de.bixilon.minosoft.data.chat.ChatUtil.getMessageSender
+import de.bixilon.minosoft.data.chat.message.ChatMessage
+import de.bixilon.minosoft.data.chat.message.PlayerChatMessage
+import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -29,7 +34,7 @@ import java.util.*
 
 @LoadPacket(threadSafe = false)
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val message: ChatComponent = buffer.readChatComponent()
+    val text: ChatComponent = buffer.readChatComponent()
     var type: ChatMessageType = buffer.connection.registries.messageTypeRegistry[DefaultMessageTypes.CHAT]!!
         private set
     var sender: UUID? = null
@@ -48,17 +53,21 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
             }
         }
-        message.setFallbackColor(ProtocolDefinition.DEFAULT_COLOR)
+        text.setFallbackColor(ProtocolDefinition.DEFAULT_COLOR)
     }
 
     override fun handle(connection: PlayConnection) {
-        val event = ChatMessageReceiveEvent(connection, this)
-        if (connection.fireEvent(event)) {
-            return
+        val type = if (overlay) connection.registries.messageTypeRegistry[DefaultMessageTypes.GAME]!! else type
+        val sender = sender
+        val message: ChatMessage = if (sender == null) {
+            SimpleChatMessage(text, type)
+        } else {
+            PlayerChatMessage(text, type, connection.getMessageSender(sender))
         }
+        connection.fireEvent(ChatMessageReceiveEvent(connection, EventInitiators.SERVER, message))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat message (message=\"$message\")" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chat message (test=\"$text\", sender=$sender, overlay=$overlay)" }
     }
 }
