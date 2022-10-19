@@ -123,7 +123,7 @@ class NodeSuggestionsElement(guiRenderer: GUIRenderer, position: Vec2i, val inpu
         if (type == KeyChangeTypes.RELEASE) {
             return super.onKey(key, type)
         }
-        if (key == KeyCodes.KEY_ENTER || key == KeyCodes.KEY_KP_ENTER || key == KeyCodes.KEY_TAB) {
+        if (key == KeyCodes.KEY_RIGHT || key == KeyCodes.KEY_TAB) {
             return applySuggestion()
         }
         val offset = when (key) {
