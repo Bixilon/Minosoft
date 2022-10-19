@@ -24,14 +24,14 @@ import org.testng.annotations.Test
 @Test(groups = ["light"], dependsOnGroups = ["block"])
 class HeightmapBreakTest {
 
-    fun testHeightmapEmpty() {
+    fun testEmpty() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = StoneTestO.state
         chunk[Vec3i(0, 0, 0)] = null
         assertTrue(chunk.light.getMaxHeight(0, 0) < 0)
     }
 
-    fun testHeightmapCobweb() {
+    fun testCobweb() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = CobwebTestO.state
         chunk[Vec3i(0, 1, 0)] = CobwebTestO.state
@@ -40,7 +40,7 @@ class HeightmapBreakTest {
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    fun testHeightmapGlass() {
+    fun testGlass() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = GlassTestO.state
         chunk[Vec3i(0, 1, 0)] = GlassTestO.state
@@ -49,7 +49,7 @@ class HeightmapBreakTest {
         assertTrue(chunk.light.getMaxHeight(0, 0) < 0)
     }
 
-    fun testHeightmapLeaves() {
+    fun testLeaves() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = LeavesTestO.state
         chunk[Vec3i(0, 1, 0)] = LeavesTestO.state
@@ -58,7 +58,7 @@ class HeightmapBreakTest {
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    fun testHeightmapSlime() {
+    fun testSlime() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = SlimeTestO.state
         chunk[Vec3i(0, 1, 0)] = SlimeTestO.state
@@ -67,7 +67,7 @@ class HeightmapBreakTest {
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    fun testHeightmapStairs() {
+    fun testStairs() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = StairsTestO.state
         chunk[Vec3i(0, 1, 0)] = StairsTestO.state
@@ -76,7 +76,7 @@ class HeightmapBreakTest {
         assertEquals(chunk.light.getMaxHeight(0, 0), 1)
     }
 
-    fun testHeightmapStone() {
+    fun testStone() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = StoneTestO.state
         chunk[Vec3i(0, 1, 0)] = StoneTestO.state
@@ -85,7 +85,7 @@ class HeightmapBreakTest {
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    fun testHeightmapTorch() {
+    fun testTorch() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = TorchTestO.state
         chunk[Vec3i(0, 1, 0)] = TorchTestO.state
@@ -94,12 +94,21 @@ class HeightmapBreakTest {
         assertTrue(chunk.light.getMaxHeight(0, 0) < 0)
     }
 
-    fun testHeightmapGlassLeaves() {
+    fun testGlassLeaves() {
         val chunk: Chunk = createChunkWithNeighbours()
         chunk[Vec3i(0, 0, 0)] = LeavesTestO.state
         chunk[Vec3i(0, 1, 0)] = GlassTestO.state
         chunk[Vec3i(0, 2, 0)] = GlassTestO.state
         chunk[Vec3i(0, 2, 0)] = null
         assertEquals(chunk.light.getMaxHeight(0, 0), 1)
+    }
+
+    fun testWater() {
+        val chunk: Chunk = createChunkWithNeighbours()
+        chunk[Vec3i(0, 0, 0)] = WaterTestO.state
+        chunk[Vec3i(0, 1, 0)] = WaterTestO.state
+        chunk[Vec3i(0, 2, 0)] = WaterTestO.state
+        chunk[Vec3i(0, 2, 0)] = null
+        assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 }

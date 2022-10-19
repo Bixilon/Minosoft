@@ -111,12 +111,12 @@ class ChunkLight(private val chunk: Chunk) {
             return bottom[index].toInt()
         }
         if (sectionHeight == chunk.highestSection + 1) {
-            return top[index].toInt() or 0xF0 // top has always sky=15
+            return top[index].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
         }
         var light = chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
-        if (y > heightmap[heightmapIndex]) {
+        if (y >= heightmap[heightmapIndex]) {
             // set sky=15
-            light = light or 0xF0
+            light = light or SectionLight.SKY_LIGHT_MASK
         }
         return light
     }
@@ -368,11 +368,11 @@ class ChunkLight(private val chunk: Chunk) {
             // bottom section
             bottom.traceSkyIncrease(x, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I)
         } else {
-            val maxSection = chunk.sections?.get(maxHeightSection - chunk.lowestSection)
+            val maxSection = chunk.getOrPut(maxHeightSection)
             val baseY = maxHeightSection * ProtocolDefinition.SECTION_HEIGHT_Y
             if (maxSection != null) {
                 for (y in (if (skylightStart.sectionHeight != maxHeightSection) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
-                    maxSection.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
+                    maxSection.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, null, baseY + y, false)
                 }
                 maxSection.light.update = true
             }

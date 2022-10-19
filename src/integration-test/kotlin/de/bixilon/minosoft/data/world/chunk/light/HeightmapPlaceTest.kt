@@ -84,4 +84,11 @@ class HeightmapPlaceTest {
         chunk[Vec3i(0, 1, 0)] = GlassTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 1)
     }
+
+    fun testWater() {
+        val chunk: Chunk = createChunkWithNeighbours()
+        chunk[Vec3i(0, 0, 0)] = WaterTestO.state
+        chunk[Vec3i(0, 1, 0)] = WaterTestO.state
+        assertEquals(chunk.light.getMaxHeight(0, 0), 2)
+    }
 }

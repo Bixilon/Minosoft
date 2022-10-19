@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.light.CustomLightProperties
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.AABB
@@ -40,6 +41,8 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
     }
 
     companion object : BlockFactory<FluidBlock> {
+        val LIGHT_PROPERTIES = CustomLightProperties(true, false, true)
+
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): FluidBlock {
             return FluidBlock(resourceLocation, registries, data)
         }

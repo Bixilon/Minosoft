@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.light.*
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
@@ -125,7 +126,9 @@ data class BlockState(
             val translucent = data["translucent"]?.toBoolean() ?: true
 
 
-            var lightProperties = if (outlineShape == VoxelShape.EMPTY || (!opaque && translucent)) {
+            var lightProperties = if (block is FluidBlock) {
+                FluidBlock.LIGHT_PROPERTIES
+            } else if (outlineShape == VoxelShape.EMPTY || (!opaque && translucent)) {
                 TransparentProperty
             } else if (outlineShape == VoxelShape.FULL) {
                 SolidProperty

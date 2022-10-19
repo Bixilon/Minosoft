@@ -352,7 +352,7 @@ class SectionLight(
             if (y > 0) {
                 traceSkylightIncrease(x, y - 1, z, nextNeighbourLevel, Directions.DOWN, totalY - 1)
             } else if (section.sectionHeight != chunk.highestSection) {
-                (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.sectionHeight + 1, false))?.light?.traceSkylightIncrease(x, 0, z, nextNeighbourLevel, Directions.DOWN, totalY)
+                (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight + 1, false))?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, nextNeighbourLevel, Directions.DOWN, totalY - 1)
             }
         }
         if (target != Directions.DOWN && target != null && (lightProperties.propagatesLight(Directions.UP))) {
@@ -361,7 +361,7 @@ class SectionLight(
             } else if (section.sectionHeight == chunk.lowestSection) {
                 chunk.light.bottom.traceSkyIncrease(x, z, nextLevel)
             } else {
-                (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, nextNeighbourLevel, Directions.UP, totalY)
+                (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkylightIncrease(x, 0, z, nextNeighbourLevel, Directions.UP, totalY + 1)
             }
         }
         if (target != Directions.SOUTH && (target == null || lightProperties.propagatesLight(Directions.NORTH))) {
@@ -460,7 +460,7 @@ class SectionLight(
             val chunkNeighbours = it.neighbours ?: return@let
             val minHeight = it.light.getNeighbourMinHeight(chunkNeighbours, x, z)
             if (totalY > minHeight) {
-                skylight = ProtocolDefinition.MAX_LIGHT_LEVEL.toInt()
+                skylight = ProtocolDefinition.MAX_LIGHT_LEVEL_I
             }
         }
         traceSkylightIncrease(x, y, z, skylight - 1, null, totalY)
