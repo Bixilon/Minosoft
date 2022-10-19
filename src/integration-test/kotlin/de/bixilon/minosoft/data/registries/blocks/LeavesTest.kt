@@ -13,18 +13,25 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.types.leaves.LeavesBlock
 import org.testng.annotations.Test
 
-internal object LeavesTest : BlockTest<LeavesBlock>() {
+@Test(groups = ["block"])
+class LeavesTest : BlockTest<LeavesBlock>() {
 
-    @Test
-    private fun getOakLeaves() {
+    init {
+        LeavesTestO = this
+    }
+
+    fun getOakLeaves() {
         super.retrieveBlock(MinecraftBlocks.OAK_LEAVES)
     }
 
-    @Test
     fun testLightProperties() {
         state.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
     }
 }
+
+var LeavesTestO: LeavesTest = CastUtil.unsafeNull()
+

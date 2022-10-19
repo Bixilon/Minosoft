@@ -13,38 +13,41 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import org.testng.annotations.Ignore
 import org.testng.annotations.Test
 
-internal object StairsTest : BlockTest<Block>() {
+@Test(groups = ["block"])
+class StairsTest : BlockTest<Block>() {
 
-    @Test
-    private fun getOakStairs() {
+    init {
+        StairsTestO = this
+    }
+
+    fun getOakStairs() {
         super.retrieveBlock(MinecraftBlocks.OAK_STAIRS)
     }
 
     @Ignore
-    @Test
     fun testLightPropertiesNorth() {
         // ToDo: This test is correct, but failing
         block.withProperties(BlockProperties.FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))
     }
 
-    @Test
     fun testLightPropertiesSouth() {
         block.withProperties(BlockProperties.FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
     }
 
-    @Test
     fun testLightPropertiesWest() {
         block.withProperties(BlockProperties.FACING to Directions.WEST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, false, true))
     }
 
-    @Test
     fun testLightPropertiesEast() {
         block.withProperties(BlockProperties.FACING to Directions.EAST).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, true, true, false))
     }
 }
+
+var StairsTestO: StairsTest = CastUtil.unsafeNull()

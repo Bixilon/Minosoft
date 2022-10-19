@@ -13,18 +13,24 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.types.SlimeBlock
 import org.testng.annotations.Test
 
-internal object SlimeTest : BlockTest<SlimeBlock>() {
+@Test(groups = ["block"])
+class SlimeTest : BlockTest<SlimeBlock>() {
 
-    @Test
-    private fun getSlimeBlock() {
+    init {
+        SlimeTestO = this
+    }
+
+    fun getSlimeBlock() {
         super.retrieveBlock(MinecraftBlocks.SLIME_BLOCK)
     }
 
-    @Test
     fun testLightProperties() {
         state.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
     }
 }
+
+var SlimeTestO: SlimeTest = CastUtil.unsafeNull()

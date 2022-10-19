@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.IT
+import de.bixilon.minosoft.IT.reference
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -26,6 +27,9 @@ abstract class BlockTest<T : Block> {
     var block: T = unsafeNull()
     var state: BlockState = unsafeNull()
 
+    init {
+        reference()
+    }
 
     fun retrieveBlock(name: ResourceLocation) {
         val block = IT.VERSION.registries!!.blockRegistry[name]

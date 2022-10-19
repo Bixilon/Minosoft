@@ -13,18 +13,24 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import org.testng.annotations.Test
 
-internal object GlassTest : BlockTest<Block>() {
+@Test(groups = ["block"])
+class GlassTest : BlockTest<Block>() {
 
-    @Test
-    private fun getGlass() {
+    init {
+        GlassTestO = this
+    }
+
+    fun getGlass() {
         super.retrieveBlock(MinecraftBlocks.GLASS)
     }
 
-    @Test
     fun testLightProperties() {
         state.testLightProperties(0, true, true, false, booleanArrayOf(true, true, true, true, true, true))
     }
 }
+
+var GlassTestO: GlassTest = CastUtil.unsafeNull()

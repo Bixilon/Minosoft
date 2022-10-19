@@ -90,6 +90,7 @@ public final class ProtocolDefinition {
 
     public static final byte LIGHT_LEVELS = 16;
     public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
+    public static final int MAX_LIGHT_LEVEL_I = MAX_LIGHT_LEVEL;
 
     static {
         InetAddress inetAddress;

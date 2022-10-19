@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkLight(private val chunk: Chunk) {
     private val connection = chunk.connection
-    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z)
+    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { Int.MIN_VALUE }
 
     val bottom = BorderSectionLight(false, chunk)
     val top = BorderSectionLight(true, chunk)
@@ -38,7 +38,7 @@ class ChunkLight(private val chunk: Chunk) {
     fun onBlockChange(x: Int, y: Int, z: Int, section: ChunkSection, next: BlockState?) {
         val heightmapIndex = (z shl 4) or x
         val previous = heightmap[heightmapIndex]
-        recalculateHeightmap(x, y, z, next != null)
+        recalculateHeightmap(x, y, z, next)
         onHeightmapUpdate(x, y, z, previous, heightmap[heightmapIndex])
 
         val neighbours = chunk.neighbours ?: return
@@ -190,11 +190,9 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun checkHeightmapY(x: Int, startY: Int, z: Int) {
-        val minY = chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y
-
         val sections = chunk.sections ?: return
 
-        var y = minY
+        var y = Int.MIN_VALUE
 
         sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.lowestSection) downTo 0) {
             if (sectionIndex >= sections.size) {
@@ -207,7 +205,7 @@ class ChunkLight(private val chunk: Chunk) {
             for (sectionY in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
                 val light = section.blocks.unsafeGet(x, sectionY, z)?.lightProperties ?: continue
 
-                if (light.skylightEnters && !light.filtersSkylight) {
+                if (light.skylightEnters && !light.filtersSkylight && light.propagatesLight(Directions.DOWN)) {
                     // can go through block
                     continue
                 }
@@ -250,34 +248,34 @@ class ChunkLight(private val chunk: Chunk) {
         }
     }
 
-    private fun recalculateHeightmap(x: Int, y: Int, z: Int, place: Boolean) {
+    private fun recalculateHeightmap(x: Int, y: Int, z: Int, blockState: BlockState?) {
         chunk.lock.lock()
         val index = (z shl 4) or x
 
         val current = heightmap[index]
 
-        if (current > y) {
+        if (current > y + 1) {
             // our block is/was not the highest, ignore everything
             chunk.lock.unlock()
             return
         }
-        if (current < y) {
-            if (place) {
-                // we are the highest block now
-                heightmap[index] = y
-            }
+        if (blockState == null) {
+            checkHeightmapY(x, y, z)
             chunk.lock.unlock()
             return
         }
 
-        if (place) {
-            chunk.lock.unlock()
-            return
+        // we are the highest block now
+        // check if light can pass
+        val light = blockState.lightProperties
+        if (!light.skylightEnters) {
+            heightmap[index] = y + 1
+        } else if (light.filtersSkylight || !light.propagatesLight(Directions.DOWN)) {
+            heightmap[index] = y
         }
 
-        // we used to be the highest block, find out the block below us
-        checkHeightmapY(x, y - 1, z)
         chunk.lock.unlock()
+        return
     }
 
     private fun calculateSkylight() {
@@ -352,27 +350,32 @@ class ChunkLight(private val chunk: Chunk) {
         val neighbours = chunk.neighbours ?: return
         val heightmapIndex = (z shl 4) or x
         val maxHeight = heightmap[heightmapIndex]
+        val maxHeightSection = maxHeight.sectionHeight
         val skylightStart = getNeighbourMaxHeight(neighbours, x, z, heightmapIndex)
 
 
-        for (sectionHeight in skylightStart.sectionHeight downTo maxHeight.sectionHeight + 1) {
+        for (sectionHeight in minOf(skylightStart.sectionHeight, chunk.highestSection) downTo maxOf(maxHeightSection + 1, chunk.lowestSection)) {
             val section = chunk.sections?.get(sectionHeight - chunk.lowestSection) ?: continue
             // ToDo: Only update if affected by heightmap change
             section.light.update = true
             // ToDo: bare tracing
             val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
             for (y in ProtocolDefinition.SECTION_MAX_Y downTo 0) {
-                section.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
+                section.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, null, baseY + y, false)
             }
         }
-        val sectionHeight = maxHeight.sectionHeight
-        val maxSection = chunk.sections?.get(maxHeight.sectionHeight - chunk.lowestSection)
-        val baseY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
-        if (maxSection != null) {
-            for (y in (if (skylightStart.sectionHeight != sectionHeight) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
-                maxSection.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
+        if (maxHeight.sectionHeight < chunk.lowestSection) {
+            // bottom section
+            bottom.traceSkyIncrease(x, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I)
+        } else {
+            val maxSection = chunk.sections?.get(maxHeightSection - chunk.lowestSection)
+            val baseY = maxHeightSection * ProtocolDefinition.SECTION_HEIGHT_Y
+            if (maxSection != null) {
+                for (y in (if (skylightStart.sectionHeight != maxHeightSection) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
+                    maxSection.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL.toInt(), null, baseY + y, false)
+                }
+                maxSection.light.update = true
             }
-            maxSection.light.update = true
         }
     }
 

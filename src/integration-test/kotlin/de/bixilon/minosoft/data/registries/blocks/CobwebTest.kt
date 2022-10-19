@@ -13,18 +13,24 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import org.testng.annotations.Test
 
-internal object CobwebTest : BlockTest<Block>() {
+@Test(groups = ["block"])
+class CobwebTest : BlockTest<Block>() {
 
-    @Test
-    private fun getCobweb() {
+    init {
+        CobwebTestO = this
+    }
+
+    fun getCobweb() {
         super.retrieveBlock(MinecraftBlocks.COBWEB)
     }
 
-    @Test
     fun testLightProperties() {
         state.testLightProperties(0, true, false, true, booleanArrayOf(true, true, true, true, true, true))
     }
 }
+
+var CobwebTestO: CobwebTest = CastUtil.unsafeNull()

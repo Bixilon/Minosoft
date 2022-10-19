@@ -19,4 +19,10 @@ import de.bixilon.minosoft.data.registries.versions.Version
 object IT {
     const val VERSION_NAME = "1.18.2"
     var VERSION: Version = unsafeNull()
+
+    val references: MutableList<Any> = mutableListOf()
+
+    fun Any.reference() {
+        references += this
+    }
 }

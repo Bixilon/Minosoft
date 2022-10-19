@@ -20,75 +20,68 @@ import de.bixilon.minosoft.data.world.chunk.ChunkTestingUtil.createChunkWithNeig
 import org.testng.Assert.*
 import org.testng.annotations.Test
 
-class ChunkLightTest {
 
-    @Test
+@Test(groups = ["light"], dependsOnGroups = ["block"])
+class HeightmapPlaceTest {
+
     fun testHeightmapEmpty() {
         val chunk: Chunk = createChunkWithNeighbours()
         assertTrue(chunk.light.getMaxHeight(0, 0) < 0)
     }
 
-    @Test
     fun testHeightmapCobweb() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = CobwebTest.state
-        chunk[Vec3i(0, 1, 0)] = CobwebTest.state
+        chunk[Vec3i(0, 0, 0)] = CobwebTestO.state
+        chunk[Vec3i(0, 1, 0)] = CobwebTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    @Test
     fun testHeightmapGlass() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = GlassTest.state
-        chunk[Vec3i(0, 1, 0)] = GlassTest.state
+        chunk[Vec3i(0, 0, 0)] = GlassTestO.state
+        chunk[Vec3i(0, 1, 0)] = GlassTestO.state
         assertTrue(chunk.light.getMaxHeight(0, 0) < 0)
     }
 
-    @Test
     fun testHeightmapLeaves() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = LeavesTest.state
-        chunk[Vec3i(0, 1, 0)] = LeavesTest.state
+        chunk[Vec3i(0, 0, 0)] = LeavesTestO.state
+        chunk[Vec3i(0, 1, 0)] = LeavesTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    @Test
     fun testHeightmapSlime() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = SlimeTest.state
-        chunk[Vec3i(0, 1, 0)] = SlimeTest.state
+        chunk[Vec3i(0, 0, 0)] = SlimeTestO.state
+        chunk[Vec3i(0, 1, 0)] = SlimeTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    @Test
     fun testHeightmapStairs() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = StairsTest.state
-        chunk[Vec3i(0, 1, 0)] = StairsTest.state
+        chunk[Vec3i(0, 0, 0)] = StairsTestO.state
+        chunk[Vec3i(0, 1, 0)] = StairsTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 1)
     }
 
-    @Test
     fun testHeightmapStone() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = StoneTest.state
-        chunk[Vec3i(0, 1, 0)] = StoneTest.state
+        chunk[Vec3i(0, 0, 0)] = StoneTestO.state
+        chunk[Vec3i(0, 1, 0)] = StoneTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 2)
     }
 
-    @Test
     fun testHeightmapTorch() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = TorchTest.state
-        chunk[Vec3i(0, 1, 0)] = TorchTest.state
+        chunk[Vec3i(0, 0, 0)] = TorchTestO.state
+        chunk[Vec3i(0, 1, 0)] = TorchTestO.state
         assertTrue(chunk.light.getMaxHeight(0, 0) < 0)
     }
 
-    @Test
     fun testHeightmapGlassLeaves() {
         val chunk: Chunk = createChunkWithNeighbours()
-        chunk[Vec3i(0, 0, 0)] = LeavesTest.state
-        chunk[Vec3i(0, 1, 0)] = GlassTest.state
+        chunk[Vec3i(0, 0, 0)] = LeavesTestO.state
+        chunk[Vec3i(0, 1, 0)] = GlassTestO.state
         assertEquals(chunk.light.getMaxHeight(0, 0), 1)
     }
 }

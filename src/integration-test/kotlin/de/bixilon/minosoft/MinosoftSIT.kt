@@ -23,12 +23,14 @@ import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import org.testng.annotations.BeforeGroups
 import org.testng.annotations.BeforeTest
 
 
 internal object MinosoftSIT {
 
     @BeforeTest
+    @BeforeGroups(groups = ["block"])
     fun setup() {
         disableGC()
         initAssetsManager()
@@ -43,7 +45,7 @@ internal object MinosoftSIT {
 
     fun disableGC() {
         Thread {
-            val references = listOf(Minosoft, IT)
+            val references = IT.references
             // basically while (true)
             for (i in 0 until Int.MAX_VALUE) {
                 Thread.sleep(100000L)

@@ -13,18 +13,24 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import org.testng.annotations.Test
 
-internal object TorchTest : BlockTest<Block>() {
+@Test(groups = ["block"])
+class TorchTest : BlockTest<Block>() {
 
-    @Test
-    private fun getTorch() {
+    init {
+        TorchTestO = this
+    }
+
+    fun getTorch() {
         super.retrieveBlock(MinecraftBlocks.TORCH)
     }
 
-    @Test
     fun testLightProperties() {
         state.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
     }
 }
+
+var TorchTestO: TorchTest = unsafeNull()
