@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
@@ -121,6 +122,7 @@ class Registries {
     val worldEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
 
     val argumentTypeRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
+    val messageTypeRegistry: Registry<ChatMessageType> = register("chat_type", Registry(codec = ChatMessageType))
 
     var isFullyLoaded = false
         private set
@@ -173,6 +175,7 @@ class Registries {
         worker += WorkerTask(this::gameEventRegistry) { gameEventRegistry.rawUpdate(pixlyzerData["game_events"]?.toJsonObject(), this) }
         worker += WorkerTask(this::worldEventRegistry) { worldEventRegistry.rawUpdate(pixlyzerData["world_events"]?.toJsonObject(), this) }
         worker += WorkerTask(this::argumentTypeRegistry) { argumentTypeRegistry.rawUpdate(pixlyzerData["argument_type"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::messageTypeRegistry) { messageTypeRegistry.rawUpdate(pixlyzerData["message_types"]?.toJsonObject(), this) }
 
 
         worker += WorkerTask(this::entityTypeRegistry) { entityTypeRegistry.rawUpdate(pixlyzerData["entities"]?.toJsonObject(), this) }

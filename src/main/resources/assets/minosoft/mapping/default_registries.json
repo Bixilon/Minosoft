@@ -642,5 +642,33 @@
         "texture": "minecraft:textures/entity/cat/all_black.png"
       }
     }
+  },
+  "minecraft:message_types": {
+    "0": {
+      "minecraft:chat": {
+        "id": 0,
+        "position": "chat",
+        "chat": {
+          "translation_key": "%s",
+          "parameters": ["content"]
+        }
+      },
+      "minecraft:system": {
+        "id": 1,
+        "position": "system",
+        "chat": {
+          "translation_key": "%s",
+          "parameters": ["content"]
+        }
+      },
+      "minecraft:game": {
+        "id": 2,
+        "position": "hotbar",
+        "chat": {
+          "translation_key": "%s",
+          "parameters": ["content"]
+        }
+      }
+    }
   }
 }

@@ -48,6 +48,7 @@ object RegistriesLoader {
         registries.titleActionsRegistry.parent = DefaultRegistries.TITLE_ACTIONS_REGISTRY.forVersion(version)
         registries.entityAnimationRegistry.parent = DefaultRegistries.ENTITY_ANIMATION_REGISTRY.forVersion(version)
         registries.entityActionsRegistry.parent = DefaultRegistries.ENTITY_ACTIONS_REGISTRY.forVersion(version)
+        registries.messageTypeRegistry.parent = DefaultRegistries.MESSAGE_TYPES_REGISTRY.forVersion(version)
 
         registries.containerTypeRegistry.parent = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version)
         registries.gameEventRegistry.parent = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version)

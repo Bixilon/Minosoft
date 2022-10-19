@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry.codec
 
+import de.bixilon.kutil.json.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 interface ResourceLocationCodec<T> {
-    fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): T?
+    fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): T?
 }

@@ -11,12 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.type
+package de.bixilon.minosoft.data.registries.chat
 
-import de.bixilon.minosoft.util.KUtil.minecraft
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-object DefaultMessageTypes {
-    val CHAT = minecraft("chat")
-    val SYSTEM = minecraft("system")
-    val GAME = minecraft("game")
+enum class ChatParameter {
+    TARGET,
+    SENDER,
+    CONTENT,
+    ;
+
+    companion object : ValuesEnum<ChatParameter> {
+        override val VALUES = values()
+        override val NAME_MAP: Map<String, ChatParameter> = EnumUtil.getEnumValues(VALUES)
+    }
 }

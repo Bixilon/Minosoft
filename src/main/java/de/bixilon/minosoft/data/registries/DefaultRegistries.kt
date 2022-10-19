@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.types.EntityDataTypes
+import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationRegistry
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
+import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -66,6 +68,9 @@ object DefaultRegistries {
     val CAT_VARIANT_REGISTRY: PerVersionRegistry<CatVariant, Registry<CatVariant>> = PerVersionRegistry { Registry(codec = CatVariant) }
 
 
+    val MESSAGE_TYPES_REGISTRY: PerVersionRegistry<ChatMessageType, Registry<ChatMessageType>> = PerVersionRegistry { Registry(codec = ChatMessageType) }
+
+
     fun load(latch: CountUpAndDownLatch) {
         check(!initialized) { "Already initialized!" }
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
@@ -100,6 +105,8 @@ object DefaultRegistries {
 
 
         CAT_VARIANT_REGISTRY.initialize(registriesJson[ResourceLocation("variants/cat")].asJsonObject(), CatVariant)
+
+        MESSAGE_TYPES_REGISTRY.initialize(registriesJson[minecraft("message_types")].asJsonObject(), ChatMessageType)
 
         initialized = true
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loaded default registries!" }

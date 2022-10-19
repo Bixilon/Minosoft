@@ -233,7 +233,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             layout += LineSpacerElement(guiRenderer)
 
             MinosoftPropertiesLoader.apply {
-                layout += TextElement(guiRenderer, "Git ${it.commit}/${it.branch}", HorizontalAlignments.RIGHT)
+                layout += TextElement(guiRenderer, "Git ${it.commitShort}/${it.branch}", HorizontalAlignments.RIGHT)
             }
         }
 

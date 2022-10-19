@@ -25,7 +25,6 @@ import de.bixilon.minosoft.commands.suggestion.factory.SuggestionFactories
 import de.bixilon.minosoft.data.chat.filter.ChatFilter
 import de.bixilon.minosoft.data.chat.filter.Filter
 import de.bixilon.minosoft.data.chat.signature.*
-import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
 import de.bixilon.minosoft.data.chat.type.MessageType
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -384,14 +383,14 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readMessageType(): MessageType {
-        return MessageType(readVarInt(), readChatComponent(), readOptional { readChatComponent() })
+        return MessageType(readRegistryItem(connection.registries.messageTypeRegistry), readChatComponent(), readOptional { readChatComponent() })
     }
 
     fun readSignedMessage(): SignedMessage {
         if (versionId < ProtocolVersions.V_1_19_1_PRE4) {
             val message = readChatComponent()
             val unsignedContent = if (versionId >= ProtocolVersions.V_22W19A) readOptional { readChatComponent() } else null
-            var type = DefaultMessageTypes[readVarInt()]
+            var type = readRegistryItem(connection.registries.messageTypeRegistry)
             val sender = readChatMessageSender()
             val sendingTime = readInstant()
             val salt = readLong()

@@ -70,6 +70,10 @@ object KUtil {
         }
     }
 
+    fun minecraft(path: String): ResourceLocation {
+        return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, path)
+    }
+
     fun minosoft(path: String): ResourceLocation {
         return ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, path)
     }
