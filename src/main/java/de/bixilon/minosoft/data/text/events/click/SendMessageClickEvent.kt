@@ -30,7 +30,7 @@ class SendMessageClickEvent(
             return
         }
         if (!guiRenderer.connection.profiles.gui.confirmation.sendMessage) {
-            guiRenderer.connection.util.sendChatMessage(message)
+            guiRenderer.connection.util.typeChat(message)
             return
         }
         val dialog = SendMessageDialog(guiRenderer, message)

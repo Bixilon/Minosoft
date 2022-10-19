@@ -15,7 +15,9 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kutil.string.WhitespaceUtil.trimWhitespaces
+import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.commands.stack.CommandStack
+import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.chat.message.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.MessageChain
@@ -58,6 +60,10 @@ class ConnectionUtil(
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
     }
 
+    fun typeChat(message: String) {
+        ChatNode("", allowCLI = false).execute(CommandReader(message), CommandStack(connection))
+    }
+
     fun sendChatMessage(message: String) {
         val message = message.trimWhitespaces()
         if (message.isBlank()) {
@@ -92,12 +98,11 @@ class ConnectionUtil(
         connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = SignatureData(signature), false, acknowledgement))
     }
 
-    @Deprecated("message will re removed as soon as brigadier is fully implemented")
     fun sendCommand(message: String, stack: CommandStack) {
         if (!connection.version.requiresSignedChat || connection.profiles.connection.signature.sendCommandAsMessage) {
             return sendChatMessage(message)
         }
-        TODO("Can not send signed chat!")
+        TODO("Can not send signed commands!")
     }
 
     fun prepareSpawn() {

@@ -33,7 +33,7 @@ class ChatNode(
         val string = parser.parse(reader)
         if (node != CLI.ROOT_NODE && string.isNotBlank()) {
             if (peek == '/'.code) {
-                stack.connection.util.sendChatMessage("/$string")
+                stack.connection.util.sendCommand("/$string", stack)
             } else {
                 stack.connection.util.sendChatMessage(string)
             }

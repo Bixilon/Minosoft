@@ -28,7 +28,7 @@ class SendMessageDialog(
     override fun createButtons(): Array<ButtonElement> {
         return arrayOf(
             ButtonElement(guiRenderer, "Yes, send it!") {
-                guiRenderer.connection.util.sendChatMessage(message)
+                guiRenderer.connection.util.typeChat(message)
                 close()
             },
             createCopyToClipboardButton(message)
