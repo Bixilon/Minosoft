@@ -42,10 +42,15 @@ class ConnectingDialog(
     override fun init() {
         headerFX.text = HEADER
         cancelButtonFX.isDisable = true
+        connection::state.observeFX(this) { update(it) }
+    }
+
+    override fun postInit() {
+        super.postInit()
+
         stage.onCloseRequest = EventHandler {
             it.consume()
         }
-        connection::state.observeFX(this) { update(it) }
     }
 
     private fun update(state: PlayConnectionStates) {

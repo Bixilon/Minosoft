@@ -53,7 +53,10 @@ open class ProgressDialog(
     override fun init() {
         headerFX.text = header
         cancelButtonFX.isDisable = onCancel == null
+    }
 
+    override fun postInit() {
+        super.postInit()
         if (onCancel == null) {
             stage.onCloseRequest = EventHandler {
                 it.consume()
