@@ -26,7 +26,7 @@ object ChatUtil {
         val entity = this.world.entities[uuid]
         if (entity == null) {
             val tab = tabList.tabListItemsByUUID[uuid] ?: return UnknownMessageSender(uuid)
-            return TabMessageSender(uuid, tab)
+            return UnspawnedMessageSender(uuid, tab)
         }
         if (entity !is PlayerEntity) {
             return InvalidSender(uuid)

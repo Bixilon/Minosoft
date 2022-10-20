@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.chat.sender
 
+import de.bixilon.minosoft.protocol.PlayerPublicKey
 import java.util.*
 
 abstract class PlayerMessageSender(
     override val uuid: UUID,
     val name: String,
-) : MessageSender
+) : MessageSender {
+    abstract val publicKey: PlayerPublicKey?
+}
