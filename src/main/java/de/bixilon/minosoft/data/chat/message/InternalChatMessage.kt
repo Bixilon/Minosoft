@@ -31,7 +31,6 @@ class InternalChatMessage(
     }
 
     companion object {
-
         val TYPE = ChatMessageType(minosoft("internal"), TypeProperties("%s", listOf(ChatParameter.CONTENT), mapOf()), narration = null, position = ChatTextPositions.CHAT)
     }
 }
