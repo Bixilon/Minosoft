@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
@@ -41,6 +42,9 @@ class ConnectingDialog(
     override fun init() {
         headerFX.text = HEADER
         cancelButtonFX.isDisable = true
+        stage.onCloseRequest = EventHandler {
+            it.consume()
+        }
         connection::state.observeFX(this) { update(it) }
     }
 

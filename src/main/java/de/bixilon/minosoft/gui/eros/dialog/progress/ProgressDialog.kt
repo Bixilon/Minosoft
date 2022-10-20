@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ProgressBar
@@ -52,6 +53,12 @@ open class ProgressDialog(
     override fun init() {
         headerFX.text = header
         cancelButtonFX.isDisable = onCancel == null
+
+        if (onCancel == null) {
+            stage.onCloseRequest = EventHandler {
+                it.consume()
+            }
+        }
     }
 
     private fun update() {
