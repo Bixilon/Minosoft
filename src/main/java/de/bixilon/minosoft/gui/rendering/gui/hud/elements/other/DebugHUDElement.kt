@@ -284,7 +284,18 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Fully loaded: ", world[chunkPosition]?.isFullyLoaded) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) {
+                    var value: Any = chunk.isFullyLoaded
+                    if (!chunk.isFullyLoaded) {
+                        val builder = StringBuilder()
+                        if (chunk.blocksInitialized) builder.append('s') // for block states
+                        if (chunk.biomesInitialized) builder.append('b') // biomes
+                        if (chunk.neighbours != null) builder.append('n') // neighbours
+
+                        value = builder.toString()
+                    }
+                    BaseComponent("Fully loaded: ", value)
+                }
 
                 lastChunk = chunk
             }
