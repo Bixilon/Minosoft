@@ -353,9 +353,12 @@ class ChunkLight(private val chunk: Chunk) {
         val maxHeightSection = maxHeight.sectionHeight
         val skylightStart = getNeighbourMaxHeight(neighbours, x, z, heightmapIndex)
 
+        val skylightStartSectionHeight = skylightStart.sectionHeight
+        chunk.getOrPut(skylightStartSectionHeight - 1) // ToDo: Create section below max section
 
-        for (sectionHeight in minOf(skylightStart.sectionHeight, chunk.highestSection) downTo maxOf(maxHeightSection + 1, chunk.lowestSection)) {
+        for (sectionHeight in minOf(skylightStartSectionHeight, chunk.highestSection) downTo maxOf(maxHeightSection + 1, chunk.lowestSection)) {
             val section = chunk.sections?.get(sectionHeight - chunk.lowestSection) ?: continue
+
             // ToDo: Only update if affected by heightmap change
             section.light.update = true
             // ToDo: bare tracing
@@ -371,7 +374,7 @@ class ChunkLight(private val chunk: Chunk) {
             val maxSection = chunk.getOrPut(maxHeightSection)
             val baseY = maxHeightSection * ProtocolDefinition.SECTION_HEIGHT_Y
             if (maxSection != null) {
-                for (y in (if (skylightStart.sectionHeight != maxHeightSection) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
+                for (y in (if (skylightStartSectionHeight != maxHeightSection) ProtocolDefinition.SECTION_MAX_Y else skylightStart.inSectionHeight) downTo maxHeight.inSectionHeight) {
                     maxSection.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, null, baseY + y, false)
                 }
                 maxSection.light.update = true
