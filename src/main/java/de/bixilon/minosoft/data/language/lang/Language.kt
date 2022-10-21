@@ -29,7 +29,7 @@ class Language(
     }
 
     override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, data)
+        val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, *data)
         return Companion.translate(placeholder, parent, this, *data)
     }
 
