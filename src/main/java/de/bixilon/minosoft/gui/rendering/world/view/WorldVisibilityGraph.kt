@@ -309,6 +309,7 @@ class WorldVisibilityGraph(
     @Synchronized
     private fun calculateGraph() {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
+            connection.fireEvent(VisibilityGraphChangeEvent(renderWindow))
             return
         }
         connection.world.chunks.lock.acquire()
