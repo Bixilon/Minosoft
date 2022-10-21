@@ -354,7 +354,10 @@ class ChunkLight(private val chunk: Chunk) {
         val skylightStart = getNeighbourMaxHeight(neighbours, x, z, heightmapIndex)
 
         val skylightStartSectionHeight = skylightStart.sectionHeight
-        chunk.getOrPut(skylightStartSectionHeight - 1) // ToDo: Create section below max section
+        if (skylightStart.inSectionHeight == 1) {
+            // Create section below max section
+            chunk.getOrPut(skylightStartSectionHeight - 1)
+        }
 
         for (sectionHeight in minOf(skylightStartSectionHeight, chunk.highestSection) downTo maxOf(maxHeightSection + 1, chunk.lowestSection)) {
             val section = chunk.sections?.get(sectionHeight - chunk.lowestSection) ?: continue
