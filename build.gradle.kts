@@ -375,11 +375,14 @@ fun loadGit() {
     git = Grgit.open(mapOf("currentDir" to project.rootDir))
     val commit = git.log().first()
     val tag = git.tag.list().find { it.commit == commit }
-    val nextVersion = if (tag != null) {
+    var nextVersion = if (tag != null) {
         stable = true
         tag.name
     } else {
         commit.abbreviatedId
+    }
+    if (!git.status().isClean) {
+        nextVersion += "-dirty"
     }
     if (project.version != nextVersion) {
         project.version = nextVersion
