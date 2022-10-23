@@ -23,6 +23,7 @@ enum class EntityDataTypes(val type: EntityDataType<*>) {
     SHORT(ShortEntityDataType),
     INTEGER(IntEntityDataType),
     VAR_INT(VarIntEntityDataType),
+    LONG(LongEntityDataType),
     FLOAT(FloatEntityDataType),
     STRING(StringEntityDataType),
     TEXT_COMPONENT(ChatComponentEntityDataType),

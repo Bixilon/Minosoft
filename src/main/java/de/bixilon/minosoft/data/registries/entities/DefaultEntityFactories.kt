@@ -60,6 +60,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     Bee,
     Blaze,
     Boat,
+    Camel,
     Cat,
     CaveSpider,
     Chicken,
@@ -172,6 +173,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<*>>(
     GlowSquid,
     EvokerFangs,
 ) {
+
     fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, data: EntityData?, versionId: Int): Entity? {
         val factory = this[resourceLocation] ?: throw UnknownEntityException("Can not find entity type: $resourceLocation")
         return buildEntity(factory, connection, position, rotation, data, versionId)

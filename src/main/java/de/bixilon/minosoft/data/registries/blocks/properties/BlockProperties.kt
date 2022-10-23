@@ -121,6 +121,8 @@ enum class BlockProperties {
     // ToDo: used in models
     MAP("map", BooleanBlockPropertiesSerializer),
 
+    BOOKS_STORED("books_stored", IntBlockPropertiesSerializer),
+    LAST_INTERACTION_BOOK_SLOT("last_interaction_book_slot", IntBlockPropertiesSerializer),
     ;
 
     val group: String
