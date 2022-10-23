@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.array.ArrayUtil.isEmptyOrOnlyNull
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -204,9 +203,7 @@ object ChunkUtil {
             }
         }
 
-        if (!sectionBlocks.isEmptyOrOnlyNull()) {
-            chunkData.blocks = sectionBlocks
-        }
+        chunkData.blocks = sectionBlocks
         if (lightReceived > 0) {
             chunkData.light = light
         }

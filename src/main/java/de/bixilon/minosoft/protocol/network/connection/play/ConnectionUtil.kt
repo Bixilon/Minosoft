@@ -87,7 +87,7 @@ class ConnectionUtil(
         sendSignedMessage(privateKey, message)
     }
 
-    fun sendSignedMessage(privateKey: PrivateKey = connection.player.privateKey?.private!!, message: String) {
+    fun sendSignedMessage(privateKey: PrivateKey = connection.player.privateKey!!.private, message: String) {
         val salt = random.nextLong()
         val time = Instant.now()
         val uuid = connection.player.uuid
