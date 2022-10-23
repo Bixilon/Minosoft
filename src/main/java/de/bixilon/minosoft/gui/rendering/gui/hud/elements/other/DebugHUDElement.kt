@@ -59,6 +59,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.Reference
 import de.bixilon.minosoft.util.SystemInformation
 import kotlin.math.abs
 
@@ -66,6 +67,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private val connection = renderWindow.connection
     private val layout = GridLayout(guiRenderer, Vec2i(3, 1)).apply { parent = this@DebugHUDElement }
     override val layoutOffset: Vec2i = Vec2i.EMPTY
+
 
     init {
         layout.columnConstraints[0].apply {
@@ -253,7 +255,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     }
 
     private class DebugWorldInfo(guiRenderer: GUIRenderer) : RowLayout(guiRenderer) {
-        private var lastChunk: Chunk? = null
+        private val chunk = Reference<Chunk?>(null)
+        private var lastChunk = Reference<Chunk?>(null)
         private val world = guiRenderer.renderWindow.connection.world
         private val entity = guiRenderer.renderWindow.connection.player
 
@@ -268,14 +271,14 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         private fun updateInformation() {
             entity.positionInfo.apply {
-                val chunk = world[chunkPosition]
+                chunk.value = world[chunkPosition]
 
-                if ((chunk == null && lastChunk == null) || (chunk != null && lastChunk != null)) {
+                if ((chunk.value == null && lastChunk.value == null) || (chunk.value != null && lastChunk.value != null)) {
                     // No update, elements will update themselves
                     return
                 }
-                if (chunk == null) {
-                    lastChunk = null
+                if (chunk.value == null) {
+                    lastChunk.value = null
                     showWait()
                     return
                 }
@@ -285,6 +288,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) {
+                    val chunk = chunk.value!!
                     var value: Any = chunk.isFullyLoaded
                     if (!chunk.isFullyLoaded) {
                         val builder = StringBuilder()
