@@ -34,8 +34,9 @@
 #  This software is not affiliated with Mojang AB, the original developer of Minecraft.
 
 import subprocess
-import ujson
 import urllib.request
+
+import ujson
 
 print("Minosoft assets properties generator")
 
@@ -47,11 +48,9 @@ ASSETS_PROPERTIES = ujson.load(open(ASSETS_PROPERTIES_PATH))
 VERSION_MANIFEST = ujson.loads(urllib.request.urlopen('https://launchermeta.mojang.com/mc/game/version_manifest.json').read().decode("utf-8"))
 PIXLYZER_INDEX = ujson.loads(urllib.request.urlopen('https://gitlab.bixilon.de/bixilon/pixlyzer-data/-/raw/master/mbf_index.min.json?inline=false').read().decode("utf-8"))
 
-SKIP_COMPILE = True
-
 
 def generate_jar_assets(version_id, assets_properties):
-    process = subprocess.Popen(r'mvn -e -q exec:java -Dexec.mainClass="de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator" -Dexec.args="\"%s\" \"%s\""' % (version_id, assets_properties["client_jar_hash"]), shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(r'./gradlew -q assetsProperties --args="\"%s\" \"%s\""' % (version_id, assets_properties["client_jar_hash"]), shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     exit_code = process.wait()
     if exit_code != 0:
         print(process.stdout.read().decode('utf-8'))
@@ -62,16 +61,6 @@ def generate_jar_assets(version_id, assets_properties):
     (hash, tar_bytes) = process.stdout.read().decode('utf-8').split(":")
     assets_properties["jar_assets_hash"] = hash
     assets_properties["jar_assets_tar_bytes"] = tar_bytes
-
-
-def compile_minosoft():
-    print("Compiling minosoft...")
-    compile_process = subprocess.Popen(r'mvn compile', shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    exit_code = compile_process.wait()
-    if exit_code != 0:
-        print(compile_process.stdout.read().decode('utf-8'))
-        print(compile_process.stderr.read().decode('utf-8'))
-    print("Minosoft compiled!")
 
 
 def generate_version(version):
@@ -113,8 +102,6 @@ def generate_version(version):
 
 
 def main():
-    if not SKIP_COMPILE:
-        compile_minosoft()
     for version in VERSION_MANIFEST["versions"]:
         if version["id"] == DOWNLOAD_UNTIL_VERSION:
             break
