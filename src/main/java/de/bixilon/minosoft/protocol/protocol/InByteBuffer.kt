@@ -231,19 +231,12 @@ open class InByteBuffer {
         return readUnsignedByte() == 1
     }
 
-    @JvmOverloads
     fun readString(length: Int = readVarInt()): String {
         val string = String(readByteArray(length), StandardCharsets.UTF_8)
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
         return string
     }
 
-    @Deprecated("Use readArray", ReplaceWith("readArray(length) { readString() }"))
-    fun readStringArray(length: Int = readVarInt()): Array<String> {
-        return readArray(length) { readString() }
-    }
-
-    @JvmOverloads
     fun readNullString(length: Int = readVarInt()): String? {
         val string = readString(length)
         if (string.isBlank()) {
@@ -256,37 +249,16 @@ open class InByteBuffer {
         return UUID(readLong(), readLong())
     }
 
-    @Deprecated("Use readArray")
-    fun readUUIDArray(length: Int = readVarInt()): Array<UUID> {
-        return readArray(length) { readUUID() }
-    }
-
     fun readUUIDString(): UUID {
         return readString().toUUID()
     }
-
-    @Deprecated("Use readArray")
-    fun readUUIDStringArray(length: Int = readVarInt()): Array<UUID> {
-        return readArray(length) { readUUIDString() }
-    }
-
 
     fun readJson(): Map<String, Any> {
         return Jackson.MAPPER.readValue(readString(), Jackson.JSON_MAP_TYPE)
     }
 
-    @Deprecated("Use readArray")
-    fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {
-        return readArray(length) { readJson() }
-    }
-
     open fun readChatComponent(): ChatComponent {
         return ChatComponent.of(readString(), restrictedMode = true)
-    }
-
-    @Deprecated("Use readArray")
-    fun readChatComponentArray(length: Int = readVarInt()): Array<ChatComponent> {
-        return readArray(length) { readChatComponent() }
     }
 
     fun readDirection(): Directions {

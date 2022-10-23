@@ -37,8 +37,8 @@ class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             val key = buffer.readString()
             val parent = buffer.readOptional { readString() }
             val display = buffer.readPlayOptional { readDisplay() }
-            val criteria = buffer.readStringArray().toSet()
-            val requirements = buffer.readArray { buffer.readStringArray().toSet() }.toSet()
+            val criteria = buffer.readArray { buffer.readString() }.toSet()
+            val requirements = buffer.readArray { buffer.readArray { buffer.readString() }.toSet() }.toSet()
 
             advancements[key] = Advancement(
                 parent = parent,
@@ -47,7 +47,7 @@ class AdvancementsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 requirements = requirements,
             )
         }
-        for (remove in buffer.readStringArray()) {
+        for (remove in buffer.readArray { buffer.readString() }) {
             advancements[remove] = null
         }
         this.advancements = advancements

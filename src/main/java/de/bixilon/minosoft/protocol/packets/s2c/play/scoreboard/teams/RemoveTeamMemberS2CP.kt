@@ -25,12 +25,13 @@ class RemoveTeamMemberS2CP(
     val name: String,
     buffer: PlayInByteBuffer,
 ) : TeamsS2CP {
-    val members: Set<String> = buffer.readStringArray(
+    val members: Set<String> = buffer.readArray(
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.readUnsignedShort()
         } else {
             buffer.readVarInt()
-        }).toSet()
+        }
+    ) { buffer.readString() }.toSet()
 
 
     override fun handle(connection: PlayConnection) {
