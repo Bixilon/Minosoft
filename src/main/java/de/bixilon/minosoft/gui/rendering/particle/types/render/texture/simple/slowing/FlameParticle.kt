@@ -23,6 +23,8 @@ import kotlin.math.pow
 
 open class FlameParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SlowingParticle(connection, position, velocity, data) {
 
+    override val emittingLight: Int get() = 14 // non vanilla
+
     override var scale: Float
         get() = super.scale * (1.0f - (floatAge / maxAge).pow(2) * 0.5f)
         set(value) {

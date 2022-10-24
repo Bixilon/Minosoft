@@ -20,9 +20,13 @@ layout (location = 3) in uint vinIndexLayerAnimation;
 
 layout (location = 4) in float vinScale;
 layout (location = 5) in uint vinTintColor;
+layout (location = 6) in uint vinLight;
 
 
 #include "minosoft:animation/buffer"
+
+#include "minosoft:light"
+
 
 out Vertex
 {
@@ -47,7 +51,7 @@ void main() {
     ginVertex.minUVCoordinates = vinMinUVCoordinates;
 
     ginVertex.scale = vinScale;
-    ginVertex.tintColor = getRGBAColor(vinTintColor);
+    ginVertex.tintColor = getRGBAColor(vinTintColor) * getLight(vinLight & 0xFFu);
 
 
     uint animationIndex = vinIndexLayerAnimation & 0xFFFu;

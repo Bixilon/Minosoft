@@ -35,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -137,14 +138,8 @@ class ParticleRenderer(
 
     override fun postInit(latch: CountUpAndDownLatch) {
         transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
-        transparentShader.load()
-        renderWindow.textureManager.staticTextures.use(transparentShader)
-        renderWindow.textureManager.staticTextures.animator.use(transparentShader)
-
-        translucentShader.load()
-        renderWindow.textureManager.staticTextures.use(translucentShader)
-        renderWindow.textureManager.staticTextures.animator.use(translucentShader)
-
+        transparentShader.loadAnimated(light = true)
+        translucentShader.loadAnimated(light = true)
 
         connection.world.particleRenderer = this
 

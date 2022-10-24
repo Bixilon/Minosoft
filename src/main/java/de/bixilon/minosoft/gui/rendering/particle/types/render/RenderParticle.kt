@@ -17,10 +17,40 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class RenderParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : Particle(connection, position, velocity, data) {
     protected open var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBColor = ChatColors.WHITE
+
+    var light = 0
+    open val emittingLight = 0
+
+    override fun forceMove(delta: Vec3d) {
+        super.forceMove(delta)
+        val aabb = aabb + position
+        var maxBlockLight = 0
+        var maxSkyLight = 0
+
+        val chunkPosition = position.blockPosition.chunkPosition
+        val chunk = connection.world[chunkPosition] ?: return
+
+        for (position in aabb.blockPositions) {
+            val light = chunk.traceChunk(position.chunkPosition - chunkPosition)?.light?.get(position.inChunkPosition) ?: SectionLight.SKY_LIGHT_MASK
+            if (light and SectionLight.BLOCK_LIGHT_MASK > maxBlockLight) {
+                maxBlockLight = light and SectionLight.BLOCK_LIGHT_MASK
+            }
+            if (light and SectionLight.SKY_LIGHT_MASK > maxSkyLight) {
+                maxSkyLight = light and SectionLight.SKY_LIGHT_MASK
+            }
+        }
+
+        this.light = maxBlockLight or maxSkyLight
+    }
+
 }

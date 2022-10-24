@@ -93,10 +93,14 @@ interface Shader {
             return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
         }
 
-        fun Shader.loadAnimated() {
+        fun Shader.loadAnimated(light: Boolean = false) {
             load()
             renderWindow.textureManager.staticTextures.use(this)
             renderWindow.textureManager.staticTextures.animator.use(this)
+
+            if (light) {
+                renderWindow.lightMap.use(this)
+            }
         }
     }
 }

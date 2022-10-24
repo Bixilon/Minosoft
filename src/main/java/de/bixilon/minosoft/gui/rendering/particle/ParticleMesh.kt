@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
 
-    fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null) {
+    fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) {
             EMPTY_UV_ARRAY
         } else {
@@ -43,6 +43,7 @@ class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mes
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add(scale)
         data.add(tintColor.rgba.buffer())
+        data.add(light.buffer())
     }
 
 
@@ -57,6 +58,7 @@ class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mes
         val indexLayerAnimation: Int,
         val scale: Float,
         val tintColor: RGBColor,
+        val light: Int,
     ) {
         companion object : MeshStruct(ParticleMeshStruct::class)
     }

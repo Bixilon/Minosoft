@@ -103,14 +103,13 @@ abstract class Particle(
         return interpolateLinear((time - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
     }
 
-    fun forceMove(delta: Vec3d) {
+    open fun forceMove(delta: Vec3d) {
         this.previousPosition = Vec3d(position)
         position += delta
     }
 
     fun forceMove(move: () -> Double) {
-        this.previousPosition = Vec3d(position)
-        position += move
+        forceMove(Vec3d(move()))
     }
 
     open fun move(velocity: Vec3d) {

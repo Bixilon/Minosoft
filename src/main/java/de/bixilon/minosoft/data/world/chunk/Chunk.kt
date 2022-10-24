@@ -311,30 +311,34 @@ class Chunk(
         return traceBlock(blockPosition.inChunkPosition, deltaChunkPosition)
     }
 
-    private fun traceBlock(inChunkSectionPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
-        if (chunkOffset.x == 0 && chunkOffset.y == 0) {
-            return this[inChunkSectionPosition]
+    fun traceChunk(offset: Vec2i): Chunk? {
+        if (offset.x == 0 && offset.y == 0) {
+            return this
         }
         val neighbours = this.neighbours ?: return null
 
-        if (chunkOffset.x > 0) {
-            chunkOffset.x--
-            return neighbours[6].traceBlock(inChunkSectionPosition, chunkOffset)
+        if (offset.x > 0) {
+            offset.x--
+            return neighbours[6].traceChunk(offset)
         }
-        if (chunkOffset.x < 0) {
-            chunkOffset.x++
-            return neighbours[1].traceBlock(inChunkSectionPosition, chunkOffset)
+        if (offset.x < 0) {
+            offset.x++
+            return neighbours[1].traceChunk(offset)
         }
-        if (chunkOffset.y > 0) {
-            chunkOffset.y--
-            return neighbours[4].traceBlock(inChunkSectionPosition, chunkOffset)
+        if (offset.y > 0) {
+            offset.y--
+            return neighbours[4].traceChunk(offset)
         }
-        if (chunkOffset.y < 0) {
-            chunkOffset.y++
-            return neighbours[3].traceBlock(inChunkSectionPosition, chunkOffset)
+        if (offset.y < 0) {
+            offset.y++
+            return neighbours[3].traceChunk(offset)
         }
 
-        Broken("Can not get chunk from offset: $chunkOffset")
+        Broken("Can not get chunk from offset: $offset")
+    }
+
+    private fun traceBlock(inChunkPosition: Vec3i, chunkOffset: Vec2i): BlockState? {
+        return traceChunk(chunkOffset)?.get(inChunkPosition)
     }
 }
 
