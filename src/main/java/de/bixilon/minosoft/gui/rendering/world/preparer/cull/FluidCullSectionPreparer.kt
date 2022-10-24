@@ -19,7 +19,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -261,23 +260,12 @@ class FluidCullSectionPreparer(
         var totalHeight = 0.0f
         var count = 0
 
-        val neighbours = providedChunk.neighbours ?: Broken("neighbours == null")
+        val neighbours = providedChunk.neighbours
 
         for (side in 0 until 4) {
             val blockPosition = position + Vec3i(-(side and 0x01), 0, -(side shr 1 and 0x01))
             val offset = blockPosition.chunkPosition - providedChunkPosition
-            val chunk = when {
-                offset.x == 0 && offset.y == 0 -> providedChunk // most likely, doing this one first
-                offset.x == -1 && offset.y == -1 -> neighbours[0]
-                offset.x == -1 && offset.y == 0 -> neighbours[1]
-                offset.x == -1 && offset.y == 1 -> neighbours[2]
-                offset.x == 0 && offset.y == -1 -> neighbours[3]
-                offset.x == 0 && offset.y == 1 -> neighbours[4]
-                offset.x == 1 && offset.y == -1 -> neighbours[5]
-                offset.x == 1 && offset.y == 0 -> neighbours[6]
-                offset.x == 1 && offset.y == 1 -> neighbours[7]
-                else -> Broken("Can not get neighbour chunk from offset $offset")
-            }
+            val chunk = neighbours[offset]!!
 
             val inChunkPosition = blockPosition.inChunkPosition
             if (fluid.matches(chunk.unsafeGet(inChunkPosition + Directions.UP))) {

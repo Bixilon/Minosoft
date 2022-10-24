@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.light.TransparentProperty
 import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.ChunkSection.Companion.getIndex
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class SectionLight(
@@ -133,7 +133,7 @@ class SectionLight(
             update = true
         }
         val chunk = section.chunk ?: return
-        val chunkNeighbours = chunk.neighbours ?: return
+        val chunkNeighbours = chunk.neighbours.get() ?: return
         val neighbours = section.neighbours ?: return
 
         if (nextLuminance == 1) {
@@ -320,7 +320,7 @@ class SectionLight(
             // this light level will be 15, don't care
             return
         }
-        val chunkNeighbours = chunk.neighbours ?: return
+        val chunkNeighbours = chunk.neighbours.get() ?: return
         val index = heightmapIndex or (y shl 8)
         val currentLight = this[index].toInt()
         if (noForce && ((currentLight and SKY_LIGHT_MASK) shr 4) >= nextLevel) {
@@ -457,7 +457,7 @@ class SectionLight(
         val totalY = section.sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + y
         section.chunk?.let {
             // check if neighbours are above heightmap, if so set light level to max
-            val chunkNeighbours = it.neighbours ?: return@let
+            val chunkNeighbours = it.neighbours.get() ?: return@let
             val minHeight = it.light.getNeighbourMinHeight(chunkNeighbours, x, z)
             if (totalY > minHeight) {
                 skylight = ProtocolDefinition.MAX_LIGHT_LEVEL_I

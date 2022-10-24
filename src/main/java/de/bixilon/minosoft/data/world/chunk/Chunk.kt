@@ -26,7 +26,9 @@ import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.InChunkPosition
 import de.bixilon.minosoft.data.world.positions.SectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
@@ -43,7 +45,7 @@ import de.bixilon.minosoft.util.chunk.ChunkUtil
  */
 class Chunk(
     val connection: PlayConnection,
-    val chunkPosition: Vec2i,
+    val chunkPosition: ChunkPosition,
     var sections: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
@@ -57,26 +59,13 @@ class Chunk(
     var blocksInitialized = false // All block data was received
     var biomesInitialized = false // All biome data is initialized (aka. cache built, or similar)
 
-
-    var neighbours: Array<Chunk>? = null
-        set(value) {
-            lock.lock()
-            if (field.contentEquals(value)) {
-                lock.unlock()
-                return
-            }
-            field = value
-            if (value != null) {
-                updateSectionNeighbours(value)
-            }
-            lock.unlock()
-        }
+    val neighbours = ChunkNeighbours(this)
 
     val isLoaded: Boolean
         get() = blocksInitialized && biomesInitialized
 
     val isFullyLoaded: Boolean
-        get() = isLoaded && neighbours != null
+        get() = isLoaded && neighbours.complete
 
     operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
@@ -209,14 +198,14 @@ class Chunk(
         if (section == null) {
             section = ChunkSection(sectionHeight, BlockSectionDataProvider(occlusionUpdateCallback = world.occlusionUpdateCallback), chunk = this)
             val cacheBiomeAccessor = world.cacheBiomeAccessor
-            val neighbours = this.neighbours
+            val neighbours = this.neighbours.get()
             if (neighbours != null) {
                 if (cacheBiomeAccessor != null && biomesInitialized) {
                     section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
                 }
                 section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, this, sectionHeight)
                 for (neighbour in neighbours) {
-                    val neighbourNeighbours = neighbour.neighbours ?: continue
+                    val neighbourNeighbours = neighbour.neighbours.get() ?: continue
                     neighbour.updateNeighbours(neighbourNeighbours, sectionHeight)
                 }
             }
@@ -255,7 +244,7 @@ class Chunk(
         val cacheBiomeAccessor = connection.world.cacheBiomeAccessor ?: return
         check(!biomesInitialized) { "Biome cache already initialized!" }
         check(cacheBiomes) { "Cache is disabled!" }
-        check(neighbours != null) { "Neighbours not set!" }
+        check(neighbours.complete) { "Neighbours not set!" }
 
         // ToDo: Return if isEmpty
 
@@ -278,16 +267,6 @@ class Chunk(
             return section.biomes[x, y.inSectionHeight, z]
         }
         return biomeSource?.getBiome(x and 0x0F, y, z and 0x0F)
-    }
-
-    private fun updateSectionNeighbours(neighbours: Array<Chunk>) {
-        for ((index, section) in sections!!.withIndex()) {
-            if (section == null) {
-                continue
-            }
-            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, index + lowestSection)
-            section.neighbours = sectionNeighbours
-        }
     }
 
     private fun updateNeighbours(neighbours: Array<Chunk>, sectionHeight: Int) {
@@ -315,23 +294,22 @@ class Chunk(
         if (offset.x == 0 && offset.y == 0) {
             return this
         }
-        val neighbours = this.neighbours ?: return null
 
         if (offset.x > 0) {
             offset.x--
-            return neighbours[6].traceChunk(offset)
+            return neighbours[6]?.traceChunk(offset)
         }
         if (offset.x < 0) {
             offset.x++
-            return neighbours[1].traceChunk(offset)
+            return neighbours[1]?.traceChunk(offset)
         }
         if (offset.y > 0) {
             offset.y--
-            return neighbours[4].traceChunk(offset)
+            return neighbours[4]?.traceChunk(offset)
         }
         if (offset.y < 0) {
             offset.y++
-            return neighbours[3].traceChunk(offset)
+            return neighbours[3]?.traceChunk(offset)
         }
 
         Broken("Can not get chunk from offset: $offset")

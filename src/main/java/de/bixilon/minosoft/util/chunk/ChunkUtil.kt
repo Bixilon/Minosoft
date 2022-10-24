@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.util.chunk
 
-import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -24,6 +23,7 @@ import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkData
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
@@ -259,10 +259,10 @@ object ChunkUtil {
             return true
         }
 
-    val Array<Chunk?>.canBuildBiomeCache: Boolean
+    val Array<Chunk>.canBuildBiomeCache: Boolean
         get() {
             for (neighbour in this) {
-                if (neighbour?.biomeSource == null || !neighbour.cacheBiomes) {
+                if (neighbour.biomeSource == null || !neighbour.cacheBiomes) {
                     return false
                 }
             }
@@ -272,14 +272,14 @@ object ChunkUtil {
 
     fun getChunkNeighbourPositions(chunkPosition: ChunkPosition): Array<ChunkPosition> {
         return arrayOf(
-            chunkPosition + Vec2i(-1, -1), // 0
-            chunkPosition + Vec2i(-1, +0), // 1
-            chunkPosition + Vec2i(-1, +1), // 2
-            chunkPosition + Vec2i(+0, -1), // 3
-            chunkPosition + Vec2i(+0, +1), // 4
-            chunkPosition + Vec2i(+1, -1), // 5
-            chunkPosition + Vec2i(+1, +0), // 6
-            chunkPosition + Vec2i(+1, +1), // 7
+            chunkPosition + ChunkNeighbours.OFFSETS[0],
+            chunkPosition + ChunkNeighbours.OFFSETS[1],
+            chunkPosition + ChunkNeighbours.OFFSETS[2],
+            chunkPosition + ChunkNeighbours.OFFSETS[3],
+            chunkPosition + ChunkNeighbours.OFFSETS[4],
+            chunkPosition + ChunkNeighbours.OFFSETS[5],
+            chunkPosition + ChunkNeighbours.OFFSETS[6],
+            chunkPosition + ChunkNeighbours.OFFSETS[7],
         )
     }
 

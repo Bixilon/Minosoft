@@ -28,9 +28,9 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.BlockPosition
 import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderWindow

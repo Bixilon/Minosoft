@@ -14,7 +14,6 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.array.ArrayUtil.cast
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
@@ -35,6 +34,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -56,7 +56,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
-import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import kotlin.random.Random
 
 /**
@@ -226,10 +225,13 @@ class World(
 
     fun unloadChunk(chunkPosition: ChunkPosition) {
         val chunk = chunks.remove(chunkPosition) ?: return
-        val neighbourPositions = getChunkNeighbourPositions(chunkPosition)
-        for (neighbourPosition in neighbourPositions) {
-            val neighbour = this[neighbourPosition] ?: continue
-            neighbour.neighbours = null
+        for ((index, neighbour) in chunk.neighbours.neighbours.withIndex()) {
+            if (neighbour == null) {
+                continue
+            }
+            val offset = ChunkNeighbours.OFFSETS[index]
+            val neighbourPosition = chunkPosition + offset
+            neighbour.neighbours.remove(-offset)
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbour))
         }
         // connection.world.view.updateServerViewDistance(chunkPosition, false)
@@ -369,37 +371,45 @@ class World(
         return getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
     }
 
+    private fun calculateChunkData(chunk: Chunk) {
+        val neighbours = chunk.neighbours.get() ?: return
+        if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
+            chunk.buildBiomeCache()
+        }
+
+        chunk.light.recalculate(false)
+        chunk.light.propagateFromNeighbours()
+        connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunk.chunkPosition, chunk))
+    }
+
     fun onChunkUpdate(chunkPosition: ChunkPosition, chunk: Chunk, checkNeighbours: Boolean = true) {
         if (chunk.isFullyLoaded) {
+            // everything already calculated
             return
         }
 
-
-        val neighboursPositions = getChunkNeighbourPositions(chunkPosition)
-        val neighbours = getChunkNeighbours(neighboursPositions)
-
-        val neighboursReceived = neighbours.received
-        if (neighboursReceived) {
-            chunk.neighbours = neighbours.cast()
-
-            if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
-                chunk.buildBiomeCache()
+        for ((index, neighbour) in chunk.neighbours.neighbours.withIndex()) {
+            if (neighbour != null) {
+                continue
             }
+            val offset = ChunkNeighbours.OFFSETS[index]
+            val neighbour = this[chunkPosition + offset] ?: continue
+            chunk.neighbours[index] = neighbour
+            neighbour.neighbours[-offset] = chunk
         }
 
-        if (neighboursReceived) {
-            chunk.light.recalculate(false)
-            chunk.light.propagateFromNeighbours()
+        if (chunk.neighbours.complete) {
+            calculateChunkData(chunk)
         }
 
         if (checkNeighbours) {
             for (index in 0 until 8) {
-                val neighbour = neighbours[index] ?: continue
-                onChunkUpdate(neighboursPositions[index], neighbour, false)
+                val neighbour = chunk.neighbours[index] ?: continue
+                calculateChunkData(neighbour)
             }
         }
 
-        if (neighboursReceived) {
+        if (chunk.neighbours.complete) {
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
         }
     }

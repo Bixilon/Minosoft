@@ -19,8 +19,8 @@ import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -41,7 +41,7 @@ class ChunkLight(private val chunk: Chunk) {
         recalculateHeightmap(x, y, z, next)
         onHeightmapUpdate(x, y, z, previous, heightmap[heightmapIndex])
 
-        val neighbours = chunk.neighbours ?: return
+        val neighbours = chunk.neighbours.get() ?: return
 
         fireLightChange(section, y.sectionHeight, neighbours)
     }
@@ -91,7 +91,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {
-        val neighbours = chunk.neighbours ?: return
+        val neighbours = chunk.neighbours.get() ?: return
         for ((index, section) in sections.withIndex()) {
             fireLightChange(section ?: continue, index + chunk.lowestSection, neighbours, fireSameChunkEvent)
         }
@@ -279,7 +279,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun calculateSkylight() {
-        if (chunk.world.dimension?.hasSkyLight != true || chunk.neighbours == null) {
+        if (chunk.world.dimension?.hasSkyLight != true || !chunk.neighbours.complete) {
             // no need to calculate it
             return
         }
@@ -347,7 +347,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun startSkylightFloodFill(x: Int, z: Int) {
-        val neighbours = chunk.neighbours ?: return
+        val neighbours = chunk.neighbours.get() ?: return
         val heightmapIndex = (z shl 4) or x
         val maxHeight = heightmap[heightmapIndex]
         val maxHeightSection = maxHeight.sectionHeight

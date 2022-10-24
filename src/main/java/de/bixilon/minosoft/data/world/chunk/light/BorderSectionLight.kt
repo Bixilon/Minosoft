@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.Chunk
-import de.bixilon.minosoft.data.world.chunk.ChunkNeighbours
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.getFirst
 import de.bixilon.minosoft.util.KUtil.getLast
@@ -83,23 +83,23 @@ class BorderSectionLight(
         if (z > 0) {
             traceBlockIncrease(x, z - 1, neighbourLuminance)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            chunk.neighbours.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
             traceBlockIncrease(x, z + 1, neighbourLuminance)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
+            chunk.neighbours.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
         }
 
         if (x > 0) {
             traceBlockIncrease(x - 1, z, neighbourLuminance)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
+            chunk.neighbours.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
             traceBlockIncrease(x + 1, z, neighbourLuminance)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
+            chunk.neighbours.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
         }
     }
 
@@ -136,29 +136,29 @@ class BorderSectionLight(
         if (z > 0) {
             traceSkyIncrease(x, z - 1, neighbourLevel)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceSkyIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLevel)
+            chunk.neighbours.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceSkyIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLevel)
         }
         if (z < ProtocolDefinition.SECTION_MAX_Y) {
             traceSkyIncrease(x, z + 1, neighbourLevel)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceSkyIncrease(x, 0, neighbourLevel)
+            chunk.neighbours.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceSkyIncrease(x, 0, neighbourLevel)
         }
 
         if (x > 0) {
             traceSkyIncrease(x - 1, z, neighbourLevel)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceSkyIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLevel)
+            chunk.neighbours.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceSkyIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLevel)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
             traceSkyIncrease(x + 1, z, neighbourLevel)
         } else {
-            chunk.neighbours?.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceSkyIncrease(0, z, neighbourLevel)
+            chunk.neighbours.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceSkyIncrease(0, z, neighbourLevel)
         }
     }
 
     internal fun decreaseCheckLevel(x: Int, z: Int, light: Int, reset: Boolean) {
         decreaseCheckX(z, light, reset)
-        val neighbours = chunk.neighbours ?: return
+        val neighbours = chunk.neighbours.get() ?: return
 
         if (x - light < 0) {
             neighbours[ChunkNeighbours.WEST].getBorderLight().decreaseCheckX(z, light - x, reset)
@@ -169,7 +169,7 @@ class BorderSectionLight(
     }
 
     private fun decreaseCheckX(z: Int, light: Int, reset: Boolean) {
-        val neighbours = chunk.neighbours ?: return
+        val neighbours = chunk.neighbours.get() ?: return
         if (reset) reset()
 
         if (z - light < 0) {

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.reflection.ReflectionUtil.setValue
 import de.bixilon.kutil.watcher.DataWatcher
@@ -29,6 +28,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.light.ChunkLight
+import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.EventMaster
@@ -68,6 +68,7 @@ object ChunkTestingUtil {
         Chunk::world.javaField!!.setValue(chunk, createWorld())
         Chunk::connection.javaField!!.setValue(chunk, chunk.world.connection)
         Chunk::light.javaField!!.setValue(chunk, ChunkLight(chunk))
+        Chunk::neighbours.javaField!!.setValue(chunk, ChunkNeighbours(chunk))
         chunk.sections = arrayOfNulls(SECTIONS)
 
         return chunk
@@ -75,18 +76,16 @@ object ChunkTestingUtil {
 
     fun createChunkWithNeighbours(): Chunk {
         val chunk = createEmptyChunk(Vec2i.EMPTY)
-        val neighbours: Array<Chunk?> = arrayOfNulls(8)
         var index = 0
         for (x in -1..1) {
             for (z in -1..1) {
                 if (x == 0 && z == 0) {
                     continue
                 }
-                neighbours[index++] = createEmptyChunk(Vec2i(x, z))
+                chunk.neighbours[index++] = createEmptyChunk(Vec2i(x, z))
             }
         }
 
-        chunk.neighbours = neighbours.unsafeCast()
         return chunk
     }
 

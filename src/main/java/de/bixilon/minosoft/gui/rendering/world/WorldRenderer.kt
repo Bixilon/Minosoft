@@ -173,7 +173,7 @@ class WorldRenderer(
             val chunkPosition = it.blockPosition.chunkPosition
             val sectionHeight = it.blockPosition.sectionHeight
             val chunk = world[chunkPosition] ?: return@of
-            val neighbours = chunk.neighbours ?: return@of
+            val neighbours = chunk.neighbours.get() ?: return@of
             queueSection(chunkPosition, sectionHeight, chunk, neighbours = neighbours)
             val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
 
@@ -227,7 +227,7 @@ class WorldRenderer(
                     neighbours[5] = true
                 }
             }
-            val neighbours = chunk.neighbours ?: return@of
+            val neighbours = chunk.neighbours.get() ?: return@of
             for ((sectionHeight, neighbourUpdates) in sectionHeights) {
                 queueSection(it.chunkPosition, sectionHeight, chunk, neighbours = neighbours)
 
@@ -481,7 +481,7 @@ class WorldRenderer(
             if (section.blocks.isEmpty) {
                 return queueItemUnload(item)
             }
-            val neighbourChunks: Array<Chunk> = chunk.neighbours ?: return queueSection(item.chunkPosition, item.sectionHeight, chunk, section, neighbours = null)
+            val neighbourChunks: Array<Chunk> = chunk.neighbours.get() ?: return queueSection(item.chunkPosition, item.sectionHeight, chunk, section, neighbours = null)
             val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
             val mesh = WorldMesh(renderWindow, item.chunkPosition, item.sectionHeight, section.blocks.count < ProtocolDefinition.SECTION_MAX_X * ProtocolDefinition.SECTION_MAX_Z)
             solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks, mesh)
@@ -600,7 +600,7 @@ class WorldRenderer(
         return false
     }
 
-    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk>? = chunk?.neighbours) {
+    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false, neighbours: Array<Chunk>? = chunk?.neighbours?.get()) {
         if (chunk == null || neighbours == null || section == null || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
@@ -613,7 +613,7 @@ class WorldRenderer(
     }
 
     private fun queueChunk(chunkPosition: Vec2i, chunk: Chunk = world.chunks[chunkPosition]!!) {
-        val neighbours = chunk.neighbours
+        val neighbours = chunk.neighbours.get()
         if (neighbours == null || !chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
@@ -813,7 +813,7 @@ class WorldRenderer(
 
         for ((chunkPosition, pair) in nextQueue) {
             val (chunk, sectionHeights) = pair
-            val neighbours = chunk.neighbours ?: continue
+            val neighbours = chunk.neighbours.get() ?: continue
             for (sectionHeight in sectionHeights.intIterator()) {
                 queueSection(chunkPosition, sectionHeight, chunk = chunk, ignoreFrustum = true, neighbours = neighbours)
             }
