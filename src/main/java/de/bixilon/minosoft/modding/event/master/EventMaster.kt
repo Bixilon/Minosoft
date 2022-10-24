@@ -15,7 +15,10 @@ package de.bixilon.minosoft.modding.event.master
 
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
+import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.modding.event.EventInstantFire
+import de.bixilon.minosoft.modding.event.events.AsyncEvent
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
@@ -41,6 +44,18 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
             return size
         }
 
+    private fun runEvent(invoker: EventInvoker, event: Event, toRemove: MutableSet<EventInvoker>) {
+        try {
+            invoker(event)
+        } catch (exception: Throwable) {
+            exception.printStackTrace()
+        }
+
+        if (invoker is OneShotInvoker && invoker.oneShot) {
+            toRemove += invoker
+        }
+    }
+
 
     override fun fireEvent(event: Event): Boolean {
         parentLock.acquire()
@@ -51,21 +66,21 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
 
         val toRemove: MutableSet<EventInvoker> = mutableSetOf()
         eventInvokerLock.acquire()
+        val worker = UnconditionalWorker()
         for (invoker in eventInvokers) {
             if (!invoker.eventType.isAssignableFrom(event::class.java)) {
                 continue
             }
-            try {
-                invoker(event)
-            } catch (exception: Throwable) {
-                exception.printStackTrace()
-            }
-
-            if (invoker is OneShotInvoker && invoker.oneShot) {
-                toRemove += invoker
+            if (event is AsyncEvent) {
+                worker += { runEvent(invoker, event, toRemove) }
+            } else {
+                runEvent(invoker, event, toRemove)
             }
         }
         eventInvokerLock.release()
+        if (event is AsyncEvent) {
+            worker.work(CountUpAndDownLatch(0))
+        }
         if (toRemove.isNotEmpty()) {
             eventInvokerLock.lock()
             this.eventInvokers -= toRemove

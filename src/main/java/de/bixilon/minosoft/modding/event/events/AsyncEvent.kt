@@ -11,11 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.modding.event.events.AsyncEvent
-
-class VisibilityGraphChangeEvent(
-    renderWindow: RenderWindow,
-) : RenderEvent(renderWindow), AsyncEvent
+interface AsyncEvent
