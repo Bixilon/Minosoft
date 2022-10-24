@@ -35,7 +35,9 @@ class ConnectionTicker(private val connection: PlayConnection) {
             if (it != PlayConnectionStates.PLAYING) {
                 unregister()
             } else {
-                register()
+                // Ticks are postponed 10 ticks
+                // When joining/respawning the lock on chunks, etc is the performance bottleneck and makes the game laggy.
+                TimeWorker.runIn(10 * ProtocolDefinition.TICK_TIME) { register() }
             }
         }
     }
@@ -46,6 +48,10 @@ class ConnectionTicker(private val connection: PlayConnection) {
             return
         }
         lock.lock()
+        if (registered || connection.state != PlayConnectionStates.PLAYING) {
+            lock.unlock()
+            return
+        }
         tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
             connection.world.entities.tick()
         }
