@@ -357,9 +357,11 @@ class World(
      */
     fun getChunkNeighbours(neighbourPositions: Array<ChunkPosition>): Array<Chunk?> {
         val chunks: Array<Chunk?> = arrayOfNulls(neighbourPositions.size)
+        this.chunks.lock.acquire()
         for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
-            chunks[index] = this[neighbourPosition] ?: continue
+            chunks[index] = this.chunks.unsafe[neighbourPosition] ?: continue
         }
+        this.chunks.lock.release()
         return chunks
     }
 
