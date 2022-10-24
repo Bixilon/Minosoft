@@ -32,6 +32,9 @@ class LogPrintStream(
         if (string.startsWith("Unknown element") && string.endsWith("):")) {
             return
         }
+        if (Thread.currentThread().name == "JavaFX-Launcher") {
+            return
+        }
         Log.log(message = string, type = type, level = level)
     }
 
