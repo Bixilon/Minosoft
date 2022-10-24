@@ -68,7 +68,8 @@ object LANServerListener {
         val thread = Thread({
             try {
                 val socket = MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT)
-                socket.joinGroup(InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS))
+                val inetAddress = InetAddress.getByName(ProtocolDefinition.LAN_SERVER_BROADCAST_ADDRESS)
+                socket.joinGroup(InetSocketAddress(inetAddress, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(inetAddress))
                 val buffer = ByteArray(256) // this should be enough, if the packet is longer, it is probably invalid
                 Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE) { "Listening for LAN servers..." }
                 latch?.dec()

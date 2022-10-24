@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec3.Vec3i;
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors;
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor;
 
-import java.net.InetAddress;
 import java.util.regex.Pattern;
 
 public final class ProtocolDefinition {
@@ -37,7 +36,6 @@ public final class ProtocolDefinition {
 
     public static final int LAN_SERVER_BROADCAST_PORT = 4445;
     public static final String LAN_SERVER_BROADCAST_ADDRESS = "224.0.2.60";
-    public static final InetAddress LAN_SERVER_BROADCAST_INET_ADDRESS;
     public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
 
     public static final String DEFAULT_NAMESPACE = "minecraft";
@@ -92,16 +90,6 @@ public final class ProtocolDefinition {
     public static final byte MAX_LIGHT_LEVEL = LIGHT_LEVELS - 1;
     public static final int MAX_LIGHT_LEVEL_I = MAX_LIGHT_LEVEL;
 
-    static {
-        InetAddress inetAddress;
-        try {
-            inetAddress = InetAddress.getByName(LAN_SERVER_BROADCAST_ADDRESS);
-        } catch (Exception e) {
-            e.printStackTrace();
-            inetAddress = null;
-        }
-        LAN_SERVER_BROADCAST_INET_ADDRESS = inetAddress;
-    }
 
     public static final String VANILLA_BRAND = "vanilla";
     public static final String MINOSOFT_BRAND = "minosoft";
