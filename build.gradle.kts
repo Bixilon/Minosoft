@@ -264,7 +264,7 @@ testing {
 }
 
 tasks.named("check") {
-    dependsOn(testing.suites.named("integrationTest"))
+    dependsOn(testing.suites.named("test"), testing.suites.named("integrationTest"))
 }
 
 fun DependencyHandler.javafx(name: String) {
