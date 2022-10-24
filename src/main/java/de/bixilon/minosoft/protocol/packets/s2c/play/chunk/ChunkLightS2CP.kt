@@ -29,8 +29,10 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(lowPriority = true)
-class ChunkLightS2CP @JvmOverloads constructor(buffer: PlayInByteBuffer, chunkPositionGetter: () -> Vec2i = { Vec2i(buffer.readVarInt(), buffer.readVarInt()) }) : PlayS2CPacket {
-    val chunkPosition: Vec2i = chunkPositionGetter()
+class ChunkLightS2CP @JvmOverloads constructor(
+    buffer: PlayInByteBuffer,
+    val chunkPosition: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt()),
+) : PlayS2CPacket {
     var trustEdges: Boolean = false
         private set
     val chunkData: ChunkData

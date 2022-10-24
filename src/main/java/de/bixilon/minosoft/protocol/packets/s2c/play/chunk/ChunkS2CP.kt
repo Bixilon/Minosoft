@@ -149,7 +149,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
                     buffer.pointer = buffer.size
                 } else {
-                    this.chunkData.replace(ChunkLightS2CP(buffer) { chunkPosition }.chunkData)
+                    this.chunkData.replace(ChunkLightS2CP(buffer, chunkPosition).chunkData)
                 }
             }
         }
