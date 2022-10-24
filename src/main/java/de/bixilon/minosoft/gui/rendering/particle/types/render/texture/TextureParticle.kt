@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -27,7 +26,8 @@ abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velo
 
 
     override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) {
-        val light = light and SectionLight.SKY_LIGHT_MASK or emittingLight
+        val light = light
+
         val texture = texture ?: return
         when {
             texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> particleMesh

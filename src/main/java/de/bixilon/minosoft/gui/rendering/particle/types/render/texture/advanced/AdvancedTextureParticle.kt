@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
@@ -27,7 +26,7 @@ abstract class AdvancedTextureParticle(connection: PlayConnection, position: Vec
     var maxUV: Vec2 = Vec2(1.0f, 1.0f)
 
     override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) {
-        val light = light and SectionLight.SKY_LIGHT_MASK or emittingLight
+        val light = light
 
         val texture = texture ?: return
         when {

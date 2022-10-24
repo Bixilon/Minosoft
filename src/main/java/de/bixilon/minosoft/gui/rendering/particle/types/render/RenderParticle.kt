@@ -28,17 +28,21 @@ abstract class RenderParticle(connection: PlayConnection, position: Vec3d, veloc
     protected open var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBColor = ChatColors.WHITE
 
-    var light = 0
     open val emittingLight = 0
+    var light = retrieveLight()
 
     override fun forceMove(delta: Vec3d) {
         super.forceMove(delta)
+        this.light = retrieveLight()
+    }
+
+    private fun retrieveLight(): Int {
         val aabb = aabb + position
-        var maxBlockLight = 0
+        var maxBlockLight = emittingLight
         var maxSkyLight = 0
 
         val chunkPosition = position.blockPosition.chunkPosition
-        val chunk = connection.world[chunkPosition] ?: return
+        val chunk = connection.world[chunkPosition] ?: return maxBlockLight
 
         for (position in aabb.blockPositions) {
             val light = chunk.traceChunk(position.chunkPosition - chunkPosition)?.light?.get(position.inChunkPosition) ?: SectionLight.SKY_LIGHT_MASK
@@ -50,7 +54,6 @@ abstract class RenderParticle(connection: PlayConnection, position: Vec3d, veloc
             }
         }
 
-        this.light = maxBlockLight or maxSkyLight
+        return maxBlockLight or maxSkyLight
     }
-
 }
