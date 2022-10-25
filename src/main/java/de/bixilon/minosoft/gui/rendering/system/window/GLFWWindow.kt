@@ -183,7 +183,7 @@ class GLFWWindow(
         glfwWindowHint(GLFW_VISIBLE, false.glfw)
 
 
-        window = glfwCreateWindow(size.x, size.y, "Minosoft ${RunConfiguration.VERSION_STRING}", MemoryUtil.NULL, MemoryUtil.NULL)
+        window = glfwCreateWindow(size.x, size.y, RunConfiguration.APPLICATION_NAME, MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
             try {
                 destroy()

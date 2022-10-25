@@ -93,7 +93,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
     private fun initLeft(): Element {
         val layout = RowLayout(guiRenderer)
         layout.margin = Vec4i(2)
-        layout += TextElement(guiRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
+        layout += TextElement(guiRenderer, TextComponent(RunConfiguration.APPLICATION_NAME, ChatColors.RED))
         layout += AutoTextElement(guiRenderer, 1) { "FPS §d${renderWindow.renderStats.smoothAvgFPS.rounded10}" }
         renderWindow.renderer[WorldRenderer]?.apply {
             layout += AutoTextElement(guiRenderer, 1) { "C v=$visibleSize, m=${loadedMeshesSize.format()}, cQ=${culledQueuedSize.format()}, q=${queueSize.format()}, pT=${preparingTasksSize.format()}/${maxPreparingTasks.format()}, l=${meshesToLoadSize.format()}/${maxMeshesToLoad.format()}, w=${connection.world.chunks.size.format()}" }

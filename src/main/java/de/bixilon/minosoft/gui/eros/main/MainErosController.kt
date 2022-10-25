@@ -86,7 +86,7 @@ class MainErosController : JavaFXWindowController() {
 
     override fun init() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
-        versionTextFX.text = RunConfiguration.VERSION_STRING
+        versionTextFX.text = RunConfiguration.APPLICATION_NAME
         iconMap = mapOf(
             ErosMainActivities.PLAY to playIconFX,
             ErosMainActivities.PROFILES to profilesIconFX,

@@ -295,7 +295,7 @@ class RenderWindow(
             }
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                window.title = "Minosoft ${RunConfiguration.VERSION_STRING} | FPS: ${renderStats.smoothAvgFPS.rounded10}"
+                window.title = "${RunConfiguration.APPLICATION_NAME} | FPS: ${renderStats.smoothAvgFPS.rounded10}"
             }
             renderStats.endFrame()
         }

@@ -28,7 +28,7 @@ object MinosoftPropertiesLoader {
         val json = Minosoft.MINOSOFT_ASSETS_MANAGER[minosoft("version.json")].readJson<MinosoftP>()
         MinosoftProperties = json
 
-        RunConfiguration.VERSION_STRING = "Minosoft ${MinosoftProperties.general.name}"
+        RunConfiguration.APPLICATION_NAME = "Minosoft ${MinosoftProperties.general.name}"
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "This is minosoft version ${MinosoftProperties.general.name}${MinosoftProperties.git?.let { ", built on ${it.commitShort}/${it.branch}" }}!" }
     }
 }

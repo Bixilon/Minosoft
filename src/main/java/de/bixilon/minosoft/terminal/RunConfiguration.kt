@@ -58,7 +58,7 @@ object RunConfiguration {
 
     val X_START_ON_FIRST_THREAD_SET = System.getenv("JAVA_STARTED_ON_FIRST_THREAD_${ProcessHandle.current().pid()}") == "1"
 
-    var VERSION_STRING = "Minosoft"
+    var APPLICATION_NAME = "Minosoft"
 
     var SKIP_RENDERERS: List<ResourceLocation> = emptyList()
 

@@ -44,7 +44,7 @@ class AboutController : EmbeddedJavaFXController<HBox>() {
         bixilonLogoFX.children.setAll(JavaFXUtil.BIXILON_LOGO)
         createCrashReportFX.ctext = CRASH_REPORT
 
-        versionStringFX.text = RunConfiguration.VERSION_STRING
+        versionStringFX.text = RunConfiguration.APPLICATION_NAME
         aboutTextFX.text = TEXT
     }
 
