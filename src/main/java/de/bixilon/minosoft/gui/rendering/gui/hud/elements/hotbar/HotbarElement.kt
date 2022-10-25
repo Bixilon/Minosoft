@@ -182,7 +182,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
             if (it.message.type.position != ChatTextPositions.HOTBAR) {
                 return@of
             }
-            hoverText.text = it.message
+            hoverText.text = it.message.text
             hoverText.show()
         })
     }
