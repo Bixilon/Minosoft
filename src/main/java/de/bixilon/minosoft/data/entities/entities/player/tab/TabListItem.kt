@@ -34,12 +34,12 @@ data class TabListItem(
         get() = team?.decorateName(displayName) ?: displayName
 
     fun merge(data: TabListItemData) {
-        genericMerge(data)
+        spareMerge(data)
         data.gamemode?.let { gamemode = it }
         data.publicKey?.let { publicKey = it }
     }
 
-    fun genericMerge(data: TabListItemData) {
+    fun spareMerge(data: TabListItemData) {
         data.name?.let { name = it }
         data.ping?.let { ping = it }
 

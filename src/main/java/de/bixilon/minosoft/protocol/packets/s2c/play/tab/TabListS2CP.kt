@@ -70,22 +70,15 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
             val entity = connection.world.entities[uuid]
 
+            var item = connection.tabList.tabListItemsByUUID[uuid]
 
-            val tabListItem = connection.tabList.tabListItemsByUUID[uuid] ?: run {
-                val name = data.name
-                if (name == null) {
-                    // item not yet created
-                    return@run null
-                }
-                val item = if (entity === connection.player) {
-                    connection.player.tabListItem
-                } else {
-                    TabListItem(name = name)
-                }
+            if (item == null) {
+                val name = data.name ?: continue // player not added, only contains data. ignore it
+
+                item = if (entity === connection.player) connection.player.tabListItem else TabListItem(name)
+
                 connection.tabList.tabListItemsByUUID[uuid] = item
                 connection.tabList.tabListItemsByName[name] = item
-
-                // set team
 
                 for (team in connection.scoreboardManager.teams.toSynchronizedMap().values) {
                     if (team.members.contains(data.name)) {
@@ -93,18 +86,18 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         break
                     }
                 }
-                item
-            } ?: continue
+            }
 
             if (entity === connection.player) {
-                entity.tabListItem.genericMerge(data)
+                // we can not change specific values (e.g. gamemode) for the local player with this packet
+                entity.tabListItem.spareMerge(data)
             } else {
-                tabListItem.merge(data)
-                if (entity == null || entity !is PlayerEntity) {
+                item.merge(data)
+                if (entity !is PlayerEntity) {
                     continue
                 }
 
-                entity.tabListItem = tabListItem
+                entity.tabListItem = item
             }
         }
 
