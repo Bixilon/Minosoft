@@ -20,6 +20,6 @@ data class ModManifest(
     val uuid: UUID,
     val version: String,
     val main: String,
-    val authors: List<String> = emptyList(),
-    val description: String = "",
+    val authors: List<String>? = null,
+    val description: String? = null,
 )

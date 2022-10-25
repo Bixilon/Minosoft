@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.gui.eros.main.mods
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.minosoft
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
 import javafx.scene.layout.Pane
@@ -39,11 +40,16 @@ class ModsController : EmbeddedJavaFXController<Pane>() {
 
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/mods/mods.fxml".toResourceLocation()
+        val LAYOUT = minosoft("eros/main/mods/mods.fxml")
 
         private val MOD_INFO_PROPERTIES: List<Pair<ResourceLocation, (MinosoftMod) -> Any?>> = listOf(
-            "minosoft:mod.name".toResourceLocation() to { it.manifest?.name },
-            "minosoft:mod.description".toResourceLocation() to { it.manifest?.description },
+            minosoft("mod.name") to { it.manifest?.name },
+            minosoft("mod.description") to { it.manifest?.description },
+            minosoft("mod.version") to { it.manifest?.version },
+
+            TranslatableComponents.GENERAL_EMPTY to { " " },
+
+            minosoft("mod.authors") to { it.manifest?.authors },
         )
     }
 }

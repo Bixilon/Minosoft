@@ -35,8 +35,8 @@ class InfoPane<T>(vararg children: Node) : AnchorPane(*children) {
     }
 
     fun updateProperties(properties: List<Pair<ResourceLocation, (T) -> Any?>>) {
-        val item = item ?: return
         propertiesPane.children.clear()
+        val item = item ?: return
         var row = 0
         for ((key, property) in properties) {
             val propertyValue = property(item) ?: continue

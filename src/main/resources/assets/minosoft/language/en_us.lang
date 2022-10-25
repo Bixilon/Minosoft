@@ -207,3 +207,8 @@ minosoft:main.about.crash=Create crash report
 
 minosoft:main.account.please_wait.title=Please wait... - Minosoft
 minosoft:main.account.please_wait.header=Please wait...
+
+minosoft:mod.name=Name
+minosoft:mod.description=Description
+minosoft:mod.version=Version
+minosoft:mod.authors=Author(s)
