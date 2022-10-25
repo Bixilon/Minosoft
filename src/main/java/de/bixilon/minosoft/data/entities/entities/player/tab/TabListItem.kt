@@ -28,6 +28,7 @@ data class TabListItem(
     var properties: PlayerProperties? = null,
     var team: Team? = null,
     var publicKey: PlayerPublicKey? = null,
+    var listed: Boolean = true,
 ) : Comparable<TabListItem> {
     val tabDisplayName: ChatComponent
         get() = team?.decorateName(displayName) ?: displayName
@@ -55,6 +56,7 @@ data class TabListItem(
             this.team = null
         }
         data.team?.let { team = it }
+        data.listed?.let { listed = it }
     }
 
     override fun compareTo(other: TabListItem): Int {

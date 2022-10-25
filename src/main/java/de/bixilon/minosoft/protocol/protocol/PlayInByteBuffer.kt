@@ -330,6 +330,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
+    fun readBitSet(size: Int): BitSet {
+        val bytes = ByteArray(-Math.floorDiv(-size, 8))
+        readByteArray(bytes)
+        return BitSet.valueOf(bytes)
+    }
+
     fun <T> readRegistryItem(registry: AbstractRegistry<T>): T {
         return registry[readVarInt()]
     }
@@ -355,10 +361,26 @@ class PlayInByteBuffer : InByteBuffer {
         if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
             return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
         }
+        if (versionId >= ProtocolVersions.V_22W42A) {
+            val uuid = readUUID()
+            return readOptional { PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray()) }
+        }
         return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
     }
 
     fun readMessageHeader(): MessageHeader {
         return MessageHeader(readOptional { readByteArray() }, readUUID())
+    }
+
+    inline fun <reified T : Enum<T>> readEnumSet(values: Array<T>): EnumSet<T> {
+        val bitset = readBitSet(values.size)
+        val set = EnumSet.noneOf(T::class.java)
+        for (index in values.indices) {
+            if (!bitset.get(index)) {
+                continue
+            }
+            set += values[index]
+        }
+        return set
     }
 }

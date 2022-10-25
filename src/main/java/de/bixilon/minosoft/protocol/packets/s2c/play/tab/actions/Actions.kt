@@ -10,20 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
-import java.util.*
+package de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions
 
-class TabListEntryChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val entries: Map<UUID, TabListItemData?>,
-) : PlayConnectionEvent(connection, initiator) {
+enum class Actions(val action: AbstractAction) {
+    INITIALIZE(InitializeAction),
+    CHAT(ChatAction),
+    GAMEMODE(GamemodeAction),
+    LISTED(ListedAction),
+    LATENCY(LatencyAction),
+    DISPLAY_NAME(DisplayNameAction),
+    ;
 
-    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, EventInitiators.SERVER, packet.entries)
+    companion object {
+        val VALUES_22W42A = arrayOf(INITIALIZE, CHAT, GAMEMODE, LISTED, LATENCY, DISPLAY_NAME)
+    }
+
 }

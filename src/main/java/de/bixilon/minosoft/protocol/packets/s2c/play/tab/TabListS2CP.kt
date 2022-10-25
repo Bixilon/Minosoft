@@ -12,10 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
-import de.bixilon.kutil.enums.EnumUtil
-import de.bixilon.kutil.enums.ValuesEnum
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
@@ -23,6 +21,9 @@ import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions.AbstractAction
+import de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions.Actions
+import de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions.LegacyActions
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
@@ -32,69 +33,35 @@ import java.util.*
 
 @LoadPacket(threadSafe = false)
 class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val items: MutableMap<UUID, TabListItemData?> = mutableMapOf()
+    val entries: Map<UUID, TabListItemData?>
+
 
     init {
-        val action = TabListItemActions[buffer.readVarInt()]
-        val count: Int = buffer.readVarInt()
-        for (i in 0 until count) {
-            val uuid: UUID = buffer.readUUID()
-            val data: TabListItemData?
-            when (action) {
-                TabListItemActions.ADD -> {
-                    val name = buffer.readString()
-                    val properties = buffer.readPlayerProperties()
-                    val gamemode = Gamemodes.getOrNull(buffer.readVarInt()) ?: Gamemodes.SURVIVAL
-                    val ping = buffer.readVarInt()
-                    val hasDisplayName = buffer.readBoolean()
-                    val displayName = if (hasDisplayName) {
-                        buffer.readChatComponent()
-                    } else {
-                        null
-                    }
-                    val publicKey = if (buffer.versionId >= ProtocolVersions.V_22W18A) buffer.readOptional { buffer.readPlayerPublicKey() } else null
-                    publicKey?.requireSignature(buffer.versionId, uuid)
-                    data = TabListItemData(
-                        name = name,
-                        properties = properties,
-                        gamemode = gamemode,
-                        ping = ping,
-                        displayName = displayName,
-                        publicKey = publicKey,
-                    )
-                }
+        val actions = if (buffer.versionId < ProtocolVersions.V_22W42A) LegacyActions[buffer.readVarInt()].actions else buffer.readEnumSet(Actions.VALUES_22W42A).actions()
+        val entries: MutableMap<UUID, TabListItemData?> = mutableMapOf()
 
-                TabListItemActions.UPDATE_GAMEMODE -> {
-                    data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
-                }
+        for (index in 0 until buffer.readVarInt()) {
+            val uuid = buffer.readUUID()
+            val entry = TabListItemData()
 
-                TabListItemActions.UPDATE_LATENCY -> {
-                    data = TabListItemData(ping = buffer.readVarInt())
-                }
-
-                TabListItemActions.UPDATE_DISPLAY_NAME -> {
-                    val hasDisplayName = buffer.readBoolean()
-                    val displayName = if (hasDisplayName) {
-                        buffer.readChatComponent()
-                    } else {
-                        null
-                    }
-                    data = TabListItemData(
-                        hasDisplayName = hasDisplayName,
-                        displayName = displayName,
-                    )
-                }
-
-                TabListItemActions.REMOVE_PLAYER -> {
-                    data = null
-                }
+            for (action in actions) {
+                action.read(buffer, entry)
             }
-            items[uuid] = data
+            entries[uuid] = if (entry.remove) null else entry
         }
+        this.entries = entries
+    }
+
+    private fun EnumSet<Actions>.actions(): Array<AbstractAction> {
+        val array = arrayOfNulls<AbstractAction>(this.size)
+        for ((index, entry) in this.withIndex()) {
+            array[index] = entry.action
+        }
+        return array.unsafeCast()
     }
 
     override fun handle(connection: PlayConnection) {
-        for ((uuid, data) in items) {
+        for ((uuid, data) in entries) {
             if (data == null) {
                 val item = connection.tabList.tabListItemsByUUID.remove(uuid) ?: continue
                 connection.tabList.tabListItemsByName.remove(item.name)
@@ -105,17 +72,18 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
             val tabListItem = connection.tabList.tabListItemsByUUID[uuid] ?: run {
-                if (data.name == null) {
+                val name = data.name
+                if (name == null) {
                     // item not yet created
                     return@run null
                 }
                 val item = if (entity === connection.player) {
                     connection.player.tabListItem
                 } else {
-                    TabListItem(name = data.name)
+                    TabListItem(name = name)
                 }
                 connection.tabList.tabListItemsByUUID[uuid] = item
-                connection.tabList.tabListItemsByName[data.name] = item
+                connection.tabList.tabListItemsByName[name] = item
 
                 // set team
 
@@ -147,21 +115,6 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tab list data (items=$items)" }
-    }
-
-
-    enum class TabListItemActions {
-        ADD,
-        UPDATE_GAMEMODE,
-        UPDATE_LATENCY,
-        UPDATE_DISPLAY_NAME,
-        REMOVE_PLAYER,
-        ;
-
-        companion object : ValuesEnum<TabListItemActions> {
-            override val VALUES = values()
-            override val NAME_MAP: Map<String, TabListItemActions> = EnumUtil.getEnumValues(VALUES)
-        }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tab list data (entries=$entries)" }
     }
 }

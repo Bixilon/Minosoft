@@ -58,10 +58,12 @@ import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 
 class PlayConnection(
@@ -79,8 +81,9 @@ class PlayConnection(
     val util = ConnectionUtil(this)
     val ticker = ConnectionTicker(this)
     val pluginManager = PluginManager(this)
-
     val serverInfo = ServerInfo()
+    val sessionId = KUtil.secureRandomUUID()
+
     lateinit var assetsManager: AssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
@@ -140,7 +143,7 @@ class PlayConnection(
                 ProtocolStates.HANDSHAKING, ProtocolStates.STATUS -> throw IllegalStateException("Invalid state!")
                 ProtocolStates.LOGIN -> {
                     this.state = PlayConnectionStates.LOGGING_IN
-                    this.network.send(StartC2SP(this.player))
+                    this.network.send(StartC2SP(this.player, this.sessionId))
                 }
 
                 ProtocolStates.PLAY -> {

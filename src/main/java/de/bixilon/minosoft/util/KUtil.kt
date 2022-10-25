@@ -51,6 +51,7 @@ import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
+import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
 
@@ -327,5 +328,10 @@ object KUtil {
     @Deprecated("Kutil 1.18")
     inline fun <T> Array<T>.getLast(): T {
         return this[lastIndex]
+    }
+
+    fun secureRandomUUID(): UUID {
+        val random = SecureRandom()
+        return UUID(random.nextLong(), random.nextLong())
     }
 }

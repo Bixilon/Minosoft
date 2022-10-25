@@ -16,40 +16,20 @@ import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.time.Instant
 
 @LoadPacket(threadSafe = false)
-class CommandC2SP(
-    val command: String,
-    val time: Instant = Instant.now(),
-    val salt: Long,
-    val signature: Map<String, ByteArray>,
-    val signedPreview: Boolean,
-    val acknowledgement: Acknowledgement?,
+class LegacyMessageAcknowledgementC2SP(
+    val acknowledgement: Acknowledgement,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeString(command)
-        buffer.writeInstant(time)
-        buffer.writeLong(salt)
-        buffer.writeVarInt(signature.size)
-        for ((argument, signature) in signature) {
-            buffer.writeString(argument)
-            buffer.writeByteArray(signature)
-        }
-        if (buffer.versionId >= ProtocolVersions.V_1_19_PRE1 && buffer.versionId < ProtocolVersions.V_22W42A) {
-            buffer.writeBoolean(signedPreview)
-        }
-        if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE5) {
-            buffer.writeAcknowledgement(acknowledgement!!)
-        }
+        buffer.writeAcknowledgement(acknowledgement)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Command (message=$command, time=$time, signature=$signature)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Message acknowledgement (acknowledgement=$acknowledgement)" }
     }
 }

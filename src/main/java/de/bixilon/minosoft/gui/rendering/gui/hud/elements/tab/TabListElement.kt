@@ -226,7 +226,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
             footer.text = it.footer
         })
         connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
-            for ((uuid, entry) in it.items) {
+            for ((uuid, entry) in it.entries) {
                 if (entry == null) {
                     remove(uuid)
                     continue

@@ -10,20 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
-import java.util.*
+package de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions
 
-class TabListEntryChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val entries: Map<UUID, TabListItemData?>,
-) : PlayConnectionEvent(connection, initiator) {
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, EventInitiators.SERVER, packet.entries)
+enum class LegacyActions(vararg val actions: AbstractAction) {
+    INITIALIZE(InitializeAction, GamemodeAction, LatencyAction, DisplayNameAction, ChatAction),
+    GAMEMODE(GamemodeAction),
+    LATENCY(LatencyAction),
+    DISPLAY_NAME(DisplayNameAction),
+    REMOVE(RemoveAction),
+    ;
+
+    companion object : ValuesEnum<LegacyActions> {
+        override val VALUES = values()
+        override val NAME_MAP: Map<String, LegacyActions> = EnumUtil.getEnumValues(VALUES)
+    }
 }

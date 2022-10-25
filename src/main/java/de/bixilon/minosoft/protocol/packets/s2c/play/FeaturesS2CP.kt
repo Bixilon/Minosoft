@@ -10,20 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
-import java.util.*
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class TabListEntryChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val entries: Map<UUID, TabListItemData?>,
-) : PlayConnectionEvent(connection, initiator) {
+@LoadPacket
+class FeaturesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val features = buffer.readArray { buffer.readResourceLocation() }.toSet()
 
-    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, EventInitiators.SERVER, packet.entries)
+    override fun log(reducedLog: Boolean) {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Features (features=$features)" }
+    }
 }

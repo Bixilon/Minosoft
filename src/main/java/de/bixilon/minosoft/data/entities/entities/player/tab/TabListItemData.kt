@@ -20,13 +20,15 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 
 data class TabListItemData(
-    val name: String? = null,
+    var name: String? = null,
     var ping: Int? = null,
     var gamemode: Gamemodes? = null,
     var hasDisplayName: Boolean? = null,
     var displayName: ChatComponent? = null,
-    val properties: PlayerProperties? = null,
+    var properties: PlayerProperties? = null,
     var team: Team? = null,
     var removeFromTeam: Boolean = false,
     var publicKey: PlayerPublicKey? = null,
+    var listed: Boolean? = null,
+    var remove: Boolean = false,
 )

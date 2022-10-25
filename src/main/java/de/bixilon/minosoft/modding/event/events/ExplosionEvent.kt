@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
@@ -22,11 +23,11 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.ExplosionS2CP
 class ExplosionEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    val position: Vec3,
+    val position: Vec3d,
     val power: Float,
     val explodedBlocks: Array<Vec3i>,
     val velocity: Vec3,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
     constructor(connection: PlayConnection, packet: ExplosionS2CP) : this(connection, EventInitiators.SERVER, packet.position, packet.power, packet.explodedBlocks, packet.velocity)
 
