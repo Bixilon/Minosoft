@@ -13,22 +13,29 @@
 
 package de.bixilon.minosoft.data.chat.message
 
-import de.bixilon.minosoft.data.chat.filter.Filter
-import de.bixilon.minosoft.data.chat.sender.MessageSender
+import de.bixilon.minosoft.data.chat.ChatUtil
+import de.bixilon.minosoft.data.language.lang.Language
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import java.time.Instant
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class SignedChatMessage(
+open class FormattedChatMessage(
     private val connection: PlayConnection,
-    val message: String,
-    type: ChatMessageType,
-    override val sender: MessageSender,
-    parameters: Map<ChatParameter, ChatComponent>,
-    val filter: Filter?,
-    val error: Exception?,
-    val sent: Instant,
-    val received: Instant,
-) : FormattedChatMessage(connection, type, parameters), ChatMessage, PlayerSentMessage
+    final override val type: ChatMessageType,
+    val parameters: Map<ChatParameter, ChatComponent>,
+) : ChatMessage {
+    final override val text: ChatComponent
+
+    init {
+        // ToDo: parent (formatting)
+        val data = type.chat.formatParameters(parameters)
+        text = if (connection.language.canTranslate(type.chat.translationKey.toResourceLocation())) {
+            connection.language.translate(type.chat.translationKey.toResourceLocation(), data = data)
+        } else {
+            Language.translate(type.chat.translationKey, data = data)
+        }
+        text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
+    }
+}

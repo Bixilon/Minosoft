@@ -82,8 +82,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         val type = readRegistryItem(connection.registries.messageTypeRegistry)
 
-        parameters[ChatParameter.SENDER] = readChatComponent()
-        readOptional { readChatComponent() }?.let { parameters[ChatParameter.TARGET] = it }
+        readChatMessageParameters(parameters)
 
         val sender = connection.getMessageSender(header.sender)
         val received = Instant.now()

@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
@@ -382,5 +383,10 @@ class PlayInByteBuffer : InByteBuffer {
             set += values[index]
         }
         return set
+    }
+
+    fun readChatMessageParameters(parameters: MutableMap<ChatParameter, ChatComponent>) {
+        parameters[ChatParameter.SENDER] = readChatComponent()
+        readOptional { readChatComponent() }?.let { parameters[ChatParameter.TARGET] = it }
     }
 }
