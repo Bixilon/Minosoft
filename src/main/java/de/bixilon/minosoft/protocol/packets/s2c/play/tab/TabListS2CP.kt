@@ -63,22 +63,21 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         for ((uuid, data) in entries) {
             if (data == null) {
-                val item = connection.tabList.tabListItemsByUUID.remove(uuid) ?: continue
-                connection.tabList.tabListItemsByName.remove(item.name)
+                 connection.tabList.remove(uuid)
                 continue
             }
 
             val entity = connection.world.entities[uuid]
 
-            var item = connection.tabList.tabListItemsByUUID[uuid]
+            var item = connection.tabList.uuid[uuid]
 
             if (item == null) {
                 val name = data.name ?: continue // player not added, only contains data. ignore it
 
                 item = if (entity === connection.player) connection.player.tabListItem else TabListItem(name)
 
-                connection.tabList.tabListItemsByUUID[uuid] = item
-                connection.tabList.tabListItemsByName[name] = item
+                connection.tabList.uuid[uuid] = item
+                connection.tabList.name[name] = item
 
                 for (team in connection.scoreboardManager.teams.toSynchronizedMap().values) {
                     if (team.members.contains(data.name)) {

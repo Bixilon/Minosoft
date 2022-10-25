@@ -58,6 +58,7 @@ import javax.net.ssl.SSLContext
 
 object KUtil {
     val RANDOM = Random()
+    val EMPTY_BYTE_ARRAY = ByteArray(0)
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))

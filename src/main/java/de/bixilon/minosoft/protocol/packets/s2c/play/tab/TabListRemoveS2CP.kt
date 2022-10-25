@@ -10,47 +10,40 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 
-package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
-
-import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamMemberRemoveEvent
+import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
-class RemoveTeamMemberS2CP(
-    val name: String,
-    buffer: PlayInByteBuffer,
-) : TeamsS2CP {
-    val members: Set<String> = buffer.readArray(
-        if (buffer.versionId < ProtocolVersions.V_14W04A) {
-            buffer.readUnsignedShort()
-        } else {
-            buffer.readVarInt()
-        }
-    ) { buffer.readString() }.toSet()
+@LoadPacket(threadSafe = false)
+class TabListRemoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val uuids: Array<UUID> = buffer.readArray { buffer.readUUID() }
 
 
     override fun handle(connection: PlayConnection) {
-        val team = connection.scoreboardManager.teams[name] ?: return
-        team.members -= members
+        val event: MutableMap<UUID, TabListItemData?> = mutableMapOf()
 
-        for (member in members) {
-            val item = connection.tabList.name[member] ?: continue
-            if (item.team != team) {
-                continue
-            }
-            item.team = team
+        for (uuid in uuids) {
+            connection.tabList.remove(uuid)
+            event[uuid] = null
         }
 
-        connection.scoreboardManager.updateScoreTeams(team, members, true)
-        connection.fireEvent(TeamMemberRemoveEvent(connection, team, members))
+        connection.fireEvent(TabListEntryChangeEvent(connection, EventInitiators.SERVER, event))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team member remove (name=$name, members=$members)" }
+        if (reducedLog) {
+            return
+        }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tab list remove (uuids=$uuids)" }
     }
 }

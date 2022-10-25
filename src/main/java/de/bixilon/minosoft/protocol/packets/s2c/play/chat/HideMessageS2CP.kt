@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(threadSafe = false)
 class HideMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val id = if (buffer.versionId >= ProtocolVersions.V_22W42A) buffer.readVarInt() - 1 else -1
-    val signature = if (buffer.versionId < ProtocolVersions.V_22W42A || id >= 0) buffer.readByteArray() else null
+    val signature = if (buffer.versionId < ProtocolVersions.V_22W42A || id >= 0) buffer.readSignatureData() else null
 
     override fun log(reducedLog: Boolean) {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hide message (id=$id, signature=$signature)" }

@@ -14,14 +14,15 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
-import de.bixilon.minosoft.data.chat.signature.LastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
 import de.bixilon.minosoft.data.chat.signature.LastSeenMessageList
+import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W43A
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import java.time.Instant
+import java.util.*
 
 class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     val versionId = connection.version.versionId
@@ -89,8 +90,13 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
         }
     }
 
-    fun writeSignatureData(signature: SignatureData) {
-        writeByteArray(signature.signature)
+    fun writeSignatureData(signature: ByteArray) {
+        if (versionId < ProtocolVersions.V_22W42A) {
+            writeByteArray(signature)
+            return
+        }
+        check(signature.size == ChatSignatureProperties.SIGNATURE_SIZE) { "Signature size mismatch!" }
+        writeBareByteArray(signature)
     }
 
     fun writeInstant(instant: Instant) {
@@ -111,7 +117,27 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
     }
 
     fun writeAcknowledgement(acknowledgement: Acknowledgement) {
-        writeLastSeenMessageList(acknowledgement.lastSeen)
-        writeOptional(acknowledgement.lastReceived) { writeLastSeenMessage(it) }
+        if (versionId < ProtocolVersions.V_22W42A) {
+            writeLastSeenMessageList(acknowledgement.lastSeen)
+            writeOptional(acknowledgement.lastReceived) { writeLastSeenMessage(it) }
+            return
+        }
+        writeVarInt(acknowledgement.offset)
+        writeBitSet(acknowledgement.acknowledged, 20)
+    }
+
+    fun writeBitSet(bitSet: BitSet, size: Int) {
+        if (bitSet.length() > size) {
+            throw IllegalArgumentException("Bit set is larger than size")
+        }
+        val array = bitSet.toByteArray()
+        val bytes = -Math.floorDiv(-size, Byte.SIZE_BITS)
+        for (index in 0 until bytes) {
+            if (index >= array.size) {
+                writeByte(0)
+                continue
+            }
+            writeByte(array[index])
+        }
     }
 }

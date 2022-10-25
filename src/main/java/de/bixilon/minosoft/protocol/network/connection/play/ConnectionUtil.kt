@@ -34,7 +34,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.chat.ChatMessageC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.CommandC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.chat.SignedChatMessageC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -94,9 +93,13 @@ class ConnectionUtil(
 
         val acknowledgement = Acknowledgement.EMPTY
 
-        val signature = chain.signMessage(connection.version, privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
+        val signature: ByteArray? = if (connection.network.encrypted) {
+            chain.signMessage(connection.version, privateKey, message, null, salt, uuid, time, acknowledgement.lastSeen)
+        } else {
+            null
+        }
 
-        connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = SignatureData(signature), false, acknowledgement))
+        connection.sendPacket(SignedChatMessageC2SP(message.encodeNetwork(), time = time, salt = salt, signature = signature, false, acknowledgement))
     }
 
     fun sendCommand(command: String, stack: CommandStack) {
@@ -110,7 +113,7 @@ class ConnectionUtil(
         var signature: Map<String, ByteArray> = emptyMap()
 
         val key = connection.player.privateKey
-        if (key != null && connection.profiles.connection.signature.signCommands) {
+        if (key != null && connection.network.encrypted && connection.profiles.connection.signature.signCommands) {
             signature = stack.sign(chain, key.private, salt, time)
         }
 

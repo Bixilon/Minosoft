@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.chat.signature
 
+import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
 import de.bixilon.minosoft.data.text.ChatComponent
 import java.time.Instant
 

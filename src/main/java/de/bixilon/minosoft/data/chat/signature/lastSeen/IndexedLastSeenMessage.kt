@@ -11,12 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol.encryption
+package de.bixilon.minosoft.data.chat.signature.lastSeen
 
-data class SignatureData(
-    val signature: ByteArray,
-) {
-    companion object {
-        val EMPTY = SignatureData(byteArrayOf())
-    }
-}
+class IndexedLastSeenMessage(
+    val id: Int,
+    val signature: ByteArray?,
+)

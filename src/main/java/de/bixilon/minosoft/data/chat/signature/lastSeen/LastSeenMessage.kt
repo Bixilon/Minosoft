@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.signature
+package de.bixilon.minosoft.data.chat.signature.lastSeen
 
 import java.util.*
 

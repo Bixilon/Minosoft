@@ -17,8 +17,9 @@ import de.bixilon.minosoft.data.chat.filter.ChatFilter
 import de.bixilon.minosoft.data.chat.filter.Filter
 import de.bixilon.minosoft.data.chat.message.SignedChatMessage
 import de.bixilon.minosoft.data.chat.signature.ChatSignatureProperties
-import de.bixilon.minosoft.data.chat.signature.LastSeenMessage
 import de.bixilon.minosoft.data.chat.signature.errors.MessageExpiredError
+import de.bixilon.minosoft.data.chat.signature.lastSeen.IndexedLastSeenMessage
+import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
 import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.time.Instant
+import java.util.*
 
 @LoadPacket(threadSafe = false)
 class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
@@ -41,6 +43,15 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     fun PlayInByteBuffer.readLastSeenMessage(): LastSeenMessage {
         return LastSeenMessage(readUUID(), readByteArray())
+    }
+
+    fun PlayInByteBuffer.readIndexedLastSeenMessage(): IndexedLastSeenMessage {
+        val id = readVarInt() - 1
+        var signature: ByteArray? = null
+        if (id == -1) {
+            signature = readSignatureData()
+        }
+        return IndexedLastSeenMessage(id, signature)
     }
 
     private fun PlayInByteBuffer.readLegacySignedMessage(): SignedChatMessage {
@@ -61,18 +72,24 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         val parameters: MutableMap<ChatParameter, ChatComponent> = mutableMapOf()
-        val header = readMessageHeader()
-        val signature = readByteArray()
+        val senderUUID: UUID = if (versionId >= ProtocolVersions.V_22W42A) {
+            readUUID()
+        } else {
+            val header = readMessageHeader()
+            header.sender
+        }
+        val index: Int = if (versionId >= ProtocolVersions.V_22W42A) readVarInt() else -1
+        val signature = if (versionId >= ProtocolVersions.V_22W42A) readOptional { readSignatureData() } else readSignatureData()
 
 
         val message = readChatComponent().message
-        if (versionId >= ProtocolVersions.V_1_19_1_PRE5) {
+        if (versionId >= ProtocolVersions.V_1_19_1_PRE5 && versionId < ProtocolVersions.V_22W42A) {
             readOptional { readChatComponent() } // formatted text
         }
 
         val sent = readInstant()
         val salt = readLong()
-        val lastSeen = readArray { readLastSeenMessage() }
+        val lastSeen = readArray { if (versionId >= ProtocolVersions.V_22W42A) readIndexedLastSeenMessage() else readLastSeenMessage() }
 
         parameters[ChatParameter.CONTENT] = TextComponent(message)
         val unsigned = readOptional { readChatComponent() }
@@ -84,7 +101,7 @@ class SignedChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         readChatMessageParameters(parameters)
 
-        val sender = connection.getMessageSender(header.sender)
+        val sender = connection.getMessageSender(senderUUID)
         val received = Instant.now()
 
         var error: Exception? = null

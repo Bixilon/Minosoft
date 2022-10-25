@@ -25,7 +25,7 @@ object ChatUtil {
     fun PlayConnection.getMessageSender(uuid: UUID): MessageSender {
         val entity = this.world.entities[uuid]
         if (entity == null) {
-            val tab = tabList.tabListItemsByUUID[uuid] ?: return UnknownMessageSender(uuid)
+            val tab = tabList.uuid[uuid] ?: return UnknownMessageSender(uuid)
             return UnspawnedMessageSender(uuid, tab)
         }
         if (entity !is PlayerEntity) {

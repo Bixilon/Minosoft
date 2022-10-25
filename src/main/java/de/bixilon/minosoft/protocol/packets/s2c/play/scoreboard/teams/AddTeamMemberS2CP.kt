@@ -25,12 +25,13 @@ class AddTeamMemberS2CP(
     val name: String,
     buffer: PlayInByteBuffer,
 ) : TeamsS2CP {
-    val members: Set<String> = buffer.readStringArray(
+    val members: Set<String> = buffer.readArray(
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.readUnsignedShort()
         } else {
             buffer.readVarInt()
-        }).toSet()
+        }
+    ) { buffer.readString() }.toSet()
 
 
     override fun handle(connection: PlayConnection) {
@@ -38,7 +39,7 @@ class AddTeamMemberS2CP(
         team.members += members
 
         for (member in members) {
-            connection.tabList.tabListItemsByName[member]?.team = team
+            connection.tabList.name[member]?.team = team
         }
 
         connection.scoreboardManager.updateScoreTeams(team, members)

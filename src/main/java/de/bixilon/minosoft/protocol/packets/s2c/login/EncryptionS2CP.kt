@@ -24,7 +24,6 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
 import de.bixilon.minosoft.protocol.protocol.encryption.EncryptionSignatureData
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -58,7 +57,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             signature.update(Longs.toByteArray(salt))
             val signed = signature.sign()
 
-            connection.sendPacket(EncryptionC2SP(encryptedSecretKey, EncryptionSignatureData(salt, SignatureData(signed))))
+            connection.sendPacket(EncryptionC2SP(encryptedSecretKey, EncryptionSignatureData(salt, signed)))
         } else {
             connection.sendPacket(EncryptionC2SP(encryptedSecretKey, CryptManager.encryptData(publicKey, nonce)))
         }

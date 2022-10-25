@@ -52,7 +52,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil
@@ -332,7 +331,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readBitSet(size: Int): BitSet {
-        val bytes = ByteArray(-Math.floorDiv(-size, 8))
+        val bytes = ByteArray(-Math.floorDiv(-size, Byte.SIZE_BITS))
         readByteArray(bytes)
         return BitSet.valueOf(bytes)
     }
@@ -354,8 +353,11 @@ class PlayInByteBuffer : InByteBuffer {
         return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
     }
 
-    fun readSignatureData(): SignatureData {
-        return SignatureData(readByteArray())
+    fun readSignatureData(): ByteArray {
+        if (versionId < ProtocolVersions.V_22W42A) {
+            return readByteArray()
+        }
+        return readByteArray(ChatSignatureProperties.SIGNATURE_SIZE)
     }
 
     fun readPlayerPublicKey(): PlayerPublicKey? {
