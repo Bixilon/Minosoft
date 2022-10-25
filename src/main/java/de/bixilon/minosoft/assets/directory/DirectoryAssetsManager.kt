@@ -16,10 +16,13 @@ package de.bixilon.minosoft.assets.directory
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.assets.properties.manager.AssetsManagerProperties
 import de.bixilon.minosoft.assets.util.FileAssetsUtil.toAssetName
 import de.bixilon.minosoft.assets.util.FileUtil
+import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 
@@ -29,14 +32,18 @@ import java.io.InputStream
  */
 
 class DirectoryAssetsManager(
-    basePath: String,
+    private val rootPath: String,
     private val canUnload: Boolean = true,
     val prefix: String = AssetsManager.DEFAULT_ASSETS_PREFIX,
 ) : AssetsManager {
-    private val basePath = File(basePath).slashPath + "/" + prefix
+    private val basePath = File(rootPath).slashPath + "/" + prefix
     override val namespaces: MutableSet<String> = mutableSetOf()
     private var assets: MutableSet<ResourceLocation> = mutableSetOf()
     override var loaded: Boolean = false
+        private set
+    override var image: ByteArray? = null
+        private set
+    override var properties: AssetsManagerProperties? = null
         private set
 
     private val ResourceLocation.filePath: String
@@ -57,6 +64,8 @@ class DirectoryAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
         scanDirectory(File(basePath))
+        File("$rootPath/pack.png").let { if (it.exists() && it.isFile) image = FileInputStream(it).readAllBytes() }
+        File("$rootPath/pack.mcmeta").let { if (it.exists() && it.isFile) properties = FileInputStream(it).readJson() }
         loaded = true
     }
 
