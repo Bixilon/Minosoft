@@ -14,30 +14,25 @@
 package de.bixilon.minosoft.recipes.heat
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.recipes.Ingredient
-import de.bixilon.minosoft.recipes.RecipeFactory
+import de.bixilon.minosoft.recipes.RecipeCategories
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class CampfireRecipe(
     override val group: String,
+    override val category: RecipeCategories?,
     override val ingredient: Ingredient,
     override val result: ItemStack?,
     override val experience: Float,
     override val cookingTime: Int,
 ) : HeatRecipe {
 
-    companion object : RecipeFactory<CampfireRecipe> {
+
+    companion object : HeatRecipeFactory<CampfireRecipe> {
         override val RESOURCE_LOCATION = "campfire_cooking".toResourceLocation()
 
-        override fun build(buffer: PlayInByteBuffer): CampfireRecipe {
-            return CampfireRecipe(
-                group = buffer.readString(),
-                ingredient = buffer.readIngredient(),
-                result = buffer.readItemStack(),
-                experience = buffer.readFloat(),
-                cookingTime = buffer.readVarInt(),
-            )
+        override fun build(group: String, category: RecipeCategories?, ingredient: Ingredient, result: ItemStack?, experience: Float, cookingTime: Int): CampfireRecipe {
+            return CampfireRecipe(group, category, ingredient, result, experience, cookingTime)
         }
     }
 }

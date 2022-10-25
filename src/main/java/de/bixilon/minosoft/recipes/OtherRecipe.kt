@@ -17,4 +17,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 
 class OtherRecipe(
     val type: ResourceLocation,
-) : Recipe
+) : Recipe {
+    override val category: RecipeCategories? get() = null
+}

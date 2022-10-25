@@ -13,6 +13,18 @@
 
 package de.bixilon.minosoft.recipes
 
-interface Recipe {
-    val category: RecipeCategories?
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+
+enum class RecipeCategories {
+    BUILDING,
+    REDSTONE,
+    EQUIPMENT,
+    MISC,
+    ;
+
+    companion object : ValuesEnum<RecipeCategories> {
+        override val VALUES: Array<RecipeCategories> = values()
+        override val NAME_MAP: Map<String, RecipeCategories> = EnumUtil.getEnumValues(VALUES)
+    }
 }

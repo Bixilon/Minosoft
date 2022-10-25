@@ -11,8 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes
+package de.bixilon.minosoft.recipes.special
 
-interface Recipe {
-    val category: RecipeCategories?
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.recipes.RecipeCategories
+import de.bixilon.minosoft.recipes.RecipeFactory
+
+interface SpecialRecipeFactory<T : SpecialRecipe> : RecipeFactory<SpecialRecipe> {
+
+    fun build(category: RecipeCategories?): T
+
+    override fun build(buffer: PlayInByteBuffer): T {
+        return build(
+            category = if (buffer.versionId >= ProtocolVersions.V_22W42A) RecipeCategories[buffer.readVarInt()] else null,
+        )
+    }
 }

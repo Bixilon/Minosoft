@@ -11,8 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes
+package de.bixilon.minosoft.recipes.special
 
-interface Recipe {
-    val category: RecipeCategories?
-}
+import de.bixilon.minosoft.recipes.Recipe
+
+interface SpecialRecipe : Recipe

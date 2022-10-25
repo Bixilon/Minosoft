@@ -14,24 +14,24 @@
 package de.bixilon.minosoft.recipes.heat
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.recipes.RecipeCategories
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.recipes.RecipeFactory
 
-class SmokingRecipe(
-    override val group: String,
-    override val category: RecipeCategories?,
-    override val ingredient: Ingredient,
-    override val result: ItemStack?,
-    override val experience: Float,
-    override val cookingTime: Int,
-) : HeatRecipe {
+interface HeatRecipeFactory<T : HeatRecipe> : RecipeFactory<HeatRecipe> {
 
-    companion object : HeatRecipeFactory<SmokingRecipe> {
-        override val RESOURCE_LOCATION = "smoking".toResourceLocation()
+    fun build(group: String, category: RecipeCategories?, ingredient: Ingredient, result: ItemStack?, experience: Float, cookingTime: Int): T
 
-        override fun build(group: String, category: RecipeCategories?, ingredient: Ingredient, result: ItemStack?, experience: Float, cookingTime: Int): SmokingRecipe {
-            return SmokingRecipe(group, category, ingredient, result, experience, cookingTime)
-        }
+    override fun build(buffer: PlayInByteBuffer): T {
+        return build(
+            group = buffer.readString(),
+            category = if (buffer.versionId >= ProtocolVersions.V_22W42A) RecipeCategories[buffer.readVarInt()] else null,
+            ingredient = buffer.readIngredient(),
+            result = buffer.readItemStack(),
+            experience = buffer.readFloat(),
+            cookingTime = buffer.readVarInt(),
+        )
     }
 }

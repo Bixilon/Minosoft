@@ -14,30 +14,24 @@
 package de.bixilon.minosoft.recipes.heat
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.recipes.Ingredient
-import de.bixilon.minosoft.recipes.RecipeFactory
+import de.bixilon.minosoft.recipes.RecipeCategories
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SmeltingRecipe(
     override val group: String,
+    override val category: RecipeCategories?,
     override val ingredient: Ingredient,
     override val result: ItemStack?,
     override val experience: Float,
     override val cookingTime: Int,
 ) : HeatRecipe {
 
-    companion object : RecipeFactory<SmeltingRecipe> {
+    companion object : HeatRecipeFactory<SmeltingRecipe> {
         override val RESOURCE_LOCATION = "smelting".toResourceLocation()
 
-        override fun build(buffer: PlayInByteBuffer): SmeltingRecipe {
-            return SmeltingRecipe(
-                group = buffer.readString(),
-                ingredient = buffer.readIngredient(),
-                result = buffer.readItemStack(),
-                experience = buffer.readFloat(),
-                cookingTime = buffer.readVarInt(),
-            )
+        override fun build(group: String, category: RecipeCategories?, ingredient: Ingredient, result: ItemStack?, experience: Float, cookingTime: Int): SmeltingRecipe {
+            return SmeltingRecipe(group, category, ingredient, result, experience, cookingTime)
         }
     }
 }

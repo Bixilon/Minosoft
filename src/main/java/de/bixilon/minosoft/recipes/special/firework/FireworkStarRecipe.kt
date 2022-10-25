@@ -11,27 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.recipes.heat
+package de.bixilon.minosoft.recipes.special.firework
 
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.recipes.RecipeCategories
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.recipes.special.SpecialRecipe
+import de.bixilon.minosoft.recipes.special.SpecialRecipeFactory
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-class SmokingRecipe(
-    override val group: String,
+class FireworkStarRecipe(
     override val category: RecipeCategories?,
-    override val ingredient: Ingredient,
-    override val result: ItemStack?,
-    override val experience: Float,
-    override val cookingTime: Int,
-) : HeatRecipe {
+) : SpecialRecipe {
 
-    companion object : HeatRecipeFactory<SmokingRecipe> {
-        override val RESOURCE_LOCATION = "smoking".toResourceLocation()
+    companion object : SpecialRecipeFactory<FireworkStarRecipe> {
+        override val RESOURCE_LOCATION = minecraft("crafting_special_firework_star")
 
-        override fun build(group: String, category: RecipeCategories?, ingredient: Ingredient, result: ItemStack?, experience: Float, cookingTime: Int): SmokingRecipe {
-            return SmokingRecipe(group, category, ingredient, result, experience, cookingTime)
+        override fun build(category: RecipeCategories?): FireworkStarRecipe {
+            return FireworkStarRecipe(category)
         }
     }
 }
