@@ -82,6 +82,10 @@ object CommandLineArguments {
             addArgument("--ignore_yggdrasil")
                 .action(Arguments.storeTrue())
                 .help("Disable all yggdrasil (mojang) signature checking")
+
+            addArgument("--ignore_mods")
+                .action(Arguments.storeTrue())
+                .help("Ignores all mods and disable mod loading")
         }
 
     fun parse(args: Array<String>) {
@@ -125,5 +129,6 @@ object CommandLineArguments {
         RunConfiguration.VERBOSE_LOGGING = namespace.getBoolean("verbose")
 
         RunConfiguration.IGNORE_YGGDRASIL = namespace.getBoolean("ignore_yggdrasil")
+        RunConfiguration.IGNORE_MODS = namespace.getBoolean("ignore_mods")
     }
 }

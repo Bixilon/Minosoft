@@ -307,6 +307,7 @@ dependencies {
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.9")
+    implementation("org.xeustechnologies", "jcl-core", version = "2.8")
 
 
     // ikonli

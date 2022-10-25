@@ -11,22 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.modding.loader
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    PACKETS,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    JAVAFX,
-    FILE_WATCHER,
-    YGGDRASIL,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
+
+enum class LoadingPhases {
+    PRE_BOOT,
+    BOOT,
+    POST_BOOT,
     ;
+
+    companion object : ValuesEnum<LoadingPhases> {
+        override val VALUES: Array<LoadingPhases> = values()
+        override val NAME_MAP: Map<String, LoadingPhases> = EnumUtil.getEnumValues(VALUES)
+    }
 }

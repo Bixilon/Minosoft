@@ -22,7 +22,6 @@
   - load meta -> inject to classpath -> initialize main class
 - main class template (with logging, assets, ...)
 - Multiple `mods` folders
-  - pre load (before loading anything)
-  - while load (while loading everything else)
-  - background load (start loading in while, but don't wait for them. Only wait before loading connection)
-  - connection load (load before connecting to server)
+  - pre boot (before loading anything)
+  - boot (while loading everything else)
+  - post boot (start loading in while, but don't wait for them. Only wait before loading connection)

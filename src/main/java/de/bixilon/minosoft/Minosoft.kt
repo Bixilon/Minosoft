@@ -42,6 +42,8 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.main.BootTasks
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.modding.loader.LoadingPhases
+import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
@@ -70,11 +72,15 @@ object Minosoft {
         val start = nanos()
         Log::class.java.forceInit()
         CommandLineArguments.parse(args)
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
+
         KUtil.initUtilClasses()
         KUtil.init()
+        ModLoader.initModLoading()
+        ModLoader.load(LoadingPhases.PRE_BOOT, CountUpAndDownLatch(0))
+        ModLoader.await(LoadingPhases.PRE_BOOT)
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft..." }
         warnMacOS()
         MinosoftPropertiesLoader.load()
 
@@ -105,6 +111,7 @@ object Minosoft {
         taskWorker += WorkerTask(identifier = BootTasks.YGGDRASIL, executor = { YggdrasilUtil.load() })
 
         taskWorker += WorkerTask(identifier = BootTasks.ASSETS_OVERRIDE, executor = { OVERRIDE_ASSETS_MANAGER.load(it) })
+        taskWorker += WorkerTask(identifier = BootTasks.MODS, executor = { ModLoader.load(LoadingPhases.BOOT, it) })
 
 
         taskWorker.work(BOOT_LATCH)
@@ -114,6 +121,7 @@ object Minosoft {
         val end = nanos()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
         GlobalEventMaster.fireEvent(FinishInitializingEvent())
+        DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT, CountUpAndDownLatch(0)) }
 
 
         RunConfiguration.AUTO_CONNECT_TO?.let { AutoConnect.autoConnect(it) }

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 enum class PlayConnectionStates : Translatable {
     WAITING,
 
+    WAITING_MODS,
+
     LOADING_ASSETS,
     LOADING,
 

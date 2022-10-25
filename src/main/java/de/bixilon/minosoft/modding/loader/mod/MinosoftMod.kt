@@ -11,22 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.modding.loader.mod
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    PACKETS,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    JAVAFX,
-    FILE_WATCHER,
-    YGGDRASIL,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
-    ;
+import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.modding.loader.LoadingPhases
+import de.bixilon.minosoft.modding.loader.mod.manifest.ModManifest
+import org.xeustechnologies.jcl.JarClassLoader
+import java.io.File
+
+class MinosoftMod(
+    val path: File,
+    val phase: LoadingPhases,
+    val latch: CountUpAndDownLatch,
+) {
+    val classLoader = JarClassLoader()
+    var manifest: ModManifest? = null
+    var assetsManager: AssetsManager? = null
+    var main: ModMain? = null
 }

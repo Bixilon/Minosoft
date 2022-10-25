@@ -66,4 +66,6 @@ object RunConfiguration {
 
 
     var IGNORE_YGGDRASIL = false
+
+    var IGNORE_MODS = false
 }

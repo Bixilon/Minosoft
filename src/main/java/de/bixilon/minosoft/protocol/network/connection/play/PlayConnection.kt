@@ -48,6 +48,8 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.loader.LoadingPhases
+import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.plugin.DefaultPluginHandler
@@ -168,6 +170,9 @@ class PlayConnection(
         val count = latch.count
         check(!wasConnected) { "Connection was already connected!" }
         try {
+            state = PlayConnectionStates.WAITING_MODS
+            ModLoader.await(LoadingPhases.BOOT)
+
             state = PlayConnectionStates.LOADING_ASSETS
             var error: Throwable? = null
             val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception }, criticalErrorHandler = { _, exception -> if (error == null) error = exception })

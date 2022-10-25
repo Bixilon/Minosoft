@@ -11,22 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.modding.loader.mod
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    PACKETS,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    JAVAFX,
-    FILE_WATCHER,
-    YGGDRASIL,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
-    ;
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
+
+abstract class ModMain : Initializable {
+    val assets: AssetsManager = unsafeNull()
 }

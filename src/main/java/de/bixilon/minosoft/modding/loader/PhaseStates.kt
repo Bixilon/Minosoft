@@ -11,22 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.main
+package de.bixilon.minosoft.modding.loader
 
-enum class BootTasks {
-    PROFILES,
-    LANGUAGE_FILES,
-    PACKETS,
-    VERSIONS,
-    ASSETS_PROPERTIES,
-    DEFAULT_REGISTRIES,
-    LAN_SERVERS,
-    JAVAFX,
-    FILE_WATCHER,
-    YGGDRASIL,
-    STARTUP_PROGRESS,
-    ASSETS_OVERRIDE,
-    CLI,
-    MODS,
+enum class PhaseStates {
+    WAITING,
+    LISTING,
+    INJECTING,
+    CONSTRUCTING,
+    POST_INIT,
+    COMPLETE,
     ;
 }
