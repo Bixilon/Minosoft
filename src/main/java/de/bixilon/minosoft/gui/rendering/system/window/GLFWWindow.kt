@@ -33,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFA
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -182,7 +183,7 @@ class GLFWWindow(
         glfwWindowHint(GLFW_VISIBLE, false.glfw)
 
 
-        window = glfwCreateWindow(size.x, size.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
+        window = glfwCreateWindow(size.x, size.y, "Minosoft ${RunConfiguration.VERSION_STRING}", MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
             try {
                 destroy()

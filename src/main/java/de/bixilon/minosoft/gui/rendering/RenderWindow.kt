@@ -18,7 +18,7 @@ import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.camera.Camera
@@ -46,6 +46,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -91,7 +92,7 @@ class RenderWindow(
     private val latch = CountUpAndDownLatch(1)
 
     var tickCount = 0L
-    var lastTickTimer = TimeUtil.millis
+    var lastTickTimer = millis()
 
     private var slowRendering = profile.performance.slowRendering
 
@@ -251,7 +252,7 @@ class RenderWindow(
 
             lightMap.update()
 
-            val currentTickTime = TimeUtil.millis
+            val currentTickTime = millis()
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
                 // inputHandler.currentKeyConsumer?.tick(tickCount)
@@ -294,7 +295,7 @@ class RenderWindow(
             }
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.rounded10}"
+                window.title = "Minosoft ${RunConfiguration.VERSION_STRING} | FPS: ${renderStats.smoothAvgFPS.rounded10}"
             }
             renderStats.endFrame()
         }
