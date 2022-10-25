@@ -22,7 +22,7 @@ import java.io.InputStream
 
 abstract class FileAssetsManager(private val canUnload: Boolean = true) : AssetsManager {
     override var loaded: Boolean = false
-        protected set
+        @Deprecated("?") set
     override var image: ByteArray? = null
         protected set
     override var properties: AssetsManagerProperties? = null

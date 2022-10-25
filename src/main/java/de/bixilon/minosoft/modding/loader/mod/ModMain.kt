@@ -18,5 +18,5 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 
 abstract class ModMain : Initializable {
-    val assets: AssetsManager = unsafeNull()
+    var assets: AssetsManager = unsafeNull()
 }

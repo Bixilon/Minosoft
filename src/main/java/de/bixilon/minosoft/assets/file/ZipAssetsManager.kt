@@ -44,20 +44,24 @@ class ZipAssetsManager(
             if (entry.isDirectory) {
                 continue
             }
-            when (val name = entry.name) {
-                "pack.png" -> image = inputStream.readAllBytes()
-                "pack.mcmeta" -> properties = inputStream.readJson(false)
-                else -> {
-                    val resourceLocation = name.toAssetName(prefix = prefix) ?: continue
-                    namespaces += resourceLocation.namespace
-                    assets[resourceLocation] = inputStream.readAllBytes()
-                }
-            }
+            push(entry.name, inputStream)
         }
 
         inputStream.close()
         this.namespaces = namespaces
         loaded = true
+    }
+
+    fun push(name: String, stream: ZipInputStream) {
+        when (name) {
+            "pack.png" -> image = stream.readAllBytes()
+            "pack.mcmeta" -> properties = stream.readJson(false)
+            else -> {
+                val resourceLocation = name.toAssetName(prefix = prefix) ?: return
+                this.namespaces += resourceLocation.namespace
+                assets[resourceLocation] = stream.readAllBytes()
+            }
+        }
     }
 
     override fun contains(path: ResourceLocation): Boolean {

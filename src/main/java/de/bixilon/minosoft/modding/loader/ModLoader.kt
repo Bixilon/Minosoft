@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.modding.loader
 
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.assets.file.ZipAssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
@@ -61,12 +63,13 @@ object ModLoader {
         DefaultThreadPool += { createDirectories() }
     }
 
-    private fun MinosoftMod.processFile(path: String, data: ByteArray) {
+    private fun MinosoftMod.processDirectory(file: File) {
         TODO("Directory")
     }
 
     private fun MinosoftMod.processJar(file: File) {
         val stream = JarInputStream(FileInputStream(file))
+        val assets = ZipAssetsManager(stream)
         while (true) {
             val entry = stream.nextEntry ?: break
             if (entry.isDirectory) {
@@ -75,13 +78,15 @@ object ModLoader {
 
             if (entry.name.endsWith(".class") && entry is JarEntry) {
                 this.classLoader.load(entry, stream)
-            } else if (entry.name.startsWith("assets/")) {
-                TODO("Assets")
             } else if (entry.name == MANFIEST) {
                 manifest = stream.readJson(false)
+            } else {
+                assets.push(entry.name, stream)
             }
         }
         stream.close()
+        this.assetsManager = assets
+        assets.loaded = true
     }
 
     private fun MinosoftMod.construct() {
@@ -91,12 +96,34 @@ object ModLoader {
         if (main !is ModMain) {
             throw IllegalStateException("${manifest.main} does not inherit ModMain!")
         }
+        main.assets = assetsManager!!
         this.main = main
         main.init()
     }
 
     private fun MinosoftMod.postInit() {
         main!!.postInit()
+    }
+
+    private fun inject(mods: MutableList<MinosoftMod>, file: File, phase: LoadingPhases, latch: CountUpAndDownLatch) {
+        if (!file.isDirectory && !file.name.endsWith(".jar") && !file.name.endsWith(".zip")) {
+            return
+        }
+        val mod = MinosoftMod(file, phase, CountUpAndDownLatch(3, latch))
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting $file" }
+        try {
+            if (file.isDirectory) {
+                mod.processDirectory(file)
+            } else {
+                mod.processJar(file)
+            }
+            mods += mod
+            mod.latch.dec()
+        } catch (exception: Throwable) {
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN) { "Error injecting mod: $file" }
+            exception.printStackTrace()
+            mod.latch.count = 0
+        }
     }
 
     @Synchronized
@@ -120,32 +147,17 @@ object ModLoader {
             state = PhaseStates.COMPLETE
             return
         }
-        val mods: MutableList<MinosoftMod> = mutableListOf()
+        val mods: MutableList<MinosoftMod> = synchronizedListOf()
 
         state = PhaseStates.INJECTING
+        var worker = UnconditionalWorker()
         for (file in files) {
-            if (!file.isDirectory && !file.name.endsWith(".jar") && !file.name.endsWith(".zip")) {
-                continue
-            }
-            val mod = MinosoftMod(file, phase, CountUpAndDownLatch(3, inner))
-            Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting $file" }
-            try {
-                if (file.isDirectory) {
-                    TODO("Scanning directory")
-                }
-                mod.processJar(file)
-                mods += mod
-                mod.latch.dec()
-            } catch (exception: Throwable) {
-                Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN) { "Error injecting mod: $file" }
-                exception.printStackTrace()
-                mod.latch.count = 0
-            }
+            worker += add@{ inject(mods, file, phase, inner) }
         }
-
+        worker.work(inner)
 
         state = PhaseStates.CONSTRUCTING
-        var worker = UnconditionalWorker()
+        worker = UnconditionalWorker()
         for (mod in mods) {
             worker += {
                 try {
