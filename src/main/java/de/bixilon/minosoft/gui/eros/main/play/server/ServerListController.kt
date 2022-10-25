@@ -18,7 +18,6 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
@@ -34,6 +33,7 @@ import de.bixilon.minosoft.gui.eros.dialog.connection.ConnectingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.LoadingDialog
 import de.bixilon.minosoft.gui.eros.dialog.connection.VerifyAssetsDialog
+import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
@@ -53,13 +53,12 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeListFX
 import javafx.fxml.FXML
-import javafx.geometry.HPos
-import javafx.geometry.Insets
+import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ListView
 import javafx.scene.input.KeyCode
-import javafx.scene.layout.*
+import javafx.scene.layout.Pane
 
 
 class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
@@ -69,7 +68,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML private lateinit var addServerButtonFX: Button
     @FXML private lateinit var serverListViewFX: ListView<ServerCard>
-    @FXML private lateinit var serverInfoFX: AnchorPane
+    @FXML private lateinit var serverInfoFX: InfoPane<ServerCard>
 
     private val toRemove: MutableSet<ServerCard> = mutableSetOf() // workaround for crash when calling onPingUpdate in the event listener from onPingUpdate
 
@@ -265,88 +264,52 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
 
     private fun setServerInfo(serverCard: ServerCard?) {
+        val serverType = this.serverType!!
+
         if (serverCard == null) {
-            serverInfoFX.children.clear()
+            serverInfoFX.reset()
             return
         }
-        val serverType = serverType
         val account = ErosProfileManager.selected.general.accountProfile
 
-        val pane = GridPane()
-
-        AnchorPane.setLeftAnchor(pane, 10.0)
-        AnchorPane.setRightAnchor(pane, 10.0)
-
-
-        GridPane().let {
-
-            fun updateProperties() {
-                it.children.clear()
-                var row = 0
-                for ((key, property) in SERVER_INFO_PROPERTIES) {
-                    val propertyValue = property(serverCard) ?: continue
-
-                    it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
-                    it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
+        val actions: Array<Node> = arrayOf(
+            Button("Delete").apply {
+                setOnAction {
+                    SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
+                        serverType.servers -= serverCard.server
+                    }).show()
                 }
-            }
-            updateProperties()
+                ctext = TranslatableComponents.GENERAL_DELETE
+                isDisable = serverType.readOnly
+            },
+            Button("Edit").apply {
+                setOnAction {
+                    val server = serverCard.server
+                    ServerModifyDialog(server = server, onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
+                        server.name = ChatComponent.of(name)
+                        server.forcedVersion = forcedVersion
+                        server.profiles = profiles.toMutableMap()
+                        server.queryVersion = queryVersion
+                        val ping = serverCard.ping
+                        ping.forcedVersion = if (queryVersion) null else forcedVersion
+                        if (server.address != address) {
+                            server.faviconHash?.let { hash -> server.saveFavicon(null, hash) }
 
-            serverCard.ping::pingQuery.observeFX(this) { updateProperties() }
-            serverCard.ping::lastServerStatus.observeFX(this) { updateProperties() }
+                            server.address = address
 
-            it.columnConstraints += ColumnConstraints(10.0, 180.0, 250.0)
-            it.columnConstraints += ColumnConstraints(10.0, 200.0, 300.0)
-            it.hgap = 10.0
-            it.vgap = 5.0
+                            // disconnect all ping connections, re ping
+                            // ToDo: server.connections.clear()
 
-            pane.add(it, 0, 0)
-        }
-
-        GridPane().let {
-            it.columnConstraints += ColumnConstraints()
-            it.columnConstraints += ColumnConstraints()
-            it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
-
-            if (!serverType!!.readOnly) {
-                it.add(Button("Delete").apply {
-                    setOnAction {
-                        SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
-                            serverType.servers -= serverCard.server
-                        }).show()
-                    }
-                    ctext = TranslatableComponents.GENERAL_DELETE
-                }, 0, 0)
-                it.add(Button("Edit").apply {
-                    setOnAction {
-                        val server = serverCard.server
-                        ServerModifyDialog(server = server, onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
-                            server.name = ChatComponent.of(name)
-                            server.forcedVersion = forcedVersion
-                            server.profiles = profiles.toMutableMap()
-                            server.queryVersion = queryVersion
-                            val ping = serverCard.ping
-                            ping.forcedVersion = if (queryVersion) null else forcedVersion
-                            if (server.address != address) {
-                                server.faviconHash?.let { hash -> server.saveFavicon(null, hash) }
-
-                                server.address = address
-
-                                // disconnect all ping connections, re ping
-                                // ToDo: server.connections.clear()
-
-                                ping.network.disconnect()
-                                ping.address = server.address
-                                ping.ping()
-                            }
-                            JavaFXUtil.runLater { refreshList() }
-                        }).show()
-                    }
-                    ctext = EDIT
-                }, 1, 0)
-            }
-
-            it.add(Button("Refresh").apply {
+                            ping.network.disconnect()
+                            ping.address = server.address
+                            ping.ping()
+                        }
+                        JavaFXUtil.runLater { refreshList() }
+                    }).show()
+                }
+                ctext = EDIT
+            },
+            Button("Refresh").apply {
                 setOnAction {
                     serverCard.ping.network.disconnect()
                     serverCard.ping.ping()
@@ -354,8 +317,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR
                 ctext = TranslatableComponents.GENERAL_REFRESH
                 serverCard.ping::state.observeFX(this) { state -> isDisable = state != StatusConnectionStates.PING_DONE && state != StatusConnectionStates.ERROR }
-            }, 3, 0)
-            it.add(Button("Connect").apply {
+            },
+            Button("Connect").apply {
                 setOnAction {
                     isDisable = true
                     connect(serverCard)
@@ -365,17 +328,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 // ToDo: Also disable, if currently connecting
                 ctext = CONNECT
                 serverCard.ping::state.observeFX(this) { isDisable = selected == null || !serverCard.canConnect(selected) }
-            }, 4, 0)
+            },
+        )
 
-
-            it.hgap = 5.0
-            GridPane.setMargin(it, Insets(20.0, 0.0, 0.0, 0.0))
-
-            pane.add(it, 0, 1)
-        }
-
-
-        serverInfoFX.children.setAll(pane)
+        serverInfoFX.update(serverCard, SERVER_INFO_PROPERTIES, actions)
     }
 
     val StatusConnection.hide: Boolean

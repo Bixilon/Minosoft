@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -18,6 +18,7 @@ import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.about.AboutController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
+import de.bixilon.minosoft.gui.eros.main.mods.ModsController
 import de.bixilon.minosoft.gui.eros.main.play.PlayController
 import de.bixilon.minosoft.gui.eros.main.profiles.ProfilesController
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -28,6 +29,7 @@ enum class ErosMainActivities(
     PLAY(PlayController.LAYOUT),
     PROFILES(ProfilesController.LAYOUT),
     HELP("".toResourceLocation()),
+    MODS(ModsController.LAYOUT),
     ABOUT(AboutController.LAYOUT),
 
 

@@ -37,8 +37,8 @@ import java.util.jar.JarInputStream
 object ModLoader {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "mods/"
     private const val MANIFEST = "manifest.json"
-    private val mods: MutableList<MinosoftMod> = mutableListOf()
     private var latch: CountUpAndDownLatch? = null
+    val mods: MutableList<MinosoftMod> = mutableListOf()
     var currentPhase by watched(LoadingPhases.PRE_BOOT)
         private set
     var state by watched(PhaseStates.WAITING)

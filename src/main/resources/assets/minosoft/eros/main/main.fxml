@@ -58,6 +58,7 @@
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                 </columnConstraints>
                 <FontIcon fx:id="playIconFX" accessibleText="Play" iconLiteral="fas-play" iconSize="30" GridPane.columnIndex="1">
                     <GridPane.margin>
@@ -69,17 +70,22 @@
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
                 </FontIcon>
-                <FontIcon fx:id="helpIconFX" accessibleText="Help" iconLiteral="fas-life-ring" iconSize="30" GridPane.columnIndex="3">
+                <FontIcon fx:id="modsIconFX" accessibleText="Mods" iconLiteral="fas-puzzle-piece" iconSize="30" GridPane.columnIndex="3">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
                 </FontIcon>
-                <FontIcon fx:id="aboutIconFX" accessibleText="About" iconLiteral="fas-info" iconSize="30" GridPane.columnIndex="4">
+                <FontIcon fx:id="helpIconFX" accessibleText="Help" iconLiteral="fas-life-ring" iconSize="30" GridPane.columnIndex="4">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
                     </GridPane.margin>
                 </FontIcon>
-                <FontIcon fx:id="exitIconFX" accessibleText="Exit" iconLiteral="fas-door-open" iconSize="30" GridPane.columnIndex="5">
+                <FontIcon fx:id="aboutIconFX" accessibleText="About" iconLiteral="fas-info" iconSize="30" GridPane.columnIndex="5">
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </GridPane.margin>
+                </FontIcon>
+                <FontIcon fx:id="exitIconFX" accessibleText="Exit" iconLiteral="fas-door-open" iconSize="30" GridPane.columnIndex="6">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
                     </GridPane.margin>

@@ -16,33 +16,30 @@ package de.bixilon.minosoft.gui.eros.main.profiles
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.watcher.map.MapChange.Companion.values
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialog.profiles.ProfileCreateDialog
+import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeBiMapFX
 import javafx.fxml.FXML
-import javafx.geometry.HPos
-import javafx.geometry.Insets
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
-import javafx.scene.layout.*
+import javafx.scene.layout.Pane
 
 
 class ProfilesListController : EmbeddedJavaFXController<Pane>() {
     @FXML private lateinit var profilesListViewFX: ListView<Profile>
-    @FXML private lateinit var profileInfoFX: AnchorPane
+    @FXML private lateinit var profileInfoFX: InfoPane<Profile>
 
     @FXML private lateinit var createProfileButtonFX: Button
 
@@ -123,41 +120,12 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
 
     private fun setProfileInfo(profile: Profile?) {
         val profileManager = this.profileManager
-        if (profile == null || profileManager == null) {
-            profileInfoFX.children.clear()
+        if (profile == null) {
+            profileInfoFX.reset()
             return
         }
-
-        val pane = GridPane()
-
-        AnchorPane.setLeftAnchor(pane, 10.0)
-        AnchorPane.setRightAnchor(pane, 10.0)
-
-
-        GridPane().let {
-            var row = 0
-
-            for ((key, property) in PROFILE_INFO_PROPERTIES) {
-                val propertyValue = property(profile) ?: continue
-
-                it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
-                it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
-            }
-
-            it.columnConstraints += ColumnConstraints(10.0, 180.0, 250.0)
-            it.columnConstraints += ColumnConstraints(10.0, 200.0, 300.0)
-            it.hgap = 10.0
-            it.vgap = 5.0
-
-            pane.add(it, 0, 0)
-        }
-
-        GridPane().let {
-            it.columnConstraints += ColumnConstraints()
-            it.columnConstraints += ColumnConstraints()
-            it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
-
-            it.add(Button("Delete").apply {
+        profileInfoFX.update(profile, PROFILE_INFO_PROPERTIES, actions = arrayOf(
+            Button("Delete").apply {
                 isDisable = !profile.manager.canDelete(profile)
                 setOnAction {
                     SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), onConfirm = {
@@ -169,31 +137,21 @@ class ProfilesListController : EmbeddedJavaFXController<Pane>() {
                     }).show()
                 }
                 ctext = TranslatableComponents.GENERAL_DELETE
-            }, 0, 0)
-            it.add(Button("Edit").apply {
+            },
+            Button("Edit").apply {
                 // ToDo: proper profile editing
                 setOnAction { DefaultThreadPool += { DesktopUtil.openFile(profile.manager.getPath(profile.name)) } }
                 ctext = EDIT
-            }, 1, 0)
-
-            it.add(Button("Set primary").apply {
+            },
+            Button("Set primary").apply {
                 isDisable = profile.manager.selected == profile
                 setOnAction {
                     profile.manager.selected = profile
                     isDisable = true
                 }
                 ctext = SET_PRIMARY
-            }, 3, 0)
-
-
-            it.hgap = 5.0
-            GridPane.setMargin(it, Insets(20.0, 0.0, 0.0, 0.0))
-
-            pane.add(it, 0, 1)
-        }
-
-
-        profileInfoFX.children.setAll(pane)
+            }
+        ))
     }
 
 

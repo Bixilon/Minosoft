@@ -44,6 +44,7 @@ class MainErosController : JavaFXWindowController() {
 
     @FXML private lateinit var playIconFX: FontIcon
     @FXML private lateinit var profilesIconFX: FontIcon
+    @FXML private lateinit var modsIconFX: FontIcon
     @FXML private lateinit var helpIconFX: FontIcon
     @FXML private lateinit var aboutIconFX: FontIcon
     @FXML private lateinit var exitIconFX: FontIcon
@@ -90,6 +91,7 @@ class MainErosController : JavaFXWindowController() {
         iconMap = mapOf(
             ErosMainActivities.PLAY to playIconFX,
             ErosMainActivities.PROFILES to profilesIconFX,
+            ErosMainActivities.MODS to modsIconFX,
             ErosMainActivities.HELP to helpIconFX,
             ErosMainActivities.ABOUT to aboutIconFX,
         )
@@ -105,6 +107,9 @@ class MainErosController : JavaFXWindowController() {
         }
         profilesIconFX.setOnMouseClicked {
             activity = ErosMainActivities.PROFILES
+        }
+        modsIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.MODS
         }
         helpIconFX.setOnMouseClicked {
             // ToDo: activity = ErosMainActivities.HELP

@@ -21,4 +21,5 @@ data class ModManifest(
     val version: String,
     val main: String,
     val authors: List<String> = emptyList(),
+    val description: String = "",
 )
