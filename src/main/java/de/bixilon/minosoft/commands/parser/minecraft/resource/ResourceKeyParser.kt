@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.commands.parser.minecraft.resource.tag
+package de.bixilon.minosoft.commands.parser.minecraft.resource
 
 import de.bixilon.minosoft.commands.parser.ArgumentParser
 import de.bixilon.minosoft.commands.parser.factory.ArgumentParserFactory
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 @Deprecated("TODO")
-class ResourceOrTagParser(
+class ResourceKeyParser(
     val registry: AbstractRegistry<*>?,
 ) : ArgumentParser<Any> {
     override val examples: List<Any> = listOf("TODO")
@@ -40,14 +40,14 @@ class ResourceOrTagParser(
         return emptyList()
     }
 
-    companion object : ArgumentParserFactory<ResourceOrTagParser> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:resource_or_tag".toResourceLocation()
+    companion object : ArgumentParserFactory<ResourceKeyParser> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:resource_key".toResourceLocation()
 
 
-        override fun read(buffer: PlayInByteBuffer): ResourceOrTagParser {
+        override fun read(buffer: PlayInByteBuffer): ResourceKeyParser {
             val registryName = buffer.readResourceLocation()
             val registry = buffer.connection.registries[registryName]
-            return ResourceOrTagParser(registry)
+            return ResourceKeyParser(registry)
         }
     }
 }

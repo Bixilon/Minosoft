@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 @Deprecated("TODO")
-class ResourceOrTagParser(
+class ResourceOrTagKeyParser(
     val registry: AbstractRegistry<*>?,
 ) : ArgumentParser<Any> {
     override val examples: List<Any> = listOf("TODO")
@@ -40,14 +40,14 @@ class ResourceOrTagParser(
         return emptyList()
     }
 
-    companion object : ArgumentParserFactory<ResourceOrTagParser> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:resource_or_tag".toResourceLocation()
+    companion object : ArgumentParserFactory<ResourceOrTagKeyParser> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:resource_or_tag_key".toResourceLocation()
 
 
-        override fun read(buffer: PlayInByteBuffer): ResourceOrTagParser {
+        override fun read(buffer: PlayInByteBuffer): ResourceOrTagKeyParser {
             val registryName = buffer.readResourceLocation()
             val registry = buffer.connection.registries[registryName]
-            return ResourceOrTagParser(registry)
+            return ResourceOrTagKeyParser(registry)
         }
     }
 }
