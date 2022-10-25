@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.file.ZipAssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.modding.loader.LoaderUtil.load
@@ -35,7 +36,7 @@ import java.util.jar.JarInputStream
 
 object ModLoader {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "mods/"
-    private const val MANFIEST = "manifest.json"
+    private const val MANIFEST = "manifest.json"
     private val mods: MutableList<MinosoftMod> = mutableListOf()
     private var latch: CountUpAndDownLatch? = null
     var currentPhase by watched(LoadingPhases.PRE_BOOT)
@@ -63,8 +64,34 @@ object ModLoader {
         DefaultThreadPool += { createDirectories() }
     }
 
+
+    private fun MinosoftMod.scanDirectory(base: File, file: File) {
+        if (file.isFile) {
+            this.classLoader.load(file.path.removePrefix(base.path).removePrefix("/"), FileInputStream(file).readAllBytes())
+        }
+        if (file.isDirectory) {
+            for (sub in file.listFiles()!!) {
+                scanDirectory(base, sub)
+            }
+        }
+    }
+
     private fun MinosoftMod.processDirectory(file: File) {
-        TODO("Directory")
+        val files = file.listFiles()!!
+        val assets = DirectoryAssetsManager(file.path)
+        assets.load(CountUpAndDownLatch(0))
+
+        for (sub in files) {
+            if (sub.isDirectory && sub.name == "assets") {
+                continue
+            }
+            if (sub.isFile && sub.name == MANIFEST) {
+                manifest = FileInputStream(sub).readJson()
+            }
+            scanDirectory(file, sub)
+        }
+
+        this.assetsManager = assets
     }
 
     private fun MinosoftMod.processJar(file: File) {
@@ -78,7 +105,7 @@ object ModLoader {
 
             if (entry.name.endsWith(".class") && entry is JarEntry) {
                 this.classLoader.load(entry, stream)
-            } else if (entry.name == MANFIEST) {
+            } else if (entry.name == MANIFEST) {
                 manifest = stream.readJson(false)
             } else {
                 assets.push(entry.name, stream)
