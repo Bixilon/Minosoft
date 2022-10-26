@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" minHeight="110.0" prefHeight="110.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/18" fx:controller="de.bixilon.minosoft.gui.eros.main.mods.ModCardController">
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" minHeight="80.0" prefHeight="80.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/18" fx:controller="de.bixilon.minosoft.gui.eros.main.mods.ModCardController">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER"/>
@@ -48,7 +48,7 @@
                 <RowConstraints/>
             </rowConstraints>
         </GridPane>
-        <PixelImageView fx:id="imageFX" height="100.0" width="100.0">
+        <PixelImageView fx:id="imageFX" height="70.0" width="70.0">
             <GridPane.margin>
                 <Insets bottom="5.0" left="5.0" right="15.0" top="5.0"/>
             </GridPane.margin>
