@@ -212,3 +212,4 @@ minosoft:mod.name=Name
 minosoft:mod.description=Description
 minosoft:mod.version=Version
 minosoft:mod.authors=Author(s)
+minosoft:mod.phase=Loading phase

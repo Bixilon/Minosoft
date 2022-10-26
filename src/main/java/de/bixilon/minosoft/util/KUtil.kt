@@ -328,4 +328,12 @@ object KUtil {
     inline fun <T> Array<T>.getLast(): T {
         return this[lastIndex]
     }
+
+    @Deprecated("Kutil 1.18")
+    fun <T : Collection<*>> T.toNull(): T? {
+        if (isEmpty()) {
+            return null
+        }
+        return this
+    }
 }

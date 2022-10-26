@@ -11,31 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loader.mod.manifest
+package de.bixilon.minosoft.modding.loader.mod.manifest.load
 
-import de.bixilon.minosoft.modding.loader.mod.manifest.load.LoadM
-import de.bixilon.minosoft.modding.loader.mod.manifest.packages.PackagesM
-import java.net.URL
+import de.bixilon.minosoft.modding.loader.LoadingPhases
 
-data class ModManifest(
-    val name: String,
-    val description: String? = null,
-    val authors: List<String>? = null,
-    val website: URL? = null,
-    val version: String,
-
-    val main: String,
-    val packages: PackagesM? = null,
-    val load: LoadM? = null,
-) {
-
-    init {
-        if (!NAME_REGEX.matches(name)) {
-            throw IllegalStateException("Invalid mod name!")
-        }
-    }
-
-    companion object {
-        val NAME_REGEX = "[\\w| -_]{3,30}".toRegex()
-    }
-}
+data class LoadM(
+    val before: Set<String> = setOf(),
+    val after: Set<String> = setOf(),
+    val phases: Set<LoadingPhases>? = null,
+)

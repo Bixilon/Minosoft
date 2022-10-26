@@ -38,8 +38,6 @@ class ModCardController : AbstractCardController<MinosoftMod>() {
         if (previous === item) {
             return
         }
-        imageFX.maxHeight(40.0)
-        imageFX.maxWidth(40.0)
 
 
         imageFX.isVisible = true

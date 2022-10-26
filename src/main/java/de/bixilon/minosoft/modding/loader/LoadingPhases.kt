@@ -25,5 +25,6 @@ enum class LoadingPhases {
     companion object : ValuesEnum<LoadingPhases> {
         override val VALUES: Array<LoadingPhases> = values()
         override val NAME_MAP: Map<String, LoadingPhases> = EnumUtil.getEnumValues(VALUES)
+        val ALL = VALUES.toSet()
     }
 }

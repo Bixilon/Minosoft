@@ -17,22 +17,25 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
 import de.bixilon.minosoft.util.DesktopUtil
+import java.io.File
 
 class OpenFileConfirmationDialog(
     guiRenderer: GUIRenderer,
-    val path: String,
+    val file: File,
 ) : AbstractConfirmationMenu(
     guiRenderer, "Do you want to open that file?",
-    TextComponent(path, color = VALUE_COLOR),
+    TextComponent(file.path, color = VALUE_COLOR),
 ) {
+
+    constructor(guiRenderer: GUIRenderer, path: String) : this(guiRenderer, File(path))
 
     override fun createButtons(): Array<ButtonElement> {
         return arrayOf(
             ButtonElement(guiRenderer, "Yes, open it!") {
-                DesktopUtil.openFile(path)
+                DesktopUtil.openFile(file)
                 close()
             },
-            createCopyToClipboardButton(path)
+            createCopyToClipboardButton(file.path)
         )
     }
 

@@ -22,13 +22,16 @@ import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseActions
 import de.bixilon.minosoft.gui.rendering.gui.input.mouse.MouseButtons
 import de.bixilon.minosoft.util.DesktopUtil
 import javafx.scene.text.Text
+import java.io.File
 
 class OpenFileClickEvent(
-    val path: String,
+    val file: File,
 ) : ClickEvent {
 
+    constructor(path: String) : this(File(path))
+
     override fun applyJavaFX(text: Text) {
-        text.file(path)
+        text.file(file)
     }
 
     override fun onClick(guiRenderer: GUIRenderer, position: Vec2i, button: MouseButtons, action: MouseActions) {
@@ -36,10 +39,10 @@ class OpenFileClickEvent(
             return
         }
         if (!guiRenderer.connection.profiles.gui.confirmation.openFile) {
-            DesktopUtil.openFile(path)
+            DesktopUtil.openFile(file)
             return
         }
-        val dialog = OpenFileConfirmationDialog(guiRenderer, path)
+        val dialog = OpenFileConfirmationDialog(guiRenderer, file)
         dialog.show()
     }
 

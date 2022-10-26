@@ -41,6 +41,7 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
+import java.io.File
 import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
@@ -168,7 +169,7 @@ object JavaFXUtil {
         this.clickable()
     }
 
-    fun Text.file(path: String) {
+    fun Text.file(path: File) {
         this.setOnMouseClicked { DefaultThreadPool += { DesktopUtil.openFile(path) } }
         this.accessibleRole = AccessibleRole.HYPERLINK
         this.styleClass.setAll("hyperlink")
