@@ -45,6 +45,8 @@ val nettyVersion = getProperty("netty.version")
 val jacksonVersion = getProperty("jackson.version")
 val kutilVersion = getProperty("kutil.version")
 
+val os = properties["platform"]?.let { OSTypes[it] } ?: PlatformInfo.OS
+val architecture = properties["architecture"]?.let { Architectures[it] } ?: PlatformInfo.ARCHITECTURE
 
 repositories {
     mavenCentral()
@@ -53,7 +55,7 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath("de.bixilon", "kutil", "1.17")
+        classpath("de.bixilon", "kutil", "1.17.1")
     }
 }
 
@@ -61,13 +63,13 @@ var lwjglNatives = ""
 var zstdNatives = ""
 var javafxNatives = ""
 
-when (PlatformInfo.OS) {
+when (os) {
     OSTypes.LINUX -> {
         lwjglNatives += "linux"
         zstdNatives += "linux"
         javafxNatives += "linux"
 
-        when (PlatformInfo.ARCHITECTURE) {
+        when (architecture) {
             Architectures.AMD64 -> {
                 zstdNatives += "_amd64"
             }
@@ -78,7 +80,7 @@ when (PlatformInfo.OS) {
                 javafxNatives += "-aarch64"
             }
 
-            else -> throw IllegalArgumentException("Can not determinate linux natives on ${PlatformInfo.ARCHITECTURE}")
+            else -> throw IllegalArgumentException("Can not determinate linux natives on $architecture")
         }
     }
 
@@ -87,7 +89,7 @@ when (PlatformInfo.OS) {
         zstdNatives += "darwin"
         javafxNatives += "mac"
 
-        when (PlatformInfo.ARCHITECTURE) {
+        when (architecture) {
             Architectures.AMD64, Architectures.X86 -> {
                 zstdNatives += "_x86_64"
             }
@@ -98,7 +100,7 @@ when (PlatformInfo.OS) {
                 javafxNatives += "-aarch64"
             }
 
-            else -> throw IllegalArgumentException("Can not determinate macos natives on ${PlatformInfo.ARCHITECTURE}")
+            else -> throw IllegalArgumentException("Can not determinate macos natives on $architecture")
         }
     }
 
@@ -107,7 +109,7 @@ when (PlatformInfo.OS) {
         zstdNatives += "win"
         javafxNatives += "win"
 
-        when (PlatformInfo.ARCHITECTURE) {
+        when (architecture) {
             Architectures.AMD64 -> {
                 zstdNatives += "_amd64"
             }
@@ -118,12 +120,12 @@ when (PlatformInfo.OS) {
                 javafxNatives += "-x86"
             }
 
-            else -> throw IllegalArgumentException("Can not determinate windows natives on ${PlatformInfo.ARCHITECTURE}")
+            else -> throw IllegalArgumentException("Can not determinate windows natives on $architecture")
         }
     }
 
     else -> {
-        throw IllegalArgumentException("Can not determinate natives for ${PlatformInfo.OS} on ${PlatformInfo.ARCHITECTURE}")
+        throw IllegalArgumentException("Can not determinate natives for $os on $architecture")
     }
 }
 
@@ -344,11 +346,11 @@ dependencies {
 
 
     // platform specific
-    if (PlatformInfo.OS == OSTypes.LINUX) {
-        val nettyNatives = when (PlatformInfo.ARCHITECTURE) {
+    if (os == OSTypes.LINUX) {
+        val nettyNatives = when (architecture) {
             Architectures.AMD64, Architectures.X86 -> "x86_64"
             Architectures.ARM, Architectures.AARCH64 -> "aarch64"
-            else -> throw IllegalArgumentException("Can not determinate netty natives for ${PlatformInfo.ARCHITECTURE}")
+            else -> throw IllegalArgumentException("Can not determinate netty natives for $architecture")
         }
         implementation("io.netty", "netty-transport-native-epoll", nettyVersion, classifier = "linux-$nettyNatives")
     } else {
@@ -435,7 +437,7 @@ application {
 }
 
 val fatJar = task("fatJar", type = Jar::class) {
-    archiveBaseName.set("${project.name}-fat-${PlatformInfo.OS.name.toLowerCase()}-${PlatformInfo.ARCHITECTURE.name.toLowerCase()}")
+    archiveBaseName.set("${project.name}-fat-${os.name.toLowerCase()}-${architecture.name.toLowerCase()}")
     manifest {
         attributes["Implementation-Title"] = project.name.capitalized()
         attributes["Implementation-Version"] = project.version
