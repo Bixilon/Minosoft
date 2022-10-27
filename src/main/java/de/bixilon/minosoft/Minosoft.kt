@@ -61,7 +61,6 @@ import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
 
 
 object Minosoft {
-    val MAIN_THREAD: Thread = Thread.currentThread()
     val MINOSOFT_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false)
     val OVERRIDE_ASSETS_MANAGER = ResourcesAssetsUtil.create(Minosoft::class.java, canUnload = false, prefix = "assets_override")
     val LANGUAGE_MANAGER = MultiLanguageManager()
@@ -79,6 +78,7 @@ object Minosoft {
         ModLoader.initModLoading()
         ModLoader.load(LoadingPhases.PRE_BOOT, CountUpAndDownLatch(0))
         ModLoader.await(LoadingPhases.PRE_BOOT)
+
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
         warnMacOS()

@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.world.chunk.light
 
+import de.bixilon.kutil.array.ArrayUtil.getFirst
+import de.bixilon.kutil.array.ArrayUtil.getLast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.getFirst
-import de.bixilon.minosoft.util.KUtil.getLast
 
 class BorderSectionLight(
     val top: Boolean,
