@@ -22,10 +22,7 @@ import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.file.ZipAssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
 import de.bixilon.minosoft.modding.loader.LoaderUtil.load
-import de.bixilon.minosoft.modding.loader.error.DuplicateModError
-import de.bixilon.minosoft.modding.loader.error.NoManifestError
-import de.bixilon.minosoft.modding.loader.error.NoModMainError
-import de.bixilon.minosoft.modding.loader.error.NoObjectMainError
+import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.ModMain
 import de.bixilon.minosoft.modding.loader.mod.manifest.load.LoadM
@@ -43,7 +40,7 @@ object ModLoader {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "mods/"
     private const val MANIFEST = "manifest.json"
     private var latch: CountUpAndDownLatch? = null
-    val mods: MutableMap<String, MinosoftMod> = mutableMapOf()
+    val mods = ModList()
     var currentPhase by watched(LoadingPhases.PRE_BOOT)
         private set
     var state by watched(PhaseStates.WAITING)
@@ -137,7 +134,7 @@ object ModLoader {
         main!!.postInit()
     }
 
-    private fun inject(mods: MutableMap<String, MinosoftMod>, file: File, phase: LoadingPhases, latch: CountUpAndDownLatch) {
+    private fun inject(list: ModList, file: File, phase: LoadingPhases, latch: CountUpAndDownLatch) {
         if (!file.isDirectory && !file.name.endsWith(".jar") && !file.name.endsWith(".zip")) {
             return
         }
@@ -149,11 +146,20 @@ object ModLoader {
             } else {
                 mod.processJar(file)
             }
-            val name = mod.manifest!!.name
-            if (name in mods || name in this.mods) {
+            val manifest = mod.manifest!!
+            val name = manifest.name
+            if (name in list || name in this.mods) {
                 throw DuplicateModError(name)
             }
-            mods[name] = mod
+            manifest.packages?.provides?.let {
+                for (providedName in it) {
+                    val provided = list[providedName] ?: this.mods[providedName]
+                    if (provided != null) {
+                        throw DuplicateProvidedError(mod, provided, providedName)
+                    }
+                }
+            }
+            list += mod
             mod.latch.dec()
         } catch (exception: Throwable) {
             Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN) { "Error injecting mod: $file" }
@@ -186,18 +192,18 @@ object ModLoader {
             state = PhaseStates.COMPLETE
             return
         }
-        val mods: MutableMap<String, MinosoftMod> = synchronizedMapOf()
+        val list = ModList(synchronizedMapOf(), synchronizedMapOf())
 
         state = PhaseStates.INJECTING
         var worker = UnconditionalWorker()
         for (file in files) {
-            worker += add@{ inject(mods, file, phase, inner) }
+            worker += add@{ inject(list, file, phase, inner) }
         }
         worker.work(inner)
 
         state = PhaseStates.CONSTRUCTING
         worker = UnconditionalWorker()
-        for ((name, mod) in mods) {
+        for (mod in list) {
             worker += {
                 try {
                     mod.construct()
@@ -205,7 +211,7 @@ object ModLoader {
                 } catch (error: Throwable) {
                     mod.latch.count = 0
                     error.printStackTrace()
-                    mods -= name
+                    list -= mod
                 }
             }
         }
@@ -213,7 +219,7 @@ object ModLoader {
 
         state = PhaseStates.POST_INIT
         worker = UnconditionalWorker()
-        for ((name, mod) in mods) {
+        for (mod in list) {
             worker += {
                 try {
                     mod.postInit()
@@ -221,14 +227,14 @@ object ModLoader {
                 } catch (error: Throwable) {
                     mod.latch.count = 0
                     error.printStackTrace()
-                    mods -= name
+                    list -= mod
                 }
             }
         }
         worker.work(inner)
 
 
-        this.mods += mods
+        this.mods += list
         state = PhaseStates.COMPLETE
         inner.dec()
         if (phase == LoadingPhases.POST_BOOT) {
