@@ -210,6 +210,12 @@ minosoft:main.account.please_wait.header=Please wait...
 
 minosoft:mod.name=Name
 minosoft:mod.description=Description
-minosoft:mod.version=Version
 minosoft:mod.authors=Author(s)
+minosoft:mod.website=Website
+minosoft:mod.version=Version
+
+minosoft:mod.path=Path
 minosoft:mod.phase=Loading phase
+
+minosoft:mod.depends=Depends
+minosoft:mod.provides=Provides
