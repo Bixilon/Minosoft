@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
+import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
@@ -254,5 +255,12 @@ class PlayConnection(
     companion object {
         val ACTIVE_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
         val ERRORED_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
+
+        fun collectConnections(): Array<PlayConnection> {
+            val result = ACTIVE_CONNECTIONS.toSynchronizedSet()
+            result += ERRORED_CONNECTIONS.toSynchronizedSet()
+
+            return result.toTypedArray()
+        }
     }
 }

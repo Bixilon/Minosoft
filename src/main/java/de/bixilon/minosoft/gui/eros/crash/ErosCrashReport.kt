@@ -19,20 +19,16 @@ import de.bixilon.kutil.exception.ExceptionUtil.toStackTrace
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
 import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.file.watcher.FileWatcherService
-import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.kutil.unit.UnitFormatter.formatBytes
 import de.bixilon.kutil.unsafe.UnsafeUtil
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.SystemInformation
+import de.bixilon.minosoft.util.crash.CrashReportUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,7 +44,6 @@ import javafx.stage.Stage
 import javafx.stage.Window
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 
@@ -89,40 +84,6 @@ class ErosCrashReport : JavaFXWindowController() {
     companion object {
         var alreadyCrashed = false
             private set
-        private val CRASH_REPORT_COMMENTS = listOf(
-            "Let's blame Bixilon for this",
-            "But it worked once",
-            "It works on my computer",
-            "Not a bug, it's a feature",
-            "My bad",
-            "Whoops",
-            "Don't try to crash this!",
-            "Makes not sense!",
-            "Let's hack the game",
-            "You're evil",
-            "Maybe in another life.",
-            "This sucks",
-            "Chill ur life",
-            "Chill your life",
-            "Chill your base",
-            "Damn!",
-            "Developing is hard.",
-            "Please don't kill me for this",
-            "Trying my best",
-            "That happens when you develop while playing games!",
-            "Written while driving in a FlixBus",
-            "Coded while traveling in the ICE 272 towards Hamburg-Altona",
-            "Sorry, the ICE 693 drive towards Munich was really long",
-            "Coded while playing bedwars",
-            "I am #1 in bedwars swordless",
-            "Der AB kam vor der CD",
-            "You can't do this",
-            "Sing me a happy song!",
-            "This message should not be visible...",
-            "lmfao",
-            "Your fault",
-            "Technoblade never dies", // In memorial to technoblade. RIP Technoblade 30.6.2022
-        )
 
 
         /**
@@ -135,7 +96,7 @@ class ErosCrashReport : JavaFXWindowController() {
             }
             alreadyCrashed = true
             val details = try {
-                createCrashText(if (hideException) null else this)
+                CrashReportUtil.createCrashReport(if (hideException) null else this)
             } catch (error: Throwable) {
                 error.toStackTrace()
             }
@@ -207,71 +168,6 @@ class ErosCrashReport : JavaFXWindowController() {
                 stage.setOnCloseRequest { ShutdownManager.shutdown(this?.message, AbstractShutdownReason.CRASH) }
                 stage.show()
             }
-        }
-
-        private fun createCrashText(exception: Throwable?): String {
-            var connections = """
--- Connections --"""
-
-            fun addConnection(connection: PlayConnection) {
-                connections += """
-    #${connection.connectionId}:
-        Version: ${connection.version}
-        Account: ${connection.account.username}
-        Address: ${connection.address}
-        Brand: ${connection.serverInfo.brand}
-        Events: ${connection.size}
-        State: ${connection.state}
-        Connected: ${connection.network.connected}
-        Protocol state: ${connection.network.state}
-        Compression threshold: ${connection.network.compressionThreshold}
-        Encrypted: ${connection.network.encrypted}
-        Was connected: ${connection.wasConnected}
-        Rendering: ${connection.rendering != null}
-        Error: ${connection.error}
-""".removeSuffix("\n")
-            }
-
-            for (connection in PlayConnection.ACTIVE_CONNECTIONS.toSynchronizedSet()) {
-                addConnection(connection)
-            }
-
-            for (connection in PlayConnection.ERRORED_CONNECTIONS.toSynchronizedSet()) {
-                addConnection(connection)
-            }
-
-            val stackTraceText = if (exception == null) "" else """
--- Stacktrace --
-${exception.toStackTrace()}"""
-
-            return """
------ Minosoft Crash Report -----
-// ${CRASH_REPORT_COMMENTS.random()}
-
--- General Information --
-    Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(millis())} (${millis() / 1000L})
-    Crash thread: ${Thread.currentThread().name}
-$stackTraceText
-$connections
-
--- Runtime Details --
-    Start arguments: ${CommandLineArguments.ARGUMENTS}
-    JVM flags: ${ManagementFactory.getRuntimeMXBean().inputArguments}
-    Home directory: ${RunConfiguration.HOME_DIRECTORY}
-    Disable Eros: ${RunConfiguration.DISABLE_EROS}
-    Disable rendering: ${RunConfiguration.DISABLE_RENDERING}
-
--- System Details --
-    Operating system: ${SystemInformation.OS_TEXT}
-    Detected operating system: ${PlatformInfo.OS}
-    Detected architecture: ${PlatformInfo.ARCHITECTURE}
-    Java version: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
-    Memory: ${SystemInformation.SYSTEM_MEMORY.formatBytes()}
-    CPU: ${SystemInformation.PROCESSOR_TEXT}
- 
--- Git Info --
-${tryCatch { MinosoftProperties.git?.format() }}
-""".removeSuffix("\n")
         }
     }
 }
