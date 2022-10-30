@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.loader.mod
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.AssetsManager
+import de.bixilon.minosoft.modding.loader.LoaderUtil.unloadAll
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.mod.manifest.ModManifest
 import org.xeustechnologies.jcl.JarClassLoader
@@ -29,4 +30,15 @@ class MinosoftMod(
     var manifest: ModManifest? = null
     var assetsManager: AssetsManager? = null
     var main: ModMain? = null
+
+
+    fun unload() {
+        try {
+            main = null
+            classLoader.unloadAll()
+            assetsManager?.unload()
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
+    }
 }

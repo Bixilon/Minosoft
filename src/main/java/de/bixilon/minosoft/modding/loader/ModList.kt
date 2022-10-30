@@ -30,6 +30,12 @@ class ModList(
         this.virtual -= manifest.name
 
         manifest.packages?.provides?.let { this.virtual -= it }
+
+        try {
+            mod.unload()
+        } catch (error: Throwable) {
+            error.printStackTrace()
+        }
     }
 
     inline operator fun plusAssign(mod: MinosoftMod) = add(mod)

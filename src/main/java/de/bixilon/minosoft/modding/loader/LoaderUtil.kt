@@ -47,4 +47,10 @@ object LoaderUtil {
         entry.resourceBytes = data
         content[name] = entry
     }
+
+    fun JarClassLoader.unloadAll() {
+        for (entry in this.classpathResources.contents) {
+            this.unloadClass(entry.key)
+        }
+    }
 }
