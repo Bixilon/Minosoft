@@ -27,7 +27,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
 abstract class Connection : AbstractEventMaster {
     val network = NettyClient(this)
-    private val eventMaster = EventMaster(GlobalEventMaster)
+    val events = EventMaster(GlobalEventMaster)
     val connectionId = lastConnectionId++
     var wasConnected = false
     open val version: Version? = null
@@ -35,43 +35,50 @@ abstract class Connection : AbstractEventMaster {
     open var error: Throwable? = null
         set(value) {
             field = value
-            value?.let { fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
+            value?.let { events.fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
         }
 
     open fun sendPacket(packet: C2SPacket) {
         val event = PacketSendEvent(this, packet)
-        if (fireEvent(event)) {
+        if (events.fireEvent(event)) {
             return
         }
         network.send(packet)
     }
 
+
     /**
      * @param event The event to fire
      * @return if the event has been cancelled or not
      */
+    @Deprecated("events", ReplaceWith("events.fireEvent(event)"))
     override fun fireEvent(event: Event): Boolean {
-        return eventMaster.fireEvent(event)
+        return events.fireEvent(event)
     }
 
+    @Deprecated("events", ReplaceWith("events.unregisterEvent(invoker)"))
     override fun unregisterEvent(invoker: EventInvoker?) {
-        eventMaster.unregisterEvent(invoker)
+        events.unregisterEvent(invoker)
     }
 
+    @Deprecated("events", ReplaceWith("events.registerEvent(invoker)"))
     override fun <T : EventInvoker> registerEvent(invoker: T): T {
-        return eventMaster.registerEvent(invoker)
+        return events.registerEvent(invoker)
     }
 
+    @Deprecated("events", ReplaceWith("events.registerEvents(*invokers)"))
     override fun registerEvents(vararg invokers: EventInvoker) {
-        eventMaster.registerEvents(*invokers)
+        events.registerEvents(*invokers)
     }
 
+    @Deprecated("events", ReplaceWith("events.iterator()"))
     override fun iterator(): Iterator<EventInvoker> {
-        return eventMaster.iterator()
+        return events.iterator()
     }
 
+    @Deprecated("events", ReplaceWith("events.size"))
     override val size: Int
-        get() = eventMaster.size
+        get() = events.size
 
     companion object {
         var lastConnectionId: Int = 0
