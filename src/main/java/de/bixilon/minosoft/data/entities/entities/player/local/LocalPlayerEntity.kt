@@ -47,6 +47,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -67,7 +68,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
@@ -87,7 +87,7 @@ class LocalPlayerEntity(
 ) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username, account.properties) {
     val healthCondition = HealthCondition()
     val experienceCondition = ExperienceCondition()
-    var spawnPosition: Vec3i = Vec3i.EMPTY
+    var compass by watched(CompassPosition())
 
     val baseAbilities = Abilities()
 

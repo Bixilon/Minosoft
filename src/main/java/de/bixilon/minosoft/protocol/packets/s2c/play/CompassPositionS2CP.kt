@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.modding.event.events.CompassPositionChangeEvent
+import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -25,24 +25,20 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
 class CompassPositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    var spawnPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
+    var position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readIntBlockPosition()
     } else {
         buffer.readBlockPosition()
     }
     var angle = if (buffer.versionId >= ProtocolVersions.V_21W08A) {
         buffer.readFloat()
-    } else {
-        0.0f
-    }
+    } else null
 
     override fun handle(connection: PlayConnection) {
-        connection.player.spawnPosition = spawnPosition
-
-        connection.fire(CompassPositionChangeEvent(connection, this))
+        connection.player.compass = CompassPosition(position, angle)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Compass position (spawnPosition=$spawnPosition, angle=$angle)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Compass position (position=$position, angle=$angle)" }
     }
 }

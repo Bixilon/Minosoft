@@ -22,6 +22,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIManager
 import de.bixilon.minosoft.gui.rendering.gui.gui.dragged.DraggedManager
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.popper.PopperManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDManager
 import de.bixilon.minosoft.gui.rendering.gui.input.ModifierKeys
 import de.bixilon.minosoft.gui.rendering.input.InputHandler
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions

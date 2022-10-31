@@ -16,4 +16,5 @@ import de.bixilon.minosoft.modding.event.events.connection.ConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
+@Deprecated("packet handlers?")
 class PacketSendEvent(connection: Connection, val packet: C2SPacket) : ConnectionEvent(connection)

@@ -17,7 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
+import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -58,7 +58,7 @@ object Eros {
 
 
     init {
-        GlobalEventMaster.register(CallbackEventListener.of<FinishInitializingEvent> {
+        GlobalEventMaster.register(CallbackEventListener.of<FinishBootEvent> {
             if (skipErosStartup) {
                 return@of
             }

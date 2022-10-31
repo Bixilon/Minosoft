@@ -11,23 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 
-class CameraMatrixChangeEvent(
+class ResizeWindowEvent(
     renderWindow: RenderWindow,
-    viewMatrix: Mat4,
-    projectionMatrix: Mat4,
-    viewProjectionMatrix: Mat4,
-) : RenderEvent(renderWindow) {
-    val viewMatrix: Mat4 = viewMatrix
-        get() = Mat4(field)
-
-    val projectionMatrix: Mat4 = projectionMatrix
-        get() = Mat4(field)
-
-    val viewProjectionMatrix: Mat4 = viewProjectionMatrix
-        get() = Mat4(field)
-}
+    val previousSize: Vec2i,
+    val size: Vec2i,
+) : RenderEvent(renderWindow)

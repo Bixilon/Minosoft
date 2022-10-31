@@ -11,15 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.gui.rendering.events.input
 
-import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.events.RenderEvent
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 
-class CameraPositionChangeEvent(
+class RawKeyInputEvent(
     renderWindow: RenderWindow,
-    newPosition: Vec3,
-) : RenderEvent(renderWindow) {
-    val newPosition: Vec3 = newPosition
-        get() = Vec3(field)
-}
+    val keyCode: KeyCodes,
+    val keyChangeType: KeyChangeTypes,
+) : RenderEvent(renderWindow)

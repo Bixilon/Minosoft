@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
+import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log

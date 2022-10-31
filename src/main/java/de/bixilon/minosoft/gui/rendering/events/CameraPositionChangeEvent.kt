@@ -11,13 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 
-class ResizeWindowEvent(
+class CameraPositionChangeEvent(
     renderWindow: RenderWindow,
-    val previousSize: Vec2i,
-    val size: Vec2i,
-) : RenderEvent(renderWindow)
+    newPosition: Vec3,
+) : RenderEvent(renderWindow) {
+    val newPosition: Vec3 = newPosition
+        get() = Vec3(field)
+}

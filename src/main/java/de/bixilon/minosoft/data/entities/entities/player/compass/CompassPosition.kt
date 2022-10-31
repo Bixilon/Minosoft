@@ -11,15 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events.input
+package de.bixilon.minosoft.data.entities.entities.player.compass
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
-import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 
-class RawKeyInputEvent(
-    renderWindow: RenderWindow,
-    val keyCode: KeyCodes,
-    val keyChangeType: KeyChangeTypes,
-) : RenderEvent(renderWindow)
+class CompassPosition(
+    val position: Vec3i = Vec3i.EMPTY,
+    val angle: Float? = null,
+) {
+}

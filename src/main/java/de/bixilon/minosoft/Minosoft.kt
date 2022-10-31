@@ -40,7 +40,7 @@ import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.main.BootTasks
-import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
+import de.bixilon.minosoft.modding.event.events.FinishBootEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModLoader
@@ -120,7 +120,7 @@ object Minosoft {
         BOOT_LATCH.await()
         val end = nanos()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
-        GlobalEventMaster.fire(FinishInitializingEvent())
+        GlobalEventMaster.fire(FinishBootEvent())
         DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT, CountUpAndDownLatch(0)) }
 
 

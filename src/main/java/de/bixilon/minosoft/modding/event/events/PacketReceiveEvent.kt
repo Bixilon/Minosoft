@@ -16,4 +16,5 @@ import de.bixilon.minosoft.modding.event.events.connection.ConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 
+@Deprecated("packet handlers?")
 class PacketReceiveEvent(connection: Connection, val packet: S2CPacket) : ConnectionEvent(connection)

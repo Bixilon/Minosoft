@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.primitive.BooleanUtil.decide
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -38,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
-import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
@@ -221,10 +221,8 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     override fun init() {
         val connection = renderWindow.connection
-        connection.register(CallbackEventListener.of<TabListInfoChangeEvent> {
-            header.text = it.header
-            footer.text = it.footer
-        })
+        connection.tabList::header.observe(this) { header.text = it }
+        connection.tabList::footer.observe(this) { footer.text = it }
         connection.register(CallbackEventListener.of<TabListEntryChangeEvent> {
             for ((uuid, entry) in it.items) {
                 if (entry == null) {

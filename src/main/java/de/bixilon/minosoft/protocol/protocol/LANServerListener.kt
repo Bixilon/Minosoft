@@ -21,8 +21,6 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.LANServerType
-import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -89,9 +87,6 @@ object LANServerListener {
                             continue
                         }
                         if (SERVERS.size > ProtocolDefinition.LAN_SERVER_MAXIMUM_SERVERS) {
-                            continue
-                        }
-                        if (GlobalEventMaster.fire(LANServerDiscoverEvent(packet.address, server))) {
                             continue
                         }
                         Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Discovered LAN servers: ${server.address}" }

@@ -11,17 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events.input
+package de.bixilon.minosoft.gui.rendering.events.input
 
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
-import de.bixilon.minosoft.modding.event.events.CancelableEvent
+import de.bixilon.minosoft.gui.rendering.events.RenderEvent
 
-class MouseScrollEvent(
+class RawCharInputEvent(
     renderWindow: RenderWindow,
-    offset: Vec2d,
-) : RenderEvent(renderWindow), CancelableEvent {
-    val offset: Vec2d = offset
-        get() = Vec2d(field)
-}
+    val char: Int,
+) : RenderEvent(renderWindow)

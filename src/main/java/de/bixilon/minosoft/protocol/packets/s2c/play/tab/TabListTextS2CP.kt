@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.tab
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -30,8 +29,6 @@ class TabListTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.tabList.header = header
         connection.tabList.footer = footer
-
-        connection.fire(TabListInfoChangeEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

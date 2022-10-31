@@ -11,24 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events.input
+package de.bixilon.minosoft.gui.rendering.events
 
-import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 
-class MouseMoveEvent(
-    renderWindow: RenderWindow,
-    position: Vec2d,
-    previous: Vec2d,
-    delta: Vec2d,
-) : RenderEvent(renderWindow) {
-    val position: Vec2d = position
-        get() = Vec2d(field)
-
-    val previous: Vec2d = previous
-        get() = Vec2d(field)
-
-    val delta: Vec2d = delta
-        get() = Vec2d(field)
-}
+abstract class RenderEvent(
+    val renderWindow: RenderWindow,
+) : PlayConnectionEvent(renderWindow.connection)

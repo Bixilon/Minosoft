@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.WorldFramebuffer
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener

@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.world.positions.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.Camera
-import de.bixilon.minosoft.gui.rendering.modding.events.VisibilityGraphChangeEvent
+import de.bixilon.minosoft.gui.rendering.events.VisibilityGraphChangeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY

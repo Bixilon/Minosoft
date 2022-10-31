@@ -22,9 +22,9 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
-import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
+import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition

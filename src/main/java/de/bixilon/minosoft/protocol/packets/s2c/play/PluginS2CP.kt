@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -36,11 +35,10 @@ class PluginS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
     }
 
-    val data: PlayInByteBuffer = PlayInByteBuffer(buffer.readRest(), buffer.connection)
-        get() = PlayInByteBuffer(field)
+    val data = buffer.readRest()
 
     override fun handle(connection: PlayConnection) {
-        connection.fire(PluginMessageReceiveEvent(connection, this))
+        connection.pluginManager.handleMessage(channel, data)
     }
 
     override fun log(reducedLog: Boolean) {

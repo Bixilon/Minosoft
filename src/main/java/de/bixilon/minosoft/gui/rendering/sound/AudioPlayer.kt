@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
-import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
+import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener

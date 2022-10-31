@@ -23,14 +23,14 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager.Companion.registerDefault

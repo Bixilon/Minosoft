@@ -18,8 +18,6 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
@@ -27,11 +25,7 @@ class PluginManager(val connection: PlayConnection) {
     private val handlers: SynchronizedMap<ResourceLocation, MutableSet<PluginHandler>> = synchronizedMapOf()
 
 
-    init {
-        connection.register(CallbackEventListener.of<PluginMessageReceiveEvent> { handleMessage(it.channel, it.data.readRest()) })
-    }
-
-    private fun handleMessage(channel: ResourceLocation, data: ByteArray) {
+    fun handleMessage(channel: ResourceLocation, data: ByteArray) {
         val handlers = handlers[channel] ?: return
         for (handler in handlers.toSynchronizedList()) { // ToDo: properly lock
             val buffer = PlayInByteBuffer(data, connection)

@@ -11,13 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.gui.rendering.events
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
-import de.bixilon.minosoft.modding.event.events.CancelableEvent
+import de.bixilon.minosoft.modding.event.events.AsyncEvent
 
-class WindowCloseEvent(
+class VisibilityGraphChangeEvent(
     renderWindow: RenderWindow,
-    val window: BaseWindow,
-) : RenderEvent(renderWindow), CancelableEvent
+) : RenderEvent(renderWindow), AsyncEvent

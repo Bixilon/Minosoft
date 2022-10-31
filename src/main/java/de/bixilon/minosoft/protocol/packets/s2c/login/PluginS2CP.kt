@@ -24,16 +24,15 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket(state = ProtocolStates.LOGIN, threadSafe = false)
 class PluginS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val messageId = buffer.readVarInt()
-    val channel = buffer.readString()
-    val data: PlayInByteBuffer = PlayInByteBuffer(buffer.readRest(), buffer.connection)
-        get() = PlayInByteBuffer(field)
+    val channel = buffer.readResourceLocation()
+    val data: ByteArray = buffer.readRest()
 
     override fun handle(connection: PlayConnection) {
-        // ToDo:    connection.fireEvent(LoginPluginMessageRequestEvent(connection, this))
+        connection.pluginManager.handleMessage(channel, data)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login plugin request (messageId=$messageId, channel=$channel, data=${data.readRest()})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login plugin request (messageId=$messageId, channel=$channel, data=$data)" }
     }
 
 }
