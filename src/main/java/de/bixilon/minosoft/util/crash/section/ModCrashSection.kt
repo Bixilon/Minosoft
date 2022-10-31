@@ -22,7 +22,7 @@ class ModCrashSection(
 
     override fun format(entry: MinosoftMod, builder: StringBuilder, intent: String) {
         builder.appendProperty(intent, "Path", entry.path)
-        builder.appendProperty(intent, "Phase", entry.phase)
+        builder.appendProperty(intent, "Phase", entry.phase.name.lowercase())
         builder.appendProperty(intent, "Name", entry.manifest?.name)
         builder.appendProperty(intent, "Version", entry.manifest?.version)
         builder.appendProperty(intent, "Author(s)", entry.manifest?.authors)

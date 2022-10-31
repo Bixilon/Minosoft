@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.natives
 
-import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import io.netty.channel.Channel
 import io.netty.channel.EventLoopGroup
 
@@ -25,7 +25,7 @@ interface TransportNatives {
     companion object {
 
         fun get(): TransportNatives {
-            return tryCatch { EpollNatives } ?: NioNatives
+            return catchAll { EpollNatives } ?: NioNatives
         }
     }
 }

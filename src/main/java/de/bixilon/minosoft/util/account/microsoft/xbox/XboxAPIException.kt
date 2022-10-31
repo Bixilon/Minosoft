@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.account.microsoft.xbox
 
-import de.bixilon.kutil.exception.ExceptionUtil
+import de.bixilon.kutil.exception.ExceptionUtil.catchAll
 import de.bixilon.minosoft.util.http.HTTPResponse
 import de.bixilon.minosoft.util.json.Jackson
 
@@ -23,5 +23,5 @@ class XboxAPIException(
     message: String? = error?.error?.toString(),
 ) : Exception(message) {
 
-    constructor(response: HTTPResponse<Map<String, Any>?>) : this(response.statusCode, response.body?.let { ExceptionUtil.tryCatch(Throwable::class.java) { Jackson.MAPPER.convertValue(it, XboxAPIError::class.java) } })
+    constructor(response: HTTPResponse<Map<String, Any>?>) : this(response.statusCode, response.body?.let { catchAll { Jackson.MAPPER.convertValue(it, XboxAPIError::class.java) } })
 }

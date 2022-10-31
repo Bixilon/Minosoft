@@ -18,11 +18,4 @@ data class GitP(
     val commit: String,
     val commitShort: String,
     val dirty: Boolean,
-) {
-    fun format(intend: String = "    "): String {
-        return """${intend}Branch: $branch
-${intend}Commit: $commit
-${intend}Dirty: $dirty
-""".removeSuffix("\n")
-    }
-}
+)

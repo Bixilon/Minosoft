@@ -20,8 +20,8 @@ import de.bixilon.minosoft.util.SystemInformation
 class SystemSection : CrashSection(
     "System information", arrayOf(
         "Operating system" to SystemInformation.OS_TEXT,
-        "Platform os" to PlatformInfo.OS,
-        "Platform architecture" to PlatformInfo.ARCHITECTURE,
+        "Platform os" to PlatformInfo.OS.name.lowercase(),
+        "Platform architecture" to PlatformInfo.ARCHITECTURE.name.lowercase(),
         "Java" to "${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
         "Memory" to SystemInformation.SYSTEM_MEMORY.formatBytes(),
         "Processor" to SystemInformation.PROCESSOR_TEXT,
