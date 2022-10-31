@@ -28,7 +28,7 @@ class TitleTimesS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     val fadeOutTime = buffer.readInt()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(TitleTimesSetEvent(connection, this))
+        connection.fire(TitleTimesSetEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

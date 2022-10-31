@@ -36,7 +36,7 @@ class LegacyBlockBreakS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             // never happens?
             connection.world[blockPosition] = blockState
         }
-        connection.fireEvent(LegacyBlockBreakAckEvent(connection, this))
+        connection.fire(LegacyBlockBreakAckEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

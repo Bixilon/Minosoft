@@ -84,7 +84,7 @@ abstract class TextureManager {
         return getFallbackTexture(uuid)
     }
 
-    fun getSkin(player: PlayerEntity, properties: PlayerProperties? = player.tabListItem.properties): DynamicTexture {
+    fun getSkin(player: PlayerEntity, properties: PlayerProperties? = player.additional.properties): DynamicTexture {
         if (player is LocalPlayerEntity) {
             return skin
         }

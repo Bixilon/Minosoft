@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -24,12 +23,11 @@ object GamemodeChangeGameEventHandler : GameEventHandler {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:gamemode_change".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
-        val previous = connection.player.tabListItem.gamemode
+        val previous = connection.player.additional.gamemode
         val next = Gamemodes[data.toInt()]
         if (previous == next) {
             return
         }
-        connection.player.tabListItem.gamemode = next
-        connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previous, next))
+        connection.player.additional.gamemode = next
     }
 }

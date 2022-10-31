@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.loader
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
@@ -192,7 +191,7 @@ object ModLoader {
             state = PhaseStates.COMPLETE
             return
         }
-        val list = ModList(synchronizedMapOf(), synchronizedMapOf())
+        val list = ModList()
 
         state = PhaseStates.INJECTING
         var worker = UnconditionalWorker()

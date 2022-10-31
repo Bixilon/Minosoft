@@ -32,7 +32,7 @@ class SignEditorS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(OpenSignEditorEvent(connection, this))) {
+        if (connection.fire(OpenSignEditorEvent(connection, this))) {
             return
         }
     }

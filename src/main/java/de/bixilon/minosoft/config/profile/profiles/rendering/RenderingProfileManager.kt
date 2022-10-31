@@ -42,7 +42,7 @@ object RenderingProfileManager : ProfileManager<RenderingProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(RenderingProfileSelectEvent(value))
+            GlobalEventMaster.fire(RenderingProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): RenderingProfile {

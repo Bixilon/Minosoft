@@ -45,7 +45,7 @@ class BlockBreakAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val event = BlockBreakAnimationEvent(connection, this)
-        if (connection.fireEvent(event)) {
+        if (connection.fire(event)) {
             return
         }
     }

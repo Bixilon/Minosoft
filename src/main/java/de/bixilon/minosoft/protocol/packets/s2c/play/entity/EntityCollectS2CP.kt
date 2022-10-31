@@ -37,7 +37,7 @@ class EntityCollectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(CollectItemAnimationEvent(connection, this))) {
+        if (connection.fire(CollectItemAnimationEvent(connection, this))) {
             return
         }
     }

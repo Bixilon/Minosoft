@@ -31,13 +31,13 @@ class ObjectivePositionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val scoreboardManager = connection.scoreboardManager
         if (name == null) {
             scoreboardManager.positions -= position
-            connection.fireEvent(ObjectivePositionSetEvent(connection, position, null))
+            connection.fire(ObjectivePositionSetEvent(connection, position, null))
             return
         }
         val objective = scoreboardManager.objectives[name] ?: return
         scoreboardManager.positions[position] = objective
 
-        connection.fireEvent(ObjectivePositionSetEvent(connection, position, objective))
+        connection.fire(ObjectivePositionSetEvent(connection, position, objective))
     }
 
     override fun log(reducedLog: Boolean) {

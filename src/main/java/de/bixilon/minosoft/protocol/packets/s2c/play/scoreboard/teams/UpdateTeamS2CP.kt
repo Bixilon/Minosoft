@@ -104,7 +104,7 @@ class UpdateTeamS2CP(
         team.nameTagVisibility = nameTagVisibility
         team.formattingCode = formattingCode
 
-        connection.fireEvent(TeamUpdateEvent(connection, team))
+        connection.fire(TeamUpdateEvent(connection, team))
     }
 
     override fun log(reducedLog: Boolean) {

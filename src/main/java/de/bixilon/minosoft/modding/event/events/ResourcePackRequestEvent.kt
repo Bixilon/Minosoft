@@ -13,19 +13,17 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.ResourcepackS2CP
 
 class ResourcePackRequestEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val url: String,
     val hash: String,
     val promptText: ChatComponent?,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+) : PlayConnectionEvent(connection), CancelableEvent {
 
 
-    constructor(connection: PlayConnection, packet: ResourcepackS2CP) : this(connection, EventInitiators.SERVER, packet.url, packet.hash, packet.promptText)
+    constructor(connection: PlayConnection, packet: ResourcepackS2CP) : this(connection, packet.url, packet.hash, packet.promptText)
 }

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarRemoveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
@@ -27,7 +26,7 @@ class RemoveBossbarS2CP(
 
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbarManager.bossbars.remove(uuid) ?: return
-        connection.fireEvent(BossbarRemoveEvent(connection, EventInitiators.SERVER, uuid, bossbar))
+        connection.fire(BossbarRemoveEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

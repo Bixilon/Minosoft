@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.PrintStream
@@ -97,7 +97,7 @@ object Log {
             }
         }, "Log").start()
 
-        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
+        GlobalEventMaster.register(CallbackEventListener.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
     }
 
 

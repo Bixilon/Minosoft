@@ -47,7 +47,7 @@ class RemoveTeamMemberS2CP(
         }
 
         connection.scoreboardManager.updateScoreTeams(team, members, true)
-        connection.fireEvent(TeamMemberRemoveEvent(connection, team, members))
+        connection.fire(TeamMemberRemoveEvent(connection, team, members))
     }
 
     override fun log(reducedLog: Boolean) {

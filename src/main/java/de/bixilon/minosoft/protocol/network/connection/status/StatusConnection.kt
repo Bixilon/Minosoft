@@ -20,12 +20,11 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
-import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
-import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
+import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
@@ -171,20 +170,20 @@ class StatusConnection(
         }
     }
 
-    override fun <T : EventInvoker> registerEvent(invoker: T): T {
+    override fun <T : EventListener> register(invoker: T): T {
         if (invoker is EventInstantFireable && !invoker.instantFire) {
-            return super.registerEvent(invoker)
+            return super.register(invoker)
         }
 
-        super.registerEvent(invoker)
+        super.register(invoker)
 
 
         when {
             invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) -> {
-                error?.let { invoker.invoke(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
+                error?.let { invoker.invoke(ConnectionErrorEvent(this, it)) }
             }
             invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) -> {
-                lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, EventInitiators.UNKNOWN, it)) }
+                lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, it)) }
             }
             invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
                 lastPongEvent?.let { invoker.invoke(it) }

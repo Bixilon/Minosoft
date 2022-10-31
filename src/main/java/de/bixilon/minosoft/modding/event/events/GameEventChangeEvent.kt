@@ -13,17 +13,15 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
 
 class GameEventChangeEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val event: ResourceLocation?,
     val data: Float,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, EventInitiators.SERVER, packet.event, packet.data)
+    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, packet.event, packet.data)
 }

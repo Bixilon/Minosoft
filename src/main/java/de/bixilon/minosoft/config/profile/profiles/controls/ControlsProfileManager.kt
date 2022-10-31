@@ -42,7 +42,7 @@ object ControlsProfileManager : ProfileManager<ControlsProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(ControlsProfileSelectEvent(value))
+            GlobalEventMaster.fire(ControlsProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): ControlsProfile {

@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicText
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player), DynamicStateChangeCallback {
-    private var properties = player.tabListItem.properties
+    private var properties = player.additional.properties
     private var skin: DynamicTexture? = null
     protected var refreshModel = false
 
@@ -87,7 +87,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     }
 
     override fun prepareAsync() {
-        val properties = entity.tabListItem.properties // ToDo: Check for skin layers
+        val properties = entity.additional.properties // ToDo: Check for skin layers
         if (refreshModel || this.properties != properties) {
             _instance = instance
             instance = createModel(properties)

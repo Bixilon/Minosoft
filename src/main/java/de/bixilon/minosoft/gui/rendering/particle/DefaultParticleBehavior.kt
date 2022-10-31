@@ -18,10 +18,9 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -35,7 +34,7 @@ object DefaultParticleBehavior {
         val explosionEmitterParticleType = connection.registries.particleTypeRegistry[ExplosionEmitterParticle]!!
         val typesConfig = connection.profiles.particle.types
         val invokers = listOf(
-            CallbackEventInvoker.of<ExplosionEvent> {
+            CallbackEventListener.of<ExplosionEvent> {
                 if (typesConfig.explosions) {
                     return@of
                 }
@@ -45,11 +44,8 @@ object DefaultParticleBehavior {
                     particleRenderer += ExplosionParticle(connection, Vec3d(it.position), explosionParticleType.default())
                 }
             },
-            CallbackEventInvoker.of<ParticleSpawnEvent> {
+            CallbackEventListener.of<ParticleSpawnEvent> {
                 DefaultThreadPool += add@{
-                    if (it.initiator == EventInitiators.SERVER && !typesConfig.packet) {
-                        return@add
-                    }
                     fun spawn(position: Vec3d, velocity: Vec3d) {
                         val factory = it.data.type.factory
                         if (factory == null) {
@@ -75,6 +71,6 @@ object DefaultParticleBehavior {
             },
         )
 
-        connection.registerEvents(*invokers.toTypedArray())
+        connection.register(*invokers.toTypedArray())
     }
 }

@@ -24,4 +24,5 @@
 - Multiple `mods` folders
   - pre boot (before loading anything)
   - boot (while loading everything else)
-  - post boot (start loading in while, but don't wait for them. Only wait before loading connection)
+  - post boot (start loading after booting, but don't wait for them. Only wait before loading connection)
+- No classic event system, events are stateless. Everything that is stateful should use observables

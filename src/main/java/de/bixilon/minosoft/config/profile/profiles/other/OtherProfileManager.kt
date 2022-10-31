@@ -42,7 +42,7 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(OtherProfileSelectEvent(value))
+            GlobalEventMaster.fire(OtherProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): OtherProfile {

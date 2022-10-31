@@ -36,8 +36,8 @@ class SuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.network.state = ProtocolStates.PLAY
 
         val playerEntity = connection.player
-        playerEntity.tabListItem.name = name
-        playerEntity.tabListItem.displayName = ChatComponent.of(name)
+        playerEntity.additional.name = name
+        playerEntity.additional.displayName = ChatComponent.of(name)
 
         connection.world.entities.add(null, uuid, playerEntity)
     }

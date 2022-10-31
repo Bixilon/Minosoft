@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.modding.event.events.loading
 
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -21,7 +20,7 @@ class RegistriesLoadEvent(
     connection: PlayConnection,
     val registries: Registries,
     val state: States,
-) : PlayConnectionEvent(connection, EventInitiators.CLIENT) {
+) : PlayConnectionEvent(connection) {
 
     enum class States {
         PRE,

@@ -30,6 +30,8 @@ import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
@@ -94,15 +96,16 @@ class LocalPlayerEntity(
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
-    var selectedHotbarSlot: Int = 0
-        set(value) {
-            if (field == value) {
-                return
-            }
-            field = value
+
+    var selectedHotbarSlot: Int by watched(0)
+
+    init {
+        this::selectedHotbarSlot.observe(this) {
             equipment.remove(InventorySlots.EquipmentSlots.MAIN_HAND)
-            equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(value) ?: return
+            equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(it) ?: return@observe
         }
+    }
+
     var openedContainer: Container? = null
 
     val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()

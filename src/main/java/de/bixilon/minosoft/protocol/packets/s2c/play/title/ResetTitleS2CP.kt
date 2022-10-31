@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ResetTitleS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(TitleResetEvent(connection, this))
+        connection.fire(TitleResetEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -28,8 +28,8 @@ import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.entities.entities.SynchronizedEntityData
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.item.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -49,9 +49,9 @@ abstract class PlayerEntity(
     data: EntityData,
     position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
-    name: String = "TBA",
+    name: String = "",
     properties: PlayerProperties? = null,
-    var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
+    val additional: PlayerAdditional = PlayerAdditional(name = name, properties = properties),
 ) : LivingEntity(connection, entityType, data, position, rotation) {
     protected var _model: PlayerModel?
         get() = super.model.nullCast()
@@ -64,11 +64,11 @@ abstract class PlayerEntity(
 
     @get:SynchronizedEntityData
     val gamemode: Gamemodes
-        get() = tabListItem.gamemode
+        get() = additional.gamemode
 
     @get:SynchronizedEntityData
     val name: String
-        get() = tabListItem.name
+        get() = additional.name
 
     @get:SynchronizedEntityData
     val playerAbsorptionHearts: Float
@@ -139,7 +139,7 @@ abstract class PlayerEntity(
             if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
                 chestPlate._display?.dyeColor?.let { return it }
             }
-            val formattingCode = tabListItem.team?.formattingCode
+            val formattingCode = additional.team?.formattingCode
             if (formattingCode is RGBColor) {
                 return formattingCode
             }

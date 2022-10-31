@@ -48,6 +48,9 @@ interface BaseWindow {
 
     val time: Double
 
+    val iconified: Boolean
+    val focused: Boolean
+
     fun init(profile: RenderingProfile) {
         resizable = true
         profile.advanced::swapInterval.profileWatchRendering(this, true, profile) { swapInterval = it }

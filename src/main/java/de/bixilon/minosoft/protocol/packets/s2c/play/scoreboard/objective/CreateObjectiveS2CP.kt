@@ -62,7 +62,7 @@ class CreateObjectiveS2CP(
 
         connection.scoreboardManager.objectives[name] = objective
 
-        connection.fireEvent(ScoreboardObjectiveCreateEvent(connection, objective))
+        connection.fire(ScoreboardObjectiveCreateEvent(connection, objective))
     }
 
     enum class ObjectiveUnits {

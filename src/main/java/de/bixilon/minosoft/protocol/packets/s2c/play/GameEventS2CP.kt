@@ -32,7 +32,7 @@ class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             return
         }
         val event = GameEventChangeEvent(connection, this)
-        if (connection.fireEvent(event)) {
+        if (connection.fire(event)) {
             return
         }
 

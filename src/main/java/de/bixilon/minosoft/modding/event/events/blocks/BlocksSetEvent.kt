@@ -15,17 +15,15 @@ package de.bixilon.minosoft.modding.event.events.blocks
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlocksS2CP
 
 class BlocksSetEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val blocks: Map<Vec3i, BlockState?>,
     val chunkPosition: Vec2i,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: BlocksS2CP) : this(connection, EventInitiators.SERVER, packet.blocks, packet.chunkPosition)
+    constructor(connection: PlayConnection, packet: BlocksS2CP) : this(connection, packet.blocks, packet.chunkPosition)
 }

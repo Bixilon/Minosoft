@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -55,17 +54,17 @@ class ChunkLight(private val chunk: Chunk) {
 
         val chunkPosition = chunk.chunkPosition
         if (fireSameChunkEvent) {
-            connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight, true))
+            connection.fire(LightChangeEvent(connection, chunkPosition, chunk, sectionHeight, true))
 
             val down = section.neighbours?.get(Directions.O_DOWN)?.light
             if (down != null && down.update) {
                 down.update = false
-                connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight - 1, false))
+                connection.fire(LightChangeEvent(connection, chunkPosition, chunk, sectionHeight - 1, false))
             }
             val up = section.neighbours?.get(Directions.O_UP)?.light
             if (up?.update == true) {
                 up.update = false
-                connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, chunkPosition, chunk, sectionHeight + 1, false))
+                connection.fire(LightChangeEvent(connection, chunkPosition, chunk, sectionHeight + 1, false))
             }
         }
 
@@ -84,7 +83,7 @@ class ChunkLight(private val chunk: Chunk) {
                         continue
                     }
                     neighbourSection.light.update = false
-                    connection.fireEvent(LightChangeEvent(connection, EventInitiators.CLIENT, nextPosition, chunk, sectionHeight + chunkY, false))
+                    connection.fire(LightChangeEvent(connection, nextPosition, chunk, sectionHeight + chunkY, false))
                 }
             }
         }

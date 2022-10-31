@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
@@ -109,7 +109,7 @@ class ParticleRenderer(
         profile::maxAmount.profileWatch(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
         profile::enabled.profileWatch(this, true, profile) { enabled = it }
 
-        connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
+        connection.register(CallbackEventListener.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
                 fun applyToShader(shader: Shader) {
                     shader.apply {
@@ -144,7 +144,7 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            if (!renderWindow.renderingState.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
+            if (!renderWindow.state.running || !enabled || connection.state != PlayConnectionStates.PLAYING) {
                 return@TimeWorkerTask
             }
             val cameraPosition = connection.player.positionInfo.chunkPosition
@@ -190,7 +190,7 @@ class ParticleRenderer(
     }
 
     override fun addParticle(particle: Particle) {
-        if (!renderWindow.renderingState.running || !enabled) {
+        if (!renderWindow.state.running || !enabled) {
             return
         }
         val particleCount = particles.size + particleQueue.size

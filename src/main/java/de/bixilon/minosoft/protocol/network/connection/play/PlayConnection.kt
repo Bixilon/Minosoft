@@ -48,7 +48,7 @@ import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -153,7 +153,7 @@ class PlayConnection(
                         CLI.connection = this
                     }
 
-                    registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
+                    register(CallbackEventListener.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.message.type.position) {
                             ChatTextPositions.SYSTEM -> "[SYSTEM] "
                             ChatTextPositions.HOTBAR -> "[HOTBAR] "
@@ -178,10 +178,10 @@ class PlayConnection(
             var error: Throwable? = null
             val taskWorker = TaskWorker(errorHandler = { _, exception -> if (error == null) error = exception }, criticalErrorHandler = { _, exception -> if (error == null) error = exception })
             taskWorker += {
-                fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
+                fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
                 version.load(profiles.resources, latch)
                 registries.parentRegistries = version.registries
-                fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
+                fire(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             }
 
             taskWorker += {

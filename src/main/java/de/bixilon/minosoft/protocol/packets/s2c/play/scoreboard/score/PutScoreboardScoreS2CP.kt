@@ -39,7 +39,7 @@ class PutScoreboardScoreS2CP(
         val score = ScoreboardScore(entity, objective, connection.scoreboardManager.getTeam(entity), value)
         objective.scores[entity] = score
 
-        connection.fireEvent(ScoreboardScorePutEvent(connection, score))
+        connection.fire(ScoreboardScorePutEvent(connection, score))
     }
 
 

@@ -14,15 +14,13 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
-import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.protocol.PacketErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -148,12 +146,10 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.util.prepareSpawn()
         val playerEntity = connection.player
-        val previousGamemode = playerEntity.tabListItem.gamemode
+        val previousGamemode = playerEntity.additional.gamemode
 
         if (previousGamemode != gamemode) {
-            playerEntity.tabListItem.gamemode = gamemode
-
-            connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previousGamemode, gamemode))
+            playerEntity.additional.gamemode = gamemode
         }
 
         connection.world.hardcore = isHardcore

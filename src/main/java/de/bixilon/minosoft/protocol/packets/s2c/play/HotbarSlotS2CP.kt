@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.container.types.PlayerInventory
-import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -32,7 +31,6 @@ class HotbarSlotS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.player.selectedHotbarSlot = slot
-        connection.fireEvent(SelectHotbarSlotEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

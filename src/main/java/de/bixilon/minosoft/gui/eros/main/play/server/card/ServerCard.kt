@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
@@ -29,20 +29,20 @@ class ServerCard(
     val connections: MutableSet<PlayConnection> = synchronizedSetOf()
     private var pinged = false
 
-    var statusReceiveInvoker: EventInvoker? = null
+    var statusReceiveInvoker: EventListener? = null
         set(value) {
             field = value
-            ping.registerEvent(value ?: return)
+            ping.register(value ?: return)
         }
-    var statusErrorInvoker: EventInvoker? = null
+    var statusErrorInvoker: EventListener? = null
         set(value) {
             field = value
-            ping.registerEvent(value ?: return)
+            ping.register(value ?: return)
         }
-    var pongInvoker: EventInvoker? = null
+    var pongInvoker: EventListener? = null
         set(value) {
             field = value
-            ping.registerEvent(value ?: return)
+            ping.register(value ?: return)
         }
 
     init {
@@ -51,9 +51,9 @@ class ServerCard(
 
 
     fun unregister() {
-        statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregisterEvent(it) }
-        statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregisterEvent(it) }
-        pongInvoker?.let { pongInvoker = null; ping.unregisterEvent(it) }
+        statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregister(it) }
+        statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregister(it) }
+        pongInvoker?.let { pongInvoker = null; ping.unregister(it) }
     }
 
     @Synchronized

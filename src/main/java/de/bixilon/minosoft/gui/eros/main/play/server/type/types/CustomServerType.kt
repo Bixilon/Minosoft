@@ -20,7 +20,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.modding.EventPriorities
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -36,7 +36,7 @@ object CustomServerType : ServerType {
     override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
 
     init {
-        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<ErosProfileSelectEvent>(priority = EventPriorities.LOW) {
+        GlobalEventMaster.register(CallbackEventListener.of<ErosProfileSelectEvent>(priority = EventPriorities.LOW) {
             servers = ErosProfileManager.selected.server.entries
         })
     }

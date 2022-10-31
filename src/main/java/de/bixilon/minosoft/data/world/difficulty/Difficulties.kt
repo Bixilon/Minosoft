@@ -10,20 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.data.world.difficulty
 
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.ExperienceS2CP
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-class ExperienceChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val bar: Float,
-    val level: Int,
-    val total: Int,
-) : PlayConnectionEvent(connection, initiator) {
+enum class Difficulties {
+    PEACEFUL,
+    EASY,
+    NORMAL,
+    HARD,
+    ;
 
-    constructor(connection: PlayConnection, packet: ExperienceS2CP) : this(connection, EventInitiators.SERVER, packet.bar, packet.level, packet.total)
+    companion object : ValuesEnum<Difficulties> {
+        override val VALUES: Array<Difficulties> = values()
+        override val NAME_MAP: Map<String, Difficulties> = EnumUtil.getEnumValues(VALUES)
+    }
 }

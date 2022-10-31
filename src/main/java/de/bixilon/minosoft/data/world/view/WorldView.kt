@@ -34,7 +34,7 @@ class WorldView(
                 return
             }
             field = realValue
-            connection.fireEvent(ViewDistanceChangeEvent(connection, realValue))
+            connection.fire(ViewDistanceChangeEvent(connection, realValue))
         }
 
     var serverSimulationDistance = Int.MAX_VALUE
@@ -49,7 +49,7 @@ class WorldView(
                 return
             }
             field = realValue
-            connection.fireEvent(SimulationDistanceChangeEvent(connection, realValue))
+            connection.fire(SimulationDistanceChangeEvent(connection, realValue))
             particleViewDistance = minOf(realValue, connection.profiles.particle.viewDistance)
         }
 
@@ -60,7 +60,7 @@ class WorldView(
                 return
             }
             field = realValue
-            connection.fireEvent(ParticleViewDistanceChangeEvent(connection, realValue))
+            connection.fire(ParticleViewDistanceChangeEvent(connection, realValue))
         }
 
     @Synchronized

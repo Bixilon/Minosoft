@@ -15,17 +15,19 @@ package de.bixilon.minosoft.data.world.time
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.fractional
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 
+@Deprecated("make values final")
 class WorldTime(
     private val world: World,
 ) {
-    var time = 0L
-    var age = 0L
+    var time by watched(0L)
+    var age by watched(0L)
 
 
     val skyAngle: Float

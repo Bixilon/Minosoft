@@ -80,7 +80,7 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.player.containers[containerId] = container
         connection.player.openedContainer = container
 
-        connection.fireEvent(ContainerOpenEvent(connection, containerId, container))
+        connection.fire(ContainerOpenEvent(connection, containerId, container))
     }
 
     override fun log(reducedLog: Boolean) {

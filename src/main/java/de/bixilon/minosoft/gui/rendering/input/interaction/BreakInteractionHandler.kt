@@ -32,7 +32,7 @@ import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestr
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.modding.event.events.LegacyBlockBreakAckEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.move.SwingArmC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -253,7 +253,7 @@ class BreakInteractionHandler(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
         ))
 
-        connection.registerEvent(CallbackEventInvoker.of<LegacyBlockBreakAckEvent> {
+        connection.register(CallbackEventListener.of<LegacyBlockBreakAckEvent> {
             when (it.actions) {
                 PlayerActionC2SP.Actions.START_DIGGING -> {
                     if (it.successful) {

@@ -53,7 +53,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(ErosProfileSelectEvent(value))
+            GlobalEventMaster.fire(ErosProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): ErosProfile {

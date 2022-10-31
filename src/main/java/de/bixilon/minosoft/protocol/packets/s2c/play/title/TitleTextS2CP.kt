@@ -26,7 +26,7 @@ class TitleTextS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     val text = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(TitleSetEvent(connection, this))
+        connection.fire(TitleSetEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers.win
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -25,7 +24,7 @@ object WinGameEventHandler : GameEventHandler {
 
     override fun handle(data: Float, connection: PlayConnection) {
         val credits = data.toInt() == 0x01
-        connection.fireEvent(WinGameEvent(connection, EventInitiators.SERVER, credits))
+        connection.fire(WinGameEvent(connection, credits))
         if (!credits) {
             connection.sendPacket(ClientActionC2SP(ClientActionC2SP.ClientActions.PERFORM_RESPAWN))
         }

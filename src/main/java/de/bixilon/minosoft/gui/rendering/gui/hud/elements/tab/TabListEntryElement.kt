@@ -17,7 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -40,7 +40,7 @@ class TabListEntryElement(
     guiRenderer: GUIRenderer,
     val tabList: TabListElement,
     uuid: UUID,
-    val item: TabListItem,
+    val item: PlayerAdditional,
     width: Int,
 ) : Element(guiRenderer), Pollable, Comparable<TabListEntryElement> {
 
@@ -56,7 +56,7 @@ class TabListEntryElement(
     private val nameElement = TextElement(guiRenderer, "", background = false, parent = this)
     private lateinit var pingElement: AtlasImageElement
 
-    private var displayName: ChatComponent = item.displayName
+    private var displayName: ChatComponent = item.tabDisplayName
     private var ping = item.ping
     private var gamemode: Gamemodes = item.gamemode
     private var name: String = item.name

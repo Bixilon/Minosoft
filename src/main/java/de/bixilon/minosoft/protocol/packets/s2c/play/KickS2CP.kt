@@ -31,7 +31,7 @@ class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (!connection.network.connected) {
             return // already disconnected, maybe timed out?
         }
-        connection.fireEvent(KickEvent(connection, this))
+        connection.fire(KickEvent(connection, this))
         // got kicked
         connection.network.disconnect()
         connection.state = PlayConnectionStates.KICKED

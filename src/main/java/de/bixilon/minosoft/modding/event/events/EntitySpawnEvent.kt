@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityPlayerS2CP
@@ -21,19 +20,18 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn.*
 
 class EntitySpawnEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val entity: Entity,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: EntityMobSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityMobSpawnS2CP) : this(connection, packet.entity)
 
-    constructor(connection: PlayConnection, packet: GlobalEntitySpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: GlobalEntitySpawnS2CP) : this(connection, packet.entity)
 
-    constructor(connection: PlayConnection, packet: EntityPlayerS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityPlayerS2CP) : this(connection, packet.entity)
 
-    constructor(connection: PlayConnection, packet: EntityExperienceOrbS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityExperienceOrbS2CP) : this(connection, packet.entity)
 
-    constructor(connection: PlayConnection, packet: EntityObjectSpawnS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityObjectSpawnS2CP) : this(connection, packet.entity)
 
-    constructor(connection: PlayConnection, packet: EntityPaintingS2CP) : this(connection, EventInitiators.SERVER, packet.entity)
+    constructor(connection: PlayConnection, packet: EntityPaintingS2CP) : this(connection, packet.entity)
 }

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.debug
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3d
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.input.button.ButtonElement
@@ -24,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
-import de.bixilon.minosoft.modding.event.EventInitiators
 
 class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
     private val connection = guiRenderer.connection
@@ -34,10 +32,9 @@ class DebugMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
         add(SpacerElement(guiRenderer, Vec2i(0, 10)))
         add(ButtonElement(guiRenderer, "Switch to next gamemode") { connection.util.typeChat("/gamemode ${connection.player.gamemode.next().name.lowercase()}") })
         add(ButtonElement(guiRenderer, "Hack to next gamemode") {
-            val previous = connection.player.tabListItem.gamemode
+            val previous = connection.player.additional.gamemode
             val next = previous.next()
-            connection.player.tabListItem.gamemode = next
-            connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previous, next))
+            connection.player.additional.gamemode = next
         })
         add(ButtonElement(guiRenderer, "Toggle collisions") {
             connection.player.hasCollisions = !connection.player.hasCollisions

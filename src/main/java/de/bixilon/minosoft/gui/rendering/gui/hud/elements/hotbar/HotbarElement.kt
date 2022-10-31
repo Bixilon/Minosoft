@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
@@ -35,11 +34,10 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
-import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
-import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import java.lang.Integer.max
 
 class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
@@ -172,13 +170,18 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         prefMaxSize = Vec2i(-1, -1)
 
         val connection = renderWindow.connection
-        connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> { core.experience.apply() })
+        val player = connection.player
 
-        connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { forceApply() })
+        // ToDo: Don't listen 3 times
+        player.experienceCondition::level.observeRendering(this) { core.experience.apply() }
+        player.experienceCondition::total.observeRendering(this) { core.experience.apply() }
+        player.experienceCondition::bar.observeRendering(this) { core.experience.apply() }
 
-        connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> { core.base.apply() })
+        player.additional::gamemode.observeRendering(this) { forceApply() }
 
-        connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
+        player::selectedHotbarSlot.observeRendering(this) { core.base.apply() }
+
+        connection.register(CallbackEventListener.of<ChatMessageReceiveEvent> {
             if (it.message.type.position != ChatTextPositions.HOTBAR) {
                 return@of
             }

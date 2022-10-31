@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class HideTitleS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(TitleHideEvent(connection, this))
+        connection.fire(TitleHideEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

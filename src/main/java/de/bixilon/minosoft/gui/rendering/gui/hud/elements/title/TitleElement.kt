@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.title.*
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.lang.Integer.max
@@ -128,21 +128,21 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     override fun init() {
         val connection = renderWindow.connection
 
-        connection.registerEvent(CallbackEventInvoker.of<TitleResetEvent> {
+        connection.register(CallbackEventListener.of<TitleResetEvent> {
             this.reset()
         })
-        connection.registerEvent(CallbackEventInvoker.of<TitleHideEvent> {
+        connection.register(CallbackEventListener.of<TitleHideEvent> {
             this.hide()
         })
-        connection.registerEvent(CallbackEventInvoker.of<TitleSetEvent> {
+        connection.register(CallbackEventListener.of<TitleSetEvent> {
             this.title.text = it.title
             this.show()
         })
-        connection.registerEvent(CallbackEventInvoker.of<TitleSubtitleSetEvent> {
+        connection.register(CallbackEventListener.of<TitleSubtitleSetEvent> {
             this.subtitle.text = it.subtitle
             // layout.show() // non vanilla behavior
         })
-        connection.registerEvent(CallbackEventInvoker.of<TitleTimesSetEvent> {
+        connection.register(CallbackEventListener.of<TitleTimesSetEvent> {
             this.fadeInTime = it.fadeInTime * ProtocolDefinition.TICK_TIME.toLong()
             this.stayTime = it.stayTime * ProtocolDefinition.TICK_TIME.toLong()
             this.fadeOutTime = it.fadeOutTime * ProtocolDefinition.TICK_TIME.toLong()

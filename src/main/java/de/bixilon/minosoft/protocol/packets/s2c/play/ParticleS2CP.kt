@@ -52,7 +52,10 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(ParticleSpawnEvent(connection, this))) {
+        if (!connection.profiles.particle.types.packet) {
+            return
+        }
+        if (connection.fire(ParticleSpawnEvent(connection, this))) {
             return
         }
     }

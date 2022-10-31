@@ -43,7 +43,7 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(AudioProfileSelectEvent(value))
+            GlobalEventMaster.fire(AudioProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): AudioProfile {

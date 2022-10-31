@@ -42,7 +42,7 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(ParticleProfileSelectEvent(value))
+            GlobalEventMaster.fire(ParticleProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): ParticleProfile {

@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.data.chat.sender
 
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import java.util.*
 
 class UnspawnedMessageSender(
     uuid: UUID,
-    val tab: TabListItem,
+    val tab: PlayerAdditional,
 ) : PlayerMessageSender(uuid, tab.name) {
     override val publicKey: PlayerPublicKey? get() = tab.publicKey
 }

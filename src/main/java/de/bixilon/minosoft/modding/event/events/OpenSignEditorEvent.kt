@@ -13,16 +13,14 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.sign.SignEditorS2CP
 
 class OpenSignEditorEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val blockPosition: Vec3i,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+) : PlayConnectionEvent(connection), CancelableEvent {
 
-    constructor(connection: PlayConnection, packet: SignEditorS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition)
+    constructor(connection: PlayConnection, packet: SignEditorS2CP) : this(connection, packet.blockPosition)
 }

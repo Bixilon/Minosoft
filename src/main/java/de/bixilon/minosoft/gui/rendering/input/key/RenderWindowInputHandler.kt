@@ -36,7 +36,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.EventPriorities
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -94,11 +94,11 @@ class RenderWindowInputHandler(
     fun init() {
         interactionManager.init()
 
-        connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
-        connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
-        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) })
+        connection.register(CallbackEventListener.of<RawCharInputEvent> { charInput(it.char) })
+        connection.register(CallbackEventListener.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
+        connection.register(CallbackEventListener.of<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) })
 
-        connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
+        connection.register(CallbackEventListener.of<MouseMoveEvent> {
             val inputHandler = inputHandler
             currentMousePosition = it.position
             if (inputHandler != null) {

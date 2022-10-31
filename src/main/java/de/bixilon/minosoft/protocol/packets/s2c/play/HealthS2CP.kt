@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
@@ -40,8 +39,6 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.player.healthCondition.hp = hp
         connection.player.healthCondition.saturation = saturation
 
-
-        connection.fireEvent(UpdateHealthEvent(connection, this))
 
         if (hp == 0.0f) {
             if (connection.state == PlayConnectionStates.PLAYING) {

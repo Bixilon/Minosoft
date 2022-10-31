@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.chunk.ChunkUtil
@@ -178,7 +177,7 @@ class Chunk(
         }
         lock.unlock()
         world.onChunkUpdate(chunkPosition, this)
-        connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, this))
+        connection.fire(ChunkDataChangeEvent(connection, chunkPosition, this))
     }
 
     fun getOrPut(sectionHeight: Int, calculateLight: Boolean = true): ChunkSection? {

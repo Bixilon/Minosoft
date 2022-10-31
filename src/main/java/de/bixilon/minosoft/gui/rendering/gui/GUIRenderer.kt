@@ -38,7 +38,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -81,7 +81,7 @@ class GUIRenderer(
         renderWindow.textureManager.staticTextures.animator.use(shader)
         renderWindow.textureManager.dynamicTextures.use(shader)
 
-        connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
+        connection.register(CallbackEventListener.of<ResizeWindowEvent> { recalculateMatrices(it.size) })
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
 
         gui.postInit()

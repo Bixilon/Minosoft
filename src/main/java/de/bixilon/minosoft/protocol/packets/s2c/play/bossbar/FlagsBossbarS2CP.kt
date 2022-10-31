@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarFlagsSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -59,7 +58,7 @@ class FlagsBossbarS2CP(
             return
         }
 
-        connection.fireEvent(BossbarFlagsSetEvent(connection, EventInitiators.SERVER, uuid, bossbar))
+        connection.fire(BossbarFlagsSetEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

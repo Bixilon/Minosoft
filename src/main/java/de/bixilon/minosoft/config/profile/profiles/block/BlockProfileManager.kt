@@ -42,7 +42,7 @@ object BlockProfileManager : ProfileManager<BlockProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(BlockProfileSelectEvent(value))
+            GlobalEventMaster.fire(BlockProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): BlockProfile {

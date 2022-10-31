@@ -13,17 +13,15 @@
 package de.bixilon.minosoft.modding.event.events.title
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleTextS2CP
 
 class TitleSetEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val title: ChatComponent,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: TitleTextS2CP) : this(connection, EventInitiators.SERVER, packet.text)
+    constructor(connection: PlayConnection, packet: TitleTextS2CP) : this(connection, packet.text)
 
 }

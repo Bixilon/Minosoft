@@ -309,7 +309,7 @@ class WorldVisibilityGraph(
     @Synchronized
     private fun calculateGraph() {
         if (!RenderConstants.OCCLUSION_CULLING_ENABLED) {
-            connection.fireEvent(VisibilityGraphChangeEvent(renderWindow))
+            connection.fire(VisibilityGraphChangeEvent(renderWindow))
             return
         }
         connection.world.chunks.lock.acquire()
@@ -351,7 +351,7 @@ class WorldVisibilityGraph(
 
         connection.world.chunks.lock.release()
 
-        connection.fireEvent(VisibilityGraphChangeEvent(renderWindow))
+        connection.fire(VisibilityGraphChangeEvent(renderWindow))
     }
 
     override fun onOcclusionChange() {

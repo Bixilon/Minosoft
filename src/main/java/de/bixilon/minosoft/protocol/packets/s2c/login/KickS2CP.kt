@@ -29,7 +29,7 @@ class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val reason: ChatComponent = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(LoginKickEvent(connection, this))
+        connection.fire(LoginKickEvent(connection, this))
         Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
         connection.network.disconnect()
         connection.state = PlayConnectionStates.ERROR

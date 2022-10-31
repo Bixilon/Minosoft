@@ -10,21 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.TimeS2CP
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+package de.bixilon.minosoft.data.world.difficulty
 
-class TimeChangeEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val age: Long,
-    val time: Long,
-) : PlayConnectionEvent(connection, initiator) {
-
-
-    constructor(connection: PlayConnection, packet: TimeS2CP) : this(connection, EventInitiators.SERVER, packet.age, packet.time % ProtocolDefinition.TICKS_PER_DAY)
-}
+class WorldDifficulty(
+    val difficulty: Difficulties,
+    val locked: Boolean,
+)

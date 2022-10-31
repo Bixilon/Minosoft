@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -221,11 +221,11 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
 
     override fun init() {
         val connection = renderWindow.connection
-        connection.registerEvent(CallbackEventInvoker.of<TabListInfoChangeEvent> {
+        connection.register(CallbackEventListener.of<TabListInfoChangeEvent> {
             header.text = it.header
             footer.text = it.footer
         })
-        connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
+        connection.register(CallbackEventListener.of<TabListEntryChangeEvent> {
             for ((uuid, entry) in it.items) {
                 if (entry == null) {
                     remove(uuid)

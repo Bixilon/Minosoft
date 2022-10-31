@@ -22,5 +22,5 @@ class PlayerEntityMessageSender(
     name: String,
     val player: PlayerEntity,
 ) : PlayerMessageSender(uuid, name) {
-    override val publicKey: PlayerPublicKey? get() = player.tabListItem.publicKey
+    override val publicKey: PlayerPublicKey? get() = player.additional.publicKey
 }

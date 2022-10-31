@@ -120,7 +120,7 @@ object Minosoft {
         BOOT_LATCH.await()
         val end = nanos()
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Minosoft boot sequence finished in ${(end - start).formatNanos()}!" }
-        GlobalEventMaster.fireEvent(FinishInitializingEvent())
+        GlobalEventMaster.fire(FinishInitializingEvent())
         DefaultThreadPool += { ModLoader.load(LoadingPhases.POST_BOOT, CountUpAndDownLatch(0)) }
 
 

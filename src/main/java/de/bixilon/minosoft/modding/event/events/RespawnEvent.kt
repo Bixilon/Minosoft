@@ -12,15 +12,13 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP
 
 class RespawnEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: RespawnS2CP) : this(connection, EventInitiators.SERVER)
+    constructor(connection: PlayConnection, packet: RespawnS2CP) : this(connection)
 }

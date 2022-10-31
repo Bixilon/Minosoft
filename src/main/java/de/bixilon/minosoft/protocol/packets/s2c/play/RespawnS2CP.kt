@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
-import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.GlobalPosition
 import de.bixilon.minosoft.data.entities.data.types.GlobalPositionEntityDataType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.difficulty.Difficulties
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -98,10 +98,10 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         connection.util.prepareSpawn()
-        connection.player.tabListItem.gamemode = gamemode
+        connection.player.additional.gamemode = gamemode
         connection.world.dimension = dimension
         connection.state = PlayConnectionStates.SPAWNING
-        connection.fireEvent(RespawnEvent(connection, this))
+        connection.fire(RespawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

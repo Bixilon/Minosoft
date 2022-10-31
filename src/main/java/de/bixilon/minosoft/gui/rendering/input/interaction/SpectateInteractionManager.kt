@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.kutil.rate.RateLimiter
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.modding.event.events.CameraSetEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SpectateInteractionManager(
@@ -32,12 +32,14 @@ class SpectateInteractionManager(
     private val rateLimiter = RateLimiter()
 
     fun init() {
-        renderWindow.inputHandler.registerKeyCallback(STOP_SPECTATING, KeyBinding(
+        renderWindow.inputHandler.registerKeyCallback(
+            STOP_SPECTATING, KeyBinding(
                 KeyActions.PRESS to setOf(KeyCodes.KEY_LEFT_SHIFT),
-        )) { spectate(null) }
+            )
+        ) { spectate(null) }
 
-        renderWindow.connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> { spectate(null) })
-        renderWindow.connection.registerEvent(CallbackEventInvoker.of<CameraSetEvent> { spectate(it.entity) })
+        connection.player.additional::gamemode.observe(this) { spectate(null) }
+        connection.register(CallbackEventListener.of<CameraSetEvent> { spectate(it.entity) })
     }
 
 

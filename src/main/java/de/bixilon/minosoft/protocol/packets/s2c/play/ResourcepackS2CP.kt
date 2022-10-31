@@ -47,7 +47,7 @@ class ResourcepackS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val event = ResourcePackRequestEvent(connection, this)
-        if (connection.fireEvent(event)) {
+        if (connection.fire(event)) {
             return
         }
         connection.sendPacket(ResourcepackC2SP(hash, ResourcepackC2SP.ResourcePackStates.SUCCESSFULLY)) // ToDo: This fakes it, to not get kicked on most servers

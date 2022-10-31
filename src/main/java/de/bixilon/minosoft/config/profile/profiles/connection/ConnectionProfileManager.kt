@@ -42,7 +42,7 @@ object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(ConnectionProfileSelectEvent(value))
+            GlobalEventMaster.fire(ConnectionProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): ConnectionProfile {

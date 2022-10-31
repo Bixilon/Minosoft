@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.scoreboard.*
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable {
@@ -163,38 +163,38 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
     override fun init() {
         val connection = renderWindow.connection
-        connection.registerEvent(CallbackEventInvoker.of<ObjectivePositionSetEvent> {
+        connection.register(CallbackEventListener.of<ObjectivePositionSetEvent> {
             if (it.position != ScoreboardPositions.SIDEBAR) {
                 return@of
             }
 
             this.objective = it.objective
         })
-        connection.registerEvent(CallbackEventInvoker.of<ScoreboardObjectiveUpdateEvent> {
+        connection.register(CallbackEventListener.of<ScoreboardObjectiveUpdateEvent> {
             if (it.objective != this.objective) {
                 return@of
             }
             this.updateName()
         })
-        connection.registerEvent(CallbackEventInvoker.of<ScoreboardScoreRemoveEvent> {
+        connection.register(CallbackEventListener.of<ScoreboardScoreRemoveEvent> {
             if (it.score.objective != this.objective) {
                 return@of
             }
             this.removeScore(it.score)
         })
-        connection.registerEvent(CallbackEventInvoker.of<ScoreboardScorePutEvent> {
+        connection.register(CallbackEventListener.of<ScoreboardScorePutEvent> {
             if (it.score.objective != this.objective) {
                 return@of
             }
             this.updateScore(it.score)
         })
-        connection.registerEvent(CallbackEventInvoker.of<ScoreTeamChangeEvent> {
+        connection.register(CallbackEventListener.of<ScoreTeamChangeEvent> {
             if (it.score.objective != this.objective) {
                 return@of
             }
             this.updateScore(it.score)
         })
-        connection.registerEvent(CallbackEventInvoker.of<TeamUpdateEvent> {
+        connection.register(CallbackEventListener.of<TeamUpdateEvent> {
             val objective = this.objective ?: return@of
             for ((_, score) in objective.scores) {
                 if (it.team != score.team) {

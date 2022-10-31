@@ -55,7 +55,7 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
 
-        connection.fireEvent(EntityEquipmentChangeEvent(connection, this))
+        connection.fire(EntityEquipmentChangeEvent(connection, this))
         for ((slot, itemStack) in equipment) {
             if (itemStack == null) {
                 entity.equipment.remove(slot)

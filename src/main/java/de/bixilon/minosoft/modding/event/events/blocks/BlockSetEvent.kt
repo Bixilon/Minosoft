@@ -14,7 +14,6 @@ package de.bixilon.minosoft.modding.event.events.blocks
 
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockS2CP
@@ -24,10 +23,9 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.block.BlockS2CP
  */
 class BlockSetEvent(
     connection: PlayConnection,
-    initiator: EventInitiators = EventInitiators.DEFAULT,
     val blockPosition: Vec3i,
     val blockState: BlockState?,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: BlockS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition, packet.blockState)
+    constructor(connection: PlayConnection, packet: BlockS2CP) : this(connection, packet.blockPosition, packet.blockState)
 }

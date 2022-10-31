@@ -42,7 +42,7 @@ object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(ResourcesProfileSelectEvent(value))
+            GlobalEventMaster.fire(ResourcesProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): ResourcesProfile {

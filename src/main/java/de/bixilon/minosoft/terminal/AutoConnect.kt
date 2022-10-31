@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -50,7 +50,7 @@ object AutoConnect {
                 }
             }
         }
-        connection.registerEvent(CallbackEventInvoker.of<ConnectionErrorEvent> { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) })
+        connection.register(CallbackEventListener.of<ConnectionErrorEvent> { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) })
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
         connection.connect()
     }
@@ -66,10 +66,10 @@ object AutoConnect {
         if (version == Versions.AUTOMATIC) {
             Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
             val ping = StatusConnection(address)
-            ping.registerEvent(CallbackEventInvoker.of<ServerStatusReceiveEvent> {
+            ping.register(CallbackEventListener.of<ServerStatusReceiveEvent> {
                 autoConnect(ping.tryAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account)
             })
-            ping.registerEvent(CallbackEventInvoker.of<ConnectionErrorEvent> { exitProcess(1) })
+            ping.register(CallbackEventListener.of<ConnectionErrorEvent> { exitProcess(1) })
             ping.ping()
             return
         }

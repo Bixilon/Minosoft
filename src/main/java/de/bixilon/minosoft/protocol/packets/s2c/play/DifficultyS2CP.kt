@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
+import de.bixilon.minosoft.data.world.difficulty.Difficulties
+import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -36,9 +36,7 @@ class DifficultyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world.difficulty = difficulty
-        connection.world.difficultyLocked = locked
-        connection.fireEvent(DifficultyChangeEvent(connection, this))
+        connection.world.difficulty = WorldDifficulty(difficulty, locked)
     }
 
     override fun log(reducedLog: Boolean) {

@@ -36,7 +36,7 @@ Those assets are not modifiable and checked everytime they get loaded (to disabl
 
 ## Resource packs
 
-They are pretty bugged, expect that things break. They are still supported. To add a resource pack, add this to `resource_packs` in the `resources.json:
+They are pretty bugged, expect that things break. They are still supported. To add a resource pack, add this to `resource_packs` in the `resources.json`:
 
 ```json
 {

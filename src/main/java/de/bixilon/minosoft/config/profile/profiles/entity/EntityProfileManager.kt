@@ -42,7 +42,7 @@ object EntityProfileManager : ProfileManager<EntityProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(EntityProfileSelectEvent(value))
+            GlobalEventMaster.fire(EntityProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): EntityProfile {

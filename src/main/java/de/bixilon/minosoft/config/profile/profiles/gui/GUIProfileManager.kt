@@ -42,7 +42,7 @@ object GUIProfileManager : ProfileManager<GUIProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(GUIProfileSelectEvent(value))
+            GlobalEventMaster.fire(GUIProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): GUIProfile {

@@ -42,7 +42,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
     private val topRight = RowLayout(guiRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
 
 
-    private var gamemode = guiRenderer.renderWindow.connection.player.tabListItem.gamemode
+    private var gamemode = guiRenderer.renderWindow.connection.player.additional.gamemode
 
     private var renderElements = setOf(
         base,
@@ -99,7 +99,7 @@ class HotbarCoreElement(guiRenderer: GUIRenderer) : Element(guiRenderer) {
 
         val size = Vec2i.EMPTY
 
-        gamemode = guiRenderer.renderWindow.connection.player.tabListItem.gamemode
+        gamemode = guiRenderer.renderWindow.connection.player.additional.gamemode
         if (gamemode != Gamemodes.SPECTATOR) {
             size += base.size
         }

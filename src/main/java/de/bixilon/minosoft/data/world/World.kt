@@ -20,7 +20,6 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -35,6 +34,7 @@ import de.bixilon.minosoft.data.world.border.WorldBorder
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.light.SectionLight
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
+import de.bixilon.minosoft.data.world.difficulty.WorldDifficulty
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.data.world.particle.WorldParticleRenderer
 import de.bixilon.minosoft.data.world.positions.BlockPosition
@@ -48,7 +48,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
@@ -70,8 +69,7 @@ class World(
     val entities = WorldEntities()
     var hardcore by watched(false)
     var dimension: DimensionProperties? by watched(null)
-    var difficulty: Difficulties? by watched(null)
-    var difficultyLocked by watched(false)
+    var difficulty: WorldDifficulty? by watched(null)
     var hashedSeed = 0L
     val time = WorldTime(this)
     val weather = WorldWeather()
@@ -181,7 +179,7 @@ class World(
         blockState?.block?.onPlace(connection, blockPosition, blockState)
         chunk[inChunkPosition] = blockState
         chunk.getOrPutBlockEntity(inChunkPosition)
-        connection.fireEvent(
+        connection.fire(
             BlockSetEvent(
                 connection = connection,
                 blockPosition = blockPosition,
@@ -232,10 +230,10 @@ class World(
             val offset = ChunkNeighbours.OFFSETS[index]
             val neighbourPosition = chunkPosition + offset
             neighbour.neighbours.remove(-offset)
-            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbour))
+            connection.fire(ChunkDataChangeEvent(connection, neighbourPosition, neighbour))
         }
         // connection.world.view.updateServerViewDistance(chunkPosition, false)
-        connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
+        connection.fire(ChunkUnloadEvent(connection, chunkPosition, chunk))
         if (chunkPosition.x <= chunkMin.x || chunkPosition.y <= chunkMin.y || chunkPosition.x >= chunkMax.x || chunkPosition.y >= chunkMax.y) {
             recalculateChunkExtreme()
         }
@@ -379,7 +377,7 @@ class World(
 
         chunk.light.recalculate(false)
         chunk.light.propagateFromNeighbours()
-        connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunk.chunkPosition, chunk))
+        connection.fire(ChunkDataChangeEvent(connection, chunk.chunkPosition, chunk))
     }
 
     fun onChunkUpdate(chunkPosition: ChunkPosition, chunk: Chunk, checkNeighbours: Boolean = true) {
@@ -410,7 +408,7 @@ class World(
         }
 
         if (chunk.neighbours.complete) {
-            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
+            connection.fire(ChunkDataChangeEvent(connection, chunkPosition, chunk))
         }
     }
 

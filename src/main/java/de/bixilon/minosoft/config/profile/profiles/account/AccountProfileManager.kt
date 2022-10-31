@@ -42,7 +42,7 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(AccountProfileSelectEvent(value))
+            GlobalEventMaster.fire(AccountProfileSelectEvent(value))
         }
 
     override fun createProfile(name: String, description: String?): AccountProfile {

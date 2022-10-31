@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.local
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+
+@Deprecated("make values final")
 class ExperienceCondition {
-    var level = 0
-    var totalExperience = 0
-    var experienceBarProgress = 0.0f
+    var level by watched(0)
+    var total by watched(0)
+    var bar by watched(0.0f)
 }

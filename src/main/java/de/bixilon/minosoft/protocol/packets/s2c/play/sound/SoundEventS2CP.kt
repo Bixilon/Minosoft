@@ -66,7 +66,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (!connection.profiles.audio.types.packet) {
             return
         }
-        connection.fireEvent(PlaySoundEvent(connection, this))
+        connection.fire(PlaySoundEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

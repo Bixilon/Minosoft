@@ -20,6 +20,7 @@ import de.bixilon.kutil.math.simple.DoubleMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -28,7 +29,8 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferManager
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.input.key.DefaultKeyCombinations
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
-import de.bixilon.minosoft.gui.rendering.modding.events.*
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererManager.Companion.registerDefault
@@ -42,12 +44,13 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.gui.rendering.world.LightMap
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Stopwatch
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -99,18 +102,7 @@ class RenderWindow(
     lateinit var thread: Thread
         private set
 
-    var renderingState = RenderingStates.RUNNING
-        private set(value) {
-            if (field == value) {
-                return
-            }
-            if (field == RenderingStates.PAUSED) {
-                queue.clear()
-            }
-            val previousState = field
-            field = value
-            connection.fireEvent(RenderingStateChangeEvent(connection, previousState, value))
-        }
+    var state by watched(RenderingStates.RUNNING)
 
     init {
         connection::state.observe(this) {
@@ -127,6 +119,16 @@ class RenderWindow(
         }
         profile.performance::slowRendering.profileWatch(this, profile = profile) { this.slowRendering = it }
         renderer.registerDefault(connection.profiles)
+
+        var paused = false
+        this::state.observe(this) {
+            paused = if (paused) {
+                queue.clear()
+                false
+            } else {
+                it == RenderingStates.PAUSED
+            }
+        }
     }
 
     fun init(latch: CountUpAndDownLatch) {
@@ -194,26 +196,22 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Registering callbacks (after ${stopwatch.labTime()})..." }
 
-        connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
-            renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
-        })
+        window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
-        connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
-            renderingState = it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING)
-        })
+        window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
         profile.animations::sprites.profileWatch(this, true, profile = profile) { textureManager.staticTextures.animator.enabled = it }
 
 
         inputHandler.init()
         DefaultKeyCombinations.registerAll(this)
-        connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
-            if (it.state != RenderingStates.RUNNING) {
+        this::state.observe(this) {
+            if (it != RenderingStates.RUNNING) {
                 pause(true)
             }
-        })
+        }
 
 
-        connection.fireEvent(ResizeWindowEvent(this, previousSize = Vec2i(0, 0), size = window.size))
+        connection.events.fire(ResizeWindowEvent(this, previousSize = Vec2i(0, 0), size = window.size))
 
         textureManager.dynamicTextures.activate()
         textureManager.staticTextures.activate()
@@ -229,18 +227,18 @@ class RenderWindow(
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
-        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { renderingState = RenderingStates.QUITTING })
+        connection.events.listen<WindowCloseEvent> { state = RenderingStates.QUITTING }
         while (true) {
-            if (renderingState == RenderingStates.PAUSED) {
+            if (state == RenderingStates.PAUSED) {
                 window.title = "Minosoft | Paused"
             }
 
-            while (renderingState == RenderingStates.PAUSED) {
+            while (state == RenderingStates.PAUSED) {
                 Thread.sleep(20L)
                 window.pollEvents()
             }
 
-            if (connection.wasConnected || !renderingState.active) {
+            if (connection.wasConnected || !state.active) {
                 break
             }
 
@@ -282,11 +280,11 @@ class RenderWindow(
             // handle opengl context tasks, but limit it per frame
             queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
-            if (renderingState == RenderingStates.STOPPED) {
+            if (state == RenderingStates.STOPPED) {
                 window.close()
                 break
             }
-            if (renderingState == RenderingStates.SLOW && slowRendering) {
+            if (state == RenderingStates.SLOW && slowRendering) {
                 Thread.sleep(100L)
             }
 
@@ -301,7 +299,7 @@ class RenderWindow(
         }
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
-        renderingState = RenderingStates.STOPPED
+        state = RenderingStates.STOPPED
         renderSystem.destroy()
         window.destroy()
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }

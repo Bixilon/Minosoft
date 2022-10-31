@@ -63,6 +63,6 @@ class UpdateObjectiveS2CP(
         objective.displayName = displayName
         objective.unit = unit
 
-        connection.fireEvent(ScoreboardObjectiveUpdateEvent(connection, objective))
+        connection.fire(ScoreboardObjectiveUpdateEvent(connection, objective))
     }
 }

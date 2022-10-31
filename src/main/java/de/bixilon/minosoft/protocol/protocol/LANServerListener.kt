@@ -91,7 +91,7 @@ object LANServerListener {
                         if (SERVERS.size > ProtocolDefinition.LAN_SERVER_MAXIMUM_SERVERS) {
                             continue
                         }
-                        if (GlobalEventMaster.fireEvent(LANServerDiscoverEvent(packet.address, server))) {
+                        if (GlobalEventMaster.fire(LANServerDiscoverEvent(packet.address, server))) {
                             continue
                         }
                         Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Discovered LAN servers: ${server.address}" }

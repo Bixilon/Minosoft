@@ -23,9 +23,7 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -48,10 +46,9 @@ class HotbarInteractionHandler(
         if (connection.player.selectedHotbarSlot == slot) {
             return
         }
-        connection.player.selectedHotbarSlot = slot
         interactionManager.use.stopUsingItem()
+        connection.player.selectedHotbarSlot = slot
         slotLimiter += { connection.sendPacket(HotbarSlotC2SP(slot)) }
-        connection.fireEvent(SelectHotbarSlotEvent(connection, EventInitiators.CLIENT, slot))
     }
 
     fun swapItems() {
@@ -83,7 +80,7 @@ class HotbarInteractionHandler(
             )) { selectSlot(i - 1) }
         }
 
-        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent> {
+        connection.register(CallbackEventListener.of<MouseScrollEvent> {
             currentScrollOffset += it.offset.y
 
             val limit = connection.profiles.controls.mouse.scrollSensitivity

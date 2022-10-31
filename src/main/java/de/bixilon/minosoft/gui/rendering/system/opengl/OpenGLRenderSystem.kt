@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureMana
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -131,7 +131,7 @@ class OpenGLRenderSystem(
         this.version = glGetString(GL_VERSION) ?: "UNKNOWN"
         this.gpuType = glGetString(GL_RENDERER) ?: "UNKNOWN"
 
-        renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+        renderWindow.connection.register(CallbackEventListener.of<ResizeWindowEvent> {
             renderWindow.queue += {
                 glViewport(0, 0, it.size.x, it.size.y)
             }

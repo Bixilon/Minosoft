@@ -15,17 +15,15 @@ package de.bixilon.minosoft.modding.event.events
 import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityEquipmentS2CP
 
 class EntityEquipmentChangeEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val entity: Entity,
     val equipment: Map<EquipmentSlots, ItemStack?>,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: EntityEquipmentS2CP) : this(connection, EventInitiators.SERVER, connection.world.entities[packet.entityId]!!, packet.equipment)
+    constructor(connection: PlayConnection, packet: EntityEquipmentS2CP) : this(connection, connection.world.entities[packet.entityId]!!, packet.equipment)
 }

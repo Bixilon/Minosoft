@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 
 class MatrixHandler(
     private val renderWindow: RenderWindow,
@@ -103,7 +103,7 @@ class MatrixHandler(
     }
 
     fun init() {
-        connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+        connection.register(CallbackEventListener.of<ResizeWindowEvent> {
             calculateProjectionMatrix(Vec2(it.size))
             upToDate = false
         })
@@ -140,14 +140,16 @@ class MatrixHandler(
             camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         }
 
-        connection.fireEvent(CameraPositionChangeEvent(renderWindow, eyePosition))
+        connection.fire(CameraPositionChangeEvent(renderWindow, eyePosition))
 
-        connection.fireEvent(CameraMatrixChangeEvent(
-            renderWindow = renderWindow,
-            viewMatrix = viewMatrix,
-            projectionMatrix = projectionMatrix,
-            viewProjectionMatrix = viewProjectionMatrix,
-        ))
+        connection.fire(
+            CameraMatrixChangeEvent(
+                renderWindow = renderWindow,
+                viewMatrix = viewMatrix,
+                projectionMatrix = projectionMatrix,
+                viewProjectionMatrix = viewProjectionMatrix,
+            )
+        )
 
         updateShaders(if (debugView) debugPosition else eyePosition)
         upToDate = true

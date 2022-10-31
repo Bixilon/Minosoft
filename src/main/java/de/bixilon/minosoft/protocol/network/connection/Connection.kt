@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
-import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -35,12 +34,12 @@ abstract class Connection : AbstractEventMaster {
     open var error: Throwable? = null
         set(value) {
             field = value
-            value?.let { events.fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
+            value?.let { events.fire(ConnectionErrorEvent(this, it)) }
         }
 
     open fun sendPacket(packet: C2SPacket) {
         val event = PacketSendEvent(this, packet)
-        if (events.fireEvent(event)) {
+        if (events.fire(event)) {
             return
         }
         network.send(packet)
@@ -52,27 +51,27 @@ abstract class Connection : AbstractEventMaster {
      * @return if the event has been cancelled or not
      */
     @Deprecated("events", ReplaceWith("events.fireEvent(event)"))
-    override fun fireEvent(event: Event): Boolean {
-        return events.fireEvent(event)
+    override fun fire(event: Event): Boolean {
+        return events.fire(event)
     }
 
     @Deprecated("events", ReplaceWith("events.unregisterEvent(invoker)"))
-    override fun unregisterEvent(invoker: EventInvoker?) {
-        events.unregisterEvent(invoker)
+    override fun unregister(invoker: EventListener?) {
+        events.unregister(invoker)
     }
 
     @Deprecated("events", ReplaceWith("events.registerEvent(invoker)"))
-    override fun <T : EventInvoker> registerEvent(invoker: T): T {
-        return events.registerEvent(invoker)
+    override fun <T : EventListener> register(invoker: T): T {
+        return events.register(invoker)
     }
 
     @Deprecated("events", ReplaceWith("events.registerEvents(*invokers)"))
-    override fun registerEvents(vararg invokers: EventInvoker) {
-        events.registerEvents(*invokers)
+    override fun register(vararg invokers: EventListener) {
+        events.register(*invokers)
     }
 
     @Deprecated("events", ReplaceWith("events.iterator()"))
-    override fun iterator(): Iterator<EventInvoker> {
+    override fun iterator(): Iterator<EventListener> {
         return events.iterator()
     }
 

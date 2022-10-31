@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -32,8 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
-import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minosoft
 
@@ -62,18 +62,14 @@ class SkyRenderer(
         skySunMesh.load()
 
 
-        connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
+        connection.register(CallbackEventListener.of<CameraMatrixChangeEvent> {
             val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
             renderWindow.queue += {
                 skyboxShader.use().setMat4(SKY_MATRIX, Mat4(viewProjectionMatrix))
                 setSunMatrix(viewProjectionMatrix)
             }
         })
-        connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
-            if (connection.world.time.time != it.time) {
-                updateSun = true
-            }
-        })
+        connection.world.time::time.observe(this) { updateSun = true }
         sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
     }
 

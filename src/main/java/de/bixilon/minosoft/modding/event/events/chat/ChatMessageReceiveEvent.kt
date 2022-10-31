@@ -13,13 +13,11 @@
 package de.bixilon.minosoft.modding.event.events.chat
 
 import de.bixilon.minosoft.data.chat.message.ChatMessage
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ChatMessageReceiveEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val message: ChatMessage,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent
+) : PlayConnectionEvent(connection), CancelableEvent

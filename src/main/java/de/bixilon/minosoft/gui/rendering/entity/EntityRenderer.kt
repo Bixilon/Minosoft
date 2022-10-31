@@ -35,7 +35,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -59,15 +60,15 @@ class EntityRenderer(
         private set
 
     override fun init(latch: CountUpAndDownLatch) {
-        connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> { event ->
+        connection.register(CallbackEventListener.of<EntitySpawnEvent> { event ->
             DefaultThreadPool += { event.entity.createModel(this)?.let { models[event.entity] = it } }
         })
-        connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
+        connection.register(CallbackEventListener.of<EntityDestroyEvent> {
             DefaultThreadPool += add@{ toUnload += models.remove(it.entity) ?: return@add }
         })
-        connection.registerEvent(CallbackEventInvoker.of<VisibilityGraphChangeEvent> {
+        connection.events.listen<VisibilityGraphChangeEvent> {
             runAsync { it.updateVisibility(visibilityGraph) }
-        })
+        }
 
         profile.hitbox::enabled.profileWatch(this, profile = profile) { this.hitboxes = it }
 

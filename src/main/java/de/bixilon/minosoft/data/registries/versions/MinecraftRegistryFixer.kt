@@ -16,14 +16,14 @@ package de.bixilon.minosoft.data.registries.versions
 import de.bixilon.minosoft.data.entities.block.FlowerPotBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object MinecraftRegistryFixer {
 
 
     fun register(connection: PlayConnection) {
-        connection.registerEvent(CallbackEventInvoker.of<RegistriesLoadEvent> {
+        connection.register(CallbackEventListener.of<RegistriesLoadEvent> {
             if (it.state != RegistriesLoadEvent.States.POST) {
                 return@of
             }

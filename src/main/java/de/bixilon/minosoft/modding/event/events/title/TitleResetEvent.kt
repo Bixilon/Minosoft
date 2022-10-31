@@ -12,16 +12,14 @@
  */
 package de.bixilon.minosoft.modding.event.events.title
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.ResetTitleS2CP
 
 class TitleResetEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: ResetTitleS2CP) : this(connection, EventInitiators.SERVER)
+    constructor(connection: PlayConnection, packet: ResetTitleS2CP) : this(connection)
 
 }

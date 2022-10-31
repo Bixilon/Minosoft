@@ -41,7 +41,7 @@ class StatusS2CP(buffer: InByteBuffer) : StatusS2CPacket {
             connection.serverVersion = version
         }
 
-        connection.fireEvent(ServerStatusReceiveEvent(connection, this))
+        connection.fire(ServerStatusReceiveEvent(connection, this))
 
         val pingQuery = PingQuery()
         connection.pingQuery = pingQuery

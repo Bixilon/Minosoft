@@ -50,14 +50,14 @@ class ConnectionUtil(
 
     fun sendDebugMessage(message: Any) {
         val component = BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { this.setFallbackColor(ChatColors.BLUE) })
-        connection.fireEvent(InternalMessageReceiveEvent(connection, InternalChatMessage(component)))
+        connection.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(component)))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { component }
     }
 
     fun sendInternal(message: Any) {
         val component = ChatComponent.of(message)
         val prefixed = BaseComponent(RenderConstants.INTERNAL_MESSAGES_PREFIX, component)
-        connection.fireEvent(InternalMessageReceiveEvent(connection, InternalChatMessage(if (connection.profiles.gui.chat.internal.hidden) prefixed else component)))
+        connection.fire(InternalMessageReceiveEvent(connection, InternalChatMessage(if (connection.profiles.gui.chat.internal.hidden) prefixed else component)))
         Log.log(LogMessageType.CHAT_IN, LogLevels.INFO) { prefixed }
     }
 
@@ -76,7 +76,7 @@ class ConnectionUtil(
         if (message.length > connection.version.maxChatMessageSize) {
             throw IllegalArgumentException("Message length (${message.length} can not exceed ${connection.version.maxChatMessageSize})")
         }
-        if (connection.fireEvent(ChatMessageSendEvent(connection, message))) {
+        if (connection.fire(ChatMessageSendEvent(connection, message))) {
             return
         }
         Log.log(LogMessageType.CHAT_OUT) { message }
@@ -124,7 +124,7 @@ class ConnectionUtil(
         connection.world.particleRenderer?.removeAllParticles()
         connection.player.openedContainer?.let {
             connection.player.openedContainer = null
-            connection.fireEvent(ContainerCloseEvent(connection, it.id ?: -1, it))
+            connection.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
         }
         connection.player.healthCondition.hp = 20.0f
     }

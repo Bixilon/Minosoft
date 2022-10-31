@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.player.local
 
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 
+@Deprecated("Make values final")
 class HealthCondition {
     var hp by watched(20.0f)
     var hunger by watched(20)

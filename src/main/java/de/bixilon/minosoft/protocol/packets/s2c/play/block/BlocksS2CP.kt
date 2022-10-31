@@ -88,7 +88,7 @@ class BlocksS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         chunk.setBlocks(blocks)
 
-        connection.fireEvent(BlocksSetEvent(connection, this))
+        connection.fire(BlocksSetEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

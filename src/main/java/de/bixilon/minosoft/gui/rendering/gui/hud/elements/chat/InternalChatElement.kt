@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegate
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 
 class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
     private val chatProfile = profile.chat.internal
@@ -47,7 +47,7 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
 
     override fun init() {
-        connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
+        connection.register(CallbackEventListener.of<InternalMessageReceiveEvent> {
             if (profile.chat.internal.hidden) {
                 return@of
             }

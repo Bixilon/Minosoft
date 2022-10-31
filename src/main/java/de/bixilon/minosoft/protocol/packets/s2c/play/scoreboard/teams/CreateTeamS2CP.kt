@@ -125,7 +125,7 @@ class CreateTeamS2CP(
 
         connection.scoreboardManager.updateScoreTeams(team, members)
 
-        connection.fireEvent(TeamCreateEvent(connection, team))
+        connection.fire(TeamCreateEvent(connection, team))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -46,7 +46,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.world.entities.renderer.sign.SignBlockEntityRenderer
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.packets.c2s.play.block.SignTextC2SP
 
 class SignEditorScreen(
@@ -220,7 +220,7 @@ class SignEditorScreen(
         private val BACKGROUND_SIZE = Vec2i(24, 12) * BACKGROUND_SCALE
 
         fun register(guiRenderer: GUIRenderer) {
-            guiRenderer.connection.registerEvent(CallbackEventInvoker.of<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.blockPosition)) })
+            guiRenderer.connection.register(CallbackEventListener.of<OpenSignEditorEvent> { guiRenderer.gui.push(SignEditorScreen(guiRenderer, it.blockPosition)) })
         }
     }
 }

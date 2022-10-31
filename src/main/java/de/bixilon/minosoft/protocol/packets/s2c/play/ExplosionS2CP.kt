@@ -49,7 +49,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         connection.player.velocity = connection.player.velocity + velocity
 
-        connection.fireEvent(ExplosionEvent(connection, this))
+        connection.fire(ExplosionEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

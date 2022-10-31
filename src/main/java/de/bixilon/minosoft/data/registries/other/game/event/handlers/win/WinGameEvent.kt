@@ -13,12 +13,10 @@
 
 package de.bixilon.minosoft.data.registries.other.game.event.handlers.win
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class WinGameEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val showCredits: Boolean,
-) : PlayConnectionEvent(connection, initiator)
+) : PlayConnectionEvent(connection)

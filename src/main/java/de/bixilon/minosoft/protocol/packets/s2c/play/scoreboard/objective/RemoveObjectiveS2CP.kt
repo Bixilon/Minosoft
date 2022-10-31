@@ -38,7 +38,7 @@ class RemoveObjectiveS2CP(
                 continue
             }
             connection.scoreboardManager.positions -= position
-            connection.fireEvent(ObjectivePositionSetEvent(connection, position, null))
+            connection.fire(ObjectivePositionSetEvent(connection, position, null))
         }
     }
 }

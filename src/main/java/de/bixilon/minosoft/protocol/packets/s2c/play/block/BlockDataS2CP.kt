@@ -45,7 +45,7 @@ class BlockDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
         val blockEntity = connection.world.getOrPutBlockEntity(position)
         blockEntity?.updateNBT(nbt) ?: return
-        connection.fireEvent(BlockDataChangeEvent(connection, position, blockEntity))
+        connection.fire(BlockDataChangeEvent(connection, position, blockEntity))
     }
 
     override fun log(reducedLog: Boolean) {

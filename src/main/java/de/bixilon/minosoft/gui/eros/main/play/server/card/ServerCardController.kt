@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.favicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -84,7 +84,7 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
 
         item.server.favicon?.let { faviconFX.image = it }
 
-        item.statusReceiveInvoker = JavaFXEventInvoker.of<ServerStatusReceiveEvent> {
+        item.statusReceiveInvoker = JavaFXEventListener.of<ServerStatusReceiveEvent> {
             if (this.item != item || it.connection.error != null) {
                 // error already occurred, not setting any data
                 return@of
@@ -117,7 +117,7 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
             serverList?.onPingUpdate(item)
         }
 
-        item.statusErrorInvoker = JavaFXEventInvoker.of<ConnectionErrorEvent> {
+        item.statusErrorInvoker = JavaFXEventListener.of<ConnectionErrorEvent> {
             if (this.item != item) {
                 return@of
             }
@@ -127,7 +127,7 @@ class ServerCardController : AbstractCardController<ServerCard>(), WatcherRefere
             serverList?.onPingUpdate(item)
         }
 
-        item.pongInvoker = JavaFXEventInvoker.of<StatusPongReceiveEvent> {
+        item.pongInvoker = JavaFXEventListener.of<StatusPongReceiveEvent> {
             if (this.item != item || it.connection.error != null) {
                 // error already occurred, not setting any data
                 return@of

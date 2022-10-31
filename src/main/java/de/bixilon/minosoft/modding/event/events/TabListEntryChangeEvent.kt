@@ -12,8 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
-import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
@@ -21,9 +20,8 @@ import java.util.*
 
 class TabListEntryChangeEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
-    val items: Map<UUID, TabListItemData?>,
-) : PlayConnectionEvent(connection, initiator) {
+    val items: Map<UUID, AdditionalDataUpdate?>,
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, EventInitiators.SERVER, packet.items)
+    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, packet.items)
 }

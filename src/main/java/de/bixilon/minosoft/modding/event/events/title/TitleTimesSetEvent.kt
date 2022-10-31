@@ -12,19 +12,17 @@
  */
 package de.bixilon.minosoft.modding.event.events.title
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleTimesS2CP
 
 class TitleTimesSetEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val fadeInTime: Int,
     val stayTime: Int,
     val fadeOutTime: Int,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: TitleTimesS2CP) : this(connection, EventInitiators.SERVER, packet.fadeInTime, packet.stayTime, packet.fadeOutTime)
+    constructor(connection: PlayConnection, packet: TitleTimesS2CP) : this(connection, packet.fadeInTime, packet.stayTime, packet.fadeOutTime)
 
 }

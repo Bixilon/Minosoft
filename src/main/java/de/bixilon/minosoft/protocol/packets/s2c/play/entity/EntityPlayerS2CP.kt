@@ -80,7 +80,7 @@ class EntityPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         // connection.tabList.tabListItemsByUUID[entityUUID]?.let { entity.tabListItem = it }
         connection.world.entities.add(entityId, entityUUID, entity)
 
-        connection.fireEvent(EntitySpawnEvent(connection, this))
+        connection.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

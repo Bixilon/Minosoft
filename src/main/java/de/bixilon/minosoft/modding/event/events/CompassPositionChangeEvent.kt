@@ -13,17 +13,15 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.CompassPositionS2CP
 
 class CompassPositionChangeEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val spawnPosition: Vec3i,
     val angle: Float,
-) : PlayConnectionEvent(connection, initiator) {
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: CompassPositionS2CP) : this(connection, EventInitiators.SERVER, packet.spawnPosition, packet.angle)
+    constructor(connection: PlayConnection, packet: CompassPositionS2CP) : this(connection, packet.spawnPosition, packet.angle)
 }

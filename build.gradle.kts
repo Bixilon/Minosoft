@@ -287,9 +287,9 @@ fun DependencyHandler.netty(name: String) {
     implementation("io.netty", "netty-$name", nettyVersion)
 }
 
-fun DependencyHandler.lwjgl(name: String) {
+fun DependencyHandler.lwjgl(name: String? = null) {
     var artifactId = "lwjgl"
-    if (name.isNotEmpty()) {
+    if (name != null) {
         artifactId += "-$name"
     }
     implementation("org.lwjgl", artifactId, lwjglVersion)
@@ -309,7 +309,7 @@ dependencies {
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
     implementation("it.unimi.dsi", "fastutil-core", "8.5.9")
-    implementation("org.xeustechnologies", "jcl-core", version = "2.8")
+    implementation("org.xeustechnologies", "jcl-core", "2.8")
 
 
     // ikonli
@@ -335,7 +335,7 @@ dependencies {
 
     // lwjgl
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-    lwjgl("")
+    lwjgl()
     lwjgl("glfw")
     lwjgl("openal")
     lwjgl("opengl")

@@ -31,7 +31,7 @@ class TabListTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.tabList.header = header
         connection.tabList.footer = footer
 
-        connection.fireEvent(TabListInfoChangeEvent(connection, this))
+        connection.fire(TabListInfoChangeEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

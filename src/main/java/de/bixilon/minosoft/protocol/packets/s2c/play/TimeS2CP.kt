@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -30,8 +29,6 @@ class TimeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.world.time.age = age
         connection.world.time.time = time % ProtocolDefinition.TICKS_PER_DAY
-
-        connection.fireEvent(TimeChangeEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

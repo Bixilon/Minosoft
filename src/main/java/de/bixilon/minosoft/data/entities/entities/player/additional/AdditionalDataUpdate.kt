@@ -11,13 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.data.entities.entities.player.additional
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
+import de.bixilon.minosoft.data.scoreboard.Team
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.PlayerPublicKey
 
-class WindowFocusChangeEvent(
-    renderWindow: RenderWindow,
-    val window: BaseWindow,
-    val focused: Boolean,
-) : RenderEvent(renderWindow)
+data class AdditionalDataUpdate(
+    val name: String? = null,
+    var ping: Int? = null,
+    var gamemode: Gamemodes? = null,
+    var hasDisplayName: Boolean? = null,
+    var displayName: ChatComponent? = null,
+    val properties: PlayerProperties? = null,
+    var team: Team? = null,
+    var removeFromTeam: Boolean = false,
+    var publicKey: PlayerPublicKey? = null,
+)

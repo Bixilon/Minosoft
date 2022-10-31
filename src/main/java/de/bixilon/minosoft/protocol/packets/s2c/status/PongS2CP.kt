@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
@@ -37,9 +36,9 @@ class PongS2CP(buffer: InByteBuffer) : StatusS2CPacket {
         }
         val latency = TimeUtil.nanos - pingQuery.nanos
         connection.network.disconnect()
-        val pongEvent = StatusPongReceiveEvent(connection, EventInitiators.SERVER, pingId, latency)
+        val pongEvent = StatusPongReceiveEvent(connection, pingId, latency)
         connection.lastPongEvent = pongEvent
-        connection.fireEvent(pongEvent)
+        connection.fire(pongEvent)
         connection.state = StatusConnectionStates.PING_DONE
     }
 

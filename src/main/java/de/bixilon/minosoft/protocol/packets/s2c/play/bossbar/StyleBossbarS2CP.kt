@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.data.bossbar.BossbarColors
 import de.bixilon.minosoft.data.bossbar.BossbarNotches
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarStyleSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -48,7 +47,7 @@ class StyleBossbarS2CP(
             return
         }
 
-        connection.fireEvent(BossbarStyleSetEvent(connection, EventInitiators.SERVER, uuid, bossbar))
+        connection.fire(BossbarStyleSetEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {

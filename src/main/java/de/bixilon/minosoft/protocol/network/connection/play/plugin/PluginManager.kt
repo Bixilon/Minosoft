@@ -19,7 +19,7 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
@@ -28,7 +28,7 @@ class PluginManager(val connection: PlayConnection) {
 
 
     init {
-        connection.registerEvent(CallbackEventInvoker.of<PluginMessageReceiveEvent> { handleMessage(it.channel, it.data.readRest()) })
+        connection.register(CallbackEventListener.of<PluginMessageReceiveEvent> { handleMessage(it.channel, it.data.readRest()) })
     }
 
     private fun handleMessage(channel: ResourceLocation, data: ByteArray) {

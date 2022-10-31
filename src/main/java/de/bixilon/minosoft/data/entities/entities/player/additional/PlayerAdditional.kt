@@ -11,8 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.player.tab
+package de.bixilon.minosoft.data.entities.entities.player.additional
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.scoreboard.Team
@@ -20,25 +21,33 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.util.KUtil.nullCompare
 
-data class TabListItem(
-    var name: String,
-    var ping: Int = -1,
-    var gamemode: Gamemodes = Gamemodes.SURVIVAL,
-    var displayName: ChatComponent = ChatComponent.of(name),
-    var properties: PlayerProperties? = null,
-    var team: Team? = null,
-    var publicKey: PlayerPublicKey? = null,
-) : Comparable<TabListItem> {
-    val tabDisplayName: ChatComponent
-        get() = team?.decorateName(displayName) ?: displayName
+class PlayerAdditional(
+    name: String,
+    ping: Int = -1,
+    gamemode: Gamemodes = Gamemodes.SURVIVAL,
+    displayName: ChatComponent? = null,
+    properties: PlayerProperties? = null,
+    team: Team? = null,
+    publicKey: PlayerPublicKey? = null,
+) : Comparable<PlayerAdditional> {
+    var name by watched(name)
+    var ping by watched(ping)
+    var gamemode by watched(gamemode)
+    var displayName by watched(displayName)
+    var properties by watched(properties)
+    var team by watched(team)
+    var publicKey by watched(publicKey)
 
-    fun merge(data: TabListItemData) {
+    val tabDisplayName: ChatComponent
+        get() = displayName?.let { team?.decorateName(it) ?: it } ?: ChatComponent.of(name)
+
+    fun merge(data: AdditionalDataUpdate) {
         genericMerge(data)
         data.gamemode?.let { gamemode = it }
         data.publicKey?.let { publicKey = it }
     }
 
-    fun genericMerge(data: TabListItemData) {
+    fun genericMerge(data: AdditionalDataUpdate) {
         data.name?.let { name = it }
         data.ping?.let { ping = it }
 
@@ -57,7 +66,7 @@ data class TabListItem(
         data.team?.let { team = it }
     }
 
-    override fun compareTo(other: TabListItem): Int {
+    override fun compareTo(other: PlayerAdditional): Int {
         if (this.gamemode != other.gamemode) {
             if (this.gamemode == Gamemodes.SPECTATOR) {
                 return -1

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
 import de.bixilon.minosoft.data.chat.message.SimpleChatMessage
 import de.bixilon.minosoft.data.chat.type.DefaultMessageTypes
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -35,6 +34,6 @@ class HotbarTextS2CP(buffer: PlayInByteBuffer) : TitleS2CP {
     override fun handle(connection: PlayConnection) {
         Log.log(LogMessageType.CHAT_IN) { "[HOTBAR] $text" }
         val message = SimpleChatMessage(text, connection.registries.messageTypeRegistry[DefaultMessageTypes.GAME]!!)
-        connection.fireEvent(ChatMessageReceiveEvent(connection, EventInitiators.SERVER, message))
+        connection.fire(ChatMessageReceiveEvent(connection, message))
     }
 }

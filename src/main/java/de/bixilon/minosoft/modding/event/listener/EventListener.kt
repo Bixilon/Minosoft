@@ -10,14 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.listener
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+import de.bixilon.minosoft.modding.EventPriorities
+import de.bixilon.minosoft.modding.event.events.Event
+import kotlin.reflect.KClass
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
+abstract class EventListener(
+    val ignoreCancelled: Boolean,
+    val priority: EventPriorities,
+) : Comparable<EventListener> {
+    abstract val kEventType: KClass<out Event>?
+    abstract val eventType: Class<out Event>
 
-class WindowIconifyChangeEvent(
-    renderWindow: RenderWindow,
-    val window: BaseWindow,
-    val iconified: Boolean,
-) : RenderEvent(renderWindow)
+    abstract operator fun invoke(event: Event)
+
+    override fun compareTo(other: EventListener): Int {
+        return -(other.priority.ordinal - this.priority.ordinal)
+    }
+}

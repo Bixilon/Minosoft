@@ -38,7 +38,7 @@ import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFav
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.KickEvent
@@ -163,7 +163,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 JavaFXUtil.runLater { updateServer(server, true) }
             }
 
-            connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
+            connection.register(JavaFXEventListener.of<KickEvent> { event ->
                 KickDialog(
                     title = "minosoft:connection.kick.title".toResourceLocation(),
                     header = "minosoft:connection.kick.header".toResourceLocation(),
@@ -171,7 +171,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     reason = event.reason,
                 ).show()
             })
-            connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
+            connection.register(JavaFXEventListener.of<LoginKickEvent> { event ->
                 KickDialog(
                     title = "minosoft:connection.login_kick.title".toResourceLocation(),
                     header = "minosoft:connection.login_kick.header".toResourceLocation(),

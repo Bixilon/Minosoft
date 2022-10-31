@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PluginS2CP
@@ -21,12 +20,11 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 class PluginMessageReceiveEvent(
     connection: PlayConnection,
-    initiator: EventInitiators,
     val channel: ResourceLocation,
     data: PlayInByteBuffer,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+) : PlayConnectionEvent(connection), CancelableEvent {
     val data: PlayInByteBuffer = data
         get() = PlayInByteBuffer(field)
 
-    constructor(connection: PlayConnection, packet: PluginS2CP) : this(connection, EventInitiators.SERVER, packet.channel, packet.data)
+    constructor(connection: PlayConnection, packet: PluginS2CP) : this(connection, packet.channel, packet.data)
 }

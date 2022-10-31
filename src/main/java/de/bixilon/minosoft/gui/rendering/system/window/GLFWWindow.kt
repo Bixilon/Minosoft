@@ -19,11 +19,14 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.gui.rendering.modding.events.*
+import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
@@ -263,20 +266,22 @@ class GLFWWindow(
         glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
     }
 
+    override var focused by watched(false)
+
     private fun onFocusChange(window: Long, focused: Boolean) {
         if (window != this.window) {
             return
         }
-
-        fireGLFWEvent(WindowFocusChangeEvent(renderWindow, window = this, focused = focused))
+        this.focused = focused
     }
+
+    override var iconified by watched(false)
 
     private fun onIconify(window: Long, iconified: Boolean) {
         if (window != this.window) {
             return
         }
-
-        fireGLFWEvent(WindowIconifyChangeEvent(renderWindow, window = this, iconified = iconified))
+        this.iconified = iconified
     }
 
     private fun onClose(window: Long) {
@@ -370,10 +375,10 @@ class GLFWWindow(
     private fun fireGLFWEvent(event: RenderEvent): Boolean {
         // ToDo: It looks like glfwPollEvents is mixing threads. This should not happen.
         if (Rendering.currentContext != event.renderWindow) {
-            event.renderWindow.queue += { eventMaster.fireEvent(event) }
+            event.renderWindow.queue += { eventMaster.fire(event) }
             return false
         }
-        return eventMaster.fireEvent(event)
+        return eventMaster.fire(event)
     }
 
     companion object {

@@ -49,7 +49,7 @@ class ScoreboardManager(private val connection: PlayConnection) {
                     if (!fireEvent) {
                         continue
                     }
-                    connection.fireEvent(ScoreTeamChangeEvent(connection, objective, score, team, remove))
+                    connection.fire(ScoreTeamChangeEvent(connection, objective, score, team, remove))
                 }
             }
             objective.scores.lock.release()

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,26 +14,26 @@
 package de.bixilon.minosoft.modding.event.master
 
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.listener.EventListener
 
-interface AbstractEventMaster : Iterable<EventInvoker> {
+interface AbstractEventMaster : Iterable<EventListener> {
     val size: Int
 
-    fun fireEvent(event: Event): Boolean
+    fun fire(event: Event): Boolean
 
-    fun <T : EventInvoker> registerEvent(invoker: T): T
+    fun <T : EventListener> register(invoker: T): T
 
-    fun registerEvents(vararg invokers: EventInvoker) {
+    fun register(vararg invokers: EventListener) {
         for (invoker in invokers) {
-            registerEvent(invoker)
+            register(invoker)
         }
     }
 
-    fun unregisterEvent(invoker: EventInvoker?) = Unit
+    fun unregister(invoker: EventListener?) = Unit
 
-    fun unregisterEvents(vararg invokers: EventInvoker?) {
+    fun unregister(vararg invokers: EventListener?) {
         for (invoker in invokers) {
-            unregisterEvent(invoker)
+            unregister(invoker)
         }
     }
 }

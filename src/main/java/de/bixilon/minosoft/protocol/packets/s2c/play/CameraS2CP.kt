@@ -27,7 +27,7 @@ class CameraS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
-        connection.fireEvent(CameraSetEvent(connection, entity))
+        connection.fire(CameraSetEvent(connection, entity))
     }
 
     override fun log(reducedLog: Boolean) {

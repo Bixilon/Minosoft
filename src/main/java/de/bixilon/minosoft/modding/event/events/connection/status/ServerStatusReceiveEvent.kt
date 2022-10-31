@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.modding.event.events.connection.status
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.packets.s2c.status.StatusS2CP
 import de.bixilon.minosoft.protocol.status.ServerStatus
@@ -22,9 +21,8 @@ import de.bixilon.minosoft.protocol.status.ServerStatus
  */
 class ServerStatusReceiveEvent(
     connection: StatusConnection,
-    initiator: EventInitiators,
     val status: ServerStatus,
-) : StatusConnectionEvent(connection, initiator) {
+) : StatusConnectionEvent(connection) {
 
-    constructor(connection: StatusConnection, packet: StatusS2CP) : this(connection, EventInitiators.SERVER, packet.status)
+    constructor(connection: StatusConnection, packet: StatusS2CP) : this(connection, packet.status)
 }

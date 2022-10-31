@@ -10,41 +10,57 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
+
+package de.bixilon.minosoft.gui.eros.modding.invoker
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.EventPriorities
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
+import de.bixilon.minosoft.modding.event.listener.EventListener
+import de.bixilon.minosoft.modding.event.listener.OneShotListener
+import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import kotlin.reflect.KClass
 
-class CallbackEventInvoker<E : Event> private constructor(
+/**
+ * Basically a CallbackEventInvoker, bt the callback runs on the java fx ui thread
+ */
+class JavaFXEventListener<E : Event> constructor(
     ignoreCancelled: Boolean,
     private val callback: (E) -> Unit,
+    override val oneShot: Boolean,
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
-    priority: EventPriorities,
-) : EventInvoker(ignoreCancelled, priority), EventInstantFireable {
+) : EventListener(ignoreCancelled, EventPriorities.NORMAL), EventInstantFireable, OneShotListener {
 
     override operator fun invoke(event: Event) {
-        if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
+        if (!this.ignoreCancelled && event is CancelableEvent && event.cancelled) {
             return
         }
-        callback(event.unsafeCast())
+        JavaFXUtil.runLater {
+            callback(event.unsafeCast())
+        }
     }
 
     companion object {
-        @JvmOverloads
-        @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, priority: EventPriorities = EventPriorities.NORMAL, noinline callback: (E) -> Unit): CallbackEventInvoker<E> {
-            return CallbackEventInvoker(
+
+        inline fun <reified E : Event> AbstractEventMaster.javaFX(ignoreCancelled: Boolean = false, instantFire: Boolean = true, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventListener<E> {
+            val listener = of(ignoreCancelled, instantFire, oneShot, callback)
+            register(listener)
+            return listener
+        }
+
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventListener<E> {
+            return JavaFXEventListener(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
+                oneShot = oneShot,
                 kEventType = E::class,
                 eventType = E::class.java,
                 instantFire = instantFire,
-                priority = priority,
             )
         }
     }

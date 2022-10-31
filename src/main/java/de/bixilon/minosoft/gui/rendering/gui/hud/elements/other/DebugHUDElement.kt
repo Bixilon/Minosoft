@@ -24,7 +24,6 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -50,9 +49,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
-import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
-import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
-import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -169,21 +166,19 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
-            connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
-                text = BaseComponent("Gamemode ", it.gamemode)
-            })
+            connection.player.additional::gamemode.observe(this) { text = BaseComponent("Gamemode ", it) }
         }
 
-        layout += TextElement(guiRenderer, BaseComponent("Difficulty ", connection.world.difficulty, ", locked=", connection.world.difficultyLocked)).apply {
-            connection.registerEvent(CallbackEventInvoker.of<DifficultyChangeEvent> {
-                text = BaseComponent("Difficulty ", it.difficulty, ", locked=", it.locked)
-            })
+        layout += TextElement(guiRenderer, BaseComponent("Difficulty ", connection.world.difficulty?.difficulty, ", locked=", connection.world.difficulty?.locked)).apply {
+            connection.world::difficulty.observe(this) { text = BaseComponent("Difficulty ", it?.difficulty, ", locked=", it?.locked) }
         }
 
         layout += TextElement(guiRenderer, "Time TBA").apply {
-            connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
-                text = BaseComponent("Time ", abs(it.time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", it.time >= 0, ", day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY)
-            })
+            fun update(time: Long, age: Long) {
+                text = BaseComponent("Time ", abs(time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", time >= 0, ", day=", abs(age) / ProtocolDefinition.TICKS_PER_DAY)
+            }
+            connection.world.time::time.observe(this) { update(it, connection.world.time.age) }
+            connection.world.time::age.observe(this) { update(connection.world.time.time, it) }
         }
 
         layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
@@ -221,9 +216,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         layout += LineSpacerElement(guiRenderer)
 
         layout += TextElement(guiRenderer, "Display <?>", HorizontalAlignments.RIGHT).apply {
-            guiRenderer.renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+            guiRenderer.renderWindow.connection.events.listen<ResizeWindowEvent> {
                 text = "Display ${it.size.x.format()}x${it.size.y.format()}"
-            })
+            }
         }
 
         renderWindow.renderSystem.apply {
@@ -241,7 +236,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
 
         layout += LineSpacerElement(guiRenderer)
 
-        layout += TextElement(guiRenderer, "${connection.size.format()}x listeners", HorizontalAlignments.RIGHT)
+        layout += TextElement(guiRenderer, "${connection.events.size.format()}x listeners", HorizontalAlignments.RIGHT)
 
         layout += LineSpacerElement(guiRenderer)
 
@@ -294,7 +289,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                         val builder = StringBuilder()
                         if (chunk.blocksInitialized) builder.append('s') // for block states
                         if (chunk.biomesInitialized) builder.append('b') // biomes
-                        if (chunk.neighbours != null) builder.append('n') // neighbours
+                        if (chunk.neighbours.complete) builder.append('n') // neighbours
 
                         value = builder.toString()
                     }

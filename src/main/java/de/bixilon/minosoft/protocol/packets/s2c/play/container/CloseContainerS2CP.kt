@@ -28,7 +28,7 @@ class CloseContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val container = connection.player.containers[containerId] ?: return
         container.onClose()
-        connection.fireEvent(ContainerCloseEvent(connection, containerId, container))
+        connection.fire(ContainerCloseEvent(connection, containerId, container))
     }
 
     override fun log(reducedLog: Boolean) {

@@ -72,7 +72,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         connection.world.entities.add(entityId, entityUUID, entity)
         velocity?.let { entity.velocity = it }
 
-        connection.fireEvent(EntitySpawnEvent(connection, this))
+        connection.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

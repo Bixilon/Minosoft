@@ -21,21 +21,21 @@ import de.bixilon.minosoft.modding.event.EventInstantFire
 import de.bixilon.minosoft.modding.event.events.AsyncEvent
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
-import de.bixilon.minosoft.modding.event.invoker.EventInvoker
-import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
+import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
+import de.bixilon.minosoft.modding.event.listener.EventListener
+import de.bixilon.minosoft.modding.event.listener.OneShotListener
 import java.util.*
 import kotlin.reflect.full.companionObjectInstance
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
     private val parents: MutableSet<AbstractEventMaster> = mutableSetOf(*parents)
     private val parentLock = SimpleLock()
-    private val eventInvokers: PriorityQueue<EventInvoker> = PriorityQueue()
+    private val eventListeners: PriorityQueue<EventListener> = PriorityQueue()
     private val eventInvokerLock = SimpleLock()
 
     override val size: Int
         get() {
-            var size = eventInvokers.size
+            var size = eventListeners.size
             parentLock.acquire()
             for (parent in parents) {
                 size += parent.size
@@ -44,30 +44,30 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
             return size
         }
 
-    private fun runEvent(invoker: EventInvoker, event: Event, toRemove: MutableSet<EventInvoker>) {
+    private fun runEvent(invoker: EventListener, event: Event, toRemove: MutableSet<EventListener>) {
         try {
             invoker(event)
         } catch (exception: Throwable) {
             exception.printStackTrace()
         }
 
-        if (invoker is OneShotInvoker && invoker.oneShot) {
+        if (invoker is OneShotListener && invoker.oneShot) {
             toRemove += invoker
         }
     }
 
 
-    override fun fireEvent(event: Event): Boolean {
+    override fun fire(event: Event): Boolean {
         parentLock.acquire()
         for (parent in parents) {
-            parent.fireEvent(event)
+            parent.fire(event)
         }
         parentLock.release()
 
-        val toRemove: MutableSet<EventInvoker> = mutableSetOf()
+        val toRemove: MutableSet<EventListener> = mutableSetOf()
         eventInvokerLock.acquire()
         val worker = UnconditionalWorker()
-        for (invoker in eventInvokers) {
+        for (invoker in eventListeners) {
             if (!invoker.eventType.isAssignableFrom(event::class.java)) {
                 continue
             }
@@ -83,7 +83,7 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         }
         if (toRemove.isNotEmpty()) {
             eventInvokerLock.lock()
-            this.eventInvokers -= toRemove
+            this.eventListeners -= toRemove
             eventInvokerLock.unlock()
         }
 
@@ -96,18 +96,18 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         return false
     }
 
-    override fun unregisterEvent(invoker: EventInvoker?) {
+    override fun unregister(invoker: EventListener?) {
         eventInvokerLock.lock()
         try {
-            eventInvokers -= invoker ?: return
+            eventListeners -= invoker ?: return
         } finally {
             eventInvokerLock.unlock()
         }
     }
 
-    override fun <T : EventInvoker> registerEvent(invoker: T): T {
+    override fun <T : EventListener> register(invoker: T): T {
         eventInvokerLock.lock()
-        eventInvokers += invoker
+        eventListeners += invoker
         eventInvokerLock.unlock()
 
         if (invoker is EventInstantFireable && invoker.instantFire) {
@@ -121,7 +121,7 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
     }
 
 
-    override fun iterator(): Iterator<EventInvoker> {
-        return eventInvokers.toSynchronizedList().iterator()
+    override fun iterator(): Iterator<EventListener> {
+        return eventListeners.toSynchronizedList().iterator()
     }
 }

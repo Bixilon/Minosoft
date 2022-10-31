@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity
 
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.EntityDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -32,7 +31,7 @@ class EntityDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val entity = connection.world.entities[entityId] ?: return
 
         entity.data.merge(data)
-        connection.fireEvent(EntityDataChangeEvent(connection, EventInitiators.SERVER, entity))
+        connection.fire(EntityDataChangeEvent(connection, entity))
     }
 
 

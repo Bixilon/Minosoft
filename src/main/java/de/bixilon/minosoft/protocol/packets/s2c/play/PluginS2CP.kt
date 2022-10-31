@@ -40,7 +40,7 @@ class PluginS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         get() = PlayInByteBuffer(field)
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(PluginMessageReceiveEvent(connection, this))
+        connection.fire(PluginMessageReceiveEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

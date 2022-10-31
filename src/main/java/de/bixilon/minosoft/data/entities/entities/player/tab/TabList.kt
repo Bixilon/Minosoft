@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.tab
 
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.text.ChatComponent
 import java.util.*
 
 class TabList {
-    val tabListItemsByUUID: MutableMap<UUID, TabListItem> = mutableMapOf()
-    val tabListItemsByName: MutableMap<String, TabListItem> = mutableMapOf()
+    val tabListItemsByUUID: MutableMap<UUID, PlayerAdditional> = mutableMapOf()
+    val tabListItemsByName: MutableMap<String, PlayerAdditional> = mutableMapOf()
     var header = ChatComponent.of("")
     var footer = ChatComponent.of("")
 }

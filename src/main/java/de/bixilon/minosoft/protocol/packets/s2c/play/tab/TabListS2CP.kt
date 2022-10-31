@@ -17,8 +17,8 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItem
-import de.bixilon.minosoft.data.entities.entities.player.tab.TabListItemData
+import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
+import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -32,14 +32,14 @@ import java.util.*
 
 @LoadPacket(threadSafe = false)
 class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val items: MutableMap<UUID, TabListItemData?> = mutableMapOf()
+    val items: MutableMap<UUID, AdditionalDataUpdate?> = mutableMapOf()
 
     init {
         val action = TabListItemActions[buffer.readVarInt()]
         val count: Int = buffer.readVarInt()
         for (i in 0 until count) {
             val uuid: UUID = buffer.readUUID()
-            val data: TabListItemData?
+            val data: AdditionalDataUpdate?
             when (action) {
                 TabListItemActions.ADD -> {
                     val name = buffer.readString()
@@ -54,7 +54,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     }
                     val publicKey = if (buffer.versionId >= ProtocolVersions.V_22W18A) buffer.readOptional { buffer.readPlayerPublicKey() } else null
                     publicKey?.requireSignature(buffer.versionId, uuid)
-                    data = TabListItemData(
+                    data = AdditionalDataUpdate(
                         name = name,
                         properties = properties,
                         gamemode = gamemode,
@@ -65,11 +65,11 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 }
 
                 TabListItemActions.UPDATE_GAMEMODE -> {
-                    data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
+                    data = AdditionalDataUpdate(gamemode = Gamemodes[buffer.readVarInt()])
                 }
 
                 TabListItemActions.UPDATE_LATENCY -> {
-                    data = TabListItemData(ping = buffer.readVarInt())
+                    data = AdditionalDataUpdate(ping = buffer.readVarInt())
                 }
 
                 TabListItemActions.UPDATE_DISPLAY_NAME -> {
@@ -79,7 +79,7 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     } else {
                         null
                     }
-                    data = TabListItemData(
+                    data = AdditionalDataUpdate(
                         hasDisplayName = hasDisplayName,
                         displayName = displayName,
                     )
@@ -110,9 +110,9 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     return@run null
                 }
                 val item = if (entity === connection.player) {
-                    connection.player.tabListItem
+                    connection.player.additional
                 } else {
-                    TabListItem(name = data.name)
+                    PlayerAdditional(name = data.name)
                 }
                 connection.tabList.tabListItemsByUUID[uuid] = item
                 connection.tabList.tabListItemsByName[data.name] = item
@@ -129,18 +129,18 @@ class TabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             } ?: continue
 
             if (entity === connection.player) {
-                entity.tabListItem.genericMerge(data)
+                entity.additional.genericMerge(data)
             } else {
                 tabListItem.merge(data)
                 if (entity == null || entity !is PlayerEntity) {
                     continue
                 }
 
-                entity.tabListItem = tabListItem
+                // ToDO entity.additional = tabListItem
             }
         }
 
-        connection.fireEvent(TabListEntryChangeEvent(connection, this))
+        connection.fire(TabListEntryChangeEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {

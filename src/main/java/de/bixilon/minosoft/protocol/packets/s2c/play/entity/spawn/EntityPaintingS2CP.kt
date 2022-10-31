@@ -61,7 +61,7 @@ class EntityPaintingS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         connection.world.entities.add(entityId, entityUUID, entity)
 
-        connection.fireEvent(EntitySpawnEvent(connection, this))
+        connection.fire(EntitySpawnEvent(connection, this))
     }
 
     override fun log(reducedLog: Boolean) {
