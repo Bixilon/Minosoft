@@ -18,23 +18,39 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
+@OptIn(ExperimentalContracts::class)
 class ModLogger(name: String) {
     private val prefix = TextComponent("[$name] ").color(ChatColors.BLUE)
 
     fun fatal(message: () -> Any?) {
+        contract {
+            callsInPlace(message, InvocationKind.AT_MOST_ONCE)
+        }
         Log.log(LogMessageType.MODS, LogLevels.FATAL, prefix, message)
     }
 
     fun warn(message: () -> Any?) {
+        contract {
+            callsInPlace(message, InvocationKind.AT_MOST_ONCE)
+        }
         Log.log(LogMessageType.MODS, LogLevels.WARN, prefix, message)
     }
 
     fun info(message: () -> Any?) {
+        contract {
+            callsInPlace(message, InvocationKind.AT_MOST_ONCE)
+        }
         Log.log(LogMessageType.MODS, LogLevels.INFO, prefix, message)
     }
 
     fun verbose(message: () -> Any?) {
+        contract {
+            callsInPlace(message, InvocationKind.AT_MOST_ONCE)
+        }
         Log.log(LogMessageType.MODS, LogLevels.VERBOSE, prefix, message)
     }
 }

@@ -27,8 +27,12 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.util.concurrent.LinkedBlockingQueue
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 
+@OptIn(ExperimentalContracts::class)
 object Log {
     private val MINOSOFT_START_TIME = TimeUtil.millis
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
@@ -137,6 +141,7 @@ object Log {
                     ChatComponent.of(message, ignoreJson = true)
                 }
             }
+
             else -> ChatComponent.of(message, ignoreJson = true)
         }
 
@@ -152,6 +157,9 @@ object Log {
 
     @JvmStatic
     fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any?) {
+        contract {
+            callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
+        }
         if (skipLogging(type, level)) {
             return
         }
@@ -160,11 +168,17 @@ object Log {
 
     @JvmStatic
     fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any?) {
+        contract {
+            callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
+        }
         log(type, level = level, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
     @JvmStatic
     fun log(type: LogMessageType, messageBuilder: () -> Any?) {
+        contract {
+            callsInPlace(messageBuilder, InvocationKind.AT_MOST_ONCE)
+        }
         log(type, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 }
