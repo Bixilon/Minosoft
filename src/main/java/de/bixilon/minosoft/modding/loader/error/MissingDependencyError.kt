@@ -11,15 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loader
+package de.bixilon.minosoft.modding.loader.error
 
-enum class PhaseStates {
-    WAITING,
-    LISTING,
-    INJECTING,
-    VALIDATING,
-    CONSTRUCTING,
-    POST_INIT,
-    COMPLETE,
-    ;
-}
+import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
+
+class MissingDependencyError(val mod: MinosoftMod, val missing: Set<String>) : Exception("Mod ${mod.manifest!!.name} is missing dependencies: $missing")

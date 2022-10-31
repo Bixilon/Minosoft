@@ -19,4 +19,5 @@ data class LoadM(
     val before: Set<String> = setOf(),
     val after: Set<String> = setOf(),
     val phases: Set<LoadingPhases>? = null,
-)
+) {
+}

@@ -21,7 +21,14 @@ class ModList(
     val virtual: MutableMap<String, MinosoftMod> = mutableMapOf(),
 ) : Iterable<MinosoftMod> {
 
+    inline operator fun minusAssign(mods: Collection<MinosoftMod>) = remove(mods)
     inline operator fun minusAssign(mod: MinosoftMod) = remove(mod)
+
+    fun remove(mods: Collection<MinosoftMod>) {
+        for (mod in mods) {
+            remove(mod)
+        }
+    }
 
     @Synchronized
     fun remove(mod: MinosoftMod) {

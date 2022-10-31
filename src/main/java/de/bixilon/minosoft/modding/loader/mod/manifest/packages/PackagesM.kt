@@ -13,7 +13,22 @@
 
 package de.bixilon.minosoft.modding.loader.mod.manifest.packages
 
+import de.bixilon.kutil.collections.CollectionUtil.toNull
+import de.bixilon.minosoft.modding.loader.ModList
+import de.bixilon.minosoft.modding.loader.ModLoader
+
 data class PackagesM(
     val depends: Set<String> = setOf(),
     val provides: Set<String> = setOf(),
-)
+) {
+
+    fun getMissingDependencies(mods: ModList): Set<String>? {
+        val missing: MutableSet<String> = mutableSetOf()
+        for (name in this.depends) {
+            if (name !in mods && name !in ModLoader.mods && name !in provides) {
+                missing += name
+            }
+        }
+        return missing.toNull()
+    }
+}

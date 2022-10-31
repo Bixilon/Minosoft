@@ -24,7 +24,6 @@ import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.ModMain
-import de.bixilon.minosoft.modding.loader.mod.manifest.load.LoadM
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -137,7 +136,7 @@ object ModLoader {
         if (!file.isDirectory && !file.name.endsWith(".jar") && !file.name.endsWith(".zip")) {
             return
         }
-        val mod = MinosoftMod(file, phase, CountUpAndDownLatch(3, latch))
+        val mod = MinosoftMod(file, phase, CountUpAndDownLatch(4, latch))
         Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting $file" }
         try {
             if (file.isDirectory) {
@@ -151,6 +150,7 @@ object ModLoader {
                 throw DuplicateModError(name)
             }
             manifest.packages?.provides?.let {
+                // ToDO: possible race condition?
                 for (providedName in it) {
                     val provided = list[providedName] ?: this.mods[providedName]
                     if (provided != null) {
@@ -164,6 +164,14 @@ object ModLoader {
             Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN) { "Error injecting mod: $file" }
             exception.printStackTrace()
             mod.latch.count = 0
+        }
+    }
+
+    fun MinosoftMod.validate(mods: ModList) {
+        val manifest = manifest!!
+        val missingDependencies = manifest.packages?.getMissingDependencies(mods)
+        if (missingDependencies != null) {
+            throw MissingDependencyError(this, missingDependencies)
         }
     }
 
@@ -199,6 +207,24 @@ object ModLoader {
             worker += add@{ inject(list, file, phase, inner) }
         }
         worker.work(inner)
+
+        state = PhaseStates.VALIDATING
+        worker = UnconditionalWorker()
+        val invalid: MutableSet<MinosoftMod> = mutableSetOf()
+        for (mod in list) {
+            worker += {
+                try {
+                    mod.validate(mods)
+                    mod.latch.dec()
+                } catch (error: Throwable) {
+                    mod.latch.count = 0
+                    error.printStackTrace()
+                    invalid += mod
+                }
+            }
+        }
+        worker.work(inner)
+        list -= invalid
 
         state = PhaseStates.CONSTRUCTING
         worker = UnconditionalWorker()
@@ -260,9 +286,5 @@ object ModLoader {
             return
         }
         throw IllegalStateException("$phase has not started yet!")
-    }
-
-    private fun LoadM.checkDependencies(mods: List<MinosoftMod>) {
-
     }
 }
