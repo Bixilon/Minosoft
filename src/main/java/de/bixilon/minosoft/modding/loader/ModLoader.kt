@@ -24,6 +24,7 @@ import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.ModMain
+import de.bixilon.minosoft.modding.loader.mod.logger.ModLogger
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -32,6 +33,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.jar.JarEntry
 import java.util.jar.JarInputStream
+import kotlin.reflect.jvm.javaField
 
 
 object ModLoader {
@@ -123,7 +125,8 @@ object ModLoader {
         if (main !is ModMain) {
             throw NoModMainError(mainClass)
         }
-        main.assets = assetsManager!!
+        ASSETS_MANAGER_FIELD[main] = assetsManager!!
+        LOGGER_FIELD[main] = ModLogger(manifest.name)
         this.main = main
         main.init()
     }
@@ -288,4 +291,8 @@ object ModLoader {
         }
         throw IllegalStateException("$phase has not started yet!")
     }
+
+
+    private val ASSETS_MANAGER_FIELD = ModMain::assets.javaField!!.apply { isAccessible = true }
+    private val LOGGER_FIELD = ModMain::logger.javaField!!.apply { isAccessible = true }
 }

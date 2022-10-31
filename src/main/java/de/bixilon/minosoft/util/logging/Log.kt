@@ -115,7 +115,7 @@ object Log {
     @DoNotCall
     @JvmOverloads
     @JvmStatic
-    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
+    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any?, vararg formatting: Any) {
         if (skipLogging(type, level)) {
             return
         }
@@ -151,7 +151,7 @@ object Log {
     }
 
     @JvmStatic
-    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
+    fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any?) {
         if (skipLogging(type, level)) {
             return
         }
@@ -159,12 +159,12 @@ object Log {
     }
 
     @JvmStatic
-    fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any) {
+    fun log(type: LogMessageType, level: LogLevels, messageBuilder: () -> Any?) {
         log(type, level = level, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
     @JvmStatic
-    fun log(type: LogMessageType, messageBuilder: () -> Any) {
+    fun log(type: LogMessageType, messageBuilder: () -> Any?) {
         log(type, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 }

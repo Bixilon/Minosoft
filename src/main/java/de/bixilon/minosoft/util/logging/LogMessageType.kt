@@ -63,6 +63,14 @@ enum class LogMessageType(
     ),
 
     PROFILES(ChatColors.AQUA),
+
+    MODS(
+        ChatColors.WHITE, mapOf(
+            LogLevels.FATAL to ChatColors.DARK_RED,
+            LogLevels.WARN to ChatColors.RED,
+            LogLevels.VERBOSE to ChatColors.YELLOW,
+        )
+    )
     ;
 
     companion object : ValuesEnum<LogMessageType> {
