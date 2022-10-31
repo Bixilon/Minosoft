@@ -12,12 +12,12 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.handshaking
 
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

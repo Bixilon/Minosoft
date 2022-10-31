@@ -10,8 +10,7 @@
 - jar loading or folder loading with jcl
 - build system (gradle?): easy debugging, executing and hot reloading
 - soft dependency management
-  - depend on other mods by package (with version)
-  - depend on minosoft version (i.e. minosoft is a fake mod)
+  - depend on other mods by name
   - no libraries (aka bundle that with your jar)
 - basic api
   - connect events (by regex, port, hostname, ip, …)

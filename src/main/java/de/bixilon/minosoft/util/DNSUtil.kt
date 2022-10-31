@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.xbill.DNS.Lookup
 import org.xbill.DNS.SRVRecord

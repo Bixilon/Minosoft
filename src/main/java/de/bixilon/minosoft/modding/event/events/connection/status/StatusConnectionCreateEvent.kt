@@ -10,19 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+package de.bixilon.minosoft.modding.event.events.connection.status
 
-data class ServerAddress(
-    val hostname: String,
-    val port: Int = ProtocolDefinition.DEFAULT_PORT,
-) {
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
-    override fun toString(): String {
-        if (port == ProtocolDefinition.DEFAULT_PORT) {
-            return hostname
-        }
-        return "$hostname:$port"
-    }
+class StatusConnectionCreateEvent(
+    connection: StatusConnection,
+) : StatusConnectionEvent(connection) {
 }

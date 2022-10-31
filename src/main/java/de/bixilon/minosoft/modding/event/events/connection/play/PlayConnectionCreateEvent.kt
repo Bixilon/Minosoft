@@ -11,14 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events.connection.status
+package de.bixilon.minosoft.modding.event.events.connection.play
 
-import de.bixilon.minosoft.modding.event.events.connection.ConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class StatusConnectionEvent(
-    override val connection: StatusConnection,
-) : ConnectionEvent(connection) {
-
+class PlayConnectionCreateEvent(
+    connection: PlayConnection,
+) : PlayConnectionEvent(connection) {
 }
-

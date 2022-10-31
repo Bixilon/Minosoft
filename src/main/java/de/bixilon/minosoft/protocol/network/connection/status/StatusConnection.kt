@@ -22,9 +22,12 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionCreateEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.modding.event.listener.EventInstantFireable
 import de.bixilon.minosoft.modding.event.listener.EventListener
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
@@ -32,7 +35,6 @@ import de.bixilon.minosoft.protocol.protocol.PingQuery
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.concurrent.TimeoutException
@@ -111,6 +113,7 @@ class StatusConnection(
                 this.timeoutTask = null
             }
         }
+        GlobalEventMaster.fire(StatusConnectionCreateEvent(this))
     }
 
 
@@ -182,9 +185,11 @@ class StatusConnection(
             invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) -> {
                 error?.let { invoker.invoke(ConnectionErrorEvent(this, it)) }
             }
+
             invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) -> {
                 lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, it)) }
             }
+
             invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
                 lastPongEvent?.let { invoker.invoke(it) }
             }

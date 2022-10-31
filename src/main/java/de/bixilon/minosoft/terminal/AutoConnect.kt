@@ -23,11 +23,11 @@ import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

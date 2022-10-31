@@ -17,6 +17,7 @@ import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -33,7 +34,6 @@ import de.bixilon.minosoft.protocol.network.network.client.pipeline.length.Lengt
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

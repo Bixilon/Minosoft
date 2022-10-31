@@ -51,12 +51,12 @@ class MinosoftMod(
         manifest.load?.after?.let { depends += it }
 
         if (otherManifest.name in depends) {
-            return 1 // load before
+            return 1 // load before with higher priority than rest
         }
 
         manifest.load?.before?.let {
             if (otherManifest.name in it) {
-                return -1
+                return -1 // after
             }
         }
 

@@ -47,10 +47,13 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionCreateEvent
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModLoader
+import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.plugin.DefaultPluginHandler
@@ -61,7 +64,6 @@ import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.cli.CLI
-import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -165,6 +167,8 @@ class PlayConnection(
             }
         }
         ticker.init()
+
+        GlobalEventMaster.fire(PlayConnectionCreateEvent(this))
     }
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
