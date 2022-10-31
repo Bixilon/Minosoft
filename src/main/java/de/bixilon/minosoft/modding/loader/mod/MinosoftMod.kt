@@ -25,7 +25,7 @@ class MinosoftMod(
     val path: File,
     val phase: LoadingPhases,
     val latch: CountUpAndDownLatch,
-) {
+) : Comparable<MinosoftMod> {
     val classLoader = JarClassLoader()
     var manifest: ModManifest? = null
     var assetsManager: AssetsManager? = null
@@ -40,5 +40,26 @@ class MinosoftMod(
         } catch (error: Throwable) {
             error.printStackTrace()
         }
+    }
+
+    override fun compareTo(other: MinosoftMod): Int {
+        val manifest = manifest!!
+        val otherManifest = other.manifest!!
+
+        val depends: MutableSet<String> = mutableSetOf()
+        manifest.packages?.depends?.let { depends += it }
+        manifest.load?.after?.let { depends += it }
+
+        if (otherManifest.name in depends) {
+            return 1 // load before
+        }
+
+        manifest.load?.before?.let {
+            if (otherManifest.name in it) {
+                return -1
+            }
+        }
+
+        return 0
     }
 }

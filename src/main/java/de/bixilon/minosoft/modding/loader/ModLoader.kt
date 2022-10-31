@@ -210,7 +210,6 @@ object ModLoader {
 
         state = PhaseStates.VALIDATING
         worker = UnconditionalWorker()
-        val invalid: MutableSet<MinosoftMod> = mutableSetOf()
         for (mod in list) {
             worker += {
                 try {
@@ -219,16 +218,16 @@ object ModLoader {
                 } catch (error: Throwable) {
                     mod.latch.count = 0
                     error.printStackTrace()
-                    invalid += mod
+                    list -= mod
                 }
             }
         }
         worker.work(inner)
-        list -= invalid
 
+        val sorted = list.sorted().toMutableList()
         state = PhaseStates.CONSTRUCTING
         worker = UnconditionalWorker()
-        for (mod in list) {
+        for (mod in sorted) {
             worker += {
                 try {
                     mod.construct()
@@ -237,6 +236,7 @@ object ModLoader {
                     mod.latch.count = 0
                     error.printStackTrace()
                     list -= mod
+                    sorted -= mod
                 }
             }
         }
@@ -244,7 +244,7 @@ object ModLoader {
 
         state = PhaseStates.POST_INIT
         worker = UnconditionalWorker()
-        for (mod in list) {
+        for (mod in sorted) {
             worker += {
                 try {
                     mod.postInit()
@@ -253,6 +253,7 @@ object ModLoader {
                     mod.latch.count = 0
                     error.printStackTrace()
                     list -= mod
+                    sorted -= mod
                 }
             }
         }
