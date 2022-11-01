@@ -15,6 +15,10 @@ package de.bixilon.minosoft.modding.loader.mod.source
 
 import de.bixilon.minosoft.assets.file.ZipAssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.modding.loader.LoaderUtil
 import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
@@ -25,7 +29,7 @@ import java.util.jar.JarInputStream
 
 class ArchiveSource(
     val jar: File,
-) : ModSource {
+) : ModSource, TextFormattable {
 
     override fun process(mod: MinosoftMod) {
         val stream = JarInputStream(FileInputStream(jar))
@@ -51,5 +55,9 @@ class ArchiveSource(
 
     override fun toString(): String {
         return "jar:$jar"
+    }
+
+    override fun toText(): Any {
+        return BaseComponent("jar:", TextComponent(jar.path).clickEvent(OpenFileClickEvent(jar)))
     }
 }

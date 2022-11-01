@@ -59,12 +59,14 @@ open class TextComponent(
         formatting.add(PreChatFormattingCodes.ITALIC); return this
     }
 
-    fun clickEvent(clickEvent: ClickEvent?) {
+    fun clickEvent(clickEvent: ClickEvent?): TextComponent {
         this.clickEvent = clickEvent
+        return this
     }
 
-    fun hoverEvent(hoverEvent: HoverEvent?) {
+    fun hoverEvent(hoverEvent: HoverEvent?): TextComponent {
         this.hoverEvent = hoverEvent
+        return this
     }
 
     fun color(color: RGBColor): TextComponent {
@@ -154,15 +156,19 @@ open class TextComponent(
                     obfuscatedTimeline.play()
                     text.styleClass.add("obfuscated")
                 }
+
                 PreChatFormattingCodes.BOLD -> {
                     text.style += "-fx-font-weight: bold;"
                 }
+
                 PreChatFormattingCodes.STRIKETHROUGH -> {
                     text.style += "-fx-strikethrough: true;"
                 }
+
                 PreChatFormattingCodes.UNDERLINED -> {
                     text.style += "-fx-underline: true;"
                 }
+
                 PreChatFormattingCodes.ITALIC -> {
                     text.style += "-fx-font-weight: italic;"
                 }

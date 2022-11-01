@@ -61,7 +61,7 @@ class ModsController : EmbeddedJavaFXController<Pane>() {
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
             minosoft("mod.source") to { it.source },
-            minosoft("mod.phase") to { it.phase.name.lowercase() },
+            minosoft("mod.phase") to { it.phase },
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 

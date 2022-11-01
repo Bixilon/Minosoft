@@ -16,6 +16,10 @@ package de.bixilon.minosoft.modding.loader.mod.source
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 import de.bixilon.minosoft.modding.loader.LoaderUtil
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import java.io.File
@@ -24,7 +28,7 @@ import java.io.FileInputStream
 class SplitDirectorySource(
     val classes: File,
     val resources: File,
-) : ModSource {
+) : ModSource, TextFormattable {
     override fun process(mod: MinosoftMod) {
         processResources(mod)
 
@@ -36,7 +40,11 @@ class SplitDirectorySource(
     }
 
     override fun toString(): String {
-        return "directory:$classes|$resources"
+        return "directory:$classes | $resources"
+    }
+
+    override fun toText(): Any {
+        return BaseComponent("directory:", TextComponent(classes.path).clickEvent(OpenFileClickEvent(classes)), " | ", TextComponent(resources.path).clickEvent(OpenFileClickEvent(resources)))
     }
 
     private fun processResources(mod: MinosoftMod) {
