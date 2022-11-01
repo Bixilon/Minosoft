@@ -15,19 +15,21 @@ package de.bixilon.minosoft.data.world.time
 
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.math.simple.DoubleMath.fractional
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 
-@Deprecated("make values final")
 class WorldTime(
     private val world: World,
+    time: Int = 0,
+    val age: Long = 0L,
 ) {
-    var time by watched(0L)
-    var age by watched(0L)
+    val time = abs(time) % ProtocolDefinition.TICKS_PER_DAY
+    val cycling = time >= 0
+
+    val moonPhase = MoonPhases[age % ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
 
 
     val skyAngle: Float

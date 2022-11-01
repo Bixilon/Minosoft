@@ -174,11 +174,9 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         layout += TextElement(guiRenderer, "Time TBA").apply {
-            fun update(time: Long, age: Long) {
-                text = BaseComponent("Time ", abs(time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", time >= 0, ", day=", abs(age) / ProtocolDefinition.TICKS_PER_DAY)
+            connection.world::time.observe(this) {
+                text = BaseComponent("Time ", abs(it.time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", it.cycling, ", day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY)
             }
-            connection.world.time::time.observe(this) { update(it, connection.world.time.age) }
-            connection.world.time::age.observe(this) { update(connection.world.time.time, it) }
         }
 
         layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
