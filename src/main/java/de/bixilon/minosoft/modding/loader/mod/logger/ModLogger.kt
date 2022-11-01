@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.loader.mod.logger
 
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -25,32 +26,43 @@ import kotlin.contracts.contract
 @OptIn(ExperimentalContracts::class)
 class ModLogger(name: String) {
     private val prefix = TextComponent("[$name] ").color(ChatColors.BLUE)
+    var level: LogLevels = LogLevels.INFO
+
+    private inline fun log(level: LogLevels, noinline message: () -> Any?) {
+        contract {
+            callsInPlace(message, InvocationKind.AT_MOST_ONCE)
+        }
+        if (!RunConfiguration.VERBOSE_LOGGING && level > this.level) {
+            return
+        }
+        Log.log(LogMessageType.MODS, level, prefix, message)
+    }
 
     fun fatal(message: () -> Any?) {
         contract {
             callsInPlace(message, InvocationKind.AT_MOST_ONCE)
         }
-        Log.log(LogMessageType.MODS, LogLevels.FATAL, prefix, message)
+        log(LogLevels.FATAL, message)
     }
 
     fun warn(message: () -> Any?) {
         contract {
             callsInPlace(message, InvocationKind.AT_MOST_ONCE)
         }
-        Log.log(LogMessageType.MODS, LogLevels.WARN, prefix, message)
+        log(LogLevels.WARN, message)
     }
 
     fun info(message: () -> Any?) {
         contract {
             callsInPlace(message, InvocationKind.AT_MOST_ONCE)
         }
-        Log.log(LogMessageType.MODS, LogLevels.INFO, prefix, message)
+        log(LogLevels.INFO, message)
     }
 
     fun verbose(message: () -> Any?) {
         contract {
             callsInPlace(message, InvocationKind.AT_MOST_ONCE)
         }
-        Log.log(LogMessageType.MODS, LogLevels.VERBOSE, prefix, message)
+        log(LogLevels.VERBOSE, message)
     }
 }
