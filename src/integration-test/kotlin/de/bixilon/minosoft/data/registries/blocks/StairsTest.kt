@@ -17,7 +17,6 @@ import de.bixilon.kutil.cast.CastUtil
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import org.testng.annotations.Ignore
 import org.testng.annotations.Test
 
 @Test(groups = ["block"])
@@ -31,7 +30,7 @@ class StairsTest : BlockTest<Block>() {
         super.retrieveBlock(MinecraftBlocks.OAK_STAIRS)
     }
 
-    @Ignore
+    @Test(enabled = false)
     fun testLightPropertiesNorth() {
         // ToDo: This test is correct, but failing
         block.withProperties(BlockProperties.FACING to Directions.NORTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, false, true, true, true))

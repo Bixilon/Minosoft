@@ -24,12 +24,10 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.testng.annotations.BeforeGroups
-import org.testng.annotations.BeforeTest
 
 
 internal object MinosoftSIT {
 
-    @BeforeTest
     @BeforeGroups(groups = ["block"])
     fun setup() {
         disableGC()

@@ -46,7 +46,7 @@ object ChunkTestingUtil {
     fun createConnection(): PlayConnection {
         val connection = ObjenesisStd().newInstance(PlayConnection::class.java)
 
-        Connection::class.java.getDeclaredField("eventMaster").setValue(connection, EventMaster())
+        Connection::events.javaField!!.setValue(connection, EventMaster())
         return connection
     }
 
