@@ -28,6 +28,7 @@ import de.bixilon.minosoft.config.profile.profiles.rendering.light.LightC
 import de.bixilon.minosoft.config.profile.profiles.rendering.movement.MovementC
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.OverlayC
 import de.bixilon.minosoft.config.profile.profiles.rendering.performance.PerformanceC
+import de.bixilon.minosoft.config.profile.profiles.rendering.sky.SkyC
 
 /**
  * Profile for general rendering
@@ -54,6 +55,7 @@ class RenderingProfile(
     val movement = MovementC()
     val performance = PerformanceC()
     val overlay = OverlayC()
+    val sky = SkyC()
 
 
     override fun toString(): String {

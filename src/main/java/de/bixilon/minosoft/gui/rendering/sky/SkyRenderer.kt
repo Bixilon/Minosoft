@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer
+import de.bixilon.minosoft.gui.rendering.sky.properties.OverworldSkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -39,7 +40,9 @@ class SkyRenderer(
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
+    var properties by watched(connection.world.dimension?.skyProperties ?: OverworldSkyProperties)
     var matrix by watched(Mat4())
+    val profile = connection.profiles.rendering.sky
     private val box = SkyboxRenderer(this).register()
 
     override fun init(latch: CountUpAndDownLatch) {
@@ -60,6 +63,7 @@ class SkyRenderer(
         connection.events.listen<CameraMatrixChangeEvent> {
             matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
         }
+        connection.world::dimension.observe(this) { properties = it?.skyProperties ?: OverworldSkyProperties }
     }
 
     override fun prePrepareDraw() {

@@ -13,24 +13,34 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.box
 
+import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.sky.properties.DefaultSkyProperties
+import de.bixilon.minosoft.gui.rendering.sky.properties.SkyProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.util.KUtil.minosoft
-import java.util.*
 
 class SkyboxRenderer(
     private val sky: SkyRenderer,
 ) : SkyChildRenderer {
-    private val shader = sky.renderSystem.createShader(minosoft("sky/skybox"))
+    private val textureCache: MutableMap<SkyProperties, AbstractTexture> = mutableMapOf()
+    private val colorShader = sky.renderSystem.createShader(minosoft("sky/skybox"))
     private val mesh = SkyboxMesh(sky.renderWindow)
     private var updateColor = true
     private var updateMatrix = true
     private var color: RGBColor by watched(ChatColors.BLUE)
+
+    private var time: WorldTime = sky.renderWindow.connection.world.time
 
     init {
         sky::matrix.observe(this) { updateMatrix = true }
@@ -38,11 +48,16 @@ class SkyboxRenderer(
     }
 
     override fun onTimeUpdate(time: WorldTime) {
-        color = RGBColor(Random(time.time.toLong()).nextInt())
+        this.time = time
     }
 
     override fun init() {
-        shader.load()
+        colorShader.load()
+
+        for (properties in DefaultSkyProperties) {
+            val textureName = properties.fixedTexture ?: continue
+            textureCache[properties] = sky.renderWindow.textureManager.staticTextures.createTexture(textureName)
+        }
     }
 
     override fun postInit() {
@@ -51,19 +66,82 @@ class SkyboxRenderer(
 
     private fun updateUniforms() {
         if (updateColor) {
-            shader.setRGBColor("uSkyColor", color)
+            colorShader.setRGBColor("uSkyColor", color)
             updateColor = false
         }
         if (updateMatrix) {
-            shader.setMat4("uSkyViewProjectionMatrix", sky.matrix)
+            colorShader.setMat4("uSkyViewProjectionMatrix", sky.matrix)
             updateMatrix = false
         }
     }
 
+    override fun updateAsync() {
+        color = calculateSkyColor() ?: DEFAULT_SKY_COLOR
+    }
+
     override fun draw() {
-        shader.use()
+        colorShader.use()
         updateUniforms()
 
         mesh.draw()
+    }
+
+    private fun calculateBiomeAvg(average: (Biome) -> RGBColor?): RGBColor? {
+        val radius = sky.profile.biomeRadius
+
+        var red = 0
+        var green = 0
+        var blue = 0
+        var count = 0
+
+        val connection = sky.renderWindow.connection
+
+        val cameraPosition = sky.renderWindow.camera.matrixHandler.eyePosition.blockPosition
+        val chunk = connection.world[cameraPosition.chunkPosition] ?: return null
+
+        for (xOffset in -radius..radius) {
+            for (yOffset in -radius..radius) {
+                for (zOffset in -radius..radius) {
+                    val x = cameraPosition.x + xOffset
+                    val y = cameraPosition.y + yOffset
+                    val z = cameraPosition.z + zOffset
+                    val neighbour = chunk.traceChunk(Vec2i(x shr 4, z shr 4))
+                    val biome = neighbour?.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
+
+                    val color = average(biome) ?: continue
+                    red += color.red
+                    green += color.green
+                    blue += color.blue
+                    count++
+                }
+            }
+        }
+
+        if (count == 0) {
+            return null
+        }
+        return RGBColor(red / count, green / count, blue / count)
+    }
+
+    private fun calculateSkyColor(): RGBColor? {
+        val properties = sky.properties
+        if (properties.fixedTexture != null) {
+            // sky is a texture, no color (e.g. end)
+            return null
+        }
+        if (!properties.daylightCycle) {
+            // no daylight cycle (e.g. nether)
+            return calculateBiomeAvg { it.fogColor }
+        }
+
+        if (time.time in 13000..23000) {
+            return ChatColors.DARK_BLUE
+        }
+
+        return ChatColors.BLUE
+    }
+
+    companion object {
+        val DEFAULT_SKY_COLOR = "#ecff89".asColor()
     }
 }

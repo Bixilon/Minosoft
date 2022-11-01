@@ -38,6 +38,7 @@ data class Biome(
     val category: BiomeCategory,
     val precipitation: BiomePrecipitation,
     val skyColor: RGBColor,
+    val fogColor: RGBColor? = null,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
 ) : RegistryItem() {
@@ -73,7 +74,8 @@ data class Biome(
                 category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
                 precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION,
                 skyColor = data["sky_color"]?.toInt()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
-                descriptionId = data["water_fog_color"].nullCast(),
+                fogColor = data["fog_color"]?.toInt()?.asRGBColor(),
+                descriptionId = null,
                 grassColorModifier = data["grass_color_modifier"].nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
                     ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
