@@ -19,6 +19,7 @@ import de.bixilon.minosoft.modding.loader.ModList
 import de.bixilon.minosoft.modding.loader.mod.manifest.ModManifest
 import de.bixilon.minosoft.modding.loader.mod.manifest.load.LoadM
 import de.bixilon.minosoft.modding.loader.mod.manifest.packages.PackagesM
+import de.bixilon.minosoft.modding.loader.mod.source.ArchiveSource
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -26,7 +27,7 @@ import kotlin.test.assertEquals
 internal class MinosoftModTest {
 
     private fun createMod(): MinosoftMod {
-        return MinosoftMod(File("."), LoadingPhases.PRE_BOOT, CountUpAndDownLatch(0))
+        return MinosoftMod(ArchiveSource(File(".")), LoadingPhases.PRE_BOOT, CountUpAndDownLatch(0))
     }
 
     @Test
