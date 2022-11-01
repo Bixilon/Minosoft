@@ -33,7 +33,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minosoft
 
@@ -62,13 +62,13 @@ class SkyRenderer(
         skySunMesh.load()
 
 
-        connection.register(CallbackEventListener.of<CameraMatrixChangeEvent> {
+        connection.events.listen<CameraMatrixChangeEvent> {
             val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
             renderWindow.queue += {
                 skyboxShader.use().setMat4(SKY_MATRIX, Mat4(viewProjectionMatrix))
                 setSunMatrix(viewProjectionMatrix)
             }
-        })
+        }
         connection.world.time::time.observe(this) { updateSun = true }
         sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
     }

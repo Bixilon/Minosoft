@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegate
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
 class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
     private val chatProfile = profile.chat.internal
@@ -47,12 +47,12 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
 
     override fun init() {
-        connection.register(CallbackEventListener.of<InternalMessageReceiveEvent> {
+        connection.events.listen<InternalMessageReceiveEvent> {
             if (profile.chat.internal.hidden) {
-                return@of
+                return@listen
             }
             DefaultThreadPool += { messages += it.message.text }
-        })
+        }
     }
 
     override fun forceSilentApply() {

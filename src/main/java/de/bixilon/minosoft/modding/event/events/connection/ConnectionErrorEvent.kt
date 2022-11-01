@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.event.events.connection
 
 import de.bixilon.minosoft.protocol.network.connection.Connection
 
+@Deprecated("Observables")
 class ConnectionErrorEvent(
     connection: Connection,
     val exception: Throwable,

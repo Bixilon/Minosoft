@@ -36,7 +36,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2dUtil.EMPTY
 import de.bixilon.minosoft.modding.EventPriorities
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -94,24 +94,24 @@ class RenderWindowInputHandler(
     fun init() {
         interactionManager.init()
 
-        connection.register(CallbackEventListener.of<RawCharInputEvent> { charInput(it.char) })
-        connection.register(CallbackEventListener.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
-        connection.register(CallbackEventListener.of<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) })
+        connection.events.listen<RawCharInputEvent> { charInput(it.char) }
+        connection.events.listen<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) }
+        connection.events.listen<MouseScrollEvent>(priority = EventPriorities.LOW) { scroll(it.offset, it) }
 
-        connection.register(CallbackEventListener.of<MouseMoveEvent> {
+        connection.events.listen<MouseMoveEvent> {
             val inputHandler = inputHandler
             currentMousePosition = it.position
             if (inputHandler != null) {
                 if (skipMouseMove) {
                     skipMouseMove = false
-                    return@of
+                    return@listen
                 }
                 inputHandler.onMouseMove(Vec2i(it.position))
-                return@of
+                return@listen
             }
 
             cameraInput.mouseCallback(it.delta)
-        })
+        }
 
         profile::keyBindings.profileWatchMap(this, profile = profile) {
             val keyBinding = keyBindingCallbacks[it.key] ?: return@profileWatchMap

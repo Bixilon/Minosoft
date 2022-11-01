@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.Initializable
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.modding.event.events.bossbar.*
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, HorizontalAlignments.CENTER, 2), LayoutedElement, Initializable {
@@ -92,27 +92,27 @@ class BossbarLayout(guiRenderer: GUIRenderer) : RowLayout(guiRenderer, Horizonta
     )
 
     override fun postInit() {
-        connection.register(CallbackEventListener.of<BossbarAddEvent> {
+        connection.events.listen<BossbarAddEvent> {
             val element = BossbarElement(guiRenderer, it.bossbar, atlas)
             this += element
-            val previous = bossbars.put(it.bossbar, element) ?: return@of
+            val previous = bossbars.put(it.bossbar, element) ?: return@listen
             this -= previous
-        })
+        }
 
-        connection.register(CallbackEventListener.of<BossbarRemoveEvent> {
-            val element = bossbars.remove(it.bossbar) ?: return@of
+        connection.events.listen<BossbarRemoveEvent> {
+            val element = bossbars.remove(it.bossbar) ?: return@listen
             this -= element
-        })
+        }
 
-        connection.register(CallbackEventListener.of<BossbarValueSetEvent> {
+        connection.events.listen<BossbarValueSetEvent> {
             bossbars[it.bossbar]?.apply()
-        })
-        connection.register(CallbackEventListener.of<BossbarTitleSetEvent> {
+        }
+        connection.events.listen<BossbarTitleSetEvent> {
             bossbars[it.bossbar]?.apply()
-        })
-        connection.register(CallbackEventListener.of<BossbarStyleSetEvent> {
+        }
+        connection.events.listen<BossbarStyleSetEvent> {
             bossbars[it.bossbar]?.apply()
-        })
+        }
     }
 
 

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
@@ -50,7 +51,7 @@ object AutoConnect {
                 }
             }
         }
-        connection.register(CallbackEventListener.of<ConnectionErrorEvent> { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) })
+        connection.events.listen<ConnectionErrorEvent> { ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH) }
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
         connection.connect()
     }

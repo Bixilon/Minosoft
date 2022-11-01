@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import java.lang.Integer.max
@@ -181,13 +181,13 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
         player::selectedHotbarSlot.observeRendering(this) { core.base.apply() }
 
-        connection.register(CallbackEventListener.of<ChatMessageReceiveEvent> {
+        connection.events.listen<ChatMessageReceiveEvent> {
             if (it.message.type.position != ChatTextPositions.HOTBAR) {
-                return@of
+                return@listen
             }
             hoverText.text = it.message
             hoverText.show()
-        })
+        }
     }
 
 

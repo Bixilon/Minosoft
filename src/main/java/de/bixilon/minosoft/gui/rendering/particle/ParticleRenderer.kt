@@ -37,7 +37,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
@@ -109,7 +109,7 @@ class ParticleRenderer(
         profile::maxAmount.profileWatch(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
         profile::enabled.profileWatch(this, true, profile) { enabled = it }
 
-        connection.register(CallbackEventListener.of<CameraMatrixChangeEvent> {
+        connection.events.listen<CameraMatrixChangeEvent> {
             renderWindow.queue += {
                 fun applyToShader(shader: Shader) {
                     shader.apply {
@@ -123,7 +123,7 @@ class ParticleRenderer(
                 applyToShader(transparentShader)
                 applyToShader(translucentShader)
             }
-        })
+        }
 
         transparentMesh.load()
         translucentMesh.load()

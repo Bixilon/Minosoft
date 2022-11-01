@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -93,12 +93,12 @@ class AudioPlayer(
         listener.masterVolume = volumeConfig.masterVolume
         volumeConfig::masterVolume.profileWatch(this) { queue += { listener.masterVolume = it } }
 
-        connection.register(CallbackEventListener.of<CameraPositionChangeEvent> {
+        connection.events.listen<CameraPositionChangeEvent> {
             queue += {
                 listener.position = Vec3(it.newPosition)
                 listener.setOrientation(it.renderWindow.camera.matrixHandler.cameraFront, MatrixHandler.CAMERA_UP_VEC3)
             }
-        })
+        }
 
         DefaultAudioBehavior.register(connection)
 

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.inventory.LocalInventoryScreen
 import de.bixilon.minosoft.modding.event.events.container.ContainerCloseEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerOpenEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ContainerGUIManager {
@@ -65,7 +65,7 @@ object ContainerGUIManager {
     fun register(guiRenderer: GUIRenderer) {
         registerLocalContainerEvent(guiRenderer)
 
-        guiRenderer.connection.register(CallbackEventListener.of<ContainerOpenEvent> { open(guiRenderer, it.container) })
-        guiRenderer.connection.register(CallbackEventListener.of<ContainerCloseEvent> { close(guiRenderer, it.container) })
+        guiRenderer.connection.events.listen<ContainerOpenEvent> { open(guiRenderer, it.container) }
+        guiRenderer.connection.events.listen<ContainerCloseEvent> { close(guiRenderer, it.container) }
     }
 }

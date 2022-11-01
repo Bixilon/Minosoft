@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.scoreboard.*
 import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable, AsyncDrawable {
@@ -163,46 +163,46 @@ class ScoreboardSideElement(guiRenderer: GUIRenderer) : Element(guiRenderer), La
 
     override fun init() {
         val connection = renderWindow.connection
-        connection.register(CallbackEventListener.of<ObjectivePositionSetEvent> {
+        connection.events.listen<ObjectivePositionSetEvent> {
             if (it.position != ScoreboardPositions.SIDEBAR) {
-                return@of
+                return@listen
             }
 
             this.objective = it.objective
-        })
-        connection.register(CallbackEventListener.of<ScoreboardObjectiveUpdateEvent> {
+        }
+        connection.events.listen<ScoreboardObjectiveUpdateEvent> {
             if (it.objective != this.objective) {
-                return@of
+                return@listen
             }
             this.updateName()
-        })
-        connection.register(CallbackEventListener.of<ScoreboardScoreRemoveEvent> {
+        }
+        connection.events.listen<ScoreboardScoreRemoveEvent> {
             if (it.score.objective != this.objective) {
-                return@of
+                return@listen
             }
             this.removeScore(it.score)
-        })
-        connection.register(CallbackEventListener.of<ScoreboardScorePutEvent> {
+        }
+        connection.events.listen<ScoreboardScorePutEvent> {
             if (it.score.objective != this.objective) {
-                return@of
+                return@listen
             }
             this.updateScore(it.score)
-        })
-        connection.register(CallbackEventListener.of<ScoreTeamChangeEvent> {
+        }
+        connection.events.listen<ScoreTeamChangeEvent> {
             if (it.score.objective != this.objective) {
-                return@of
+                return@listen
             }
             this.updateScore(it.score)
-        })
-        connection.register(CallbackEventListener.of<TeamUpdateEvent> {
-            val objective = this.objective ?: return@of
+        }
+        connection.events.listen<TeamUpdateEvent> {
+            val objective = this.objective ?: return@listen
             for ((_, score) in objective.scores) {
                 if (it.team != score.team) {
                     continue
                 }
                 this.updateScore(score)
             }
-        })
+        }
     }
 
     override fun drawAsync() {

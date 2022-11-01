@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.gui.GUIFramebuffer
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.WorldFramebuffer
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
 class FramebufferManager(
     private val renderWindow: RenderWindow,
@@ -32,10 +32,10 @@ class FramebufferManager(
         world.init()
         gui.init()
 
-        renderWindow.connection.register(CallbackEventListener.of<ResizeWindowEvent> {
+        renderWindow.connection.events.listen<ResizeWindowEvent> {
             world.framebuffer.resize(it.size)
             gui.framebuffer.resize(it.size)
-        })
+        }
     }
 
     fun postInit() {

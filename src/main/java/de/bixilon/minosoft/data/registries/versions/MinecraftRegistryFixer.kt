@@ -16,20 +16,20 @@ package de.bixilon.minosoft.data.registries.versions
 import de.bixilon.minosoft.data.entities.block.FlowerPotBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.modding.event.events.loading.RegistriesLoadEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object MinecraftRegistryFixer {
 
 
     fun register(connection: PlayConnection) {
-        connection.register(CallbackEventListener.of<RegistriesLoadEvent> {
+        connection.events.listen<RegistriesLoadEvent> {
             if (it.state != RegistriesLoadEvent.States.POST) {
-                return@of
+                return@listen
             }
             // add minecraft:flower_pot as block entity, even if it's not a real entity, but we need it for setting the flower type (in earlier versions of the game)
 
             connection.registries.blockEntityTypeRegistry[FlowerPotBlockEntity] = BlockEntityType(FlowerPotBlockEntity.RESOURCE_LOCATION, setOf(connection.registries.blockRegistry[FlowerPotBlockEntity]!!), FlowerPotBlockEntity)
-        })
+        }
     }
 }

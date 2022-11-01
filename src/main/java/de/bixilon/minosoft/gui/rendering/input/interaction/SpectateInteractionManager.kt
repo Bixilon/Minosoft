@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.modding.event.events.CameraSetEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class SpectateInteractionManager(
@@ -39,7 +39,7 @@ class SpectateInteractionManager(
         ) { spectate(null) }
 
         connection.player.additional::gamemode.observe(this) { spectate(null) }
-        connection.register(CallbackEventListener.of<CameraSetEvent> { spectate(it.entity) })
+        connection.events.listen<CameraSetEvent> { spectate(it.entity) }
     }
 
 

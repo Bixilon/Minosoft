@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.gui.GUIBuilder
 import de.bixilon.minosoft.gui.rendering.gui.gui.LayoutedGUIElement
 import de.bixilon.minosoft.gui.rendering.gui.gui.screen.menu.Menu
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 
 class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
@@ -72,14 +72,14 @@ class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
                     guiRenderer.gui.pop(element)
                 }
             }
-            guiRenderer.connection.register(CallbackEventListener.of<RespawnEvent> {
+            guiRenderer.connection.events.listen<RespawnEvent> {
                 val element = guiRenderer.gui[this]
                 if (element.state == ElementStates.CLOSED) {
-                    return@of
+                    return@listen
                 }
                 element.layout.canPop = true
                 guiRenderer.gui.pop(element)
-            })
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
 
 @Deprecated("ToDo")
@@ -52,12 +52,12 @@ class CreditsScreen(
     companion object {
 
         fun register(guiRenderer: GUIRenderer) {
-            guiRenderer.connection.register(CallbackEventListener.of<WinGameEvent> {
+            guiRenderer.connection.events.listen<WinGameEvent> {
                 if (!it.showCredits) {
-                    return@of
+                    return@listen
                 }
                 guiRenderer.gui.push(CreditsScreen(guiRenderer))
-            })
+            }
         }
     }
 }

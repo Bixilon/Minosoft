@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -80,7 +80,7 @@ class HotbarInteractionHandler(
             )) { selectSlot(i - 1) }
         }
 
-        connection.register(CallbackEventListener.of<MouseScrollEvent> {
+        connection.events.listen<MouseScrollEvent> {
             currentScrollOffset += it.offset.y
 
             val limit = connection.profiles.controls.mouse.scrollSensitivity
@@ -90,7 +90,7 @@ class HotbarInteractionHandler(
             } else if (currentScrollOffset <= -limit && currentScrollOffset < 0) {
                 nextSlot++
             } else {
-                return@of
+                return@listen
             }
             currentScrollOffset = 0.0
             if (nextSlot < 0) {
@@ -100,7 +100,7 @@ class HotbarInteractionHandler(
             }
 
             selectSlot(nextSlot)
-        })
+        }
 
 
         renderWindow.inputHandler.registerKeyCallback("minosoft:swap_items".toResourceLocation(), KeyBinding(

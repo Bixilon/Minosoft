@@ -71,7 +71,7 @@ import de.bixilon.minosoft.modding.event.events.blocks.BlocksSetEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -164,15 +164,15 @@ class WorldRenderer(
         loadWorldShader(this.textShader, false)
 
 
-        connection.register(CallbackEventListener.of<VisibilityGraphChangeEvent> { onFrustumChange() })
+        connection.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
 
-        connection.register(CallbackEventListener.of<RespawnEvent> { unloadWorld() })
-        connection.register(CallbackEventListener.of<ChunkDataChangeEvent> { queueChunk(it.chunkPosition, it.chunk) })
-        connection.register(CallbackEventListener.of<BlockSetEvent> {
+        connection.events.listen<RespawnEvent> { unloadWorld() }
+        connection.events.listen<ChunkDataChangeEvent> { queueChunk(it.chunkPosition, it.chunk) }
+        connection.events.listen<BlockSetEvent> {
             val chunkPosition = it.blockPosition.chunkPosition
             val sectionHeight = it.blockPosition.sectionHeight
-            val chunk = world[chunkPosition] ?: return@of
-            val neighbours = chunk.neighbours.get() ?: return@of
+            val chunk = world[chunkPosition] ?: return@listen
+            val neighbours = chunk.neighbours.get() ?: return@listen
             queueSection(chunkPosition, sectionHeight, chunk, neighbours = neighbours)
             val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
 
@@ -191,20 +191,20 @@ class WorldRenderer(
             } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
                 queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight, chunk = neighbours[6])
             }
-        })
+        }
 
-        connection.register(CallbackEventListener.of<LightChangeEvent> {
+        connection.events.listen<LightChangeEvent> {
             if (it.blockChange) {
                 // change is already covered
-                return@of
+                return@listen
             }
             queueSection(it.chunkPosition, it.sectionHeight, it.chunk)
-        })
+        }
 
-        connection.register(CallbackEventListener.of<BlocksSetEvent> {
-            val chunk = world[it.chunkPosition] ?: return@of // should not happen
+        connection.events.listen<BlocksSetEvent> {
+            val chunk = world[it.chunkPosition] ?: return@listen // should not happen
             if (!chunk.isFullyLoaded) {
-                return@of
+                return@listen
             }
             val sectionHeights: Int2ObjectOpenHashMap<BooleanArray> = Int2ObjectOpenHashMap()
             for (blockPosition in it.blocks.keys) {
@@ -226,7 +226,7 @@ class WorldRenderer(
                     neighbours[5] = true
                 }
             }
-            val neighbours = chunk.neighbours.get() ?: return@of
+            val neighbours = chunk.neighbours.get() ?: return@listen
             for ((sectionHeight, neighbourUpdates) in sectionHeights) {
                 queueSection(it.chunkPosition, sectionHeight, chunk, neighbours = neighbours)
 
@@ -249,9 +249,9 @@ class WorldRenderer(
                     queueSection(Vec2i(it.chunkPosition.x + 1, it.chunkPosition.y), sectionHeight, chunk = neighbours[6])
                 }
             }
-        })
+        }
 
-        connection.register(CallbackEventListener.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
+        connection.events.listen<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) }
         connection::state.observe(this) { if (it == PlayConnectionStates.DISCONNECTED) unloadWorld() }
 
         var paused = false
@@ -264,7 +264,7 @@ class WorldRenderer(
                 paused = false
             }
         }
-        connection.register(CallbackEventListener.of<BlockDataChangeEvent> { queueSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
+        connection.events.listen<BlockDataChangeEvent> { queueSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) }
 
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:clear_chunk_cache".toResourceLocation(),

@@ -35,7 +35,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.format
@@ -60,12 +59,12 @@ class EntityRenderer(
         private set
 
     override fun init(latch: CountUpAndDownLatch) {
-        connection.register(CallbackEventListener.of<EntitySpawnEvent> { event ->
+        connection.events.listen<EntitySpawnEvent> { event ->
             DefaultThreadPool += { event.entity.createModel(this)?.let { models[event.entity] = it } }
-        })
-        connection.register(CallbackEventListener.of<EntityDestroyEvent> {
+        }
+        connection.events.listen<EntityDestroyEvent> {
             DefaultThreadPool += add@{ toUnload += models.remove(it.entity) ?: return@add }
-        })
+        }
         connection.events.listen<VisibilityGraphChangeEvent> {
             runAsync { it.updateVisibility(visibilityGraph) }
         }

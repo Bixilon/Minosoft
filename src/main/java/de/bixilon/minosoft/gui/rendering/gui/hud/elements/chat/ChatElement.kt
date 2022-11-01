@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
@@ -81,22 +81,22 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
 
     override fun init() {
-        connection.register(CallbackEventListener.of<ChatMessageReceiveEvent> {
+        connection.events.listen<ChatMessageReceiveEvent> {
             if (it.message.type.position == ChatTextPositions.HOTBAR) {
-                return@of
+                return@listen
             }
             DefaultThreadPool += { messages += it.message.text }
-        })
-        connection.register(CallbackEventListener.of<InternalMessageReceiveEvent> {
+        }
+        connection.events.listen<InternalMessageReceiveEvent> {
             if (!profile.chat.internal.hidden) {
-                return@of
+                return@listen
             }
             DefaultThreadPool += { messages += it.message.text }
-        })
+        }
 
         renderWindow.inputHandler.registerKeyCallback(
             "minosoft:open_chat".toResourceLocation(), KeyBinding(
-                    KeyActions.PRESS to setOf(KeyCodes.KEY_T),
+                KeyActions.PRESS to setOf(KeyCodes.KEY_T),
             )
         ) { guiRenderer.gui.open(ChatElement) }
 

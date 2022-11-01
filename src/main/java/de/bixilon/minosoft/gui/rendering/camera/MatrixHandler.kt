@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 
 class MatrixHandler(
     private val renderWindow: RenderWindow,
@@ -103,10 +103,10 @@ class MatrixHandler(
     }
 
     fun init() {
-        connection.register(CallbackEventListener.of<ResizeWindowEvent> {
+        connection.events.listen<ResizeWindowEvent> {
             calculateProjectionMatrix(Vec2(it.size))
             upToDate = false
-        })
+        }
         draw() // set initial values
     }
 

@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.AsyncDrawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -223,7 +223,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
         val connection = renderWindow.connection
         connection.tabList::header.observe(this) { header.text = it }
         connection.tabList::footer.observe(this) { footer.text = it }
-        connection.register(CallbackEventListener.of<TabListEntryChangeEvent> {
+        connection.events.listen<TabListEntryChangeEvent> {
             for ((uuid, entry) in it.items) {
                 if (entry == null) {
                     remove(uuid)
@@ -231,7 +231,7 @@ class TabListElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedE
                 }
                 update(uuid)
             }
-        })
+        }
 
         // ToDo: Also check team changes, scoreboard changes, etc
     }

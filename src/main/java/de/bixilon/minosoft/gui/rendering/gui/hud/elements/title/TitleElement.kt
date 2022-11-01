@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.title.*
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.lang.Integer.max
@@ -128,25 +128,25 @@ class TitleElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEle
     override fun init() {
         val connection = renderWindow.connection
 
-        connection.register(CallbackEventListener.of<TitleResetEvent> {
+        connection.events.listen<TitleResetEvent> {
             this.reset()
-        })
-        connection.register(CallbackEventListener.of<TitleHideEvent> {
+        }
+        connection.events.listen<TitleHideEvent> {
             this.hide()
-        })
-        connection.register(CallbackEventListener.of<TitleSetEvent> {
+        }
+        connection.events.listen<TitleSetEvent> {
             this.title.text = it.title
             this.show()
-        })
-        connection.register(CallbackEventListener.of<TitleSubtitleSetEvent> {
+        }
+        connection.events.listen<TitleSubtitleSetEvent> {
             this.subtitle.text = it.subtitle
             // layout.show() // non vanilla behavior
-        })
-        connection.register(CallbackEventListener.of<TitleTimesSetEvent> {
+        }
+        connection.events.listen<TitleTimesSetEvent> {
             this.fadeInTime = it.fadeInTime * ProtocolDefinition.TICK_TIME.toLong()
             this.stayTime = it.stayTime * ProtocolDefinition.TICK_TIME.toLong()
             this.fadeOutTime = it.fadeOutTime * ProtocolDefinition.TICK_TIME.toLong()
-        })
+        }
     }
 
     companion object : HUDBuilder<LayoutedGUIElement<TitleElement>> {
