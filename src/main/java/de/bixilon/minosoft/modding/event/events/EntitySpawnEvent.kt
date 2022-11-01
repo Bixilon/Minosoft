@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.EntityPlayerS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.entity.spawn.*
 
+@Deprecated("Observables")
 class EntitySpawnEvent(
     connection: PlayConnection,
     val entity: Entity,

@@ -16,6 +16,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleTimesS2CP
 
+@Deprecated("Observables")
 class TitleTimesSetEvent(
     connection: PlayConnection,
     val fadeInTime: Int,

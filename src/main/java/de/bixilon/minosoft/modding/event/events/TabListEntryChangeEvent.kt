@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.tab.TabListS2CP
 import java.util.*
 
+@Deprecated("Observables")
 class TabListEntryChangeEvent(
     connection: PlayConnection,
     val items: Map<UUID, AdditionalDataUpdate?>,

@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.chat.message.InternalChatMessage
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
+@Deprecated("message receive event: InternalMessage")
 class InternalMessageReceiveEvent(
     connection: PlayConnection,
     val message: InternalChatMessage,

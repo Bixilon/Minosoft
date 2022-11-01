@@ -17,6 +17,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleTextS2CP
 
+@Deprecated("Observables")
 class TitleSetEvent(
     connection: PlayConnection,
     val title: ChatComponent,

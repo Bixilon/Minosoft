@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.bossbar.Bossbar
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
+@Deprecated("Observables")
 class BossbarStyleSetEvent(
     connection: PlayConnection,
     uuid: UUID,

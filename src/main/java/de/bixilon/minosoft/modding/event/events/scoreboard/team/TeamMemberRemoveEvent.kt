@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardTeamMemberEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
+@Deprecated("Observables")
 class TeamMemberRemoveEvent(
     connection: PlayConnection,
     team: Team,

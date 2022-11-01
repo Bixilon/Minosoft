@@ -18,6 +18,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 
+@Deprecated("Observables")
 abstract class BossbarEvent(
     connection: PlayConnection,
     val uuid: UUID,
