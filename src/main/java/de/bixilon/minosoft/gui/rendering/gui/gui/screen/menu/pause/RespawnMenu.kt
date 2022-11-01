@@ -60,8 +60,8 @@ class RespawnMenu(guiRenderer: GUIRenderer) : Menu(guiRenderer) {
         }
 
         fun register(guiRenderer: GUIRenderer) {
-            guiRenderer.connection.player.healthCondition::hp.observe(this) {
-                if (it <= 0.0f) {
+            guiRenderer.connection.player::healthCondition.observe(this) {
+                if (it.hp <= 0.0f) {
                     guiRenderer.gui.open(this)
                 } else {
                     val element = guiRenderer.gui[this]

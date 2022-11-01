@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.data.entities.entities.player.local.ExperienceCondition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -44,9 +45,11 @@ class ExperienceS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.player.experienceCondition.level = level
-        connection.player.experienceCondition.bar = bar
-        connection.player.experienceCondition.total = total
+        connection.player.experienceCondition = ExperienceCondition(
+            level = level,
+            total = total,
+            bar = bar,
+        )
     }
 
     override fun log(reducedLog: Boolean) {

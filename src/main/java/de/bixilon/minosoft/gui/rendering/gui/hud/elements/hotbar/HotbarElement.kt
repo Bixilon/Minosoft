@@ -172,10 +172,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
         val connection = renderWindow.connection
         val player = connection.player
 
-        // ToDo: Don't listen 3 times
-        player.experienceCondition::level.observeRendering(this) { core.experience.apply() }
-        player.experienceCondition::total.observeRendering(this) { core.experience.apply() }
-        player.experienceCondition::bar.observeRendering(this) { core.experience.apply() }
+        player::experienceCondition.observeRendering(this) { core.experience.apply() }
 
         player.additional::gamemode.observeRendering(this) { forceApply() }
 

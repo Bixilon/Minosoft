@@ -21,6 +21,7 @@ import de.bixilon.minosoft.commands.util.CommandReader
 import de.bixilon.minosoft.data.chat.message.InternalChatMessage
 import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.data.chat.signature.MessageChain
+import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -126,6 +127,6 @@ class ConnectionUtil(
             connection.player.openedContainer = null
             connection.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
         }
-        connection.player.healthCondition.hp = 20.0f
+        connection.player.healthCondition = HealthCondition()
     }
 }

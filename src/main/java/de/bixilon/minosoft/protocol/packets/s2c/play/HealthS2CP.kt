@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.kotlinglm.func.common.clamp
+import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP
@@ -35,9 +36,11 @@ class HealthS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val saturation: Float = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {
-        connection.player.healthCondition.hunger = hunger
-        connection.player.healthCondition.hp = hp
-        connection.player.healthCondition.saturation = saturation
+        connection.player.healthCondition = HealthCondition(
+            hp = hp,
+            hunger = hunger,
+            saturation = saturation,
+        )
 
 
         if (hp == 0.0f) {

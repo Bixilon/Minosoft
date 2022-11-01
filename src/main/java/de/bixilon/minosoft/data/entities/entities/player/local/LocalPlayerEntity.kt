@@ -85,8 +85,8 @@ class LocalPlayerEntity(
     connection: PlayConnection,
     val privateKey: PlayerPrivateKey?,
 ) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username, account.properties) {
-    val healthCondition = HealthCondition()
-    val experienceCondition = ExperienceCondition()
+    var healthCondition by watched(HealthCondition())
+    var experienceCondition by watched(ExperienceCondition())
     var compass by watched(CompassPosition())
 
     val baseAbilities = Abilities()
