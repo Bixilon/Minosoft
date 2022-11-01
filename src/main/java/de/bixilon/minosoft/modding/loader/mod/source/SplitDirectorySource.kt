@@ -29,6 +29,7 @@ class SplitDirectorySource(
     val classes: File,
     val resources: File,
 ) : ModSource, TextFormattable {
+
     override fun process(mod: MinosoftMod) {
         processResources(mod)
 

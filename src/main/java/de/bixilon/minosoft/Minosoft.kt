@@ -81,7 +81,9 @@ object Minosoft {
 
         MINOSOFT_ASSETS_MANAGER.load(CountUpAndDownLatch(0))
 
-        warnMacOS()
+        if (PlatformInfo.OS == OSTypes.MAC) {
+            checkMacOS()
+        }
         MinosoftPropertiesLoader.load()
 
         val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
@@ -142,9 +144,9 @@ object Minosoft {
         }
     }
 
-    private fun warnMacOS() {
-        if (PlatformInfo.OS == OSTypes.MAC && RunConfiguration.X_START_ON_FIRST_THREAD_SET && (!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) {
-            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
+    private fun checkMacOS() {
+        if (RunConfiguration.X_START_ON_FIRST_THREAD_SET && (!RunConfiguration.DISABLE_RENDERING || !RunConfiguration.DISABLE_EROS)) {
+            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using macOS. To use rendering you must not set the jvm argument §9-XstartOnFirstThread§r. Please remove it!" }
             ShutdownManager.shutdown(reason = AbstractShutdownReason.CRASH)
         }
     }
