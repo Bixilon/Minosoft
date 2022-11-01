@@ -18,11 +18,11 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.modding.loader.LoaderUtil.unloadAll
 import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.mod.manifest.ModManifest
+import de.bixilon.minosoft.modding.loader.mod.source.ModSource
 import org.xeustechnologies.jcl.JarClassLoader
-import java.io.File
 
 class MinosoftMod(
-    val path: File,
+    val source: ModSource,
     val phase: LoadingPhases,
     val latch: CountUpAndDownLatch,
 ) : Comparable<MinosoftMod> {

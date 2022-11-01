@@ -50,27 +50,27 @@ abstract class Connection : AbstractEventMaster {
      * @param event The event to fire
      * @return if the event has been cancelled or not
      */
-    @Deprecated("events", ReplaceWith("events.fireEvent(event)"))
+    @Deprecated("events")
     override fun fire(event: Event): Boolean {
         return events.fire(event)
     }
 
-    @Deprecated("events", ReplaceWith("events.unregisterEvent(invoker)"))
+    @Deprecated("events")
     override fun unregister(invoker: EventListener?) {
         events.unregister(invoker)
     }
 
-    @Deprecated("events", ReplaceWith("events.registerEvent(invoker)"))
+    @Deprecated("events")
     override fun <T : EventListener> register(invoker: T): T {
         return events.register(invoker)
     }
 
-    @Deprecated("events", ReplaceWith("events.registerEvents(*invokers)"))
+    @Deprecated("events")
     override fun register(vararg invokers: EventListener) {
         events.register(*invokers)
     }
 
-    @Deprecated("events", ReplaceWith("events.iterator()"))
+    @Deprecated("events")
     override fun iterator(): Iterator<EventListener> {
         return events.iterator()
     }

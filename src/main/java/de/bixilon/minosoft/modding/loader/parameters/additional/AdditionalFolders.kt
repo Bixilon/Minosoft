@@ -11,8 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loader.error
+package de.bixilon.minosoft.modding.loader.parameters.additional
 
-import de.bixilon.minosoft.modding.loader.mod.source.ModSource
+import java.io.File
 
-class NoManifestError(val source: ModSource) : Exception("Mod has no manifest: $source")
+data class AdditionalFolders(
+    val classes: File,
+    val resources: File,
+)

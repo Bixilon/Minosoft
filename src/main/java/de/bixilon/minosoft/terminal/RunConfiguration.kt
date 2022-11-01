@@ -18,6 +18,7 @@ import de.bixilon.kutil.file.FileUtil.slashPath
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import java.io.File
 import java.io.IOException
 
@@ -68,4 +69,6 @@ object RunConfiguration {
     var IGNORE_YGGDRASIL = false
 
     var IGNORE_MODS = false
+
+    var MOD_PARAMETERS = ModParameters()
 }

@@ -32,7 +32,7 @@ class ModList(
 
     @Synchronized
     fun remove(mod: MinosoftMod) {
-        val manifest = mod.manifest ?: throw NoManifestError(mod.path)
+        val manifest = mod.manifest ?: throw NoManifestError(mod.source)
         this.mods -= manifest.name
         this.virtual -= manifest.name
 
@@ -49,7 +49,7 @@ class ModList(
 
     @Synchronized
     fun add(mod: MinosoftMod) {
-        val manifest = mod.manifest ?: throw NoManifestError(mod.path)
+        val manifest = mod.manifest ?: throw NoManifestError(mod.source)
 
         this.mods[manifest.name] = mod
         this.virtual[manifest.name] = mod

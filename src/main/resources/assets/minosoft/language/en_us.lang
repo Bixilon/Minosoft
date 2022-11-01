@@ -214,7 +214,7 @@ minosoft:mod.authors=Author(s)
 minosoft:mod.website=Website
 minosoft:mod.version=Version
 
-minosoft:mod.path=Path
+minosoft:mod.source=Source
 minosoft:mod.phase=Loading phase
 
 minosoft:mod.depends=Depends

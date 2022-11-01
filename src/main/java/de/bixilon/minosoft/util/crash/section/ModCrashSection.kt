@@ -21,7 +21,7 @@ class ModCrashSection(
 ) : ArrayCrashSection<MinosoftMod>("Mods", connections) {
 
     override fun format(entry: MinosoftMod, builder: StringBuilder, intent: String) {
-        builder.appendProperty(intent, "Path", entry.path)
+        builder.appendProperty(intent, "Source", entry.source)
         builder.appendProperty(intent, "Phase", entry.phase.name.lowercase())
         builder.appendProperty(intent, "Name", entry.manifest?.name)
         builder.appendProperty(intent, "Version", entry.manifest?.version)

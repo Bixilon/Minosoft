@@ -15,9 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.mods
 
 import de.bixilon.kutil.collections.CollectionUtil.toNull
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
-import de.bixilon.minosoft.data.text.events.click.OpenFileClickEvent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.modding.loader.ModLoader
@@ -62,7 +60,7 @@ class ModsController : EmbeddedJavaFXController<Pane>() {
 
             TranslatableComponents.GENERAL_EMPTY to { " " },
 
-            minosoft("mod.path") to { TextComponent(it.path, clickEvent = OpenFileClickEvent(it.path)) },
+            minosoft("mod.source") to { it.source },
             minosoft("mod.phase") to { it.phase.name.lowercase() },
 
             TranslatableComponents.GENERAL_EMPTY to { " " },

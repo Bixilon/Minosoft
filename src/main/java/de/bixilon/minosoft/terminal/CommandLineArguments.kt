@@ -16,8 +16,10 @@ package de.bixilon.minosoft.terminal
 import de.bixilon.kutil.shutdown.AbstractShutdownReason
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.modding.loader.parameters.ModParameters
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.impl.Arguments
@@ -86,6 +88,10 @@ object CommandLineArguments {
             addArgument("--ignore_mods")
                 .action(Arguments.storeTrue())
                 .help("Ignores all mods and disable mod loading")
+
+            addArgument("--mod_parameters")
+                .action(Arguments.store())
+                .help("JSON of custom mod parameters")
         }
 
     fun parse(args: Array<String>) {
@@ -130,5 +136,6 @@ object CommandLineArguments {
 
         RunConfiguration.IGNORE_YGGDRASIL = namespace.getBoolean("ignore_yggdrasil")
         RunConfiguration.IGNORE_MODS = namespace.getBoolean("ignore_mods")
+        namespace.getString("mod_parameters")?.let { RunConfiguration.MOD_PARAMETERS = Jackson.MAPPER.readValue(it, ModParameters::class.java) }
     }
 }

@@ -21,6 +21,7 @@ import java.util.jar.JarEntry
 import java.util.jar.JarInputStream
 
 object LoaderUtil {
+    const val MANIFEST = "manifest.json"
     private val contentsField = JarResources::class.java.getDeclaredField("jarEntryContents")
     private val classpathResourcesField = JarClassLoader::class.java.getDeclaredField("classpathResources")
 

@@ -17,28 +17,21 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.minosoft.assets.directory.DirectoryAssetsManager
-import de.bixilon.minosoft.assets.file.ZipAssetsManager
-import de.bixilon.minosoft.assets.util.FileUtil.readJson
-import de.bixilon.minosoft.modding.loader.LoaderUtil.load
 import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.ModMain
 import de.bixilon.minosoft.modding.loader.mod.logger.ModLogger
+import de.bixilon.minosoft.modding.loader.mod.source.ModSource
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
-import java.io.FileInputStream
-import java.util.jar.JarEntry
-import java.util.jar.JarInputStream
 import kotlin.reflect.jvm.javaField
 
 
 object ModLoader {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "mods/"
-    private const val MANIFEST = "manifest.json"
     private var latch: CountUpAndDownLatch? = null
     val mods = ModList()
     var currentPhase by watched(LoadingPhases.PRE_BOOT)
@@ -67,59 +60,8 @@ object ModLoader {
     }
 
 
-    private fun MinosoftMod.scanDirectory(base: File, file: File) {
-        if (file.isFile) {
-            this.classLoader.load(file.path.removePrefix(base.path).removePrefix("/"), FileInputStream(file).readAllBytes())
-        }
-        if (file.isDirectory) {
-            for (sub in file.listFiles()!!) {
-                scanDirectory(base, sub)
-            }
-        }
-    }
-
-    private fun MinosoftMod.processDirectory(file: File) {
-        val files = file.listFiles()!!
-        val assets = DirectoryAssetsManager(file.path)
-        assets.load(CountUpAndDownLatch(0))
-
-        for (sub in files) {
-            if (sub.isDirectory && sub.name == "assets") {
-                continue
-            }
-            if (sub.isFile && sub.name == MANIFEST) {
-                manifest = FileInputStream(sub).readJson()
-            }
-            scanDirectory(file, sub)
-        }
-
-        this.assetsManager = assets
-    }
-
-    private fun MinosoftMod.processJar(file: File) {
-        val stream = JarInputStream(FileInputStream(file))
-        val assets = ZipAssetsManager(stream)
-        while (true) {
-            val entry = stream.nextEntry ?: break
-            if (entry.isDirectory) {
-                continue
-            }
-
-            if (entry.name.endsWith(".class") && entry is JarEntry) {
-                this.classLoader.load(entry, stream)
-            } else if (entry.name == MANIFEST) {
-                manifest = stream.readJson(false)
-            } else {
-                assets.push(entry.name, stream)
-            }
-        }
-        stream.close()
-        this.assetsManager = assets
-        assets.loaded = true
-    }
-
     private fun MinosoftMod.construct() {
-        val manifest = manifest ?: throw NoManifestError(path)
+        val manifest = manifest ?: throw NoManifestError(source)
         val mainClass = Class.forName(manifest.main, true, classLoader)
         val main = mainClass.kotlin.objectInstance ?: throw NoObjectMainError(mainClass)
         if (main !is ModMain) {
@@ -135,20 +77,18 @@ object ModLoader {
         main!!.postInit()
     }
 
-    private fun inject(list: ModList, file: File, phase: LoadingPhases, latch: CountUpAndDownLatch) {
-        if (!file.isDirectory && !file.name.endsWith(".jar") && !file.name.endsWith(".zip")) {
-            return
-        }
-        val mod = MinosoftMod(file, phase, CountUpAndDownLatch(4, latch))
-        Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting $file" }
+    private fun inject(list: ModList, source: ModSource, phase: LoadingPhases, latch: CountUpAndDownLatch) {
+        val mod = MinosoftMod(source, phase, CountUpAndDownLatch(4, latch))
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Injecting $source" }
         try {
-            if (file.isDirectory) {
-                mod.processDirectory(file)
-            } else {
-                mod.processJar(file)
-            }
+            source.process(mod)
             val manifest = mod.manifest!!
             val name = manifest.name
+
+            if (name in RunConfiguration.MOD_PARAMETERS.ignoreMods) {
+                mod.latch.count = 0
+                return
+            }
             if (name in list || name in this.mods) {
                 throw DuplicateModError(name)
             }
@@ -164,7 +104,7 @@ object ModLoader {
             list += mod
             mod.latch.dec()
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN) { "Error injecting mod: $file" }
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN) { "Error injecting mod: $source" }
             exception.printStackTrace()
             mod.latch.count = 0
         }
@@ -180,7 +120,7 @@ object ModLoader {
 
     @Synchronized
     fun load(phase: LoadingPhases, latch: CountUpAndDownLatch) {
-        if (RunConfiguration.IGNORE_MODS) {
+        if (RunConfiguration.IGNORE_MODS || phase in RunConfiguration.MOD_PARAMETERS.ignorePhases) {
             return
         }
         Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE) { "Starting mod load: $phase" }
@@ -192,8 +132,9 @@ object ModLoader {
         this.state = PhaseStates.LISTING
 
         val path = phase.path
-        val files = path.listFiles()
-        if (files == null || files.isEmpty()) {
+        val files = path.listFiles() ?: emptyArray()
+        val additionalSources = RunConfiguration.MOD_PARAMETERS.additionalSources[phase] ?: emptySet()
+        if (files.isEmpty() && additionalSources.isEmpty()) {
             // no mods to load
             inner.dec()
             if (phase == LoadingPhases.POST_BOOT) {
@@ -207,7 +148,10 @@ object ModLoader {
         state = PhaseStates.INJECTING
         var worker = UnconditionalWorker()
         for (file in files) {
-            worker += add@{ inject(list, file, phase, inner) }
+            worker += add@{ inject(list, ModSource.detect(file) ?: return@add, phase, inner) }
+        }
+        for (source in additionalSources) {
+            worker += add@{ inject(list, source, phase, inner) }
         }
         worker.work(inner)
 

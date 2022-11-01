@@ -11,8 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.loader.error
+package de.bixilon.minosoft.modding.loader.parameters
 
+import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.mod.source.ModSource
 
-class NoManifestError(val source: ModSource) : Exception("Mod has no manifest: $source")
+class ModParameters(
+    val ignorePhases: Set<LoadingPhases> = emptySet(),
+    val ignoreMods: Set<String> = emptySet(),
+    val additionalSources: Map<LoadingPhases, Set<ModSource>> = emptyMap(),
+)
