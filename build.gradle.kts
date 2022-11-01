@@ -388,7 +388,7 @@ fun loadGit() {
 loadGit()
 
 
-val task = tasks.register("versions.json") {
+val versionJsonTask = tasks.register("versionJson") {
     outputs.upToDateWhen { false }
 
     doFirst {
@@ -420,7 +420,10 @@ val task = tasks.register("versions.json") {
     }
 }
 
-tasks.getByName("processResources").finalizedBy(task)
+tasks.getByName("processResources") {
+    finalizedBy(versionJsonTask)
+    // ToDo: verify and minify jsons
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
