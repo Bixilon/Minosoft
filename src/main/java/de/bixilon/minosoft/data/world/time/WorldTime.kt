@@ -29,7 +29,7 @@ class WorldTime(
     val time = abs(time) % ProtocolDefinition.TICKS_PER_DAY
     val cycling = time >= 0
 
-    val moonPhase = MoonPhases[age % ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
+    val moonPhase = MoonPhases[age.toInt() % ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
 
 
     val skyAngle: Float

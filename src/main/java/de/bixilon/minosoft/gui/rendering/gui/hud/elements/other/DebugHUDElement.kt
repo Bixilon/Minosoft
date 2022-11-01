@@ -174,7 +174,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         layout += TextElement(guiRenderer, "Time TBA").apply {
-            connection.world::time.observe(this) {
+            connection.world::time.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
                 text = BaseComponent("Time ", abs(it.time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", it.cycling, ", day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY)
             }
         }
