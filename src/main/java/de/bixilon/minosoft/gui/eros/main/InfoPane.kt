@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.util.KUtil.format
 import javafx.geometry.HPos
 import javafx.geometry.Insets
 import javafx.scene.Node
@@ -42,7 +42,7 @@ class InfoPane<T>(vararg children: Node) : AnchorPane(*children) {
             val propertyValue = property(item) ?: continue
 
             propertiesPane.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
-            propertiesPane.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
+            propertiesPane.add(propertyValue.format().textFlow, 1, row++)
         }
     }
 
