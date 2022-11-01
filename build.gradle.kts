@@ -26,7 +26,8 @@ plugins {
     kotlin("jvm") version "1.7.20"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit") version "2.3.0"
+    id("org.ajoberstar.grgit") version "5.0.0"
+    id("com.github.ben-manes.versions") version "0.43.0"
 }
 
 fun getProperty(name: String): String {
@@ -135,7 +136,7 @@ testing {
 
         val test by getting(JvmTestSuite::class) {
             testType.set(TestSuiteType.UNIT_TEST)
-            useJUnitJupiter()
+            useJUnitJupiter("5.9.1")
 
             dependencies {
                 implementation(project)
@@ -175,7 +176,7 @@ testing {
 
         val integrationTest by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.INTEGRATION_TEST)
-            useTestNG()
+            useTestNG("7.6.1")
 
             dependencies {
                 implementation(project)
@@ -222,7 +223,7 @@ testing {
         }
         val benchmarkTest by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.PERFORMANCE_TEST)
-            useTestNG()
+            useTestNG("7.6.1")
 
             dependencies {
                 implementation(project)
@@ -303,8 +304,8 @@ dependencies {
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.21.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.2.2")
-    implementation("com.github.luben", "zstd-jni", "1.5.2-3", classifier = zstdNatives)
+    implementation("com.github.oshi", "oshi-core", "6.3.1")
+    implementation("com.github.luben", "zstd-jni", "1.5.2-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
