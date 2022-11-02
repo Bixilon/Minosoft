@@ -21,15 +21,11 @@ class Bossbar(
     progress: Float = 0.0f,
     color: BossbarColors = BossbarColors.PINK,
     notches: BossbarNotches = BossbarNotches.NO_NOTCHES,
-    darkSky: Boolean = false,
-    dragonBar: Boolean = false,
-    fog: Boolean = false,
+    flags: BossbarFlags,
 ) {
     var title by watched(title)
     var progress by watched(progress)
     var color by watched(color)
     var notches by watched(notches)
-    var darkSky by watched(darkSky)
-    var dragonBar by watched(dragonBar)
-    var fog by watched(fog)
+    var flags by watched(flags)
 }

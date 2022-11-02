@@ -31,15 +31,26 @@ class BossbarManager {
     init {
         this::bossbars.observeMap(this) {
             for (bossbar in it.adds.values()) {
-                if (bossbar.darkSky) {
-                    darkSky = true
-                }
-                bossbar::darkSky.observe(this) { darkSky -> if (darkSky) this.darkSky = true else calculateFlags() }
-                if (bossbar.fog) {
-                    fog = true
-                }
-                bossbar::fog.observe(this) { fog -> if (fog) this.fog = true else calculateFlags() }
+                processFlags(bossbar.flags, ignoreRecalculate = true)
+                bossbar::flags.observe(this) { flags -> processFlags(flags) }
             }
+        }
+    }
+
+    private fun processFlags(flags: BossbarFlags, ignoreRecalculate: Boolean = false) {
+        var recalculate = false
+        if (flags.darkSky) {
+            this.darkSky = true
+        } else if (this.darkSky) {
+            recalculate = true
+        }
+        if (flags.fog) {
+            this.fog = true
+        } else if (this.fog) {
+            recalculate = true
+        }
+        if (!ignoreRecalculate && recalculate) {
+            calculateFlags()
         }
     }
 
@@ -48,10 +59,10 @@ class BossbarManager {
         var darkSky = false
         var fog = false
         for (bossbar in _bossbar.values) {
-            if (bossbar.darkSky) {
+            if (bossbar.flags.darkSky) {
                 darkSky = true
             }
-            if (bossbar.fog) {
+            if (bossbar.flags.fog) {
                 fog = true
             }
         }

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
+import de.bixilon.minosoft.data.bossbar.BossbarFlags
 import de.bixilon.minosoft.modding.event.events.bossbar.BossbarFlagsSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -26,42 +26,17 @@ class FlagsBossbarS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
 ) : BossbarS2CP {
-    val shouldDarkenSky: Boolean
-    val dragonBar: Boolean
-    val fog: Boolean
-
-    init {
-        val flags = buffer.readUnsignedByte()
-        shouldDarkenSky = flags.isBitMask(BossbarFlags.SHOULD_DARKEN_SKY_MASK)
-        dragonBar = flags.isBitMask(BossbarFlags.DRAGON_BAR_MASK)
-        fog = flags.isBitMask(BossbarFlags.FOG_MASK)
-    }
+    val flags = BossbarFlags(buffer.readUnsignedByte())
 
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
 
-        var changes = 0
-
-        if (bossbar.darkSky != shouldDarkenSky) {
-            bossbar.darkSky = shouldDarkenSky
-            changes++
-        }
-        if (bossbar.dragonBar != dragonBar) {
-            bossbar.dragonBar = dragonBar
-            changes++
-        }
-        if (bossbar.fog != fog) {
-            bossbar.fog = fog
-            changes++
-        }
-        if (changes == 0) {
-            return
-        }
+        bossbar.flags = flags
 
         connection.fire(BossbarFlagsSetEvent(connection, uuid, bossbar))
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar flags set (uuid=$uuid, shouldDarkenSky=$shouldDarkenSky, dragonBar=$dragonBar, fog=$fog)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar flags set (uuid=$uuid, flags=$flags)" }
     }
 }
