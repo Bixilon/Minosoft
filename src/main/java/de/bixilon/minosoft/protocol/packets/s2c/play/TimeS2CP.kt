@@ -28,7 +28,7 @@ class TimeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val time = buffer.readLong()
 
     override fun handle(connection: PlayConnection) {
-        if (DebugOptions.SIMULATE_TIME > 0) {
+        if (DebugOptions.SIMULATE_TIME) {
             return
         }
         connection.world.time = WorldTime(connection.world, time = time.toInt(), age = age)

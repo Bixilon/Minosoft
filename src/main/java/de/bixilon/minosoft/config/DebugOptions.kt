@@ -16,5 +16,5 @@ package de.bixilon.minosoft.config
 object DebugOptions {
     const val INFINITE_TORCHES = false
 
-    const val SIMULATE_TIME = 50
+    const val SIMULATE_TIME = true
 }

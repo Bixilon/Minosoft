@@ -144,7 +144,6 @@ class SkyboxRenderer(
         val day = calculateDaytime(0.0f)?.toVec3() ?: return null
 
         var color = interpolateLinear(progress, night, day)
-        println(progress)
 
         // make a bit more red/yellow
         val modifier = Vec3(0.95f, 0.78, 0.56f)

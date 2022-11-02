@@ -66,13 +66,15 @@ class ConnectionTicker(private val connection: PlayConnection) {
         if (StaticConfiguration.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
             tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.player.inventory[44] = ItemStack(connection.registries.itemRegistry["minecraft:torch"]!!, Int.MAX_VALUE) }
         }
-        if (DebugOptions.SIMULATE_TIME > 0) {
+        if (DebugOptions.SIMULATE_TIME) {
             tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
-                var nextTime = connection.world.time.time + DebugOptions.SIMULATE_TIME / 10
-                if (nextTime > 300 && nextTime < 22000) {
-                    nextTime = 22800
+                val time = connection.world.time.time
+                val offset = if (time in 11800..13300 || (time < 300 || time > 22800)) {
+                    50
+                } else {
+                    500
                 }
-                connection.world.time = WorldTime(connection.world, nextTime, connection.world.time.age + DebugOptions.SIMULATE_TIME)
+                connection.world.time = WorldTime(connection.world, time + offset, connection.world.time.age + offset)
             }
         }
 
