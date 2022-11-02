@@ -33,8 +33,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 import de.bixilon.minosoft.util.KUtil.minosoft
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.sin
 
 class SkyboxRenderer(
     private val sky: SkyRenderer,
@@ -137,8 +139,22 @@ class SkyboxRenderer(
         return ChatColors.GRAY
     }
 
-    private fun calculateSunrise(progress: Float): RGBColor {
-        return ChatColors.YELLOW
+    private fun calculateSunrise(progress: Float): RGBColor? {
+        val night = calculateNight(1.0f)?.toVec3() ?: return null
+        val day = calculateDaytime(0.0f)?.toVec3() ?: return null
+
+        var color = interpolateLinear(progress, night, day)
+        println(progress)
+
+        // make a bit more red/yellow
+        val modifier = Vec3(0.95f, 0.78, 0.56f)
+
+        val delta = (abs(progress - 0.5f) * 2.0f)
+        val sine = maxOf(sin(delta.pow(2) * PI.toFloat() / 2.0f), 0.6f)
+
+        color = interpolateLinear(sine, modifier, color)
+
+        return RGBColor(color)
     }
 
     private fun calculateDaytime(progress: Float): RGBColor? {
@@ -147,8 +163,17 @@ class SkyboxRenderer(
         return RGBColor(interpolateLinear((abs(progress - 0.5f) * 2.0f).pow(2), base, base * 0.9f))
     }
 
-    private fun calculateSunset(progress: Float): RGBColor {
-        return ChatColors.RED
+    private fun calculateSunset(progress: Float): RGBColor? {
+        val night = calculateNight(0.0f)?.toVec3() ?: return null
+        val day = calculateDaytime(1.0f)?.toVec3() ?: return null
+
+        val color = interpolateLinear(progress, day, night)
+
+        // make a bit more red
+        color.r *= 0.2f
+        color.g *= 0.1f
+
+        return RGBColor(color)
     }
 
     private fun calculateNight(progress: Float): RGBColor? {
@@ -162,6 +187,7 @@ class SkyboxRenderer(
 
     private fun calculateSkyColor(): RGBColor? {
         val properties = sky.properties
+        val time = time
         if (properties.fixedTexture != null) {
             // sky is a texture, no color (e.g. end)
             return null
@@ -179,14 +205,11 @@ class SkyboxRenderer(
             return calculateRain(weather.rain)
         }
 
-        val phase = time.phase
-        val progress = phase.getProgress(time.time)
-
-        return when (phase) {
-            DayPhases.SUNRISE -> calculateSunrise(progress)
-            DayPhases.DAY -> calculateDaytime(progress)
-            DayPhases.SUNSET -> calculateSunset(progress)
-            DayPhases.NIGHT -> calculateNight(progress)
+        return when (time.phase) {
+            DayPhases.SUNRISE -> calculateSunrise(time.progress)
+            DayPhases.DAY -> calculateDaytime(time.progress)
+            DayPhases.SUNSET -> calculateSunset(time.progress)
+            DayPhases.NIGHT -> calculateNight(time.progress)
         }
     }
 
