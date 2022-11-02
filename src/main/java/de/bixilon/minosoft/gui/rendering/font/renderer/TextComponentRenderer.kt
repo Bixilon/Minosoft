@@ -62,7 +62,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun applyOffset() {
-            if (consumer == null && offset.x == initialOffset.x + renderInfo.charMargin) {
+            val lastLine = renderInfo.lines.getOrNull(renderInfo.lineIndex)
+            if (consumer == null && offset.x == initialOffset.x + renderInfo.charMargin && (lastLine == null || lastLine.width != 0)) {
                 // preparing phase
                 renderInfo.lines += TextLineInfo()
             } else {
@@ -88,7 +89,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (addY(renderInfo.charHeight)) {
                 return true
             }
-            renderInfo.currentLineNumber++
+            renderInfo.lineIndex++
             offset.x = initialOffset.x + renderInfo.charMargin
             applyOffset()
             return false

@@ -158,7 +158,10 @@ open class TextElement(
         )
         if (!emptyMessage) {
             ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, this, renderWindow, null, null, renderInfo, chatComponent)
-            renderInfo.currentLineNumber = 0
+            renderInfo.lineIndex = 0
+        }
+        if (renderInfo.lines.size > 1 && size.y > Font.CHAR_HEIGHT) {
+            size.y-- // remove char margin from bottom
         }
         this.renderInfo = renderInfo
 
@@ -188,7 +191,7 @@ open class TextElement(
         }
         consumer.ensureSize(vertices)
         ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, this, renderWindow, consumer, options, renderInfo, chatComponent)
-        renderInfo.currentLineNumber = 0
+        renderInfo.lineIndex = 0
     }
 
     override fun onMouseAction(position: Vec2i, button: MouseButtons, action: MouseActions, count: Int): Boolean {
