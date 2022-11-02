@@ -28,9 +28,6 @@ class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val data: Float = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {
-        if (event == null) {
-            return
-        }
         val event = GameEventChangeEvent(connection, this)
         if (connection.fire(event)) {
             return

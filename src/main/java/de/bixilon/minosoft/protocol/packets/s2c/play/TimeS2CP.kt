@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -27,6 +28,9 @@ class TimeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val time = buffer.readLong()
 
     override fun handle(connection: PlayConnection) {
+        if (DebugOptions.SIMULATE_TIME > 0) {
+            return
+        }
         connection.world.time = WorldTime(connection.world, time = time.toInt(), age = age)
     }
 

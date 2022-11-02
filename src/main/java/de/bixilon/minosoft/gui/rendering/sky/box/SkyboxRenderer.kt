@@ -133,6 +133,14 @@ class SkyboxRenderer(
             // no daylight cycle (e.g. nether)
             return calculateBiomeAvg { it.fogColor }
         }
+        val weather = sky.renderWindow.connection.world.weather
+
+        if (weather.thunderGradient > 0.0f) {
+            return ChatColors.DARK_GRAY
+        }
+        if (weather.raining) {
+            return ChatColors.GRAY
+        }
 
         if (time.time in 13000..23000) {
             return ChatColors.DARK_BLUE

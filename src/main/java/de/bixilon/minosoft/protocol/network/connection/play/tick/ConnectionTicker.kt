@@ -20,6 +20,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -64,6 +65,9 @@ class ConnectionTicker(private val connection: PlayConnection) {
 
         if (StaticConfiguration.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
             tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.player.inventory[44] = ItemStack(connection.registries.itemRegistry["minecraft:torch"]!!, Int.MAX_VALUE) }
+        }
+        if (DebugOptions.SIMULATE_TIME > 0) {
+            tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.world.time = WorldTime(connection.world, connection.world.time.time + DebugOptions.SIMULATE_TIME, connection.world.time.age + DebugOptions.SIMULATE_TIME) }
         }
 
         for (task in tasks) {
