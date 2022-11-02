@@ -31,7 +31,6 @@ import de.bixilon.minosoft.data.registries.RegistryUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
-import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
@@ -105,7 +104,6 @@ class Registries {
     val entityAnimationRegistry: EnumRegistry<EntityAnimations> = EnumRegistry(values = EntityAnimations)
     val entityActionsRegistry: EnumRegistry<EntityActionC2SP.EntityActions> = EnumRegistry(values = EntityActionC2SP.EntityActions)
 
-    val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry(codec = BiomePrecipitation)
     val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry(codec = BiomeCategory)
     val soundGroupRegistry: FakeEnumRegistry<SoundGroup> = FakeEnumRegistry(codec = SoundGroup)
 
@@ -168,7 +166,6 @@ class Registries {
 
         // id stuff
         worker += WorkerTask(this::biomeCategoryRegistry) { biomeCategoryRegistry.update(pixlyzerData["biome_categories"]?.unsafeCast(), this) }
-        worker += WorkerTask(this::biomePrecipitationRegistry) { biomePrecipitationRegistry.update(pixlyzerData["biome_precipitations"]?.unsafeCast(), this) }
 
         // id resource location stuff
         worker += WorkerTask(this::containerTypeRegistry) { containerTypeRegistry.rawUpdate(pixlyzerData["container_types"]?.toJsonObject(), this) }
@@ -187,7 +184,7 @@ class Registries {
         worker += WorkerTask(this::materialRegistry) { materialRegistry.rawUpdate(pixlyzerData["materials"]?.toJsonObject(), this) }
         worker += WorkerTask(this::enchantmentRegistry) { enchantmentRegistry.rawUpdate(pixlyzerData["enchantments"]?.toJsonObject(), this) }
         worker += WorkerTask(this::statusEffectRegistry) { statusEffectRegistry.rawUpdate(pixlyzerData["status_effects"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::biomeRegistry, dependencies = arrayOf(this::biomeCategoryRegistry, this::biomePrecipitationRegistry)) { biomeRegistry.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::biomeRegistry, dependencies = arrayOf(this::biomeCategoryRegistry)) { biomeRegistry.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
         worker += WorkerTask(this::dimensionRegistry) { dimensionRegistry.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
         worker += WorkerTask(this::fluidRegistry) { fluidRegistry.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
         worker += WorkerTask(this::blockRegistry, dependencies = arrayOf(this::fluidRegistry, this::shapes)) { blockRegistry.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }

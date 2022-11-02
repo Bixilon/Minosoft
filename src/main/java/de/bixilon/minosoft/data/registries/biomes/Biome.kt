@@ -72,7 +72,7 @@ data class Biome(
                 waterColor = TintManager.getJsonColor(data["water_color"]?.toInt() ?: 0),
                 waterFogColor = TintManager.getJsonColor(data["water_fog_color"]?.toInt() ?: 0),
                 category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
-                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION,
+                precipitation = data["precipitation"]?.toInt()?.let { BiomePrecipitation[it] } ?: BiomePrecipitation.NONE,
                 skyColor = data["sky_color"]?.toInt()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
                 fogColor = data["fog_color"]?.toInt()?.asRGBColor(),
                 descriptionId = null,
@@ -84,7 +84,6 @@ data class Biome(
             )
         }
 
-        private val DEFAULT_PRECIPITATION = BiomePrecipitation("NONE")
         private val DEFAULT_CATEGORY = BiomeCategory("NONE")
 
     }

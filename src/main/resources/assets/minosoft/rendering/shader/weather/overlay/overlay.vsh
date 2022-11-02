@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,11 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.weather
+#version 330 core
 
-data class WorldWeather(
-    val rain: Float = 1.0f,
-    val thunder: Float = 0.0f,
-) {
-    val raining: Boolean get() = rain > 0.0f
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUV;
+layout (location = 2) in float vinOffset;
+layout (location = 3) in float vinOffsetMultiplicator;
+layout (location = 4) in float vinAlphaMultiplicator;
+
+
+flat out uint finTextureIndex;
+out vec3 finTextureCoordinates;
+
+uniform vec2 uMaxUV;
+uniform float uIntensity;
+uniform float uOffset;
+uniform uint uIndexLayer;
+
+
+void main() {
+    gl_Position = vec4(vinPosition, 1.0f);
+
+    finTextureIndex = uIndexLayer >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
+    float offset = vinOffset + (uOffset * vinOffsetMultiplicator);
+
+    finTextureCoordinates.y += offset;
 }

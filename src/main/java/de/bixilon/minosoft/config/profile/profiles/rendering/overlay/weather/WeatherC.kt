@@ -11,11 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.weather
+package de.bixilon.minosoft.config.profile.profiles.rendering.overlay.weather
 
-data class WorldWeather(
-    val rain: Float = 1.0f,
-    val thunder: Float = 0.0f,
-) {
-    val raining: Boolean get() = rain > 0.0f
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+
+class WeatherC {
+
+    /**
+     * Enables rain overlay
+     */
+    var rain by delegate(true)
+
+    /**
+     * Enables snow overlay
+     */
+    var snow by delegate(true)
+
 }
