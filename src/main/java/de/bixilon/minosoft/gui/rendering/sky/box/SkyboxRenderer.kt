@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -123,6 +124,30 @@ class SkyboxRenderer(
         return RGBColor(red / count, green / count, blue / count)
     }
 
+    private fun calculateThunder(rain: Float, thunder: Float): RGBColor {
+        return ChatColors.DARK_GRAY
+    }
+
+    private fun calculateRain(rain: Float): RGBColor {
+        return ChatColors.GRAY
+    }
+
+    private fun calculateSunrise(progress: Float): RGBColor {
+        return ChatColors.YELLOW
+    }
+
+    private fun calculateDaytime(progress: Float): RGBColor {
+        return ChatColors.BLUE
+    }
+
+    private fun calculateSunset(progress: Float): RGBColor {
+        return ChatColors.RED
+    }
+
+    private fun calculateNight(progress: Float): RGBColor {
+        return ChatColors.DARK_BLUE
+    }
+
     private fun calculateSkyColor(): RGBColor? {
         val properties = sky.properties
         if (properties.fixedTexture != null) {
@@ -135,18 +160,22 @@ class SkyboxRenderer(
         }
         val weather = sky.renderWindow.connection.world.weather
 
-        if (weather.thunderGradient > 0.0f) {
-            return ChatColors.DARK_GRAY
+        if (weather.thunder > 0.0f) {
+            return calculateThunder(weather.rain, weather.thunder)
         }
         if (weather.raining) {
-            return ChatColors.GRAY
+            return calculateRain(weather.rain)
         }
 
-        if (time.time in 13000..23000) {
-            return ChatColors.DARK_BLUE
-        }
+        val phase = time.phase
+        val progress = phase.getProgress(time.time)
 
-        return ChatColors.BLUE
+        return when (phase) {
+            DayPhases.SUNRISE -> calculateSunrise(progress)
+            DayPhases.DAY -> calculateDaytime(progress)
+            DayPhases.SUNSET -> calculateSunset(progress)
+            DayPhases.NIGHT -> calculateNight(progress)
+        }
     }
 
     companion object {

@@ -30,6 +30,7 @@ class WorldTime(
     val cycling = time >= 0
 
     val moonPhase = MoonPhases[age.toInt() % ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
+    val phase = DayPhases.of(time)
 
 
     val skyAngle: Float
@@ -46,9 +47,8 @@ class WorldTime(
             base = base.clamp(0.0, 1.0)
             base = 1.0 - base
 
-            base *= 1.0 - ((world.weather.rainGradient * 5.0) / 16.0)
-            base *= 1.0 - (((world.weather.thunderGradient * world.weather.rainGradient) * 5.0) / 16.0)
+            base *= 1.0 - ((world.weather.rain * 5.0) / 16.0)
+            base *= 1.0 - (((world.weather.thunder * world.weather.rain) * 5.0) / 16.0)
             return base * 0.8 + 0.2
         }
-
 }

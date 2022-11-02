@@ -11,17 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.other.game.event.handlers.gradients
+package de.bixilon.minosoft.data.world.time
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+enum class DayPhases(private val progressCalculator: (Int) -> Float) {
+    SUNRISE({ (it - 23000) / 1000.0f }),
+    DAY({ it / 12000.0f }),
+    SUNSET({ (it - 12000) / 1000.0f }), // I love this song: https://www.youtube.com/watch?v=URma_gu1aNE
+    NIGHT({ (it - 13000) / 10000.9f }),
+    ;
 
-object ThunderGradientSetGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:thunder_gradient_set".toResourceLocation()
+    fun getProgress(time: Int): Float {
+        return progressCalculator(time)
+    }
 
-    override fun handle(data: Float, connection: PlayConnection) {
-        connection.world.weather = connection.world.weather.copy(thunder = data)
+    companion object {
+        fun of(time: Int): DayPhases {
+            if (time > 23000) {
+                return SUNRISE
+            }
+            if (time < 12000) {
+                return DAY
+            }
+            if (time in 12000 until 13000) {
+                return SUNSET
+            }
+            return NIGHT
+        }
     }
 }
