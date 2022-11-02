@@ -15,8 +15,12 @@ package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
+import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -49,9 +53,20 @@ class SkyboxRenderer(
 
     private var time: WorldTime = sky.renderWindow.connection.world.time
 
+    private var lastStrike = -1L
+    private var strikeDuration = -1L
+
     init {
         sky::matrix.observe(this) { updateMatrix = true }
         this::color.observe(this) { updateColor = true }
+
+        // ToDo: Sync with lightmap, lightnings, etc
+        sky.renderWindow.connection.world.entities::entities.observeSet(this) {
+            val lightnings = it.adds.filterIsInstance<LightningBolt>()
+            if (lightnings.isEmpty()) return@observeSet
+            lastStrike = millis()
+            strikeDuration = lightnings.maxOf(LightningBolt::duration)
+        }
     }
 
     override fun onTimeUpdate(time: WorldTime) {
@@ -130,61 +145,88 @@ class SkyboxRenderer(
         return RGBColor(red / count, green / count, blue / count)
     }
 
-    private fun calculateThunder(rain: Float, thunder: Float): RGBColor {
-        return ChatColors.DARK_GRAY
+    private fun calculateLightingStrike(original: Vec3): Vec3 {
+        val duration = this.strikeDuration
+        val delta = millis() - lastStrike
+        if (delta > duration) {
+            return original
+        }
+        val progress = delta / duration.toFloat()
+
+        val sine = abs(sin(progress * PIf * (duration / 80).toInt()))
+        return interpolateLinear(sine, original, Vec3(1.0f))
     }
 
-    private fun calculateRain(rain: Float): RGBColor {
-        return ChatColors.GRAY
+    private fun calculateThunder(time: WorldTime, rain: Float, thunder: Float): Vec3? {
+        val rainColor = calculateRain(time, rain) ?: return null
+        val brightness = minOf(rainColor.length() * 2, 1.0f)
+
+        val thunderColor = interpolateLinear(brightness / 8, THUNDER_BASE_COLOR, rainColor)
+        thunderColor *= brightness
+
+        return calculateLightingStrike(interpolateLinear(thunder, rainColor, thunderColor))
     }
 
-    private fun calculateSunrise(progress: Float): RGBColor? {
-        val night = calculateNight(1.0f)?.toVec3() ?: return null
-        val day = calculateDaytime(0.0f)?.toVec3() ?: return null
+    private fun calculateRain(time: WorldTime, rain: Float): Vec3? {
+        val clearColor = calculateClear(time) ?: return null
+        val brightness = minOf(clearColor.length(), 1.0f)
+
+        val rainColor = interpolateLinear(brightness / 8, RAIN_BASE_COLOR, clearColor)
+        rainColor *= brightness
+
+        return interpolateLinear(rain, clearColor, rainColor)
+    }
+
+    private fun calculateSunrise(progress: Float): Vec3? {
+        val night = calculateNight(1.0f) ?: return null
+        val day = calculateDaytime(0.0f) ?: return null
 
         var color = interpolateLinear(progress, night, day)
 
         // make a bit more red/yellow
-        val modifier = Vec3(0.95f, 0.78f, 0.56f)
-
         val delta = (abs(progress - 0.5f) * 2.0f)
         val sine = maxOf(sin(delta.pow(2) * PI.toFloat() / 2.0f), 0.6f)
 
-        color = interpolateLinear(sine, modifier, color)
+        color = interpolateLinear(sine, SUNRISE_BASE_COLOR, color)
 
-        return RGBColor(color)
+        return color
     }
 
-    private fun calculateDaytime(progress: Float): RGBColor? {
+    private fun calculateDaytime(progress: Float): Vec3? {
         val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
 
-        return RGBColor(interpolateLinear((abs(progress - 0.5f) * 2.0f).pow(2), base, base * 0.9f))
+        return interpolateLinear((abs(progress - 0.5f) * 2.0f).pow(2), base, base * 0.9f)
     }
 
-    private fun calculateSunset(progress: Float): RGBColor? {
-        val night = calculateNight(0.0f)?.toVec3() ?: return null
-        val day = calculateDaytime(1.0f)?.toVec3() ?: return null
+    private fun calculateSunset(progress: Float): Vec3? {
+        val night = calculateNight(0.0f) ?: return null
+        val day = calculateDaytime(1.0f) ?: return null
 
         var color = interpolateLinear(progress, day, night)
 
         // make a bit more red
-        val modifier = Vec3(0.95f, 0.68f, 0.56f)
-
         val delta = (abs(progress - 0.5f) * 2.0f)
         val sine = maxOf(sin(delta.pow(3) * PI.toFloat() / 2.0f), 0.4f)
 
-        color = interpolateLinear(sine, modifier, color)
+        color = interpolateLinear(sine, SUNSET_BASE_COLOR, color)
 
-        return RGBColor(color)
+        return color
     }
 
-    private fun calculateNight(progress: Float): RGBColor? {
+    private fun calculateNight(progress: Float): Vec3? {
         val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
         base *= 0.1
 
-        val minColor = Vec3(0.02f, 0.04f, 0.09f)
+        return interpolateLinear((abs(progress - 0.5f) * 2.0f), NIGHT_BASE_COLOR, base) * time.moonPhase.light
+    }
 
-        return RGBColor(interpolateLinear((abs(progress - 0.5f) * 2.0f), minColor, base) * time.moonPhase.light)
+    private fun calculateClear(time: WorldTime): Vec3? {
+        return when (time.phase) {
+            DayPhases.SUNRISE -> calculateSunrise(time.progress)
+            DayPhases.DAY -> calculateDaytime(time.progress)
+            DayPhases.SUNSET -> calculateSunset(time.progress)
+            DayPhases.NIGHT -> calculateNight(time.progress)
+        }
     }
 
     private fun calculateSkyColor(): RGBColor? {
@@ -201,21 +243,20 @@ class SkyboxRenderer(
         val weather = sky.renderWindow.connection.world.weather
 
         if (weather.thunder > 0.0f) {
-            return calculateThunder(weather.rain, weather.thunder)
+            return calculateThunder(time, weather.rain, weather.thunder)?.let { RGBColor(it) }
         }
         if (weather.raining) {
-            return calculateRain(weather.rain)
+            return calculateRain(time, weather.rain)?.let { RGBColor(it) }
         }
-
-        return when (time.phase) {
-            DayPhases.SUNRISE -> calculateSunrise(time.progress)
-            DayPhases.DAY -> calculateDaytime(time.progress)
-            DayPhases.SUNSET -> calculateSunset(time.progress)
-            DayPhases.NIGHT -> calculateNight(time.progress)
-        }
+        return calculateClear(time)?.let { RGBColor(it) }
     }
 
     companion object {
-        val DEFAULT_SKY_COLOR = "#ecff89".asColor()
+        private val DEFAULT_SKY_COLOR = "#ecff89".asColor()
+        private val THUNDER_BASE_COLOR = Vec3(0.16f, 0.18f, 0.21f)
+        private val RAIN_BASE_COLOR = Vec3(0.39f, 0.45f, 0.54f)
+        private val SUNRISE_BASE_COLOR = Vec3(0.95f, 0.78f, 0.56f)
+        private val SUNSET_BASE_COLOR = Vec3(0.95f, 0.68f, 0.56f)
+        private val NIGHT_BASE_COLOR = Vec3(0.02f, 0.04f, 0.09f)
     }
 }

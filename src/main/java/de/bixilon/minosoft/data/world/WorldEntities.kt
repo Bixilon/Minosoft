@@ -18,6 +18,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
+import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.watchedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -31,7 +32,7 @@ class WorldEntities : Iterable<Entity> {
     private val entityIdMap: Object2IntOpenHashMap<Entity> = Object2IntOpenHashMap()
     private val entityUUIDMap: MutableMap<Entity, UUID> = mutableMapOf()
     private val uuidEntityMap: MutableMap<UUID, Entity> = mutableMapOf()
-    private val entities: MutableSet<Entity> = mutableSetOf()
+    val entities: MutableSet<Entity> by watchedSet(mutableSetOf())
 
     val lock = SimpleLock()
 

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class LightningBolt(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d) : Entity(connection, entityType, data, position, EntityRotation(0.0f, 0.0f)) {
+    val duration = random.nextLong(100, 250)
 
     companion object : EntityFactory<LightningBolt> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("lightning_bolt")
