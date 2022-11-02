@@ -181,6 +181,11 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 )
             }
         }
+        layout += TextElement(guiRenderer, "Weather TBA").apply {
+            connection.world::weather.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
+                text = BaseComponent("Weather r=", it.rain, ", t=", it.thunder)
+            }
+        }
 
         layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
 

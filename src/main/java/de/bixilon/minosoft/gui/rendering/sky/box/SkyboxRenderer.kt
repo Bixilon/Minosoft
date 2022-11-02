@@ -240,6 +240,8 @@ class SkyboxRenderer(
             // no daylight cycle (e.g. nether)
             return calculateBiomeAvg { it.fogColor }
         }
+        // TODO: Check if wither is present
+
         val weather = sky.renderWindow.connection.world.weather
 
         if (weather.thunder > 0.0f) {

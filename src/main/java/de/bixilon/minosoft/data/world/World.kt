@@ -72,7 +72,7 @@ class World(
     var difficulty: WorldDifficulty? by watched(null)
     var hashedSeed = 0L
     var time by watched(WorldTime(this))
-    var weather = WorldWeather()
+    var weather by watched(WorldWeather())
     val view = WorldView(connection)
     val border = WorldBorder()
     private val random = Random
