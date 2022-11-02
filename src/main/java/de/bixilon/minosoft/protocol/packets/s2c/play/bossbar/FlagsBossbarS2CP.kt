@@ -42,8 +42,8 @@ class FlagsBossbarS2CP(
 
         var changes = 0
 
-        if (bossbar.shouldDarkenSky != shouldDarkenSky) {
-            bossbar.shouldDarkenSky = shouldDarkenSky
+        if (bossbar.darkSky != shouldDarkenSky) {
+            bossbar.darkSky = shouldDarkenSky
             changes++
         }
         if (bossbar.dragonBar != dragonBar) {

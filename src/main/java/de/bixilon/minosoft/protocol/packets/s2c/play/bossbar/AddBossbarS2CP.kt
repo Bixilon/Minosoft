@@ -51,10 +51,10 @@ class AddBossbarS2CP(
     override fun handle(connection: PlayConnection) {
         val bossbar = Bossbar(
             title = title,
-            value = value,
+            progress = value,
             color = color,
             notches = notches,
-            shouldDarkenSky = shouldDarkenSky,
+            darkSky = shouldDarkenSky,
             dragonBar = dragonBar,
             fog = fog,
         )
