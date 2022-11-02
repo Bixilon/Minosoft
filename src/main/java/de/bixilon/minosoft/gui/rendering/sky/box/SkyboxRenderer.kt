@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
@@ -25,9 +26,13 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
+import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.properties.DefaultSkyProperties
@@ -35,6 +40,8 @@ import de.bixilon.minosoft.gui.rendering.sky.properties.SkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
 import kotlin.math.PI
 import kotlin.math.abs
@@ -56,6 +63,11 @@ class SkyboxRenderer(
     private var lastStrike = -1L
     private var strikeDuration = -1L
 
+    private var cameraPosition: Vec3i? = null
+    private var chunkPosition: ChunkPosition? = null
+    private var chunk: Chunk? = null
+    private var baseColor: RGBColor? = null
+
     init {
         sky::matrix.observe(this) { updateMatrix = true }
         this::color.observe(this) { updateColor = true }
@@ -67,6 +79,33 @@ class SkyboxRenderer(
             lastStrike = millis()
             strikeDuration = lightnings.maxOf(LightningBolt::duration)
         }
+        sky.renderWindow.connection.events.listen<CameraPositionChangeEvent> {
+            val blockPosition = it.newPosition.blockPosition
+            if (blockPosition == this.cameraPosition) {
+                return@listen
+            }
+            this.cameraPosition = blockPosition
+            val chunkPosition = blockPosition.chunkPosition
+            if (chunkPosition != this.chunkPosition) {
+                this.chunkPosition = chunkPosition
+                this.chunk = sky.renderWindow.connection.world[chunkPosition]
+            }
+            recalculateBaseColor()
+        }
+
+        sky.renderWindow.connection.events.listen<ChunkDataChangeEvent> {
+            if (!it.chunk.neighbours.complete) {
+                return@listen
+            }
+            if (it.chunkPosition == chunkPosition || this.chunk == it.chunk) {
+                this.chunk = it.chunk
+                recalculateBaseColor()
+            }
+        }
+    }
+
+    private fun recalculateBaseColor() {
+        baseColor = calculateBiomeAvg(Biome::skyColor)
     }
 
     override fun onTimeUpdate(time: WorldTime) {
@@ -109,26 +148,28 @@ class SkyboxRenderer(
     }
 
     private fun calculateBiomeAvg(average: (Biome) -> RGBColor?): RGBColor? {
-        val radius = sky.profile.biomeRadius
+        var radius = sky.profile.biomeRadius
+        radius *= radius
 
         var red = 0
         var green = 0
         var blue = 0
         var count = 0
 
-        val connection = sky.renderWindow.connection
-
-        val cameraPosition = sky.renderWindow.camera.matrixHandler.eyePosition.blockPosition
-        val chunk = connection.world[cameraPosition.chunkPosition] ?: return null
+        val cameraPosition = this.cameraPosition?.inChunkPosition ?: return null
+        val chunk = this.chunk ?: return null
 
         for (xOffset in -radius..radius) {
             for (yOffset in -radius..radius) {
                 for (zOffset in -radius..radius) {
+                    if (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset > radius) {
+                        continue
+                    }
                     val x = cameraPosition.x + xOffset
                     val y = cameraPosition.y + yOffset
                     val z = cameraPosition.z + zOffset
-                    val neighbour = chunk.traceChunk(Vec2i(x shr 4, z shr 4))
-                    val biome = neighbour?.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
+                    val neighbour = chunk.traceChunk(Vec2i(x shr 4, z shr 4)) ?: continue
+                    val biome = neighbour.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
 
                     val color = average(biome) ?: continue
                     red += color.red
@@ -193,7 +234,7 @@ class SkyboxRenderer(
     }
 
     private fun calculateDaytime(progress: Float): Vec3? {
-        val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
+        val base = this.baseColor?.toVec3() ?: return null
 
         return interpolateLinear((abs(progress - 0.5f) * 2.0f).pow(2), base, base * 0.9f)
     }
@@ -214,7 +255,7 @@ class SkyboxRenderer(
     }
 
     private fun calculateNight(progress: Float): Vec3? {
-        val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
+        val base = this.baseColor?.toVec3() ?: return null
         base *= 0.1
 
         return interpolateLinear((abs(progress - 0.5f) * 2.0f), NIGHT_BASE_COLOR, base) * time.moonPhase.light
@@ -238,7 +279,7 @@ class SkyboxRenderer(
         }
         if (!properties.daylightCycle) {
             // no daylight cycle (e.g. nether)
-            return calculateBiomeAvg { it.fogColor }
+            return calculateBiomeAvg { it.fogColor } // ToDo: Optimize
         }
         // TODO: Check if wither is present
 
