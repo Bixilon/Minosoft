@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -29,7 +30,11 @@ import de.bixilon.minosoft.gui.rendering.sky.properties.DefaultSkyProperties
 import de.bixilon.minosoft.gui.rendering.sky.properties.SkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 import de.bixilon.minosoft.util.KUtil.minosoft
+import kotlin.math.abs
+import kotlin.math.pow
 
 class SkyboxRenderer(
     private val sky: SkyRenderer,
@@ -136,16 +141,23 @@ class SkyboxRenderer(
         return ChatColors.YELLOW
     }
 
-    private fun calculateDaytime(progress: Float): RGBColor {
-        return ChatColors.BLUE
+    private fun calculateDaytime(progress: Float): RGBColor? {
+        val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
+
+        return RGBColor(interpolateLinear((abs(progress - 0.5f) * 2.0f).pow(2), base, base * 0.9f))
     }
 
     private fun calculateSunset(progress: Float): RGBColor {
         return ChatColors.RED
     }
 
-    private fun calculateNight(progress: Float): RGBColor {
-        return ChatColors.DARK_BLUE
+    private fun calculateNight(progress: Float): RGBColor? {
+        val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
+        base *= 0.2
+
+        val minColor = Vec3(0.02f, 0.04f, 0.09f) * time.moonPhase.light
+
+        return RGBColor(interpolateSine(abs(progress - 0.5f) * 2.0f, minColor, base))
     }
 
     private fun calculateSkyColor(): RGBColor? {

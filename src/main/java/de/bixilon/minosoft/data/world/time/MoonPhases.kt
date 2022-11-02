@@ -17,15 +17,15 @@ import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 
 // see https://minecraft.fandom.com/wiki/Moon
-enum class MoonPhases {
-    FULL_MOON,
-    WANING_GIBBOUS,
-    LAST_QUARTER,
-    WANING_CRESCENT,
-    NEW_MOON,
-    WAXING_CRESCENT,
-    FIRST_QUARTER,
-    WAXING_GIBBOUS,
+enum class MoonPhases(val light: Float) {
+    FULL_MOON(1.0f),
+    WANING_GIBBOUS(0.7f),
+    LAST_QUARTER(0.4f),
+    WANING_CRESCENT(0.2f),
+    NEW_MOON(0.0f),
+    WAXING_CRESCENT(0.2f),
+    FIRST_QUARTER(0.4f),
+    WAXING_GIBBOUS(0.7f),
     ;
 
     companion object : ValuesEnum<MoonPhases> {
