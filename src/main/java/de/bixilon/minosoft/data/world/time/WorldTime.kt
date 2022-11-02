@@ -24,14 +24,18 @@ import kotlin.math.cos
 class WorldTime(
     private val world: World,
     time: Int = 0,
-    val age: Long = 0L,
+    age: Long = 0L,
 ) {
     val time = abs(time) % ProtocolDefinition.TICKS_PER_DAY
     val cycling = time >= 0
 
-    val moonPhase = MoonPhases[age.toInt() / ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
+    val age = abs(age)
+
+    val moonPhase = MoonPhases[this.age.toInt() / ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
     val phase = DayPhases.of(time)
     val progress = phase.getProgress(time)
+
+    val day = this.age / ProtocolDefinition.TICKS_PER_DAY
 
 
     val skyAngle: Float

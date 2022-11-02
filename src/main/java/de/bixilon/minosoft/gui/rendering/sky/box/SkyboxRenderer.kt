@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
+import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
@@ -67,6 +68,9 @@ class SkyboxRenderer(
     private var chunkPosition: ChunkPosition? = null
     private var chunk: Chunk? = null
     private var baseColor: RGBColor? = null
+
+    private var day = -1L
+    private var intensity = 1.0f
 
     init {
         sky::matrix.observe(this) { updateMatrix = true }
@@ -110,6 +114,21 @@ class SkyboxRenderer(
 
     override fun onTimeUpdate(time: WorldTime) {
         this.time = time
+        if (day != time.day) {
+            this.day = time.day
+            this.intensity = Random(time.day.murmur64()).nextFloat(0.3f, 1.0f)
+        }
+    }
+
+    @Deprecated("Kutil 1.18")
+    fun Long.murmur64(): Long {
+        var value = this
+        value = value xor (value ushr 33)
+        value *= -0xae502812aa7333L
+        value = value xor (value ushr 33)
+        value *= -0x3b314601e57a13adL
+        value = value xor (value ushr 33)
+        return value
     }
 
     override fun init() {
@@ -222,13 +241,16 @@ class SkyboxRenderer(
         val night = calculateNight(1.0f) ?: return null
         val day = calculateDaytime(0.0f) ?: return null
 
-        var color = interpolateLinear(progress, night, day)
+        val baseColor = interpolateLinear(progress, night, day)
+        var color = Vec3(baseColor)
 
         // make a bit more red/yellow
         val delta = (abs(progress - 0.5f) * 2.0f)
         val sine = maxOf(sin(delta.pow(2) * PI.toFloat() / 2.0f), 0.6f)
 
+
         color = interpolateLinear(sine, SUNRISE_BASE_COLOR, color)
+        color = interpolateLinear(intensity, baseColor, color)
 
         return color
     }
@@ -243,13 +265,15 @@ class SkyboxRenderer(
         val night = calculateNight(0.0f) ?: return null
         val day = calculateDaytime(1.0f) ?: return null
 
-        var color = interpolateLinear(progress, day, night)
+        val baseColor = interpolateLinear(progress, day, night)
+        var color = Vec3(baseColor)
 
         // make a bit more red
         val delta = (abs(progress - 0.5f) * 2.0f)
         val sine = maxOf(sin(delta.pow(3) * PI.toFloat() / 2.0f), 0.4f)
 
-        color = interpolateLinear(sine, SUNSET_BASE_COLOR, color)
+        color = interpolateLinear(sine * intensity, SUNSET_BASE_COLOR, color)
+        color = interpolateLinear(intensity, baseColor, color)
 
         return color
     }
