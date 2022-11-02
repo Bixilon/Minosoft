@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.sky.properties.SkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateSine
 import de.bixilon.minosoft.util.KUtil.minosoft
 import kotlin.math.PI
 import kotlin.math.abs
@@ -146,7 +145,7 @@ class SkyboxRenderer(
         var color = interpolateLinear(progress, night, day)
 
         // make a bit more red/yellow
-        val modifier = Vec3(0.95f, 0.78, 0.56f)
+        val modifier = Vec3(0.95f, 0.78f, 0.56f)
 
         val delta = (abs(progress - 0.5f) * 2.0f)
         val sine = maxOf(sin(delta.pow(2) * PI.toFloat() / 2.0f), 0.6f)
@@ -166,22 +165,26 @@ class SkyboxRenderer(
         val night = calculateNight(0.0f)?.toVec3() ?: return null
         val day = calculateDaytime(1.0f)?.toVec3() ?: return null
 
-        val color = interpolateLinear(progress, day, night)
+        var color = interpolateLinear(progress, day, night)
 
         // make a bit more red
-        color.r *= 0.2f
-        color.g *= 0.1f
+        val modifier = Vec3(0.95f, 0.68f, 0.56f)
+
+        val delta = (abs(progress - 0.5f) * 2.0f)
+        val sine = maxOf(sin(delta.pow(3) * PI.toFloat() / 2.0f), 0.4f)
+
+        color = interpolateLinear(sine, modifier, color)
 
         return RGBColor(color)
     }
 
     private fun calculateNight(progress: Float): RGBColor? {
         val base = calculateBiomeAvg { it.skyColor }?.toVec3() ?: return null
-        base *= 0.2
+        base *= 0.1
 
-        val minColor = Vec3(0.02f, 0.04f, 0.09f) * time.moonPhase.light
+        val minColor = Vec3(0.02f, 0.04f, 0.09f)
 
-        return RGBColor(interpolateSine(abs(progress - 0.5f) * 2.0f, minColor, base))
+        return RGBColor(interpolateLinear((abs(progress - 0.5f) * 2.0f), minColor, base) * time.moonPhase.light)
     }
 
     private fun calculateSkyColor(): RGBColor? {

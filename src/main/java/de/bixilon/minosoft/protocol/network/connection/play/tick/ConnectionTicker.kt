@@ -70,7 +70,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
             tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
                 val time = connection.world.time.time
                 val offset = if (time in 11800..13300 || (time < 300 || time > 22800)) {
-                    50
+                    20
                 } else {
                     500
                 }
