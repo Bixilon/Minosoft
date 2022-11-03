@@ -73,6 +73,13 @@ class MoonRenderer(
         return Random((day / MoonPhases.VALUES.size).murmur64()).nextFloat(0.0f, 0.2f)
     }
 
+    override fun draw() {
+        if (!sky.properties.moon) {
+            return
+        }
+        super.draw()
+    }
+
     companion object {
         private val MOON_PHASES = minecraft("environment/moon_phases").texture()
 

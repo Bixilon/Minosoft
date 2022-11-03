@@ -53,6 +53,13 @@ class SunRenderer(
         return Random(day.murmur64()).nextFloat(0.0f, 0.2f)
     }
 
+    override fun draw() {
+        if (!sky.properties.sun) {
+            return
+        }
+        super.draw()
+    }
+
     companion object {
         private val SUN = minecraft("environment/sun").texture()
     }
