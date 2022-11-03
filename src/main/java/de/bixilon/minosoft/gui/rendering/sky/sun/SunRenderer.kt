@@ -13,66 +13,21 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.sun
 
-import de.bixilon.kotlinglm.func.rad
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.world.time.DayPhases
-import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.minecraft
-import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.murmur64
 import java.util.*
 import kotlin.math.pow
 
 class SunRenderer(
-    private val sky: SkyRenderer,
-) : SkyChildRenderer {
-    private val texture = sky.renderWindow.textureManager.staticTextures.createTexture(SUN)
-    private val shader = sky.renderWindow.renderSystem.createShader(minosoft("weather/sun"))
-    private val mesh = SunMesh(sky.renderWindow)
-    private var day = -1L
-    private var matrix = Mat4()
-    private var matrixUpdate = true
-    private var sunModifier = 0.0f
-    private var intensity = -1.0f
+    sky: SkyRenderer,
+) : PlanetRenderer(sky) {
+    override val texture = sky.renderWindow.textureManager.staticTextures.createTexture(SUN)
 
-    override fun init() {
-        shader.load()
-    }
-
-    private fun prepareMesh() {
-        mesh.addYQuad(
-            start = Vec2(-0.15f, -0.15f),
-            y = 1f,
-            end = Vec2(+0.15f, +0.15f),
-            vertexConsumer = { position, uv ->
-                mesh.addVertex(
-                    position = position,
-                    texture = texture,
-                    uv = uv,
-                )
-            }
-        )
-
-        mesh.load()
-    }
-
-    override fun postInit() {
-        prepareMesh()
-        sky.renderWindow.textureManager.staticTextures.use(shader)
-        sky::matrix.observe(this) { calculateMatrix(it) }
-    }
-
-    private fun getSunAngle(): Float {
+    override fun calculateAngle(): Float {
         val time = sky.renderWindow.connection.world.time
 
         // 270: sunrise (23k-0k)
@@ -84,7 +39,7 @@ class SunRenderer(
         return ((time.time / ProtocolDefinition.TICKS_PER_DAYf) - 0.25f) * 360.0f
     }
 
-    private fun calculateSunIntensity(): Float {
+    override fun calculateIntensity(): Float {
         val time = sky.renderWindow.connection.world.time
         return when (time.phase) {
             DayPhases.NIGHT -> 0.0f
@@ -94,45 +49,8 @@ class SunRenderer(
         }
     }
 
-    private fun calculateMatrix(base: Mat4) {
-        val matrix = Mat4(base)
-
-        matrix.rotateAssign(getSunAngle().rad, Vec3(0, 0, -1))
-        matrix.translateAssign(Vec3(0.0f, -0.01f, 0.0f)) // prevents face fighting
-
-        matrix.translateAssign(Vec3(0.0f, -sunModifier, 0.0f)) // moves the sun closer to the player based on the day (sun appears bigger)
-
-
-        this.matrix = matrix
-        this.matrixUpdate = true
-    }
-
-    override fun onTimeUpdate(time: WorldTime) {
-        if (this.day != time.day) {
-            this.day = time.day
-            sunModifier = Random(day.murmur64()).nextFloat(0.0f, 0.2f)
-        }
-        calculateMatrix(sky.matrix)
-    }
-
-    override fun draw() {
-        shader.use()
-        if (matrixUpdate) {
-            shader.setMat4("uSunMatrix", matrix)
-
-            val intensity = calculateSunIntensity()
-            if (this.intensity != intensity) {
-                shader.setVec4("uTintColor", Vec4(1.0f, 1.0f, 1.0f, intensity))
-                this.intensity = intensity
-            }
-            this.matrixUpdate = false
-        }
-
-        sky.renderSystem.enable(RenderingCapabilities.BLENDING)
-        sky.renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
-
-        mesh.draw()
-        sky.renderSystem.resetBlending()
+    override fun calculateModifier(day: Long): Float {
+        return Random(day.murmur64()).nextFloat(0.0f, 0.2f)
     }
 
     companion object {

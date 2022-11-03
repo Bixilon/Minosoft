@@ -20,10 +20,10 @@ layout (location = 2) in uint vinIndexLayerAnimation;
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
 
-uniform mat4 uSunMatrix;
+uniform mat4 uMatrix;
 
 void main() {
-    gl_Position = uSunMatrix * vec4(vinPosition, 1.0f);
+    gl_Position = uMatrix * vec4(vinPosition, 1.0f);
 
     finTextureIndex = vinIndexLayerAnimation >> 28u;
     finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
