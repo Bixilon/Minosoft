@@ -125,6 +125,12 @@ interface RenderSystem {
     fun polygonOffset(factor: Float, unit: Float)
 
 
+    fun resetBlending() {
+        disable(RenderingCapabilities.BLENDING)
+        setBlendFunction(BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+    }
+
+
     companion object {
 
         fun createRenderSystem(renderWindow: RenderWindow): RenderSystem {

@@ -20,13 +20,11 @@ in vec3 finTextureCoordinates;
 
 uniform vec4 uTintColor;
 
-// #include "minosoft:texture"
-
+#include "minosoft:texture"
 
 
 void main() {
-    // vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
-    foutColor = vec4(1.0f, 0.5f, 0.5f, 1.0f) * uTintColor;
+    foutColor = getTexture(finTextureIndex, finTextureCoordinates) * uTintColor;
     if (foutColor.a == 0.0f) {
         discard;
     }

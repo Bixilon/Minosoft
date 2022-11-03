@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
@@ -67,7 +68,7 @@ class SunRenderer(
 
     override fun postInit() {
         prepareMesh()
-//        sky.renderWindow.textureManager.staticTextures.use(shader)
+        sky.renderWindow.textureManager.staticTextures.use(shader)
         sky.renderWindow.connection.events.listen<CameraMatrixChangeEvent> { calculateMatrix(it.projectionMatrix, it.viewMatrix) }
     }
 
@@ -121,13 +122,15 @@ class SunRenderer(
             shader.setVec4("uTintColor", Vec4(1.0f, 1.0f, 1.0f, calculateSunIntensity()))
             this.matrixUpdate = false
         }
+
         sky.renderSystem.enable(RenderingCapabilities.BLENDING)
+        sky.renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
 
         mesh.unload()
         mesh = SunMesh(sky.renderWindow)
         prepareMesh()
         mesh.draw()
-        sky.renderSystem.disable(RenderingCapabilities.BLENDING)
+        sky.renderSystem.resetBlending()
     }
 
     companion object {

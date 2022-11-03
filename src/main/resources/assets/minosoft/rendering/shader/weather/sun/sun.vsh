@@ -17,16 +17,14 @@ layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
 layout (location = 2) in uint vinIndexLayerAnimation;
 
-//flat out uint finTextureIndex;
-//out vec3 finTextureCoordinates;
+flat out uint finTextureIndex;
+out vec3 finTextureCoordinates;
 
 uniform mat4 uSunMatrix;
-
-#include "minosoft:color"
 
 void main() {
     gl_Position = uSunMatrix * vec4(vinPosition, 1.0f);
 
-    //   finTextureIndex = vinIndexLayerAnimation >> 28u;
-    //   finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
+    finTextureIndex = vinIndexLayerAnimation >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
 }
