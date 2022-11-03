@@ -35,6 +35,7 @@ class MoonRenderer(
         val coordinates = PHASE_UV[phases.ordinal]
         uvStart = Vec2(1.0f / 4 * coordinates.x, 1.0f / 2 * coordinates.y) * texture.textureArrayUV
         uvEnd = Vec2(1.0f / 4 * (coordinates.x + 1), 1.0f / 2 * (coordinates.y + 1)) * texture.textureArrayUV
+        meshInvalid = true
     }
 
     override fun postInit() {
@@ -83,7 +84,7 @@ class MoonRenderer(
             Vec2i(0, 1), // NEW_MOON
             Vec2i(3, 0), // WAXING_CRESCENT
             Vec2i(2, 0), // FIRST_QUARTER
-            Vec2i(1, 0) // WAXING_GIBBOUS
+            Vec2i(1, 0), // WAXING_GIBBOUS
         )
     }
 }
