@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.weather
 
 data class WorldWeather(
-    val rain: Float = 1.0f,
+    val rain: Float = 0.0f,
     val thunder: Float = 0.0f,
 ) {
     val raining: Boolean get() = rain > 0.0f

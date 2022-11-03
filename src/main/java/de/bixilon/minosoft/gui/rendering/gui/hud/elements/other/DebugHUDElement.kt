@@ -52,13 +52,11 @@ import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Reference
 import de.bixilon.minosoft.util.SystemInformation
-import kotlin.math.abs
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
@@ -177,7 +175,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
             connection.world::time.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
                 text = BaseComponent(
                     "Time ", it.time, " (", it.phase, ")", ", cycling=", it.cycling, "\n",
-                    "Date ", "day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY, " (", it.moonPhase, ")"
+                    "Date ", "day=", it.day, " (", it.moonPhase, ")"
                 )
             }
         }

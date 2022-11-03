@@ -25,6 +25,8 @@ import de.bixilon.minosoft.data.entities.entities.player.local.HealthCondition
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
@@ -128,5 +130,7 @@ class ConnectionUtil(
             connection.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
         }
         connection.player.healthCondition = HealthCondition()
+        connection.world.time = WorldTime(connection.world)
+        connection.world.weather = WorldWeather()
     }
 }

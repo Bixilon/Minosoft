@@ -35,7 +35,7 @@ class WorldTime(
     val phase = DayPhases.of(time)
     val progress = phase.getProgress(time)
 
-    val day = this.age / ProtocolDefinition.TICKS_PER_DAY
+    val day = (this.age + 6000) / ProtocolDefinition.TICKS_PER_DAY - 1 // day changes at midnight (18k)
 
 
     val skyAngle: Float

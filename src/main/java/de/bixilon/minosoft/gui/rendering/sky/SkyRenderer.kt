@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer
 import de.bixilon.minosoft.gui.rendering.sky.properties.OverworldSkyProperties
+import de.bixilon.minosoft.gui.rendering.sky.sun.SunRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -44,6 +45,7 @@ class SkyRenderer(
     var matrix by watched(Mat4())
     val profile = connection.profiles.rendering.sky
     private val box = SkyboxRenderer(this).register()
+    private val sun = SunRenderer(this).register()
 
     override fun init(latch: CountUpAndDownLatch) {
         for (renderer in renderer) {

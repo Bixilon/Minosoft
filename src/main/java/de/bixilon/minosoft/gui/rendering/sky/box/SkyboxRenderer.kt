@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
+import de.bixilon.minosoft.util.KUtil.murmur64
 import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs
@@ -118,17 +119,6 @@ class SkyboxRenderer(
             this.day = time.day
             this.intensity = Random(time.day.murmur64()).nextFloat(0.3f, 1.0f)
         }
-    }
-
-    @Deprecated("Kutil 1.18")
-    fun Long.murmur64(): Long {
-        var value = this
-        value = value xor (value ushr 33)
-        value *= -0xae502812aa7333L
-        value = value xor (value ushr 33)
-        value *= -0x3b314601e57a13adL
-        value = value xor (value ushr 33)
-        return value
     }
 
     override fun init() {
