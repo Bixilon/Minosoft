@@ -31,12 +31,16 @@ import java.util.*
 
 class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Float) : Overlay {
     private val world = renderWindow.connection.world
-    private val config = renderWindow.connection.profiles.rendering.overlay
+    private val config = renderWindow.connection.profiles.rendering.overlay.weather
     private val rain = renderWindow.textureManager.staticTextures.createTexture(RAIN)
     private val snow = renderWindow.textureManager.staticTextures.createTexture(SNOW)
     private val precipitation get() = renderWindow.connection.player.positionInfo.biome?.precipitation ?: BiomePrecipitation.NONE
     override val render: Boolean
-        get() = world.weather.raining && precipitation != BiomePrecipitation.NONE  // ToDo: Check if exposed to the sky
+        get() = world.weather.raining && when (precipitation) { // ToDo: Check if exposed to the sky
+            BiomePrecipitation.NONE -> false
+            BiomePrecipitation.RAIN -> config.rain
+            BiomePrecipitation.SNOW -> config.snow
+        }
     private val texture: AbstractTexture?
         get() = when (precipitation) {
             BiomePrecipitation.NONE -> null
@@ -93,10 +97,8 @@ class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Floa
     private fun updateShader() {
         shader.setFloat("uIntensity", world.weather.rain)
         val offset = (millis() % 500L) / 500.0f
-        println("Offset: $offset")
         shader.setFloat("uOffset", -offset)
         shader.setUInt("uIndexLayer", texture!!.shaderId)
-//        shader.setVec2("uMaxUV", texture!!.textureArrayUV)
     }
 
     override fun draw() {

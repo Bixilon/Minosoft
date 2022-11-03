@@ -272,7 +272,7 @@ class SkyboxRenderer(
         val delta = (abs(progress - 0.5f) * 2.0f)
         val sine = maxOf(sin(delta.pow(3) * PI.toFloat() / 2.0f), 0.4f)
 
-        color = interpolateLinear(sine * intensity, SUNSET_BASE_COLOR, color)
+        color = interpolateLinear(sine, SUNSET_BASE_COLOR, color)
         color = interpolateLinear(intensity, baseColor, color)
 
         return color

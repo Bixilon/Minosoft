@@ -15,6 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.rendering.overlay
 
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.fire.FireC
+import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.weather.WeatherC
 
 class OverlayC {
     /**
@@ -33,4 +34,5 @@ class OverlayC {
     var worldBorder by delegate(true)
 
     val fire = FireC()
+    val weather = WeatherC()
 }
