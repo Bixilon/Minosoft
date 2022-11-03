@@ -13,7 +13,6 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 
 - Rendering
 - Connect with any version to any server  (1.7 - 1.19.2)
-- ~~Modding~~
 - [Bleeding edge performance (e.g. incredible start time)](/doc/Performance.md)
 - Free (as far as we consider original minecraft as free) and open source
 - Easy use of multiple accounts
@@ -22,6 +21,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Debugging on protocol layer
 - LAN servers
 - Multiple profiles (i.e. settings for servers or minosoft in general)
+- Modding
 - Independent, I will probably accept almost all patches
 - Way more stuff
 
@@ -47,8 +47,8 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Particles
 - Basic block and skylight (custom light engine)
 - Block and item interactions (e.g. place, break, mining)
-- ~~Original physics~~
-- A lot more, only listing major things here
+- ~~Original physics~~ ([#91](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/91)
+- A lot more, only listing major things here, see the screenshots:
 
 ![Rendering](doc/img/rendering5.png)  
 A world, with a ton of hud features exposed
@@ -82,20 +82,16 @@ Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data sou
 
 ## Modding
 
-Completely broken -/-
+Works, still missing some features to make modding super easy (see e.g. [#12](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/12))
 
-## Botting
+### Botting
 
-Not easily possible, but will be improved in the future.
+Will be improved in the future.
 
 ## Contribution or helping out
 
 Please do it. I am completely busy with the development. Grab pretty much whatever you want and start developing.
 (But before please take a look at [Contributing.md](/Contributing.md))
-
-## Tools and generators
-
-I wrote some tools to help out, see [Utility](util/ReadMe.md).
 
 ## Credits and thanking words
 
