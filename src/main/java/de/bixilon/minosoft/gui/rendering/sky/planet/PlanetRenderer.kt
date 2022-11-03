@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.sun
+package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
@@ -32,12 +32,16 @@ abstract class PlanetRenderer(
 ) : SkyChildRenderer {
     protected abstract val texture: AbstractTexture
     protected val shader = sky.renderWindow.renderSystem.createShader(minosoft("weather/planet"))
-    private val mesh = PlanetMesh(sky.renderWindow)
+    private var mesh = PlanetMesh(sky.renderWindow)
     protected var day = -1L
     protected var matrix = Mat4()
     private var matrixUpdate = true
     protected var modifier = 0.0f
     protected var intensity = -1.0f
+    protected var meshInvalid = false
+
+    open var uvStart = Vec2(0.0f, 0.0f)
+    open var uvEnd = Vec2(1.0f, 1.0f)
 
     override fun init() {
         shader.load()
@@ -48,6 +52,8 @@ abstract class PlanetRenderer(
             start = Vec2(-0.15f, -0.15f),
             y = 1f,
             end = Vec2(+0.15f, +0.15f),
+            uvStart = uvStart,
+            uvEnd = uvEnd,
             vertexConsumer = { position, uv ->
                 mesh.addVertex(
                     position = position,
@@ -58,6 +64,7 @@ abstract class PlanetRenderer(
         )
 
         mesh.load()
+        this.meshInvalid = false
     }
 
     override fun postInit() {
@@ -104,6 +111,11 @@ abstract class PlanetRenderer(
                 this.intensity = intensity
             }
             this.matrixUpdate = false
+        }
+        if (meshInvalid) {
+            this.mesh.unload()
+            this.mesh = PlanetMesh(sky.renderWindow)
+            prepareMesh()
         }
 
         sky.renderSystem.enable(RenderingCapabilities.BLENDING)

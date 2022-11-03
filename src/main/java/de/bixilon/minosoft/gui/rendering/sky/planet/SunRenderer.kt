@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.sun
+package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
