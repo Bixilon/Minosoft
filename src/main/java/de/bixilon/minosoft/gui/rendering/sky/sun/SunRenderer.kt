@@ -18,15 +18,14 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
-import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.KUtil.minosoft
@@ -39,11 +38,12 @@ class SunRenderer(
 ) : SkyChildRenderer {
     private val texture = sky.renderWindow.textureManager.staticTextures.createTexture(SUN)
     private val shader = sky.renderWindow.renderSystem.createShader(minosoft("weather/sun"))
-    private var mesh = SunMesh(sky.renderWindow)
+    private val mesh = SunMesh(sky.renderWindow)
     private var day = -1L
     private var matrix = Mat4()
     private var matrixUpdate = true
     private var sunModifier = 0.0f
+    private var intensity = -1.0f
 
     override fun init() {
         shader.load()
@@ -69,7 +69,7 @@ class SunRenderer(
     override fun postInit() {
         prepareMesh()
         sky.renderWindow.textureManager.staticTextures.use(shader)
-        sky.renderWindow.connection.events.listen<CameraMatrixChangeEvent> { calculateMatrix(it.projectionMatrix, it.viewMatrix) }
+        sky::matrix.observe(this) { calculateMatrix(it) }
     }
 
     private fun getSunAngle(): Float {
@@ -94,8 +94,8 @@ class SunRenderer(
         }
     }
 
-    private fun calculateMatrix(projection: Mat4 = sky.renderWindow.camera.matrixHandler.projectionMatrix, view: Mat4 = sky.renderWindow.camera.matrixHandler.viewMatrix) {
-        val matrix = projection * view.toMat3().toMat4()
+    private fun calculateMatrix(base: Mat4) {
+        val matrix = Mat4(base)
 
         matrix.rotateAssign(getSunAngle().rad, Vec3(0, 0, -1))
         matrix.translateAssign(Vec3(0.0f, -0.01f, 0.0f)) // prevents face fighting
@@ -112,23 +112,25 @@ class SunRenderer(
             this.day = time.day
             sunModifier = Random(day.murmur64()).nextFloat(0.0f, 0.2f)
         }
+        calculateMatrix(sky.matrix)
     }
 
     override fun draw() {
         shader.use()
-        calculateMatrix()
         if (matrixUpdate) {
             shader.setMat4("uSunMatrix", matrix)
-            shader.setVec4("uTintColor", Vec4(1.0f, 1.0f, 1.0f, calculateSunIntensity()))
+
+            val intensity = calculateSunIntensity()
+            if (this.intensity != intensity) {
+                shader.setVec4("uTintColor", Vec4(1.0f, 1.0f, 1.0f, intensity))
+                this.intensity = intensity
+            }
             this.matrixUpdate = false
         }
 
         sky.renderSystem.enable(RenderingCapabilities.BLENDING)
         sky.renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
 
-        mesh.unload()
-        mesh = SunMesh(sky.renderWindow)
-        prepareMesh()
         mesh.draw()
         sky.renderSystem.resetBlending()
     }
