@@ -31,7 +31,7 @@ abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
 ) : SkyChildRenderer {
     protected abstract val texture: AbstractTexture
-    protected val shader = sky.renderWindow.renderSystem.createShader(minosoft("weather/planet"))
+    protected val shader = sky.renderWindow.renderSystem.createShader(minosoft("sky/planet"))
     private var mesh = PlanetMesh(sky.renderWindow)
     protected var day = -1L
     protected var matrix = Mat4()
@@ -80,8 +80,8 @@ abstract class PlanetRenderer(
     private fun calculateMatrix(base: Mat4) {
         val matrix = Mat4(base)
 
+
         matrix.rotateAssign(calculateAngle().rad, Vec3(0, 0, 1))
-        matrix.translateAssign(Vec3(0.0f, -0.01f, 0.0f)) // prevents face fighting
 
         matrix.translateAssign(Vec3(0.0f, -modifier, 0.0f)) // moves the planet closer to the player (appears appears bigger)
 

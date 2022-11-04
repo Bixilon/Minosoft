@@ -27,7 +27,7 @@ class SunRenderer(
 ) : PlanetRenderer(sky) {
     override val texture = sky.renderWindow.textureManager.staticTextures.createTexture(SUN)
 
-    override fun calculateAngle(): Float {
+    public override fun calculateAngle(): Float {
         val time = sky.renderWindow.connection.world.time
 
         // 270: sunrise (23k-0k)

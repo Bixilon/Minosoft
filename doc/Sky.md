@@ -31,3 +31,14 @@ Resources:
 - https://minecraft.fandom.com/wiki/Cloud
 - https://minecraft.fandom.com/wiki/Daylight_cycle
 - https://minecraft.fandom.com/wiki/Effect_(dimension)
+
+## Tasks
+
+- [ ] Light scatter
+- [ ] Atmosphere effect
+- [ ] improve fog color
+- [ ] Lens flare
+- [ ] sky texture
+- [ ] stars
+- [ ] Wither
+- [ ] Clouds

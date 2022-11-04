@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.MoonRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
+import de.bixilon.minosoft.gui.rendering.sky.planet.scatter.SunScatterRenderer
 import de.bixilon.minosoft.gui.rendering.sky.properties.OverworldSkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
@@ -45,11 +46,17 @@ class SkyRenderer(
     var properties by watched(connection.world.dimension?.skyProperties ?: OverworldSkyProperties)
     var matrix by watched(Mat4())
     val profile = connection.profiles.rendering.sky
-    private val box = SkyboxRenderer(this).register()
-    private val sun = SunRenderer(this).register()
-    private val moon = MoonRenderer(this).register()
+    private val box = SkyboxRenderer(this)
+    private val sun = SunRenderer(this)
+    private val sunScatter = SunScatterRenderer(this, sun)
+    private val moon = MoonRenderer(this)
 
     override fun init(latch: CountUpAndDownLatch) {
+        box.register()
+        sunScatter.register()
+        sun.register()
+        moon.register()
+
         for (renderer in renderer) {
             renderer.init()
         }
@@ -78,7 +85,7 @@ class SkyRenderer(
     }
 
     override fun drawPre() {
-        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
+        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
         for (renderer in renderer) {
             renderer.draw()
         }
