@@ -130,6 +130,14 @@ interface RenderSystem {
         setBlendFunction(BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO)
     }
 
+    @Deprecated("Highly unstable")
+    fun reloadShaders() {
+        val copy = shaders.toMutableSet()
+        for (shader in copy) {
+            shader.reload()
+        }
+    }
+
 
     companion object {
 

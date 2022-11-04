@@ -11,16 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.terminal.commands
+package de.bixilon.minosoft.terminal.commands.rendering
 
-import de.bixilon.minosoft.terminal.commands.connection.SayCommand
-import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
+import de.bixilon.minosoft.commands.nodes.LiteralNode
 
-object Commands {
-    val COMMANDS: List<Command> = listOf(
-        HelpCommand,
-        SayCommand,
-        ConnectionManageCommand,
-        ReloadCommand,
-    )
+object ReloadCommand : RenderingCommand {
+    override var node = LiteralNode("reload", setOf("rl"))
+        .addChild(LiteralNode("shaders", executor = {
+            it.connection.rendering!!.renderWindow.renderSystem.reloadShaders()
+            it.connection.util.sendDebugMessage("Shaders reloaded!")
+        }))
 }

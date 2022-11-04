@@ -105,6 +105,19 @@ class OpenGLShader(
         renderWindow.renderSystem.shaders += this
     }
 
+    override fun unload() {
+        check(loaded) { "Not loaded!" }
+        glDeleteProgram(this.shader)
+        loaded = false
+        this.shader = -1
+        renderWindow.renderSystem.shaders -= this
+    }
+
+    override fun reload() {
+        unload()
+        load()
+    }
+
 
     private fun getUniformLocation(uniformName: String): Int {
         val location = uniformLocations.getOrPut(uniformName) {
