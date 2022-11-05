@@ -30,5 +30,5 @@ void main() {
     gl_Position = uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f);
 
     finTextureIndex = uIndexLayer >> 28u;
-    finTextureCoordinates = vec3(CONST_UV[uvIndex] * 15.0f, ((uIndexLayer >> 12) & 0xFFFFu));
+    finTextureCoordinates = vec3(CONST_UV[uvIndex] * 20.0f, ((uIndexLayer >> 12) & 0xFFFFu));
 }

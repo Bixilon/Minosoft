@@ -21,4 +21,9 @@ class SkyC {
      * Biomes to query when calculating sky color
      */
     var biomeRadius by delegate(3) { check(it in 0..5) { "Must be in range 0..5" } }
+
+    /**
+     * Enables or disables the (ugly?) sun scatter
+     */
+    var sunScatter by delegate(true)
 }

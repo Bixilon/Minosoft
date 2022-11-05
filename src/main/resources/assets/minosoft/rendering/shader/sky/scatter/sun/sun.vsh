@@ -17,7 +17,10 @@ layout (location = 0) in vec3 vinPosition;
 
 uniform mat4 uScatterMatrix;
 
+out vec3 finFragmentPosition;
+
 
 void main() {
     gl_Position = uScatterMatrix * vec4(vinPosition, 1.0);
+    finFragmentPosition = vinPosition;
 }

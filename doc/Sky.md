@@ -38,7 +38,8 @@ Resources:
 - [ ] Atmosphere effect
 - [ ] improve fog color
 - [ ] Lens flare
-- [ ] sky texture
+- [x] sky texture
 - [ ] stars
 - [ ] Wither
 - [ ] Clouds
+- [ ] Lightmap

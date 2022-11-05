@@ -49,9 +49,9 @@ abstract class PlanetRenderer(
 
     private fun prepareMesh() {
         mesh.addYQuad(
-            start = Vec2(-0.15f, -0.15f),
+            start = Vec2(-0.2f, -0.2f),
             y = 1f,
-            end = Vec2(+0.15f, +0.15f),
+            end = Vec2(+0.2f, +0.2f),
             uvStart = uvStart,
             uvEnd = uvEnd,
             vertexConsumer = { position, uv ->
@@ -83,7 +83,7 @@ abstract class PlanetRenderer(
 
         matrix.rotateAssign(calculateAngle().rad, Vec3(0, 0, 1))
 
-        matrix.translateAssign(Vec3(0.0f, -modifier, 0.0f)) // moves the planet closer to the player (appears appears bigger)
+        matrix.translateAssign(Vec3(0.0f, -modifier, 0.0f)) // moves the planet closer to the player (appears bigger)
 
 
         this.matrix = matrix
