@@ -50,6 +50,9 @@ class SkyRenderer(
     private val sun = SunRenderer(this)
     private val sunScatter = SunScatterRenderer(this, sun)
     private val moon = MoonRenderer(this)
+    var time = connection.world.time
+        private set
+    private var updateTime: Boolean = true
 
     override fun init(latch: CountUpAndDownLatch) {
         box.register()
@@ -66,11 +69,7 @@ class SkyRenderer(
         for (renderer in renderer) {
             renderer.postInit()
         }
-        connection.world::time.observe(this) {
-            for (renderer in renderer) {
-                renderer.onTimeUpdate(it)
-            }
-        }
+        connection.world::time.observe(this) { updateTime = true }
         connection.events.listen<CameraMatrixChangeEvent> {
             matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
         }
@@ -78,6 +77,13 @@ class SkyRenderer(
     }
 
     override fun prePrepareDraw() {
+        if (updateTime) {
+            this.time = connection.world.time
+            for (renderer in renderer) {
+                renderer.onTimeUpdate(time)
+            }
+            updateTime = false
+        }
         for (renderer in renderer) {
             renderer.updateAsync()
             renderer.update()

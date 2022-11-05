@@ -22,6 +22,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
@@ -36,7 +37,6 @@ import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.sky.properties.DefaultSkyProperties
-import de.bixilon.minosoft.gui.rendering.sky.properties.SkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
@@ -53,10 +53,13 @@ import kotlin.math.sin
 class SkyboxRenderer(
     private val sky: SkyRenderer,
 ) : SkyChildRenderer {
-    private val textureCache: MutableMap<SkyProperties, AbstractTexture> = mutableMapOf()
+    private val textureCache: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf()
     private val colorShader = sky.renderSystem.createShader(minosoft("sky/skybox"))
-    private val mesh = SkyboxMesh(sky.renderWindow)
+    private val textureShader = sky.renderSystem.createShader(minosoft("sky/skybox/texture"))
+    private val colorMesh = SkyboxMesh(sky.renderWindow)
+    private val textureMesh = SkyboxTextureMesh(sky.renderWindow)
     private var updateColor = true
+    private var updateTexture = true
     private var updateMatrix = true
     private var color: RGBColor by watched(ChatColors.BLUE)
 
@@ -72,6 +75,8 @@ class SkyboxRenderer(
 
     private var day = -1L
     private var intensity = 1.0f
+
+    private var texture = false
 
     init {
         sky::matrix.observe(this) { updateMatrix = true }
@@ -123,18 +128,21 @@ class SkyboxRenderer(
 
     override fun init() {
         colorShader.load()
+        textureShader.load()
 
         for (properties in DefaultSkyProperties) {
-            val textureName = properties.fixedTexture ?: continue
-            textureCache[properties] = sky.renderWindow.textureManager.staticTextures.createTexture(textureName)
+            val texture = properties.fixedTexture ?: continue
+            textureCache[texture] = sky.renderWindow.textureManager.staticTextures.createTexture(texture)
         }
     }
 
     override fun postInit() {
-        mesh.load()
+        colorMesh.load()
+        textureMesh.load()
+        sky.renderWindow.textureManager.staticTextures.use(textureShader)
     }
 
-    private fun updateUniforms() {
+    private fun updateColorShader() {
         if (updateColor) {
             colorShader.setRGBColor("uSkyColor", color)
             updateColor = false
@@ -145,15 +153,37 @@ class SkyboxRenderer(
         }
     }
 
+    private fun updateTextureShader(texture: ResourceLocation) {
+        if (updateTexture) {
+            val cache = this.textureCache[texture] ?: throw IllegalStateException("Texture not loaded!")
+            textureShader.setUInt("uIndexLayer", cache.shaderId)
+            updateTexture = false
+        }
+        if (updateMatrix) {
+            textureShader.setMat4("uSkyViewProjectionMatrix", sky.matrix)
+            updateMatrix = false
+        }
+    }
+
     override fun updateAsync() {
         color = calculateSkyColor() ?: DEFAULT_SKY_COLOR
     }
 
     override fun draw() {
-        colorShader.use()
-        updateUniforms()
-
-        mesh.draw()
+        val texture = sky.properties.fixedTexture
+        if (this.texture != (texture != null)) {
+            this.texture = (texture != null)
+            updateMatrix = true
+        }
+        if (texture != null) {
+            textureShader.use()
+            updateTextureShader(texture)
+            textureMesh.draw()
+        } else {
+            colorShader.use()
+            updateColorShader()
+            colorMesh.draw()
+        }
     }
 
     private fun calculateBiomeAvg(average: (Biome) -> RGBColor?): RGBColor? {

@@ -16,40 +16,19 @@
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in uint uvIndex;
 
-uniform mat4 uViewProjectionMatrix;
+uniform mat4 uSkyViewProjectionMatrix;
 uniform uint uIndexLayer;
-uniform float uTextureOffset;
-uniform float uRadius;
-uniform vec2 uCenter;
-uniform float uCameraHeight;
 
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
-out vec3 finFragmentPosition;
-
 
 #include "minosoft:uv"
 #include "minosoft:color"
 #include "minosoft:light"
 
 void main() {
-    vec3 position = vinPosition;
-    position = position * uRadius;
-    if (position.y < 0.0f) {
-        position.y = uCameraHeight - 300;
-    } else if (position.y > 0.0f) {
-        position.y = uCameraHeight + 300;
-    }
-    position.x += uCenter.x;
-    position.z += uCenter.y;
-    gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
+    gl_Position = uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f);
 
     finTextureIndex = uIndexLayer >> 28u;
-    vec2 uv = CONST_UV[uvIndex];
-    uv.x *= (uRadius / 5.0f);
-    uv.y *= (300 / 5.0f);
-
-    finTextureCoordinates = vec3(uv, ((uIndexLayer >> 12) & 0xFFFFu));
-    finTextureCoordinates.x += uTextureOffset;
-    finTextureCoordinates.y += uTextureOffset;
+    finTextureCoordinates = vec3(CONST_UV[uvIndex] * 15.0f, ((uIndexLayer >> 12) & 0xFFFFu));
 }
