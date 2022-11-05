@@ -34,7 +34,7 @@ Resources:
 
 ## Tasks
 
-- [ ] Light scatter
+- [x] Light scatter
 - [ ] Atmosphere effect
 - [ ] improve fog color
 - [ ] Lens flare

@@ -36,11 +36,11 @@ uniform vec3 uSunPosition;
 
 #define END_DISTANCE MAX_DISTANCE - 0.2f
 
-#define YELLOWISH vec3(0.9f, 0.8f, 0.25f)
+#define YELLOWISH vec3(1.0f, 0.6f, 0.15f)
 #define REDISH vec3(1.0f, 0.4f, 0.05f)
 
 void main() {
-    foutColor = vec4(REDISH, uIntensity * 0.8f);
+    foutColor = vec4(REDISH, uIntensity);
     float distance = length(uSunPosition - finFragmentPosition);
 
     float distanceMultiplier = 0.0f;

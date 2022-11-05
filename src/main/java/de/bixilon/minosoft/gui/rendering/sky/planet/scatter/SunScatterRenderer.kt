@@ -56,10 +56,9 @@ class SunScatterRenderer(
     }
 
     private fun calculateIntensity(progress: Float): Float {
-        val delta = (abs(progress - 0.5f) * 2.0f)
-        val sine = minOf(sin(delta * PI.toFloat() / 2.0f), 0.6f)
+        val delta = (abs(progress) * 2.0f)
 
-        return 1.0f - sine
+        return maxOf(sin(delta * PI.toFloat() / 2.0f), 0.5f)
     }
 
     private fun calculateSunPosition(): Vec3 {
@@ -79,9 +78,9 @@ class SunScatterRenderer(
         if (!sky.profile.sunScatter || sky.time.phase == DayPhases.DAY || sky.time.phase == DayPhases.NIGHT || !sky.properties.sun) {
             return
         }
+        shader.use()
         if (timeUpdate) {
             calculateMatrix()
-            shader.use()
             shader.setMat4("uScatterMatrix", matrix)
             shader.setFloat("uIntensity", calculateIntensity(sky.time.progress))
             shader.setVec3("uSunPosition", calculateSunPosition())
