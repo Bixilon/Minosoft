@@ -15,7 +15,9 @@ package de.bixilon.minosoft.recipes.crafting
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.recipes.Ingredient
+import de.bixilon.minosoft.recipes.RecipeCategories
 import de.bixilon.minosoft.recipes.RecipeFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -23,6 +25,7 @@ class ShapedRecipe(
     val width: Int,
     val height: Int,
     val group: String,
+    override val category: RecipeCategories?,
     val ingredients: Array<Ingredient>,
     val result: ItemStack?,
 ) : CraftingRecipe {
@@ -35,12 +38,14 @@ class ShapedRecipe(
             val width = buffer.readVarInt()
             val height = buffer.readVarInt()
             val group = buffer.readString()
-            val ingredients = buffer.readIngredientArray(width * height)
+            val category = if (buffer.versionId >= ProtocolVersions.V_22W42A) RecipeCategories[buffer.readVarInt()] else null
+            val ingredients = buffer.readArray(width * height) { buffer.readIngredient() }
             val result = buffer.readItemStack()
             return ShapedRecipe(
                 width = width,
                 height = height,
                 group = group,
+                category = category,
                 ingredients = ingredients,
                 result = result
             )

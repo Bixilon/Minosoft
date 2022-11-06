@@ -45,7 +45,7 @@ class EncryptionC2SP private constructor(
                 buffer.writeBoolean(false)
                 val nonce = nonce as EncryptionSignatureData
                 buffer.writeLong(nonce.salt)
-                buffer.writeSignatureData(nonce.signatureData)
+                buffer.writeByteArray(nonce.signature)
             }
         }
     }

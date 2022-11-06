@@ -25,11 +25,11 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 @Deprecated("TODO")
 class ResourceParser(
     val registry: AbstractRegistry<*>?,
-) : ArgumentParser<IntRange> {
+) : ArgumentParser<Any> {
     override val examples: List<Any> = listOf("TODO")
     override val placeholder = ChatComponent.of("<TODO>")
 
-    override fun parse(reader: CommandReader): IntRange {
+    override fun parse(reader: CommandReader): Any {
         TODO()
     }
 

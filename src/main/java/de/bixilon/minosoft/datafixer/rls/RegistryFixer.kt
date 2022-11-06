@@ -20,6 +20,7 @@ object RegistryFixer : ResourceLocationFixer {
     private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
         "dimension" to "dimension_type",
         "motive" to "motif",
+        "worldgen/biome" to "biome",
     ).asResourceLocationMap()
 
     override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {

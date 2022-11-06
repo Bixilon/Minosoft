@@ -40,12 +40,13 @@ class LegacyTabListS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
+        TODO("Can not handle tab packet!")
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Legacy Tab list data (items=$items)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Legacy tab list data (items=$items)" }
     }
 }

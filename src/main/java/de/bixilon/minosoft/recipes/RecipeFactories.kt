@@ -20,25 +20,37 @@ import de.bixilon.minosoft.recipes.heat.BlastingRecipe
 import de.bixilon.minosoft.recipes.heat.CampfireRecipe
 import de.bixilon.minosoft.recipes.heat.SmeltingRecipe
 import de.bixilon.minosoft.recipes.heat.SmokingRecipe
+import de.bixilon.minosoft.recipes.special.BookCloningRecipe
+import de.bixilon.minosoft.recipes.special.RepairItemRecipe
+import de.bixilon.minosoft.recipes.special.SuspiciousStewRecipe
+import de.bixilon.minosoft.recipes.special.TippedArrowRecipe
+import de.bixilon.minosoft.recipes.special.banner.BannerDuplicateRecipe
+import de.bixilon.minosoft.recipes.special.banner.ShieldDecorationRecipe
+import de.bixilon.minosoft.recipes.special.color.ArmorDyeRecipe
+import de.bixilon.minosoft.recipes.special.color.ShulkerBoxColoringRecipe
+import de.bixilon.minosoft.recipes.special.firework.FireworkRocketRecipe
+import de.bixilon.minosoft.recipes.special.firework.FireworkStarFadeRecipe
+import de.bixilon.minosoft.recipes.special.firework.FireworkStarRecipe
+import de.bixilon.minosoft.recipes.special.map.MapCloningRecipe
+import de.bixilon.minosoft.recipes.special.map.MapExtendingRecipe
 
 object RecipeFactories : DefaultFactory<RecipeFactory<*>>(
     ShapelessRecipe,
     ShapedRecipe,
-    // ToDo:
-    //  crafting_special_armordye
-    //  crafting_special_bookcloning
-    //  crafting_special_mapcloning
-    //  crafting_special_mapextending
-    //  crafting_special_firework_rocket
-    //  crafting_special_firework_star
-    //  crafting_special_firework_star_fade
-    //  crafting_special_repairitem
-    //  crafting_special_tippedarrow
-    //  crafting_special_bannerduplicate
-    //  crafting_special_banneraddpattern
-    //  crafting_special_shielddecoration
-    //  crafting_special_shulkerboxcoloring
-    //  crafting_special_suspiciousstew
+
+    ArmorDyeRecipe,
+    BookCloningRecipe,
+    MapCloningRecipe,
+    MapExtendingRecipe,
+    FireworkRocketRecipe,
+    FireworkStarRecipe,
+    FireworkStarFadeRecipe,
+    TippedArrowRecipe,
+    BannerDuplicateRecipe,
+    ShieldDecorationRecipe,
+    ShulkerBoxColoringRecipe,
+    SuspiciousStewRecipe,
+    RepairItemRecipe,
 
     SmeltingRecipe,
     BlastingRecipe,

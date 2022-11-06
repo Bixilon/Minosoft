@@ -66,6 +66,11 @@ open class InByteBuffer {
         return bytes[pointer++]
     }
 
+    open fun readByteArray(array: ByteArray) {
+        System.arraycopy(bytes, pointer, array, 0, array.size)
+        pointer += array.size
+    }
+
     open fun readByteArray(length: Int = readVarInt()): ByteArray {
         check(length <= bytes.size) { "Trying to allocate too much memory!" }
         val array = ByteArray(length)
@@ -342,6 +347,7 @@ open class InByteBuffer {
                 }
                 out
             }
+
             NBTTagTypes.COMPOUND -> {
                 val out: MutableMap<String, Any> = mutableMapOf()
                 while (true) {
@@ -356,6 +362,7 @@ open class InByteBuffer {
                 }
                 out
             }
+
             NBTTagTypes.INT_ARRAY -> readIntArray(readInt())
             NBTTagTypes.LONG_ARRAY -> readLongArray(readInt())
         }

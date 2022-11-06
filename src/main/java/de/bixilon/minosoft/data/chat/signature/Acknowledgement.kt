@@ -13,11 +13,16 @@
 
 package de.bixilon.minosoft.data.chat.signature
 
+import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
+import java.util.*
+
 class Acknowledgement(
+    val offset: Int,
     val lastSeen: LastSeenMessageList,
     val lastReceived: LastSeenMessage? = null,
+    val acknowledged: BitSet,
 ) {
     companion object {
-        val EMPTY = Acknowledgement(LastSeenMessageList(emptyArray()), null)
+        val EMPTY = Acknowledgement(0, LastSeenMessageList(emptyArray()), null, BitSet.valueOf(byteArrayOf()))
     }
 }

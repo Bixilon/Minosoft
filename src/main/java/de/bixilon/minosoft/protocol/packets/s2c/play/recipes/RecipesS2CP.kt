@@ -43,6 +43,9 @@ class RecipesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 type = buffer.readResourceLocation()
             }
             val factory = RecipeFactories[type]
+            if (factory == null) {
+                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Can not find recipe type $type" }
+            }
             val recipe = factory?.build(buffer) ?: OtherRecipe(type)
             recipes[id] = recipe
         }

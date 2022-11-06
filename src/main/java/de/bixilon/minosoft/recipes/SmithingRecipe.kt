@@ -22,6 +22,7 @@ class SmithingRecipe(
     val ingredient: Ingredient,
     val result: ItemStack?,
 ) : Recipe {
+    override val category: RecipeCategories? get() = null
 
     companion object : RecipeFactory<SmithingRecipe> {
         override val RESOURCE_LOCATION = "smithing".toResourceLocation()

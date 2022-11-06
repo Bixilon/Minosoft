@@ -19,8 +19,14 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import java.util.*
 
 class TabList {
-    val tabListItemsByUUID: MutableMap<UUID, PlayerAdditional> = mutableMapOf()
-    val tabListItemsByName: MutableMap<String, PlayerAdditional> = mutableMapOf()
+    val uuid: MutableMap<UUID, PlayerAdditional> = mutableMapOf()
+    val name: MutableMap<String, PlayerAdditional> = mutableMapOf()
     var header by watched(ChatComponent.of(""))
     var footer by watched(ChatComponent.of(""))
+
+
+    fun remove(uuid: UUID) {
+        val entry = this.uuid.remove(uuid) ?: return
+        name.remove(entry.name)
+    }
 }

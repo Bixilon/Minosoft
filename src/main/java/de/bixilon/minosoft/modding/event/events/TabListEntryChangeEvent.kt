@@ -21,8 +21,8 @@ import java.util.*
 @Deprecated("Observables")
 class TabListEntryChangeEvent(
     connection: PlayConnection,
-    val items: Map<UUID, AdditionalDataUpdate?>,
+    val entries: Map<UUID, AdditionalDataUpdate?>,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, packet.items)
+    constructor(connection: PlayConnection, packet: TabListS2CP) : this(connection, packet.entries)
 }

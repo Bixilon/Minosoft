@@ -11,11 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.chat.signature
+package de.bixilon.minosoft.recipes.special
 
-import java.util.*
+import de.bixilon.minosoft.recipes.RecipeCategories
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-class LastSeenMessage(
-    val profile: UUID,
-    val signature: ByteArray,
-)
+class RepairItemRecipe(
+    override val category: RecipeCategories?,
+) : SpecialRecipe {
+
+    companion object : SpecialRecipeFactory<RepairItemRecipe> {
+        override val RESOURCE_LOCATION = minecraft("crafting_special_repairitem")
+
+        override fun build(category: RecipeCategories?): RepairItemRecipe {
+            return RepairItemRecipe(category)
+        }
+    }
+}

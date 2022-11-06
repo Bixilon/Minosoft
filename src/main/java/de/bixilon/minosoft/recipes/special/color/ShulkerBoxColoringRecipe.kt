@@ -11,12 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.protocol.encryption
+package de.bixilon.minosoft.recipes.special.color
 
-data class SignatureData(
-    val signature: ByteArray,
-) {
-    companion object {
-        val EMPTY = SignatureData(byteArrayOf())
+import de.bixilon.minosoft.recipes.RecipeCategories
+import de.bixilon.minosoft.recipes.special.SpecialRecipe
+import de.bixilon.minosoft.recipes.special.SpecialRecipeFactory
+import de.bixilon.minosoft.util.KUtil.minecraft
+
+class ShulkerBoxColoringRecipe(
+    override val category: RecipeCategories?,
+) : SpecialRecipe {
+
+    companion object : SpecialRecipeFactory<ShulkerBoxColoringRecipe> {
+        override val RESOURCE_LOCATION = minecraft("crafting_special_shulkerboxcoloring")
+
+        override fun build(category: RecipeCategories?): ShulkerBoxColoringRecipe {
+            return ShulkerBoxColoringRecipe(category)
+        }
     }
 }

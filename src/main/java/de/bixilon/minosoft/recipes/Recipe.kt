@@ -13,4 +13,6 @@
 
 package de.bixilon.minosoft.recipes
 
-interface Recipe
+interface Recipe {
+    val category: RecipeCategories?
+}

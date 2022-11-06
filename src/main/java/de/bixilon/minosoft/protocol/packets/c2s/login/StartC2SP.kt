@@ -27,14 +27,18 @@ import java.util.*
 @LoadPacket(state = ProtocolStates.LOGIN)
 class StartC2SP(
     val username: String,
+    val sessionId: UUID,
     val publicKey: PlayerPublicKey?,
     val profileUUID: UUID? = null,
 ) : PlayC2SPacket {
 
-    constructor(player: LocalPlayerEntity) : this(player.name, player.privateKey?.playerKey, player.uuid)
+    constructor(player: LocalPlayerEntity, sessionId: UUID) : this(player.name, sessionId, player.privateKey?.playerKey, player.uuid)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(username)
+        if (buffer.versionId >= ProtocolVersions.V_22W42A) {
+            buffer.writeUUID(sessionId)
+        }
         if (buffer.versionId >= ProtocolVersions.V_22W17A) {
             buffer.writeOptional(publicKey) { buffer.writePublicKey(it) }
         }

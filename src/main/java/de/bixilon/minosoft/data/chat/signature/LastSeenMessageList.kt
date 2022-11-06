@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.chat.signature
 
+import de.bixilon.minosoft.data.chat.signature.lastSeen.LastSeenMessage
+
 class LastSeenMessageList(
     val messages: Array<LastSeenMessage>,
 )

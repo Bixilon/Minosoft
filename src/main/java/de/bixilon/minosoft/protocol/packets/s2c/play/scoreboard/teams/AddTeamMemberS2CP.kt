@@ -39,7 +39,7 @@ class AddTeamMemberS2CP(
         team.members += members
 
         for (member in members) {
-            connection.tabList.tabListItemsByName[member]?.team = team
+            connection.tabList.name[member]?.team = team
         }
 
         connection.scoreboardManager.updateScoreTeams(team, members)

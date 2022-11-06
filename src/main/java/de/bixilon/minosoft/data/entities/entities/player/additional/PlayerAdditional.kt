@@ -29,6 +29,7 @@ class PlayerAdditional(
     properties: PlayerProperties? = null,
     team: Team? = null,
     publicKey: PlayerPublicKey? = null,
+    listed: Boolean = true,
 ) : Comparable<PlayerAdditional> {
     var name by watched(name)
     var ping by watched(ping)
@@ -37,17 +38,18 @@ class PlayerAdditional(
     var properties by watched(properties)
     var team by watched(team)
     var publicKey by watched(publicKey)
+    var listed by watched(listed)
 
     val tabDisplayName: ChatComponent
         get() = displayName?.let { team?.decorateName(it) ?: it } ?: ChatComponent.of(name)
 
     fun merge(data: AdditionalDataUpdate) {
-        genericMerge(data)
+        spareMerge(data)
         data.gamemode?.let { gamemode = it }
         data.publicKey?.let { publicKey = it }
     }
 
-    fun genericMerge(data: AdditionalDataUpdate) {
+    fun spareMerge(data: AdditionalDataUpdate) {
         data.name?.let { name = it }
         data.ping?.let { ping = it }
 
@@ -64,6 +66,7 @@ class PlayerAdditional(
             this.team = null
         }
         data.team?.let { team = it }
+        data.listed?.let { listed = it }
     }
 
     override fun compareTo(other: PlayerAdditional): Int {

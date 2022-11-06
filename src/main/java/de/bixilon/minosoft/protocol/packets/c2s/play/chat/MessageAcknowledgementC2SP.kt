@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s.play.chat
 
-import de.bixilon.minosoft.data.chat.signature.Acknowledgement
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
@@ -22,14 +21,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket(threadSafe = false)
 class MessageAcknowledgementC2SP(
-    val acknowledgement: Acknowledgement,
+    val offset: Int,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeAcknowledgement(acknowledgement)
+        buffer.writeVarInt(offset)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Message acknowledgement (acknowledgement=$acknowledgement)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Message acknowledgement (acknowledgement=$offset)" }
     }
 }

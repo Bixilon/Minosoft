@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -28,7 +28,7 @@ class SignedChatMessageC2SP(
     val message: ByteArray,
     val time: Instant = Instant.now(),
     val salt: Long,
-    val signature: SignatureData? = null,
+    val signature: ByteArray? = null,
     val previewed: Boolean = false,
     val acknowledgement: Acknowledgement?,
 ) : PlayC2SPacket {
@@ -42,8 +42,14 @@ class SignedChatMessageC2SP(
             buffer.writeInstant(time)
         }
         buffer.writeLong(salt)
-        buffer.writeSignatureData(signature ?: SignatureData.EMPTY)
-        if (buffer.versionId >= ProtocolVersions.V_22W19A) {
+
+        if (buffer.versionId >= ProtocolVersions.V_22W42A) {
+            buffer.writeOptional(signature) { buffer.writeSignatureData(it) }
+        } else {
+            buffer.writeSignatureData(signature ?: KUtil.EMPTY_BYTE_ARRAY)
+        }
+
+        if (buffer.versionId >= ProtocolVersions.V_22W19A && buffer.versionId < ProtocolVersions.V_22W42A) {
             buffer.writeBoolean(previewed)
         }
         if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE5) {

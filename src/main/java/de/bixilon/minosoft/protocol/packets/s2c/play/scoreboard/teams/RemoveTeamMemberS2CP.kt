@@ -39,7 +39,7 @@ class RemoveTeamMemberS2CP(
         team.members -= members
 
         for (member in members) {
-            val item = connection.tabList.tabListItemsByName[member] ?: continue
+            val item = connection.tabList.name[member] ?: continue
             if (item.team != team) {
                 continue
             }

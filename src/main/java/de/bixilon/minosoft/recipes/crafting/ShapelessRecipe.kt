@@ -15,12 +15,15 @@ package de.bixilon.minosoft.recipes.crafting
 
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.recipes.Ingredient
+import de.bixilon.minosoft.recipes.RecipeCategories
 import de.bixilon.minosoft.recipes.RecipeFactory
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ShapelessRecipe(
     val group: String,
+    override val category: RecipeCategories?,
     val ingredients: Array<Ingredient>,
     val result: ItemStack?,
 ) : CraftingRecipe {
@@ -31,10 +34,12 @@ class ShapelessRecipe(
 
         override fun build(buffer: PlayInByteBuffer): ShapelessRecipe {
             val group = buffer.readString()
-            val ingredients = buffer.readIngredientArray()
+            val category = if (buffer.versionId >= ProtocolVersions.V_22W42A) RecipeCategories[buffer.readVarInt()] else null
+            val ingredients = buffer.readArray { buffer.readIngredient() }
             val result = buffer.readItemStack()
             return ShapelessRecipe(
                 group = group,
+                category = category,
                 ingredients = ingredients,
                 result = result,
             )

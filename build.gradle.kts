@@ -386,7 +386,7 @@ fun loadGit() {
     }
     if (project.version != nextVersion) {
         project.version = nextVersion
-        println("Version changed to ${project.version}")
+        logger.info("Version changed to ${project.version}")
     }
 }
 loadGit()
@@ -453,4 +453,12 @@ val fatJar = task("fatJar", type = Jar::class) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
     with(tasks["jar"] as CopySpec)
+}
+
+
+task("assetsProperties", type = JavaExec::class) {
+    dependsOn("processResources", "compileKotlin", "compileJava")
+    classpath(project.configurations.runtimeClasspath.get(), tasks["jar"])
+    standardOutput = System.out
+    mainClass.set("de.bixilon.minosoft.assets.properties.version.generator.AssetsPropertiesGenerator")
 }

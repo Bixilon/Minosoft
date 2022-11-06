@@ -15,5 +15,5 @@ package de.bixilon.minosoft.protocol.protocol.encryption
 
 class EncryptionSignatureData(
     val salt: Long,
-    val signatureData: SignatureData,
+    val signature: ByteArray,
 )

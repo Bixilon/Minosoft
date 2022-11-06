@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTextures
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.chat.ChatParameter
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
@@ -51,7 +52,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_1_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W28A
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
-import de.bixilon.minosoft.protocol.protocol.encryption.SignatureData
 import de.bixilon.minosoft.recipes.Ingredient
 import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.KUtil
@@ -330,6 +330,12 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
+    fun readBitSet(size: Int): BitSet {
+        val bytes = ByteArray(-Math.floorDiv(-size, Byte.SIZE_BITS))
+        readByteArray(bytes)
+        return BitSet.valueOf(bytes)
+    }
+
     fun <T> readRegistryItem(registry: AbstractRegistry<T>): T {
         return registry[readVarInt()]
     }
@@ -347,18 +353,42 @@ class PlayInByteBuffer : InByteBuffer {
         return ChatMessageSender(readUUID(), readChatComponent(), if (versionId >= ProtocolVersions.V_22W18A) readOptional { readChatComponent() } else null)
     }
 
-    fun readSignatureData(): SignatureData {
-        return SignatureData(readByteArray())
+    fun readSignatureData(): ByteArray {
+        if (versionId < ProtocolVersions.V_22W42A) {
+            return readByteArray()
+        }
+        return readByteArray(ChatSignatureProperties.SIGNATURE_SIZE)
     }
 
     fun readPlayerPublicKey(): PlayerPublicKey? {
         if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
             return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
         }
+        if (versionId >= ProtocolVersions.V_22W42A) {
+            val uuid = readUUID()
+            return readOptional { PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray()) }
+        }
         return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
     }
 
     fun readMessageHeader(): MessageHeader {
         return MessageHeader(readOptional { readByteArray() }, readUUID())
+    }
+
+    inline fun <reified T : Enum<T>> readEnumSet(values: Array<T>): EnumSet<T> {
+        val bitset = readBitSet(values.size)
+        val set = EnumSet.noneOf(T::class.java)
+        for (index in values.indices) {
+            if (!bitset.get(index)) {
+                continue
+            }
+            set += values[index]
+        }
+        return set
+    }
+
+    fun readChatMessageParameters(parameters: MutableMap<ChatParameter, ChatComponent>) {
+        parameters[ChatParameter.SENDER] = readChatComponent()
+        readOptional { readChatComponent() }?.let { parameters[ChatParameter.TARGET] = it }
     }
 }

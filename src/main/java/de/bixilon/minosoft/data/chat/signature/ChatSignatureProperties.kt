@@ -15,4 +15,5 @@ package de.bixilon.minosoft.data.chat.signature
 
 object ChatSignatureProperties {
     const val MESSAGE_TTL = 2 * 60 * 1000 // 2 Minutes
+    const val SIGNATURE_SIZE = 256
 }

@@ -51,12 +51,14 @@ import de.bixilon.minosoft.util.url.ResourceURLHandler
 import io.netty.channel.SimpleChannelInboundHandler
 import javafx.application.Platform
 import org.kamranzafar.jtar.TarHeader
+import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
 
 
 object KUtil {
     val RANDOM = Random()
+    val EMPTY_BYTE_ARRAY = ByteArray(0)
 
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
@@ -318,4 +320,9 @@ object KUtil {
             if (this is CharSequence) return this.length
             return toString().length
         }
+
+    fun secureRandomUUID(): UUID {
+        val random = SecureRandom()
+        return UUID(random.nextLong(), random.nextLong())
+    }
 }
