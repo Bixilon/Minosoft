@@ -364,11 +364,11 @@ class PlayInByteBuffer : InByteBuffer {
         if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
             return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
         }
-        if (versionId >= ProtocolVersions.V_22W42A) {
-            val uuid = readUUID()
+        if (versionId < ProtocolVersions.V_22W42A) {
             return readOptional { PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray()) }
         }
-        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
+        val uuid = readUUID()
+        return readOptional { PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray()) }
     }
 
     fun readMessageHeader(): MessageHeader {
