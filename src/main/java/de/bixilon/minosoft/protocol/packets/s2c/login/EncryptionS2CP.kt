@@ -48,7 +48,7 @@ class EncryptionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         val encryptedSecretKey = CryptManager.encryptData(publicKey, secretKey.encoded)
         val privateKey = connection.player.privateKey
-        if (connection.version.requiresSignedChat && privateKey != null) {
+        if (connection.version.requiresSignedLogin && privateKey != null) {
             val salt = SecureRandom().nextLong()
 
             val signature = CryptManager.createSignature(connection.version)

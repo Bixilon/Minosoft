@@ -28,18 +28,23 @@ object DefaultPluginHandler {
         registerBrand(connection)
     }
 
-    private fun registerBrand(connection: PlayConnection) {
-        val brandChannel = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
-        connection.pluginManager[brandChannel] = {
-            connection.serverInfo.brand = it.readString()
+    fun PlayConnection.getBrandChannel(): ResourceLocation {
+        return DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.resourceLocation
+    }
 
-            connection.sendBrand(brandChannel, if (connection.profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
+    private fun registerBrand(connection: PlayConnection) {
+        connection.pluginManager[connection.getBrandChannel()] = {
+            connection.serverInfo.brand = it.readString()
         }
     }
 
-    private fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
+    fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
         val buffer = PlayOutByteBuffer(this)
         buffer.writeByteArray(brand.encodeNetwork())
         sendPacket(PluginC2SP(channel, buffer))
+    }
+
+    fun PlayConnection.sendBrand() {
+        sendBrand(getBrandChannel(), if (profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
     }
 }

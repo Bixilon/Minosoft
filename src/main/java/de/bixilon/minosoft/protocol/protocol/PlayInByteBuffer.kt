@@ -360,15 +360,21 @@ class PlayInByteBuffer : InByteBuffer {
         return readByteArray(ChatSignatureProperties.SIGNATURE_SIZE)
     }
 
+    private fun _readPlayerPublicKey(): PlayerPublicKey {
+        return PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray())
+    }
+
     fun readPlayerPublicKey(): PlayerPublicKey? {
         if (versionId <= ProtocolVersions.V_22W18A) { // ToDo: find version
             return readNBT()?.let { PlayerPublicKey(it.asJsonObject()) }
         }
-        if (versionId < ProtocolVersions.V_22W42A) {
-            return readOptional { PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray()) }
+        if (versionId > ProtocolVersions.V_22W42A) {
+            val uuid = readUUID()
         }
-        val uuid = readUUID()
-        return readOptional { PlayerPublicKey(readInstant(), CryptManager.getPlayerPublicKey(readByteArray()), readByteArray()) }
+        if (versionId < ProtocolVersions.V_22W43A) {
+            return readOptional { _readPlayerPublicKey() }
+        }
+        return _readPlayerPublicKey()
     }
 
     fun readMessageHeader(): MessageHeader {

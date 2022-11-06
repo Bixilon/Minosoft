@@ -67,6 +67,7 @@ class Version(
     val maxChatMessageSize get() = if (versionId < ProtocolVersions.V_16W38A) 100 else 256
     val hasAttackCooldown get() = versionId >= ProtocolVersions.V_15W34A
     val requiresSignedChat get() = versionId >= ProtocolVersions.V_22W17A
+    val requiresSignedLogin get() = requiresSignedChat && versionId < ProtocolVersions.V_22W43A
     val supportsRGBChat get() = versionId >= ProtocolVersions.V_20W17A
     val jsonLanguage get() = versionId >= ProtocolVersions.V_18W02A
 }

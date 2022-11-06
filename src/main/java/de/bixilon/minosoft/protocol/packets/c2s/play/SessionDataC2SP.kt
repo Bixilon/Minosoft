@@ -10,46 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.login
+package de.bixilon.minosoft.protocol.packets.c2s.play
 
-import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.protocol.PlayerPublicKey
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-@LoadPacket(state = ProtocolStates.LOGIN)
-class StartC2SP(
-    val username: String,
+@LoadPacket
+class SessionDataC2SP(
     val sessionId: UUID,
-    val publicKey: PlayerPublicKey?,
-    val profileUUID: UUID? = null,
+    val publicKey: PlayerPublicKey,
 ) : PlayC2SPacket {
 
-    constructor(player: LocalPlayerEntity, sessionId: UUID) : this(player.name, sessionId, player.privateKey?.playerKey, player.uuid)
-
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeString(username)
-        if (buffer.versionId < ProtocolVersions.V_22W43A) {
-            if (buffer.versionId >= ProtocolVersions.V_22W42A) {
-                buffer.writeUUID(sessionId)
-            }
-            if (buffer.versionId >= ProtocolVersions.V_22W17A) {
-                buffer.writeOptional(publicKey) { buffer.writePublicKey(it) }
-            }
-        }
-        if (buffer.versionId >= ProtocolVersions.V_1_19_1_PRE2) {
-            buffer.writeOptional(profileUUID) { buffer.writeUUID(it) }
-        }
+        buffer.writeUUID(sessionId)
+        buffer.writePublicKey(publicKey)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Login start (username=$username, publicKey=$publicKey)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Session data (sessionId=$sessionId, publicKey=$publicKey)" }
     }
 }

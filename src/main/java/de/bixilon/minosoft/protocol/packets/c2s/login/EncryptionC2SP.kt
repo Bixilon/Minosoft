@@ -35,8 +35,8 @@ class EncryptionC2SP private constructor(
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByteArray(secret)
-        if (buffer.versionId < ProtocolVersions.V_22W17A) {
-            buffer.writeByteArray(nonce.nullCast<ByteArray>() ?: throw IllegalArgumentException("In < 22w17a the nonce must be a bytearray!"))
+        if (buffer.versionId < ProtocolVersions.V_22W17A || buffer.versionId >= ProtocolVersions.V_22W43A) {
+            buffer.writeByteArray(nonce.nullCast<ByteArray>() ?: throw IllegalArgumentException("In nonce must be a bytearray!"))
         } else {
             if (nonce is ByteArray) {
                 buffer.writeBoolean(true)
