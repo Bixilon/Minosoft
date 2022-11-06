@@ -11,19 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer.rls
+package de.bixilon.minosoft.data.registries.biomes
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-object RegistryFixer : ResourceLocationFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "dimension" to "dimension_type",
-        "motive" to "motif",
-        "worldgen/biome" to "biome",
-    ).asResourceLocationMap()
+enum class GrassColorModifiers {
+    NONE,
+    DARK_FOREST,
+    SWAMP,
+    ;
 
-    override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {
-        return RENAMES.getOrDefault(resourceLocation, resourceLocation)
+    companion object : ValuesEnum<GrassColorModifiers> {
+        override val VALUES = values()
+        override val NAME_MAP = EnumUtil.getEnumValues(VALUES)
+
+        val BIOME_MAP = mapOf(
+            DefaultBiomes.SWAMP to SWAMP,
+            DefaultBiomes.SWAMP_HILLS to SWAMP,
+
+            DefaultBiomes.DARK_FOREST to DARK_FOREST,
+            DefaultBiomes.DARK_FOREST_HILLS to DARK_FOREST,
+        )
     }
 }

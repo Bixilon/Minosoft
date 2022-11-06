@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.registries.biomes
 
 import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kutil.cast.CastUtil.nullCast
+import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -21,26 +21,21 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.tint.TintManager
+import de.bixilon.minosoft.gui.rendering.tint.TintManager.Companion.jsonTint
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import java.util.*
 
 data class Biome(
     override val resourceLocation: ResourceLocation,
-    val depth: Float,
-    val scale: Float,
     val temperature: Float,
     val downfall: Float,
+    val skyColor: RGBColor?,
     val waterColor: RGBColor?,
     val waterFogColor: RGBColor?,
-    val category: BiomeCategory,
+    val category: BiomeCategory?,
     val precipitation: BiomePrecipitation,
-    val skyColor: RGBColor,
-    val descriptionId: String?,
-    val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
 ) : RegistryItem() {
+    val grassColorModifier = GrassColorModifiers.BIOME_MAP[resourceLocation] ?: GrassColorModifiers.NONE
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
     val colorMapPixelIndex = downfallColorMapCoordinate shl 8 or temperatureColorMapCoordinate
@@ -62,23 +57,21 @@ data class Biome(
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Biome {
             check(registries != null) { "Registries is null!" }
+            val effects = data["effects"].toJsonObject() // nbt data
+            val skyColor = (data["sky_color"] ?: effects?.get("sky_color"))?.jsonTint()
+            val waterColor = (data["water_color"] ?: effects?.get("water_color"))?.jsonTint()
+            val waterFogColor = (data["water_fog_color"] ?: effects?.get("water_fog_color"))?.jsonTint()
+
             return Biome(
                 resourceLocation = resourceLocation,
-                depth = data["depth"]?.toFloat() ?: 0.0f,
-                scale = data["scale"]?.toFloat() ?: 0.0f,
                 temperature = data["temperature"]?.toFloat() ?: 0.0f,
                 downfall = data["downfall"]?.toFloat() ?: 0.0f,
-                waterColor = TintManager.getJsonColor(data["water_color"]?.toInt() ?: 0),
-                waterFogColor = TintManager.getJsonColor(data["water_fog_color"]?.toInt() ?: 0),
+                skyColor = skyColor,
+                waterColor = waterColor,
+                waterFogColor = waterFogColor,
                 category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
-                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION,
-                skyColor = data["sky_color"]?.toInt()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
-                descriptionId = data["water_fog_color"].nullCast(),
-                grassColorModifier = data["grass_color_modifier"].nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
-                    ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
-                    ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
-                    else -> GrassColorModifiers.NONE
-                }
+                //   precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION, TODO
+                precipitation = DEFAULT_PRECIPITATION,
             )
         }
 
@@ -87,10 +80,4 @@ data class Biome(
 
     }
 
-    enum class GrassColorModifiers {
-        NONE,
-        DARK_FOREST,
-        SWAMP,
-        ;
-    }
 }

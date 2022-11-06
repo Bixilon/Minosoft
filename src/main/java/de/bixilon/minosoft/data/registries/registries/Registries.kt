@@ -303,7 +303,7 @@ class Registries {
     }
 
     companion object {
-        val IGNORED_REGISTRIES = setOf("minecraft:worldgen/biome".toResourceLocation())
+        val IGNORED_REGISTRIES: Set<ResourceLocation> = setOf()
         private val PARENTABLE_FIELDS: List<Field>
         private val PARENTABLE_SET_PARENT_METHOD = Parentable::class.java.getDeclaredMethod("setParent", Any::class.java)
         private val TYPE_MAP: Map<Class<*>, Field>

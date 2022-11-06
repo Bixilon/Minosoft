@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.tint
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.biomes.GrassColorModifiers
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -51,9 +52,9 @@ class GrassTintCalculator : TintProvider {
         val color = getColor(biome.colorMapPixelIndex)
 
         return when (biome.grassColorModifier) {
-            Biome.GrassColorModifiers.NONE -> color
-            Biome.GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
-            Biome.GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
+            GrassColorModifiers.NONE -> color
+            GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
+            GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
         }
     }
 

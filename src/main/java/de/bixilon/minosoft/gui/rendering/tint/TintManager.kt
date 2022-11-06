@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.tint
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -116,6 +117,11 @@ class TintManager(private val connection: PlayConnection) {
                 return null
             }
             return color.asRGBColor()
+        }
+
+        fun Any?.jsonTint(): RGBColor? {
+            val rgb = this?.toInt() ?: return null
+            return getJsonColor(rgb)
         }
     }
 }

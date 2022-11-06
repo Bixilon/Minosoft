@@ -11,19 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.datafixer.rls
+package de.bixilon.minosoft.data.registries.biomes
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-object RegistryFixer : ResourceLocationFixer {
-    private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
-        "dimension" to "dimension_type",
-        "motive" to "motif",
-        "worldgen/biome" to "biome",
-    ).asResourceLocationMap()
+object DefaultBiomes {
+    val SWAMP = minecraft("swamp")
+    val SWAMP_HILLS = minecraft("swamp_hills")
 
-    override fun _fix(resourceLocation: ResourceLocation): ResourceLocation {
-        return RENAMES.getOrDefault(resourceLocation, resourceLocation)
-    }
+    val DARK_FOREST = minecraft("dark_forest")
+    val DARK_FOREST_HILLS = minecraft("dark_forest_hills")
 }
