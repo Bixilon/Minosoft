@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import java.util.*
 
 class CloudArray(
     val clouds: CloudsRenderer,
@@ -27,13 +26,8 @@ class CloudArray(
         mesh.load()
     }
 
-    private fun BitSet.getCloud(x: Int, z: Int): Boolean {
-        val offset = (x and CloudsRenderer.CLOUD_MATRIX_MASK) + (z and CloudsRenderer.CLOUD_MATRIX_MASK) * CloudsRenderer.CLOUD_MATRIX_SIZE
-        return get(offset)
-    }
-
     private fun build() {
-        val matrix = clouds.cloudMatrix
+        val matrix = clouds.matrix
         val matrixOffset = (offset * ARRAY_SIZE) and 0xFF
 
         for (z in 0 until ARRAY_SIZE) {
@@ -41,17 +35,17 @@ class CloudArray(
                 val matrixX = matrixOffset.x + x
                 val matrixZ = matrixOffset.y + z
 
-                if (!matrix.getCloud(matrixX, matrixZ)) {
+                if (!matrix[matrixX, matrixZ]) {
                     continue
                 }
 
                 val start = (this@CloudArray.offset * ARRAY_SIZE + Vec2i(x, z)) * CLOUD_SIZE
 
                 val cull = booleanArrayOf(
-                    matrix.getCloud(matrixX + 0, matrixZ - 1), // NORTH
-                    matrix.getCloud(matrixX + 0, matrixZ + 1), // SOUTH
-                    matrix.getCloud(matrixX - 1, matrixZ + 0), // WEST
-                    matrix.getCloud(matrixX + 1, matrixZ + 0), // EAST
+                    matrix[matrixX + 0, matrixZ - 1], // NORTH
+                    matrix[matrixX + 0, matrixZ + 1], // SOUTH
+                    matrix[matrixX - 1, matrixZ + 0], // WEST
+                    matrix[matrixX + 1, matrixZ + 0], // EAST
                 )
                 mesh.createCloud(start, start + CLOUD_SIZE, 0, 4f, cull)
             }

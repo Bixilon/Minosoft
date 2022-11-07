@@ -26,13 +26,9 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.readTexture
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.KUtil.minosoft
-import java.util.*
 import kotlin.math.abs
 
 class CloudsRenderer(
@@ -42,7 +38,7 @@ class CloudsRenderer(
 ) : Renderer, TranslucentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader(minosoft("sky/clouds"))
-    val cloudMatrix = BitSet(CLOUD_MATRIX_SIZE * CLOUD_MATRIX_SIZE)
+    val matrix = CloudMatrix()
     private var position = Vec2i(Int.MIN_VALUE)
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(4).unsafeCast()
 
@@ -50,20 +46,9 @@ class CloudsRenderer(
     override val skipTranslucent: Boolean
         get() = !sky.properties.clouds || !sky.profile.clouds || connection.profiles.block.viewDistance < 3
 
-    private fun loadCloudMatrix() {
-        val data = sky.renderWindow.connection.assetsManager[CLOUD_MATRIX].readTexture()
-
-        if (data.size.x != CLOUD_MATRIX_SIZE || data.size.y != CLOUD_MATRIX_SIZE) {
-            throw IllegalStateException("Cloud matrix has invalid size: ${data.size}")
-        }
-
-        for (i in 0 until CLOUD_MATRIX_SIZE * CLOUD_MATRIX_SIZE) {
-            cloudMatrix[i] = data.buffer.getInt(i * 4) ushr 24 == 0xFF
-        }
-    }
 
     override fun asyncInit(latch: CountUpAndDownLatch) {
-        loadCloudMatrix()
+        matrix.load(connection.assetsManager)
     }
 
     override fun init(latch: CountUpAndDownLatch) {
@@ -76,28 +61,38 @@ class CloudsRenderer(
         arrays[from] = CloudArray(this, arrays[from].offset + direction)
     }
 
-    private fun reset() {
-        // TODO: unload previous
-        val position = connection.player.positionInfo.chunkPosition
-        val cloudPosition = position shr 4
-        arrays[0] = CloudArray(this, cloudPosition)
-        arrays[1] = CloudArray(this, cloudPosition + Vec2i(1, 0))
-        arrays[2] = CloudArray(this, cloudPosition + Vec2i(0, 1))
-        arrays[3] = CloudArray(this, cloudPosition + Vec2i(1, 1))
+    private fun reset(cloudPosition: Vec2i) {
+        for (array in arrays.unsafeCast<Array<CloudArray?>>()) {
+            array?.unload()
+        }
+        arrays[0] = CloudArray(this, cloudPosition + Vec2i(+0, -1))
+        arrays[1] = CloudArray(this, cloudPosition + Vec2i(-1, -1))
+        arrays[2] = CloudArray(this, cloudPosition + Vec2i(+0, +0))
+        arrays[3] = CloudArray(this, cloudPosition + Vec2i(-1, +0))
     }
 
+    private fun Vec2i.cloudPosition(): Vec2i {
+        val position = this shr 4
+        if (this.x and 0x0F >= 8) {
+            position.x++
+        }
+        if (this.y and 0x0F >= 8) {
+            position.y++
+        }
+        return position
+    }
 
     override fun postPrepareDraw() {
         val position = connection.player.positionInfo.chunkPosition
         if (position == this.position) {
             return
         }
-        val cloudPosition = position shr 4
-        val arrayDelta = cloudPosition - (this.position shr 4)
+
+        val arrayDelta = position.cloudPosition() - this.position.cloudPosition()
 
         if (abs(arrayDelta.x) > 1 || abs(arrayDelta.y) > 1) {
             // major position change (e.g. teleport)
-            reset()
+            reset(position shr 4)
         } else {
             // push array in our direction
             if (arrayDelta.x == -1) {
@@ -126,7 +121,7 @@ class CloudsRenderer(
 
     override fun drawTranslucent() {
         shader.use()
-        shader.setVec4("uCloudsColor", Vec4(1.0f, 0.5, 1.0f, 1.0f))
+        shader.setVec4("uCloudsColor", Vec4(1.0f, 1.0f, 1.0f, 1.0f))
 
         for (array in arrays) {
             array.draw()
@@ -135,9 +130,6 @@ class CloudsRenderer(
 
     companion object : RendererBuilder<CloudsRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:clouds")
-        private val CLOUD_MATRIX = minecraft("environment/clouds").texture()
-        const val CLOUD_MATRIX_SIZE = 256
-        const val CLOUD_MATRIX_MASK = 0xFF
 
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudsRenderer? {

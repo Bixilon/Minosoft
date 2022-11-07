@@ -23,5 +23,5 @@ flat in float finAlpha;
 void main() {
     // TODO
     foutColor = uCloudsColor;
-    foutColor.r = finAlpha;
+ //   foutColor.r = finAlpha;
 }

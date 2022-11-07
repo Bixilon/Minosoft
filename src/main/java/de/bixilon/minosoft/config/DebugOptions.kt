@@ -17,4 +17,6 @@ object DebugOptions {
     const val INFINITE_TORCHES = false
 
     const val SIMULATE_TIME = true
+
+    const val CLOUD_RASTER = false
 }
