@@ -150,14 +150,14 @@ class BaseComponent : ChatComponent {
         fun parseExtra() {
             json["extra"].toJsonList()?.let {
                 for (data in it) {
-                    parts += ChatComponent.of(data, translator, currentParent)
+                    parts += ChatComponent.of(data, translator, currentParent, restrictedMode)
                 }
             }
         }
 
         json["text"]?.nullCast<String>()?.let {
             if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) != -1) {
-                this += ChatComponent.of(it, translator, parent)
+                this += ChatComponent.of(it, translator, parent, restrictedMode)
                 parseExtra()
                 return
             }
@@ -199,7 +199,7 @@ class BaseComponent : ChatComponent {
                     with.add(part ?: continue)
                 }
             }
-            parts += translator?.translate(it.toResourceLocation(), currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent)
+            parts += translator?.translate(it.toResourceLocation(), currentParent, restrictedMode, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent, restrictedMode)
         }
     }
 

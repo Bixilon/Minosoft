@@ -32,12 +32,12 @@ class LanguageList(
         return false
     }
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
         for (language in list) {
             if (language.canTranslate(key)) {
-                return language.translate(key, parent, data)
+                return language.translate(key, parent, restrictedMode, data)
             }
         }
-        return LanguageUtil.getFallbackTranslation(key, parent, data)
+        return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, data)
     }
 }

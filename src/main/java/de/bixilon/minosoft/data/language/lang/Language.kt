@@ -28,9 +28,9 @@ class Language(
         return data.containsKey(key?.path)
     }
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, *data)
-        return Companion.translate(placeholder, parent, this, *data)
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
+        val placeholder = this.data[key?.path] ?: return LanguageUtil.getFallbackTranslation(key, parent, restrictedMode, *data)
+        return Companion.translate(placeholder, parent, this, restrictedMode, *data)
     }
 
     override fun toString(): String {
@@ -42,7 +42,7 @@ class Language(
         private val FORMATTER_SPLIT_REGEX = "%[ds]".toRegex() // %s fell from a high place
 
 
-        fun translate(placeholder: String, parent: TextComponent? = null, translator: Translator? = null, vararg data: Any?): ChatComponent {
+        fun translate(placeholder: String, parent: TextComponent? = null, translator: Translator? = null, restrictedMode: Boolean = false, vararg data: Any?): ChatComponent {
 
             val ret = BaseComponent()
 
@@ -77,9 +77,9 @@ class Language(
 
             // create base component
             for ((index, part) in splitPlaceholder.withIndex()) {
-                ret += ChatComponent.of(part, translator, parent)
+                ret += ChatComponent.of(part, translator, parent, restrictedMode)
                 if (index < data.size) {
-                    ret += ChatComponent.of(arguments[index], translator, parent)
+                    ret += ChatComponent.of(arguments[index], translator, parent, restrictedMode)
                 }
             }
 

@@ -41,9 +41,9 @@ class SignedChatMessage(
         // ToDo: parent (formatting)
         val data = type.chat.formatParameters(parameters)
         text = if (connection.language.canTranslate(type.chat.translationKey.toResourceLocation())) {
-            connection.language.translate(type.chat.translationKey.toResourceLocation(), data = data)
+            connection.language.translate(type.chat.translationKey.toResourceLocation(), restrictedMode = true, data = data)
         } else {
-            Language.translate(type.chat.translationKey, data = data)
+            Language.translate(type.chat.translationKey, restrictedMode = true, data = data)
         }
         text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }

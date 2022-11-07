@@ -27,9 +27,9 @@ class MultiLanguageManager(
         return translators[key.namespace]?.canTranslate(key) == true
     }
 
-    override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        key ?: return ChatComponent.of("null: ${data.contentToString()}")
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, restrictedMode: Boolean, vararg data: Any?): ChatComponent {
+        key ?: return ChatComponent.of("null: ${data.contentToString()}", restrictedMode = restrictedMode)
 
-        return translators[key.namespace]?.translate(key, parent, *data) ?: ChatComponent.of("$key: ${data.contentToString()}")
+        return translators[key.namespace]?.translate(key, parent, restrictedMode, *data) ?: ChatComponent.of("$key: ${data.contentToString()}", restrictedMode = restrictedMode)
     }
 }
