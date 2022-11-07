@@ -20,6 +20,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer
@@ -38,7 +39,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 class SkyRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, PreDrawable {
+) : Renderer, PreDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
@@ -77,7 +78,7 @@ class SkyRenderer(
         connection.world::dimension.observe(this) { properties = it?.skyProperties ?: OverworldSkyProperties }
     }
 
-    override fun prePrepareDraw() {
+    override fun prepareDrawAsync() {
         if (updateTime) {
             this.time = connection.world.time
             for (renderer in renderer) {
@@ -87,6 +88,11 @@ class SkyRenderer(
         }
         for (renderer in renderer) {
             renderer.updateAsync()
+        }
+    }
+
+    override fun prePrepareDraw() {
+        for (renderer in renderer) {
             renderer.update()
         }
     }

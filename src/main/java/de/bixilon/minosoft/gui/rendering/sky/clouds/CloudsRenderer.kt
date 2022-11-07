@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -33,13 +34,15 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.minosoft
+import de.bixilon.minosoft.util.KUtil.murmur64
+import java.util.*
 import kotlin.math.abs
 
 class CloudsRenderer(
     private val sky: SkyRenderer,
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OpaqueDrawable {
+) : Renderer, OpaqueDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader(minosoft("sky/clouds"))
     val matrix = CloudMatrix()
@@ -52,6 +55,8 @@ class CloudsRenderer(
         private set
     private var maxDistance = 0.0f
     private var yOffset = 0.0f
+    private var day = -1L
+    private var randomSpeed = 0.0f
 
     override val skipOpaque: Boolean
         get() = !sky.properties.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3
@@ -153,7 +158,14 @@ class CloudsRenderer(
         } else {
             push(arrayDelta)
         }
-        check(arrays[4].offset == cloudPosition) // ToDo: remove debug check
+    }
+
+    override fun prepareDrawAsync() {
+        val day = sky.time.day
+        if (day != this.day) {
+            this.day = day
+            randomSpeed = Random(sky.time.age.murmur64()).nextFloat(0.0f, 0.1f)
+        }
     }
 
     override fun postPrepareDraw() {
@@ -184,7 +196,7 @@ class CloudsRenderer(
     }
 
     private fun getCloudSpeed(): Float {
-        return 0.5f
+        return randomSpeed + 0.1f
     }
 
     private fun updateOffset() {
