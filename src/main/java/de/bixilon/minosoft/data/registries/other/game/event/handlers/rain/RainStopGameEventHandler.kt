@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers.rain
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -22,6 +23,6 @@ object RainStopGameEventHandler : GameEventHandler {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:rain_stop".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
-        connection.world.weather = connection.world.weather.copy(rain = 0.0f)
+        connection.world.weather = WorldWeather(0.0f, 0.0f)
     }
 }
