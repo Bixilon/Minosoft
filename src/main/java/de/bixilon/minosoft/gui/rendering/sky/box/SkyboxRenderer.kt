@@ -196,25 +196,43 @@ class SkyboxRenderer(
         var count = 0
 
         val cameraPosition = this.cameraPosition?.inChunkPosition ?: return null
+        val offset = Vec3i(cameraPosition)
         val chunk = this.chunk ?: return null
 
+        val dimension = sky.connection.world.dimension ?: return null
+        val yRange: IntRange
+
+        if (dimension.supports3DBiomes) {
+            if (offset.y - radius < dimension.minY) {
+                offset.y = dimension.minY
+                yRange = IntRange(0, radius)
+            } else if (offset.y + radius > dimension.maxY) {
+                offset.y = dimension.maxY
+                yRange = IntRange(-radius, 0)
+            } else {
+                yRange = IntRange(-radius, radius)
+            }
+        } else {
+            yRange = 0..1
+        }
+
         for (xOffset in -radius..radius) {
-            for (yOffset in -radius..radius) {
+            for (yOffset in yRange) {
                 for (zOffset in -radius..radius) {
                     if (xOffset * xOffset + yOffset * yOffset + zOffset * zOffset > radius) {
                         continue
                     }
-                    val x = cameraPosition.x + xOffset
-                    val y = cameraPosition.y + yOffset
-                    val z = cameraPosition.z + zOffset
+                    val x = offset.x + xOffset
+                    val y = offset.y + yOffset
+                    val z = offset.z + zOffset
                     val neighbour = chunk.traceChunk(Vec2i(x shr 4, z shr 4)) ?: continue
                     val biome = neighbour.getBiome(x and 0x0F, y, z and 0x0F) ?: continue
 
+                    count++
                     val color = average(biome) ?: continue
                     red += color.red
                     green += color.green
                     blue += color.blue
-                    count++
                 }
             }
         }
