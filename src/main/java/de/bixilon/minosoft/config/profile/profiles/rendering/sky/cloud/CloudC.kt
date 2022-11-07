@@ -26,4 +26,9 @@ class CloudC {
      * Moves clouds from time to time
      */
     var movement by delegate(true)
+
+    /**
+     * Max y axis distance to clouds
+     */
+    var maxDistance by delegate(60.0f)
 }

@@ -50,6 +50,8 @@ class CloudsRenderer(
     private var movement = true
     var height: IntRange = sky.properties.getCloudHeight(connection)
         private set
+    private var maxDistance = 0.0f
+    private var yOffset = 0.0f
 
     override val skipOpaque: Boolean
         get() = !sky.properties.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3
@@ -64,7 +66,8 @@ class CloudsRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        sky.profile.clouds::movement.profileWatch(this, profile = connection.profiles.rendering) { this.movement = it }
+        sky.profile.clouds::movement.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.movement = it }
+        sky.profile.clouds::maxDistance.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.maxDistance = it }
         connection::state.observe(this) {
             if (it == PlayConnectionStates.SPAWNING) {
                 // reset clouds
@@ -196,6 +199,18 @@ class CloudsRenderer(
         this.offset = offset
     }
 
+    private fun setYOffset() {
+        val y = renderWindow.camera.matrixHandler.eyePosition.y
+        var yOffset = 0.0f
+        if (height.first - y > maxDistance) {
+            yOffset = y - height.first + maxDistance
+        }
+        if (yOffset != this.yOffset) {
+            shader.setFloat("uYOffset", yOffset)
+            this.yOffset = yOffset
+        }
+    }
+
     override fun drawOpaque() {
         shader.use()
         val color = calculateCloudsColor()
@@ -206,7 +221,7 @@ class CloudsRenderer(
         if (movement) {
             shader.setFloat("uOffset", offset)
         }
-
+        setYOffset()
 
 
         for (array in arrays) {

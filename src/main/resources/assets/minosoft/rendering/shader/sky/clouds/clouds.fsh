@@ -20,8 +20,11 @@ uniform vec4 uCloudsColor;
 flat in float finBrightness;
 
 
+#include "minosoft:fog"
+
 void main() {
     // TODO
     foutColor = uCloudsColor;
     foutColor.rgb *= finBrightness;
+    set_fog();
 }

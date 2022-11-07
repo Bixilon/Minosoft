@@ -16,16 +16,24 @@
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in uint vinSide;
 
+out vec3 finFragmentPosition;
 flat out float finBrightness;
+
 
 uniform mat4 uViewProjectionMatrix;
 uniform float uOffset;
+uniform float uYOffset;
+uniform vec3 uCameraPosition;
 
 
 void main() {
     vec3 position = vinPosition;
     position.x -= uOffset;
+    position.y += uYOffset;
+
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0);
+
+    finFragmentPosition = position / 3;
 
     switch (vinSide) {
         case 0u: finBrightness = 0.5f; break; // DOWN
