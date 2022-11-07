@@ -31,8 +31,8 @@ class CloudMesh(renderWindow: RenderWindow) : Mesh(renderWindow, CloudMeshStruct
 
 
     fun createCloud(start: Vec2i, end: Vec2i, yStart: Int, yEnd: Int, culling: BooleanArray) {
-        val start = Vec3(start.x, yStart, start.y)
-        val end = Vec3(end.x, yEnd, end.y)
+        val start = Vec3(start.x, yStart, start.y) + CLOUD_OFFSET
+        val end = Vec3(end.x, yEnd, end.y) + CLOUD_OFFSET
 
         addYQuad(Vec2(start.x, start.z), end.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
         addYQuad(Vec2(start.x, start.z), start.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }
@@ -58,5 +58,9 @@ class CloudMesh(renderWindow: RenderWindow) : Mesh(renderWindow, CloudMeshStruct
         val side: Int,
     ) {
         companion object : MeshStruct(CloudMeshStruct::class)
+    }
+
+    companion object {
+        private const val CLOUD_OFFSET = 0.24f // prevents face fighting with pretty much all blocks
     }
 }
