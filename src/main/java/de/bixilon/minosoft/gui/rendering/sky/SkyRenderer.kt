@@ -36,7 +36,7 @@ import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companio
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class SkyRenderer(
-    private val connection: PlayConnection,
+    val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, PreDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
@@ -46,13 +46,14 @@ class SkyRenderer(
     var properties by watched(connection.world.dimension?.skyProperties ?: OverworldSkyProperties)
     var matrix by watched(Mat4())
     val profile = connection.profiles.rendering.sky
+    var time = connection.world.time
+        private set
+    private var updateTime: Boolean = true
+
     private val box = SkyboxRenderer(this)
     private val sun = SunRenderer(this)
     private val sunScatter = SunScatterRenderer(this, sun)
     private val moon = MoonRenderer(this)
-    var time = connection.world.time
-        private set
-    private var updateTime: Boolean = true
 
     override fun init(latch: CountUpAndDownLatch) {
         box.register()

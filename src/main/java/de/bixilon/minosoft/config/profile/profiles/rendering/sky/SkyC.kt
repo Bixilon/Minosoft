@@ -26,4 +26,9 @@ class SkyC {
      * Enables or disables the (ugly?) sun scatter
      */
     var sunScatter by delegate(true)
+
+    /**
+     * Renders clouds
+     */
+    var clouds by delegate(true)
 }
