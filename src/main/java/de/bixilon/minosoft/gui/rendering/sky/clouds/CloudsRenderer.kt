@@ -20,7 +20,6 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -30,7 +29,6 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -46,7 +44,7 @@ class CloudsRenderer(
     private val shader = renderSystem.createShader(minosoft("sky/clouds"))
     val matrix = CloudMatrix()
     private var position = Vec2i(Int.MIN_VALUE)
-    private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(4).unsafeCast()
+    private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(3 * 3).unsafeCast()
     private var color: Vec3 = Vec3.EMPTY
     private var offset = 0.0f
     private var movement = true
@@ -76,31 +74,62 @@ class CloudsRenderer(
         }
     }
 
-    private fun push(from: Int, to: Int, direction: Directions) {
+    private fun push(from: Int, to: Int) {
         arrays[to].unload()
         arrays[to] = arrays[from]
-        arrays[from] = CloudArray(this, arrays[from].offset + direction)
+    }
+
+    private fun fill(index: Int) {
+        val offset = Vec2i((index % 3) - 1, (index / 3) - 1)
+        arrays[index] = CloudArray(this, position.cloudPosition() + offset)
+    }
+
+    fun pushX(negative: Boolean) {
+        if (negative) {
+            push(1, 0); push(2, 1)
+            push(4, 3); push(5, 4)
+            push(7, 6); push(8, 7)
+            fill(2); fill(5); fill(8)
+        } else {
+            push(1, 2); push(0, 1)
+            push(4, 5); push(3, 4)
+            push(7, 8); push(6, 7)
+            fill(0); fill(3); fill(6)
+        }
+    }
+
+    fun pushZ(negative: Boolean) {
+        if (negative) {
+            push(3, 0); push(6, 3)
+            push(4, 1); push(7, 4)
+            push(5, 2); push(8, 5)
+            fill(6); fill(7); fill(8)
+        } else {
+            push(3, 6); push(0, 3)
+            push(4, 7); push(1, 4)
+            push(5, 8); push(2, 5)
+            fill(0); fill(1); fill(2)
+        }
+    }
+
+    fun push(offset: Vec2i) {
+        if (offset.x != 0) pushX(offset.x == 1)
+        if (offset.y != 0) pushZ(offset.y == 1)
     }
 
     private fun reset(cloudPosition: Vec2i) {
         for (array in arrays.unsafeCast<Array<CloudArray?>>()) {
             array?.unload()
         }
-        arrays[0] = CloudArray(this, cloudPosition + Vec2i(-1, -1))
-        arrays[1] = CloudArray(this, cloudPosition + Vec2i(+0, -1))
-        arrays[2] = CloudArray(this, cloudPosition + Vec2i(-1, +0))
-        arrays[3] = CloudArray(this, cloudPosition + Vec2i(+0, +0))
+        for (x in -1..1) {
+            for (z in -1..1) {
+                arrays[(x + 1) + 3 * (z + 1)] = CloudArray(this, cloudPosition + Vec2i(x, z))
+            }
+        }
     }
 
     private fun Vec2i.cloudPosition(): Vec2i {
-        val position = this shr 4
-        if (this.x and 0x0F >= 8) {
-            position.x++
-        }
-        if (this.y and 0x0F >= 8) {
-            position.y++
-        }
-        return position
+        return this shr 4
     }
 
     private fun updatePosition() {
@@ -110,30 +139,18 @@ class CloudsRenderer(
             return
         }
 
-        val arrayDelta = position.cloudPosition() - this.position.cloudPosition()
+        val cloudPosition = position.cloudPosition()
+        val arrayDelta = cloudPosition - this.position.cloudPosition()
 
-        if (abs(arrayDelta.x) > 1 || abs(arrayDelta.y) > 1) {
-            // major position change (e.g. teleport)
-            reset(position shr 4)
-        } else {
-            // push array in our direction
-            if (arrayDelta.x == -1) {
-                push(from = 0, to = 1, Directions.WEST)
-                push(from = 2, to = 3, Directions.WEST)
-            } else if (arrayDelta.x == 1) {
-                push(from = 1, to = 0, Directions.EAST)
-                push(from = 3, to = 2, Directions.EAST)
-            }
-            if (arrayDelta.y == -1) {
-                push(from = 0, to = 2, Directions.NORTH)
-                push(from = 1, to = 3, Directions.NORTH)
-            } else if (arrayDelta.y == 1) {
-                push(from = 2, to = 0, Directions.SOUTH)
-                push(from = 3, to = 1, Directions.SOUTH)
-            }
-        }
 
         this.position = position
+        if (abs(arrayDelta.x) > 1 || abs(arrayDelta.y) > 1) {
+            // major position change (e.g. teleport)
+            reset(cloudPosition)
+        } else {
+            push(arrayDelta)
+        }
+        check(arrays[4].offset == cloudPosition) // ToDo: remove debug check
     }
 
     override fun postPrepareDraw() {
@@ -168,7 +185,7 @@ class CloudsRenderer(
     }
 
     private fun updateOffset() {
-        if (!movement) {
+        if (!movement || true) {
             return
         }
         var offset = this.offset
