@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
@@ -62,7 +62,8 @@ class FogManager(
     }
 
     private fun calculateFog(): Boolean {
-        var fogStart = if (!renderWindow.connection.profiles.rendering.fog.enabled) {
+        val sky = renderWindow.connection.world.dimension?.skyProperties
+        var fogStart = if (!renderWindow.connection.profiles.rendering.fog.enabled || sky == null || !sky.fog) {
             Float.MAX_VALUE
         } else {
             (renderWindow.connection.world.view.viewDistance - 2.0f) * ProtocolDefinition.SECTION_WIDTH_X  // could be improved? basically view distance in blocks and then the center of that chunk
@@ -98,7 +99,7 @@ class FogManager(
     }
 
     private fun saveFog() {
-        val time = TimeUtil.millis
+        val time = millis()
         updateValues(time)
         fogChange = time
         _fogStart = interpolatedFogStart
@@ -106,7 +107,7 @@ class FogManager(
         _fogColor = interpolatedFogColor
     }
 
-    private fun updateValues(time: Long = TimeUtil.millis) {
+    private fun updateValues(time: Long = millis()) {
         val delta = time - fogChange
         if (delta > FOG_INTERPOLATION_TIME) {
             // already up to date

@@ -185,7 +185,7 @@ class CloudsRenderer(
     }
 
     private fun updateOffset() {
-        if (!movement || true) {
+        if (!movement) {
             return
         }
         var offset = this.offset
