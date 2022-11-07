@@ -11,22 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.rendering.sky
+package de.bixilon.minosoft.config.profile.profiles.rendering.sky.cloud
 
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
-import de.bixilon.minosoft.config.profile.profiles.rendering.sky.cloud.CloudC
 
-class SkyC {
-
-    /**
-     * Biomes to query when calculating sky color
-     */
-    var biomeRadius by delegate(3) { check(it in 0..5) { "Must be in range 0..5" } }
+class CloudC {
 
     /**
-     * Enables or disables the (ugly?) sun scatter
+     * Renders clouds
      */
-    var sunScatter by delegate(true)
+    var enabled by delegate(true)
 
-    val clouds = CloudC()
+    /**
+     * Moves clouds from time to time
+     */
+    var movement by delegate(true)
 }

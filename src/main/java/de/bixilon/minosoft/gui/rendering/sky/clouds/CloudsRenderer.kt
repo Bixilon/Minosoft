@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.WorldTime
@@ -48,11 +49,12 @@ class CloudsRenderer(
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(4).unsafeCast()
     private var color: Vec3 = Vec3.EMPTY
     private var offset = 0.0f
-    var cloudHeight: IntRange = sky.properties.getCloudHeight(connection)
+    private var movement = true
+    var height: IntRange = sky.properties.getCloudHeight(connection)
         private set
 
     override val skipOpaque: Boolean
-        get() = !sky.properties.clouds || !sky.profile.clouds || connection.profiles.block.viewDistance < 3
+        get() = !sky.properties.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3
 
 
     override fun asyncInit(latch: CountUpAndDownLatch) {
@@ -64,11 +66,12 @@ class CloudsRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
+        sky.profile.clouds::movement.profileWatch(this, profile = connection.profiles.rendering) { this.movement = it }
         connection::state.observe(this) {
             if (it == PlayConnectionStates.SPAWNING) {
                 // reset clouds
                 position = Vec2i(Int.MIN_VALUE)
-                cloudHeight = sky.properties.getCloudHeight(connection)
+                height = sky.properties.getCloudHeight(connection)
             }
         }
     }
@@ -165,6 +168,9 @@ class CloudsRenderer(
     }
 
     private fun updateOffset() {
+        if (!movement) {
+            return
+        }
         var offset = this.offset
         offset += getCloudSpeed()
         if (offset > MAX_OFFSET) {
@@ -180,7 +186,9 @@ class CloudsRenderer(
             shader.setVec4("uCloudsColor", Vec4(color, 1.0f))
             this.color = color
         }
-        shader.setFloat("uOffset", offset)
+        if (movement) {
+            shader.setFloat("uOffset", offset)
+        }
 
 
 
