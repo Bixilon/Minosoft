@@ -19,10 +19,13 @@ layout (location = 1) in uint vinSide;
 flat out float finBrightness;
 
 uniform mat4 uViewProjectionMatrix;
+uniform float uOffset;
 
 
 void main() {
-    gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0);
+    vec3 position = vinPosition;
+    position.x -= uOffset;
+    gl_Position = uViewProjectionMatrix * vec4(position, 1.0);
 
     switch (vinSide) {
         case 0u: finBrightness = 0.5f; break; // DOWN

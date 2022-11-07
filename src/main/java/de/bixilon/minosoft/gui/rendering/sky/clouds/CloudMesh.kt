@@ -30,9 +30,9 @@ class CloudMesh(renderWindow: RenderWindow) : Mesh(renderWindow, CloudMeshStruct
     }
 
 
-    fun createCloud(start: Vec2i, end: Vec2i, yOffset: Int, height: Float, culling: BooleanArray) {
-        val start = Vec3(start.x, yOffset, start.y)
-        val end = Vec3(end.x, yOffset + height, end.y)
+    fun createCloud(start: Vec2i, end: Vec2i, yStart: Int, yEnd: Int, culling: BooleanArray) {
+        val start = Vec3(start.x, yStart, start.y)
+        val end = Vec3(end.x, yEnd, end.y)
 
         addYQuad(Vec2(start.x, start.z), end.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
         addYQuad(Vec2(start.x, start.z), start.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }

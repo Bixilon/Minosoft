@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.WorldTime
@@ -31,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.minosoft
 import kotlin.math.abs
 
@@ -45,7 +47,9 @@ class CloudsRenderer(
     private var position = Vec2i(Int.MIN_VALUE)
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(4).unsafeCast()
     private var color: Vec3 = Vec3.EMPTY
-
+    private var offset = 0.0f
+    var cloudHeight: IntRange = sky.properties.getCloudHeight(connection)
+        private set
 
     override val skipOpaque: Boolean
         get() = !sky.properties.clouds || !sky.profile.clouds || connection.profiles.block.viewDistance < 3
@@ -57,6 +61,16 @@ class CloudsRenderer(
 
     override fun init(latch: CountUpAndDownLatch) {
         shader.load()
+    }
+
+    override fun postInit(latch: CountUpAndDownLatch) {
+        connection::state.observe(this) {
+            if (it == PlayConnectionStates.SPAWNING) {
+                // reset clouds
+                position = Vec2i(Int.MIN_VALUE)
+                cloudHeight = sky.properties.getCloudHeight(connection)
+            }
+        }
     }
 
     private fun push(from: Int, to: Int, direction: Directions) {
@@ -86,8 +100,9 @@ class CloudsRenderer(
         return position
     }
 
-    override fun postPrepareDraw() {
-        val position = connection.player.positionInfo.chunkPosition
+    private fun updatePosition() {
+        val offset = this.offset.toInt()
+        val position = connection.player.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
         if (position == this.position) {
             return
         }
@@ -118,6 +133,11 @@ class CloudsRenderer(
         this.position = position
     }
 
+    override fun postPrepareDraw() {
+        updateOffset()
+        updatePosition()
+    }
+
     override fun setupOpaque() {
         super.setupOpaque()
         renderSystem.disable(RenderingCapabilities.FACE_CULLING)
@@ -140,6 +160,19 @@ class CloudsRenderer(
         return calculateNormal(time)
     }
 
+    private fun getCloudSpeed(): Float {
+        return 0.5f
+    }
+
+    private fun updateOffset() {
+        var offset = this.offset
+        offset += getCloudSpeed()
+        if (offset > MAX_OFFSET) {
+            offset -= MAX_OFFSET
+        }
+        this.offset = offset
+    }
+
     override fun drawOpaque() {
         shader.use()
         val color = calculateCloudsColor()
@@ -147,6 +180,9 @@ class CloudsRenderer(
             shader.setVec4("uCloudsColor", Vec4(color, 1.0f))
             this.color = color
         }
+        shader.setFloat("uOffset", offset)
+
+
 
         for (array in arrays) {
             array.draw()
@@ -155,6 +191,7 @@ class CloudsRenderer(
 
     companion object : RendererBuilder<CloudsRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:clouds")
+        private const val MAX_OFFSET = CloudMatrix.CLOUD_MATRIX_MASK * CloudArray.CLOUD_SIZE
 
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudsRenderer? {
