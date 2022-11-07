@@ -14,19 +14,22 @@
 package de.bixilon.minosoft.gui.rendering.sky.clouds
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minosoft
 import kotlin.math.abs
@@ -35,15 +38,16 @@ class CloudsRenderer(
     private val sky: SkyRenderer,
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, TranslucentDrawable {
+) : Renderer, OpaqueDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader(minosoft("sky/clouds"))
     val matrix = CloudMatrix()
     private var position = Vec2i(Int.MIN_VALUE)
     private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(4).unsafeCast()
+    private var color: Vec3 = Vec3.EMPTY
 
 
-    override val skipTranslucent: Boolean
+    override val skipOpaque: Boolean
         get() = !sky.properties.clouds || !sky.profile.clouds || connection.profiles.block.viewDistance < 3
 
 
@@ -65,10 +69,10 @@ class CloudsRenderer(
         for (array in arrays.unsafeCast<Array<CloudArray?>>()) {
             array?.unload()
         }
-        arrays[0] = CloudArray(this, cloudPosition + Vec2i(+0, -1))
-        arrays[1] = CloudArray(this, cloudPosition + Vec2i(-1, -1))
-        arrays[2] = CloudArray(this, cloudPosition + Vec2i(+0, +0))
-        arrays[3] = CloudArray(this, cloudPosition + Vec2i(-1, +0))
+        arrays[0] = CloudArray(this, cloudPosition + Vec2i(-1, -1))
+        arrays[1] = CloudArray(this, cloudPosition + Vec2i(+0, -1))
+        arrays[2] = CloudArray(this, cloudPosition + Vec2i(-1, +0))
+        arrays[3] = CloudArray(this, cloudPosition + Vec2i(+0, +0))
     }
 
     private fun Vec2i.cloudPosition(): Vec2i {
@@ -96,11 +100,11 @@ class CloudsRenderer(
         } else {
             // push array in our direction
             if (arrayDelta.x == -1) {
-                push(from = 1, to = 0, Directions.WEST)
-                push(from = 3, to = 2, Directions.WEST)
+                push(from = 0, to = 1, Directions.WEST)
+                push(from = 2, to = 3, Directions.WEST)
             } else if (arrayDelta.x == 1) {
-                push(from = 0, to = 1, Directions.EAST)
-                push(from = 2, to = 3, Directions.EAST)
+                push(from = 1, to = 0, Directions.EAST)
+                push(from = 3, to = 2, Directions.EAST)
             }
             if (arrayDelta.y == -1) {
                 push(from = 0, to = 2, Directions.NORTH)
@@ -114,14 +118,35 @@ class CloudsRenderer(
         this.position = position
     }
 
-    override fun setupTranslucent() {
-        super.setupTranslucent()
+    override fun setupOpaque() {
+        super.setupOpaque()
         renderSystem.disable(RenderingCapabilities.FACE_CULLING)
     }
 
-    override fun drawTranslucent() {
+    private fun calculateNormal(time: WorldTime): Vec3 {
+        return Vec3(1.0f)
+    }
+
+    private fun calculateRainColor(time: WorldTime, rain: Float): Vec3 {
+        return Vec3(0.5f)
+    }
+
+    private fun calculateCloudsColor(): Vec3 {
+        val weather = connection.world.weather
+        val time = sky.time
+        if (weather.rain > 0.0f || weather.thunder > 0.0f) {
+            return calculateRainColor(time, maxOf(weather.rain, weather.thunder))
+        }
+        return calculateNormal(time)
+    }
+
+    override fun drawOpaque() {
         shader.use()
-        shader.setVec4("uCloudsColor", Vec4(1.0f, 1.0f, 1.0f, 1.0f))
+        val color = calculateCloudsColor()
+        if (color != this.color) {
+            shader.setVec4("uCloudsColor", Vec4(color, 1.0f))
+            this.color = color
+        }
 
         for (array in arrays) {
             array.draw()

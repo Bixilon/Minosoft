@@ -17,11 +17,11 @@ out vec4 foutColor;
 
 uniform vec4 uCloudsColor;
 
-flat in float finAlpha;
+flat in float finBrightness;
 
 
 void main() {
     // TODO
     foutColor = uCloudsColor;
- //   foutColor.r = finAlpha;
+    foutColor.rgb *= finBrightness;
 }
