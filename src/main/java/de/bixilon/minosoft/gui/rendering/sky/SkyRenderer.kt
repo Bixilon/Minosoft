@@ -51,10 +51,10 @@ class SkyRenderer(
         private set
     private var updateTime: Boolean = true
 
-    private val box = SkyboxRenderer(this)
-    private val sun = SunRenderer(this)
-    private val sunScatter = SunScatterRenderer(this, sun)
-    private val moon = MoonRenderer(this)
+    val box = SkyboxRenderer(this)
+    val sun = SunRenderer(this)
+    val sunScatter = SunScatterRenderer(this, sun)
+    val moon = MoonRenderer(this)
 
     override fun init(latch: CountUpAndDownLatch) {
         box.register()

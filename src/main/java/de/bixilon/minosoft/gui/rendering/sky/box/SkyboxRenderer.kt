@@ -74,7 +74,8 @@ class SkyboxRenderer(
     private var baseColor: RGBColor? = null
 
     private var day = -1L
-    private var intensity = 1.0f
+    var intensity = 1.0f
+        private set
 
     private var texture = false
 

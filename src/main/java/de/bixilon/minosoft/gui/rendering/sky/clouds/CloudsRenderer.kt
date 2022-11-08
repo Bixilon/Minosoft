@@ -21,6 +21,8 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.world.time.DayPhases
+import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
@@ -31,12 +33,16 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.murmur64
 import java.util.*
+import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sin
 
 class CloudsRenderer(
     private val sky: SkyRenderer,
@@ -178,12 +184,57 @@ class CloudsRenderer(
         renderSystem.disable(RenderingCapabilities.FACE_CULLING)
     }
 
+    private fun calculateDay(progress: Float): Vec3 {
+        return interpolateLinear((abs(progress - 0.5f) * 2).pow(2), DAY_COLOR, DAY_COLOR * 0.8f)
+    }
+
+    private fun calculateNight(progress: Float, moon: MoonPhases): Vec3 {
+        return interpolateLinear((abs(progress - 0.5f) * 2).pow(2), NIGHT_COLOR, DAY_COLOR * 0.1f) * moon.light
+    }
+
+    private fun calculateSunrise(progress: Float, moon: MoonPhases): Vec3 {
+        val night = calculateNight(1.0f, moon)
+        val day = calculateDay(0.0f)
+
+        val base = interpolateLinear(progress, night, day)
+        var color = Vec3(base)
+        val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(2) * PI.toFloat() / 2.0f), 0.4f)
+
+        color = interpolateLinear(sine, SUNRISE_COLOR, color)
+        color = interpolateLinear(sky.box.intensity, base, color)
+
+        return color
+    }
+
+    fun calculateSunset(progress: Float, moon: MoonPhases): Vec3 {
+        val day = calculateDay(1.0f)
+        val night = calculateNight(0.0f, moon)
+
+        val base = interpolateLinear(progress, day, night)
+        var color = Vec3(base)
+
+
+        val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(3) * PI.toFloat() / 2.0f), 0.2f)
+
+        color = interpolateLinear(sine, SUNSET_COLOR, color)
+        color = interpolateLinear(sky.box.intensity, base, color)
+
+        return color
+    }
+
     private fun calculateNormal(time: WorldTime): Vec3 {
-        return Vec3(1.0f)
+        return when (time.phase) {
+            DayPhases.DAY -> calculateDay(time.progress)
+            DayPhases.NIGHT -> calculateNight(time.progress, time.moonPhase)
+            DayPhases.SUNRISE -> calculateSunrise(time.progress, time.moonPhase)
+            DayPhases.SUNSET -> calculateSunset(time.progress, time.moonPhase)
+        }
     }
 
     private fun calculateRainColor(time: WorldTime, rain: Float): Vec3 {
-        return Vec3(0.5f)
+        val normal = calculateNormal(time)
+        val brightness = normal.length()
+        return interpolateLinear(rain, normal, RAIN_COLOR) * brightness
     }
 
     private fun calculateCloudsColor(): Vec3 {
@@ -244,6 +295,11 @@ class CloudsRenderer(
     companion object : RendererBuilder<CloudsRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:clouds")
         private const val MAX_OFFSET = CloudMatrix.CLOUD_MATRIX_MASK * CloudArray.CLOUD_SIZE
+        private val RAIN_COLOR = Vec3(0.31f, 0.35f, 0.40f)
+        private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.46f)
+        private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)
+        private val SUNSET_COLOR = Vec3(1.0f, 0.75f, 0.65f)
+        private val NIGHT_COLOR = Vec3(0.03f, 0.06f, 0.13f)
 
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudsRenderer? {
