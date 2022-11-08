@@ -11,64 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world.light
+package de.bixilon.minosoft.gui.rendering.world.light.updater
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
+import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sin
-import kotlin.random.Random
 
-@Deprecated("Needs refactoring")
-class LightMap(private val light: RenderLight) {
-    private val connection = light.renderWindow.connection
+@Deprecated("Legacy")
+class LegacyLightmapUpdater(private val connection: PlayConnection) : LightmapUpdater {
     private val profile = connection.profiles.rendering.light
-    private val uniformBuffer = light.renderWindow.renderSystem.createFloatUniformBuffer(memAllocFloat(UNIFORM_BUFFER_SIZE))
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
 
-
-    fun init() {
-        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
-            initDebugLight()
-        }
-
-        // Set Alpha for all of them
-        for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
-            uniformBuffer.buffer.put(i * 4 + 3, 1.0f)
-        }
-        uniformBuffer.init()
-        update()
-    }
-
-    private fun initDebugLight() {
-        val random = Random(10000L)
-        for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
-            uniformBuffer.buffer.put(i * 4 + 0, random.nextFloat())
-            uniformBuffer.buffer.put(i * 4 + 1, random.nextFloat())
-            uniformBuffer.buffer.put(i * 4 + 2, random.nextFloat())
-        }
-    }
-
-    fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {
-        uniformBuffer.use(shader, bufferName)
-    }
-
-    fun update() {
-        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
-            return
-        }
+    override fun update(force: Boolean, buffer: LightmapBuffer) {
         val skyGradient = connection.world.time.lightBase.toFloat()
 
         // ToDo: Lightning
@@ -91,7 +57,7 @@ class LightMap(private val light: RenderLight) {
 
 
         var skyGradientColor = Vec3(skyGradient, skyGradient, 1.0f)
-        skyGradientColor = interpolateLinear(0.35f, skyGradientColor, Vec3.ONE)
+        skyGradientColor = Vec3Util.interpolateLinear(0.35f, skyGradientColor, Vec3.ONE)
 
         for (skyLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (blockLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
@@ -109,7 +75,7 @@ class LightMap(private val light: RenderLight) {
                 let {
                     color = color + (skyGradientColor * skyLightBrightness)
 
-                    color = interpolateLinear(0.04f, color, Vec3(0.75f))
+                    color = Vec3Util.interpolateLinear(0.04f, color, Vec3(0.75f))
 
                     // ToDo: Sky darkness
                 }
@@ -120,24 +86,17 @@ class LightMap(private val light: RenderLight) {
                     val gamma = max(color.x, max(color.y, color.z))
                     if (gamma < 1.0f) {
                         val copy = color.toVec3 * (1.0f / gamma)
-                        color = interpolateLinear(nightVisionVisibility, color, copy)
+                        color = Vec3Util.interpolateLinear(nightVisionVisibility, color, copy)
                     }
                 }
 
-                color = interpolateLinear(profile.gamma, color, color.toVec3 modify { 1.0f - (1.0f - it).pow(4) })
-                color = interpolateLinear(0.04f, color, Vec3(0.75f))
+                color = Vec3Util.interpolateLinear(profile.gamma, color, color.toVec3 modify { 1.0f - (1.0f - it).pow(4) })
+                color = Vec3Util.interpolateLinear(0.04f, color, Vec3(0.75f))
                 color = color.clamp(0.0f, 1.0f)
 
 
-                uniformBuffer.buffer.put(index + 0, color.x)
-                uniformBuffer.buffer.put(index + 1, color.y)
-                uniformBuffer.buffer.put(index + 2, color.z)
+                buffer[skyLight, blockLight] = color
             }
         }
-        uniformBuffer.upload()
-    }
-
-    private companion object {
-        private const val UNIFORM_BUFFER_SIZE = ProtocolDefinition.LIGHT_LEVELS * ProtocolDefinition.LIGHT_LEVELS * 4 // skyLight * blockLight * RGBA
     }
 }

@@ -11,21 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.rendering.light
+package de.bixilon.minosoft.gui.rendering.world.light.updater
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import kotlin.random.Random
 
-class LightC {
+object DebugLightUpdater : LightmapUpdater {
 
-    /**
-     * Changes the gamma value of the light map
-     * In original minecraft this setting is called brightness
-     * Must be non-negative and may not exceed 1
-     */
-    var gamma by delegate(0.0f) { check(it in 0.0f..1.0f) { "Gamma must be non-negative and <= 1" } }
+    override fun update(force: Boolean, buffer: LightmapBuffer) {
+        if (!force) {
+            return
+        }
 
-    /**
-     * Makes everything bright
-     */
-    var fullbright by delegate(false)
+        val random = Random(10000L)
+        for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+            for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
+                buffer[sky, block] = Vec3(random.nextFloat(), random.nextFloat(), random.nextFloat())
+            }
+        }
+    }
 }

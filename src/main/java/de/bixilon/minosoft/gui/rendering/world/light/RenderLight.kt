@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class RenderLight(val renderWindow: RenderWindow) {
     private val connection = renderWindow.connection
-    val map = LightMap(this)
+    val map = Lightmap(this)
 
     fun init() {
         map.init()

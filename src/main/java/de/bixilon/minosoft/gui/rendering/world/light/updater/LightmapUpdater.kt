@@ -11,21 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.rendering.light
+package de.bixilon.minosoft.gui.rendering.world.light.updater
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
-class LightC {
+interface LightmapUpdater {
 
-    /**
-     * Changes the gamma value of the light map
-     * In original minecraft this setting is called brightness
-     * Must be non-negative and may not exceed 1
-     */
-    var gamma by delegate(0.0f) { check(it in 0.0f..1.0f) { "Gamma must be non-negative and <= 1" } }
-
-    /**
-     * Makes everything bright
-     */
-    var fullbright by delegate(false)
+    fun update(force: Boolean, buffer: LightmapBuffer)
 }
