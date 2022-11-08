@@ -30,26 +30,28 @@ class CloudMesh(renderWindow: RenderWindow) : Mesh(renderWindow, CloudMeshStruct
     }
 
 
-    fun createCloud(start: Vec2i, end: Vec2i, yStart: Int, yEnd: Int, culling: BooleanArray) {
+    fun createCloud(start: Vec2i, end: Vec2i, yStart: Int, yEnd: Int, flat: Boolean, culling: BooleanArray) {
         val start = Vec3(start.x, yStart, start.y) + CLOUD_OFFSET
         val end = Vec3(end.x, yEnd, end.y) + CLOUD_OFFSET
 
-        addYQuad(Vec2(start.x, start.z), end.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
         addYQuad(Vec2(start.x, start.z), start.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.DOWN) }
+        if (!flat) {
+            addYQuad(Vec2(start.x, start.z), end.y, Vec2(end.x, end.z)) { position, _ -> addVertex(position, Directions.UP) }
 
 
-        if (!culling[Directions.O_NORTH - Directions.SIDE_OFFSET]) {
-            addZQuad(Vec2(start.x, start.y), start.z, Vec2(end.x, end.y)) { position, _ -> addVertex(position, Directions.NORTH) }
-        }
-        if (!culling[Directions.O_SOUTH - Directions.SIDE_OFFSET]) {
-            addZQuad(Vec2(start.x, start.y), end.z, Vec2(end.x, end.y)) { position, _ -> addVertex(position, Directions.SOUTH) }
-        }
+            if (!culling[Directions.O_NORTH - Directions.SIDE_OFFSET]) {
+                addZQuad(Vec2(start.x, start.y), start.z, Vec2(end.x, end.y)) { position, _ -> addVertex(position, Directions.NORTH) }
+            }
+            if (!culling[Directions.O_SOUTH - Directions.SIDE_OFFSET]) {
+                addZQuad(Vec2(start.x, start.y), end.z, Vec2(end.x, end.y)) { position, _ -> addVertex(position, Directions.SOUTH) }
+            }
 
-        if (!culling[Directions.O_WEST - Directions.SIDE_OFFSET]) {
-            addXQuad(Vec2(start.y, start.z), start.x, Vec2(end.y, end.z)) { position, _ -> addVertex(position, Directions.WEST) }
-        }
-        if (!culling[Directions.O_EAST - Directions.SIDE_OFFSET]) {
-            addXQuad(Vec2(start.y, start.z), end.x, Vec2(end.y, end.z)) { position, _ -> addVertex(position, Directions.EAST) }
+            if (!culling[Directions.O_WEST - Directions.SIDE_OFFSET]) {
+                addXQuad(Vec2(start.y, start.z), start.x, Vec2(end.y, end.z)) { position, _ -> addVertex(position, Directions.WEST) }
+            }
+            if (!culling[Directions.O_EAST - Directions.SIDE_OFFSET]) {
+                addXQuad(Vec2(start.y, start.z), end.x, Vec2(end.y, end.z)) { position, _ -> addVertex(position, Directions.EAST) }
+            }
         }
     }
 

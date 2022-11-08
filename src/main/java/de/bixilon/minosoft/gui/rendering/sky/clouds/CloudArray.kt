@@ -47,7 +47,7 @@ class CloudArray(
                     matrix[matrixX - 1, matrixZ + 0], // WEST
                     matrix[matrixX + 1, matrixZ + 0], // EAST
                 )
-                mesh.createCloud(start, start + CLOUD_SIZE, layer.height.first, layer.height.last, cull)
+                mesh.createCloud(start, start + CLOUD_SIZE, layer.height.first, layer.height.last, layer.clouds.flat, cull)
             }
         }
     }

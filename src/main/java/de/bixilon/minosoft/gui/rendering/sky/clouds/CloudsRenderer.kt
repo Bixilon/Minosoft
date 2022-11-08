@@ -56,6 +56,8 @@ class CloudsRenderer(
     private var yOffset = 0.0f
     private var baseHeight = 0
     private var nextLayers = 0
+    var flat: Boolean = false
+        private set
     private var toUnload: MutableSet<CloudsLayer> = mutableSetOf()
 
     override val skipOpaque: Boolean
@@ -95,6 +97,7 @@ class CloudsRenderer(
             }
         }
         sky.profile.clouds::layers.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.nextLayers = it }
+        sky.profile.clouds::flat.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.flat = it }
     }
 
     private fun updateLayers(layers: Int) {

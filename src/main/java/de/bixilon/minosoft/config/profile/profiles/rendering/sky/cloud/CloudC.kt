@@ -23,6 +23,11 @@ class CloudC {
     var enabled by delegate(true)
 
     /**
+     * Renders clouds flat and not 3d
+     */
+    var flat by delegate(false)
+
+    /**
      * Moves clouds from time to time
      */
     var movement by delegate(true)
