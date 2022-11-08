@@ -214,7 +214,7 @@ class CloudsRenderer(
         var color = Vec3(base)
 
 
-        val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(3) * PI.toFloat() / 2.0f), 0.2f)
+        val sine = maxOf(sin((abs(progress - 0.5f) * 2.0f).pow(3) * PI.toFloat() / 2.0f), 0.1f)
 
         color = interpolateLinear(sine, SUNSET_COLOR, color)
         color = interpolateLinear(sky.box.intensity, base, color)
@@ -296,9 +296,9 @@ class CloudsRenderer(
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:clouds")
         private const val MAX_OFFSET = CloudMatrix.CLOUD_MATRIX_MASK * CloudArray.CLOUD_SIZE
         private val RAIN_COLOR = Vec3(0.31f, 0.35f, 0.40f)
-        private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.46f)
+        private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.36f)
         private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)
-        private val SUNSET_COLOR = Vec3(1.0f, 0.75f, 0.65f)
+        private val SUNSET_COLOR = Vec3(1.0f, 0.75f, 0.55f)
         private val NIGHT_COLOR = Vec3(0.03f, 0.06f, 0.13f)
 
 
