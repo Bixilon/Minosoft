@@ -31,4 +31,10 @@ class CloudC {
      * Max y axis distance to clouds
      */
     var maxDistance by delegate(60.0f)
+
+
+    /**
+     * Number of cloud layers
+     */
+    var layers by delegate(3) { check(it in 0..10) }
 }

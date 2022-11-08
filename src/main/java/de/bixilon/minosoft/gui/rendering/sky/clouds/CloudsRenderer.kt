@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
@@ -37,8 +36,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.util.KUtil.minosoft
-import de.bixilon.minosoft.util.KUtil.murmur64
-import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.pow
@@ -46,26 +43,23 @@ import kotlin.math.sin
 
 class CloudsRenderer(
     private val sky: SkyRenderer,
-    private val connection: PlayConnection,
+    val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OpaqueDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val shader = renderSystem.createShader(minosoft("sky/clouds"))
+    val shader = renderSystem.createShader(minosoft("sky/clouds"))
     val matrix = CloudMatrix()
+    private val layers: MutableList<CloudsLayer> = mutableListOf()
     private var position = Vec2i(Int.MIN_VALUE)
-    private val arrays: Array<CloudArray> = arrayOfNulls<CloudArray?>(3 * 3).unsafeCast()
     private var color: Vec3 = Vec3.EMPTY
-    private var offset = 0.0f
-    private var movement = true
-    var height: IntRange = sky.properties.getCloudHeight(connection)
-        private set
     private var maxDistance = 0.0f
     private var yOffset = 0.0f
-    private var day = -1L
-    private var randomSpeed = 0.0f
+    private var baseHeight = 0
+    private var nextLayers = 0
+    private var toUnload: MutableSet<CloudsLayer> = mutableSetOf()
 
     override val skipOpaque: Boolean
-        get() = !sky.properties.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3
+        get() = !sky.properties.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
 
 
     override fun asyncInit(latch: CountUpAndDownLatch) {
@@ -76,107 +70,59 @@ class CloudsRenderer(
         shader.load()
     }
 
+    private fun getCloudHeight(index: Int): IntRange {
+        val base = sky.properties.getCloudHeight(connection)
+        this.baseHeight = base.first
+        val cloudHeight = base.last - base.first
+
+        return IntRange(baseHeight + index * cloudHeight, baseHeight + (index + 1) * cloudHeight)
+    }
+
     override fun postInit(latch: CountUpAndDownLatch) {
-        sky.profile.clouds::movement.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.movement = it }
+        sky.profile.clouds::movement.profileWatch(this, instant = true, profile = connection.profiles.rendering) {
+            for (layer in layers) {
+                layer.movement = it
+            }
+        }
         sky.profile.clouds::maxDistance.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.maxDistance = it }
         connection::state.observe(this) {
             if (it == PlayConnectionStates.SPAWNING) {
                 // reset clouds
                 position = Vec2i(Int.MIN_VALUE)
-                height = sky.properties.getCloudHeight(connection)
+                for ((index, layer) in this.layers.withIndex()) {
+                    layer.height = getCloudHeight(index)
+                }
             }
         }
+        sky.profile.clouds::layers.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.nextLayers = it }
     }
 
-    private fun push(from: Int, to: Int) {
-        arrays[to].unload()
-        arrays[to] = arrays[from]
-    }
-
-    private fun fill(index: Int) {
-        val offset = Vec2i((index % 3) - 1, (index / 3) - 1)
-        arrays[index] = CloudArray(this, position.cloudPosition() + offset)
-    }
-
-    fun pushX(negative: Boolean) {
-        if (negative) {
-            push(1, 0); push(2, 1)
-            push(4, 3); push(5, 4)
-            push(7, 6); push(8, 7)
-            fill(2); fill(5); fill(8)
-        } else {
-            push(1, 2); push(0, 1)
-            push(4, 5); push(3, 4)
-            push(7, 8); push(6, 7)
-            fill(0); fill(3); fill(6)
+    private fun updateLayers(layers: Int) {
+        while (layers < this.layers.size) {
+            toUnload += this.layers.removeLast()
         }
-    }
-
-    fun pushZ(negative: Boolean) {
-        if (negative) {
-            push(3, 0); push(6, 3)
-            push(4, 1); push(7, 4)
-            push(5, 2); push(8, 5)
-            fill(6); fill(7); fill(8)
-        } else {
-            push(3, 6); push(0, 3)
-            push(4, 7); push(1, 4)
-            push(5, 8); push(2, 5)
-            fill(0); fill(1); fill(2)
-        }
-    }
-
-    fun push(offset: Vec2i) {
-        if (offset.x != 0) pushX(offset.x == 1)
-        if (offset.y != 0) pushZ(offset.y == 1)
-    }
-
-    private fun reset(cloudPosition: Vec2i) {
-        for (array in arrays.unsafeCast<Array<CloudArray?>>()) {
-            array?.unload()
-        }
-        for (x in -1..1) {
-            for (z in -1..1) {
-                arrays[(x + 1) + 3 * (z + 1)] = CloudArray(this, cloudPosition + Vec2i(x, z))
-            }
-        }
-    }
-
-    private fun Vec2i.cloudPosition(): Vec2i {
-        return this shr 4
-    }
-
-    private fun updatePosition() {
-        val offset = this.offset.toInt()
-        val position = connection.player.positionInfo.chunkPosition + Vec2i(offset / CloudArray.CLOUD_SIZE, 0)
-        if (position == this.position) {
-            return
-        }
-
-        val cloudPosition = position.cloudPosition()
-        val arrayDelta = cloudPosition - this.position.cloudPosition()
-
-
-        this.position = position
-        if (abs(arrayDelta.x) > 1 || abs(arrayDelta.y) > 1) {
-            // major position change (e.g. teleport)
-            reset(cloudPosition)
-        } else {
-            push(arrayDelta)
+        for (index in this.layers.size until layers) {
+            val layer = CloudsLayer(sky, this, index, getCloudHeight(index))
+            this.layers += layer
         }
     }
 
     override fun prepareDrawAsync() {
-        val day = sky.time.day
-        if (day != this.day) {
-            this.day = day
-            randomSpeed = Random(sky.time.age.murmur64()).nextFloat(0.0f, 0.1f)
+        if (layers.size != nextLayers) {
+            updateLayers(nextLayers)
+        }
+        for (layer in layers) {
+            layer.prepareAsync()
         }
     }
 
     override fun postPrepareDraw() {
-        updateOffset()
-        updatePosition()
+        for (unload in toUnload) {
+            unload.unload()
+        }
+        for (layer in layers) {
+            layer.prepare()
+        }
     }
 
     override fun setupOpaque() {
@@ -246,27 +192,12 @@ class CloudsRenderer(
         return calculateNormal(time)
     }
 
-    private fun getCloudSpeed(): Float {
-        return randomSpeed + 0.1f
-    }
-
-    private fun updateOffset() {
-        if (!movement) {
-            return
-        }
-        var offset = this.offset
-        offset += getCloudSpeed()
-        if (offset > MAX_OFFSET) {
-            offset -= MAX_OFFSET
-        }
-        this.offset = offset
-    }
 
     private fun setYOffset() {
         val y = renderWindow.camera.matrixHandler.eyePosition.y
         var yOffset = 0.0f
-        if (height.first - y > maxDistance) {
-            yOffset = y - height.first + maxDistance
+        if (baseHeight - y > maxDistance) {
+            yOffset = y - baseHeight + maxDistance
         }
         if (yOffset != this.yOffset) {
             shader.setFloat("uYOffset", yOffset)
@@ -281,20 +212,16 @@ class CloudsRenderer(
             shader.setVec4("uCloudsColor", Vec4(color, 1.0f))
             this.color = color
         }
-        if (movement) {
-            shader.setFloat("uOffset", offset)
-        }
         setYOffset()
 
 
-        for (array in arrays) {
+        for (array in layers) {
             array.draw()
         }
     }
 
     companion object : RendererBuilder<CloudsRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:clouds")
-        private const val MAX_OFFSET = CloudMatrix.CLOUD_MATRIX_MASK * CloudArray.CLOUD_SIZE
         private val RAIN_COLOR = Vec3(0.31f, 0.35f, 0.40f)
         private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.36f)
         private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)

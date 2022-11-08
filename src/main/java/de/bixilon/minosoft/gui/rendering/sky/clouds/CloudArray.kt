@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kotlinglm.vec2.Vec2i
 
 class CloudArray(
-    val clouds: CloudsRenderer,
+    val layer: CloudsLayer,
     val offset: Vec2i,
 ) {
-    private val mesh: CloudMesh = CloudMesh(clouds.renderWindow)
+    private val mesh: CloudMesh = CloudMesh(layer.clouds.renderWindow)
 
     init {
         build()
@@ -27,7 +27,7 @@ class CloudArray(
     }
 
     private fun build() {
-        val matrix = clouds.matrix
+        val matrix = layer.clouds.matrix
         val matrixOffset = (offset * ARRAY_SIZE) and 0xFF
 
         for (z in 0 until ARRAY_SIZE) {
@@ -39,7 +39,7 @@ class CloudArray(
                     continue
                 }
 
-                val start = (this@CloudArray.offset * ARRAY_SIZE + Vec2i(x, z)) * CLOUD_SIZE
+                val start = (this.offset * ARRAY_SIZE + Vec2i(x, z) + layer.index) * CLOUD_SIZE
 
                 val cull = booleanArrayOf(
                     matrix[matrixX + 0, matrixZ - 1], // NORTH
@@ -47,7 +47,7 @@ class CloudArray(
                     matrix[matrixX - 1, matrixZ + 0], // WEST
                     matrix[matrixX + 1, matrixZ + 0], // EAST
                 )
-                mesh.createCloud(start, start + CLOUD_SIZE, clouds.height.first, clouds.height.last, cull)
+                mesh.createCloud(start, start + CLOUD_SIZE, layer.height.first, layer.height.last, cull)
             }
         }
     }
