@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -38,7 +38,7 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
     }
 
     private fun recalculate() {
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
         val deltaLastDraw = currentTime - lastRun
         lastRun = currentTime
 
@@ -66,9 +66,6 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
             uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData.shaderTextureId
             uniformBuffer.data[arrayOffset + 2] = interpolation.toInt()
         }
-
-
-        uniformBuffer.upload()
     }
 
     fun draw() {
@@ -76,6 +73,7 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
             return
         }
         recalculate()
+        uniformBuffer.upload()
     }
 
 

@@ -43,6 +43,10 @@ class RenderLight(val renderWindow: RenderWindow) {
         }
     }
 
+    fun updateAsync() {
+        map.updateAsync()
+    }
+
     fun update() {
         map.update()
     }

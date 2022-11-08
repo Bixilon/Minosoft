@@ -14,36 +14,57 @@
 package de.bixilon.minosoft.gui.rendering.world.light
 
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.world.light.updater.DebugLightUpdater
+import de.bixilon.minosoft.gui.rendering.world.light.updater.FullbrightLightUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LegacyLightmapUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LightmapUpdater
 
-class Lightmap(light: RenderLight) {
+class Lightmap(private val light: RenderLight) {
+    private val profile = light.renderWindow.connection.profiles.rendering
     private val buffer = LightmapBuffer(light.renderWindow.renderSystem)
-    private var updater: LightmapUpdater = LegacyLightmapUpdater(light.renderWindow.connection)
+    private var updater: LightmapUpdater = FullbrightLightUpdater
         set(value) {
             field = value
             force = true
         }
     private var force: Boolean = true
 
+    private val defaultUpdater: LightmapUpdater = LegacyLightmapUpdater(light.renderWindow.connection)
 
     fun init() {
         buffer.init()
+        profile.light::fullbright.profileWatch(this, profile = profile) { setLightmapUpdater() }
+        setLightmapUpdater()
+    }
+
+    private fun setLightmapUpdater() {
+        this.updater = getLightmapUpdater()
+    }
+
+    private fun getLightmapUpdater(): LightmapUpdater {
+        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
+            return DebugLightUpdater
+        }
+        if (profile.light.fullbright) {
+            return FullbrightLightUpdater
+        }
+        return defaultUpdater
     }
 
     fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {
         buffer.use(shader, bufferName)
     }
 
-    fun update() {
-        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
-            return
-        }
+    fun updateAsync() {
         updater.update(force, buffer)
         if (force) {
             force = false
         }
+    }
+
+    fun update() {
         buffer.upload()
     }
 }

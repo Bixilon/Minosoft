@@ -247,8 +247,9 @@ class RenderWindow(
             renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
-
+            light.updateAsync() // ToDo: do async
             light.update()
+
 
             val currentTickTime = millis()
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {

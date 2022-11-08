@@ -41,5 +41,14 @@ Resources:
 - [x] sky texture
 - [ ] stars
 - [ ] Wither
-- [ ] Clouds
+- [x] Clouds
+- [ ] interpolate world time
 - [ ] Lightmap
+  - potion effects (nigh vision, underwater visibility, conduit)
+  - submerged fluid
+  - gamma setting
+  - weather, thunder flashing
+  - wither
+  - dimension (e.g. fullbright)
+  - fullbright setting/key
+  - stars/moon
