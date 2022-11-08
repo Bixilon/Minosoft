@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.world.light.updater.FullbrightLightUpda
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LegacyLightmapUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LightmapUpdater
 
-class Lightmap(private val light: RenderLight) {
+class Lightmap(light: RenderLight) {
     private val profile = light.renderWindow.connection.profiles.rendering
     private val buffer = LightmapBuffer(light.renderWindow.renderSystem)
     private var updater: LightmapUpdater = FullbrightLightUpdater

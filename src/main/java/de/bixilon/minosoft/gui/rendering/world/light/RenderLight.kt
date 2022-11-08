@@ -41,6 +41,17 @@ class RenderLight(val renderWindow: RenderWindow) {
                 connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
             }
         }
+        renderWindow.inputHandler.registerKeyCallback(
+            "minosoft:toggle_fullbright".toResourceLocation(),
+            KeyBinding(
+                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
+            ),
+            defaultPressed = connection.profiles.rendering.light.fullbright,
+        ) {
+            connection.profiles.rendering.light.fullbright = it
+            connection.util.sendDebugMessage("Fullbright: $it")
+        }
     }
 
     fun updateAsync() {
