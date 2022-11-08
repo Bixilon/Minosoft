@@ -152,7 +152,7 @@ class WorldRenderer(
         if (animations) {
             renderWindow.textureManager.staticTextures.animator.use(shader)
         }
-        renderWindow.lightMap.use(shader)
+        renderWindow.light.map.use(shader)
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {

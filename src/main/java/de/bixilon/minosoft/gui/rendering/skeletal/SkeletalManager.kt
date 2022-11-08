@@ -35,7 +35,7 @@ class SkeletalManager(
         renderWindow.textureManager.dynamicTextures.use(shader)
         shader["uSkeletalBuffer"] = uniformBuffer
         shader.setUInt(LIGHT, 0xFF)
-        renderWindow.lightMap.use(shader)
+        renderWindow.light.map.use(shader)
     }
 
     private fun prepareDraw() {

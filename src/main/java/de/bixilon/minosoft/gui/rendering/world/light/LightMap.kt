@@ -11,17 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.world
+package de.bixilon.minosoft.gui.rendering.world.light
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.key.KeyActions
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
@@ -29,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
@@ -37,12 +31,12 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 @Deprecated("Needs refactoring")
-class LightMap(private val renderWindow: RenderWindow) {
-    private val connection = renderWindow.connection
+class LightMap(private val light: RenderLight) {
+    private val connection = light.renderWindow.connection
     private val profile = connection.profiles.rendering.light
+    private val uniformBuffer = light.renderWindow.renderSystem.createFloatUniformBuffer(memAllocFloat(UNIFORM_BUFFER_SIZE))
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
-    private val uniformBuffer = renderWindow.renderSystem.createFloatUniformBuffer(memAllocFloat(UNIFORM_BUFFER_SIZE))
 
 
     fun init() {
@@ -56,20 +50,6 @@ class LightMap(private val renderWindow: RenderWindow) {
         }
         uniformBuffer.init()
         update()
-
-        renderWindow.inputHandler.registerKeyCallback(
-            "minosoft:recalculate_light".toResourceLocation(),
-            KeyBinding(
-                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                KeyActions.PRESS to setOf(KeyCodes.KEY_A),
-            )
-        ) {
-            DefaultThreadPool += {
-                connection.world.recalculateLight()
-                renderWindow.renderer[WorldRenderer]?.silentlyClearChunkCache()
-                connection.util.sendDebugMessage("Light recalculated and chunk cache cleared!")
-            }
-        }
     }
 
     private fun initDebugLight() {

@@ -103,7 +103,7 @@ interface Shader {
             renderWindow.textureManager.staticTextures.animator.use(this)
 
             if (light) {
-                renderWindow.lightMap.use(this)
+                renderWindow.light.map.use(this)
             }
         }
     }
