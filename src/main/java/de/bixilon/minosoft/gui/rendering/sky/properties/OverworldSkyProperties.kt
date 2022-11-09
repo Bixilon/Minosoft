@@ -35,7 +35,7 @@ object OverworldSkyProperties : SkyProperties {
         return 128..132
     }
 
-    override val fullbright: Boolean get() = false
+    override val brighten: Boolean get() = false
 
     override val fog: Boolean get() = true
 }

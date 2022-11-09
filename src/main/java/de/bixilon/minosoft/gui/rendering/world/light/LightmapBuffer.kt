@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 
 class LightmapBuffer(renderSystem: RenderSystem) {
-    private val buffer = renderSystem.createFloatUniformBuffer(memAllocFloat(UNIFORM_BUFFER_SIZE))
+    val buffer = renderSystem.createFloatUniformBuffer(memAllocFloat(UNIFORM_BUFFER_SIZE))
     private var upload = false
 
     fun init() {

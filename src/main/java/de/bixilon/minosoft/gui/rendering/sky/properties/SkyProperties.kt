@@ -28,7 +28,7 @@ interface SkyProperties : ResourceLocationAble {
     val clouds: Boolean
     fun getCloudHeight(connection: PlayConnection): IntRange
 
-    val fullbright: Boolean get() = false
+    val brighten: Boolean get() = false
 
     val fog: Boolean
 }

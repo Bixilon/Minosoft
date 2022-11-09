@@ -29,7 +29,7 @@ object NetherSkyProperties : SkyProperties {
     override val clouds: Boolean get() = false
     override fun getCloudHeight(connection: PlayConnection): IntRange = Broken()
 
-    override val fullbright: Boolean get() = true
+    override val brighten: Boolean get() = true
 
     override val fog: Boolean get() = true
 }

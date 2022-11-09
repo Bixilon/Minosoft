@@ -44,11 +44,11 @@ Resources:
 - [x] Clouds
 - [ ] interpolate world time
 - [ ] Lightmap
-  - potion effects (nigh vision, underwater visibility, conduit)
+  - potion effects (nigh vision, underwater visibility, conduit, darkness)
   - submerged fluid
   - gamma setting
   - weather, thunder flashing
   - wither
-  - dimension (e.g. fullbright)
+  - dimension (e.g. fulbright)
   - fullbright setting/key
   - stars/moon

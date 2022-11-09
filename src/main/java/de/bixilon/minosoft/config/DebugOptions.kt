@@ -19,4 +19,6 @@ object DebugOptions {
     const val SIMULATE_TIME = true
 
     const val CLOUD_RASTER = false
+
+    const val LIGHTMAP_DEBUG_WINDOW = true
 }

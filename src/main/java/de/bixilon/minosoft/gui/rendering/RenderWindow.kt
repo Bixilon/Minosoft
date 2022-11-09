@@ -102,7 +102,7 @@ class RenderWindow(
     lateinit var thread: Thread
         private set
 
-    var state by watched(RenderingStates.RUNNING)
+    var state by watched(RenderingStates.LOADING)
 
     init {
         connection::state.observe(this) {
@@ -221,6 +221,7 @@ class RenderWindow(
         latch.dec()
         latch.await()
         this.latch.await()
+        state = RenderingStates.RUNNING
         window.visible = true
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
     }
