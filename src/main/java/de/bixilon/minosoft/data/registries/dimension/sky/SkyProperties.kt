@@ -11,29 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.properties
+package de.bixilon.minosoft.data.registries.dimension.sky
 
-import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.minecraft
 
-object EndSkyProperties : SkyProperties {
-    override val resourceLocation = minecraft("the_end")
+interface SkyProperties : ResourceLocationAble {
+    val daylightCycle: Boolean
+    val skylight: Boolean
+    val fixedTexture: ResourceLocation? get() = null
 
-    override val daylightCycle: Boolean get() = false
-    override val skylight: Boolean get() = false
-    override val fixedTexture: ResourceLocation = minecraft("environment/end_sky").texture()
+    val sun: Boolean
+    val moon: Boolean
+    val stars: Boolean
 
-    override val sun: Boolean get() = false
-    override val moon: Boolean get() = false
-    override val stars: Boolean get() = false
+    val clouds: Boolean
+    fun getCloudHeight(connection: PlayConnection): IntRange
 
-    override val clouds: Boolean get() = false
-    override fun getCloudHeight(connection: PlayConnection): IntRange = Broken()
+    val brighten: Boolean get() = false
 
-    override val brighten: Boolean get() = true
-
-    override val fog: Boolean get() = false
+    val fog: Boolean
 }

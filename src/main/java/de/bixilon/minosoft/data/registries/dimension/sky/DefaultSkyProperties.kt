@@ -11,25 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.properties
+package de.bixilon.minosoft.data.registries.dimension.sky
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.ResourceLocationMap
 
-interface SkyProperties : ResourceLocationAble {
-    val daylightCycle: Boolean
-    val skylight: Boolean
-    val fixedTexture: ResourceLocation? get() = null
-
-    val sun: Boolean
-    val moon: Boolean
-    val stars: Boolean
-
-    val clouds: Boolean
-    fun getCloudHeight(connection: PlayConnection): IntRange
-
-    val brighten: Boolean get() = false
-
-    val fog: Boolean
-}
+object DefaultSkyProperties : ResourceLocationMap<SkyProperties>(
+    OverworldSkyProperties,
+    NetherSkyProperties,
+    EndSkyProperties,
+)

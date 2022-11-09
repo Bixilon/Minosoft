@@ -11,17 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.properties
+package de.bixilon.minosoft.data.registries.dimension.sky
 
 import de.bixilon.kutil.exception.Broken
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-object NetherSkyProperties : SkyProperties {
-    override val resourceLocation = minecraft("the_nether")
+object EndSkyProperties : SkyProperties {
+    override val resourceLocation = minecraft("the_end")
 
     override val daylightCycle: Boolean get() = false
     override val skylight: Boolean get() = false
+    override val fixedTexture: ResourceLocation = minecraft("environment/end_sky").texture()
 
     override val sun: Boolean get() = false
     override val moon: Boolean get() = false
@@ -32,5 +35,5 @@ object NetherSkyProperties : SkyProperties {
 
     override val brighten: Boolean get() = true
 
-    override val fog: Boolean get() = true
+    override val fog: Boolean get() = false
 }

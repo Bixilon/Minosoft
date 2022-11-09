@@ -18,6 +18,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.dimension.sky.OverworldSkyProperties
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.MoonRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
 import de.bixilon.minosoft.gui.rendering.sky.planet.scatter.SunScatterRenderer
-import de.bixilon.minosoft.gui.rendering.sky.properties.OverworldSkyProperties
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -44,7 +44,7 @@ class SkyRenderer(
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
-    var properties by watched(connection.world.dimension?.skyProperties ?: OverworldSkyProperties)
+    var properties by watched(connection.world.dimension?.sky ?: OverworldSkyProperties)
     var matrix by watched(Mat4())
     val profile = connection.profiles.rendering.sky
     var time = connection.world.time
@@ -75,7 +75,7 @@ class SkyRenderer(
         connection.events.listen<CameraMatrixChangeEvent> {
             matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
         }
-        connection.world::dimension.observe(this) { properties = it?.skyProperties ?: OverworldSkyProperties }
+        connection.world::dimension.observe(this) { properties = it?.sky ?: OverworldSkyProperties }
     }
 
     override fun prepareDrawAsync() {

@@ -62,7 +62,7 @@ class FogManager(
     }
 
     private fun calculateFog(): Boolean {
-        val sky = renderWindow.connection.world.dimension?.skyProperties
+        val sky = renderWindow.connection.world.dimension?.sky
         var fogStart = if (!renderWindow.connection.profiles.rendering.fog.enabled || sky == null || !sky.fog) {
             Float.MAX_VALUE
         } else {
