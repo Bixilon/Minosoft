@@ -15,8 +15,8 @@
 
 layout (location = 0) in vec2 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in uint vinIndexLayerAnimation;
-layout (location = 3) in uint vinTintColor;
+layout (location = 2) in float vinIndexLayerAnimation;
+layout (location = 3) in float vinTintColor;
 
 #include "minosoft:animation/header_vertex"
 
@@ -28,7 +28,7 @@ layout (location = 3) in uint vinTintColor;
 
 void main() {
     gl_Position = vec4(vinPosition.xy, 0.0f, 1.0f);
-    finTintColor = getRGBAColor(vinTintColor);
+    finTintColor = getRGBAColor(floatBitsToUint(vinTintColor));
 
     run_animation();
 }

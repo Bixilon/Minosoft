@@ -16,11 +16,11 @@
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinMinUVCoordinates;
 layout (location = 2) in vec2 vinMaxUVCoordinates;
-layout (location = 3) in uint vinIndexLayerAnimation;
+layout (location = 3) in float vinIndexLayerAnimation;
 
 layout (location = 4) in float vinScale;
-layout (location = 5) in uint vinTintColor;
-layout (location = 6) in uint vinLight;
+layout (location = 5) in float vinTintColor;
+layout (location = 6) in float vinLight;
 
 
 #include "minosoft:animation/buffer"
@@ -51,20 +51,21 @@ void main() {
     ginVertex.minUVCoordinates = vinMinUVCoordinates;
 
     ginVertex.scale = vinScale;
-    ginVertex.tintColor = getRGBAColor(vinTintColor) * getLight(vinLight & 0xFFu);
+    ginVertex.tintColor = getRGBAColor(floatBitsToUint(vinTintColor)) * getLight(floatBitsToUint(vinLight) & 0xFFu);
 
 
-    uint animationIndex = vinIndexLayerAnimation & 0xFFFu;
+    uint indexLayerAnimation = floatBitsToUint(vinIndexLayerAnimation);
+    uint animationIndex = indexLayerAnimation & 0xFFFu;
 
     if (animationIndex == 0u) {
-        ginVertex.textureIndex1 = vinIndexLayerAnimation >> 28u;
-        ginVertex.textureLayer1 = ((vinIndexLayerAnimation >> 12) & 0xFFFFu);
+        ginVertex.textureIndex1 = indexLayerAnimation >> 28u;
+        ginVertex.textureLayer1 = ((indexLayerAnimation >> 12) & 0xFFFFu);
 
         ginVertex.interpolation = 0.0f;
         return;
     }
 
-    uvec4 data = uAnimationData[animationIndex -1u];
+    uvec4 data = uAnimationData[animationIndex - 1u];
     uint texture1 = data.x;
     uint texture2 = data.y;
     uint interpolation = data.z;

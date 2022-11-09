@@ -12,10 +12,11 @@
  */
 
 void run_animation() {
-    uint animationIndex = vinIndexLayerAnimation & 0xFFFu;
+    uint indexLayerAnimation = floatBitsToUint(vinIndexLayerAnimation);
+    uint animationIndex = indexLayerAnimation & 0xFFFu;
     if (animationIndex == 0u) {
-        finTextureIndex1 = vinIndexLayerAnimation >> 28u;
-        finTextureCoordinates1 = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
+        finTextureIndex1 = indexLayerAnimation >> 28u;
+        finTextureCoordinates1 = vec3(vinUV, ((indexLayerAnimation >> 12) & 0xFFFFu));
         finInterpolation = 0.0f;
         return;
     }

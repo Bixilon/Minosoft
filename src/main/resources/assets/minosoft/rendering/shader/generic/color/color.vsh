@@ -14,7 +14,7 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in uint vinTintColor;
+layout (location = 1) in float vinTintColor;
 
 uniform mat4 uViewProjectionMatrix;
 
@@ -25,5 +25,5 @@ out vec4 finTintColor;
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
 
-    finTintColor = getRGBAColor(vinTintColor);
+    finTintColor = getRGBAColor(floatBitsToUint(vinTintColor));
 }

@@ -15,8 +15,8 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in uint vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000)
-layout (location = 3) in uint vinTintColorAndLight;// Light (0xFF000000); 3 bytes color (0x00FFFFFF)
+layout (location = 2) in float vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000)
+layout (location = 3) in float vinTintColorAndLight;// Light (0xFF000000); 3 bytes color (0x00FFFFFF)
 
 uniform mat4 uViewProjectionMatrix;
 
@@ -34,9 +34,11 @@ out vec4 finTintColor;
 
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
-    finTintColor = getRGBColor(vinTintColorAndLight & 0xFFFFFFu) * getLight(vinTintColorAndLight >> 24u);
+    uint tintColorAndLight = floatBitsToUint(vinTintColorAndLight);
+    finTintColor = getRGBColor(tintColorAndLight & 0xFFFFFFu) * getLight(tintColorAndLight >> 24u);
     finFragmentPosition = vinPosition;
 
-    finTextureIndex = vinIndexLayerAnimation >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
+    uint indexLayerAnimation = floatBitsToUint(vinIndexLayerAnimation);
+    finTextureIndex = indexLayerAnimation >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((indexLayerAnimation >> 12) & 0xFFFFu));
 }

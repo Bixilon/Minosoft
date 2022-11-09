@@ -14,7 +14,7 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in uint uvIndex;
+layout (location = 1) in float uvIndex;
 
 uniform mat4 uViewProjectionMatrix;
 uniform uint uIndexLayer;
@@ -45,7 +45,7 @@ void main() {
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
 
     finTextureIndex = uIndexLayer >> 28u;
-    vec2 uv = CONST_UV[uvIndex];
+    vec2 uv = CONST_UV[floatBitsToUint(uvIndex)];
     uv.x *= (uRadius / 5.0f);
     uv.y *= (300 / 5.0f);
 
