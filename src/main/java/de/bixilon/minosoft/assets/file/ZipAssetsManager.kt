@@ -38,7 +38,6 @@ class ZipAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
-        val namespaces: MutableSet<String> = mutableSetOf()
         while (true) {
             val entry = inputStream.nextEntry ?: break
             if (entry.isDirectory) {
@@ -48,7 +47,6 @@ class ZipAssetsManager(
         }
 
         inputStream.close()
-        this.namespaces = namespaces
         loaded = true
     }
 
