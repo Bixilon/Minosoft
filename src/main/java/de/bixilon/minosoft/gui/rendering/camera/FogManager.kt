@@ -81,7 +81,7 @@ class FogManager(
             color = player.positionInfo.biome?.waterFogColor
             fogStart = 5.0f
             fogEnd = 10.0f
-        } else if (player.activeStatusEffects[blindness] != null) {
+        } else if (player.effects[blindness] != null) {
             color = ChatColors.BLACK
             fogStart = 3.0f
             fogEnd = 5.0f

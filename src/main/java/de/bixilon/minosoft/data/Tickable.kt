@@ -10,31 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities
 
-import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.Tickable
-import de.bixilon.minosoft.data.registries.effects.StatusEffectType
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+package de.bixilon.minosoft.data
 
-data class StatusEffectInstance(
-    val type: StatusEffectType,
-    val amplifier: Int,
-    val duration: Int,
-) : Tickable {
-    private val start = millis()
-    private val end = start + duration * ProtocolDefinition.TICK_TIME
-    var remaining: Int = duration
-        private set
+interface Tickable {
 
-    val expired: Boolean
-        get() = remaining <= 0
-    val progress: Float
-        get() = (end - millis()) / (duration * ProtocolDefinition.TICK_TIME).toFloat()
-
-
-    override fun tick() {
-        remaining--
-    }
+    fun tick()
 }
-

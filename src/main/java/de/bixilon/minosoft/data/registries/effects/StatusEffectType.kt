@@ -27,7 +27,7 @@ import de.bixilon.minosoft.datafixer.rls.EntityAttributeFixer.fix
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-data class StatusEffect(
+data class StatusEffectType(
     override val resourceLocation: ResourceLocation,
     val category: StatusEffectCategories?,
     override val translationKey: ResourceLocation?,
@@ -40,9 +40,9 @@ data class StatusEffect(
         return resourceLocation.full
     }
 
-    companion object : ResourceLocationCodec<StatusEffect> {
+    companion object : ResourceLocationCodec<StatusEffectType> {
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): StatusEffect {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): StatusEffectType {
             val attributes: MutableMap<ResourceLocation, EntityAttributeModifier> = mutableMapOf()
             val uuidAttributes: MutableMap<UUID, EntityAttributeModifier> = mutableMapOf()
 
@@ -54,7 +54,7 @@ data class StatusEffect(
                 }
             }
 
-            return StatusEffect(
+            return StatusEffectType(
                 resourceLocation = resourceLocation,
                 category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] },
                 translationKey = data["translation_key"]?.toResourceLocation(),

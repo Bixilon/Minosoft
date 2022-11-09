@@ -35,7 +35,7 @@ import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistr
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.dimension.Dimension
-import de.bixilon.minosoft.data.registries.effects.StatusEffect
+import de.bixilon.minosoft.data.registries.effects.StatusEffectType
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
@@ -77,7 +77,7 @@ class Registries {
     val itemRegistry: ItemRegistry = register("item", ItemRegistry())
     val enchantmentRegistry: Registry<Enchantment> = register("enchantment", Registry(codec = Enchantment))
     val particleTypeRegistry: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
-    val statusEffectRegistry: Registry<StatusEffect> = register("mob_effect", Registry(codec = StatusEffect))
+    val statusEffectRegistry: Registry<StatusEffectType> = register("mob_effect", Registry(codec = StatusEffectType))
     val statisticRegistry: Registry<Statistic> = register("custom_stat", Registry(codec = Statistic))
     val biomeRegistry: Registry<Biome> = register("biome", Registry(codec = Biome))
     val dimensionRegistry: Registry<Dimension> = register("dimension_type", Registry(codec = Dimension))

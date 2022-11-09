@@ -87,7 +87,7 @@ class AttackInteractionHandler(
 
         val sharpnessLevel = player.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(sharpness) ?: 0
 
-        val critical = cooldown.progress > 0.9f && player.fallDistance != 0.0 && !player.onGround && !player.isClimbing && (player.fluidHeights[DefaultFluids.WATER] ?: 0.0f) <= 0.0f && player.activeStatusEffects[blindness] == null && player.vehicle == null && entity is LivingEntity
+        val critical = cooldown.progress > 0.9f && player.fallDistance != 0.0 && !player.onGround && !player.isClimbing && (player.fluidHeights[DefaultFluids.WATER] ?: 0.0f) <= 0.0f && player.effects[blindness] == null && player.vehicle == null && entity is LivingEntity
 
         if (critical) {
             renderWindow.connection.world.addParticle(EntityEmitterParticle(renderWindow.connection, entity, CritParticle))

@@ -389,7 +389,7 @@ class LocalPlayerEntity(
         var gravity = PhysicsConstants.BASE_GRAVITY
         val falling = velocity.y <= 0.0
 
-        if (falling && activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.SLOW_FALLING]] != null) {
+        if (falling && effects[connection.registries.statusEffectRegistry[DefaultStatusEffects.SLOW_FALLING]] != null) {
             gravity = 0.01
             fallDistance = 0.0
         }
@@ -417,7 +417,7 @@ class LocalPlayerEntity(
                 val velocity = move(sidewaysSpeed, forwardSpeed, friction)
 
 
-                activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.LEVITATION]]?.let {
+                effects[connection.registries.statusEffectRegistry[DefaultStatusEffects.LEVITATION]]?.let {
                     velocity.y += (0.05 * (it.amplifier + 1.0f) - velocity.y) * 0.2 // ToDo: This should be correct, but somehow are we to fast...
                 } ?: let {
                     if (connection.world[positionInfo.chunkPosition] == null) {
@@ -533,7 +533,7 @@ class LocalPlayerEntity(
     private fun jump() {
         var velocity = 0.42 * jumpVelocityMultiplier
 
-        activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.JUMP_BOOST]]?.let {
+        effects[connection.registries.statusEffectRegistry[DefaultStatusEffects.JUMP_BOOST]]?.let {
             velocity += 0.1 * (it.amplifier + 1.0)
         }
         this.velocity.y = velocity

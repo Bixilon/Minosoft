@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.data.registries.effects.StatusEffect
+import de.bixilon.minosoft.data.registries.effects.StatusEffectType
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
@@ -48,7 +48,7 @@ class WaterFluid(
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val depthStriderEnchantment: Enchantment = unsafeNull()
-    private val dolphinsGraceStatusEffect: StatusEffect = unsafeNull()
+    private val dolphinsGraceStatusEffect: StatusEffectType = unsafeNull()
     override val stillTextureName: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
     override val flowingTextureName: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
     override val tintProvider: TintProvider = WaterTintProvider
@@ -97,7 +97,7 @@ class WaterFluid(
             speed += (entity.walkingSpeed - speed) * depthStriderLevel / 3.0
         }
 
-        if (entity.activeStatusEffects[dolphinsGraceStatusEffect] != null) {
+        if (entity.effects[dolphinsGraceStatusEffect] != null) {
             speedMultiplier *= 0.96
         }
 

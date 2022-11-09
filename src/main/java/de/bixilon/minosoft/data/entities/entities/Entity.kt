@@ -28,15 +28,14 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.entities.data.EntityDataField
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.entities.entities.properties.StatusEffectProperty
 import de.bixilon.minosoft.data.entities.entities.vehicle.boat.Boat
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
@@ -81,7 +80,7 @@ abstract class Entity(
 ) : PhysicsEntity {
     protected val random = Random
     open val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
-    val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
+    val effects = StatusEffectProperty()
     val attributes: MutableMap<ResourceLocation, EntityAttribute> = synchronizedMapOf()
 
     val id: Int?
@@ -160,20 +159,10 @@ abstract class Entity(
         position = position + deltaPosition
     }
 
-    fun addEffect(effect: StatusEffectInstance) {
-        // effect already applied, maybe the duration or the amplifier changed?
-        removeEffect(effect.statusEffect)
-        activeStatusEffects[effect.statusEffect] = effect
-    }
-
-    fun removeEffect(effect: StatusEffect) {
-        activeStatusEffects.remove(effect)
-    }
-
     fun getAttributeValue(name: ResourceLocation, baseValue: Double? = null): Double {
         // ToDo: Check order and verify value
-        val attribute = attributes[name]
-        val realBaseValue = baseValue ?: attribute?.baseValue ?: type.attributes[name] ?: 1.0
+        val entityAttribute = attributes[name]
+        val realBaseValue = baseValue ?: entityAttribute?.baseValue ?: type.attributes[name] ?: 1.0
         var ret = realBaseValue
 
         fun addToValue(modifier: EntityAttributeModifier, amplifier: Int) {
@@ -185,19 +174,14 @@ abstract class Entity(
             }
         }
 
-        attribute?.let {
+        entityAttribute?.let {
             for (instance in it.modifiers.values) {
                 addToValue(instance, 1)
             }
         }
 
-        for (statusEffect in activeStatusEffects.values) {
-            for ((instanceResourceLocation, instance) in statusEffect.statusEffect.attributes) {
-                if (instanceResourceLocation != name) {
-                    continue
-                }
-                addToValue(instance, statusEffect.amplifier)
-            }
+        for ((attribute, amplifier) in effects.processAttribute(name)) {
+            addToValue(attribute, amplifier)
         }
 
         return ret

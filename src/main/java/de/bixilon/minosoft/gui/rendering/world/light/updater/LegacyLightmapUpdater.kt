@@ -41,7 +41,7 @@ class LegacyLightmapUpdater(private val connection: PlayConnection) : LightmapUp
 
         val underwaterVisibility = 0.0f // ToDo
 
-        val nightVisionEffect = connection.player.activeStatusEffects[nightVisionStatusEffect]
+        val nightVisionEffect = connection.player.effects[nightVisionStatusEffect]
 
         val nightVisionVisibility = if (nightVisionEffect != null) {
             if (nightVisionEffect.duration > 200) {
@@ -49,7 +49,7 @@ class LegacyLightmapUpdater(private val connection: PlayConnection) : LightmapUp
             } else {
                 0.7f + sin((nightVisionEffect.duration.toFloat()) * GLM.PIf * 0.2f) * 0.3f
             }
-        } else if (underwaterVisibility > 0.0f && connection.player.activeStatusEffects[conduitPowerStatusEffect] != null) {
+        } else if (underwaterVisibility > 0.0f && connection.player.effects[conduitPowerStatusEffect] != null) {
             underwaterVisibility
         } else {
             0.0f

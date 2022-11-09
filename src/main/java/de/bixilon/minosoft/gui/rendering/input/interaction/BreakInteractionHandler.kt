@@ -197,11 +197,11 @@ class BreakInteractionHandler(
             }
         }
 
-        connection.player.activeStatusEffects[hasteStatusEffect]?.let {
+        connection.player.effects[hasteStatusEffect]?.let {
             speedMultiplier *= (0.2f * (it.amplifier + 1)) + 1.0f
         }
 
-        connection.player.activeStatusEffects[miningFatigueStatusEffect]?.let {
+        connection.player.effects[miningFatigueStatusEffect]?.let {
             speedMultiplier *= when (it.amplifier) {
                 0 -> 0.3f
                 1 -> 0.09f
