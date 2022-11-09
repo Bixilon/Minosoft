@@ -29,7 +29,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkLight(private val chunk: Chunk) {
     private val connection = chunk.connection
-    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { Int.MIN_VALUE }
+    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { if (chunk.world.dimension.canSkylight()) Int.MIN_VALUE else Int.MAX_VALUE }
 
     val bottom = BorderSectionLight(false, chunk)
     val top = BorderSectionLight(true, chunk)
