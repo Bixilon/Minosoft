@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface SkyProperties : ResourceLocationAble {
     val daylightCycle: Boolean
+    val skylight: Boolean
     val fixedTexture: ResourceLocation? get() = null
 
     val sun: Boolean

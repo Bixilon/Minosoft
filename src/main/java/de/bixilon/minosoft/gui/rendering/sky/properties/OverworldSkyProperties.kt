@@ -21,6 +21,7 @@ object OverworldSkyProperties : SkyProperties {
     override val resourceLocation = minecraft("overworld")
 
     override val daylightCycle: Boolean get() = true
+    override val skylight: Boolean get() = true
 
     override val sun: Boolean get() = true
     override val moon: Boolean get() = true

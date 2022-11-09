@@ -64,8 +64,8 @@ class LegacyLightmapUpdater(private val connection: PlayConnection) : LightmapUp
                 val index = ((skyLight shl 4) or blockLight) * 4
 
 
-                val skyLightBrightness = (connection.world.dimension?.lightLevels?.get(skyLight) ?: 1.0f) * (skyGradient * 0.95f + 0.05f)
-                val blockLightBrightness = (connection.world.dimension?.lightLevels?.get(blockLight) ?: 1.0f) * 1.5// ToDo: multiply with time somewhat thing?
+                val skyLightBrightness = (connection.world.dimension?.brightness?.get(skyLight) ?: 1.0f) * (skyGradient * 0.95f + 0.05f)
+                val blockLightBrightness = (connection.world.dimension?.brightness?.get(blockLight) ?: 1.0f) * 1.5// ToDo: multiply with time somewhat thing?
 
 
                 var color = Vec3(blockLightBrightness, blockLightBrightness * ((blockLightBrightness * 0.6f + 0.4f) * 0.6f + 0.4f), blockLightBrightness * (blockLightBrightness * blockLightBrightness * 0.6f + 0.4f))

@@ -51,16 +51,16 @@ data class DimensionProperties(
     }
     val maxSection = minSection + sections
 
-    val lightLevels = FloatArray(16)
+    val brightness = FloatArray(16)
 
     init {
         check(maxSection > minSection) { "Upper section can not be lower that the lower section ($minSection > $maxSection)" }
         check(minSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Minimum section out of bounds: $minSection" }
         check(maxSection in ProtocolDefinition.CHUNK_MIN_SECTION..ProtocolDefinition.CHUNK_MAX_SECTION) { "Maximum section out of bounds: $minSection" }
 
-        for (i in lightLevels.indices) {
-            val fraction = i / 15.0f
-            lightLevels[i] = interpolateLinear(ambientLight, fraction / (4.0f - 3.0f * fraction), 1.0f)
+        for (level in brightness.indices) {
+            val fraction = level / ProtocolDefinition.MAX_LIGHT_LEVEL.toFloat()
+            brightness[level] = interpolateLinear(ambientLight, fraction / (4.0f - 3.0f * fraction), 1.0f)
         }
     }
 

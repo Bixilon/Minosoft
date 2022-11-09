@@ -21,6 +21,7 @@ object NetherSkyProperties : SkyProperties {
     override val resourceLocation = minecraft("the_nether")
 
     override val daylightCycle: Boolean get() = false
+    override val skylight: Boolean get() = false
 
     override val sun: Boolean get() = false
     override val moon: Boolean get() = false

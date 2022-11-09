@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
@@ -241,7 +242,7 @@ class ChunkLight(private val chunk: Chunk) {
                 section.light.calculate()
             }
             calculateSkylight()
-        } else if (previous > y) {
+        } else if (previous > y && connection.world.dimension.canSkylight()) {
             // block is lower
             startSkylightFloodFill(x, z)
         }
@@ -278,7 +279,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun calculateSkylight() {
-        if (chunk.world.dimension?.hasSkyLight != true || !chunk.neighbours.complete) {
+        if (!chunk.world.dimension.canSkylight() || !chunk.neighbours.complete) {
             // no need to calculate it
             return
         }
@@ -394,5 +395,15 @@ class ChunkLight(private val chunk: Chunk) {
         // TODO: clear neighbours and let them propagate?
         // TODO: Optimize for specific section height (i.e. not trace everything above)
         calculateSkylight()
+    }
+
+    fun DimensionProperties?.canSkylight(): Boolean {
+        if (this == null) {
+            return false
+        }
+        if (!this.hasSkyLight || !this.skyProperties.skylight) {
+            return false
+        }
+        return true
     }
 }
