@@ -131,6 +131,6 @@ class ConnectionUtil(
         }
         connection.player.healthCondition = HealthCondition()
         connection.world.time = WorldTime(connection.world)
-        connection.world.weather = WorldWeather()
+        connection.world.weather = WorldWeather.NONE
     }
 }

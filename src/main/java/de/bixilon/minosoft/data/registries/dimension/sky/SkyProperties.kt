@@ -22,6 +22,7 @@ interface SkyProperties : ResourceLocationAble {
     val skylight: Boolean
     val fixedTexture: ResourceLocation? get() = null
 
+    val weather: Boolean
     val sun: Boolean
     val moon: Boolean
     val stars: Boolean

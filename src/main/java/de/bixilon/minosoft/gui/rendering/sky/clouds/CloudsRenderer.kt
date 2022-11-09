@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
@@ -187,7 +188,10 @@ class CloudsRenderer(
     }
 
     private fun calculateCloudsColor(): Vec3 {
-        val weather = connection.world.weather
+        var weather = connection.world.weather
+        if (connection.world.dimension?.sky?.weather != true) {
+            weather = WorldWeather.NONE
+        }
         val time = sky.time
         if (weather.rain > 0.0f || weather.thunder > 0.0f) {
             return calculateRainColor(time, maxOf(weather.rain, weather.thunder))

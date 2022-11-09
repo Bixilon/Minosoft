@@ -26,6 +26,7 @@ object EndSkyProperties : SkyProperties {
     override val skylight: Boolean get() = false
     override val fixedTexture: ResourceLocation = minecraft("environment/end_sky").texture()
 
+    override val weather: Boolean get() = false
     override val sun: Boolean get() = false
     override val moon: Boolean get() = false
     override val stars: Boolean get() = false

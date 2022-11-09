@@ -23,6 +23,7 @@ object OverworldSkyProperties : SkyProperties {
     override val daylightCycle: Boolean get() = true
     override val skylight: Boolean get() = true
 
+    override val weather: Boolean get() = true
     override val sun: Boolean get() = true
     override val moon: Boolean get() = true
     override val stars: Boolean get() = true

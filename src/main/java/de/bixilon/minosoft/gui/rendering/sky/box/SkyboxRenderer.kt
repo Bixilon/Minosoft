@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.chunkPosition
 import de.bixilon.minosoft.data.world.positions.ChunkPositionUtil.inChunkPosition
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
+import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyChildRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -346,7 +347,10 @@ class SkyboxRenderer(
         }
         // TODO: Check if wither is present
 
-        val weather = sky.renderWindow.connection.world.weather
+        var weather = sky.renderWindow.connection.world.weather
+        if (!properties.weather) {
+            weather = WorldWeather.NONE
+        }
 
         if (weather.thunder > 0.0f) {
             return calculateThunder(time, weather.rain, weather.thunder)?.let { RGBColor(it) }

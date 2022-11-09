@@ -23,6 +23,7 @@ object NetherSkyProperties : SkyProperties {
     override val daylightCycle: Boolean get() = false
     override val skylight: Boolean get() = false
 
+    override val weather: Boolean get() = false
     override val sun: Boolean get() = false
     override val moon: Boolean get() = false
     override val stars: Boolean get() = false

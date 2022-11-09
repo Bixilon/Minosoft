@@ -18,4 +18,8 @@ data class WorldWeather(
     val thunder: Float = 0.0f,
 ) {
     val raining: Boolean get() = rain > 0.0f
+
+    companion object {
+        val NONE = WorldWeather(0.0f, 0.0f)
+    }
 }
