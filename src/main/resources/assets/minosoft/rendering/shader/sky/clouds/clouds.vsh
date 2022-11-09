@@ -36,9 +36,9 @@ void main() {
     finFragmentPosition = position / 3;
 
     switch (vinSide) {
-        case 0u: finBrightness = 0.5f; break; // DOWN
+        case 0u: finBrightness = 0.7f; break; // DOWN
         case 1u: finBrightness = 1.0f; break; // UP
-        case 2u: case 3u: finBrightness = 0.8f;  break; // NORTH, SOUTH
-        case 4u: case 5u: finBrightness = 0.6f;  break; // WEST, EAST
+        case 2u: case 3u: finBrightness = 0.9f;  break; // NORTH, SOUTH
+        case 4u: case 5u: finBrightness = 0.8f;  break; // WEST, EAST
     }
 }

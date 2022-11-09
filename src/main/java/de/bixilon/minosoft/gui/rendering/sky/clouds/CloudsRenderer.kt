@@ -138,7 +138,7 @@ class CloudsRenderer(
     }
 
     private fun calculateNight(progress: Float, moon: MoonPhases): Vec3 {
-        return interpolateLinear((abs(progress - 0.5f) * 2).pow(2), NIGHT_COLOR, DAY_COLOR * 0.1f) * moon.light
+        return interpolateLinear((abs(progress - 0.5f) * 2).pow(2), NIGHT_COLOR, DAY_COLOR * 0.2f) * moon.light
     }
 
     private fun calculateSunrise(progress: Float, moon: MoonPhases): Vec3 {
@@ -229,7 +229,7 @@ class CloudsRenderer(
         private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.36f)
         private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)
         private val SUNSET_COLOR = Vec3(1.0f, 0.75f, 0.55f)
-        private val NIGHT_COLOR = Vec3(0.03f, 0.06f, 0.13f)
+        private val NIGHT_COLOR = Vec3(0.08f, 0.13f, 0.18f)
 
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudsRenderer? {
