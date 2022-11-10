@@ -38,25 +38,27 @@ class ZipAssetsManager(
     override fun load(latch: CountUpAndDownLatch) {
         check(!loaded) { "Already loaded!" }
 
+        val namespaces: MutableSet<String> = mutableSetOf()
         while (true) {
             val entry = inputStream.nextEntry ?: break
             if (entry.isDirectory) {
                 continue
             }
-            push(entry.name, inputStream)
+            push(entry.name, namespaces, inputStream)
         }
 
         inputStream.close()
+        this.namespaces = namespaces
         loaded = true
     }
 
-    fun push(name: String, stream: ZipInputStream) {
+    fun push(name: String, namespaces: MutableSet<String>, stream: ZipInputStream) {
         when (name) {
             "pack.png" -> image = stream.readAllBytes()
             "pack.mcmeta" -> properties = stream.readJson(false)
             else -> {
                 val resourceLocation = name.toAssetName(prefix = prefix) ?: return
-                this.namespaces += resourceLocation.namespace
+                namespaces += resourceLocation.namespace
                 assets[resourceLocation] = stream.readAllBytes()
             }
         }

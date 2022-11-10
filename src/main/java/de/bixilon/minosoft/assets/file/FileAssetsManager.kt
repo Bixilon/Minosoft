@@ -29,7 +29,7 @@ abstract class FileAssetsManager(private val canUnload: Boolean = true) : Assets
         protected set
     protected val assets: MutableMap<ResourceLocation, ByteArray> = mutableMapOf()
     override var namespaces: Set<String> = setOf()
-        protected set
+        @Deprecated("Why?") set
 
 
     override fun get(path: ResourceLocation): InputStream {
