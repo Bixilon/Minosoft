@@ -259,6 +259,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         private val world = guiRenderer.renderWindow.connection.world
         private val entity = guiRenderer.renderWindow.connection.player
 
+        // TODO: Cleanup this class
+
         init {
             showWait()
         }
@@ -287,7 +289,7 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) {
-                    val chunk = chunk.value!!
+                    val chunk = chunk.value ?: return@AutoTextElement ""
                     var value: Any = chunk.isFullyLoaded
                     if (!chunk.isFullyLoaded) {
                         val builder = StringBuilder()
