@@ -65,7 +65,7 @@ class NormalLightmapUpdater(
 
         for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             var color = calculateBlock(dimension.brightness[block])
-            color = tweak(color, gamma)
+            color = tweak(color, gamma, dimension.effects.brighten)
             buffer[0, block] = color
         }
     }
@@ -82,7 +82,7 @@ class NormalLightmapUpdater(
         for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
                 var color = combine(skyColors[sky], blockColors[block])
-                color = tweak(color, gamma)
+                color = tweak(color, gamma, dimension.effects.brighten)
                 buffer[sky, block] = color
             }
         }
@@ -161,11 +161,19 @@ class NormalLightmapUpdater(
         return color
     }
 
-    private fun tweak(color: Vec3, gamma: Float): Vec3 {
+    private fun tweak(color: Vec3, gamma: Float, brighten: Vec3?): Vec3 {
         var output = color
         output = applyGamma(output, gamma)
 
+        brighten?.let { output = applyBrighten(color, brighten) }
+
+
+        output = output.clamp(0.0f, 1.0f)
         return output
+    }
+
+    private fun applyBrighten(color: Vec3, brighten: Vec3): Vec3 {
+        return interpolateLinear(0.25f, color, brighten)
     }
 
     private fun applyGamma(color: Vec3, gamma: Float): Vec3 {
