@@ -65,7 +65,7 @@ class SunScatterRenderer(
         val matrix = Mat4()
         matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3(0, 0, 1))
 
-        val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f);
+        val barePosition = Vec4(1.0f, 0.128f, 0.0f, 1.0f)
 
         return (matrix * barePosition).xyz
     }
@@ -78,13 +78,22 @@ class SunScatterRenderer(
         if (!sky.profile.sunScatter || sky.time.phase == DayPhases.DAY || sky.time.phase == DayPhases.NIGHT || !sky.effects.sun) {
             return
         }
+        val weather = sky.connection.world.weather
+        val weatherLevel = maxOf(weather.rain, weather.thunder)
+        if (weatherLevel >= 1.0f) {
+            // maximum rain or thunder, don't render
+            return
+        }
+
         shader.use()
-        if (timeUpdate) {
-            calculateMatrix()
-            shader.setMat4("uScatterMatrix", matrix)
-            shader.setFloat("uIntensity", calculateIntensity(sky.time.progress))
-            shader.setVec3("uSunPosition", calculateSunPosition())
-            timeUpdate = false
+        if (timeUpdate || weatherLevel > 0.0f) {
+            if (timeUpdate) {
+                calculateMatrix()
+                shader.setMat4("uScatterMatrix", matrix)
+                shader.setVec3("uSunPosition", calculateSunPosition())
+                timeUpdate = false
+            }
+            shader.setFloat("uIntensity", (1.0f - weatherLevel) * calculateIntensity(sky.time.progress))
         }
 
         sky.renderSystem.enable(RenderingCapabilities.BLENDING)
