@@ -177,6 +177,9 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun recalculateHeightmap() {
+        if (!chunk.world.dimension.canSkylight()) {
+            return
+        }
         chunk.lock.lock()
         val maxY = chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y
 
@@ -249,6 +252,9 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun recalculateHeightmap(x: Int, y: Int, z: Int, blockState: BlockState?) {
+        if (!chunk.world.dimension.canSkylight()) {
+            return
+        }
         chunk.lock.lock()
         val index = (z shl 4) or x
 
@@ -397,13 +403,16 @@ class ChunkLight(private val chunk: Chunk) {
         calculateSkylight()
     }
 
-    fun DimensionProperties?.canSkylight(): Boolean {
-        if (this == null) {
-            return false
+    companion object {
+
+        fun DimensionProperties?.canSkylight(): Boolean {
+            if (this == null) {
+                return false
+            }
+            if (!this.hasSkyLight || !this.effects.skylight) {
+                return false
+            }
+            return true
         }
-        if (!this.hasSkyLight || !this.effects.skylight) {
-            return false
-        }
-        return true
     }
 }
