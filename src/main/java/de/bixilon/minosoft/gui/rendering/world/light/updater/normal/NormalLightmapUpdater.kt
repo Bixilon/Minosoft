@@ -21,12 +21,14 @@ import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinear
 import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LightmapUpdater
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
+import kotlin.math.pow
 
 class NormalLightmapUpdater(
     private val connection: PlayConnection,
@@ -59,20 +61,29 @@ class NormalLightmapUpdater(
     }
 
     private fun updateBlock(dimension: DimensionProperties, buffer: LightmapBuffer) {
+        val gamma = profile.gamma
+
         for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-            buffer[0, block] = calculateBlock(dimension.brightness[block])
+            var color = calculateBlock(dimension.brightness[block])
+            color = tweak(color, gamma)
+            buffer[0, block] = color
         }
     }
 
     private fun updateBlockSky(dimension: DimensionProperties, buffer: LightmapBuffer) {
         val time = connection.world.time
         val weather = connection.world.weather
+
         val skyColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateSky(dimension.brightness[it], weather, time) }
         val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.brightness[it]) }
 
+        val gamma = profile.gamma
+
         for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-                buffer[sky, block] = combine(skyColors[sky], blockColors[block])
+                var color = combine(skyColors[sky], blockColors[block])
+                color = tweak(color, gamma)
+                buffer[sky, block] = color
             }
         }
     }
@@ -148,6 +159,17 @@ class NormalLightmapUpdater(
         color = color.clamp(0.0f, 1.0f)
 
         return color
+    }
+
+    private fun tweak(color: Vec3, gamma: Float): Vec3 {
+        var output = color
+        output = applyGamma(output, gamma)
+
+        return output
+    }
+
+    private fun applyGamma(color: Vec3, gamma: Float): Vec3 {
+        return interpolateLinear(gamma, color, color modify { 1.0f - (1.0f - it).pow(4) })
     }
 
     private fun Vec3.brighten(value: Float): Vec3 {
