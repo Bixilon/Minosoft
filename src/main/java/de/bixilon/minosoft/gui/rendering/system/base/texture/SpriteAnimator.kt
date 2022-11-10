@@ -35,6 +35,8 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
         uniformBuffer = renderSystem.createIntUniformBuffer(IntArray(animations.size * INTS_PER_ANIMATED_TEXTURE))
         uniformBuffer.init()
         initialized = true
+        recalculate()
+        uniformBuffer.upload()
     }
 
     private fun recalculate() {
