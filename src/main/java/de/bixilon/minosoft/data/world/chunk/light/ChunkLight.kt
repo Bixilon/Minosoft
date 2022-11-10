@@ -401,7 +401,7 @@ class ChunkLight(private val chunk: Chunk) {
         if (this == null) {
             return false
         }
-        if (!this.hasSkyLight || !this.sky.skylight) {
+        if (!this.hasSkyLight || !this.effects.skylight) {
             return false
         }
         return true

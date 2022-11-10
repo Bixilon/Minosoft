@@ -74,7 +74,7 @@ class MoonRenderer(
     }
 
     override fun draw() {
-        if (!sky.properties.moon) {
+        if (!sky.effects.moon) {
             return
         }
         super.draw()

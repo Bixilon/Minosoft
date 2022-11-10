@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.dimension.sky
+package de.bixilon.minosoft.data.registries.dimension.effects
 
+import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-object EndSkyProperties : SkyProperties {
+object EndEffects : DimensionEffects {
     override val resourceLocation = minecraft("the_end")
 
     override val daylightCycle: Boolean get() = false
@@ -34,7 +35,7 @@ object EndSkyProperties : SkyProperties {
     override val clouds: Boolean get() = false
     override fun getCloudHeight(connection: PlayConnection): IntRange = Broken()
 
-    override val brighten: Boolean get() = true
+    override val brighten = Vec3(0.99f, 1.12f, 1.0f) // bit more green
 
     override val fog: Boolean get() = false
 }

@@ -18,9 +18,9 @@ import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.data.registries.dimension.sky.DefaultSkyProperties
-import de.bixilon.minosoft.data.registries.dimension.sky.OverworldSkyProperties
-import de.bixilon.minosoft.data.registries.dimension.sky.SkyProperties
+import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
+import de.bixilon.minosoft.data.registries.dimension.effects.DimensionEffects
+import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
@@ -32,7 +32,7 @@ data class DimensionProperties(
     //   val respawnAnchorWorks: Boolean = false,
     val hasSkyLight: Boolean = true,
     //   val bedWorks: Boolean = true,
-    val sky: SkyProperties = OverworldSkyProperties,
+    val effects: DimensionEffects = OverworldEffects,
     //   val hasRaids: Boolean = true,
     val logicalHeight: Int = DEFAULT_HEIGHT,
     //   val coordinateScale: Double = 0.0,
@@ -74,7 +74,7 @@ data class DimensionProperties(
                 //respawnAnchorWorks = data["respawn_anchor_works"]?.toBoolean() ?: false,
                 hasSkyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,
                 //bedWorks = data["bed_works"]?.toBoolean() ?: false,
-                sky = data["effects"].nullCast<String>()?.let { DefaultSkyProperties[it.toResourceLocation()] } ?: OverworldSkyProperties,
+                effects = data["effects"].nullCast<String>()?.let { DefaultDimensionEffects[it.toResourceLocation()] } ?: OverworldEffects,
                 //hasRaids = data["has_raids"]?.toBoolean() ?: false,
                 logicalHeight = data["logical_height"]?.toInt() ?: DEFAULT_MAX_Y,
                 //coordinateScale = data["coordinate_scale"].nullCast() ?: 0.0,

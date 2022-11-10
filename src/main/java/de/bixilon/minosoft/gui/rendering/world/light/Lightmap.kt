@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.world.light
 
-import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.world.light.updater.DebugLightUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.FullbrightLightUpdater
-import de.bixilon.minosoft.gui.rendering.world.light.updater.LegacyLightmapUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LightmapUpdater
+import de.bixilon.minosoft.gui.rendering.world.light.updater.normal.NormalLightmapUpdater
 
 class Lightmap(private val light: RenderLight) {
     private val profile = light.renderWindow.connection.profiles.rendering
@@ -46,7 +47,7 @@ class Lightmap(private val light: RenderLight) {
     }
 
     private fun getLightmapUpdater(): LightmapUpdater {
-        if (StaticConfiguration.LIGHT_DEBUG_MODE) {
+        if (DebugOptions.LIGHT_DEBUG_MODE) {
             return DebugLightUpdater
         }
         if (profile.light.fullbright) {

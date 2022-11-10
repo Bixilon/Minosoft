@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.dimension.sky
+package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.minosoft.util.ResourceLocationMap
 
-object DefaultSkyProperties : ResourceLocationMap<SkyProperties>(
-    OverworldSkyProperties,
-    NetherSkyProperties,
-    EndSkyProperties,
+object DefaultDimensionEffects : ResourceLocationMap<DimensionEffects>(
+    OverworldEffects,
+    NetherEffects,
+    EndEffects,
 )

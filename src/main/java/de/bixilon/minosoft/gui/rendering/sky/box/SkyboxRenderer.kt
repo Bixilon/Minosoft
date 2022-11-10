@@ -24,7 +24,7 @@ import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.dimension.sky.DefaultSkyProperties
+import de.bixilon.minosoft.data.registries.dimension.effects.DefaultDimensionEffects
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
@@ -132,7 +132,7 @@ class SkyboxRenderer(
         colorShader.load()
         textureShader.load()
 
-        for (properties in DefaultSkyProperties) {
+        for (properties in DefaultDimensionEffects) {
             val texture = properties.fixedTexture ?: continue
             textureCache[texture] = sky.renderWindow.textureManager.staticTextures.createTexture(texture)
         }
@@ -172,7 +172,7 @@ class SkyboxRenderer(
     }
 
     override fun draw() {
-        val texture = sky.properties.fixedTexture
+        val texture = sky.effects.fixedTexture
         if (this.texture != (texture != null)) {
             this.texture = (texture != null)
             updateMatrix = true
@@ -335,7 +335,7 @@ class SkyboxRenderer(
     }
 
     private fun calculateSkyColor(): RGBColor? {
-        val properties = sky.properties
+        val properties = sky.effects
         val time = time
         if (properties.fixedTexture != null) {
             // sky is a texture, no color (e.g. end)

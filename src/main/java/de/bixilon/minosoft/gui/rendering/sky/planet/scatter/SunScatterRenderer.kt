@@ -75,7 +75,7 @@ class SunScatterRenderer(
     }
 
     override fun draw() {
-        if (!sky.profile.sunScatter || sky.time.phase == DayPhases.DAY || sky.time.phase == DayPhases.NIGHT || !sky.properties.sun) {
+        if (!sky.profile.sunScatter || sky.time.phase == DayPhases.DAY || sky.time.phase == DayPhases.NIGHT || !sky.effects.sun) {
             return
         }
         shader.use()

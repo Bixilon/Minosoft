@@ -62,7 +62,7 @@ class CloudsRenderer(
     private var toUnload: MutableSet<CloudsLayer> = mutableSetOf()
 
     override val skipOpaque: Boolean
-        get() = !sky.properties.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
+        get() = !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
 
 
     override fun asyncInit(latch: CountUpAndDownLatch) {
@@ -74,7 +74,7 @@ class CloudsRenderer(
     }
 
     private fun getCloudHeight(index: Int): IntRange {
-        val base = sky.properties.getCloudHeight(connection)
+        val base = sky.effects.getCloudHeight(connection)
         this.baseHeight = base.first
         val cloudHeight = base.last - base.first
 
@@ -189,7 +189,7 @@ class CloudsRenderer(
 
     private fun calculateCloudsColor(): Vec3 {
         var weather = connection.world.weather
-        if (connection.world.dimension?.sky?.weather != true) {
+        if (connection.world.dimension?.effects?.weather != true) {
             weather = WorldWeather.NONE
         }
         val time = sky.time

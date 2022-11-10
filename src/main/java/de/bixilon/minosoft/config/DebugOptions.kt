@@ -21,4 +21,5 @@ object DebugOptions {
     const val CLOUD_RASTER = false
 
     const val LIGHTMAP_DEBUG_WINDOW = true
+    const val LIGHT_DEBUG_MODE = false
 }

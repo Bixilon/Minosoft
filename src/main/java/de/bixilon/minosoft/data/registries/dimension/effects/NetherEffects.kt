@@ -11,26 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.dimension.sky
+package de.bixilon.minosoft.data.registries.dimension.effects
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-interface SkyProperties : ResourceLocationAble {
-    val daylightCycle: Boolean
-    val skylight: Boolean
-    val fixedTexture: ResourceLocation? get() = null
+object NetherEffects : DimensionEffects {
+    override val resourceLocation = minecraft("the_nether")
 
-    val weather: Boolean
-    val sun: Boolean
-    val moon: Boolean
-    val stars: Boolean
+    override val daylightCycle: Boolean get() = false
+    override val skylight: Boolean get() = false
 
-    val clouds: Boolean
-    fun getCloudHeight(connection: PlayConnection): IntRange
+    override val weather: Boolean get() = false
+    override val sun: Boolean get() = false
+    override val moon: Boolean get() = false
+    override val stars: Boolean get() = false
 
-    val brighten: Boolean get() = false
+    override val clouds: Boolean get() = false
+    override fun getCloudHeight(connection: PlayConnection): IntRange = Broken()
 
-    val fog: Boolean
+
+    override val fog: Boolean get() = true
 }

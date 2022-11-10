@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.dimension.sky
+package de.bixilon.minosoft.data.registries.dimension.effects
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-object OverworldSkyProperties : SkyProperties {
+object OverworldEffects : DimensionEffects {
     override val resourceLocation = minecraft("overworld")
 
     override val daylightCycle: Boolean get() = true
@@ -36,8 +36,6 @@ object OverworldSkyProperties : SkyProperties {
         }
         return 128..132
     }
-
-    override val brighten: Boolean get() = false
 
     override val fog: Boolean get() = true
 }

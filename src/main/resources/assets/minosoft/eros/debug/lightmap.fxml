@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.layout.HBox?>
 <!--
   ~ Minosoft
   ~ Copyright (C) 2020-2022 Moritz Zwerger
@@ -16,6 +14,8 @@
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
 
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.HBox?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="512.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/18">
-    <Canvas fx:id="canvasFX" height="16.0" scaleX="32.0" scaleY="32.0" translateX="240.0" translateY="240.0" width="16.0" HBox.hgrow="NEVER"/>
+    <Canvas fx:id="canvasFX" height="16.0" scaleX="32.0" scaleY="32.0" translateX="248.0" translateY="248.0" width="16.0" HBox.hgrow="NEVER"/>
 </HBox>

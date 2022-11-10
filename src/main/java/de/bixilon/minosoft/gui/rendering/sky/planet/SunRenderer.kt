@@ -54,7 +54,7 @@ class SunRenderer(
     }
 
     override fun draw() {
-        if (!sky.properties.sun) {
+        if (!sky.effects.sun) {
             return
         }
         super.draw()
