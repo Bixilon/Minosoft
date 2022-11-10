@@ -112,6 +112,9 @@ class CloudsRenderer(
     }
 
     override fun prepareDrawAsync() {
+        if (!sky.effects.clouds) {
+            return
+        }
         if (layers.size != nextLayers) {
             updateLayers(nextLayers)
         }
@@ -123,6 +126,9 @@ class CloudsRenderer(
     override fun postPrepareDraw() {
         for (unload in toUnload) {
             unload.unload()
+        }
+        if (!sky.effects.clouds) {
+            return
         }
         for (layer in layers) {
             layer.prepare()
