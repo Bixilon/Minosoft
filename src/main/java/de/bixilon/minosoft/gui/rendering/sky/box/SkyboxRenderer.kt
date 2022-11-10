@@ -245,7 +245,7 @@ class SkyboxRenderer(
         return RGBColor(red / count, green / count, blue / count)
     }
 
-    private fun calculateLightingStrike(original: Vec3): Vec3 {
+    fun calculateLightingStrike(original: Vec3): Vec3 {
         val duration = this.strikeDuration
         val delta = millis() - lastStrike
         if (delta > duration) {

@@ -35,8 +35,8 @@ class Lightmap(private val light: RenderLight) {
     private lateinit var defaultUpdater: LightmapUpdater
 
     fun init() {
-        //  defaultUpdater = NormalLightmapUpdater(light.renderWindow.connection, light.renderWindow.renderer[SkyRenderer])
-        defaultUpdater = LegacyLightmapUpdater(light.renderWindow.connection)
+        defaultUpdater = NormalLightmapUpdater(light.renderWindow.connection, light.renderWindow.renderer[SkyRenderer])
+        // defaultUpdater = LegacyLightmapUpdater(light.renderWindow.connection)
         buffer.init()
         profile.light::fullbright.profileWatch(this, profile = profile) { setLightmapUpdater() }
         setLightmapUpdater()
