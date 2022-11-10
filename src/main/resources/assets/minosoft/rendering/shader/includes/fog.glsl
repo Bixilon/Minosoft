@@ -21,6 +21,10 @@ uniform float uFogDistance = 15.0f * 15.0f;
 uniform vec4 uFogColor;
 uniform bool uUseFogColor = false;
 
+#ifndef DISTANCE_MULTIPLIER
+    #define DISTANCE_MULTIPLIER 1.0f
+#endif
+
 float calulate_fog_alpha(float distance2) {
     if (distance2 < uFogStart) {
         return 1.0f;
@@ -43,7 +47,7 @@ float calculate_fog() {
     vec2 distance_vec2 = finFragmentPosition.xz - uCameraPosition.xz;
     float distance = dot(distance_vec2, distance_vec2);
     #endif
-    return calulate_fog_alpha(distance);
+    return calulate_fog_alpha(distance * DISTANCE_MULTIPLIER);
 }
 
 void set_fog() {

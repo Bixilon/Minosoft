@@ -33,7 +33,7 @@ void main() {
 
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0);
 
-    finFragmentPosition = position / 3;
+    finFragmentPosition = position;
 
     switch (vinSide) {
         case 0u: finBrightness = 0.7f; break; // DOWN

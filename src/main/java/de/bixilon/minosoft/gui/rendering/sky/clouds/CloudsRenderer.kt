@@ -187,10 +187,13 @@ class CloudsRenderer(
         }
     }
 
-    private fun calculateRainColor(time: WorldTime, rain: Float): Vec3 {
+    private fun calculateRainColor(time: WorldTime, rain: Float, thunder: Float): Vec3 {
         val normal = calculateNormal(time)
         val brightness = normal.length()
-        return interpolateLinear(rain, normal, RAIN_COLOR) * brightness
+        var color = RAIN_COLOR
+        color = color * maxOf(1.0f - thunder, 0.4f)
+
+        return interpolateLinear(maxOf(rain, thunder), normal, color) * brightness * 0.8f
     }
 
     private fun calculateCloudsColor(): Vec3 {
@@ -200,7 +203,7 @@ class CloudsRenderer(
         }
         val time = sky.time
         if (weather.rain > 0.0f || weather.thunder > 0.0f) {
-            return calculateRainColor(time, maxOf(weather.rain, weather.thunder))
+            return calculateRainColor(time, weather.rain, weather.thunder)
         }
         return calculateNormal(time)
     }
