@@ -101,6 +101,11 @@ abstract class PlanetRenderer(
     }
 
     override fun draw() {
+        val weather = sky.connection.world.weather
+        if (weather.rain > 0.8f || weather.thunder > 0.8f) {
+            // sky not clear
+            return
+        }
         shader.use()
         if (matrixUpdate) {
             shader.setMat4("uMatrix", matrix)
