@@ -45,6 +45,7 @@ import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEven
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.murmur64
+import de.bixilon.minosoft.util.KUtil.nextFloat
 import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs

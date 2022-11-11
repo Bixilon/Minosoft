@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.KUtil.murmur64
+import de.bixilon.minosoft.util.KUtil.nextFloat
 import java.util.*
 
 class MoonRenderer(

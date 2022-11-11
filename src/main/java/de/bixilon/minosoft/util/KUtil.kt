@@ -336,4 +336,9 @@ object KUtil {
         val random = SecureRandom()
         return UUID(random.nextLong(), random.nextLong())
     }
+
+    @Deprecated("Kutil 1.18")
+    fun java.util.Random.nextFloat(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): Float {
+        return min + this.nextFloat() * (max - min)
+    }
 }

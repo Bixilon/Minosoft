@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.minosoft
+import de.bixilon.minosoft.util.KUtil.nextFloat
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
