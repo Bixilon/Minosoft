@@ -31,7 +31,7 @@ abstract class PlanetRenderer(
     protected val sky: SkyRenderer,
 ) : SkyChildRenderer {
     protected abstract val texture: AbstractTexture
-    protected val shader = sky.renderWindow.renderSystem.createShader(minosoft("sky/planet"))
+    protected val shader = sky.renderWindow.renderSystem.createShader(minosoft("sky/planet")) { PlanetShader(it) }
     private var mesh = PlanetMesh(sky.renderWindow)
     protected var day = -1L
     protected var matrix = Mat4()
@@ -69,6 +69,7 @@ abstract class PlanetRenderer(
 
     override fun postInit() {
         prepareMesh()
+        shader.postLoad()
         sky.renderWindow.textureManager.staticTextures.use(shader)
         sky::matrix.observe(this) { calculateMatrix(it) }
     }
@@ -108,11 +109,11 @@ abstract class PlanetRenderer(
         }
         shader.use()
         if (matrixUpdate) {
-            shader.setMat4("uMatrix", matrix)
+            shader.matrix = matrix
 
             val intensity = calculateIntensity()
             if (this.intensity != intensity) {
-                shader.setVec4("uTintColor", Vec4(1.0f, 1.0f, 1.0f, intensity))
+                shader.tintColor = Vec4(1.0f, 1.0f, 1.0f, intensity)
                 this.intensity = intensity
             }
             this.matrixUpdate = false

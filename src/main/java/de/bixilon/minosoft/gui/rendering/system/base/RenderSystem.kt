@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
@@ -106,6 +107,10 @@ interface RenderSystem {
             geometry = "$resourceLocation.gsh".toResourceLocation(),
             fragment = "$resourceLocation.fsh".toResourceLocation(),
         )
+    }
+
+    fun <T : MinosoftShader> createShader(resourceLocation: ResourceLocation, creator: (native: Shader) -> T): T {
+        return creator(createShader(resourceLocation))
     }
 
     fun createShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): Shader
