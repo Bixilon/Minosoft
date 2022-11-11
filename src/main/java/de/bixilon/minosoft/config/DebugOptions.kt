@@ -16,10 +16,10 @@ package de.bixilon.minosoft.config
 object DebugOptions {
     const val INFINITE_TORCHES = false
 
-    const val SIMULATE_TIME = true
+    const val SIMULATE_TIME = false
 
     const val CLOUD_RASTER = false
 
-    const val LIGHTMAP_DEBUG_WINDOW = true
+    const val LIGHTMAP_DEBUG_WINDOW = false
     const val LIGHT_DEBUG_MODE = false
 }
