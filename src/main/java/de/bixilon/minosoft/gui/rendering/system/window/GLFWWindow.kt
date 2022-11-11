@@ -201,12 +201,13 @@ class GLFWWindow(
         glfwMakeContextCurrent(window)
 
         super.init(profile)
+        val scale = getWindowScale()
+        val size = Vec2i(DEFAULT_WINDOW_SIZE.x / scale.x, DEFAULT_WINDOW_SIZE.y / scale.y)
+        glfwSetWindowSize(window, size.x, size.y)
 
         val primaryMonitor = glfwGetPrimaryMonitor()
         if (primaryMonitor != MemoryUtil.NULL) {
             glfwGetVideoMode(primaryMonitor)?.let {
-                val scale = getWindowScale()
-                val size = Vec2i(DEFAULT_WINDOW_SIZE.x / scale.x, DEFAULT_WINDOW_SIZE.y / scale.y)
                 glfwSetWindowPos(window, (it.width() - size.x) / 2, (it.height() - size.y) / 2)
             }
         }
@@ -348,7 +349,7 @@ class GLFWWindow(
         }
 
 
-        val position = Vec2d(x, y)
+        val position = Vec2d(x, y) * getWindowScale()
         val previous = this.mousePosition
         val delta = position - previous
         this.mousePosition = position
