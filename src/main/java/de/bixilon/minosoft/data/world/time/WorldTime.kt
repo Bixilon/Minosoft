@@ -13,16 +13,10 @@
 
 package de.bixilon.minosoft.data.world.time
 
-import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kutil.math.simple.DoubleMath.fractional
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.cos
 
 class WorldTime(
-    private val world: World,
     time: Int = 0,
     age: Long = 0L,
 ) {
@@ -36,24 +30,4 @@ class WorldTime(
     val progress = phase.getProgress(time)
 
     val day = (this.age + 6000) / ProtocolDefinition.TICKS_PER_DAY - 1 // day changes at midnight (18k)
-
-
-    val skyAngle: Float
-        get() {
-            val fractionalPath = (abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25).fractional
-            val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
-            return ((fractionalPath * 2.0 + angle) / 3.0).toFloat()
-        }
-
-
-    val lightBase: Double
-        get() {
-            var base = 1.0f - (cos(skyAngle * 2.0 * PI) * 2.0 + 0.2)
-            base = base.clamp(0.0, 1.0)
-            base = 1.0 - base
-
-            base *= 1.0 - ((world.weather.rain * 5.0) / 16.0)
-            base *= 1.0 - (((world.weather.thunder * world.weather.rain) * 5.0) / 16.0)
-            return base * 0.8 + 0.2
-        }
 }

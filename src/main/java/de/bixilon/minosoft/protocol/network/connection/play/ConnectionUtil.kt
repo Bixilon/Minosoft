@@ -130,7 +130,7 @@ class ConnectionUtil(
             connection.fire(ContainerCloseEvent(connection, it.id ?: -1, it))
         }
         connection.player.healthCondition = HealthCondition()
-        connection.world.time = WorldTime(connection.world)
+        connection.world.time = WorldTime()
         connection.world.weather = WorldWeather.NONE
     }
 }

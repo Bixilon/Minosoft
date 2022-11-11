@@ -73,7 +73,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
                 } else {
                     500
                 }
-                connection.world.time = WorldTime(connection.world, time + offset, connection.world.time.age + offset)
+                connection.world.time = WorldTime(time + offset, connection.world.time.age + offset)
             }
         }
 

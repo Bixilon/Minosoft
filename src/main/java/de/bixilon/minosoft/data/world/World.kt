@@ -72,7 +72,7 @@ class World(
     var dimension: DimensionProperties? by watched(null)
     var difficulty: WorldDifficulty? by watched(null)
     var hashedSeed = 0L
-    var time by watched(WorldTime(this))
+    var time by watched(WorldTime())
     var weather by watched(WorldWeather.NONE)
     val view = WorldView(connection)
     val border = WorldBorder()
