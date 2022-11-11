@@ -42,6 +42,7 @@ import kotlin.reflect.jvm.javaField
 const val SECTIONS = 16
 
 object ChunkTestingUtil {
+    private val world = createWorld()
 
     fun createConnection(): PlayConnection {
         val connection = ObjenesisStd().newInstance(PlayConnection::class.java)
@@ -65,7 +66,7 @@ object ChunkTestingUtil {
         Chunk::highestSection.javaField!!.setValue(chunk, SECTIONS)
         Chunk::lock.javaField!!.setValue(chunk, ThreadLock())
         Chunk::chunkPosition.javaField!!.setValue(chunk, position)
-        Chunk::world.javaField!!.setValue(chunk, createWorld())
+        Chunk::world.javaField!!.setValue(chunk, world)
         Chunk::connection.javaField!!.setValue(chunk, chunk.world.connection)
         Chunk::light.javaField!!.setValue(chunk, ChunkLight(chunk))
         Chunk::neighbours.javaField!!.setValue(chunk, ChunkNeighbours(chunk))

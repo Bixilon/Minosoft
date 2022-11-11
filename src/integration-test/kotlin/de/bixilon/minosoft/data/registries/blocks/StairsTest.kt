@@ -37,6 +37,7 @@ class StairsTest : BlockTest<Block>() {
     }
 
     fun testLightPropertiesSouth() {
+        // ToDo: This test is correct, but failing
         block.withProperties(BlockProperties.FACING to Directions.SOUTH).testLightProperties(0, true, true, false, booleanArrayOf(false, true, true, false, true, true))
     }
 

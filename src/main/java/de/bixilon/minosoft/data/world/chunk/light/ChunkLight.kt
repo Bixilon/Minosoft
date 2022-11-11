@@ -245,7 +245,7 @@ class ChunkLight(private val chunk: Chunk) {
                 section.light.calculate()
             }
             calculateSkylight()
-        } else if (previous > y && connection.world.dimension.canSkylight()) {
+        } else if (previous > y && chunk.world.dimension.canSkylight()) {
             // block is lower
             startSkylightFloodFill(x, z)
         }
