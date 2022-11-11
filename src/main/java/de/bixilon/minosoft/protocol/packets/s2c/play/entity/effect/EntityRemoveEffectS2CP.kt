@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.effect
 
-import de.bixilon.minosoft.data.registries.effects.StatusEffect
+import de.bixilon.minosoft.data.registries.effects.StatusEffectType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -25,10 +25,11 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 @LoadPacket
 class EntityRemoveEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     val entityId: Int = buffer.readEntityId()
-    val effect: StatusEffect = buffer.connection.registries.statusEffectRegistry[if (buffer.versionId >= ProtocolVersions.V_1_18_2_PRE1) buffer.readVarInt() else buffer.readUnsignedByte()]
+    val effect: StatusEffectType = buffer.connection.registries.statusEffectRegistry[if (buffer.versionId >= ProtocolVersions.V_1_18_2_PRE1) buffer.readVarInt() else buffer.readUnsignedByte()]
 
     override fun handle(connection: PlayConnection) {
-        connection.world.entities[entityId]?.removeEffect(effect)
+        val entity = connection.world.entities[entityId] ?: return
+        entity.effects -= effect
     }
 
     override fun log(reducedLog: Boolean) {

@@ -28,13 +28,7 @@ out vec3 finTextureCoordinates;
 out vec3 finFragmentPosition;
 
 
-const vec2 CONST_UV[4] = vec2[4](
-vec2(-1.0f, +1.0f),
-vec2(+1.0f, -1.0f),
-vec2(-1.0f, -1.0f),
-vec2(+1.0f, +1.0f)
-);
-
+#include "minosoft:uv"
 #include "minosoft:color"
 #include "minosoft:light"
 
@@ -49,7 +43,6 @@ void main() {
     position.x += uCenter.x;
     position.z += uCenter.y;
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
-    finFragmentPosition = position;
 
     finTextureIndex = uIndexLayer >> 28u;
     vec2 uv = CONST_UV[uvIndex];

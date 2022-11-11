@@ -78,7 +78,7 @@ class BossbarElement(
             setStyle()
         }
 
-        val value = bossbar.value
+        val value = bossbar.progress
         if (progress.progress != value) {
             progress.progress = value
             changes++

@@ -21,7 +21,8 @@ interface Translator {
 
     fun canTranslate(key: ResourceLocation?): Boolean
 
-    fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent = translate(key, parent, false, *data)
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, restrictedMode: Boolean = false, vararg data: Any?): ChatComponent
 
 
     fun translate(translatable: Any?): ChatComponent {

@@ -30,6 +30,7 @@ data class Biome(
     val temperature: Float,
     val downfall: Float,
     val skyColor: RGBColor?,
+    val fogColor: RGBColor? = null,
     val waterColor: RGBColor?,
     val waterFogColor: RGBColor?,
     val category: BiomeCategory?,
@@ -59,6 +60,7 @@ data class Biome(
             check(registries != null) { "Registries is null!" }
             val effects = data["effects"].toJsonObject() // nbt data
             val skyColor = (data["sky_color"] ?: effects?.get("sky_color"))?.jsonTint()
+            val fogColor = (data["fog_color"] ?: effects?.get("fog_color"))?.jsonTint()
             val waterColor = (data["water_color"] ?: effects?.get("water_color"))?.jsonTint()
             val waterFogColor = (data["water_fog_color"] ?: effects?.get("water_fog_color"))?.jsonTint()
 
@@ -67,15 +69,14 @@ data class Biome(
                 temperature = data["temperature"]?.toFloat() ?: 0.0f,
                 downfall = data["downfall"]?.toFloat() ?: 0.0f,
                 skyColor = skyColor,
+                fogColor = fogColor,
                 waterColor = waterColor,
                 waterFogColor = waterFogColor,
                 category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
-                //   precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION, TODO
-                precipitation = DEFAULT_PRECIPITATION,
+                precipitation = data["precipitation"]?.toInt()?.let { BiomePrecipitation[it] } ?: BiomePrecipitation.NONE,
             )
         }
 
-        private val DEFAULT_PRECIPITATION = BiomePrecipitation("NONE")
         private val DEFAULT_CATEGORY = BiomeCategory("NONE")
 
     }

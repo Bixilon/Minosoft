@@ -34,6 +34,10 @@ interface Shader {
     val log: String
 
     fun load()
+    fun unload()
+
+    @Deprecated("Highly buggy, do not use in normal environment")
+    fun reload()
 
     fun use(): Shader {
         renderWindow.renderSystem.shader = this
@@ -99,7 +103,7 @@ interface Shader {
             renderWindow.textureManager.staticTextures.animator.use(this)
 
             if (light) {
-                renderWindow.lightMap.use(this)
+                renderWindow.light.map.use(this)
             }
         }
     }

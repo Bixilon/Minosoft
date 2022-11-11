@@ -13,151 +13,104 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
-import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec2.Vec2
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.formatting.color.ChatColors
-import de.bixilon.minosoft.data.text.formatting.color.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.renderer.renderer.AsyncRenderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.Renderer
 import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.system.base.*
+import de.bixilon.minosoft.gui.rendering.sky.box.SkyboxRenderer
+import de.bixilon.minosoft.gui.rendering.sky.planet.MoonRenderer
+import de.bixilon.minosoft.gui.rendering.sky.planet.SunRenderer
+import de.bixilon.minosoft.gui.rendering.sky.planet.scatter.SunScatterRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.minosoft
 
 class SkyRenderer(
-    private val connection: PlayConnection,
+    val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, PreDrawable {
+) : Renderer, PreDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val skyboxShader = renderSystem.createShader(minosoft("sky/skybox"))
-    private val skySunShader = renderSystem.createShader(minosoft("sky/sun"))
-    private val skyboxMesh = SkyboxMesh(renderWindow)
-    private var skySunMesh = SimpleTextureMesh(renderWindow)
-    private lateinit var sunTexture: AbstractTexture
-    private var updateSun: Boolean = true
-    private var baseColor = RenderConstants.DEFAULT_SKY_COLOR
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
-    private val fogManager = renderWindow.camera.fogManager
-    private var _color: RGBColor = ChatColors.BLACK
+    private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
+    var effects by watched(connection.world.dimension?.effects ?: OverworldEffects)
+    var matrix by watched(Mat4())
+    val profile = connection.profiles.rendering.sky
+    var time = connection.world.time
+        private set
+    private var updateTime: Boolean = true
+
+    val box = SkyboxRenderer(this)
+    val sun = SunRenderer(this)
+    val sunScatter = SunScatterRenderer(this, sun)
+    val moon = MoonRenderer(this)
 
     override fun init(latch: CountUpAndDownLatch) {
-        skyboxShader.load()
-        skyboxMesh.load()
+        box.register()
+        sunScatter.register()
+        sun.register()
+        moon.register()
 
-        skySunShader.load()
-        skySunMesh.load()
-
-
-        connection.events.listen<CameraMatrixChangeEvent> {
-            val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
-            renderWindow.queue += {
-                skyboxShader.use().setMat4(SKY_MATRIX, Mat4(viewProjectionMatrix))
-                setSunMatrix(viewProjectionMatrix)
-            }
+        for (renderer in renderer) {
+            renderer.init()
         }
-        connection.world.time::time.observe(this) { updateSun = true }
-        sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
-    }
-
-    private fun setSunMatrix(projectionViewMatrix: Mat4) {
-        val timeAngle = (connection.world.time.skyAngle * 360.0f).rad
-        val rotatedMatrix = if (timeAngle == 0.0f) {
-            projectionViewMatrix
-        } else {
-            projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
-        }
-        skySunShader.use().setMat4(SKY_MATRIX, rotatedMatrix)
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        renderWindow.textureManager.staticTextures.use(skySunShader)
-    }
-
-    private fun drawSun() {
-        if (updateSun) {
-            setSunMatrix(renderWindow.camera.matrixHandler.projectionMatrix * renderWindow.camera.matrixHandler.viewMatrix.toMat3().toMat4())
-            skySunMesh.unload()
-
-            skySunMesh = SimpleTextureMesh(renderWindow)
-            val tint = ChatColors.WHITE.with(alpha = 1.0f - connection.world.weather.rainGradient) // ToDo: Depends on time
-            skySunMesh.addYQuad(
-                start = Vec2(-0.15f, -0.15f),
-                y = 1.0f,
-                end = Vec2(+0.15f, +0.15f),
-                vertexConsumer = { position, uv ->
-                    skySunMesh.addVertex(
-                        position = position,
-                        texture = sunTexture,
-                        uv = uv,
-                        tintColor = tint,
-                    )
-                }
-            )
-            skySunMesh.load()
-            updateSun = false
+        for (renderer in renderer) {
+            renderer.postInit()
         }
-        renderSystem.enable(RenderingCapabilities.BLENDING)
-        renderSystem.setBlendFunction(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
-        skySunShader.use()
-        skySunMesh.draw()
+        connection.world::time.observe(this) { updateTime = true }
+        connection.events.listen<CameraMatrixChangeEvent> {
+            matrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
+        }
+        connection.world::dimension.observe(this) { effects = it?.effects ?: OverworldEffects }
     }
 
-    private fun calculateSkyColor(): RGBColor {
-        // ToDo: Calculate correct
-        val brightness = 1.0f
-        var skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
-
-        baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
-
-        connection.world.dimension?.hasSkyLight?.let {
-            baseColor = if (it) {
-                connection.player.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
-            } else {
-                RenderConstants.BLACK_COLOR
+    override fun prepareDrawAsync() {
+        if (updateTime) {
+            this.time = connection.world.time
+            for (renderer in renderer) {
+                renderer.onTimeUpdate(time)
             }
-        } ?: let { baseColor = RenderConstants.DEFAULT_SKY_COLOR }
-
-        fogManager.interpolatedFogColor?.let { skyColor = it }
-
-        return skyColor
+            updateTime = false
+        }
+        for (renderer in renderer) {
+            renderer.updateAsync()
+        }
     }
 
-    private fun drawSkybox() {
-        val color = calculateSkyColor()
-        skyboxShader.use()
-        if (color != _color) {
-            _color = color
-            skyboxShader.setRGBColor(SKY_COLOR, color)
+    override fun prePrepareDraw() {
+        for (renderer in renderer) {
+            renderer.update()
         }
-        skyboxMesh.draw()
     }
 
     override fun drawPre() {
-        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
-        drawSkybox()
-        drawSun()
+        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL, depthMask = false)
+        for (renderer in renderer) {
+            renderer.draw()
+        }
+    }
+
+    private fun <T : SkyChildRenderer> T.register(): T {
+        renderer += this
+        return this
     }
 
     companion object : RendererBuilder<SkyRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:sky")
-        private const val SKY_MATRIX = "uSkyViewProjectionMatrix"
-        private const val SKY_COLOR = "uSkyColor"
-
-        private val SUN_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minecraft:environment/sun").texture()
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): SkyRenderer {
             return SkyRenderer(connection, renderWindow)

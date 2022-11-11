@@ -43,7 +43,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
-import de.bixilon.minosoft.gui.rendering.world.LightMap
+import de.bixilon.minosoft.gui.rendering.world.light.RenderLight
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -80,7 +80,7 @@ class RenderWindow(
 
     val skeletalManager = SkeletalManager(this)
 
-    val lightMap = LightMap(this)
+    val light = RenderLight(this)
 
     var initialized = false
         private set
@@ -102,7 +102,7 @@ class RenderWindow(
     lateinit var thread: Thread
         private set
 
-    var state by watched(RenderingStates.RUNNING)
+    var state by watched(RenderingStates.LOADING)
 
     init {
         connection::state.observe(this) {
@@ -168,7 +168,7 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing renderer (after ${stopwatch.labTime()})..." }
-        lightMap.init()
+        light.init()
         skeletalManager.init()
         renderer.init(initLatch)
 
@@ -221,6 +221,7 @@ class RenderWindow(
         latch.dec()
         latch.await()
         this.latch.await()
+        state = RenderingStates.RUNNING
         window.visible = true
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
     }
@@ -247,8 +248,9 @@ class RenderWindow(
             renderSystem.framebuffer = null
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
+            light.updateAsync() // ToDo: do async
+            light.update()
 
-            lightMap.update()
 
             val currentTickTime = millis()
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {

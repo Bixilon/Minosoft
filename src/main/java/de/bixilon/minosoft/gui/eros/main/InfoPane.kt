@@ -72,7 +72,7 @@ class InfoPane<T>(vararg children: Node) : AnchorPane(*children) {
         }
 
         GridPane().let {
-            for (index in 0 until actions.size / 2) {
+            for (index in 0 until (actions.size - 1) / 2) {
                 it.columnConstraints += ColumnConstraints()
             }
             it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)

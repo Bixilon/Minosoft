@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asColor
 
 object RenderConstants {
-    val DEFAULT_SKY_COLOR = "#ecff89".asColor()
     val BLACK_COLOR = "#000000".asColor()
 
     val GRASS_FAILOVER_COLOR = "#48B518".asColor()

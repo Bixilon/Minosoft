@@ -13,8 +13,13 @@
 
 package de.bixilon.minosoft.data.world.weather
 
-class WorldWeather {
-    var raining = false
-    var rainGradient = 0.0f
-    var thunderGradient = 0.0f
+data class WorldWeather(
+    val rain: Float = 0.0f,
+    val thunder: Float = 0.0f,
+) {
+    val raining: Boolean get() = rain > 0.0f
+
+    companion object {
+        val NONE = WorldWeather(0.0f, 0.0f)
+    }
 }

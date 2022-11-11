@@ -216,8 +216,8 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     override fun poll(): Boolean {
         val player = guiRenderer.renderWindow.connection.player
         val hardcode = guiRenderer.renderWindow.connection.world.hardcore
-        val poison = poisonStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
-        val wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
+        val poison = poisonStatusEffect?.let { player.effects[it] != null } ?: false
+        val wither = witherStatusEffect?.let { player.effects[it] != null } ?: false
         val frozen = player.ticksFrozen > 0
 
         val absorptionsAmount = max(0.0f, player.playerAbsorptionHearts)

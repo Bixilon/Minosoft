@@ -125,6 +125,20 @@ interface RenderSystem {
     fun polygonOffset(factor: Float, unit: Float)
 
 
+    fun resetBlending() {
+        disable(RenderingCapabilities.BLENDING)
+        setBlendFunction(BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO)
+    }
+
+    @Deprecated("Highly unstable")
+    fun reloadShaders() {
+        val copy = shaders.toMutableSet()
+        for (shader in copy) {
+            shader.reload()
+        }
+    }
+
+
     companion object {
 
         fun createRenderSystem(renderWindow: RenderWindow): RenderSystem {

@@ -18,8 +18,8 @@ import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.config.DebugOptions
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.container.stack.ItemStack
+import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -62,8 +62,19 @@ class ConnectionTicker(private val connection: PlayConnection) {
             connection.world.randomTick()
         }
 
-        if (StaticConfiguration.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
+        if (DebugOptions.LIGHT_DEBUG_MODE || DebugOptions.INFINITE_TORCHES) {
             tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) { connection.player.inventory[44] = ItemStack(connection.registries.itemRegistry["minecraft:torch"]!!, Int.MAX_VALUE) }
+        }
+        if (DebugOptions.SIMULATE_TIME) {
+            tasks += TimeWorkerTask(INTERVAL, maxDelayTime = MAX_DELAY) {
+                val time = connection.world.time.time
+                val offset = if (time in 11800..13300 || (time < 300 || time > 22800)) {
+                    20
+                } else {
+                    500
+                }
+                connection.world.time = WorldTime(time + offset, connection.world.time.age + offset)
+            }
         }
 
         for (task in tasks) {

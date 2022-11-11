@@ -13,40 +13,21 @@
 
 package de.bixilon.minosoft.data.world.time
 
-import de.bixilon.kotlinglm.func.common.clamp
-import de.bixilon.kutil.math.simple.DoubleMath.fractional
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.cos
 
-@Deprecated("make values final")
 class WorldTime(
-    private val world: World,
+    time: Int = 0,
+    age: Long = 0L,
 ) {
-    var time by watched(0L)
-    var age by watched(0L)
+    val time = abs(time) % ProtocolDefinition.TICKS_PER_DAY
+    val cycling = time >= 0
 
+    val age = abs(age)
 
-    val skyAngle: Float
-        get() {
-            val fractionalPath = (abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25).fractional
-            val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
-            return ((fractionalPath * 2.0 + angle) / 3.0).toFloat()
-        }
+    val moonPhase = MoonPhases[this.age.toInt() / ProtocolDefinition.TICKS_PER_DAY % MoonPhases.VALUES.size] // ToDo: Verify
+    val phase = DayPhases.of(time)
+    val progress = phase.getProgress(time)
 
-
-    val lightBase: Double
-        get() {
-            var base = 1.0f - (cos(skyAngle * 2.0 * PI) * 2.0 + 0.2)
-            base = base.clamp(0.0, 1.0)
-            base = 1.0 - base
-
-            base *= 1.0 - ((world.weather.rainGradient * 5.0) / 16.0)
-            base *= 1.0 - (((world.weather.thunderGradient * world.weather.rainGradient) * 5.0) / 16.0)
-            return base * 0.8 + 0.2
-        }
-
+    val day = (this.age + 6000) / ProtocolDefinition.TICKS_PER_DAY - 1 // day changes at midnight (18k)
 }

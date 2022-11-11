@@ -15,8 +15,8 @@
 
 out vec4 foutColor;
 
-in vec4 finColor;
+uniform vec4 uSkyColor;
 
 void main() {
-    foutColor = finColor;
+    foutColor = uSkyColor;
 }

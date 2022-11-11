@@ -19,5 +19,5 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface RendererBuilder<T : Renderer> : CompanionResourceLocation {
 
-    fun build(connection: PlayConnection, renderWindow: RenderWindow): T
+    fun build(connection: PlayConnection, renderWindow: RenderWindow): T?
 }

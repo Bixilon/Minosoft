@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -15,22 +15,26 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in uint vinIndexLayerAnimation;
-layout (location = 3) in uint vinTintColor;
+layout (location = 2) in float vinOffset;
+layout (location = 3) in float vinOffsetMultiplicator;
+layout (location = 4) in float vinAlphaMultiplicator;
 
-out vec4 finTintColor;
+
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
 
-uniform mat4 uSkyViewProjectionMatrix;
+uniform vec2 uMaxUV;
+uniform float uIntensity;
+uniform float uOffset;
+uniform uint uIndexLayer;
 
-#include "minosoft:color"
 
 void main() {
-    gl_Position = (uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.000001f, 0.0f);// prevent face fighting
+    gl_Position = vec4(vinPosition, 1.0f);
 
-    finTextureIndex = vinIndexLayerAnimation >> 28u;
-    finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
+    finTextureIndex = uIndexLayer >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
+    float offset = vinOffset + (uOffset * vinOffsetMultiplicator);
 
-    finTintColor = getRGBAColor(vinTintColor);
+    finTextureCoordinates.y += offset;
 }

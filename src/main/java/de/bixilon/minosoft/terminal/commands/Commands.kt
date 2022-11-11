@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.terminal.commands
 
 import de.bixilon.minosoft.terminal.commands.connection.SayCommand
+import de.bixilon.minosoft.terminal.commands.rendering.ReloadCommand
 
 object Commands {
     val COMMANDS: List<Command> = listOf(
         HelpCommand,
         SayCommand,
         ConnectionManageCommand,
+        ReloadCommand,
     )
 }

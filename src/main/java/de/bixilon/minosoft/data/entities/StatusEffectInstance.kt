@@ -12,17 +12,29 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.data.registries.effects.StatusEffect
+import de.bixilon.kutil.time.TimeUtil.millis
+import de.bixilon.minosoft.data.Tickable
+import de.bixilon.minosoft.data.registries.effects.StatusEffectType
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 data class StatusEffectInstance(
-    val statusEffect: StatusEffect,
+    val type: StatusEffectType,
     val amplifier: Int,
     val duration: Int,
-) {
-    private val startMillis = TimeUtil.millis
+) : Tickable {
+    val start = millis()
+    val end = start + duration * ProtocolDefinition.TICK_TIME
+    var remaining: Int = duration
+        private set
 
-    val remainingMillis: Long
-        get() = TimeUtil.millis - startMillis
+    val expired: Boolean
+        get() = remaining <= 0
+    val progress: Float
+        get() = (end - millis()) / (duration * ProtocolDefinition.TICK_TIME).toFloat()
+
+
+    override fun tick() {
+        remaining--
+    }
 }
 

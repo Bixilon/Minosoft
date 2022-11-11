@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
+import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
@@ -127,7 +128,9 @@ class GLFWWindow(
             if (value) {
                 glfwSetWindowMonitor(window, monitor, 15, 15, mode.width(), mode.height(), mode.refreshRate())
             } else {
-                glfwSetWindowMonitor(window, 0, (mode.width() - DEFAULT_WINDOW_SIZE.x) / 2, (mode.height() - DEFAULT_WINDOW_SIZE.y) / 2, DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y, GLFW_DONT_CARE)
+                val scale = getWindowScale()
+                val size = Vec2i(DEFAULT_WINDOW_SIZE.x / scale.x, DEFAULT_WINDOW_SIZE.y / scale.y)
+                glfwSetWindowMonitor(window, 0, (mode.width() - size.x) / 2, (mode.height() - size.y) / 2, size.x, size.y, GLFW_DONT_CARE)
             }
 
             field = value
@@ -202,6 +205,8 @@ class GLFWWindow(
         val primaryMonitor = glfwGetPrimaryMonitor()
         if (primaryMonitor != MemoryUtil.NULL) {
             glfwGetVideoMode(primaryMonitor)?.let {
+                val scale = getWindowScale()
+                val size = Vec2i(DEFAULT_WINDOW_SIZE.x / scale.x, DEFAULT_WINDOW_SIZE.y / scale.y)
                 glfwSetWindowPos(window, (it.width() - size.x) / 2, (it.height() - size.y) / 2)
             }
         }
@@ -300,7 +305,9 @@ class GLFWWindow(
             return
         }
         val previousSize = Vec2i(_size)
-        _size = Vec2i(width, height)
+        val scale = getWindowScale()
+        val nextSize = Vec2i(width * scale.x, height * scale.y)
+        _size = nextSize
         fireGLFWEvent(ResizeWindowEvent(renderWindow, previousSize = previousSize, size = _size))
         this.skipNextMouseEvent = true
     }
@@ -370,6 +377,13 @@ class GLFWWindow(
         image.set(size.x, size.y, buffer)
         images.put(0, image)
         glfwSetWindowIcon(window, images)
+    }
+
+    private fun getWindowScale(): Vec2 {
+        val x = FloatArray(1)
+        val y = FloatArray(1)
+        glfwGetWindowContentScale(window, x, y)
+        return Vec2(x[0], y[0])
     }
 
     private fun fireGLFWEvent(event: RenderEvent): Boolean {

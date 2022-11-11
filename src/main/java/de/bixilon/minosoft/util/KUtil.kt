@@ -321,6 +321,17 @@ object KUtil {
             return toString().length
         }
 
+    @Deprecated("Kutil 1.18")
+    fun Long.murmur64(): Long {
+        var value = this
+        value = value xor (value ushr 33)
+        value *= -0xae502812aa7333L
+        value = value xor (value ushr 33)
+        value *= -0x3b314601e57a13adL
+        value = value xor (value ushr 33)
+        return value
+    }
+
     fun secureRandomUUID(): UUID {
         val random = SecureRandom()
         return UUID(random.nextLong(), random.nextLong())

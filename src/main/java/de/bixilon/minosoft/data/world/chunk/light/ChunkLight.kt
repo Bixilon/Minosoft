@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.exception.Broken
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.data.world.chunk.neighbours.ChunkNeighbours
@@ -28,7 +29,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class ChunkLight(private val chunk: Chunk) {
     private val connection = chunk.connection
-    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { Int.MIN_VALUE }
+    val heightmap = IntArray(ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { if (chunk.world.dimension.canSkylight()) Int.MIN_VALUE else Int.MAX_VALUE }
 
     val bottom = BorderSectionLight(false, chunk)
     val top = BorderSectionLight(true, chunk)
@@ -176,6 +177,9 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     fun recalculateHeightmap() {
+        if (!chunk.world.dimension.canSkylight()) {
+            return
+        }
         chunk.lock.lock()
         val maxY = chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y
 
@@ -241,13 +245,16 @@ class ChunkLight(private val chunk: Chunk) {
                 section.light.calculate()
             }
             calculateSkylight()
-        } else if (previous > y) {
+        } else if (previous > y && connection.world.dimension.canSkylight()) {
             // block is lower
             startSkylightFloodFill(x, z)
         }
     }
 
     private fun recalculateHeightmap(x: Int, y: Int, z: Int, blockState: BlockState?) {
+        if (!chunk.world.dimension.canSkylight()) {
+            return
+        }
         chunk.lock.lock()
         val index = (z shl 4) or x
 
@@ -278,7 +285,7 @@ class ChunkLight(private val chunk: Chunk) {
     }
 
     private fun calculateSkylight() {
-        if (chunk.world.dimension?.hasSkyLight != true || !chunk.neighbours.complete) {
+        if (!chunk.world.dimension.canSkylight() || !chunk.neighbours.complete) {
             // no need to calculate it
             return
         }
@@ -394,5 +401,18 @@ class ChunkLight(private val chunk: Chunk) {
         // TODO: clear neighbours and let them propagate?
         // TODO: Optimize for specific section height (i.e. not trace everything above)
         calculateSkylight()
+    }
+
+    companion object {
+
+        fun DimensionProperties?.canSkylight(): Boolean {
+            if (this == null) {
+                return false
+            }
+            if (!this.hasSkyLight || !this.effects.skylight) {
+                return false
+            }
+            return true
+        }
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,19 @@
 
 package de.bixilon.minosoft.data.bossbar
 
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.text.ChatComponent
 
 class Bossbar(
-    var title: ChatComponent = ChatComponent.EMPTY,
-    var value: Float = 0.0f,
-    var color: BossbarColors = BossbarColors.PINK,
-    var notches: BossbarNotches = BossbarNotches.NO_NOTCHES,
-    var shouldDarkenSky: Boolean = false,
-    var dragonBar: Boolean = false,
-    var fog: Boolean = false,
-)
+    title: ChatComponent = ChatComponent.EMPTY,
+    progress: Float = 0.0f,
+    color: BossbarColors = BossbarColors.PINK,
+    notches: BossbarNotches = BossbarNotches.NO_NOTCHES,
+    flags: BossbarFlags,
+) {
+    var title by watched(title)
+    var progress by watched(progress)
+    var color by watched(color)
+    var notches by watched(notches)
+    var flags by watched(flags)
+}

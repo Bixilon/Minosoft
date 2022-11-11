@@ -13,20 +13,17 @@
 
 package de.bixilon.minosoft.data.registries.biomes
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
-import de.bixilon.minosoft.data.registries.registries.registry.codec.IdCodec
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-data class BiomePrecipitation(
-    override val name: String,
-) : RegistryFakeEnumerable {
+enum class BiomePrecipitation {
+    NONE,
+    RAIN,
+    SNOW,
+    ;
 
-    companion object : IdCodec<BiomePrecipitation> {
-        override fun deserialize(registries: Registries, data: Map<String, Any>): BiomePrecipitation {
-            return BiomePrecipitation(
-                name = data["name"].unsafeCast()
-            )
-        }
+    companion object : ValuesEnum<BiomePrecipitation> {
+        override val VALUES = values()
+        override val NAME_MAP = EnumUtil.getEnumValues(VALUES)
     }
 }

@@ -52,13 +52,11 @@ import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.properties.MinosoftProperties
 import de.bixilon.minosoft.properties.MinosoftPropertiesLoader
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Reference
 import de.bixilon.minosoft.util.SystemInformation
-import kotlin.math.abs
 
 class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedElement, Initializable {
     private val connection = renderWindow.connection
@@ -174,11 +172,17 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         }
 
         layout += TextElement(guiRenderer, "Time TBA").apply {
-            fun update(time: Long, age: Long) {
-                text = BaseComponent("Time ", abs(time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", time >= 0, ", day=", abs(age) / ProtocolDefinition.TICKS_PER_DAY)
+            connection.world::time.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
+                text = BaseComponent(
+                    "Time ", it.time, " (", it.phase, ")", ", cycling=", it.cycling, "\n",
+                    "Date ", "day=", it.day, " (", it.moonPhase, ")"
+                )
             }
-            connection.world.time::time.observe(this) { update(it, connection.world.time.age) }
-            connection.world.time::age.observe(this) { update(connection.world.time.time, it) }
+        }
+        layout += TextElement(guiRenderer, "Weather TBA").apply {
+            connection.world::weather.observe(this) { // ToDo: Kutil 1.18: Allow instant fire
+                text = BaseComponent("Weather r=", it.rain, ", t=", it.thunder)
+            }
         }
 
         layout += AutoTextElement(guiRenderer, 1) { "Fun effect: " + renderWindow.framebufferManager.world.`fun`.effect?.resourceLocation.format() }
@@ -255,6 +259,8 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
         private val world = guiRenderer.renderWindow.connection.world
         private val entity = guiRenderer.renderWindow.connection.player
 
+        // TODO: Cleanup this class
+
         init {
             showWait()
         }
@@ -279,11 +285,11 @@ class DebugHUDElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Layouted
                 }
                 clear()
 
-                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
+                this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.effects) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { BaseComponent("Biome ", biome) }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) { with(connection.world.getLight(eyeBlockPosition)) { BaseComponent("Light block=", (this and SectionLight.BLOCK_LIGHT_MASK), ", sky=", ((this and SectionLight.SKY_LIGHT_MASK) shr 4)) } }
                 this@DebugWorldInfo += AutoTextElement(guiRenderer, 1) {
-                    val chunk = chunk.value!!
+                    val chunk = chunk.value ?: return@AutoTextElement ""
                     var value: Any = chunk.isFullyLoaded
                     if (!chunk.isFullyLoaded) {
                         val builder = StringBuilder()

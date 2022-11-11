@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
 
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.*
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather.WeatherOverlay
 
 object DefaultOverlays {
     val OVERLAYS = listOf(
@@ -23,5 +24,6 @@ object DefaultOverlays {
         PowderSnowOverlay,
         FireOverlay,
         WorldBorderOverlay,
+        WeatherOverlay,
     )
 }

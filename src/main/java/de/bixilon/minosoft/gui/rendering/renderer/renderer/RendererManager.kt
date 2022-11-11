@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.sky.clouds.CloudsRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PostDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.PreDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
@@ -35,6 +36,9 @@ import de.bixilon.minosoft.gui.rendering.world.border.WorldBorderRenderer
 import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class RendererManager(
     private val renderWindow: RenderWindow,
@@ -45,15 +49,22 @@ class RendererManager(
     private val framebufferManager = renderWindow.framebufferManager
 
 
-    fun register(builder: RendererBuilder<*>) {
+    fun <T : Renderer> register(builder: RendererBuilder<T>): T? {
         val resourceLocation = builder.RESOURCE_LOCATION
         if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
-            return
+            return null
         }
-        renderers[resourceLocation] = builder.build(connection, renderWindow)
+        val renderer = builder.build(connection, renderWindow) ?: return null
+        val previous = renderers.put(resourceLocation, renderer)
+        if (previous != null) {
+            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Renderer $previous(${builder.resourceLocation}) got replaced by $renderer!" }
+        }
+        return renderer
     }
 
-    operator fun plusAssign(builder: RendererBuilder<*>) = register(builder)
+    operator fun plusAssign(builder: RendererBuilder<*>) {
+        register(builder)
+    }
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
         return this[renderer.RESOURCE_LOCATION].unsafeCast()
@@ -189,6 +200,7 @@ class RendererManager(
                 register(ParticleRenderer)
             }
             register(EntityRenderer)
+            register(CloudsRenderer)
             register(ChunkBorderRenderer)
             register(WorldBorderRenderer)
             register(GUIRenderer)

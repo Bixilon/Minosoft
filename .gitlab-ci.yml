@@ -52,7 +52,6 @@ package:
     - ./gradlew fatJar --stacktrace
   only:
     - master
-    - test/gradle
   artifacts:
     paths:
       - build/libs/minosoft-fat-*.jar

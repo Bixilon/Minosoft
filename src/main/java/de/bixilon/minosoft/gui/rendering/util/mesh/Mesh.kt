@@ -87,10 +87,10 @@ abstract class Mesh(
 
     fun addYQuad(start: Vec2, y: Float, end: Vec2, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
         val positions = arrayOf(
-            Vec3(start.x, y, start.y),
             Vec3(start.x, y, end.y),
             Vec3(end.x, y, end.y),
             Vec3(end.x, y, start.y),
+            Vec3(start.x, y, start.y),
         )
         addQuad(positions, uvStart, uvEnd, vertexConsumer)
     }

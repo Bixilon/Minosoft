@@ -26,16 +26,16 @@ class TextRenderInfo(
     val scale: Float,
     val shadow: Boolean,
     val lines: MutableList<TextLineInfo> = mutableListOf(),
-    var currentLineNumber: Int = 0,
+    var lineIndex: Int = 0,
 ) {
     val currentLine: TextLineInfo
         get() {
             if (StaticConfiguration.DEBUG_MODE) {
-                if (currentLineNumber >= lines.size) {
-                    Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Out of lines! Did you apply?: $lines ($currentLineNumber)" }
+                if (lineIndex >= lines.size) {
+                    Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Out of lines! Did you apply?: $lines ($lineIndex)" }
                     return TextLineInfo()
                 }
             }
-            return lines[currentLineNumber]
+            return lines[lineIndex]
         }
 }

@@ -21,7 +21,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-open class FormattedChatMessage(
+open class
+FormattedChatMessage(
     private val connection: PlayConnection,
     final override val type: ChatMessageType,
     val parameters: Map<ChatParameter, ChatComponent>,
@@ -32,9 +33,9 @@ open class FormattedChatMessage(
         // ToDo: parent (formatting)
         val data = type.chat.formatParameters(parameters)
         text = if (connection.language.canTranslate(type.chat.translationKey.toResourceLocation())) {
-            connection.language.translate(type.chat.translationKey.toResourceLocation(), data = data)
+            connection.language.translate(type.chat.translationKey.toResourceLocation(), restrictedMode = true, data = data)
         } else {
-            Language.translate(type.chat.translationKey, data = data)
+            Language.translate(type.chat.translationKey, restrictedMode = true, data = data)
         }
         text.setFallbackColor(ChatUtil.DEFAULT_CHAT_COLOR)
     }

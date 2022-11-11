@@ -30,10 +30,10 @@ class ValueBossbarS2CP(
     override fun handle(connection: PlayConnection) {
         val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
 
-        if (bossbar.value == value) {
+        if (bossbar.progress == value) {
             return
         }
-        bossbar.value = value
+        bossbar.progress = value
 
         connection.fire(BossbarValueSetEvent(connection, uuid, bossbar))
     }

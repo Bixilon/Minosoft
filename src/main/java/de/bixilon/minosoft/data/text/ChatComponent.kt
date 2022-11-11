@@ -99,7 +99,7 @@ interface ChatComponent {
                 return raw
             }
             if (raw is Translatable && raw !is ResourceLocation) {
-                return (translator ?: Minosoft.LANGUAGE_MANAGER).translate(raw.translationKey, parent)
+                return (translator ?: Minosoft.LANGUAGE_MANAGER).translate(raw.translationKey, parent, restrictedMode = restrictedMode)
             }
 
             when (raw) {
