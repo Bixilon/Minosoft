@@ -16,10 +16,14 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.tab.actions
 import de.bixilon.minosoft.data.entities.entities.player.additional.AdditionalDataUpdate
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W17A
 
 object ChatAction : AbstractAction {
 
     override fun read(buffer: PlayInByteBuffer, entry: AdditionalDataUpdate) {
+        if (buffer.versionId < V_22W17A) {
+            return
+        }
         entry.publicKey = if (buffer.versionId >= ProtocolVersions.V_22W43A) buffer.readOptional { buffer.readPlayerPublicKey() } else buffer.readPlayerPublicKey()
     }
 }

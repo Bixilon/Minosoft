@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.biomes
 import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
@@ -33,7 +32,6 @@ data class Biome(
     val fogColor: RGBColor? = null,
     val waterColor: RGBColor?,
     val waterFogColor: RGBColor?,
-    val category: BiomeCategory?,
     val precipitation: BiomePrecipitation,
 ) : RegistryItem() {
     val grassColorModifier = GrassColorModifiers.BIOME_MAP[resourceLocation] ?: GrassColorModifiers.NONE
@@ -72,13 +70,8 @@ data class Biome(
                 fogColor = fogColor,
                 waterColor = waterColor,
                 waterFogColor = waterFogColor,
-                category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
-                precipitation = data["precipitation"]?.toInt()?.let { BiomePrecipitation[it] } ?: BiomePrecipitation.NONE,
+                precipitation = data["precipitation"]?.let { BiomePrecipitation[it] } ?: BiomePrecipitation.NONE,
             )
         }
-
-        private val DEFAULT_CATEGORY = BiomeCategory("NONE")
-
     }
-
 }
