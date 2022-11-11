@@ -34,6 +34,10 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sin
 
+/**
+ * Updates the lightmap similar to vanilla
+ * This class is heavily influenced by vanilla, thus it does not aim to match vanilla and has some tweaks/improvements
+ */
 class NormalLightmapUpdater(
     private val connection: PlayConnection,
     private val skyRenderer: SkyRenderer?,
