@@ -14,40 +14,17 @@
 package de.bixilon.minosoft.gui.rendering.shader
 
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-abstract class MinosoftShader : AbstractMinosoftShader {
-    private val uniforms: MutableMap<String, ShaderUniform<*>> = mutableMapOf()
+interface TextureShader : AbstractMinosoftShader {
+    val textures: TextureManager
 
-    fun load() {
-        native.load()
-    }
-
-    fun postLoad() {
-        for (uniform in uniforms.values) {
-            uniform.upload()
+    fun textureManager(textureManager: TextureManager, animated: Boolean): ShaderUniform<TextureManager> {
+        return uniform("uTextures", textureManager) { native, name, value: TextureManager ->
+            value.use(native, name)
+            if (animated) {
+                textureManager.staticTextures.animator.use(native)
+            }
         }
-    }
-
-    fun use() {
-        native.use()
-    }
-
-    fun reload() {
-        native.reload()
-        for (uniform in uniforms.values) {
-            uniform.forceUpload()
-        }
-    }
-
-
-    override fun <T> uniform(name: String, default: T, type: ShaderSetter<T>): ShaderUniform<T> {
-        val uniform = ShaderUniform(native, default, name, type)
-        val previous = uniforms.put(name, uniform)
-
-        if (previous != null) {
-            throw IllegalStateException("Duplicated uniform: $name")
-        }
-
-        return uniform
     }
 }

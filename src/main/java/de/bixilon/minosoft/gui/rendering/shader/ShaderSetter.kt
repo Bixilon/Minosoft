@@ -11,20 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.planet
+package de.bixilon.minosoft.gui.rendering.shader
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
-import de.bixilon.minosoft.gui.rendering.shader.TextureShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-class PlanetShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader {
-    var matrix: Mat4 by uniform("uMatrix", Mat4())
-    var tintColor: Vec4 by uniform("uTintColor", Vec4())
-    override val textures: TextureManager by textureManager(native.renderWindow.textureManager, false)
-
-}
+typealias ShaderSetter<T> = (shader: Shader, name: String, value: T) -> Unit

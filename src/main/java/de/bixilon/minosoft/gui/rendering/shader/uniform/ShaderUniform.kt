@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.uniform
 
+import de.bixilon.minosoft.gui.rendering.shader.ShaderSetter
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KFunction3
 import kotlin.reflect.KProperty
 
 class ShaderUniform<T>(
     private val native: Shader,
     default: T,
     private val name: String,
-    private val setter: KFunction3<Shader, String, T, Unit>,
+    private val setter: ShaderSetter<T>,
 ) : ReadWriteProperty<Any, T> {
     private var value = default
     private var upload: Boolean = true
@@ -31,6 +31,10 @@ class ShaderUniform<T>(
         if (!upload) {
             return
         }
+        forceUpload()
+    }
+
+    fun forceUpload() {
         native.use()
         setter(native, name, value)
         upload = false

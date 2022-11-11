@@ -70,7 +70,6 @@ abstract class PlanetRenderer(
     override fun postInit() {
         prepareMesh()
         shader.postLoad()
-        sky.renderWindow.textureManager.staticTextures.use(shader)
         sky::matrix.observe(this) { calculateMatrix(it) }
     }
 

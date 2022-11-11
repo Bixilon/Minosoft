@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.entities.entities.player.properties.textures.Pla
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -101,5 +103,10 @@ abstract class TextureManager {
             return steveTexture
         }
         return alexTexture
+    }
+
+    fun use(shader: Shader, name: String = ShaderUniforms.TEXTURES) {
+        staticTextures.use(shader, name)
+        dynamicTextures.use(shader, name)
     }
 }
