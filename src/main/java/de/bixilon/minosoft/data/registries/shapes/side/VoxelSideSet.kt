@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.shapes.side
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet
-
 class VoxelSideSet(
     val sides: Set<VoxelSide>,
 ) : Iterable<VoxelSide> {
@@ -30,7 +28,7 @@ class VoxelSideSet(
             return this
         }
 
-        val next: MutableSet<VoxelSide> = ObjectOpenHashSet()
+        val next: MutableSet<VoxelSide> = mutableSetOf()
 
         val array = this.sides.toTypedArray()
         for (i in 1 until sides.size) {
