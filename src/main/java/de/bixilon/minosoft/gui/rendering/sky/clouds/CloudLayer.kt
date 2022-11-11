@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.util.KUtil.murmur64
+import de.bixilon.minosoft.util.KUtil.nextFloat
 import java.util.*
 import kotlin.math.abs
 
