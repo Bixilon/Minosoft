@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -52,6 +53,7 @@ class OpenGLRenderSystem(
 ) : RenderSystem {
     private var thread: Thread? = null
     override val shaders: MutableSet<Shader> = mutableSetOf()
+    override val minosoftShaders: MutableSet<MinosoftShader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     override lateinit var vendor: OpenGLVendor
         private set

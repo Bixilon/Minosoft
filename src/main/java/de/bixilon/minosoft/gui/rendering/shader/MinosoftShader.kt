@@ -20,6 +20,12 @@ abstract class MinosoftShader : AbstractMinosoftShader {
 
     fun load() {
         native.load()
+        native.renderWindow.renderSystem.minosoftShaders += this
+    }
+
+    fun unload() {
+        native.unload()
+        native.renderWindow.renderSystem.minosoftShaders -= this
     }
 
     fun postLoad() {

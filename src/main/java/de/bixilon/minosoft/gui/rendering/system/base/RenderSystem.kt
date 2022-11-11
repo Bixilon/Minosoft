@@ -34,6 +34,7 @@ import java.nio.FloatBuffer
 
 interface RenderSystem {
     val shaders: MutableSet<Shader>
+    val minosoftShaders: MutableSet<MinosoftShader>
     val vendor: GPUVendor
     var shader: Shader?
     var framebuffer: Framebuffer?
@@ -135,9 +136,8 @@ interface RenderSystem {
         setBlendFunction(BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ZERO)
     }
 
-    @Deprecated("Highly unstable")
     fun reloadShaders() {
-        val copy = shaders.toMutableSet()
+        val copy = minosoftShaders.toMutableSet()
         for (shader in copy) {
             shader.reload()
         }
