@@ -14,8 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.world.light.updater.normal
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -29,6 +32,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.sin
 
 class NormalLightmapUpdater(
     private val connection: PlayConnection,
@@ -36,6 +40,8 @@ class NormalLightmapUpdater(
 ) : LightmapUpdater {
     private val profile = connection.profiles.rendering.light
     private var force = true
+    private val nightVision = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
+
 
     init {
         connection.world::dimension.observe(this) { force = true }
@@ -62,10 +68,11 @@ class NormalLightmapUpdater(
 
     private fun updateBlock(dimension: DimensionProperties, buffer: LightmapBuffer) {
         val gamma = profile.gamma
+        val nightVision = getNightVisionStrength()
 
         for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             var color = calculateBlock(dimension.brightness[block])
-            color = tweak(color, gamma, dimension.effects.brighten)
+            color = tweak(color, gamma, dimension.effects.brighten, nightVision)
             buffer[0, block] = color
         }
     }
@@ -78,11 +85,12 @@ class NormalLightmapUpdater(
         val blockColors = Array(ProtocolDefinition.LIGHT_LEVELS.toInt()) { calculateBlock(dimension.brightness[it]) }
 
         val gamma = profile.gamma
+        val nightVision = getNightVisionStrength()
 
         for (sky in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (block in 0 until ProtocolDefinition.LIGHT_LEVELS) {
                 var color = combine(skyColors[sky], blockColors[block])
-                color = tweak(color, gamma, dimension.effects.brighten)
+                color = tweak(color, gamma, dimension.effects.brighten, nightVision)
                 buffer[sky, block] = color
             }
         }
@@ -154,33 +162,67 @@ class NormalLightmapUpdater(
 
 
     private fun combine(sky: Vec3, block: Vec3): Vec3 {
-        var color = sky + block
+        val color = sky + block
 
-        color = color.clamp(0.0f, 1.0f)
-
-        return color
+        return color.clamp()
     }
 
-    private fun tweak(color: Vec3, gamma: Float, brighten: Vec3?): Vec3 {
+    private fun tweak(
+        color: Vec3,
+        gamma: Float,
+        brighten: Vec3?,
+        nightVision: Float,
+    ): Vec3 {
         var output = color
         output = applyGamma(output, gamma)
 
         brighten?.let { output = applyBrighten(color, brighten) }
 
+        output = applyNightVision(output, nightVision)
 
-        output = output.clamp(0.0f, 1.0f)
+
         return output
     }
 
+    private fun applyNightVision(color: Vec3, strength: Float): Vec3 {
+        if (strength <= 0.0f) {
+            return color
+        }
+        val max = maxOf(color.r, color.g, color.b)
+        if (max >= 1.0f) {
+            return color
+        }
+        return interpolateLinear(strength, color, color * (1.0f / max))
+    }
+
     private fun applyBrighten(color: Vec3, brighten: Vec3): Vec3 {
-        return interpolateLinear(0.25f, color, brighten)
+        return interpolateLinear(0.25f, color, brighten).clamp()
     }
 
     private fun applyGamma(color: Vec3, gamma: Float): Vec3 {
         return interpolateLinear(gamma, color, color modify { 1.0f - (1.0f - it).pow(4) })
     }
 
+    private fun getNightVisionStrength(): Float {
+        val nightVision = connection.player.effects[this.nightVision] ?: return 0.0f
+        val time = millis()
+        val end = nightVision.end
+        if (time > end) {
+            return 0.0f
+        }
+        val remaining = end - time
+        if (remaining > 8000) {
+            return 1.0f
+        }
+
+        return 0.3f + sin(remaining / 8000.0f * PIf * 0.2f) * 0.7f
+    }
+
     private fun Vec3.brighten(value: Float): Vec3 {
         return this * (1.0f - value) + value
+    }
+
+    private fun Vec3.clamp(): Vec3 {
+        return clamp(0.0f, 1.0f)
     }
 }

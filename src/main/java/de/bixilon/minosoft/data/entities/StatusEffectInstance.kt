@@ -22,8 +22,8 @@ data class StatusEffectInstance(
     val amplifier: Int,
     val duration: Int,
 ) : Tickable {
-    private val start = millis()
-    private val end = start + duration * ProtocolDefinition.TICK_TIME
+    val start = millis()
+    val end = start + duration * ProtocolDefinition.TICK_TIME
     var remaining: Int = duration
         private set
 

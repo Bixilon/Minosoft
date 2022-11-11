@@ -35,6 +35,7 @@ class LegacyLightmapUpdater(private val connection: PlayConnection) : LightmapUp
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
 
     override fun update(force: Boolean, buffer: LightmapBuffer) {
+        val brightness = connection.world.dimension?.brightness ?: return
         val skyGradient = connection.world.time.lightBase.toFloat()
 
         // ToDo: Lightning
@@ -61,24 +62,19 @@ class LegacyLightmapUpdater(private val connection: PlayConnection) : LightmapUp
 
         for (skyLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
             for (blockLight in 0 until ProtocolDefinition.LIGHT_LEVELS) {
-                val index = ((skyLight shl 4) or blockLight) * 4
+                val skyBrightness = brightness[skyLight] * (skyGradient * 0.95f + 0.05f)
+                val blockBrightness = brightness[blockLight]// ToDo: multiply with time somewhat thing?
 
 
-                val skyLightBrightness = (connection.world.dimension?.brightness?.get(skyLight) ?: 1.0f) * (skyGradient * 0.95f + 0.05f)
-                val blockLightBrightness = (connection.world.dimension?.brightness?.get(blockLight) ?: 1.0f) * 1.5// ToDo: multiply with time somewhat thing?
-
-
-                var color = Vec3(blockLightBrightness, blockLightBrightness * ((blockLightBrightness * 0.6f + 0.4f) * 0.6f + 0.4f), blockLightBrightness * (blockLightBrightness * blockLightBrightness * 0.6f + 0.4f))
+                var color = Vec3(blockBrightness, blockBrightness * ((blockBrightness * 0.6f + 0.4f) * 0.6f + 0.4f), blockBrightness * (blockBrightness * blockBrightness * 0.6f + 0.4f))
 
                 // ToDo: Lightning
 
-                let {
-                    color = color + (skyGradientColor * skyLightBrightness)
+                color = color + (skyGradientColor * skyBrightness)
 
-                    color = Vec3Util.interpolateLinear(0.04f, color, Vec3(0.75f))
+                color = Vec3Util.interpolateLinear(0.04f, color, Vec3(0.75f))
 
-                    // ToDo: Sky darkness
-                }
+                // ToDo: Sky darkness
 
                 color = color.clamp(0.0f, 1.0f)
 

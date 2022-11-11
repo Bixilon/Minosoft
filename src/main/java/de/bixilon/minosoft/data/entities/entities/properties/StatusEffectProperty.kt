@@ -28,13 +28,13 @@ class StatusEffectProperty : Tickable {
     override fun tick() {
         effects.lock.lock()
         val remove: MutableSet<StatusEffectType> = mutableSetOf()
-        for ((effect, instance) in effects) {
+        for ((effect, instance) in effects.unsafe) {
             instance.tick()
             if (instance.expired) {
                 remove += effect
             }
         }
-        this.effects -= remove
+        this.effects.unsafe -= remove
         effects.lock.unlock()
     }
 

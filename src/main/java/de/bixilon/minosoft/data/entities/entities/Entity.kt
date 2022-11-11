@@ -310,6 +310,7 @@ abstract class Entity(
     open val pushableByFluids: Boolean = false
 
     open fun tick() {
+        effects.tick()
         previousPosition = position
         if (spawnSprintingParticles) {
             spawnSprintingParticles()
