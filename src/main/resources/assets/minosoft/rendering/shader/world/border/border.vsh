@@ -43,6 +43,7 @@ void main() {
     position.x += uCenter.x;
     position.z += uCenter.y;
     gl_Position = uViewProjectionMatrix * vec4(position, 1.0f);
+    finFragmentPosition = position;
 
     finTextureIndex = uIndexLayer >> 28u;
     vec2 uv = CONST_UV[floatBitsToUint(uvIndex)];
