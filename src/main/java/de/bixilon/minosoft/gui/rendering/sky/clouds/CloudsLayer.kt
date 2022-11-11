@@ -115,7 +115,7 @@ class CloudsLayer(
         val day = sky.time.day
         if (day != this.day) {
             this.day = day
-            randomSpeed = Random(index.toLong().murmur64() * sky.time.age.murmur64()).nextFloat(0.0f, 0.1f)
+            randomSpeed = Random(index.toLong().murmur64() * (sky.time.age + 1000L).murmur64()).nextFloat(0.0f, 0.1f)
         }
     }
 
@@ -125,7 +125,7 @@ class CloudsLayer(
     }
 
     private fun getCloudSpeed(): Float {
-        return randomSpeed + 0.1f
+        return randomSpeed + 0.05f
     }
 
     private fun updateOffset() {

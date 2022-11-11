@@ -39,7 +39,7 @@ class CloudArray(
                     continue
                 }
 
-                val start = (this.offset * ARRAY_SIZE + Vec2i(x, z) + layer.index) * CLOUD_SIZE
+                val start = (this.offset * ARRAY_SIZE + Vec2i(x, z) + (layer.index * ARRAY_SIZE)) * CLOUD_SIZE
 
                 val cull = booleanArrayOf(
                     matrix[matrixX + 0, matrixZ - 1], // NORTH
