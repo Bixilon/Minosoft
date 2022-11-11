@@ -62,8 +62,8 @@ AFK Pooling, Hit boxes, particles, ...
 ![Rendering](doc/img/rendering1.png)  
 Lighting demo.
 
-![Rendering](doc/img/rendering4.png)  
-Particles. (ignore the numbers on the campfire, I've used them to debug animations)
+![Rendering](doc/img/sunset.png)
+A beautiful sunset
 
 ![Eros](doc/img/eros.png)  
 [Eros](https://en.wikipedia.org/wiki/Eros) is the main gui. You can select your account/favorite server and then connect to it. Once everything is prepared, the rendering will start.
