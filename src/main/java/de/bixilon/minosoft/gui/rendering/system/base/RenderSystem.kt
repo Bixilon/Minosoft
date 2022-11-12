@@ -102,6 +102,7 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 
+    @Deprecated("Use MinosoftShader")
     fun createShader(resourceLocation: ResourceLocation): Shader {
         return createShader(
             vertex = "$resourceLocation.vsh".toResourceLocation(),

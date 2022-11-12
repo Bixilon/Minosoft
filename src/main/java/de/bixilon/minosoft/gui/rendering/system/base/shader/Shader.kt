@@ -36,7 +36,6 @@ interface Shader {
     fun load()
     fun unload()
 
-    @Deprecated("Highly buggy, do not use in normal environment")
     fun reload()
 
     fun use(): Shader {

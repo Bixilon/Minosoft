@@ -43,10 +43,6 @@ abstract class PlanetRenderer(
     open var uvStart = Vec2(0.0f, 0.0f)
     open var uvEnd = Vec2(1.0f, 1.0f)
 
-    override fun init() {
-        shader.load()
-    }
-
     private fun prepareMesh() {
         mesh.addYQuad(
             start = Vec2(-0.2f, -0.2f),
@@ -68,8 +64,8 @@ abstract class PlanetRenderer(
     }
 
     override fun postInit() {
+        shader.load()
         prepareMesh()
-        shader.postLoad()
         sky::matrix.observe(this) { calculateMatrix(it) }
     }
 

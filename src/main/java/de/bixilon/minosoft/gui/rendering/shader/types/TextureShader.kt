@@ -11,16 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.shader
+package de.bixilon.minosoft.gui.rendering.shader.types
 
+import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 interface TextureShader : AbstractMinosoftShader {
-    val textures: TextureManager
+    var textures: TextureManager
 
-    fun textureManager(textureManager: TextureManager, animated: Boolean): ShaderUniform<TextureManager> {
-        return uniform("uTextures", textureManager) { native, name, value: TextureManager ->
+    fun textureManager(name: String = "uTextures", textureManager: TextureManager = native.renderWindow.textureManager, animated: Boolean = this is AnimatedShader): ShaderUniform<TextureManager> {
+        return uniform(name, textureManager) { native, name, value: TextureManager ->
             value.use(native, name)
             if (animated) {
                 textureManager.staticTextures.animator.use(native)

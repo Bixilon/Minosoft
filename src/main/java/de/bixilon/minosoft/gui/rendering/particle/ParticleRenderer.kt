@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
@@ -34,9 +33,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
-import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -53,8 +49,8 @@ class ParticleRenderer(
 ) : AsyncRenderer, TransparentDrawable, TranslucentDrawable, SkipAll, AbstractParticleRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val profile = connection.profiles.particle
-    private val transparentShader: Shader = renderSystem.createShader(minosoft("particle"))
-    private val translucentShader: Shader = renderSystem.createShader(minosoft("particle"))
+    private val transparentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, true) }
+    private val translucentShader = renderSystem.createShader(minosoft("particle")) { ParticleShader(it, false) }
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
     private var transparentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
@@ -64,6 +60,7 @@ class ParticleRenderer(
     private var particles: MutableList<Particle> = mutableListOf()
     private var particleQueueLock = SimpleLock()
     private var particleQueue: MutableList<Particle> = mutableListOf()
+    private var matrixUpdate = true
 
 
     private lateinit var particleTask: TimeWorkerTask
@@ -110,19 +107,7 @@ class ParticleRenderer(
         profile::enabled.profileWatch(this, true, profile) { enabled = it }
 
         connection.events.listen<CameraMatrixChangeEvent> {
-            renderWindow.queue += {
-                fun applyToShader(shader: Shader) {
-                    shader.apply {
-                        use()
-                        setMat4(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4(it.viewProjectionMatrix))
-                        setVec3(ShaderUniforms.CAMERA_RIGHT, Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
-                        setVec3(ShaderUniforms.CAMERA_UP, Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
-                    }
-                }
-
-                applyToShader(transparentShader)
-                applyToShader(translucentShader)
-            }
+            matrixUpdate = true
         }
 
         transparentMesh.load()
@@ -137,9 +122,8 @@ class ParticleRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
-        transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
-        transparentShader.loadAnimated(light = true)
-        translucentShader.loadAnimated(light = true)
+        transparentShader.load()
+        translucentShader.load()
 
         connection.world.particleRenderer = this
 
@@ -209,7 +193,23 @@ class ParticleRenderer(
         particleQueueLock.unlock()
     }
 
+    private fun updateShaders() {
+        val matrix = renderWindow.camera.matrixHandler.viewProjectionMatrix
+        val cameraRight = Vec3(matrix[0][0], matrix[1][0], matrix[2][0])
+        val cameraUp = Vec3(matrix[0][1], matrix[1][1], matrix[2][1])
+
+        transparentShader.cameraRight = cameraRight
+        transparentShader.cameraUp = cameraUp
+
+        translucentShader.cameraRight = cameraRight
+        translucentShader.cameraUp = cameraUp
+    }
+
     override fun prePrepareDraw() {
+        if (matrixUpdate) {
+            updateShaders()
+            matrixUpdate = false
+        }
         transparentMesh.unload()
         translucentMesh.unload()
     }

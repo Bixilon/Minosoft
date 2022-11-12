@@ -11,20 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky.planet
+package de.bixilon.minosoft.gui.rendering.shader.types
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
-import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
+import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
-class PlanetShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader {
-    var matrix: Mat4 by uniform("uMatrix", Mat4())
-    var tintColor: Vec4 by uniform("uTintColor", Vec4())
-    override var textures: TextureManager by textureManager(animated = false)
+interface LightShader : AbstractMinosoftShader {
+    val lightmap: LightmapBuffer
 
+    fun lightmap(name: String = "uLightMapBuffer", buffer: LightmapBuffer = native.renderWindow.light.map.buffer): ShaderUniform<LightmapBuffer> {
+        return uniform(name, buffer) { native, name, value -> value.use(native, name) }
+    }
 }
