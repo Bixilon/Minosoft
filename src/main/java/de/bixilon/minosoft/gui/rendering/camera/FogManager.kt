@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class FogManager(
@@ -143,19 +144,27 @@ class FogManager(
             if (shader !is FogShader || shader.fog != this) {
                 continue
             }
-            shader.use()
-
-            shader.native["uFogStart"] = start
-            shader.native["uFogEnd"] = end
-            shader.native["uFogDistance"] = distance
-            if (color == null) {
-                shader.native[USE_FOG_COLOR] = false
-            } else {
-                shader.native[FOG_COLOR] = color
-                shader.native[USE_FOG_COLOR] = true
-            }
+            use(shader.native, start, end, color, distance)
         }
         this.shaderRevision = revision
+    }
+
+    fun use(shader: NativeShader) {
+        use(shader, interpolatedFogStart * interpolatedFogStart, interpolatedFogEnd * interpolatedFogEnd, interpolatedFogColor)
+    }
+
+    fun use(shader: NativeShader, start: Float, end: Float, color: RGBColor?, distance: Float = end - start) {
+        shader.use()
+
+        shader["uFogStart"] = start
+        shader["uFogEnd"] = end
+        shader["uFogDistance"] = distance
+        if (color == null) {
+            shader[USE_FOG_COLOR] = false
+        } else {
+            shader[FOG_COLOR] = color
+            shader[USE_FOG_COLOR] = true
+        }
     }
 
     companion object {
