@@ -17,5 +17,5 @@ import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 open class FramebufferShader(override val native: NativeShader) : Shader() {
-    var texture by uniform("uTexture", 0, NativeShader::setUInt)
+    var texture by uniform("uTexture", 0)
 }
