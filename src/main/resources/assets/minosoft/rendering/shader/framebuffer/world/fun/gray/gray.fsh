@@ -17,12 +17,12 @@ in vec2 finUV;
 
 out vec4 foutColor;
 
-uniform sampler2D uColor;
+uniform sampler2D uTexture;
 
 #include "minosoft:alpha"
 
 void main() {
-    foutColor = texture(uColor, finUV);
+    foutColor = texture(uTexture, finUV);
     discard_alpha();
     foutColor.rgb = vec3((foutColor.r + foutColor.g + foutColor.b) / 3.0f);
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,18 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 
-in vec2 finUV;
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
+import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 
-out vec4 foutColor;
-
-uniform sampler2D uTexture;
-
-#include "minosoft:alpha"
-
-void main() {
-    foutColor = texture(uTexture, finUV);
-
-    discard_alpha();
+open class TintShader(native: Shader) : FramebufferShader(native) {
+    var tintColor by uniform("uTintColor", ChatColors.BLACK)
 }

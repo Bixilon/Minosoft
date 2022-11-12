@@ -17,7 +17,7 @@ in vec2 finUV;
 
 out vec4 foutColor;
 
-uniform sampler2D uColor;
+uniform sampler2D uTexture;
 
 #include "minosoft:alpha"
 
@@ -25,7 +25,7 @@ const vec3 BLACK = vec3(0.0f);
 const vec3 WHITE = vec3(1.0f);
 
 void main() {
-    foutColor = texture(uColor, finUV);
+    foutColor = texture(uTexture, finUV);
     discard_alpha();
     float gray = (foutColor.r + foutColor.g + foutColor.b) / 3.0f;
     if (gray < 0.5f) {

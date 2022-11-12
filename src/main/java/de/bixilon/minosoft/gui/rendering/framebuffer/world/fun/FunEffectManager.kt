@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FunEffectManager(
@@ -27,7 +27,7 @@ class FunEffectManager(
     private val effects: MutableMap<ResourceLocation, FunEffect> = mutableMapOf()
     var effect: FunEffect? = null
         private set
-    val shader: Shader?
+    val shader: FramebufferShader?
         get() = effect?.shader
     private var effectUsed = 0
 

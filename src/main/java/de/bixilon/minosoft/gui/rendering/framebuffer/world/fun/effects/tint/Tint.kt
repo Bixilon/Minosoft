@@ -11,20 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects
+package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.random.Random
 
 class Tint(override val renderWindow: RenderWindow) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
-    override val shader: Shader = createShader(fragment = "minosoft:framebuffer/world/fun/tint.fsh".toResourceLocation())
+    override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/tint.fsh".toResourceLocation()) { TintShader(it) }
     private var updateUniform = true
     var color = RGBColor(Random.nextInt(20, 255), Random.nextInt(20, 255), Random.nextInt(20, 255), 0xFF)
         set(value) {
@@ -34,7 +33,7 @@ class Tint(override val renderWindow: RenderWindow) : FunEffect {
 
     override fun update() {
         if (updateUniform) {
-            shader.use().setRGBColor("uTintColor", color)
+            shader.tintColor = color
             updateUniform = false
         }
     }

@@ -19,12 +19,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 
 interface IntegratedFramebuffer : Drawable {
     val renderWindow: RenderWindow
-    val shader: Shader
+    val shader: FramebufferShader
     val framebuffer: Framebuffer
     val mesh: Mesh
     val polygonMode: PolygonModes
@@ -33,8 +32,6 @@ interface IntegratedFramebuffer : Drawable {
     fun init() {
         framebuffer.init()
         shader.load()
-        shader.use()
-        shader.setInt("uColor", 0)
         // shader.setInt("uDepth", 1)
         mesh.load()
     }
