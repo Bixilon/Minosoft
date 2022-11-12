@@ -23,11 +23,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.7.21"
     `jvm-test-suite`
     application
     id("org.ajoberstar.grgit") version "5.0.0"
-    id("com.github.ben-manes.versions") version "0.43.0"
+    id("com.github.ben-manes.versions") version "0.44.0"
 }
 
 fun getProperty(name: String): String {
@@ -142,7 +142,7 @@ testing {
                 implementation(project)
                 // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
                 implementation("de.bixilon:kutil:$kutilVersion")
-                implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+                implementation("org.jetbrains.kotlin:kotlin-test:1.7.21")
             }
 
             targets {

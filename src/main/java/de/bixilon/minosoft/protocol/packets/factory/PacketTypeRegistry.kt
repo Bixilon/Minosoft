@@ -78,7 +78,6 @@ object PacketTypeRegistry {
     }
 
 
-    @Suppress("UnstableApiUsage")
     fun init(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Initializing packets..." }
         val classLoader = Thread.currentThread().contextClassLoader
@@ -104,7 +103,6 @@ object PacketTypeRegistry {
         Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Packets initialized!" }
     }
 
-    @Suppress("UnstableApiUsage")
     private fun loadClass(
         s2cClassMap: SynchronizedMap<Class<out S2CPacket>, S2CPacketType>,
         s2cStateMap: SynchronizedMap<ProtocolStates, MutableMap<String, S2CPacketType>>,
