@@ -25,7 +25,8 @@ import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
+import de.bixilon.minosoft.gui.rendering.shader.types.CameraPositionShader
+import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.chunkPosition
@@ -171,12 +172,12 @@ class MatrixHandler(
     }
 
     private fun updateShaders(cameraPosition: Vec3) {
-        for (shader in renderWindow.renderSystem.shaders) {
-            if (ShaderUniforms.VIEW_PROJECTION_MATRIX in shader.uniforms) {
-                shader.use().setMat4(ShaderUniforms.VIEW_PROJECTION_MATRIX, viewProjectionMatrix)
+        for (shader in renderWindow.renderSystem.minosoftShaders) {
+            if (shader is ViewProjectionShader) {
+                shader.viewProjectionMatrix = viewProjectionMatrix
             }
-            if (ShaderUniforms.CAMERA_POSITION in shader.uniforms) {
-                shader.use().setVec3(ShaderUniforms.CAMERA_POSITION, cameraPosition)
+            if (shader is CameraPositionShader) {
+                shader.cameraPosition = cameraPosition
             }
         }
     }

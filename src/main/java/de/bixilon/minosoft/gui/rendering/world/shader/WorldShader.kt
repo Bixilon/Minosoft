@@ -11,24 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle
+package de.bixilon.minosoft.gui.rendering.world.shader
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.camera.FogManager
 import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
 import de.bixilon.minosoft.gui.rendering.shader.types.*
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
-class ParticleShader(
+class WorldShader(
     override val native: Shader,
     override val transparent: Boolean,
-) : MinosoftShader(), TextureShader, AnimatedShader, LightShader, TransparentShader, ViewProjectionShader {
+) : MinosoftShader(), TextureShader, AnimatedShader, LightShader, TransparentShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
     override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
-    var cameraRight by uniform(ShaderUniforms.CAMERA_RIGHT, Vec3(), Shader::setVec3)
-    var cameraUp by uniform(ShaderUniforms.CAMERA_UP, Vec3(), Shader::setVec3)
+    override var cameraPosition: Vec3 by cameraPosition()
+    override var fog: FogManager by fog()
 }

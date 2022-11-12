@@ -11,24 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle
+package de.bixilon.minosoft.gui.rendering.shader.types
 
-import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
-import de.bixilon.minosoft.gui.rendering.shader.types.*
+import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
-class ParticleShader(
-    override val native: Shader,
-    override val transparent: Boolean,
-) : MinosoftShader(), TextureShader, AnimatedShader, LightShader, TransparentShader, ViewProjectionShader {
-    override var textures: TextureManager by textureManager()
-    override val lightmap: LightmapBuffer by lightmap()
-    override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
-    var cameraRight by uniform(ShaderUniforms.CAMERA_RIGHT, Vec3(), Shader::setVec3)
-    var cameraUp by uniform(ShaderUniforms.CAMERA_UP, Vec3(), Shader::setVec3)
+interface CameraPositionShader : AbstractMinosoftShader {
+    var cameraPosition: Vec3
+
+
+    fun cameraPosition(): ShaderUniform<Vec3> {
+        return uniform(ShaderUniforms.CAMERA_POSITION, Vec3(), Shader::setVec3)
+    }
 }

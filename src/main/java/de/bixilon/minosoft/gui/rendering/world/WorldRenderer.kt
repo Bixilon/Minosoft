@@ -45,7 +45,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
@@ -64,6 +63,8 @@ import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
+import de.bixilon.minosoft.gui.rendering.world.shader.WorldShader
+import de.bixilon.minosoft.gui.rendering.world.shader.WorldTextShader
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.modding.event.events.blocks.BlockDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
@@ -87,10 +88,10 @@ class WorldRenderer(
 ) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     private val profile = connection.profiles.block
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val visibilityGraph = renderWindow.camera.visibilityGraph
-    private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
-    private val textShader = renderSystem.createShader("minosoft:world/text".toResourceLocation())
+    private val shader = renderSystem.createShader("minosoft:world".toResourceLocation()) { WorldShader(it, false) }
+    private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation()) { WorldShader(it, true) }
+    private val textShader = renderSystem.createShader("minosoft:world/text".toResourceLocation()) { WorldTextShader(it) }
     private val world: World = connection.world
     private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderWindow)
     private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
@@ -146,22 +147,10 @@ class WorldRenderer(
         }
     }
 
-    private fun loadWorldShader(shader: Shader, animations: Boolean = true) {
-        shader.load()
-        renderWindow.textureManager.staticTextures.use(shader)
-        if (animations) {
-            renderWindow.textureManager.staticTextures.animator.use(shader)
-        }
-        renderWindow.light.map.use(shader)
-    }
-
     override fun postInit(latch: CountUpAndDownLatch) {
-        loadWorldShader(this.shader)
-
-        transparentShader.defines["TRANSPARENT"] = ""
-        loadWorldShader(this.transparentShader)
-
-        loadWorldShader(this.textShader, false)
+        shader.load()
+        transparentShader.load()
+        textShader.load()
 
 
         connection.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpo
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class FogManager(
@@ -138,21 +139,20 @@ class FogManager(
         val color = interpolatedFogColor
         val distance = end - start
 
-        for (shader in renderWindow.renderSystem.shaders) {
-            if (FOG_COLOR !in shader.uniforms) {
+        for (shader in renderWindow.renderSystem.minosoftShaders) {
+            if (shader !is FogShader || shader.fog != this) {
                 continue
             }
-
             shader.use()
 
-            shader["uFogStart"] = start
-            shader["uFogEnd"] = end
-            shader["uFogDistance"] = distance
+            shader.native["uFogStart"] = start
+            shader.native["uFogEnd"] = end
+            shader.native["uFogDistance"] = distance
             if (color == null) {
-                shader[USE_FOG_COLOR] = false
+                shader.native[USE_FOG_COLOR] = false
             } else {
-                shader[FOG_COLOR] = color
-                shader[USE_FOG_COLOR] = true
+                shader.native[FOG_COLOR] = color
+                shader.native[USE_FOG_COLOR] = true
             }
         }
         this.shaderRevision = revision
