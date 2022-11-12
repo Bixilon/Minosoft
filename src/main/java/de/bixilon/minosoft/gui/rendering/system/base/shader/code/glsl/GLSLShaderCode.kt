@@ -24,23 +24,8 @@ class GLSLShaderCode(
     private val rawCode: String,
 ) {
     val defines: MutableMap<String, Any> = mutableMapOf()
-    val uniforms: MutableSet<String> = mutableSetOf()
 
     init {
-        // ToDo: This is complete trash and should be replaced
-
-        for (line in rawCode.lines()) {
-            if (!line.startsWith("uniform ")) {
-                continue
-            }
-            val reader = GLSLStringReader(line.removePrefix("uniform "))
-            reader.skipWhitespaces()
-            reader.readUnquotedString() // data type
-            reader.skipWhitespaces()
-
-            uniforms += reader.readWord() ?: continue
-        }
-
         for ((name, value) in Shader.DEFAULT_DEFINES) {
             value(renderWindow)?.let { defines[name] = it }
         }
@@ -70,7 +55,6 @@ class GLSLShaderCode(
                         val include = ResourceLocation(reader.readString()!!)
 
                         val includeCode = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager[ResourceLocation(include.namespace, "rendering/shader/includes/${include.path}.glsl")].readAsString())
-                        this.uniforms += includeCode.uniforms
 
                         code.append('\n')
                         code.append(includeCode.code)

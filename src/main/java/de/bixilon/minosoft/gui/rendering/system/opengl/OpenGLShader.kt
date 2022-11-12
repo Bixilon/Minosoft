@@ -41,8 +41,6 @@ class OpenGLShader(
         private set
     override val defines: MutableMap<String, Any> = mutableMapOf()
     private var shader = -1
-    override var uniforms: MutableSet<String> = mutableSetOf()
-        private set
     private val uniformLocations: Object2IntOpenHashMap<String> = Object2IntOpenHashMap()
 
     private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
@@ -57,8 +55,6 @@ class OpenGLShader(
 
 
         glShaderSource(program, code.code)
-
-        this.uniforms += code.uniforms
 
         glCompileShader(program)
 
