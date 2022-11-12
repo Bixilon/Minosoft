@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
@@ -45,8 +46,10 @@ abstract class OpenGLRenderableBuffer(
     }
 
     override fun unbind() {
-        return
-        // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
+        if (RenderConstants.DIRTY_BUFFER_UNBIND) {
+            // This is unclean, yes. But it is not required to do at all (we always bind another buffer), so this saves a ton of gl calls
+            return
+        }
         glBindBuffer(type.gl, 0)
     }
 

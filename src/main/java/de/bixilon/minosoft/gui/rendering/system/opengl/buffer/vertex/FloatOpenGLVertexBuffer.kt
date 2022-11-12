@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -62,6 +63,14 @@ class FloatOpenGLVertexBuffer(
         }
 
         unbind()
+    }
+
+    override fun unbind() {
+        if (RenderConstants.DIRTY_BUFFER_UNBIND) {
+            return
+        }
+        super.unbind()
+        glBindVertexArray(0)
     }
 
     fun bindVao() {

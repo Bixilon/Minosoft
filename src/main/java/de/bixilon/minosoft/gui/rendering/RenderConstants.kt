@@ -58,4 +58,5 @@ object RenderConstants {
     const val DISABLE_GUI_CACHE = false
 
     const val OPENGL_DEBUG_MODE = false
+    const val DIRTY_BUFFER_UNBIND = true
 }
