@@ -13,6 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.shader
 
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-typealias ShaderSetter<T> = (shader: Shader, name: String, value: T) -> Unit
+typealias ShaderSetter<T> = (shader: NativeShader, name: String, value: T) -> Unit

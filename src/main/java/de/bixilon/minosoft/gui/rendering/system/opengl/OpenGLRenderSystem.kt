@@ -22,12 +22,12 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader.Companion.shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.frame.OpenGLFramebuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
@@ -52,8 +52,8 @@ class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
 ) : RenderSystem {
     private var thread: Thread? = null
+    override val nativeShaders: MutableSet<NativeShader> = mutableSetOf()
     override val shaders: MutableSet<Shader> = mutableSetOf()
-    override val minosoftShaders: MutableSet<MinosoftShader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     override lateinit var vendor: OpenGLVendor
         private set
@@ -75,7 +75,7 @@ class OpenGLRenderSystem(
     var boundBuffer = -1
     var uniformBufferBindingIndex = 0
 
-    override var shader: Shader? = null
+    override var shader: NativeShader? = null
         set(value) {
             if (value === field) {
                 return
@@ -86,9 +86,9 @@ class OpenGLRenderSystem(
                 return
             }
 
-            check(value is OpenGLShader) { "Can not use non OpenGL shader in OpenGL render system!" }
+            check(value is OpenGLNativeShader) { "Can not use non OpenGL shader in OpenGL render system!" }
             check(value.loaded) { "Shader not loaded!" }
-            check(value in shaders) { "Shader not part of this context!" }
+            check(value in nativeShaders) { "Shader not part of this context!" }
 
             value.unsafeUse()
 
@@ -254,8 +254,8 @@ class OpenGLRenderSystem(
         return buffer
     }
 
-    override fun createShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLShader {
-        return OpenGLShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
+    override fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation?, fragment: ResourceLocation): OpenGLNativeShader {
+        return OpenGLNativeShader(renderWindow, vertex.shader(), geometry?.shader(), fragment.shader())
     }
 
     override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatOpenGLVertexBuffer {

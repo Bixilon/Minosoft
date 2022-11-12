@@ -15,14 +15,14 @@ package de.bixilon.minosoft.gui.rendering.sky.planet
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec4.Vec4
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class PlanetShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader {
+    override val native: NativeShader,
+) : Shader(), TextureShader {
     var matrix: Mat4 by uniform("uMatrix", Mat4())
     var tintColor: Vec4 by uniform("uTintColor", Vec4())
     override var textures: TextureManager by textureManager(animated = false)

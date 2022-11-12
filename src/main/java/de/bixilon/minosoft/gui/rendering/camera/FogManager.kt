@@ -139,7 +139,7 @@ class FogManager(
         val color = interpolatedFogColor
         val distance = end - start
 
-        for (shader in renderWindow.renderSystem.minosoftShaders) {
+        for (shader in renderWindow.renderSystem.shaders) {
             if (shader !is FogShader || shader.fog != this) {
                 continue
             }

@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class SkyboxTextureShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader {
+    override val native: NativeShader,
+) : Shader(), TextureShader {
     override var textures: TextureManager by textureManager()
 
     var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4())
-    var textureIndexLayer by uniform("uIndexLayer", 0, Shader::setUInt)
+    var textureIndexLayer by uniform("uIndexLayer", 0, NativeShader::setUInt)
 }

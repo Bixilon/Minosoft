@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.types
 
-import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
-interface LightShader : AbstractMinosoftShader {
+interface LightShader : AbstractShader {
     val lightmap: LightmapBuffer
 
     fun lightmap(name: String = "uLightMapBuffer", buffer: LightmapBuffer = native.renderWindow.light.map.buffer): ShaderUniform<LightmapBuffer> {

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDrawTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderableBuffer
 import org.lwjgl.opengl.GL30.glBindBufferBase
@@ -37,7 +37,7 @@ abstract class OpenGLUniformBuffer(renderSystem: OpenGLRenderSystem, override va
     }
 
 
-    override fun use(shader: Shader, bufferName: String) {
+    override fun use(shader: NativeShader, bufferName: String) {
         shader.use()
 
         shader[bufferName] = this

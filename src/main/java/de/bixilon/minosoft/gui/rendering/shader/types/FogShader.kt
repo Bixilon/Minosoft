@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.shader.types
 
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
-import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 
-interface FogShader : AbstractMinosoftShader, CameraPositionShader {
+interface FogShader : AbstractShader, CameraPositionShader {
     var fog: FogManager
 
     fun fog(default: FogManager = native.renderWindow.camera.fogManager): ShaderUniform<FogManager> {

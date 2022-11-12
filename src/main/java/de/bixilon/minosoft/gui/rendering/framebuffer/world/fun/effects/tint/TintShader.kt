@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-open class TintShader(native: Shader) : FramebufferShader(native) {
+open class TintShader(native: NativeShader) : FramebufferShader(native) {
     var tintColor by uniform("uTintColor", ChatColors.BLACK)
 }

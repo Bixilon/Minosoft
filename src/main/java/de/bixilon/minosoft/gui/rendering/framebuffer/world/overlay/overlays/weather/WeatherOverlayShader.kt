@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather
 
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class WeatherOverlayShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader {
+    override val native: NativeShader,
+) : Shader(), TextureShader {
     override var textures: TextureManager by textureManager()
 
     var intensity by uniform("uIntensity", 0.0f)
     var offset by uniform("uOffset", 0.0f)
-    var textureIndexLayer by uniform("uIndexLayer", 0, Shader::setUInt)
+    var textureIndexLayer by uniform("uIndexLayer", 0, NativeShader::setUInt)
 }

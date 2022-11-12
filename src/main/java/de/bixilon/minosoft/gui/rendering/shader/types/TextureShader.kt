@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.shader.types
 
-import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-interface TextureShader : AbstractMinosoftShader {
+interface TextureShader : AbstractShader {
     var textures: TextureManager
 
     fun textureManager(name: String = "uTextures", textureManager: TextureManager = native.renderWindow.textureManager, animated: Boolean = this is AnimatedShader): ShaderUniform<TextureManager> {

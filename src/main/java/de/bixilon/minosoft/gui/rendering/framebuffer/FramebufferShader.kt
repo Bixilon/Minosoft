@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer
 
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-open class FramebufferShader(override val native: Shader) : MinosoftShader() {
-    var texture by uniform("uTexture", 0, Shader::setUInt)
+open class FramebufferShader(override val native: NativeShader) : Shader() {
+    var texture by uniform("uTexture", 0, NativeShader::setUInt)
 }

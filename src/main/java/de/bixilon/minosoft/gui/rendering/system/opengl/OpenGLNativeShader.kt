@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.lwjgl.opengl.GL11.GL_FALSE
@@ -31,12 +31,12 @@ import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
 import java.io.FileNotFoundException
 
-class OpenGLShader(
+class OpenGLNativeShader(
     override val renderWindow: RenderWindow,
     private val vertex: ResourceLocation,
     private val geometry: ResourceLocation?,
     private val fragment: ResourceLocation,
-) : Shader {
+) : NativeShader {
     override var loaded: Boolean = false
         private set
     override val defines: MutableMap<String, Any> = mutableMapOf()
@@ -97,7 +97,7 @@ class OpenGLShader(
         }
         loaded = true
 
-        renderWindow.renderSystem.shaders += this
+        renderWindow.renderSystem.nativeShaders += this
     }
 
     override fun unload() {
@@ -105,7 +105,7 @@ class OpenGLShader(
         glDeleteProgram(this.shader)
         loaded = false
         this.shader = -1
-        renderWindow.renderSystem.shaders -= this
+        renderWindow.renderSystem.nativeShaders -= this
     }
 
     override fun reload() {

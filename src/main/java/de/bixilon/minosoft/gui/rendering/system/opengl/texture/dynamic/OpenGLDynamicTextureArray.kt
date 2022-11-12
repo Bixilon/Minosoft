@@ -17,7 +17,7 @@ import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureData
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureArray
@@ -47,7 +47,7 @@ class OpenGLDynamicTextureArray(
     private var textures: Array<WeakReference<OpenGLDynamicTexture>?> = arrayOfNulls(initialSize)
     private val lock = ThreadLock()
     private var textureId = -1
-    var shaders: MutableSet<Shader> = mutableSetOf()
+    var shaders: MutableSet<NativeShader> = mutableSetOf()
 
     override val size: Int
         get() {
@@ -139,12 +139,12 @@ class OpenGLDynamicTextureArray(
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
     }
 
-    override fun use(shader: Shader, name: String) {
+    override fun use(shader: NativeShader, name: String) {
         shaders += shader
         _use(shader, name)
     }
 
-    private fun _use(shader: Shader, name: String = ShaderUniforms.TEXTURES) {
+    private fun _use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES) {
         shader.use()
 
         activate()

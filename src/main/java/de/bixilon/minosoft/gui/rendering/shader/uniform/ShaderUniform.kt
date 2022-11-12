@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.shader.uniform
 
 import de.bixilon.minosoft.gui.rendering.shader.ShaderSetter
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class ShaderUniform<T>(
-    private val native: Shader,
+    private val native: NativeShader,
     default: T,
     private val name: String,
     private val setter: ShaderSetter<T>,

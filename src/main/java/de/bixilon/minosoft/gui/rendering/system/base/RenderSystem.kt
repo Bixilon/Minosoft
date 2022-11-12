@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.frame.Framebuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -33,10 +33,10 @@ import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
 interface RenderSystem {
+    val nativeShaders: MutableSet<NativeShader>
     val shaders: MutableSet<Shader>
-    val minosoftShaders: MutableSet<MinosoftShader>
     val vendor: GPUVendor
-    var shader: Shader?
+    var shader: NativeShader?
     var framebuffer: Framebuffer?
 
     val active: Boolean
@@ -102,20 +102,19 @@ interface RenderSystem {
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 
-    @Deprecated("Use MinosoftShader")
-    fun createShader(resourceLocation: ResourceLocation): Shader {
-        return createShader(
+    fun createNativeShader(resourceLocation: ResourceLocation): NativeShader {
+        return createNativeShader(
             vertex = "$resourceLocation.vsh".toResourceLocation(),
             geometry = "$resourceLocation.gsh".toResourceLocation(),
             fragment = "$resourceLocation.fsh".toResourceLocation(),
         )
     }
 
-    fun <T : MinosoftShader> createShader(resourceLocation: ResourceLocation, creator: (native: Shader) -> T): T {
-        return creator(createShader(resourceLocation))
+    fun <T : Shader> createShader(resourceLocation: ResourceLocation, creator: (native: NativeShader) -> T): T {
+        return creator(createNativeShader(resourceLocation))
     }
 
-    fun createShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): Shader
+    fun createNativeShader(vertex: ResourceLocation, geometry: ResourceLocation? = null, fragment: ResourceLocation): NativeShader
 
     fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
     fun createIntUniformBuffer(data: IntArray = IntArray(0)): IntUniformBuffer
@@ -138,7 +137,7 @@ interface RenderSystem {
     }
 
     fun reloadShaders() {
-        val copy = minosoftShaders.toMutableSet()
+        val copy = shaders.toMutableSet()
         for (shader in copy) {
             shader.reload()
         }

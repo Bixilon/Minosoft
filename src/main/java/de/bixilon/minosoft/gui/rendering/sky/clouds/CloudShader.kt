@@ -17,15 +17,15 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.EMPTY
 
 class CloudShader(
-    override val native: Shader,
-) : MinosoftShader(), ViewProjectionShader, FogShader {
+    override val native: NativeShader,
+) : Shader(), ViewProjectionShader, FogShader {
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
     override var cameraPosition: Vec3 by cameraPosition()
     override var fog: FogManager by fog()

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffe
 import de.bixilon.minosoft.util.Previous
 import kotlin.math.max
 
-interface Shader {
+interface NativeShader {
     val loaded: Boolean
     val renderWindow: RenderWindow
     val defines: MutableMap<String, Any>
@@ -37,7 +37,7 @@ interface Shader {
 
     fun reload()
 
-    fun use(): Shader {
+    fun use(): NativeShader {
         renderWindow.renderSystem.shader = this
         return this
     }

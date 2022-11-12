@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.light
 import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.world.light.updater.DebugLightUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.FullbrightLightUpdater
 import de.bixilon.minosoft.gui.rendering.world.light.updater.LightmapUpdater
@@ -56,7 +56,7 @@ class Lightmap(private val light: RenderLight) {
         return defaultUpdater
     }
 
-    fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {
+    fun use(shader: NativeShader, bufferName: String = "uLightMapBuffer") {
         buffer.use(shader, bufferName)
     }
 

@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.shader.types
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.minosoft.gui.rendering.shader.AbstractMinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.AbstractShader
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 
-interface ViewProjectionShader : AbstractMinosoftShader {
+interface ViewProjectionShader : AbstractShader {
     var viewProjectionMatrix: Mat4
 
 
     fun viewProjectionMatrix(): ShaderUniform<Mat4> {
-        return uniform(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4(), Shader::setMat4)
+        return uniform(ShaderUniforms.VIEW_PROJECTION_MATRIX, Mat4(), NativeShader::setMat4)
     }
 }

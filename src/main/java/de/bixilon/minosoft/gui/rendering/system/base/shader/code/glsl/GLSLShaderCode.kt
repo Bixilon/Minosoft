@@ -17,7 +17,7 @@ import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.commands.util.StringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
 class GLSLShaderCode(
     private val renderWindow: RenderWindow,
@@ -26,7 +26,7 @@ class GLSLShaderCode(
     val defines: MutableMap<String, Any> = mutableMapOf()
 
     init {
-        for ((name, value) in Shader.DEFAULT_DEFINES) {
+        for ((name, value) in NativeShader.DEFAULT_DEFINES) {
             value(renderWindow)?.let { defines[name] = it }
         }
         defines[renderWindow.renderSystem.vendor.shaderDefine] = ""

@@ -16,16 +16,16 @@ package de.bixilon.minosoft.gui.rendering.world.shader
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.*
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 
 class WorldShader(
-    override val native: Shader,
+    override val native: NativeShader,
     override val transparent: Boolean,
-) : MinosoftShader(), TextureShader, AnimatedShader, LightShader, TransparentShader, ViewProjectionShader, FogShader {
+) : Shader(), TextureShader, AnimatedShader, LightShader, TransparentShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
     override val lightmap: LightmapBuffer by lightmap()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()

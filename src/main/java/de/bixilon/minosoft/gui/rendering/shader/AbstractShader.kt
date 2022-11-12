@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.shader
 
 import de.bixilon.minosoft.gui.rendering.shader.uniform.ShaderUniform
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 
-interface AbstractMinosoftShader {
-    val native: Shader
+interface AbstractShader {
+    val native: NativeShader
 
-    fun <T> uniform(name: String, default: T, type: ShaderSetter<T> = Shader::set): ShaderUniform<T>
+    fun <T> uniform(name: String, default: T, type: ShaderSetter<T> = NativeShader::set): ShaderUniform<T>
 }

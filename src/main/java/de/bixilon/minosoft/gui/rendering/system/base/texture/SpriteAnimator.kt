@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
 
 class SpriteAnimator(val renderSystem: RenderSystem) {
@@ -79,7 +79,7 @@ class SpriteAnimator(val renderSystem: RenderSystem) {
     }
 
 
-    fun use(shader: Shader, bufferName: String = "uSpriteBuffer") {
+    fun use(shader: NativeShader, bufferName: String = "uSpriteBuffer") {
         uniformBuffer.use(shader, bufferName)
     }
 

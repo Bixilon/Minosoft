@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.shader.generic
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class GenericTextureShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader, AnimatedShader, ViewProjectionShader {
+    override val native: NativeShader,
+) : Shader(), TextureShader, AnimatedShader, ViewProjectionShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
 }

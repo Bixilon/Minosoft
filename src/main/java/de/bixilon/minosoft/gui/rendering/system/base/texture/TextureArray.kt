@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.base.texture
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 
 interface TextureArray {
@@ -24,6 +24,6 @@ interface TextureArray {
     fun activate()
 
     @Deprecated("safe uniforms")
-    fun use(shader: Shader, name: String = ShaderUniforms.TEXTURES)
-    fun use(shader: MinosoftShader) = use(shader.native)
+    fun use(shader: NativeShader, name: String = ShaderUniforms.TEXTURES)
+    fun use(shader: Shader) = use(shader.native)
 }

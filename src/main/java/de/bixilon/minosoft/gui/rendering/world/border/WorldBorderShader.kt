@@ -18,17 +18,17 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.gui.rendering.camera.FogManager
-import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.shader.types.FogShader
 import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
 import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 
 class WorldBorderShader(
-    override val native: Shader,
-) : MinosoftShader(), TextureShader, ViewProjectionShader, FogShader {
+    override val native: NativeShader,
+) : Shader(), TextureShader, ViewProjectionShader, FogShader {
     override var textures: TextureManager by textureManager()
     override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
     override var cameraPosition: Vec3 by cameraPosition()
@@ -36,7 +36,7 @@ class WorldBorderShader(
 
     var tintColor by uniform("uTintColor", ChatColors.BLACK)
 
-    var textureIndexLayer by uniform("uIndexLayer", 0, Shader::setUInt)
+    var textureIndexLayer by uniform("uIndexLayer", 0, NativeShader::setUInt)
     var textureOffset by uniform("uTextureOffset", 0.0f)
     var radius by uniform("uRadius", 0.0f)
     var center by uniform("uCenter", Vec2.EMPTY)

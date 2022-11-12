@@ -19,7 +19,7 @@ import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.util.FileUtil.readAsString
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureArrayStates
@@ -201,7 +201,7 @@ class OpenGLTextureArray(
         }
     }
 
-    override fun use(shader: Shader, name: String) {
+    override fun use(shader: NativeShader, name: String) {
         shader.use()
         activate()
 

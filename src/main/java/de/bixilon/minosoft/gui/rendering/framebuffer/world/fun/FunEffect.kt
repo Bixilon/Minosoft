@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.FramebufferShader
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 interface FunEffect : ResourceLocationAble {
@@ -28,8 +28,8 @@ interface FunEffect : ResourceLocationAble {
     fun preDraw() {}
 
 
-    fun <T : FramebufferShader> createShader(vertex: ResourceLocation = "minosoft:framebuffer/world.vsh".toResourceLocation(), fragment: ResourceLocation = "minosoft:framebuffer/world.fsh".toResourceLocation(), creator: (Shader) -> T): T {
-        val native = renderWindow.renderSystem.createShader(vertex = vertex, fragment = fragment)
+    fun <T : FramebufferShader> createShader(vertex: ResourceLocation = "minosoft:framebuffer/world.vsh".toResourceLocation(), fragment: ResourceLocation = "minosoft:framebuffer/world.fsh".toResourceLocation(), creator: (NativeShader) -> T): T {
+        val native = renderWindow.renderSystem.createNativeShader(vertex = vertex, fragment = fragment)
         val shader = creator(native)
         shader.load()
         shader.use()
