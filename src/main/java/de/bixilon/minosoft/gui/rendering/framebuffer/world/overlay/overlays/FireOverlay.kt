@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
@@ -32,7 +31,7 @@ class FireOverlay(
 ) : Overlay {
     private val config = renderWindow.connection.profiles.rendering.overlay.fire
     private val player = renderWindow.connection.player
-    private val shader: Shader = renderWindow.shaderManager.genericTexture2dShader
+    private val shader = renderWindow.shaderManager.genericTexture2dShader
     private var texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture("block/fire_1".toResourceLocation().texture())
     override val render: Boolean
         get() {

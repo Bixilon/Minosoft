@@ -11,22 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.shader.generic
 
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader.Companion.loadAnimated
-import de.bixilon.minosoft.util.KUtil.minosoft
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.types.ViewProjectionShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 
-class ShaderManager(
-    val renderWindow: RenderWindow,
-) {
-    val genericColorShader = renderWindow.renderSystem.createShader(minosoft("generic/color"))
-    val genericTextureShader = renderWindow.renderSystem.createShader(minosoft("generic/texture"))
-    val genericTexture2dShader = renderWindow.renderSystem.createShader(minosoft("generic/texture_2d"))
-
-
-    fun postInit() {
-        genericColorShader.load()
-        genericTextureShader.loadAnimated()
-        genericTexture2dShader.loadAnimated()
-    }
+class ColorShader(
+    override val native: Shader,
+) : MinosoftShader(), ViewProjectionShader {
+    override var viewProjectionMatrix: Mat4 by viewProjectionMatrix()
 }

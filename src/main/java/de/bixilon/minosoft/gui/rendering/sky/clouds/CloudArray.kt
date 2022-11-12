@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.sky.clouds
 import de.bixilon.kotlinglm.vec2.Vec2i
 
 class CloudArray(
-    val layer: CloudsLayer,
+    val layer: CloudLayer,
     val offset: Vec2i,
 ) {
     private val mesh: CloudMesh = CloudMesh(layer.clouds.renderWindow)

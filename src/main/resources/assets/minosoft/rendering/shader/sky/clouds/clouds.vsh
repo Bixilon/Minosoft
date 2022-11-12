@@ -23,7 +23,6 @@ flat out float finBrightness;
 uniform mat4 uViewProjectionMatrix;
 uniform float uOffset;
 uniform float uYOffset;
-uniform vec3 uCameraPosition;
 
 
 void main() {

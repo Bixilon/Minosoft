@@ -85,7 +85,6 @@ interface Shader {
     }
 
     companion object {
-        const val TRANSPARENT_DEFINE = "TRANSPARENT"
         val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
             "ANIMATED_TEXTURE_COUNT" to {
                 max(it.textureManager.staticTextures.animator.size, 1)
@@ -94,16 +93,6 @@ interface Shader {
 
         fun ResourceLocation.shader(): ResourceLocation {
             return ResourceLocation(namespace, "rendering/shader/${path.replace("(\\w+)\\.\\w+".toRegex(), "$1")}/${path.split("/").last()}")
-        }
-
-        fun Shader.loadAnimated(light: Boolean = false) {
-            load()
-            renderWindow.textureManager.staticTextures.use(this)
-            renderWindow.textureManager.staticTextures.animator.use(this)
-
-            if (light) {
-                renderWindow.light.map.use(this)
-            }
         }
     }
 }

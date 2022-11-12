@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
@@ -27,7 +26,7 @@ abstract class SimpleOverlay(
     protected var z: Float,
 ) : Overlay {
     protected abstract val texture: AbstractTexture
-    protected open val shader: Shader = renderWindow.shaderManager.genericTexture2dShader
+    protected open val shader = renderWindow.shaderManager.genericTexture2dShader
     private var mesh = SimpleTextureMesh(renderWindow)
     protected var tintColor: RGBColor? = null
     protected open var uvStart = Vec2(0.0f, 0.0f)

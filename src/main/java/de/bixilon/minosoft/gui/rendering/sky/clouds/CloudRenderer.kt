@@ -42,24 +42,23 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sin
 
-class CloudsRenderer(
+class CloudRenderer(
     private val sky: SkyRenderer,
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OpaqueDrawable, AsyncRenderer {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    val shader = renderSystem.createShader(minosoft("sky/clouds"))
+    val shader = renderSystem.createShader(minosoft("sky/clouds")) { CloudShader(it) }
     val matrix = CloudMatrix()
-    private val layers: MutableList<CloudsLayer> = mutableListOf()
+    private val layers: MutableList<CloudLayer> = mutableListOf()
     private var position = Vec2i(Int.MIN_VALUE)
     private var color: Vec3 = Vec3.EMPTY
     private var maxDistance = 0.0f
-    private var yOffset = 0.0f
     private var baseHeight = 0
     private var nextLayers = 0
     var flat: Boolean = false
         private set
-    private var toUnload: MutableSet<CloudsLayer> = mutableSetOf()
+    private var toUnload: MutableSet<CloudLayer> = mutableSetOf()
 
     override val skipOpaque: Boolean
         get() = !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
@@ -67,10 +66,6 @@ class CloudsRenderer(
 
     override fun asyncInit(latch: CountUpAndDownLatch) {
         matrix.load(connection.assetsManager)
-    }
-
-    override fun init(latch: CountUpAndDownLatch) {
-        shader.load()
     }
 
     private fun getCloudHeight(index: Int): IntRange {
@@ -82,6 +77,7 @@ class CloudsRenderer(
     }
 
     override fun postInit(latch: CountUpAndDownLatch) {
+        shader.load()
         sky.profile.clouds::movement.profileWatch(this, instant = true, profile = connection.profiles.rendering) {
             for (layer in layers) {
                 layer.movement = it
@@ -106,7 +102,7 @@ class CloudsRenderer(
             toUnload += this.layers.removeLast()
         }
         for (index in this.layers.size until layers) {
-            val layer = CloudsLayer(sky, this, index, getCloudHeight(index))
+            val layer = CloudLayer(sky, this, index, getCloudHeight(index))
             this.layers += layer
         }
     }
@@ -215,17 +211,14 @@ class CloudsRenderer(
         if (baseHeight - y > maxDistance) {
             yOffset = y - baseHeight + maxDistance
         }
-        if (yOffset != this.yOffset) {
-            shader.setFloat("uYOffset", yOffset)
-            this.yOffset = yOffset
-        }
+        shader.yOffset = yOffset
     }
 
     override fun drawOpaque() {
         shader.use()
         val color = calculateCloudsColor()
         if (color != this.color) {
-            shader.setVec4("uCloudsColor", Vec4(color, 1.0f))
+            shader.cloudsColor = Vec4(color, 1.0f)
             this.color = color
         }
         setYOffset()
@@ -236,8 +229,8 @@ class CloudsRenderer(
         }
     }
 
-    companion object : RendererBuilder<CloudsRenderer> {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:clouds")
+    companion object : RendererBuilder<CloudRenderer> {
+        override val RESOURCE_LOCATION = ResourceLocation("minosoft:cloud")
         private val RAIN_COLOR = Vec3(0.31f, 0.35f, 0.40f)
         private val SUNRISE_COLOR = Vec3(0.85f, 0.68f, 0.36f)
         private val DAY_COLOR = Vec3(0.95f, 0.97f, 0.97f)
@@ -245,9 +238,9 @@ class CloudsRenderer(
         private val NIGHT_COLOR = Vec3(0.08f, 0.13f, 0.18f)
 
 
-        override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudsRenderer? {
+        override fun build(connection: PlayConnection, renderWindow: RenderWindow): CloudRenderer? {
             val sky = renderWindow.renderer[SkyRenderer] ?: return null
-            return CloudsRenderer(sky, connection, renderWindow)
+            return CloudRenderer(sky, connection, renderWindow)
         }
     }
 }
