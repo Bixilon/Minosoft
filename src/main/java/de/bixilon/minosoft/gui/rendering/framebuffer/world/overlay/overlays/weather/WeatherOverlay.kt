@@ -20,13 +20,11 @@ import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.minosoft
-import de.bixilon.minosoft.util.KUtil.nextFloat
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
@@ -49,7 +47,7 @@ class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Floa
             BiomePrecipitation.SNOW -> snow
         }
 
-    private val shader: Shader = renderWindow.renderSystem.createShader(minosoft("weather/overlay"))
+    private val shader = renderWindow.renderSystem.createShader(minosoft("weather/overlay")) { WeatherOverlayShader(it) }
     private var mesh = WeatherOverlayMesh(renderWindow)
     private var windowSize = Vec2.EMPTY
 
@@ -96,10 +94,10 @@ class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Floa
     }
 
     private fun updateShader() {
-        shader.setFloat("uIntensity", world.weather.rain)
+        shader.intensity = world.weather.rain
         val offset = (millis() % 500L) / 500.0f
-        shader.setFloat("uOffset", -offset)
-        shader.setUInt("uIndexLayer", texture!!.shaderId)
+        shader.offset = -offset
+        shader.textureIndexLayer = texture!!.shaderId
     }
 
     override fun draw() {

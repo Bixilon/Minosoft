@@ -60,7 +60,7 @@ class GUIRenderer(
         get() = renderWindow.framebufferManager.gui.framebuffer
     override val polygonMode: PolygonModes
         get() = renderWindow.framebufferManager.gui.polygonMode
-    val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
+    val shader = renderWindow.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
     val atlasManager = AtlasManager(renderWindow)
 
     var currentMousePosition: Vec2i by watched(Vec2i.EMPTY)
@@ -77,9 +77,6 @@ class GUIRenderer(
     override fun postInit(latch: CountUpAndDownLatch) {
         atlasManager.postInit()
         shader.load()
-        renderWindow.textureManager.staticTextures.use(shader)
-        renderWindow.textureManager.staticTextures.animator.use(shader)
-        renderWindow.textureManager.dynamicTextures.use(shader)
 
         connection.events.listen<ResizeWindowEvent> { recalculateMatrices(it.size) }
         profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }

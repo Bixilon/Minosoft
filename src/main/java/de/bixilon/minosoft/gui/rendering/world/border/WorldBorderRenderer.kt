@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.renderer.renderer.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
-import de.bixilon.minosoft.gui.rendering.system.base.shader.ShaderUniforms
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -37,7 +36,7 @@ class WorldBorderRenderer(
     override val renderWindow: RenderWindow,
 ) : Renderer, TranslucentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val shader = renderSystem.createShader(minosoft("world/border"))
+    private val shader = renderSystem.createShader(minosoft("world/border")) { WorldBorderShader(it) }
     private val borderMesh = WorldBorderMesh(renderWindow)
     private val border = renderWindow.connection.world.border
     private lateinit var texture: AbstractTexture
@@ -54,7 +53,7 @@ class WorldBorderRenderer(
 
     override fun postInit(latch: CountUpAndDownLatch) {
         renderWindow.textureManager.staticTextures.use(shader)
-        shader.setUInt("uIndexLayer", texture.renderData.shaderTextureId)
+        shader.textureIndexLayer = texture.renderData.shaderTextureId
     }
 
     override fun setupTranslucent() {
@@ -75,8 +74,8 @@ class WorldBorderRenderer(
             offsetReset = time
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
-        shader.setFloat(ShaderUniforms.TEXTURE_OFFSET, 1.0f - textureOffset)
-        shader.setFloat(ShaderUniforms.CAMERA_HEIGHT, renderWindow.camera.matrixHandler.eyePosition.y)
+        shader.textureOffset = 1.0f - textureOffset
+        shader.cameraHeight = renderWindow.camera.matrixHandler.eyePosition.y
 
         val distance = border.getDistanceTo(renderWindow.connection.player.position)
         val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)
@@ -86,9 +85,9 @@ class WorldBorderRenderer(
             WorldBorderState.STATIC -> STATIC_COLOR
         }
         color = color.with(alpha = (strength * strength))
-        shader.setRGBColor("uTintColor", color)
-        shader.setFloat("uRadius", border.diameter.toFloat() / 2.0f)
-        shader.setVec2("uCenter", Vec2(border.center))
+        shader.tintColor = color
+        shader.radius = border.diameter.toFloat() / 2.0f
+        shader.center = Vec2(border.center)
     }
 
     override fun drawTranslucent() {

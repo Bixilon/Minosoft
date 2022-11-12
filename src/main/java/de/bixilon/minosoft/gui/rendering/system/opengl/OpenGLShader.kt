@@ -53,7 +53,6 @@ class OpenGLShader(
             throw ShaderLoadingException()
         }
 
-
         glShaderSource(program, code.code)
 
         glCompileShader(program)

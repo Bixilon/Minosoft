@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,25 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.gui.rendering.sky.box
 
-out vec4 foutColor;
+import de.bixilon.kotlinglm.mat4x4.Mat4
+import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
+class SkyboxTextureShader(
+    override val native: Shader,
+) : MinosoftShader(), TextureShader {
+    override var textures: TextureManager by textureManager()
 
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-
-uniform vec4 uTintColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-
-#include "minosoft:texture"
-#include "minosoft:alpha"
-#include "minosoft:fog"
-
-void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
-    discard_if_0(texelColor.a);
-
-    foutColor = texelColor * uTintColor;
-    set_fog();
+    var skyViewProjectionMatrix by uniform("uSkyViewProjectionMatrix", Mat4())
+    var textureIndexLayer by uniform("uIndexLayer", 0, Shader::setUInt)
 }

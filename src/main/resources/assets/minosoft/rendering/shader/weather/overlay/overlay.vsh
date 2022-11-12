@@ -23,7 +23,6 @@ layout (location = 4) in float vinAlphaMultiplicator;
 flat out uint finTextureIndex;
 out vec3 finTextureCoordinates;
 
-uniform vec2 uMaxUV;
 uniform float uIntensity;
 uniform float uOffset;
 uniform uint uIndexLayer;

@@ -34,7 +34,7 @@ class SunScatterRenderer(
     private val sky: SkyRenderer,
     private val sun: SunRenderer,
 ) : SkyChildRenderer {
-    private val shader = sky.renderSystem.createShader(minosoft("sky/scatter/sun"))
+    private val shader = sky.renderSystem.createShader(minosoft("sky/scatter/sun")) { SunScatterShader(it) }
     private val mesh = SunScatterMesh(sky.renderWindow)
     private var matrix = Mat4()
     private var timeUpdate = true
@@ -89,11 +89,11 @@ class SunScatterRenderer(
         if (timeUpdate || weatherLevel > 0.0f) {
             if (timeUpdate) {
                 calculateMatrix()
-                shader.setMat4("uScatterMatrix", matrix)
-                shader.setVec3("uSunPosition", calculateSunPosition())
+                shader.scatterMatrix = matrix
+                shader.sunPosition = calculateSunPosition()
                 timeUpdate = false
             }
-            shader.setFloat("uIntensity", (1.0f - weatherLevel) * calculateIntensity(sky.time.progress))
+            shader.intensity = (1.0f - weatherLevel) * calculateIntensity(sky.time.progress)
         }
 
         sky.renderSystem.enable(RenderingCapabilities.BLENDING)

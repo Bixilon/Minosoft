@@ -45,7 +45,6 @@ import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEven
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.murmur64
-import de.bixilon.minosoft.util.KUtil.nextFloat
 import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs
@@ -56,8 +55,8 @@ class SkyboxRenderer(
     private val sky: SkyRenderer,
 ) : SkyChildRenderer {
     private val textureCache: MutableMap<ResourceLocation, AbstractTexture> = mutableMapOf()
-    private val colorShader = sky.renderSystem.createShader(minosoft("sky/skybox"))
-    private val textureShader = sky.renderSystem.createShader(minosoft("sky/skybox/texture"))
+    private val colorShader = sky.renderSystem.createShader(minosoft("sky/skybox")) { SkyboxColorShader(it) }
+    private val textureShader = sky.renderSystem.createShader(minosoft("sky/skybox/texture")) { SkyboxTextureShader(it) }
     private val colorMesh = SkyboxMesh(sky.renderWindow)
     private val textureMesh = SkyboxTextureMesh(sky.renderWindow)
     private var updateColor = true
@@ -130,9 +129,6 @@ class SkyboxRenderer(
     }
 
     override fun init() {
-        colorShader.load()
-        textureShader.load()
-
         for (properties in DefaultDimensionEffects) {
             val texture = properties.fixedTexture ?: continue
             textureCache[texture] = sky.renderWindow.textureManager.staticTextures.createTexture(texture)
@@ -140,6 +136,9 @@ class SkyboxRenderer(
     }
 
     override fun postInit() {
+        colorShader.load()
+        textureShader.load()
+
         colorMesh.load()
         textureMesh.load()
         sky.renderWindow.textureManager.staticTextures.use(textureShader)
@@ -147,11 +146,11 @@ class SkyboxRenderer(
 
     private fun updateColorShader() {
         if (updateColor) {
-            colorShader.setRGBColor("uSkyColor", color)
+            colorShader.skyColor = color
             updateColor = false
         }
         if (updateMatrix) {
-            colorShader.setMat4("uSkyViewProjectionMatrix", sky.matrix)
+            colorShader.skyViewProjectionMatrix = sky.matrix
             updateMatrix = false
         }
     }
@@ -159,11 +158,11 @@ class SkyboxRenderer(
     private fun updateTextureShader(texture: ResourceLocation) {
         if (updateTexture) {
             val cache = this.textureCache[texture] ?: throw IllegalStateException("Texture not loaded!")
-            textureShader.setUInt("uIndexLayer", cache.shaderId)
+            textureShader.textureIndexLayer = cache.shaderId
             updateTexture = false
         }
         if (updateMatrix) {
-            textureShader.setMat4("uSkyViewProjectionMatrix", sky.matrix)
+            textureShader.skyViewProjectionMatrix = sky.matrix
             updateMatrix = false
         }
     }

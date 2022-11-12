@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,25 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.gui.rendering.gui
 
-out vec4 foutColor;
+import de.bixilon.minosoft.gui.rendering.shader.MinosoftShader
+import de.bixilon.minosoft.gui.rendering.shader.types.AnimatedShader
+import de.bixilon.minosoft.gui.rendering.shader.types.TextureShader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
-
-uniform vec4 uTintColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-
-#include "minosoft:texture"
-#include "minosoft:alpha"
-#include "minosoft:fog"
-
-void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates, 0.0f);
-    discard_if_0(texelColor.a);
-
-    foutColor = texelColor * uTintColor;
-    set_fog();
+class GUIShader(
+    override val native: Shader,
+) : MinosoftShader(), TextureShader, AnimatedShader {
+    override var textures: TextureManager by textureManager()
 }
