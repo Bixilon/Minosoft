@@ -191,6 +191,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
+                        shouldRunAfter(test)
                         filter {
                             isFailOnNoMatchingTests = true
                         }
@@ -210,7 +211,6 @@ testing {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
                         }
-                        shouldRunAfter("test")
                     }
                 }
             }
@@ -266,7 +266,7 @@ testing {
 }
 
 tasks.named("check") {
-    dependsOn(testing.suites.named("test"), testing.suites.named("integrationTest"))
+    dependsOn(testing.suites.named("integrationTest"))
 }
 
 fun DependencyHandler.javafx(name: String) {
