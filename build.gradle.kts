@@ -133,8 +133,7 @@ when (os) {
 
 testing {
     suites {
-
-        val test by getting(JvmTestSuite::class) {
+        getting(JvmTestSuite::class) {
             testType.set(TestSuiteType.UNIT_TEST)
             useJUnitJupiter("5.9.1")
 
@@ -174,7 +173,7 @@ testing {
         }
 
 
-        val integrationTest by registering(JvmTestSuite::class) {
+        registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.INTEGRATION_TEST)
             useTestNG("7.6.1")
 
@@ -211,7 +210,7 @@ testing {
                             val options = this as TestNGOptions
                             options.preserveOrder = true
                         }
-                        shouldRunAfter(test)
+                        shouldRunAfter("test")
                     }
                 }
             }
@@ -221,7 +220,7 @@ testing {
                 }
             }
         }
-        val benchmarkTest by registering(JvmTestSuite::class) {
+        registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.PERFORMANCE_TEST)
             useTestNG("7.6.1")
 
