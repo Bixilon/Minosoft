@@ -47,7 +47,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Particles
 - Basic block and skylight (custom light engine)
 - Block and item interactions (e.g. place, break, mining)
-- ~~Original physics~~ ([#91](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/91)
+- ~~Original physics~~ ([#91](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/91))
 - A lot more, only listing major things here, see the screenshots:
 
 ![Rendering](doc/img/rendering5.png)  
