@@ -58,3 +58,4 @@ package:
   artifacts:
     paths:
       - build/libs/minosoft-fat-*.jar
+    expire_in: 1 days
