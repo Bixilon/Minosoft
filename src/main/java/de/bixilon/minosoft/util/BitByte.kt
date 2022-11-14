@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util
 
+@Deprecated("Kutil 1.18")
 object BitByte {
 
     inline fun isBitSet(`in`: Int, pos: Int): Boolean {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+@Deprecated("Kutil 1.18")
 class Reference<T>(
     var value: T,
 )
