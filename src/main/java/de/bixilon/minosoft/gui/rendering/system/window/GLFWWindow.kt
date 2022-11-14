@@ -247,6 +247,13 @@ class GLFWWindow(
         glfwSetErrorCallback(null)?.free()
     }
 
+    override fun close() {
+        if (fireGLFWEvent(WindowCloseEvent(renderWindow, window = this))) {
+            return
+        }
+        forceClose()
+    }
+
     override fun forceClose() {
         glfwSetWindowShouldClose(window, true)
     }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.matthiasmann.twl.utils.PNGDecoder
@@ -66,12 +65,7 @@ interface BaseWindow {
 
     fun destroy()
 
-    fun close() {
-        if (fireGLFWEvent(WindowCloseEvent(renderWindow, window = this))) {
-            return
-        }
-        forceClose()
-    }
+    fun close()
 
     fun forceClose()
 
