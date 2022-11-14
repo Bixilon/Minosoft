@@ -6,15 +6,24 @@ variables:
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
 stages:
   - build
   - test
   - package
+
+
+cache:
+  - key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+  - key:
+      files:
+        - "*gradle/**"
+        - "**.kts"
+    policy: pull-push
+    paths:
+      - .gradle
 
 build:
   stage: build
@@ -22,12 +31,6 @@ build:
   only:
     - master
     - merge_requests
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
-    paths:
-      - build
-      - .gradle
 
 test:
   stage: test
@@ -39,12 +42,6 @@ test:
     when: always
     reports:
       junit: build/test-results/**/TEST-*.xml
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - build
-      - .gradle
 
 package:
   stage: package
@@ -55,9 +52,3 @@ package:
   artifacts:
     paths:
       - build/libs/minosoft-fat-*.jar
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - build
-      - .gradle
