@@ -19,11 +19,17 @@ cache:
       - build
   - key:
       files:
-        - "*gradle/**"
-        - "**.kts"
+        - "*.kts"
+        - "gradle.properties"
     policy: pull-push
     paths:
-      - .gradle
+      - .gradle/caches
+  - key:
+      files:
+        - "gradle/wrapper/gradle-wrapper.properties"
+    policy: pull-push
+    paths:
+      - .gradle/wrapper
 
 build:
   stage: build
