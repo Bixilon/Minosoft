@@ -4,7 +4,7 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
-  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - export GRADLE_USER_HOME=`pwd`/.gradle_home
 
 stages:
   - build
@@ -17,19 +17,20 @@ cache:
     policy: push
     paths:
       - build
+      - .gradle
   - key:
       files:
         - "*.kts"
         - "gradle.properties"
     policy: pull-push
     paths:
-      - .gradle/caches
+      - .gradle_home/caches
   - key:
       files:
         - "gradle/wrapper/gradle-wrapper.properties"
     policy: pull-push
     paths:
-      - .gradle/wrapper
+      - .gradle_home/wrapper
 
 build:
   stage: build
