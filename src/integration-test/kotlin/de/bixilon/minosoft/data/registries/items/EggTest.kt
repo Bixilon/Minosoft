@@ -11,13 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.data.registries.item.MinecraftItems
+import de.bixilon.minosoft.data.registries.item.items.Item
+import org.testng.annotations.Test
 
-object MinecraftItems {
-    val LEATHER_BOOTS = "minecraft:leather_boots".toResourceLocation()
-    val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()
-    val APPLE = "minecraft:apple".toResourceLocation()
-    val EGG = "minecraft:egg".toResourceLocation()
+@Test(groups = ["item"])
+class EggTest : ItemTest<Item>() {
+
+    init {
+        EggTestO = this
+    }
+
+    fun getTorch() {
+        super.retrieveBlock(MinecraftItems.APPLE)
+    }
 }
+
+var EggTestO: EggTest = unsafeNull()

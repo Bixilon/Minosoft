@@ -11,13 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.container.click
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.container.Container
 
-object MinecraftItems {
-    val LEATHER_BOOTS = "minecraft:leather_boots".toResourceLocation()
-    val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()
-    val APPLE = "minecraft:apple".toResourceLocation()
-    val EGG = "minecraft:egg".toResourceLocation()
+
+object ContainerTestUtil {
+
+    fun createContainer(): Container {
+        TODO()
+    }
 }

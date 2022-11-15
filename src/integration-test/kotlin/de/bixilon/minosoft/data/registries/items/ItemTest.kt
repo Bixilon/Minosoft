@@ -11,13 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.IT
+import de.bixilon.minosoft.IT.reference
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.items.Item
+import org.testng.Assert
+import org.testng.Assert.assertEquals
 
-object MinecraftItems {
-    val LEATHER_BOOTS = "minecraft:leather_boots".toResourceLocation()
-    val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()
-    val APPLE = "minecraft:apple".toResourceLocation()
-    val EGG = "minecraft:egg".toResourceLocation()
+abstract class ItemTest<T : Item> {
+    var item: T = unsafeNull()
+
+    init {
+        reference()
+    }
+
+    fun retrieveBlock(name: ResourceLocation) {
+        val item = IT.VERSION.registries!!.itemRegistry[name]
+        Assert.assertNotNull(item)
+        item!!
+        assertEquals(item.resourceLocation, name)
+        this.item = item.unsafeCast()
+    }
 }
