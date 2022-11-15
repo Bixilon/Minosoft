@@ -25,8 +25,8 @@ class CoalTest : ItemTest<Item>() {
         CoalTest0 = this
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftItems.COAL)
+    fun getCoal() {
+        super.retrieveItem(MinecraftItems.COAL)
     }
 }
 

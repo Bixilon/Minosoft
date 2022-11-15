@@ -25,11 +25,11 @@ class LavaBucketTest : ItemTest<BucketItem>() {
 
     init {
         LavaBucketTest0 = this
-        assertTrue(item.fluid is LavaFluid)
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftItems.LAVA_BUCKET)
+    fun getLava() {
+        super.retrieveItem(MinecraftItems.LAVA_BUCKET)
+        assertTrue(item.fluid is LavaFluid)
     }
 }
 

@@ -21,11 +21,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.a
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
 @Test(groups = ["container"])
-@Deprecated("Verify with minecraft")
 class PickAllContainerActionTest {
 
     fun testEmpty() {
@@ -38,6 +38,7 @@ class PickAllContainerActionTest {
     }
 
     fun testAlready() {
+        // not invokable in minecraft
         val connection = createConnection()
         val container = createContainer(connection)
         container.floatingItem = ItemStack(EggTestO.item, count = 7)
@@ -48,16 +49,18 @@ class PickAllContainerActionTest {
     }
 
     fun testSingle() {
+        // theoretical test, not invokable
         val connection = createConnection()
         val container = createContainer(connection)
         container[0] = ItemStack(AppleTestO.item, 1)
         container.invokeAction(PickAllContainerAction(0))
         assertNull(container[0])
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 1))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 0, 0, 0, mapOf(0 to null), ItemStack(AppleTestO.item, count = 1)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, mapOf(0 to null), ItemStack(AppleTestO.item, count = 1)))
     }
 
     fun test2Single() {
+        // partly theoretical, one slot should be empty
         val connection = createConnection()
         val container = createContainer(connection)
         container[0] = ItemStack(AppleTestO.item, 1)
@@ -66,7 +69,7 @@ class PickAllContainerActionTest {
         assertNull(container[0])
         assertNull(container[1])
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 3))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 0, 0, 0, mapOf(0 to null, 1 to null), ItemStack(AppleTestO.item, count = 3)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 6, 0, 0, mapOf(0 to null, 1 to null), ItemStack(AppleTestO.item, count = 3)))
     }
 
     fun testNotTaking() {
@@ -80,10 +83,11 @@ class PickAllContainerActionTest {
         assertEquals(container[1], ItemStack(EggTestO.item, 1))
         assertNull(container[2])
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 3))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 2, 0, 0, 0, mapOf(0 to null, 2 to null), ItemStack(AppleTestO.item, count = 3)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 2, 6, 0, 0, mapOf(0 to null, 2 to null), ItemStack(AppleTestO.item, count = 3)))
     }
 
     fun testStack() {
+        // theoretical, slot already empty
         val connection = createConnection()
         val container = createContainer(connection)
         container[0] = ItemStack(AppleTestO.item, 64)
@@ -92,7 +96,7 @@ class PickAllContainerActionTest {
         assertNull(container[0])
         assertEquals(container[5], ItemStack(AppleTestO.item, count = 2))
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 64))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 0, 0, 0, mapOf(0 to null), ItemStack(AppleTestO.item, count = 64)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 6, 0, 0, mapOf(0 to null), ItemStack(AppleTestO.item, count = 64)))
     }
 
     fun testExceeds() {
@@ -104,7 +108,7 @@ class PickAllContainerActionTest {
         assertEquals(container[0], ItemStack(AppleTestO.item, count = 62))
         assertNull(container[5])
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 64))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 5, 0, 0, 0, mapOf(0 to ItemStack(AppleTestO.item, count = 62), 5 to null), ItemStack(AppleTestO.item, count = 64)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 5, 6, 0, 0, mapOf(0 to ItemStack(AppleTestO.item, count = 2), 5 to null), ItemStack(AppleTestO.item, count = 64)))
     }
 
     fun testRevertSingle() {

@@ -25,6 +25,7 @@ class FastMoveContainerAction(
     // ToDo: Action reverting
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        // ToDo: minecraft always sends a packet
         val source = container.slots[slot] ?: return
         val previous = source.copy()
         container.lock.lock()

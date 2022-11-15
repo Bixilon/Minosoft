@@ -29,6 +29,7 @@ class CloneContainerAction(
         val itemStack = clicked.copy(count = clicked.item.item.maxStackSize)
         this.copied = itemStack
 
+        // TODO (1.18.2): use creative inventory packet
         connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.createAction(this), emptyMap(), clicked))
 
         container.floatingItem = itemStack

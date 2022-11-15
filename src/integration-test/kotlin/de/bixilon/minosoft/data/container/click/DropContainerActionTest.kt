@@ -21,11 +21,11 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.a
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
+import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
 @Test(groups = ["container"])
-@Deprecated("Verify with minecraft")
 class DropContainerActionTest {
 
     fun dropEmptySingle() {

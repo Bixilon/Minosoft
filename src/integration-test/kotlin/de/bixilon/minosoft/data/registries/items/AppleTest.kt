@@ -25,8 +25,8 @@ class AppleTest : ItemTest<Item>() {
         AppleTestO = this
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftItems.APPLE)
+    fun getApple() {
+        super.retrieveItem(MinecraftItems.APPLE)
     }
 }
 

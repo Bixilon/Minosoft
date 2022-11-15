@@ -25,11 +25,11 @@ class WaterBucketTest : ItemTest<BucketItem>() {
 
     init {
         WaterBucketTest0 = this
-        assertTrue(item.fluid is WaterFluid)
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftItems.WATER_BUCKET)
+    fun getWater() {
+        super.retrieveItem(MinecraftItems.WATER_BUCKET)
+        assertTrue(item.fluid is WaterFluid)
     }
 }
 

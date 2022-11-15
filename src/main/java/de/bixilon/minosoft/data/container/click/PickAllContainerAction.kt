@@ -27,6 +27,7 @@ class PickAllContainerAction(
     // ToDo: Action reverting
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        // TODO (1.18.2) minecraft always sends a packet
         container.lock.lock()
         try {
             val previous = container.slots[slot] ?: container.floatingItem?.copy() ?: return

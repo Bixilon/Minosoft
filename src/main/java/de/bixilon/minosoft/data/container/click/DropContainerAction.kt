@@ -38,6 +38,8 @@ class DropContainerAction(
 
         val actionId = container.createAction(this)
         connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 4, if (stack) 1 else 0, actionId, mapOf(slot to item), null))
+
+        // TODO (1.18.2): use creative inventory packet
     }
 
     override fun revert(connection: PlayConnection, containerId: Int, container: Container) {

@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.types.generic.Generic9x3Container
+import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 
@@ -22,6 +24,14 @@ object ContainerTestUtil {
 
     fun createContainer(connection: PlayConnection = createConnection()): Container {
         // TODO: set id to 9
+        TODO()
+    }
+
+    fun createChest(connection: PlayConnection = createConnection()): Generic9x3Container {
+        TODO()
+    }
+
+    fun createFurnace(connection: PlayConnection = createConnection()): FurnaceContainer {
         TODO()
     }
 }

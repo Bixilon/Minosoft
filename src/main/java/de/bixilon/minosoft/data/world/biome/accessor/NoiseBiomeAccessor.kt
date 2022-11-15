@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.math.simple.DoubleMath.square
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -54,7 +55,7 @@ class NoiseBiomeAccessor(
     }
 
 
-    private fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
+    fun getBiomePosition(seed: Long, x: Int, y: Int, z: Int): Vec3i {
         val m = x - 2
         val n = y - 2
         val o = z - 2
@@ -112,13 +113,18 @@ class NoiseBiomeAccessor(
         if (s and 0x01 != 0) {
             biomeZ++
         }
+        return Vec3i(biomeX, biomeY, biomeZ)
+    }
+
+    private fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?): Biome? {
+        val position = getBiomePosition(seed, x, y, z)
 
         var biomeChunk: Chunk? = null
-        val biomeChunkX = biomeX shr 2
-        val biomeChunkZ = biomeZ shr 2
+        val biomeChunkX = position.x shr 2
+        val biomeChunkZ = position.z shr 2
 
         if (neighbours == null) {
-            return world[Vec2i(biomeChunkX, biomeChunkZ)]?.biomeSource?.getBiome(biomeX, biomeY, biomeZ)
+            return world[Vec2i(biomeChunkX, biomeChunkZ)]?.biomeSource?.getBiome(position)
         }
 
         val deltaChunkX = biomeChunkX - chunkPositionX
@@ -130,11 +136,13 @@ class NoiseBiomeAccessor(
                 -1 -> biomeChunk = neighbours[3]
                 1 -> biomeChunk = neighbours[4]
             }
+
             -1 -> when (deltaChunkZ) {
                 0 -> biomeChunk = neighbours[1]
                 -1 -> biomeChunk = neighbours[0]
                 1 -> biomeChunk = neighbours[2]
             }
+
             1 -> when (deltaChunkZ) {
                 0 -> biomeChunk = neighbours[6]
                 -1 -> biomeChunk = neighbours[5]
@@ -142,7 +150,7 @@ class NoiseBiomeAccessor(
             }
         }
 
-        return biomeChunk?.biomeSource?.getBiome(biomeX, biomeY, biomeZ)
+        return biomeChunk?.biomeSource?.getBiome(position)
     }
 
     private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {
