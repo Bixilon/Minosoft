@@ -57,7 +57,7 @@ class PlayOutByteBuffer(val connection: PlayConnection) : OutByteBuffer() {
             writeNBT(itemStack.getNBT())
             return
         }
-        val valid = itemStack?._valid == true
+        val valid = itemStack != null && itemStack._valid
         writeBoolean(valid)
         if (!valid) {
             return

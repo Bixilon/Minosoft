@@ -34,6 +34,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 open class Container(
     protected val connection: PlayConnection,
@@ -41,7 +42,7 @@ open class Container(
     val title: ChatComponent? = null,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
     @Deprecated("Should not be accessed directly")
-    val slots: MutableMap<Int, ItemStack> by watchedMap(mutableMapOf())
+    val slots: MutableMap<Int, ItemStack> by watchedMap(Int2ObjectOpenHashMap())
     val lock = SimpleLock()
     var propertiesRevision by watched(0L)
     var revision by watched(0L)

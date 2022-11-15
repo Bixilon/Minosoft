@@ -11,22 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft
+package de.bixilon.minosoft.data.container
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-object IT {
-    const val VERSION_NAME = "1.18.2"
-    var VERSION: Version = unsafeNull()
+object ContainerUtil {
 
-    val references: MutableList<Any> = mutableListOf()
+    fun slotsOf(vararg slots: Pair<Int, ItemStack?>): Int2ObjectMap<ItemStack?> {
+        val map = Int2ObjectOpenHashMap<ItemStack?>()
+        for ((slot, stack) in slots) {
+            val valid = stack == null || stack._valid
+            if (!valid) {
+                map[slot] = null
+                continue
+            }
+            map[slot] = stack
+        }
 
-    init {
-        reference()
-    }
-
-    fun Any.reference() {
-        references += this
+        return map
     }
 }

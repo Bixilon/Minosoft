@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 
 @LoadPacket
 data class ContainerClickC2SP(
@@ -29,7 +30,7 @@ data class ContainerClickC2SP(
     val mode: Int,
     val button: Int,
     val actionId: Int,
-    val next: Map<Int, ItemStack?>,
+    val next: Int2ObjectMap<ItemStack?>,
     val clickedItem: ItemStack?,
 ) : PlayC2SPacket {
 

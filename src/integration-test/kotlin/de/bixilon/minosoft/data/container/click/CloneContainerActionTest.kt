@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.data.container.click
 
-import de.bixilon.minosoft.data.container.click.ContainerTestUtil.createContainer
+import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
+import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.EggTestO
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertOnlyPacket
+import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
-@Test(groups = ["container"])
+@Test(groups = ["container"], dependsOnGroups = ["block", "item"])
 class CloneContainerActionTest {
 
     fun testEmpty() {
@@ -64,7 +65,7 @@ class CloneContainerActionTest {
         container.invokeAction(CloneContainerAction(1))
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 64))
         // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, emptyMap(), ItemStack(AppleTestO.item, count = 64)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 1, 3, 0, 0, slotsOf(), ItemStack(AppleTestO.item, count = 64)))
     }
 
     fun taskTalking2() {
@@ -74,7 +75,7 @@ class CloneContainerActionTest {
         container.invokeAction(CloneContainerAction(3))
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 64))
         // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, emptyMap(), ItemStack(AppleTestO.item, count = 64)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 3, 3, 0, 0, slotsOf(), ItemStack(AppleTestO.item, count = 64)))
     }
 
     fun testStackLimit() {
@@ -84,7 +85,7 @@ class CloneContainerActionTest {
         container.invokeAction(CloneContainerAction(8))
         assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 16))
         // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, emptyMap(), ItemStack(EggTestO.item, count = 64)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(EggTestO.item, count = 64)))
     }
 
     fun testRevert() {
@@ -94,7 +95,7 @@ class CloneContainerActionTest {
         val action = CloneContainerAction(8)
         container.invokeAction(action)
         assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 16))
-        container.revertAction(container.createAction(action))
+        container.revertAction(action)
         assertNull(container.floatingItem)
     }
 }

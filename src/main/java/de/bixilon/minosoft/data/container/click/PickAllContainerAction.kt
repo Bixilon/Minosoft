@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 /**
  * If you double-click on an item in an inventory, all items of the same type will be stacked together and selected
@@ -37,7 +39,7 @@ class PickAllContainerAction(
             }
             container.slots.remove(slot)
             var countLeft = clicked.item.item.maxStackSize - clicked.item._count
-            val changes: MutableMap<Int, ItemStack?> = mutableMapOf()
+            val changes: Int2ObjectMap<ItemStack?> = Int2ObjectOpenHashMap()
             for ((slotId, slot) in container.slots) {
                 if (!clicked.matches(slot)) {
                     continue
@@ -49,7 +51,11 @@ class PickAllContainerAction(
                 slot.item._count -= countToRemove
                 countLeft -= countToRemove
                 clicked.item._count += countToRemove
-                changes[slotId] = slot
+                if (slot._valid) {
+                    changes[slotId] = slot
+                } else {
+                    changes[slotId] = null
+                }
                 if (countLeft <= 0) {
                     break
                 }

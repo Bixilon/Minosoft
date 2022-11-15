@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
@@ -43,7 +44,7 @@ class SimpleContainerAction(
             floatingItem = previous.copy(count = previous.item.count - stayCount)
         }
         container.floatingItem = floatingItem
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to item), previous))
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to item), previous))
     }
 
     private fun putItem(connection: PlayConnection, containerId: Int, container: Container, floatingItem: ItemStack) {
@@ -58,7 +59,7 @@ class SimpleContainerAction(
                 } else {
                     floatingItem.item._count-- // don't use decrease, item + container is already locked
                 }
-                return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), emptyMap(), null))
+                return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), slotsOf(), null))
             }
             val slotType = container.getSlotType(slot)
             val matches = floatingItem.matches(target)
@@ -85,7 +86,7 @@ class SimpleContainerAction(
                     floatingItem.item._count += subtract
                 }
 
-                connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to target), previous))
+                connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), previous))
                 return
             }
             if (target != null && slotType?.canRemove(container, slot, target) != true) {
@@ -105,7 +106,7 @@ class SimpleContainerAction(
                 floatingItem.item._count--
                 container._set(slot, floatingItem.copy(count = 1))
             }
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), mapOf(slot to floatingItem), target))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to floatingItem), target))
         } finally {
             floatingItem.commit()
             target?.lock() // lock to prevent exception

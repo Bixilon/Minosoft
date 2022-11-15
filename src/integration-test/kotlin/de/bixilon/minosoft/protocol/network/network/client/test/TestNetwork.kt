@@ -52,6 +52,9 @@ class TestNetwork : ClientNetwork {
     }
 
     fun take(): C2SPacket? {
+        if (queue.isEmpty()) {
+            return null
+        }
         return queue.remove()
     }
 }

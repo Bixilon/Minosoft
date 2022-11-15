@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.container.slots
 
-import de.bixilon.minosoft.data.container.click.ContainerTestUtil
+import de.bixilon.minosoft.data.container.ContainerTestUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.CoalTest0
@@ -23,7 +23,7 @@ import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
-@Test(groups = ["container"])
+@Test(groups = ["container"], dependsOnGroups = ["block", "item"])
 class FuelSlotTypeTest {
 
     fun apple() {

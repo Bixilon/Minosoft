@@ -13,21 +13,22 @@
 
 package de.bixilon.minosoft.data.container.click
 
-import de.bixilon.minosoft.data.container.click.ContainerTestUtil.createChest
-import de.bixilon.minosoft.data.container.click.ContainerTestUtil.createFurnace
+import de.bixilon.minosoft.data.container.ContainerTestUtil.createChest
+import de.bixilon.minosoft.data.container.ContainerTestUtil.createFurnace
+import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.CoalTest0
 import de.bixilon.minosoft.data.registries.items.EggTestO
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertOnlyPacket
+import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
-@Test(groups = ["container"])
+@Test(groups = ["container"], dependsOnGroups = ["block", "item"])
 class FastMoveContainerActionTest {
 
     fun empty() {
@@ -47,7 +48,7 @@ class FastMoveContainerActionTest {
         assertNull(container.floatingItem)
         assertNull(container[54])
         assertEquals(container[0], ItemStack(AppleTestO.item, 9))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 53, 1, 0, 0, mapOf(54 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 53, 1, 0, 0, slotsOf(54 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
     }
 
     fun chestToHotbar() {
@@ -58,7 +59,7 @@ class FastMoveContainerActionTest {
         assertNull(container.floatingItem)
         assertNull(container[0])
         assertEquals(container[62], ItemStack(AppleTestO.item, 9))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, mapOf(62 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(62 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
     }
 
     fun fullHotbarChestToHotbar() {
@@ -81,7 +82,7 @@ class FastMoveContainerActionTest {
         assertNull(container.floatingItem)
         assertNull(container[0])
         assertEquals(container[53], ItemStack(AppleTestO.item, 9))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, mapOf(0 to null, 53 to ItemStack(AppleTestO.item, count = 9)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 53 to ItemStack(AppleTestO.item, count = 9)), null))
     }
 
     fun mergeItems() {
@@ -106,7 +107,7 @@ class FastMoveContainerActionTest {
         assertEquals(container[58], ItemStack(CoalTest0.item, 64))
         assertEquals(container[62], ItemStack(CoalTest0.item, 4))
 
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, mapOf(0 to null, 58 to ItemStack(AppleTestO.item, count = 64), 56 to ItemStack(AppleTestO.item, count = 64), 54 to ItemStack(AppleTestO.item, count = 64), 57 to ItemStack(AppleTestO.item, count = 64), 62 to ItemStack(AppleTestO.item, count = 4)), null)) // TODO: respect order of changes
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 58 to ItemStack(AppleTestO.item, count = 64), 56 to ItemStack(AppleTestO.item, count = 64), 54 to ItemStack(AppleTestO.item, count = 64), 57 to ItemStack(AppleTestO.item, count = 64), 62 to ItemStack(AppleTestO.item, count = 4)), null)) // TODO: respect order of changes
     }
 
     fun fuelSlot1() {
@@ -123,7 +124,7 @@ class FastMoveContainerActionTest {
         assertNull(container[30])
         assertEquals(container[3], ItemStack(EggTestO.item, 12))
 
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, mapOf(30 to null, 3 to ItemStack(AppleTestO.item, count = 8)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 3 to ItemStack(AppleTestO.item, count = 8)), null))
     }
 
     fun fuelSlot2() {
@@ -138,7 +139,7 @@ class FastMoveContainerActionTest {
         assertEquals(container[1], ItemStack(CoalTest0.item, 12))
         assertNull(container[2])
 
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, mapOf(30 to null, 1 to ItemStack(AppleTestO.item, count = 8)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(AppleTestO.item, count = 8)), null))
     }
 
     // TODO: revert, full container

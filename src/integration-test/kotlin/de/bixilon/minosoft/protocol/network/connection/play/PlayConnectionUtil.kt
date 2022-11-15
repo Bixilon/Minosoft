@@ -13,14 +13,20 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
+import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.minosoft.IT
 import de.bixilon.minosoft.IT.reference
+import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
+import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.border.WorldBorder
+import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
-import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.util.KUtil.forceSet
 import org.objenesis.ObjenesisStd
-import org.testng.Assert
-import org.testng.Assert.assertNull
 
 
 object PlayConnectionUtil {
@@ -30,29 +36,27 @@ object PlayConnectionUtil {
         reference()
     }
 
+    fun createWorld(): World {
+        val world = OBJENESIS.newInstance(World::class.java)
+        world::chunks.forceSet(lockMapOf())
+        world::border.forceSet(WorldBorder())
+        world::dimension.forceSet(watched(DimensionProperties()))
+
+        return world
+    }
+
     fun createConnection(): PlayConnection {
         val connection = OBJENESIS.newInstance(PlayConnection::class.java)
-        TODO()
+        connection::account.forceSet(OfflineAccount("dummy"))
+        connection::version.forceSet(IT.VERSION)
+        connection::registries.forceSet(Registries())
+        connection.registries.parentRegistries = IT.VERSION.registries
+        connection::world.forceSet(createWorld())
 
         connection::network.forceSet(TestNetwork())
+        connection::player.forceSet(LocalPlayerEntity(connection.account, connection, null))
+        connection::events.forceSet(EventMaster())
 
         return connection
-    }
-
-    fun PlayConnection.test(): TestNetwork {
-        return network.unsafeCast()
-    }
-
-    fun PlayConnection.assertPacket(packet: C2SPacket) {
-        Assert.assertEquals(test().take(), packet)
-    }
-
-    fun PlayConnection.assertNoPacket() {
-        assertNull(test().take())
-    }
-
-    fun PlayConnection.assertOnlyPacket(packet: C2SPacket) {
-        assertPacket(packet)
-        assertNoPacket()
     }
 }

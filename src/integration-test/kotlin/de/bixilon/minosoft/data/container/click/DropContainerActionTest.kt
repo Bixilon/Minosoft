@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.data.container.click
 
-import de.bixilon.minosoft.data.container.click.ContainerTestUtil.createContainer
+import de.bixilon.minosoft.data.container.ContainerTestUtil.createContainer
+import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.EggTestO
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertNoPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.assertOnlyPacket
+import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
+import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
-@Test(groups = ["container"])
+@Test(groups = ["container"], dependsOnGroups = ["block", "item"])
 class DropContainerActionTest {
 
     fun dropEmptySingle() {
@@ -51,7 +52,7 @@ class DropContainerActionTest {
         container.invokeAction(DropContainerAction(9, false))
         assertNull(container.floatingItem)
         assertEquals(container[9], ItemStack(AppleTestO.item, count = 7))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, mapOf(9 to ItemStack(AppleTestO.item, count = 7)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to ItemStack(AppleTestO.item, count = 7)), null))
     }
 
     fun testDropSingleEmpty() {
@@ -61,7 +62,7 @@ class DropContainerActionTest {
         container.invokeAction(DropContainerAction(9, false))
         assertNull(container.floatingItem)
         assertEquals(container[9], null)
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, mapOf(9 to null), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 0, 0, slotsOf(9 to null), null))
     }
 
     fun testDropStack() {
@@ -71,7 +72,7 @@ class DropContainerActionTest {
         container.invokeAction(DropContainerAction(9, true))
         assertNull(container.floatingItem)
         assertEquals(container[9], null)
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, mapOf(9 to null), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 9, 4, 1, 0, slotsOf(9 to null), null))
     }
 
     fun testSingleRevert() {

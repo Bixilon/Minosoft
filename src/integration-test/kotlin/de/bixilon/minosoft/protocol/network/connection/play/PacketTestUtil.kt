@@ -11,27 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.click
+package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.types.generic.Generic9x3Container
-import de.bixilon.minosoft.data.container.types.processing.smelting.FurnaceContainer
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import org.testng.Assert
 
+object PacketTestUtil {
 
-object ContainerTestUtil {
-
-    fun createContainer(connection: PlayConnection = createConnection()): Container {
-        // TODO: set id to 9
-        TODO()
+    fun PlayConnection.test(): TestNetwork {
+        return network.unsafeCast()
     }
 
-    fun createChest(connection: PlayConnection = createConnection()): Generic9x3Container {
-        TODO()
+    fun PlayConnection.assertPacket(packet: C2SPacket) {
+        Assert.assertEquals(test().take(), packet)
     }
 
-    fun createFurnace(connection: PlayConnection = createConnection()): FurnaceContainer {
-        TODO()
+    fun PlayConnection.assertNoPacket() {
+        Assert.assertNull(test().take())
+    }
+
+    fun PlayConnection.assertOnlyPacket(packet: C2SPacket) {
+        assertPacket(packet)
+        assertNoPacket()
     }
 }
