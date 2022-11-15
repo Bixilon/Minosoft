@@ -14,11 +14,14 @@
 package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 
 
 object ContainerTestUtil {
 
-    fun createContainer(): Container {
+    fun createContainer(connection: PlayConnection = createConnection()): Container {
+        // TODO: set id to 9
         TODO()
     }
 }
