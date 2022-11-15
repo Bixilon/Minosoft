@@ -62,6 +62,9 @@ class PickAllContainerAction(
             }
             container._validate()
             container.floatingItem = clicked
+            if (previous == clicked) {
+                return
+            }
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, previous))
         } finally {
             container.commit()

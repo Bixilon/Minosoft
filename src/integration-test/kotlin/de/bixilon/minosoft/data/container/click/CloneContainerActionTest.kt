@@ -85,7 +85,7 @@ class CloneContainerActionTest {
         container.invokeAction(CloneContainerAction(8))
         assertEquals(container.floatingItem, ItemStack(EggTestO.item, count = 16))
         // TODO: Not sending any packet in 1.18.2?
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(EggTestO.item, count = 64)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 8, 3, 0, 0, slotsOf(), ItemStack(EggTestO.item, count = 16)))
     }
 
     fun testRevert() {

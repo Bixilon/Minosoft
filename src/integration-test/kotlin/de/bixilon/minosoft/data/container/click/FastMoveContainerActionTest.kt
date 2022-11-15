@@ -57,8 +57,7 @@ class FastMoveContainerActionTest {
         container[0] = ItemStack(AppleTestO.item, 9)
         container.invokeAction(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
-        assertNull(container[0])
-        assertEquals(container[62], ItemStack(AppleTestO.item, 9))
+        assertEquals(container.slots, slotsOf(62 to ItemStack(AppleTestO.item, 9)))
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(62 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
     }
 
