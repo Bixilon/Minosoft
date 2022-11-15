@@ -198,7 +198,11 @@ open class Container(
     }
 
     fun revertAction(actionId: Int) {
-        actions.remove(actionId)?.revert(connection, id ?: return, this)
+        actions.remove(actionId)?.let { revertAction(it) }
+    }
+
+    fun revertAction(action: ContainerAction) {
+        action.revert(connection, id ?: return, this)
     }
 
     fun onClose() {

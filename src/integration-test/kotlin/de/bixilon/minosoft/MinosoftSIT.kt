@@ -41,6 +41,7 @@ internal object MinosoftSIT {
     }
 
 
+    @Deprecated("Not sure if that is needed")
     fun disableGC() {
         Thread {
             val references = IT.references
@@ -48,7 +49,7 @@ internal object MinosoftSIT {
             for (i in 0 until Int.MAX_VALUE) {
                 Thread.sleep(100000L)
             }
-            references.hashCode()
+            references.hashCode() // force keep reference to references
         }.start()
     }
 

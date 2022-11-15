@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 @LoadPacket
-class ContainerClickC2SP(
+data class ContainerClickC2SP(
     val containerId: Int,
     val revision: Int,
     val slot: Int?,
