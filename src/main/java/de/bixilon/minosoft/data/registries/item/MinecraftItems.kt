@@ -20,4 +20,7 @@ object MinecraftItems {
     val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()
     val APPLE = "minecraft:apple".toResourceLocation()
     val EGG = "minecraft:egg".toResourceLocation()
+    val LAVA_BUCKET = "minecraft:lava_bucket".toResourceLocation()
+    val WATER_BUCKET = "minecraft:water_bucket".toResourceLocation()
+    val COAL = "minecraft:coal".toResourceLocation()
 }

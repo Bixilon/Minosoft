@@ -19,15 +19,15 @@ import de.bixilon.minosoft.data.registries.item.items.Item
 import org.testng.annotations.Test
 
 @Test(groups = ["item"])
-class EggTest : ItemTest<Item>() {
+class CoalTest : ItemTest<Item>() {
 
     init {
-        EggTestO = this
+        CoalTest0 = this
     }
 
     fun getTorch() {
-        super.retrieveBlock(MinecraftItems.EGG)
+        super.retrieveBlock(MinecraftItems.COAL)
     }
 }
 
-var EggTestO: EggTest = unsafeNull()
+var CoalTest0: CoalTest = unsafeNull()

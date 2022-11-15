@@ -14,20 +14,23 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
+import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["item"])
-class EggTest : ItemTest<Item>() {
+class LavaBucketTest : ItemTest<BucketItem>() {
 
     init {
-        EggTestO = this
+        LavaBucketTest0 = this
+        assertTrue(item.fluid is LavaFluid)
     }
 
     fun getTorch() {
-        super.retrieveBlock(MinecraftItems.EGG)
+        super.retrieveBlock(MinecraftItems.LAVA_BUCKET)
     }
 }
 
-var EggTestO: EggTest = unsafeNull()
+var LavaBucketTest0: LavaBucketTest = unsafeNull()

@@ -15,8 +15,6 @@ package de.bixilon.minosoft.data.container.slots
 
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
 
 @Deprecated("ToDo")
 object EnchantableSlotType : SlotType {
@@ -24,10 +22,6 @@ object EnchantableSlotType : SlotType {
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
         val item = stack.item.item
 
-        if (item is BucketItem && item.fluid.resourceLocation == DefaultFluids.LAVA) {
-            return true
-        }
-        // ToDo: get from registries (misc/fuel_time)
         return super.canPut(container, slot, stack)
     }
 }
