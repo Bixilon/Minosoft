@@ -21,11 +21,12 @@ import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.protocol.network.network.client.NettyClient
+import de.bixilon.minosoft.protocol.network.network.client.ClientNetwork
+import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
 abstract class Connection : AbstractEventMaster {
-    val network = NettyClient(this)
+    val network: ClientNetwork = NettyClient(this)
     val events = EventMaster(GlobalEventMaster)
     val connectionId = lastConnectionId++
     var wasConnected = false
