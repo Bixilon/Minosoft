@@ -37,7 +37,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 open class Container(
-    protected val connection: PlayConnection,
+    val connection: PlayConnection,
     val type: ContainerType,
     val title: ChatComponent? = null,
 ) : Iterable<Map.Entry<Int, ItemStack>> {

@@ -36,7 +36,7 @@ class FastMoveContainerActionTest {
         val container = createChest(connection)
         container.invokeAction(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
-        assertEquals(container.slots.size, 0)
+        assertEquals(container.slots, slotsOf())
         connection.assertNoPacket()
     }
 
@@ -46,9 +46,8 @@ class FastMoveContainerActionTest {
         container[54] = ItemStack(AppleTestO.item, 9)
         container.invokeAction(FastMoveContainerAction(54))
         assertNull(container.floatingItem)
-        assertNull(container[54])
-        assertEquals(container[0], ItemStack(AppleTestO.item, 9))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 53, 1, 0, 0, slotsOf(54 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
+        assertEquals(container.slots, slotsOf(0 to ItemStack(AppleTestO.item, 9)))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 54, 1, 0, 0, slotsOf(54 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
     }
 
     fun chestToHotbar() {

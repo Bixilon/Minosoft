@@ -18,45 +18,39 @@ import org.objenesis.ObjenesisStd
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
+@Test(groups = ["biome"])
 class NoiseBiomeAccessorTest {
     private val OBJENESIS = ObjenesisStd()
 
-    @Test
     fun testBiomeNoise1() {
         assertEquals(calculate(129, 3274, 91, 1823123L), Vec3i(32, 818, 22))
     }
 
-    @Test
     fun testBiomeNoise2() {
         assertEquals(calculate(129, 3274, 91, -123213L), Vec3i(32, 818, 22))
     }
 
-    @Test
     fun testBiomeNoise3() {
         assertEquals(calculate(-17, 3274, 91, -123213L), Vec3i(-5, 818, 22))
     }
 
-    @Test
     fun testBiomeNoise4() {
         assertEquals(calculate(-1123, 3, 1, -18209371253621313), Vec3i(-281, 0, 0))
     }
 
-    @Test
     fun testBiomeNoise5() {
         assertEquals(calculate(0, 3, 1, -33135639), Vec3i(0, 0, 0))
     }
 
-    @Test
     fun testBiomeNoise6() {
         assertEquals(calculate(16, 15, -16, 561363374), Vec3i(4, 3, -4))
     }
 
-    @Test
     fun testBiomeNoise7() {
         assertEquals(calculate(16, -15, -16, 79707367), Vec3i(4, -4, -5))
     }
 
-    fun calculate(x: Int, y: Int, z: Int, seed: Long): Vec3i {
+    private fun calculate(x: Int, y: Int, z: Int, seed: Long): Vec3i {
         val accessor = OBJENESIS.newInstance(NoiseBiomeAccessor::class.java)
         return accessor.getBiomePosition(seed, x, y, z)
     }

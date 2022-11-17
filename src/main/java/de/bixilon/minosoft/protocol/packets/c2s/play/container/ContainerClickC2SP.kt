@@ -30,8 +30,8 @@ data class ContainerClickC2SP(
     val mode: Int,
     val button: Int,
     val actionId: Int,
-    val next: Int2ObjectMap<ItemStack?>,
-    val clickedItem: ItemStack?,
+    val changes: Int2ObjectMap<ItemStack?>,
+    val floating: ItemStack?,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -47,16 +47,16 @@ data class ContainerClickC2SP(
         }
         buffer.writeVarInt(mode) // was byte in protocol
         if (buffer.versionId >= V_1_17_1_PRE1) { // ToDo
-            buffer.writeVarInt(next.size)
-            for ((slot, value) in next) {
+            buffer.writeVarInt(changes.size)
+            for ((slot, value) in changes) {
                 buffer.writeShort(slot)
                 buffer.writeItemStack(value)
             }
         }
-        buffer.writeItemStack(clickedItem)
+        buffer.writeItemStack(floating)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$button, actionId=$actionId, next=$next, clickedItem=$clickedItem)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container click (containerId=$containerId, revision=$revision, slot=$slot, action=$button, actionId=$actionId, changes=$changes, floating=$floating)" }
     }
 }

@@ -27,7 +27,6 @@ class FastMoveContainerAction(
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
         // ToDo: minecraft always sends a packet
         val source = container.slots[slot] ?: return
-        val previous = source.copy()
         container.lock.lock()
         try {
             val sourceSection = container.getSection(slot) ?: Int.MAX_VALUE
@@ -73,7 +72,7 @@ class FastMoveContainerAction(
                 }
             }
 
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, previous))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, null))
         } finally {
             container.commit()
             container._validate()

@@ -27,7 +27,7 @@ object FuelSlotType : SlotType {
         if (item is BucketItem && item.fluid is LavaFluid) {
             return true
         }
-        // ToDo: get from registries (misc/fuel_time)
-        return super.canPut(container, slot, stack)
+        val fuelTime = container.connection.registries.misc.getFuelTime(item)
+        return fuelTime > 0
     }
 }

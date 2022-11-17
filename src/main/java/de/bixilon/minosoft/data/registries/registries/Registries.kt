@@ -44,6 +44,7 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.item.ItemRegistry
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.materials.Material
+import de.bixilon.minosoft.data.registries.misc.MiscData
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
@@ -119,6 +120,8 @@ class Registries {
 
     val argumentTypeRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
     val messageTypeRegistry: Registry<ChatMessageType> = register("chat_type", Registry(codec = ChatMessageType))
+
+    val misc = MiscData()
 
     var isFullyLoaded = false
         private set
@@ -198,6 +201,7 @@ class Registries {
         worker += WorkerTask(this::frogVariants) { frogVariants.rawUpdate(pixlyzerData["variant/frog"]?.toJsonObject(), this) }
 
         worker += WorkerTask(this::statisticRegistry) { statisticRegistry.rawUpdate(pixlyzerData["statistics"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::misc, dependencies = arrayOf(this::itemRegistry)) { misc.rawUpdate(pixlyzerData["misc"]?.toJsonObject(), this) }
 
         val inner = CountUpAndDownLatch(1, latch)
         worker.work(inner)
