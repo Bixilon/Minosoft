@@ -14,7 +14,6 @@ stages:
 
 cache:
   - key: "$CI_COMMIT_REF_NAME"
-    policy: push
     paths:
       - build
       - .gradle
@@ -22,13 +21,11 @@ cache:
       files:
         - "*.kts"
         - "gradle.properties"
-    policy: pull-push
     paths:
       - .gradle_home/caches
   - key:
       files:
         - "gradle/wrapper/gradle-wrapper.properties"
-    policy: pull-push
     paths:
       - .gradle_home/wrapper
 
