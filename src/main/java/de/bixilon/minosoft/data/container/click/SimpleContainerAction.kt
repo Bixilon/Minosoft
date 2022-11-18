@@ -26,7 +26,7 @@ class SimpleContainerAction(
     // ToDo: Action reverting
 
     private fun pickItem(connection: PlayConnection, containerId: Int, container: Container) {
-        val item = container[slot ?: return] ?: return
+        val item = container.slots[slot ?: return] ?: return
         if (container.getSlotType(slot)?.canRemove(container, slot, item) != true) {
             return
         }
@@ -36,7 +36,7 @@ class SimpleContainerAction(
         if (count == ContainerCounts.ALL) {
             floatingItem = item.copy()
             item.item.count = 0
-            container.remove(slot)
+            container._remove(slot)
         } else {
             // half
             val stayCount = item.item.count / 2
@@ -44,79 +44,84 @@ class SimpleContainerAction(
             floatingItem = previous.copy(count = previous.item.count - stayCount)
         }
         container.floatingItem = floatingItem
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to item), previous))
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to item), floatingItem))
     }
 
     private fun putItem(connection: PlayConnection, containerId: Int, container: Container, floatingItem: ItemStack) {
-        floatingItem.lock()
-        val target = container.slots[slot]
-        try {
-            if (slot == null) {
-                // slot id is null, we are not targeting anything
-                // -> drop item into the void
-                if (count == ContainerCounts.ALL) {
-                    floatingItem.item._count = 0
-                } else {
-                    floatingItem.item._count-- // don't use decrease, item + container is already locked
-                }
-                return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), slotsOf(), null))
-            }
-            val slotType = container.getSlotType(slot)
-            val matches = floatingItem.matches(target)
-
-            if (target != null && matches) {
-                val previous = target.copy()
-                // we can remove or merge the item
-                if (slotType?.canPut(container, slot, floatingItem) == true) {
-                    // merge
-                    val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
-                    if (subtract == 0 || target.item._count + subtract > target.item.item.maxStackSize) {
-                        return
-                    }
-                    target.item._count += subtract
-                    floatingItem.item._count -= subtract
-                } else if (slotType?.canRemove(container, slot, floatingItem) == true) {
-                    // remove only (e.g. crafting result)
-                    // ToDo: respect count (part or all)
-                    val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item._count, target.item._count)
-                    if (subtract == 0) {
-                        return
-                    }
-                    target.item._count -= subtract
-                    floatingItem.item._count += subtract
-                }
-
-                connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), previous))
-                return
-            }
-            if (target != null && slotType?.canRemove(container, slot, target) != true) {
-                // we can not remove the item from the slot, cancelling
-                return
-            }
-
-            if (slotType?.canPut(container, slot, floatingItem) != true) {
-                // when can not put any item in there, cancel
-                return
-            }
-            // swap
-            if (count == ContainerCounts.ALL || (!matches && target != null)) {
-                container.floatingItem = target
-                container._set(slot, floatingItem)
+        var target = container.slots[slot]
+        if (slot == null) {
+            // slot id is null, we are not targeting anything
+            // -> drop item into the void
+            if (count == ContainerCounts.ALL) {
+                floatingItem.item._count = 0
             } else {
-                floatingItem.item._count--
-                container._set(slot, floatingItem.copy(count = 1))
+                floatingItem.item._count-- // don't use decrease, item + container is already locked
             }
+            return connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, null, 0, count.ordinal, container.createAction(this), slotsOf(), null))
+        }
+        val slotType = container.getSlotType(slot)
+        val matches = floatingItem.matches(target)
+
+        if (target != null && matches) {
+            // we can remove or merge the item
+            if (slotType?.canPut(container, slot, floatingItem) == true) {
+                // merge
+                val subtract = if (count == ContainerCounts.ALL) minOf(target.item.item.maxStackSize - target.item._count, floatingItem.item._count) else 1
+                if (subtract == 0 || target.item._count + subtract > target.item.item.maxStackSize) {
+                    return
+                }
+                target.item._count += subtract
+                floatingItem.item._count -= subtract
+            } else if (slotType?.canRemove(container, slot, floatingItem) == true) {
+                // remove only (e.g. crafting result)
+                // ToDo: respect count (part or all)
+                val subtract = minOf(floatingItem.item.item.maxStackSize - floatingItem.item._count, target.item._count)
+                if (subtract == 0) {
+                    return
+                }
+                target.item._count -= subtract
+                floatingItem.item._count += subtract
+            }
+
+            if (floatingItem._valid) {
+                container.floatingItem = floatingItem
+            } else {
+                container.floatingItem = null
+            }
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), container.floatingItem))
+            return
+        }
+        if (target != null && slotType?.canRemove(container, slot, target) != true) {
+            // we can not remove the item from the slot, cancelling
+            return
+        }
+
+        if (slotType?.canPut(container, slot, floatingItem) != true) {
+            // when can not put any item in there, cancel
+            return
+        }
+        // swap
+        if (count == ContainerCounts.ALL || (!matches && target != null)) {
+            container.floatingItem = target
+            container._set(slot, floatingItem)
             connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to floatingItem), target))
-        } finally {
-            floatingItem.commit()
-            target?.lock() // lock to prevent exception
-            target?.commit()
+        } else {
+            floatingItem.item._count--
+            container.floatingItem = floatingItem
+            target = floatingItem.copy(count = 1)
+            container._set(slot, target)
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 0, count.ordinal, container.createAction(this), slotsOf(slot to target), floatingItem))
         }
     }
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
-        val floatingItem = container.floatingItem ?: return pickItem(connection, containerId, container)
-        return putItem(connection, containerId, container, floatingItem)
+        try {
+            container.lock.lock()
+            val floatingItem = container.floatingItem?.copy() ?: return pickItem(connection, containerId, container)
+            return putItem(connection, containerId, container, floatingItem)
+        } finally {
+            container.commit()
+        }
     }
 
     enum class ContainerCounts {

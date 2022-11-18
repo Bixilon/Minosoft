@@ -108,7 +108,7 @@ class FastMoveContainerActionTest {
             )
         )
 
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 58 to ItemStack(CoalTest0.item, count = 64), 56 to ItemStack(CoalTest0.item, count = 64), 54 to ItemStack(CoalTest0.item, count = 64), 57 to ItemStack(CoalTest0.item, count = 64), 62 to ItemStack(CoalTest0.item, count = 4)), null)) // TODO: respect order of changes
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 58 to ItemStack(CoalTest0.item, count = 64), 56 to ItemStack(CoalTest0.item, count = 64), 54 to ItemStack(CoalTest0.item, count = 64), 57 to ItemStack(CoalTest0.item, count = 64), 62 to ItemStack(CoalTest0.item, count = 4)), null))
     }
 
     @Test(enabled = false)

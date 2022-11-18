@@ -96,7 +96,7 @@ class ItemElement(
         if (action != MouseActions.PRESS) {
             return true
         }
-        if (button == MouseButtons.LEFT && count == 2) {
+        if (button == MouseButtons.LEFT && count == 2 && itemsElement.container[slotId] == null) {
             itemsElement.container.invokeAction(PickAllContainerAction(slotId))
             return true
         }
