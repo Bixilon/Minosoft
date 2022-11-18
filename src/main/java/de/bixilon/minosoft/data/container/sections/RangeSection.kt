@@ -11,12 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.processing
+package de.bixilon.minosoft.data.container.sections
 
-import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
-import de.bixilon.minosoft.data.container.sections.RangeSection
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+open class RangeSection(offset: Int, count: Int) : ContainerSection {
+    private val range = offset until offset + count
+    val first: Int get() = range.first
+    override val count: Int get() = (range.last + 1) - range.first
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
+    override fun contains(slot: Int): Boolean {
+        return slot in range
+    }
+
+    override fun iterator(): IntIterator {
+        return range.iterator()
+    }
+}

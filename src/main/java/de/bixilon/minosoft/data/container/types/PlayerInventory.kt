@@ -19,6 +19,10 @@ import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.ContainerSection
+import de.bixilon.minosoft.data.container.sections.HotbarSection
+import de.bixilon.minosoft.data.container.sections.PassiveInventorySection
+import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
@@ -37,7 +41,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(connection: PlayConnection) : Container(connection = connection, type = TYPE) {
-    override val sections: Array<IntRange> get() = SECTIONS
+    override val sections: Array<ContainerSection> get() = SECTIONS
     val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack> = lockMapOf()
 
     init {
@@ -162,10 +166,10 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         const val HOTBAR_SLOTS = MAIN_SLOTS_PER_ROW
         const val OFFHAND_SLOT = 45
 
-        private val SECTIONS = arrayOf(
-            ARMOR_OFFSET..ARMOR_OFFSET + 4,
-            ARMOR_OFFSET + 5 until HOTBAR_OFFSET,
-            HOTBAR_OFFSET..HOTBAR_OFFSET + HOTBAR_SLOTS,
+        private val SECTIONS = arrayOf<ContainerSection>(
+            RangeSection(ARMOR_OFFSET, 4),
+            PassiveInventorySection(ARMOR_OFFSET + 5),
+            HotbarSection(HOTBAR_OFFSET),
         )
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): PlayerInventory {

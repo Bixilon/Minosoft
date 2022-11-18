@@ -32,8 +32,4 @@ object ContainerUtil {
 
         return map
     }
-
-    fun section(offset: Int, count: Int): IntRange {
-        return offset until offset + count
-    }
 }

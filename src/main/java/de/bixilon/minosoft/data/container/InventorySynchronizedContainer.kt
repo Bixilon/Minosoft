@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.container
 
-import de.bixilon.minosoft.data.container.ContainerUtil.section
+import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
@@ -24,13 +24,13 @@ abstract class InventorySynchronizedContainer(
     connection: PlayConnection,
     type: ContainerType,
     title: ChatComponent? = null,
-    protected var synchronizedSlots: IntRange,
-    protected var inventorySlots: IntRange = section(PlayerInventory.MAIN_SLOTS_START, PlayerInventory.MAIN_SLOTS),
+    protected var synchronizedSlots: RangeSection,
+    protected var inventorySlots: RangeSection = RangeSection(PlayerInventory.MAIN_SLOTS_START, PlayerInventory.MAIN_SLOTS),
 ) : Container(connection, type, title) {
     private val playerInventory = connection.player.inventory
 
     init {
-        check(synchronizedSlots.last - synchronizedSlots.first == inventorySlots.last - inventorySlots.first) { "Synchronized inventory slots must have the same size!" }
+        check(synchronizedSlots.count == inventorySlots.count) { "Synchronized inventory slots must have the same size!" }
         // ToDo: Add initial slots from inventory
     }
 

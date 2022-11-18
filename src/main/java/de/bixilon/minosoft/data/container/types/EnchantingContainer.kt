@@ -14,9 +14,12 @@
 package de.bixilon.minosoft.data.container.types
 
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.ContainerUtil.section
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.ContainerSection
+import de.bixilon.minosoft.data.container.sections.HotbarSection
+import de.bixilon.minosoft.data.container.sections.PassiveInventorySection
+import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.EnchantableSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
@@ -31,8 +34,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, section(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
-    override val sections: Array<IntRange> get() = SECTIONS
+class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, RangeSection(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<ContainerSection> get() = SECTIONS
     val costs = IntArray(ENCHANTING_OPTIONS) { -1 }
     val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
     var enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }
@@ -79,10 +82,10 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
         const val ENCHANTING_OPTIONS = 3
 
 
-        private val SECTIONS: Array<IntRange> = arrayOf(
-            section(0, ENCHANTING_SLOTS),
-            section(ENCHANTING_SLOTS + PlayerInventory.PASSIVE_SLOTS, PlayerInventory.HOTBAR_SLOTS),
-            section(ENCHANTING_SLOTS, PlayerInventory.PASSIVE_SLOTS),
+        private val SECTIONS: Array<ContainerSection> = arrayOf(
+            RangeSection(0, ENCHANTING_SLOTS),
+            HotbarSection(ENCHANTING_SLOTS + PlayerInventory.PASSIVE_SLOTS),
+            PassiveInventorySection(ENCHANTING_SLOTS),
         )
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): EnchantingContainer {

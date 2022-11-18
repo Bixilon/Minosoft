@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.container.types.generic
 
-import de.bixilon.minosoft.data.container.ContainerUtil.section
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.ContainerSection
+import de.bixilon.minosoft.data.container.sections.HotbarSection
+import de.bixilon.minosoft.data.container.sections.PassiveInventorySection
+import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.types.PlayerInventory
@@ -28,11 +31,11 @@ abstract class GenericContainer(
     connection: PlayConnection,
     type: ContainerType,
     title: ChatComponent?,
-) : InventorySynchronizedContainer(connection, type, title, section(rows * SLOTS_PER_ROW, PlayerInventory.MAIN_SLOTS)) {
-    override val sections: Array<IntRange> = arrayOf(
-        section(0, rows * SLOTS_PER_ROW),
-        section(rows * SLOTS_PER_ROW + PlayerInventory.PASSIVE_SLOTS, PlayerInventory.HOTBAR_SLOTS),
-        section(rows * SLOTS_PER_ROW, PlayerInventory.PASSIVE_SLOTS),
+) : InventorySynchronizedContainer(connection, type, title, RangeSection(rows * SLOTS_PER_ROW, PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<ContainerSection> = arrayOf(
+        RangeSection(0, rows * SLOTS_PER_ROW),
+        HotbarSection(rows * SLOTS_PER_ROW + PlayerInventory.PASSIVE_SLOTS),
+        PassiveInventorySection(rows * SLOTS_PER_ROW),
     )
 
     override fun getSlotType(slotId: Int): SlotType? {

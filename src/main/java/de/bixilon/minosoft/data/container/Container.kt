@@ -22,6 +22,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap
 import de.bixilon.minosoft.data.container.click.ContainerAction
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -54,7 +55,7 @@ open class Container(
     val id: Int?
         get() = connection.player.containers.getKey(this)
 
-    open val sections: Array<IntRange> = arrayOf()
+    open val sections: Array<ContainerSection> get() = emptyArray()
 
     init {
         this::floatingItem.observe(this) { it?.holder?.container = this }
