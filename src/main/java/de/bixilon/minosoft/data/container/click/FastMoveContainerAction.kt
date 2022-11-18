@@ -58,6 +58,7 @@ class FastMoveContainerAction(
                     list += slot
                 }
             }
+            val maxStack = source.item.item.maxStackSize
             val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
             sections@ for (list in targets) {
                 for (slot in list.intIterator()) {
@@ -69,7 +70,7 @@ class FastMoveContainerAction(
                         container._set(this.slot, null)
                         break@sections
                     }
-                    val countToPut = source.item._count - (source.item.item.maxStackSize - content.item._count)
+                    val countToPut = if (source.item._count + content.item._count > maxStack) maxStack - content.item._count else source.item._count
                     source.item._count -= countToPut
                     content.item._count += countToPut
                     changes[slot] = content

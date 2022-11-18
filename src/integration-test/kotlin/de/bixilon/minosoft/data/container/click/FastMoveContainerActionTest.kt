@@ -97,13 +97,16 @@ class FastMoveContainerActionTest {
 
         container.invokeAction(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
-        assertNull(container[0])
-        assertEquals(container[54], ItemStack(CoalTest0.item, 64))
-        assertEquals(container[55], ItemStack(AppleTestO.item, 61))
-        assertEquals(container[56], ItemStack(CoalTest0.item, 64))
-        assertEquals(container[57], ItemStack(CoalTest0.item, 64))
-        assertEquals(container[58], ItemStack(CoalTest0.item, 64))
-        assertEquals(container[62], ItemStack(CoalTest0.item, 4))
+        assertEquals(
+            container.slots, slotsOf(
+                54 to ItemStack(CoalTest0.item, 64),
+                55 to ItemStack(AppleTestO.item, 61),
+                56 to ItemStack(CoalTest0.item, 64),
+                57 to ItemStack(CoalTest0.item, 64),
+                58 to ItemStack(CoalTest0.item, 64),
+                62 to ItemStack(CoalTest0.item, 4),
+            )
+        )
 
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 58 to ItemStack(AppleTestO.item, count = 64), 56 to ItemStack(AppleTestO.item, count = 64), 54 to ItemStack(AppleTestO.item, count = 64), 57 to ItemStack(AppleTestO.item, count = 64), 62 to ItemStack(AppleTestO.item, count = 4)), null)) // TODO: respect order of changes
     }
