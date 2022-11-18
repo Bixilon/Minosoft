@@ -26,7 +26,7 @@ import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull
 import org.testng.annotations.Test
 
-@Test(groups = ["container"], dependsOnGroups = ["block", "item"])
+@Test(groups = ["container"], dependsOnGroups = ["block", "item", "item_stack"])
 class CloneContainerActionTest {
 
     fun testEmpty() {
