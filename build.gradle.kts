@@ -187,6 +187,11 @@ testing {
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
                 implementation("it.unimi.dsi:fastutil-core:8.5.9")
+
+                jacksonCore("core")
+                jacksonCore("databind")
+                jackson("module", "kotlin")
+                jackson("datatype", "jsr310")
             }
 
             targets {
@@ -280,8 +285,21 @@ fun DependencyHandler.ikonli(name: String) {
     implementation("org.kordamp.ikonli", "ikonli-$name", ikonliVersion)
 }
 
+fun DependencyHandler.jacksonCore(name: String) {
+    implementation("com.fasterxml.jackson.core", "jackson-$name", jacksonVersion)
+}
+
+
 fun DependencyHandler.jackson(group: String, name: String) {
     implementation("com.fasterxml.jackson.$group", "jackson-$group-$name", jacksonVersion)
+}
+
+fun JvmComponentDependencies.jacksonCore(name: String) {
+    implementation("com.fasterxml.jackson.core:jackson-$name:$jacksonVersion")
+}
+
+fun JvmComponentDependencies.jackson(group: String, name: String) {
+    implementation("com.fasterxml.jackson.$group:jackson-$group-$name:$jacksonVersion")
 }
 
 fun DependencyHandler.netty(name: String) {
@@ -318,6 +336,8 @@ dependencies {
     ikonli("javafx")
 
     // jackson
+    jacksonCore("core")
+    jacksonCore("databind")
     jackson("module", "kotlin")
     jackson("datatype", "jsr310")
 
