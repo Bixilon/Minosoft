@@ -22,6 +22,10 @@ object IT {
 
     val references: MutableList<Any> = mutableListOf()
 
+    init {
+        reference()
+    }
+
     fun Any.reference() {
         references += this
     }

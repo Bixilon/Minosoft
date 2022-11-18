@@ -29,7 +29,7 @@ abstract class ItemTest<T : Item> {
         reference()
     }
 
-    fun retrieveBlock(name: ResourceLocation) {
+    fun retrieveItem(name: ResourceLocation) {
         val item = IT.VERSION.registries!!.itemRegistry[name]
         Assert.assertNotNull(item)
         item!!

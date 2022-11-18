@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 
@@ -35,7 +36,7 @@ class SlotSwapContainerAction(
             container._set(this.sourceId, target)
             container._set(targetId, source)
 
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.createAction(this), mapOf(sourceId to target, targetId to source), source))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, sourceId, 2, this.target.button, container.createAction(this), slotsOf(sourceId to target, targetId to source), source))
 
         } finally {
             container.lock.unlock()

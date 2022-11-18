@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.processing
+package de.bixilon.minosoft.data.container.sections
 
-import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
-import de.bixilon.minosoft.data.container.sections.RangeSection
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+interface ContainerSection {
+    val fillReversed: Boolean get() = false
+    val count: Int
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
+    operator fun contains(slot: Int): Boolean
+
+    fun iterator(): IntIterator
+}

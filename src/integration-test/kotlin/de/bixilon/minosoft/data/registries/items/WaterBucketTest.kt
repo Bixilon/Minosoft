@@ -11,12 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.processing
+package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
-import de.bixilon.minosoft.data.container.sections.RangeSection
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
+import de.bixilon.minosoft.data.registries.item.MinecraftItems
+import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
+import org.testng.Assert.assertTrue
+import org.testng.annotations.Test
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
+@Test(groups = ["item"])
+class WaterBucketTest : ItemTest<BucketItem>() {
+
+    init {
+        WaterBucketTest0 = this
+    }
+
+    fun getWater() {
+        super.retrieveItem(MinecraftItems.WATER_BUCKET)
+        assertTrue(item.fluid is WaterFluid)
+    }
+}
+
+var WaterBucketTest0: WaterBucketTest = unsafeNull()

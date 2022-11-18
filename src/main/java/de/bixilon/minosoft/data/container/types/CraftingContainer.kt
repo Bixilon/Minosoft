@@ -15,6 +15,10 @@ package de.bixilon.minosoft.data.container.types
 
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.ContainerSection
+import de.bixilon.minosoft.data.container.sections.HotbarSection
+import de.bixilon.minosoft.data.container.sections.PassiveInventorySection
+import de.bixilon.minosoft.data.container.sections.RangeSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
@@ -26,8 +30,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class CraftingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, (CRAFTING_SLOTS + 1)..(CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS)) {
-    override val sections: Array<IntRange> = arrayOf(0 until 1, 1 until 1 + CRAFTING_SLOTS, 1 + CRAFTING_SLOTS until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS)
+class CraftingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, RangeSection(CRAFTING_SLOTS + 1, PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<ContainerSection> get() = SECTIONS
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId == 0) {
@@ -35,19 +39,6 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
         }
         if (slotId in 1 until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
             return DefaultSlotType
-        }
-        return null
-    }
-
-    override fun getSection(slotId: Int): Int? {
-        if (slotId == 0) {
-            return 0
-        }
-        if (slotId in 1 until 1 + CRAFTING_SLOTS) {
-            return 1
-        }
-        if (slotId in 1 + CRAFTING_SLOTS until 1 + CRAFTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
-            return 2
         }
         return null
     }
@@ -64,6 +55,12 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crafting".toResourceLocation()
         override val ALIASES: Set<ResourceLocation> = setOf("minecraft:crafting_table".toResourceLocation())
         const val CRAFTING_SLOTS = 3 * 3
+        val SECTIONS: Array<ContainerSection> = arrayOf(
+            // crafting slots are not shift clickable, no section
+            HotbarSection(CRAFTING_SLOTS + 1 + PlayerInventory.PASSIVE_SLOTS),
+            PassiveInventorySection(CRAFTING_SLOTS + 1),
+        )
+
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): CraftingContainer {
             return CraftingContainer(connection, type, title)

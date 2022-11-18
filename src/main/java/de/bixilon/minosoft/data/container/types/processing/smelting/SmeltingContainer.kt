@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.types.processing.smelting
 
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.*
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.FuelSlotType
 import de.bixilon.minosoft.data.container.slots.RemoveOnlySlotType
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : ProcessingContainer(connection, type, title, (SMELTING_SLOTS) until (SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS)) {
+abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : ProcessingContainer(connection, type, title, RangeSection(SMELTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
     var processTime: Int = 0
         private set
         get() = minOf(field, maxProcessTime)
@@ -37,10 +38,12 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
     var maxFuel: Int = 0
         private set
 
+    override val sections: Array<ContainerSection> get() = SECTIONS
+
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId == 0) {
-            return DefaultSlotType // ToDo: only smeltable items
+            return SmeltingSlot
         }
         if (slotId == 1) {
             return FuelSlotType
@@ -50,19 +53,6 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
         }
         if (slotId in SMELTING_SLOTS until +SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
             return DefaultSlotType
-        }
-        return null
-    }
-
-    override fun getSection(slotId: Int): Int? {
-        if (slotId == 2) {
-            return 0
-        }
-        if (slotId == 0 || slotId == 1) {
-            return 1
-        }
-        if (slotId in SMELTING_SLOTS until SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
-            return 2
         }
         return null
     }
@@ -86,5 +76,13 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
 
     companion object {
         const val SMELTING_SLOTS = 3
+
+        val SECTIONS: Array<ContainerSection> = arrayOf(
+            SingleSlotSection(2),
+            SingleSlotSection(1),
+            SingleSlotSection(0),
+            HotbarSection(SMELTING_SLOTS + PlayerInventory.PASSIVE_SLOTS),
+            PassiveInventorySection(SMELTING_SLOTS),
+        )
     }
 }

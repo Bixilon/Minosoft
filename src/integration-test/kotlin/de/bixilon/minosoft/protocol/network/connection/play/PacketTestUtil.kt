@@ -11,12 +11,29 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.processing
+package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
-import de.bixilon.minosoft.data.container.sections.RangeSection
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import org.testng.Assert
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
+object PacketTestUtil {
+
+    fun PlayConnection.test(): TestNetwork {
+        return network.unsafeCast()
+    }
+
+    fun PlayConnection.assertPacket(packet: C2SPacket) {
+        Assert.assertEquals(test().take(), packet)
+    }
+
+    fun PlayConnection.assertNoPacket() {
+        Assert.assertNull(test().take())
+    }
+
+    fun PlayConnection.assertOnlyPacket(packet: C2SPacket) {
+        assertPacket(packet)
+        assertNoPacket()
+    }
+}

@@ -11,12 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.types.processing
+package de.bixilon.minosoft.data.container
 
-import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
-import de.bixilon.minosoft.data.container.sections.RangeSection
-import de.bixilon.minosoft.data.registries.other.containers.ContainerType
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.data.container.stack.ItemStack
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
-abstract class ProcessingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?, synchronizedSlots: RangeSection) : InventorySynchronizedContainer(connection, type, title, synchronizedSlots)
+object ContainerUtil {
+
+    fun slotsOf(vararg slots: Pair<Int, ItemStack?>): Int2ObjectMap<ItemStack?> {
+        val map = Int2ObjectOpenHashMap<ItemStack?>()
+        for ((slot, stack) in slots) {
+            val valid = stack == null || stack._valid
+            if (!valid) {
+                map[slot] = null
+                continue
+            }
+            map[slot] = stack
+        }
+
+        return map
+    }
+}

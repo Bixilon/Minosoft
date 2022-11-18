@@ -14,10 +14,12 @@
 package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.ints.IntArrayList
 
 class FastMoveContainerAction(
     val slot: Int,
@@ -25,21 +27,26 @@ class FastMoveContainerAction(
     // ToDo: Action reverting
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        // ToDo: minecraft always sends a packet
         val source = container.slots[slot] ?: return
-        val previous = source.copy()
         container.lock.lock()
         try {
             val sourceSection = container.getSection(slot) ?: Int.MAX_VALUE
 
             // loop over all sections and get the lowest slot in the lowest section that fits best
-            val targets = Int2ObjectOpenHashMap<ItemStack?>()
+            val targets: MutableList<Pair<ContainerSection, IntArrayList>> = mutableListOf()
             for ((index, section) in container.sections.withIndex()) {
                 if (index == sourceSection) {
                     // we don't want to swap into the same section, that is just useless
                     // ToDo: Is this vanilla behavior?
                     continue
                 }
-                for (slot in section) {
+                if (section.count == 0) {
+                    continue
+                }
+                val list = IntArrayList()
+                targets += Pair(section, list)
+                for (slot in section.iterator()) {
                     val content = container.slots[slot]
                     if (content != null && !source.matches(content)) { // only check slots that are not empty
                         continue
@@ -49,30 +56,39 @@ class FastMoveContainerAction(
                         // this item is not allowed in this slot (e.g. blocks in armor slot)
                         continue
                     }
-
-                    targets[slot] = content
+                    list += slot
                 }
             }
+            val maxStack = source.item.item.maxStackSize
             val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
-            for ((slot, content) in targets.toSortedMap()) {
-                if (content == null) {
+            sections@ for ((type, list) in targets) {
+                for (slot in list.intIterator()) {
+                    val content = container.slots[slot] ?: break // filling will be done one step afterwards
+                    val countToPut = if (source.item._count + content.item._count > maxStack) maxStack - content.item._count else source.item._count
+                    source.item._count -= countToPut
+                    content.item._count += countToPut
+                    changes[slot] = content
+                    changes[this.slot] = source // duplicated
+                    if (source.item._count <= 0) {
+                        break@sections
+                    }
+                }
+
+                val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
+                for (slot in putting) {
+                    val content = container.slots[slot]
+                    if (content != null) {
+                        continue
+                    }
                     changes[slot] = source
                     changes[this.slot] = null
                     container._set(slot, source)
                     container._set(this.slot, null)
-                    break
-                }
-                val countToPut = source.item._count - (source.item.item.maxStackSize - content.item._count)
-                source.item._count -= countToPut
-                content.item._count += countToPut
-                changes[slot] = content
-                changes[this.slot] = source // duplicated
-                if (source.item._count <= 0) {
-                    break
+                    break@sections
                 }
             }
 
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, previous))
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 1, 0, container.createAction(this), changes, null))
         } finally {
             container.commit()
             container._validate()

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
+@Test(groups = ["version"])
 internal class VersionsIT {
 
     @Test

@@ -25,8 +25,8 @@ class EggTest : ItemTest<Item>() {
         EggTestO = this
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftItems.APPLE)
+    fun getEgg() {
+        super.retrieveItem(MinecraftItems.EGG)
     }
 }
 

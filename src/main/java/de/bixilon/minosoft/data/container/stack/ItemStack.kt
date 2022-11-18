@@ -208,6 +208,9 @@ class ItemStack {
     }
 
     override fun hashCode(): Int {
+        if (!_valid) {
+            return 0
+        }
         return Objects.hash(item, _display, _durability, _enchanting, _hide, _nbt)
     }
 
@@ -216,8 +219,14 @@ class ItemStack {
     }
 
     override fun equals(other: Any?): Boolean {
+        if (other == null && !this._valid) {
+            return true
+        }
         if (other !is ItemStack) {
             return false
+        }
+        if (!other._valid && !this._valid) {
+            return true
         }
         if (other.hashCode() != this.hashCode()) {
             return false

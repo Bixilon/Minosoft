@@ -186,6 +186,7 @@ testing {
                 // ToDo: Include dependencies from project
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("de.bixilon:kotlin-glm:0.9.9.1-6")
+                implementation("it.unimi.dsi:fastutil-core:8.5.9")
             }
 
             targets {

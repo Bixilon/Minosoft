@@ -31,6 +31,7 @@ import de.bixilon.kutil.reflection.ReflectionUtil.realName
 import de.bixilon.kutil.shutdown.ShutdownManager
 import de.bixilon.kutil.time.Cooldown
 import de.bixilon.kutil.url.URLProtocolStreamHandlers
+import de.bixilon.kutil.watcher.WatchUtil.receiver
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -54,6 +55,8 @@ import org.kamranzafar.jtar.TarHeader
 import java.security.SecureRandom
 import java.util.*
 import javax.net.ssl.SSLContext
+import kotlin.reflect.KProperty0
+import kotlin.reflect.jvm.javaField
 
 
 object KUtil {
@@ -340,5 +343,12 @@ object KUtil {
     @Deprecated("Kutil 1.18")
     fun java.util.Random.nextFloat(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): Float {
         return min + this.nextFloat() * (max - min)
+    }
+
+    @Deprecated("Kutil 1.18")
+    fun <T> KProperty0<T>.forceSet(value: T) {
+        val field = this.javaField!!
+        field.isAccessible = true
+        field.set(this.receiver, value)
     }
 }

@@ -11,17 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.click
+package de.bixilon.minosoft.data.container.sections
 
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
+open class RangeSection(offset: Int, count: Int) : ContainerSection {
+    private val range = offset until offset + count
+    val first: Int get() = range.first
+    override val count: Int get() = (range.last + 1) - range.first
 
+    override fun contains(slot: Int): Boolean {
+        return slot in range
+    }
 
-object ContainerTestUtil {
-
-    fun createContainer(connection: PlayConnection = createConnection()): Container {
-        // TODO: set id to 9
-        TODO()
+    override fun iterator(): IntIterator {
+        return range.iterator()
     }
 }

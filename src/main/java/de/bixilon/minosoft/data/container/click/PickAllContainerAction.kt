@@ -17,28 +17,30 @@ import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 /**
  * If you double-click on an item in an inventory, all items of the same type will be stacked together and selected
  */
 class PickAllContainerAction(
-    val slot: Int,
+    @Deprecated("packet only") val slot: Int,
 ) : ContainerAction {
     // ToDo: Action reverting
 
     override fun invoke(connection: PlayConnection, containerId: Int, container: Container) {
+        // TODO (1.18.2) minecraft always sends a packet
         container.lock.lock()
         try {
-            val previous = container.slots[slot] ?: container.floatingItem?.copy() ?: return
-            val clicked = previous.copy()
-            if (container.getSlotType(slot)?.canRemove(container, slot, clicked) != true) {
+            val previous = container.slots[slot]
+            val floating = container.floatingItem?.copy()
+            if (previous != null || floating == null) {
                 return
             }
-            container.slots.remove(slot)
-            var countLeft = clicked.item.item.maxStackSize - clicked.item._count
-            val changes: MutableMap<Int, ItemStack?> = mutableMapOf()
+            var countLeft = floating.item.item.maxStackSize - floating.item._count
+            val changes: Int2ObjectMap<ItemStack?> = Int2ObjectOpenHashMap()
             for ((slotId, slot) in container.slots) {
-                if (!clicked.matches(slot)) {
+                if (!floating.matches(slot)) {
                     continue
                 }
                 if (container.getSlotType(slotId)?.canRemove(container, slotId, slot) != true) {
@@ -47,15 +49,23 @@ class PickAllContainerAction(
                 val countToRemove = minOf(slot.item._count, countLeft)
                 slot.item._count -= countToRemove
                 countLeft -= countToRemove
-                clicked.item._count += countToRemove
-                changes[slotId] = slot
+                floating.item._count += countToRemove
+                if (slot._valid) {
+                    changes[slotId] = slot
+                } else {
+                    changes[slotId] = null
+                }
                 if (countLeft <= 0) {
                     break
                 }
             }
             container._validate()
-            container.floatingItem = clicked
-            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, previous))
+            if (floating == container.floatingItem) {
+                // no change
+                return
+            }
+            container.floatingItem = floating
+            connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, this.slot, 6, 0, container.createAction(this), changes, floating))
         } finally {
             container.commit()
         }

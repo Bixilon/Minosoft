@@ -22,6 +22,7 @@ import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap
 import de.bixilon.minosoft.data.container.click.ContainerAction
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
+import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
 import de.bixilon.minosoft.data.container.slots.SlotType
 import de.bixilon.minosoft.data.container.stack.ItemStack
@@ -34,14 +35,15 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.CloseContainerC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 
 open class Container(
-    protected val connection: PlayConnection,
+    val connection: PlayConnection,
     val type: ContainerType,
     val title: ChatComponent? = null,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
     @Deprecated("Should not be accessed directly")
-    val slots: MutableMap<Int, ItemStack> by watchedMap(mutableMapOf())
+    val slots: MutableMap<Int, ItemStack> by watchedMap(Int2ObjectOpenHashMap())
     val lock = SimpleLock()
     var propertiesRevision by watched(0L)
     var revision by watched(0L)
@@ -53,7 +55,7 @@ open class Container(
     val id: Int?
         get() = connection.player.containers.getKey(this)
 
-    open val sections: Array<IntRange> = arrayOf()
+    open val sections: Array<ContainerSection> get() = emptyArray()
 
     init {
         this::floatingItem.observe(this) { it?.holder?.container = this }
@@ -86,7 +88,15 @@ open class Container(
 
     open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
     open fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? = null
-    open fun getSection(slotId: Int): Int? = null
+
+    open fun getSection(slotId: Int): Int? {
+        for ((index, section) in sections.withIndex()) {
+            if (slotId in section) {
+                return index
+            }
+        }
+        return null
+    }
 
     operator fun get(slotId: Int): ItemStack? {
         try {
@@ -198,7 +208,11 @@ open class Container(
     }
 
     fun revertAction(actionId: Int) {
-        actions.remove(actionId)?.revert(connection, id ?: return, this)
+        actions.remove(actionId)?.let { revertAction(it) }
+    }
+
+    fun revertAction(action: ContainerAction) {
+        action.revert(connection, id ?: return, this)
     }
 
     fun onClose() {

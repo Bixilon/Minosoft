@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.click
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
@@ -29,7 +30,8 @@ class CloneContainerAction(
         val itemStack = clicked.copy(count = clicked.item.item.maxStackSize)
         this.copied = itemStack
 
-        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.createAction(this), emptyMap(), clicked))
+        // TODO (1.18.2): use creative inventory packet
+        connection.sendPacket(ContainerClickC2SP(containerId, container.serverRevision, slot, 3, 0, container.createAction(this), slotsOf(), itemStack))
 
         container.floatingItem = itemStack
     }
