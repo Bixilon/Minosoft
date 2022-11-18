@@ -93,6 +93,7 @@ class PickAllContainerActionTest {
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 5, 6, 0, 0, slotsOf(0 to ItemStack(AppleTestO.item, count = 2)), ItemStack(AppleTestO.item, count = 64)))
     }
 
+    @Test(enabled = false)
     fun testRevertSingle() {
         val connection = createConnection()
         val container = createContainer(connection)
@@ -107,6 +108,7 @@ class PickAllContainerActionTest {
         assertEquals(container.floatingItem, ItemStack(AppleTestO.item, count = 9))
     }
 
+    @Test(enabled = false)
     fun testRevert2() {
         val connection = createConnection()
         val container = createContainer(connection)
