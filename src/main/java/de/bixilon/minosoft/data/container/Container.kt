@@ -87,7 +87,15 @@ open class Container(
 
     open fun getSlotType(slotId: Int): SlotType? = DefaultSlotType
     open fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? = null
-    open fun getSection(slotId: Int): Int? = null
+
+    open fun getSection(slotId: Int): Int? {
+        for ((index, section) in sections.withIndex()) {
+            if (slotId in section) {
+                return index
+            }
+        }
+        return null
+    }
 
     operator fun get(slotId: Int): ItemStack? {
         try {

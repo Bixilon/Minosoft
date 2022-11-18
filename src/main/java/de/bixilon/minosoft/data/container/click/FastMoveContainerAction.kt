@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import it.unimi.dsi.fastutil.ints.IntArrayList
 
 class FastMoveContainerAction(
     val slot: Int,
@@ -32,13 +33,18 @@ class FastMoveContainerAction(
             val sourceSection = container.getSection(slot) ?: Int.MAX_VALUE
 
             // loop over all sections and get the lowest slot in the lowest section that fits best
-            val targets = Int2ObjectOpenHashMap<ItemStack?>()
+            val targets: MutableList<IntArrayList> = mutableListOf()
             for ((index, section) in container.sections.withIndex()) {
                 if (index == sourceSection) {
                     // we don't want to swap into the same section, that is just useless
                     // ToDo: Is this vanilla behavior?
                     continue
                 }
+                if (section.isEmpty()) {
+                    continue
+                }
+                val list = IntArrayList()
+                targets += list
                 for (slot in section) {
                     val content = container.slots[slot]
                     if (content != null && !source.matches(content)) { // only check slots that are not empty
@@ -49,26 +55,28 @@ class FastMoveContainerAction(
                         // this item is not allowed in this slot (e.g. blocks in armor slot)
                         continue
                     }
-
-                    targets[slot] = content
+                    list += slot
                 }
             }
             val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
-            for ((slot, content) in targets.toSortedMap()) {
-                if (content == null) {
-                    changes[slot] = source
-                    changes[this.slot] = null
-                    container._set(slot, source)
-                    container._set(this.slot, null)
-                    break
-                }
-                val countToPut = source.item._count - (source.item.item.maxStackSize - content.item._count)
-                source.item._count -= countToPut
-                content.item._count += countToPut
-                changes[slot] = content
-                changes[this.slot] = source // duplicated
-                if (source.item._count <= 0) {
-                    break
+            sections@ for (list in targets) {
+                for (slot in list.intIterator()) {
+                    val content = container.slots[slot]
+                    if (content == null) {
+                        changes[slot] = source
+                        changes[this.slot] = null
+                        container._set(slot, source)
+                        container._set(this.slot, null)
+                        break@sections
+                    }
+                    val countToPut = source.item._count - (source.item.item.maxStackSize - content.item._count)
+                    source.item._count -= countToPut
+                    content.item._count += countToPut
+                    changes[slot] = content
+                    changes[this.slot] = source // duplicated
+                    if (source.item._count <= 0) {
+                        break
+                    }
                 }
             }
 

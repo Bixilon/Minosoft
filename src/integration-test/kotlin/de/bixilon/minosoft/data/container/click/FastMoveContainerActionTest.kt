@@ -57,7 +57,7 @@ class FastMoveContainerActionTest {
         container.invokeAction(FastMoveContainerAction(0))
         assertNull(container.floatingItem)
         assertEquals(container.slots, slotsOf(62 to ItemStack(AppleTestO.item, 9)))
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(62 to null, 0 to ItemStack(AppleTestO.item, count = 9)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(0 to null, 62 to ItemStack(AppleTestO.item, count = 9)), null))
     }
 
     fun fullHotbarChestToHotbar() {
@@ -116,11 +116,7 @@ class FastMoveContainerActionTest {
 
         container.invokeAction(FastMoveContainerAction(30))
         assertNull(container.floatingItem)
-        assertNull(container[0])
-        assertNull(container[1])
-        assertNull(container[2])
-        assertNull(container[30])
-        assertEquals(container[3], ItemStack(EggTestO.item, 12))
+        assertEquals(container.slots, slotsOf(3 to ItemStack(EggTestO.item, 12)))
 
         connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 3 to ItemStack(AppleTestO.item, count = 8)), null))
     }
@@ -133,11 +129,9 @@ class FastMoveContainerActionTest {
 
         container.invokeAction(FastMoveContainerAction(30))
         assertNull(container.floatingItem)
-        assertNull(container[0])
-        assertEquals(container[1], ItemStack(CoalTest0.item, 12))
-        assertNull(container[2])
+        assertEquals(container.slots, slotsOf(1 to ItemStack(CoalTest0.item, 12)))
 
-        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 0, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(AppleTestO.item, count = 8)), null))
+        connection.assertOnlyPacket(ContainerClickC2SP(9, container.serverRevision, 30, 1, 0, 0, slotsOf(30 to null, 1 to ItemStack(CoalTest0.item, count = 12)), null))
     }
 
     // TODO: revert, full container

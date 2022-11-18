@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.container.types
 
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.ContainerUtil.section
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
@@ -30,8 +31,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, ENCHANTING_SLOTS until (ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS)) {
-    override val sections: Array<IntRange> = arrayOf(0 until ENCHANTING_SLOTS, ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS)
+class EnchantingContainer(connection: PlayConnection, type: ContainerType, title: ChatComponent?) : InventorySynchronizedContainer(connection, type, title, section(ENCHANTING_SLOTS, PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<IntRange> get() = SECTIONS
     val costs = IntArray(ENCHANTING_OPTIONS) { -1 }
     val enchantments: Array<Enchantment?> = arrayOfNulls(ENCHANTING_OPTIONS)
     var enchantmentLevels = IntArray(ENCHANTING_OPTIONS) { -1 }
@@ -45,16 +46,6 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
             in ENCHANTING_SLOTS until ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS -> DefaultSlotType
             else -> null
         }
-    }
-
-    override fun getSection(slotId: Int): Int? {
-        if (slotId in 0..1) {
-            return 0
-        }
-        if (slotId in ENCHANTING_SLOTS..ENCHANTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
-            return 1
-        }
-        return null
     }
 
     override fun getSlotSwap(slot: SlotSwapContainerAction.SwapTargets): Int? {
@@ -86,6 +77,13 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
         const val LAPISLAZULI_SLOT = 1
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3
+
+
+        private val SECTIONS: Array<IntRange> = arrayOf(
+            section(0, ENCHANTING_SLOTS),
+            section(ENCHANTING_SLOTS + PlayerInventory.PASSIVE_SLOTS, PlayerInventory.HOTBAR_SLOTS),
+            section(ENCHANTING_SLOTS, PlayerInventory.PASSIVE_SLOTS),
+        )
 
         override fun build(connection: PlayConnection, type: ContainerType, title: ChatComponent?): EnchantingContainer {
             return EnchantingContainer(connection, type, title)

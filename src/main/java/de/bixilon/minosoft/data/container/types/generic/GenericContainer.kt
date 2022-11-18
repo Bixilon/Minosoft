@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container.types.generic
 
+import de.bixilon.minosoft.data.container.ContainerUtil.section
 import de.bixilon.minosoft.data.container.InventorySynchronizedContainer
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.slots.DefaultSlotType
@@ -27,22 +28,16 @@ abstract class GenericContainer(
     connection: PlayConnection,
     type: ContainerType,
     title: ChatComponent?,
-) : InventorySynchronizedContainer(connection, type, title, (rows * SLOTS_PER_ROW) until (rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS)) {
-    override val sections: Array<IntRange> = arrayOf(0 until rows * SLOTS_PER_ROW, rows * SLOTS_PER_ROW + 1 until rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS)
+) : InventorySynchronizedContainer(connection, type, title, section(rows * SLOTS_PER_ROW, PlayerInventory.MAIN_SLOTS)) {
+    override val sections: Array<IntRange> = arrayOf(
+        section(0, rows * SLOTS_PER_ROW),
+        section(rows * SLOTS_PER_ROW + PlayerInventory.PASSIVE_SLOTS, PlayerInventory.HOTBAR_SLOTS),
+        section(rows * SLOTS_PER_ROW, PlayerInventory.PASSIVE_SLOTS),
+    )
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId in 0 until rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS) {
             return DefaultSlotType
-        }
-        return null
-    }
-
-    override fun getSection(slotId: Int): Int? {
-        if (slotId in 0 until rows * SLOTS_PER_ROW) {
-            return 0
-        }
-        if (slotId in rows * SLOTS_PER_ROW until rows * SLOTS_PER_ROW + PlayerInventory.MAIN_SLOTS) {
-            return 1
         }
         return null
     }

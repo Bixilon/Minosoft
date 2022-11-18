@@ -155,6 +155,7 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
 
         const val MAIN_SLOTS_PER_ROW = 9
         const val MAIN_ROWS = 4
+        const val PASSIVE_SLOTS = MAIN_SLOTS_PER_ROW * (MAIN_ROWS - 1)
         const val MAIN_SLOTS = MAIN_SLOTS_PER_ROW * MAIN_ROWS
         const val MAIN_SLOTS_START = ARMOR_OFFSET + 4
 

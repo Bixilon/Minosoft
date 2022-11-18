@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.container
 
+import de.bixilon.minosoft.data.container.ContainerUtil.section
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
@@ -24,7 +25,7 @@ abstract class InventorySynchronizedContainer(
     type: ContainerType,
     title: ChatComponent? = null,
     protected var synchronizedSlots: IntRange,
-    protected var inventorySlots: IntRange = PlayerInventory.MAIN_SLOTS_START until (PlayerInventory.MAIN_SLOTS_START + PlayerInventory.MAIN_SLOTS),
+    protected var inventorySlots: IntRange = section(PlayerInventory.MAIN_SLOTS_START, PlayerInventory.MAIN_SLOTS),
 ) : Container(connection, type, title) {
     private val playerInventory = connection.player.inventory
 

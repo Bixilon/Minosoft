@@ -37,10 +37,12 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
     var maxFuel: Int = 0
         private set
 
+    override val sections: Array<IntRange> get() = SECTIONS
+
 
     override fun getSlotType(slotId: Int): SlotType? {
         if (slotId == 0) {
-            return DefaultSlotType // ToDo: only smeltable items
+            return DefaultSlotType // ToDo: only smeltable items (check recipes)
         }
         if (slotId == 1) {
             return FuelSlotType
@@ -58,11 +60,14 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
         if (slotId == 2) {
             return 0
         }
-        if (slotId == 0 || slotId == 1) {
+        if (slotId == 1) {
             return 1
         }
-        if (slotId in SMELTING_SLOTS until SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
+        if (slotId == 0) {
             return 2
+        }
+        if (slotId in SMELTING_SLOTS until SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS) {
+            return 3
         }
         return null
     }
@@ -86,5 +91,12 @@ abstract class SmeltingContainer(connection: PlayConnection, type: ContainerType
 
     companion object {
         const val SMELTING_SLOTS = 3
+
+        val SECTIONS: Array<IntRange> = arrayOf(
+            2..2,
+            1..1,
+            0..0,
+            SMELTING_SLOTS..SMELTING_SLOTS + PlayerInventory.MAIN_SLOTS,
+        )
     }
 }
