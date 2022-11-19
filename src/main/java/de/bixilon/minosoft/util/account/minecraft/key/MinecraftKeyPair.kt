@@ -45,7 +45,5 @@ data class MinecraftKeyPair(
                 throw YggdrasilException()
             }
         }
-
-
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.kutil.uuid.UUIDUtil.toUUID
 import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.yggdrasil.YggdrasilUtil
+import org.testng.Assert
 import org.testng.SkipException
 import org.testng.annotations.Test
 
@@ -33,7 +34,11 @@ class SignatureSIT {
     }
 
     fun testKeyUUID() {
-        SignatureTestUtil.key.requireSignature("9e6ce7c5-40d3-483e-8e5a-b6350987d65f".toUUID())
+        SignatureTestUtil.key.requireSignature("9e6ce7c5-40d3-483e-8e5a-b6350987d65f".toUUID()) // yep, that is really my private key
+    }
+
+    fun testRequireSignature() {
+        Assert.assertThrows { SignatureTestUtil.key.requireSignature("b876ec32-e396-476b-a115-8438d83c67d4".toUUID()) }
     }
 }
 
