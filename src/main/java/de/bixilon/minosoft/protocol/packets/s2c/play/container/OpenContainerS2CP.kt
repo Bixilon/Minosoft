@@ -73,9 +73,10 @@ class OpenContainerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val container = containerType.factory.build(connection, containerType, title)
 
         connection.player.incompleteContainers.remove(containerId)?.let {
-            for ((slot, stack) in it) {
+            for ((slot, stack) in it.slots) {
                 container[slot] = stack
             }
+            container.floatingItem = it.floating
         }
         connection.player.containers[containerId] = container
         connection.player.openedContainer = container
