@@ -21,7 +21,7 @@ import org.testng.annotations.Test
 class TorchTest : BlockTest<Block>() {
 
     init {
-        TorchTestO = this
+        TorchTest0 = this
     }
 
     fun getTorch() {
@@ -33,4 +33,4 @@ class TorchTest : BlockTest<Block>() {
     }
 }
 
-var TorchTestO: TorchTest = unsafeNull()
+var TorchTest0: TorchTest = unsafeNull()

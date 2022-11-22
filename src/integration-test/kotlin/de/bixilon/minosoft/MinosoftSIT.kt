@@ -31,6 +31,7 @@ internal object MinosoftSIT {
     @BeforeSuite
     fun setup() {
         disableGC()
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
         initAssetsManager()
         setupPacketRegistry()
         loadVersionsJson()
