@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.forceSet
 import de.bixilon.minosoft.util.KUtil.minosoft
 import org.objenesis.ObjenesisStd
 import org.testng.annotations.Test
@@ -63,10 +64,10 @@ object ChunkTestingUtil {
     fun createEmptyChunk(position: ChunkPosition): Chunk {
         val objenesis = ObjenesisStd()
         val chunk = objenesis.newInstance(Chunk::class.java)
-        Chunk::highestSection.javaField!!.setValue(chunk, SECTIONS)
         Chunk::lock.javaField!!.setValue(chunk, ThreadLock())
-        Chunk::chunkPosition.javaField!!.setValue(chunk, position)
+        chunk::chunkPosition.forceSet(position)
         Chunk::world.javaField!!.setValue(chunk, world)
+        Chunk::maxSection.javaField!!.setValue(chunk, chunk.world.dimension!!.maxSection)
         Chunk::connection.javaField!!.setValue(chunk, chunk.world.connection)
         Chunk::light.javaField!!.setValue(chunk, ChunkLight(chunk))
         Chunk::neighbours.javaField!!.setValue(chunk, ChunkNeighbours(chunk))

@@ -207,7 +207,7 @@ class BlockLightBreakIT {
     }
 
     fun bottomPropagation() {
-        val world = ConnectionTestUtil.createConnection(5).world
+        val world = ConnectionTestUtil.createConnection(3).world
         world.fill(Vec3i(-10, 0, -10), Vec3i(30, 1, 30), StoneTestO.state)
         world[Vec3i(8, 0, 8)] = TorchTest0.state
         world[Vec3i(8, 0, 8)] = null
@@ -223,7 +223,7 @@ class BlockLightBreakIT {
     }
 
     fun topPropagation() {
-        val world = ConnectionTestUtil.createConnection(5).world
+        val world = ConnectionTestUtil.createConnection(3).world
         world.fill(Vec3i(-10, 254, -10), Vec3i(30, 255, 30), StoneTestO.state)
         world[Vec3i(8, 255, 8)] = TorchTest0.state
         world[Vec3i(8, 255, 8)] = null

@@ -51,8 +51,8 @@ class Chunk(
     val lock = ThreadLock()
     val world = connection.world
     val light = ChunkLight(this)
-    val lowestSection = world.dimension!!.minSection
-    val highestSection = world.dimension!!.maxSection
+    val minSection = world.dimension!!.minSection
+    val maxSection = world.dimension!!.maxSection
     val cacheBiomes = world.cacheBiomeAccessor != null
 
     var blocksInitialized = false // All block data was received
@@ -66,7 +66,7 @@ class Chunk(
     val isFullyLoaded: Boolean
         get() = isLoaded && neighbours.complete
 
-    operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
+    operator fun get(sectionHeight: SectionHeight): ChunkSection? = sections?.getOrNull(sectionHeight - minSection)
 
     fun unsafeGet(x: Int, y: Int, z: Int): BlockState? {
         return this[y.sectionHeight]?.blocks?.unsafeGet(x, y.inSectionHeight, z)
@@ -147,7 +147,7 @@ class Chunk(
         data.blocks?.let {
             for ((index, blocks) in it.withIndex()) {
                 blocks ?: continue
-                val section = getOrPut(index + lowestSection) ?: return@let
+                val section = getOrPut(index + minSection) ?: return@let
                 section.blocks = blocks
             }
             light.recalculateHeightmap()
@@ -162,7 +162,7 @@ class Chunk(
             data.light?.let {
                 for ((index, light) in it.withIndex()) {
                     light ?: continue
-                    val section = getOrPut(index + lowestSection) ?: return@let
+                    val section = getOrPut(index + minSection) ?: return@let
                     section.light.light = light
                 }
             }
@@ -187,7 +187,7 @@ class Chunk(
             lock.unlock()
             return null
         }
-        val sectionIndex = sectionHeight - lowestSection
+        val sectionIndex = sectionHeight - minSection
         if (sectionIndex < 0 || sectionIndex >= sections.size) {
             lock.unlock()
             return null
@@ -214,7 +214,7 @@ class Chunk(
             if (sectionIndex > 0) {
                 sections[sectionIndex - 1]?.neighbours?.set(Directions.O_UP, section)
             }
-            val highestIndex = highestSection - 1
+            val highestIndex = maxSection - 1
             if (sectionIndex < highestIndex) {
                 sections[sectionIndex + 1]?.neighbours?.set(Directions.O_DOWN, section)
             }
@@ -235,7 +235,7 @@ class Chunk(
         val sections = sections!!
         for ((index, section) in sections.withIndex()) {
             section ?: continue
-            section.tick(connection, chunkPosition, index + lowestSection)
+            section.tick(connection, chunkPosition, index + minSection)
         }
     }
 
@@ -250,7 +250,7 @@ class Chunk(
         val neighbours: Array<Chunk> = connection.world.getChunkNeighbours(chunkPosition).unsafeCast()
         for ((sectionIndex, section) in sections!!.withIndex()) {
             section ?: continue
-            val sectionHeight = sectionIndex + lowestSection
+            val sectionHeight = sectionIndex + minSection
             section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
         }
         biomesInitialized = true
@@ -270,7 +270,7 @@ class Chunk(
 
     private fun updateNeighbours(neighbours: Array<Chunk>, sectionHeight: Int) {
         for (nextSectionHeight in sectionHeight - 1..sectionHeight + 1) {
-            if (nextSectionHeight < lowestSection || nextSectionHeight > highestSection) {
+            if (nextSectionHeight < minSection || nextSectionHeight > maxSection) {
                 continue
             }
 

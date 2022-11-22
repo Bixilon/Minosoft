@@ -93,7 +93,7 @@ class ChunkLight(private val chunk: Chunk) {
     private fun fireLightChange(sections: Array<ChunkSection?>, fireSameChunkEvent: Boolean) {
         val neighbours = chunk.neighbours.get() ?: return
         for ((index, section) in sections.withIndex()) {
-            fireLightChange(section ?: continue, index + chunk.lowestSection, neighbours, fireSameChunkEvent)
+            fireLightChange(section ?: continue, index + chunk.minSection, neighbours, fireSameChunkEvent)
         }
     }
 
@@ -107,10 +107,10 @@ class ChunkLight(private val chunk: Chunk) {
         val inSectionHeight = y.inSectionHeight
         val heightmapIndex = (z shl 4) or x
         val index = inSectionHeight shl 8 or heightmapIndex
-        if (sectionHeight == chunk.lowestSection - 1) {
+        if (sectionHeight == chunk.minSection - 1) {
             return bottom[index].toInt()
         }
-        if (sectionHeight == chunk.highestSection + 1) {
+        if (sectionHeight == chunk.maxSection + 1) {
             return top[index].toInt() or SectionLight.SKY_LIGHT_MASK // top has always sky=15
         }
         var light = chunk[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
@@ -181,7 +181,7 @@ class ChunkLight(private val chunk: Chunk) {
             return
         }
         chunk.lock.lock()
-        val maxY = chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y
+        val maxY = chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y
 
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
@@ -197,7 +197,7 @@ class ChunkLight(private val chunk: Chunk) {
 
         var y = Int.MIN_VALUE
 
-        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.lowestSection) downTo 0) {
+        sectionLoop@ for (sectionIndex in (startY.sectionHeight - chunk.minSection) downTo 0) {
             if (sectionIndex >= sections.size) {
                 // starting from above world
                 continue
@@ -212,7 +212,7 @@ class ChunkLight(private val chunk: Chunk) {
                     // can go through block
                     continue
                 }
-                y = (sectionIndex + chunk.lowestSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
+                y = (sectionIndex + chunk.minSection) * ProtocolDefinition.SECTION_HEIGHT_Y + sectionY
                 if (!light.skylightEnters) {
                     y++
                 }
@@ -234,8 +234,8 @@ class ChunkLight(private val chunk: Chunk) {
             // block is now higher
             // ToDo: Neighbours
             val sections = chunk.sections ?: Broken("Sections == null")
-            val maxIndex = previous.sectionHeight - chunk.lowestSection
-            val minIndex = now.sectionHeight - chunk.lowestSection
+            val maxIndex = previous.sectionHeight - chunk.minSection
+            val minIndex = now.sectionHeight - chunk.minSection
             for (index in maxIndex downTo minIndex) {
                 val section = sections[index] ?: continue
                 section.light.reset()
@@ -365,8 +365,8 @@ class ChunkLight(private val chunk: Chunk) {
             chunk.getOrPut(skylightStartSectionHeight - 1)
         }
 
-        for (sectionHeight in minOf(skylightStartSectionHeight, chunk.highestSection) downTo maxOf(maxHeightSection + 1, chunk.lowestSection)) {
-            val section = chunk.sections?.get(sectionHeight - chunk.lowestSection) ?: continue
+        for (sectionHeight in minOf(skylightStartSectionHeight, chunk.maxSection) downTo maxOf(maxHeightSection + 1, chunk.minSection)) {
+            val section = chunk.sections?.get(sectionHeight - chunk.minSection) ?: continue
 
             // ToDo: Only update if affected by heightmap change
             section.light.update = true
@@ -376,7 +376,7 @@ class ChunkLight(private val chunk: Chunk) {
                 section.light.traceSkylightIncrease(x, y, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I, null, baseY + y, false)
             }
         }
-        if (maxHeight.sectionHeight < chunk.lowestSection) {
+        if (maxHeight.sectionHeight < chunk.minSection) {
             // bottom section
             bottom.traceSkyIncrease(x, z, ProtocolDefinition.MAX_LIGHT_LEVEL_I)
         } else {

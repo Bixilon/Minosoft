@@ -75,7 +75,7 @@ class ChunkNeighbours(val chunk: Chunk) {
             if (section == null) {
                 continue
             }
-            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, index + chunk.lowestSection)
+            val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, chunk, index + chunk.minSection)
             section.neighbours = sectionNeighbours
         }
     }
