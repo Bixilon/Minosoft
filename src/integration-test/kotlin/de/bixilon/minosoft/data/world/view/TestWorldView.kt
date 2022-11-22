@@ -11,24 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft
+package de.bixilon.minosoft.data.world.view
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.versions.Version
-import org.objenesis.ObjenesisStd
+import de.bixilon.kutil.cast.CastUtil
+import de.bixilon.minosoft.IT
 
-object IT {
-    val OBJENESIS = ObjenesisStd()
-    const val VERSION_NAME = "1.18.2"
-    var VERSION: Version = unsafeNull()
+class TestWorldView : WorldView(CastUtil.unsafeNull()) {
 
-    val references: MutableList<Any> = mutableListOf()
-
-    init {
-        reference()
-    }
-
-    fun Any.reference() {
-        references += this
-    }
+    override fun updateServerDistance() = Unit
 }
+
+val TEST_WORLD_VIEW = IT.OBJENESIS.newInstance(TestWorldView::class.java)

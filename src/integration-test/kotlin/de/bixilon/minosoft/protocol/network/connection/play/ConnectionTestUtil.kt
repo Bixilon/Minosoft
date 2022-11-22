@@ -13,49 +13,38 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.IT
 import de.bixilon.minosoft.IT.reference
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
-import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.border.WorldBorder
+import de.bixilon.minosoft.data.world.WorldTestUtil.createWorld
+import de.bixilon.minosoft.data.world.WorldTestUtil.initialize
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.util.KUtil.forceSet
-import org.objenesis.ObjenesisStd
 
 
-object PlayConnectionUtil {
-    private val OBJENESIS = ObjenesisStd()
+object ConnectionTestUtil {
 
     init {
         reference()
     }
 
-    fun createWorld(): World {
-        val world = OBJENESIS.newInstance(World::class.java)
-        world::chunks.forceSet(lockMapOf())
-        world::border.forceSet(WorldBorder())
-        world::dimension.forceSet(watched(DimensionProperties()))
-
-        return world
-    }
-
-    fun createConnection(): PlayConnection {
-        val connection = OBJENESIS.newInstance(PlayConnection::class.java)
+    fun createConnection(worldSize: Int = 0): PlayConnection {
+        val connection = IT.OBJENESIS.newInstance(PlayConnection::class.java)
         connection::account.forceSet(OfflineAccount("dummy"))
         connection::version.forceSet(IT.VERSION)
         connection::registries.forceSet(Registries())
         connection.registries.parentRegistries = IT.VERSION.registries
-        connection::world.forceSet(createWorld())
-
-        connection::network.forceSet(TestNetwork())
+        connection::world.forceSet(createWorld(connection))
         connection::player.forceSet(LocalPlayerEntity(connection.account, connection, null))
+        connection::network.forceSet(TestNetwork())
         connection::events.forceSet(EventMaster())
+
+        if (worldSize > 0) {
+            connection.world.initialize(worldSize)
+        }
 
         return connection
     }
