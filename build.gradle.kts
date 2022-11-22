@@ -316,13 +316,14 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 }
 
 dependencies {
-    implementation("org.slf4j", "slf4j-api", "2.0.3")
+    implementation("org.slf4j", "slf4j-api", "2.0.4")
     implementation("com.google.guava", "guava", "31.1-jre")
-    implementation("dnsjava", "dnsjava", "3.5.1")
+    implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.21.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.3.1")
+    implementation("com.github.oshi", "oshi-core", "6.3.2")
+    implementation("com.github.oshi", "oshi-core", "6.3.2")
     implementation("com.github.luben", "zstd-jni", "1.5.2-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
