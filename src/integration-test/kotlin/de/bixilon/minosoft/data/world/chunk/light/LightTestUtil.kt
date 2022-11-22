@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.chunk.light
 
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.primitive.IntUtil.toHex
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import org.testng.Assert
@@ -22,11 +23,11 @@ object LightTestUtil {
 
     fun Chunk.assertLight(x: Int, y: Int, z: Int, expected: Int) {
         val light = this.light[x, y, z] and 0xFF
-        Assert.assertEquals(light, expected)
+        Assert.assertEquals(light.toHex(2), expected.toHex(2))
     }
 
     fun World.assertLight(x: Int, y: Int, z: Int, expected: Int) {
         val light = this.getLight(Vec3i(x, y, z)) and 0xFF
-        Assert.assertEquals(light, expected)
+        Assert.assertEquals(light.toHex(2), expected.toHex(2))
     }
 }

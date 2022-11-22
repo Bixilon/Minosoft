@@ -33,80 +33,80 @@ class BlockLightPlaceIT {
     fun inBlock() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(8, 10, 8, 0xFD)
+        world.assertLight(8, 10, 8, 0xFE)
     }
 
     fun nextToBlock1() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(8, 9, 8, 0xFC)
+        world.assertLight(8, 9, 8, 0xFD)
         world.assertLight(8, 0, 8, 0xF4)
     }
 
     fun nextToBlock2() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(8, 11, 8, 0xFC)
+        world.assertLight(8, 11, 8, 0xFD)
     }
 
     fun nextToBlock3() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(7, 10, 8, 0xFC)
+        world.assertLight(7, 10, 8, 0xFD)
     }
 
     fun nextToBlock4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(9, 10, 8, 0xFC)
+        world.assertLight(9, 10, 8, 0xFD)
     }
 
     fun nextToBlock5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(8, 10, 7, 0xFC)
+        world.assertLight(8, 10, 7, 0xFD)
     }
 
     fun nextToBlock6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        world.assertLight(8, 10, 9, 0xFC)
+        world.assertLight(8, 10, 9, 0xFD)
     }
 
     fun nextNeighbour1() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(16, 16, 16)] = TorchTest0.state
-        world.assertLight(16, 17, 16, 0xFC)
+        world.assertLight(16, 17, 16, 0xFD)
     }
 
     fun nextNeighbour2() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(16, 16, 16)] = TorchTest0.state
-        world.assertLight(17, 16, 16, 0xFC)
+        world.assertLight(17, 16, 16, 0xFD)
     }
 
     fun nextNeighbour3() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(16, 16, 16)] = TorchTest0.state
-        world.assertLight(16, 16, 17, 0xFC)
+        world.assertLight(16, 16, 17, 0xFD)
     }
 
     fun nextNeighbour4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
-        world.assertLight(17, 16, 17, 0xFC)
+        world.assertLight(17, 16, 17, 0xFD)
     }
 
     fun nextNeighbour5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
-        world.assertLight(16, 17, 17, 0xFC)
+        world.assertLight(16, 17, 17, 0xFD)
     }
 
     fun nextNeighbour6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
-        world.assertLight(17, 17, 16, 0xFC)
+        world.assertLight(17, 17, 16, 0xFD)
     }
 
     fun totalPropagation1() {
@@ -124,25 +124,25 @@ class BlockLightPlaceIT {
     fun totalPropagation3() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        world.assertLight(-1, 33, 12, 0xF1)
+        world.assertLight(-1, 20, 12, 0xF1)
     }
 
     fun totalPropagation4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        world.assertLight(25, 33, 12, 0xF1)
+        world.assertLight(25, 20, 12, 0xF1)
     }
 
     fun totalPropagation5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        world.assertLight(12, 33, 25, 0xF1)
+        world.assertLight(12, 20, 25, 0xF1)
     }
 
     fun totalPropagation6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        world.assertLight(12, 33, -1, 0xF1)
+        world.assertLight(12, 20, -1, 0xF1)
     }
 
     fun lightUpdate() {
@@ -171,8 +171,8 @@ class BlockLightPlaceIT {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 0, 8)] = TorchTest0.state
         val chunk = world[Vec2i(0, 0)]!!
-        chunk.assertLight(8, -1, 8, 0xFC)
-        chunk.assertLight(9, -1, 8, 0xFB)
+        chunk.assertLight(8, -1, 8, 0xFD)
+        chunk.assertLight(9, -1, 8, 0xFC)
     }
 
 
@@ -180,8 +180,8 @@ class BlockLightPlaceIT {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 255, 8)] = TorchTest0.state
         val chunk = world[Vec2i(0, 0)]!!
-        chunk.assertLight(8, 256, 8, 0xFC)
-        chunk.assertLight(9, 256, 8, 0xFB)
+        chunk.assertLight(8, 256, 8, 0xFD)
+        chunk.assertLight(9, 256, 8, 0xFC)
     }
 
     fun bottomPropagation() {
@@ -190,8 +190,8 @@ class BlockLightPlaceIT {
         world[Vec3i(8, 0, 8)] = TorchTest0.state
 
         val chunk = world[Vec2i(0, 0)]!!
-        chunk.assertLight(8, -1, 8, 0x0C)
-        chunk.assertLight(9, -1, 8, 0x0B)
+        chunk.assertLight(8, -1, 8, 0x0D)
+        chunk.assertLight(9, -1, 8, 0x0C)
 
         chunk.assertLight(+20, -1, +8, 0x01)
         chunk.assertLight(+8, -1, +8, 0x01)
@@ -205,8 +205,8 @@ class BlockLightPlaceIT {
         world[Vec3i(8, 255, 8)] = TorchTest0.state
 
         val chunk = world[Vec2i(0, 0)]!!
-        chunk.assertLight(8, 256, 8, 0xFC)
-        chunk.assertLight(9, 256, 8, 0xFB)
+        chunk.assertLight(8, 256, 8, 0xFD)
+        chunk.assertLight(9, 256, 8, 0xFC)
 
         chunk.assertLight(+20, 256, +8, 0xF1)
         chunk.assertLight(+8, 256, +8, 0xF1)

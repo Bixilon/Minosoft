@@ -140,28 +140,28 @@ class BlockLightBreakIT {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
         world[Vec3i(12, 20, 12)] = null
-        world.assertLight(-1, 33, 12, 0xF0)
+        world.assertLight(-1, 20, 12, 0xF0)
     }
 
     fun totalPropagation4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
         world[Vec3i(12, 20, 12)] = null
-        world.assertLight(25, 33, 12, 0xF0)
+        world.assertLight(25, 20, 12, 0xF0)
     }
 
     fun totalPropagation5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
         world[Vec3i(12, 20, 12)] = null
-        world.assertLight(12, 33, 25, 0xF0)
+        world.assertLight(12, 20, 25, 0xF0)
     }
 
     fun totalPropagation6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
         world[Vec3i(12, 20, 12)] = null
-        world.assertLight(12, 33, -1, 0xF0)
+        world.assertLight(12, 20, -1, 0xF0)
     }
 
     fun lightUpdate() {
