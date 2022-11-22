@@ -35,6 +35,14 @@ enum class Instruments(
     BIT,
     BANJO,
     PLING,
+
+    ZOMBIE,
+    SKELETON,
+    CREEPER,
+    DRAGON,
+    WITHER_SKELETON,
+    PIGLIN,
+    CUSTOM_HEAD,
     ;
 
     companion object : BlockPropertiesSerializer {
