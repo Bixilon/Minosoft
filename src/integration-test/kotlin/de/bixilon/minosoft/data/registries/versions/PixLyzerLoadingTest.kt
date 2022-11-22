@@ -20,7 +20,7 @@ import de.bixilon.minosoft.test.ITUtil
 import org.testng.Assert
 import org.testng.annotations.Test
 
-@Test
+@Test(groups = ["pixlyzer"], dependsOnGroups = ["version"])
 class PixLyzerLoadingTest {
 
     private fun Version.test() {
@@ -36,67 +36,54 @@ class PixLyzerLoadingTest {
         ITUtil.loadPixlyzerData("1.14.4").test()
     }
 
-    @Test
     fun `1_15`() {
         ITUtil.loadPixlyzerData("1.15").test()
     }
 
-    @Test
     fun `1_15_1`() {
         ITUtil.loadPixlyzerData("1.15.1").test()
     }
 
-    @Test
     fun `1_15_2`() {
         ITUtil.loadPixlyzerData("1.15.2").test()
     }
 
-    @Test
     fun `1_16`() {
         ITUtil.loadPixlyzerData("1.16").test()
     }
 
-    @Test
     fun `1_16_1`() {
         ITUtil.loadPixlyzerData("1.16.1").test()
     }
 
-    @Test
     fun `1_16_2`() {
         ITUtil.loadPixlyzerData("1.16.2").test()
     }
 
-    @Test
     fun `1_16_3`() {
         ITUtil.loadPixlyzerData("1.16.3").test()
     }
 
-    @Test
     fun `1_16_5`() {
         ITUtil.loadPixlyzerData("1.16.5").test()
     }
 
-    @Test
     fun `1_17`() {
         ITUtil.loadPixlyzerData("1.17").test()
     }
 
-    @Test
     fun `1_17_1`() {
         ITUtil.loadPixlyzerData("1.17.1").test()
     }
 
-    @Test
     fun `1_18_1`() {
         ITUtil.loadPixlyzerData("1.18.1").test()
     }
 
-    @Test
     fun `1_18_2`() {
         ITUtil.loadPixlyzerData("1.18.2").test()
     }
 
-    @Test
     fun `1_19`() {
         ITUtil.loadPixlyzerData("1.19").test()
     }
