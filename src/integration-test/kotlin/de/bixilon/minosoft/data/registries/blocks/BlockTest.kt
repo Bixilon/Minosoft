@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.IT
-import de.bixilon.minosoft.IT.reference
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.IT.reference
 import org.testng.Assert
 import org.testng.Assert.assertEquals
 

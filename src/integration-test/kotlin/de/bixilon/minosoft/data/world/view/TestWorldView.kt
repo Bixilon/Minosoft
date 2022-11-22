@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.world.view
 
 import de.bixilon.kutil.cast.CastUtil
-import de.bixilon.minosoft.IT
+import de.bixilon.minosoft.test.IT
 
 class TestWorldView : WorldView(CastUtil.unsafeNull()) {
 

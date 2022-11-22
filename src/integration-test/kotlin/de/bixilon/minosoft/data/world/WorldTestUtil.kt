@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil
 import de.bixilon.kutil.watcher.DataWatcher
-import de.bixilon.minosoft.IT
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.border.WorldBorder
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.data.world.positions.ChunkPosition
 import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.forceSet
 
 object WorldTestUtil {

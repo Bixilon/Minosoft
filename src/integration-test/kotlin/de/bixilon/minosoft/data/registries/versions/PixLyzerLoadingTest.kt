@@ -1,0 +1,108 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020-2022 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.data.registries.versions
+
+import de.bixilon.minosoft.data.entities.entities.monster.Zombie
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.registries.item.MinecraftItems
+import de.bixilon.minosoft.test.ITUtil
+import org.testng.Assert
+import org.testng.annotations.Test
+
+@Test
+class PixLyzerLoadingTest {
+
+    private fun Version.test() {
+        val registries = this.registries
+        Assert.assertNotNull(this.registries)
+        registries!!
+        Assert.assertNotNull(registries.blockRegistry[MinecraftBlocks.DIRT])
+        Assert.assertNotNull(registries.itemRegistry[MinecraftItems.COAL])
+        Assert.assertNotNull(registries.entityTypeRegistry[Zombie])
+    }
+
+    fun `1_14_4`() {
+        ITUtil.loadPixlyzerData("1.14.4").test()
+    }
+
+    @Test
+    fun `1_15`() {
+        ITUtil.loadPixlyzerData("1.15").test()
+    }
+
+    @Test
+    fun `1_15_1`() {
+        ITUtil.loadPixlyzerData("1.15.1").test()
+    }
+
+    @Test
+    fun `1_15_2`() {
+        ITUtil.loadPixlyzerData("1.15.2").test()
+    }
+
+    @Test
+    fun `1_16`() {
+        ITUtil.loadPixlyzerData("1.16").test()
+    }
+
+    @Test
+    fun `1_16_1`() {
+        ITUtil.loadPixlyzerData("1.16.1").test()
+    }
+
+    @Test
+    fun `1_16_2`() {
+        ITUtil.loadPixlyzerData("1.16.2").test()
+    }
+
+    @Test
+    fun `1_16_3`() {
+        ITUtil.loadPixlyzerData("1.16.3").test()
+    }
+
+    @Test
+    fun `1_16_5`() {
+        ITUtil.loadPixlyzerData("1.16.5").test()
+    }
+
+    @Test
+    fun `1_17`() {
+        ITUtil.loadPixlyzerData("1.17").test()
+    }
+
+    @Test
+    fun `1_17_1`() {
+        ITUtil.loadPixlyzerData("1.17.1").test()
+    }
+
+    @Test
+    fun `1_18_1`() {
+        ITUtil.loadPixlyzerData("1.18.1").test()
+    }
+
+    @Test
+    fun `1_18_2`() {
+        ITUtil.loadPixlyzerData("1.18.2").test()
+    }
+
+    @Test
+    fun `1_19`() {
+        ITUtil.loadPixlyzerData("1.19").test()
+    }
+
+    @Test(enabled = false) // already loaded in setup
+    fun `1_19_2`() {
+        ITUtil.loadPixlyzerData("1.19.2").test()
+    }
+}
