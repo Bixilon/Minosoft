@@ -19,6 +19,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.minosoft.data.registries.blocks.StoneTestO
 import de.bixilon.minosoft.data.registries.blocks.TorchTest0
 import de.bixilon.minosoft.data.world.WorldTestUtil.fill
+import de.bixilon.minosoft.data.world.chunk.light.LightTestUtil.assertLight
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.LightChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil
@@ -32,116 +33,116 @@ class BlockLightPlaceIT {
     fun inBlock() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(8, 10, 8)), 0xFD)
+        world.assertLight(8, 10, 8, 0xFD)
     }
 
     fun nextToBlock1() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(8, 9, 8)), 0xFC)
-        assertEquals(world.getLight(Vec3i(8, 0, 8)), 0xF4)
+        world.assertLight(8, 9, 8, 0xFC)
+        world.assertLight(8, 0, 8, 0xF4)
     }
 
     fun nextToBlock2() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(8, 11, 8)), 0xFC)
+        world.assertLight(8, 11, 8, 0xFC)
     }
 
     fun nextToBlock3() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(7, 10, 8)), 0xFC)
+        world.assertLight(7, 10, 8, 0xFC)
     }
 
     fun nextToBlock4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(9, 10, 8)), 0xFC)
+        world.assertLight(9, 10, 8, 0xFC)
     }
 
     fun nextToBlock5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(8, 10, 7)), 0xFC)
+        world.assertLight(8, 10, 7, 0xFC)
     }
 
     fun nextToBlock6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 10, 8)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(8, 10, 9)), 0xFC)
+        world.assertLight(8, 10, 9, 0xFC)
     }
 
     fun nextNeighbour1() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(16, 16, 16)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(16, 17, 16)), 0xFC)
+        world.assertLight(16, 17, 16, 0xFC)
     }
 
     fun nextNeighbour2() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(16, 16, 16)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(17, 16, 16)), 0xFC)
+        world.assertLight(17, 16, 16, 0xFC)
     }
 
     fun nextNeighbour3() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(16, 16, 16)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(16, 16, 17)), 0xFC)
+        world.assertLight(16, 16, 17, 0xFC)
     }
 
     fun nextNeighbour4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(17, 16, 17)), 0xFC)
+        world.assertLight(17, 16, 17, 0xFC)
     }
 
     fun nextNeighbour5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(16, 17, 17)), 0xFC)
+        world.assertLight(16, 17, 17, 0xFC)
     }
 
     fun nextNeighbour6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(17, 17, 17)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(17, 17, 16)), 0xFC)
+        world.assertLight(17, 17, 16, 0xFC)
     }
 
     fun totalPropagation1() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(12, 7, 12)), 0xF1)
+        world.assertLight(12, 7, 12, 0xF1)
     }
 
     fun totalPropagation2() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(12, 33, 12)), 0xF1)
+        world.assertLight(12, 33, 12, 0xF1)
     }
 
     fun totalPropagation3() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(-1, 33, 12)), 0xF1)
+        world.assertLight(-1, 33, 12, 0xF1)
     }
 
     fun totalPropagation4() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(25, 33, 12)), 0xF1)
+        world.assertLight(25, 33, 12, 0xF1)
     }
 
     fun totalPropagation5() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(12, 33, 25)), 0xF1)
+        world.assertLight(12, 33, 25, 0xF1)
     }
 
     fun totalPropagation6() {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(12, 20, 12)] = TorchTest0.state
-        assertEquals(world.getLight(Vec3i(12, 33, -1)), 0xF1)
+        world.assertLight(12, 33, -1, 0xF1)
     }
 
     fun lightUpdate() {
@@ -170,8 +171,8 @@ class BlockLightPlaceIT {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 0, 8)] = TorchTest0.state
         val chunk = world[Vec2i(0, 0)]!!
-        assertEquals(chunk.light[Vec3i(8, -1, 8)], 0xFC)
-        assertEquals(chunk.light[Vec3i(9, -1, 8)], 0xFB)
+        chunk.assertLight(8, -1, 8, 0xFC)
+        chunk.assertLight(9, -1, 8, 0xFB)
     }
 
 
@@ -179,8 +180,8 @@ class BlockLightPlaceIT {
         val world = ConnectionTestUtil.createConnection(3).world
         world[Vec3i(8, 255, 8)] = TorchTest0.state
         val chunk = world[Vec2i(0, 0)]!!
-        assertEquals(chunk.light[Vec3i(8, 256, 8)], 0xFC)
-        assertEquals(chunk.light[Vec3i(9, 256, 8)], 0xFB)
+        chunk.assertLight(8, 256, 8, 0xFC)
+        chunk.assertLight(9, 256, 8, 0xFB)
     }
 
     fun bottomPropagation() {
@@ -189,13 +190,13 @@ class BlockLightPlaceIT {
         world[Vec3i(8, 0, 8)] = TorchTest0.state
 
         val chunk = world[Vec2i(0, 0)]!!
-        assertEquals(chunk.light[Vec3i(8, -1, 8)], 0x0C)
-        assertEquals(chunk.light[Vec3i(9, -1, 8)], 0x0B)
+        chunk.assertLight(8, -1, 8, 0x0C)
+        chunk.assertLight(9, -1, 8, 0x0B)
 
-        assertEquals(chunk.light[Vec3i(20, -1, 8)], 0x01)
-        assertEquals(chunk.light[Vec3i(8, -1, 8)], 0x01)
-        assertEquals(chunk.light[Vec3i(-4, -1, 20)], 0x01)
-        assertEquals(chunk.light[Vec3i(8, -1, -4)], 0x01)
+        chunk.assertLight(+20, -1, +8, 0x01)
+        chunk.assertLight(+8, -1, +8, 0x01)
+        chunk.assertLight(-4, -1, +20, 0x01)
+        chunk.assertLight(+8, -1, -4, 0x01)
     }
 
     fun topPropagation() {
@@ -204,12 +205,12 @@ class BlockLightPlaceIT {
         world[Vec3i(8, 255, 8)] = TorchTest0.state
 
         val chunk = world[Vec2i(0, 0)]!!
-        assertEquals(chunk.light[Vec3i(8, 256, 8)], 0xFC)
-        assertEquals(chunk.light[Vec3i(9, 256, 8)], 0xFB)
+        chunk.assertLight(8, 256, 8, 0xFC)
+        chunk.assertLight(9, 256, 8, 0xFB)
 
-        assertEquals(chunk.light[Vec3i(20, 256, 8)], 0xF1)
-        assertEquals(chunk.light[Vec3i(8, 256, 8)], 0xF1)
-        assertEquals(chunk.light[Vec3i(-4, 256, 20)], 0xF1)
-        assertEquals(chunk.light[Vec3i(8, 256, -4)], 0xF1)
+        chunk.assertLight(+20, 256, +8, 0xF1)
+        chunk.assertLight(+8, 256, +8, 0xF1)
+        chunk.assertLight(-4, 256, +20, 0xF1)
+        chunk.assertLight(+8, 256, -4, 0xF1)
     }
 }
