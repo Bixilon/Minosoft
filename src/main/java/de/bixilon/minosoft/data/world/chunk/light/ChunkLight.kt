@@ -236,6 +236,7 @@ class ChunkLight(private val chunk: Chunk) {
             val sections = chunk.sections ?: Broken("Sections == null")
             val maxIndex = previous.sectionHeight - chunk.minSection
             val minIndex = now.sectionHeight - chunk.minSection
+            bottom.reset()
             for (index in maxIndex downTo minIndex) {
                 val section = sections[index] ?: continue
                 section.light.reset()
