@@ -38,7 +38,7 @@ class ChatMessageType(
             return ChatMessageType(
                 resourceLocation = resourceLocation,
                 chat = data["chat"].asJsonObject().let { TypeProperties.deserialize(it) },
-                narration = data["chat"]?.asJsonObject()?.let { TypeProperties.deserialize(it) },
+                narration = data["narration"]?.asJsonObject()?.let { TypeProperties.deserialize(it) },
                 position = data["position"]?.let { ChatTextPositions[it] } ?: ChatTextPositions.CHAT,
             )
         }
