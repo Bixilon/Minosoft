@@ -323,7 +323,6 @@ dependencies {
     implementation("org.jline", "jline", "3.21.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
     implementation("com.github.oshi", "oshi-core", "6.3.2")
-    implementation("com.github.oshi", "oshi-core", "6.3.2")
     implementation("com.github.luben", "zstd-jni", "1.5.2-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")

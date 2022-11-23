@@ -1,4 +1,4 @@
-image: gradle:jdk11
+image: openjdk:11-jdk-slim
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
