@@ -208,33 +208,31 @@ class BlockLightBreakIT {
 
     fun bottomPropagation() {
         val world = ConnectionTestUtil.createConnection(3).world
-        world.fill(Vec3i(-10, 0, -10), Vec3i(30, 1, 30), StoneTestO.state)
+        world.fill(Vec3i(-20, 0, -20), Vec3i(40, 1, 40), StoneTestO.state)
         world[Vec3i(8, 0, 8)] = TorchTest0.state
         world[Vec3i(8, 0, 8)] = null
 
-        val chunk = world[Vec2i(0, 0)]!!
-        chunk.assertLight(8, -1, 8, 0x00)
-        chunk.assertLight(9, -1, 8, 0x00)
+        world.assertLight(8, -1, 8, 0x00)
+        world.assertLight(9, -1, 8, 0x00)
 
-        chunk.assertLight(+20, -1, +8, 0x00)
-        chunk.assertLight(+8, -1, +8, 0x00)
-        chunk.assertLight(-4, -1, +20, 0x00)
-        chunk.assertLight(+8, -1, -4, 0x00)
+        world.assertLight(+20, -1, +8, 0x00)
+        world.assertLight(+8, -1, +8, 0x00)
+        world.assertLight(-4, -1, +8, 0x00)
+        world.assertLight(+8, -1, -4, 0x00)
     }
 
     fun topPropagation() {
         val world = ConnectionTestUtil.createConnection(3).world
-        world.fill(Vec3i(-10, 254, -10), Vec3i(30, 255, 30), StoneTestO.state)
+        world.fill(Vec3i(-20, 254, -20), Vec3i(40, 255, 40), StoneTestO.state)
         world[Vec3i(8, 255, 8)] = TorchTest0.state
         world[Vec3i(8, 255, 8)] = null
 
-        val chunk = world[Vec2i(0, 0)]!!
-        chunk.assertLight(8, 256, 8, 0xF0)
-        chunk.assertLight(9, 256, 8, 0xF0)
+        world.assertLight(8, 256, 8, 0xF0)
+        world.assertLight(9, 256, 8, 0xF0)
 
-        chunk.assertLight(+20, 256, +8, 0xF0)
-        chunk.assertLight(+8, 256, +8, 0xF0)
-        chunk.assertLight(-4, 256, +20, 0xF0)
-        chunk.assertLight(+8, 256, -4, 0xF0)
+        world.assertLight(+20, 256, +8, 0xF0)
+        world.assertLight(+8, 256, +20, 0xF0)
+        world.assertLight(-4, 256, +8, 0xF0)
+        world.assertLight(+8, 256, -4, 0xF0)
     }
 }

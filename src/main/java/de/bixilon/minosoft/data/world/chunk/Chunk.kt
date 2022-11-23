@@ -203,10 +203,6 @@ class Chunk(
                     section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
                 }
                 section.neighbours = ChunkUtil.getDirectNeighbours(neighbours, this, sectionHeight)
-                for (neighbour in neighbours) {
-                    val neighbourNeighbours = neighbour.neighbours.get() ?: continue
-                    neighbour.updateNeighbours(neighbourNeighbours, sectionHeight)
-                }
             }
 
             sections[sectionIndex] = section
@@ -217,6 +213,13 @@ class Chunk(
             val highestIndex = maxSection - 1
             if (sectionIndex < highestIndex) {
                 sections[sectionIndex + 1]?.neighbours?.set(Directions.O_DOWN, section)
+            }
+
+            if (neighbours != null) {
+                for (neighbour in neighbours) {
+                    val neighbourNeighbours = neighbour.neighbours.get() ?: continue
+                    neighbour.updateNeighbours(neighbourNeighbours, sectionHeight)
+                }
             }
 
             // check light of neighbours to check if their light needs to be traced into our own chunk
@@ -274,7 +277,7 @@ class Chunk(
                 continue
             }
 
-            val section = this[sectionHeight] ?: return
+            val section = this[nextSectionHeight] ?: continue
             val sectionNeighbours = ChunkUtil.getDirectNeighbours(neighbours, this, nextSectionHeight)
             section.neighbours = sectionNeighbours
         }

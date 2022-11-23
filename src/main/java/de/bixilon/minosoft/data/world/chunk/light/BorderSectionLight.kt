@@ -83,23 +83,23 @@ class BorderSectionLight(
         if (z > 0) {
             traceBlockIncrease(x, z - 1, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.NORTH]?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
-        if (z < ProtocolDefinition.SECTION_MAX_Y) {
+        if (z < ProtocolDefinition.SECTION_MAX_Z) {
             traceBlockIncrease(x, z + 1, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.SOUTH]?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
         }
 
         if (x > 0) {
             traceBlockIncrease(x - 1, z, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.WEST]?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
             traceBlockIncrease(x + 1, z, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.EAST]?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
         }
     }
 
