@@ -25,5 +25,12 @@ enum class ChatParameter {
     companion object : ValuesEnum<ChatParameter> {
         override val VALUES = values()
         override val NAME_MAP: Map<String, ChatParameter> = EnumUtil.getEnumValues(VALUES)
+
+        override fun get(name: String): ChatParameter {
+            return when (name.lowercase()) {
+                "team_name" -> TARGET
+                else -> super.get(name)
+            }
+        }
     }
 }

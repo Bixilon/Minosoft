@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
+import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 
 class ChatMessageType(
     override val resourceLocation: ResourceLocation,
@@ -33,11 +34,12 @@ class ChatMessageType(
     }
 
     companion object : ResourceLocationCodec<ChatMessageType> {
+        private val DEFAULT_PROPERTIES = TypeProperties("[%s] %s", listOf(ChatParameter.SENDER, ChatParameter.SENDER), mapOf("color" to ChatColors.GRAY))
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ChatMessageType {
             return ChatMessageType(
                 resourceLocation = resourceLocation,
-                chat = data["chat"].asJsonObject().let { TypeProperties.deserialize(it) },
+                chat = data["chat"]?.asJsonObject()?.let { TypeProperties.deserialize(it) } ?: DEFAULT_PROPERTIES,
                 narration = data["narration"]?.asJsonObject()?.let { TypeProperties.deserialize(it) },
                 position = data["position"]?.let { ChatTextPositions[it] } ?: ChatTextPositions.CHAT,
             )
