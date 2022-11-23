@@ -31,6 +31,10 @@ object ITUtil {
 
     fun loadPixlyzerData(name: String): Version {
         val version = Versions[name]!!
+        if (version.registries != null) {
+            // already loaded
+            return version
+        }
 
         loadPixlyzerData(version)
         return version

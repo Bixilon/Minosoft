@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.versions
 import de.bixilon.minosoft.data.entities.entities.monster.Zombie
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
+import de.bixilon.minosoft.protocol.protocol.VersionSupport
 import de.bixilon.minosoft.test.ITUtil
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -88,8 +89,14 @@ class PixLyzerLoadingTest {
         ITUtil.loadPixlyzerData("1.19").test()
     }
 
-    @Test(enabled = false) // already loaded in setup
     fun `1_19_2`() {
         ITUtil.loadPixlyzerData("1.19.2").test()
+    }
+
+    fun latest() {
+        val version = Versions.getById(VersionSupport.LATEST_VERSION)!!
+        println("Latest version $version")
+        ITUtil.loadPixlyzerData(version)
+        version.test()
     }
 }

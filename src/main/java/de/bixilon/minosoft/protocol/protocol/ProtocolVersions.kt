@@ -478,6 +478,4 @@ object ProtocolVersions {
     const val V_13W43A = 2
     const val V_13W42B = 1
     const val V_13W41B = 0
-
-    const val LOWEST_VERSION_SUPPORTED = V_13W41B
 }

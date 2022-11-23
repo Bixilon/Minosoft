@@ -123,6 +123,13 @@ enum class BlockProperties {
 
     BOOKS_STORED("books_stored", IntBlockPropertiesSerializer),
     LAST_INTERACTION_BOOK_SLOT("last_interaction_book_slot", IntBlockPropertiesSerializer),
+
+    BOOK_SLOT_OCCUPIED_0("slot_0_occupied", BooleanBlockPropertiesSerializer),
+    BOOK_SLOT_OCCUPIED_1("slot_1_occupied", BooleanBlockPropertiesSerializer),
+    BOOK_SLOT_OCCUPIED_2("slot_2_occupied", BooleanBlockPropertiesSerializer),
+    BOOK_SLOT_OCCUPIED_3("slot_3_occupied", BooleanBlockPropertiesSerializer),
+    BOOK_SLOT_OCCUPIED_4("slot_4_occupied", BooleanBlockPropertiesSerializer),
+    BOOK_SLOT_OCCUPIED_5("slot_5_occupied", BooleanBlockPropertiesSerializer),
     ;
 
     val group: String
