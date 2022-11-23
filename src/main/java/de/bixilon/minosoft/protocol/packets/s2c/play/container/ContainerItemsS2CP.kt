@@ -12,10 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.IncompleteContainer
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
@@ -25,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 @LoadPacket
 class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
@@ -41,24 +40,25 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             buffer.readUnsignedShort()
         }
     ) { buffer.readItemStack() }
-    val cursor = if (buffer.versionId >= V_1_17_1_PRE1) {
-        buffer.readItemStack()
+    val floatingItem = if (buffer.versionId >= V_1_17_1_PRE1) {
+        buffer.readItemStack()?.let { Optional.of(it) } ?: Optional.empty()
     } else {
         null
     }
 
     private fun pushIncompleteContainer(connection: PlayConnection) {
-        val slots: SynchronizedMap<Int, ItemStack> = synchronizedMapOf()
+        val container = IncompleteContainer()
 
 
         for ((slotId, stack) in this.items.withIndex()) {
             if (stack == null) {
                 continue
             }
-            slots[slotId] = stack
+            container.slots[slotId] = stack
         }
+        container.floating = floatingItem?.let { if (it.isEmpty) null else it.get() }
 
-        connection.player.incompleteContainers[containerId] = slots.unsafeCast()
+        connection.player.incompleteContainers[containerId] = container
     }
 
     private fun updateContainer(container: Container) {
@@ -72,6 +72,7 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             container._set(slotId, stack)
         }
         container.serverRevision = revision
+        this.floatingItem?.let { container.floatingItem = if (it.isEmpty) null else it.get() }
         container.lock.unlock()
         container.revision++
     }
@@ -86,6 +87,6 @@ class ContainerItemsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container items (containerId=$containerId, items=${items.contentToString()}" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container items (containerId=$containerId, items=${items.contentToString()}, floating=$floatingItem)" }
     }
 }

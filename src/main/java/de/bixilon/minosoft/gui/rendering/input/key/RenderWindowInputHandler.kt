@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
@@ -48,7 +50,7 @@ class RenderWindowInputHandler(
     val cameraInput = CameraInput(renderWindow, renderWindow.camera.matrixHandler)
     private val profile = connection.profiles.controls
 
-    private val keyBindingCallbacks: MutableMap<ResourceLocation, KeyBindingCallbackPair> = mutableMapOf()
+    private val keyBindingCallbacks: SynchronizedMap<ResourceLocation, KeyBindingCallbackPair> = synchronizedMapOf()
     private val keysDown: MutableList<KeyCodes> = mutableListOf()
     private val keyBindingsDown: MutableList<ResourceLocation> = mutableListOf()
     private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()

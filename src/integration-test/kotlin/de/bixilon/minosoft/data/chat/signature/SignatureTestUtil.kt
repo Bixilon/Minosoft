@@ -11,26 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.data.chat.signature
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import org.testng.annotations.Test
+import de.bixilon.minosoft.util.account.minecraft.MinecraftPrivateKey
 
-@Test(groups = ["block"])
-class TorchTest : BlockTest<Block>() {
-
-    init {
-        TorchTest0 = this
-    }
-
-    fun getTorch() {
-        super.retrieveBlock(MinecraftBlocks.TORCH)
-    }
-
-    fun testLightProperties() {
-        state.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
-    }
+object SignatureTestUtil {
+    var key: MinecraftPrivateKey = unsafeNull()
 }
-
-var TorchTest0: TorchTest = unsafeNull()

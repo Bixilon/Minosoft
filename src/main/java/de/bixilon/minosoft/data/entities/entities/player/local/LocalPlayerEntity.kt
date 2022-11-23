@@ -37,6 +37,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.IncompleteContainer
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
@@ -92,7 +93,7 @@ class LocalPlayerEntity(
     val baseAbilities = Abilities()
 
     val inventory = PlayerInventory(connection)
-    val incompleteContainers: SynchronizedMap<Int, SynchronizedMap<Int, ItemStack>> = synchronizedMapOf()
+    val incompleteContainers: SynchronizedMap<Int, IncompleteContainer> = synchronizedMapOf()
     val containers: SynchronizedBiMap<Int, Container> = synchronizedBiMapOf(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )

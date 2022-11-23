@@ -620,7 +620,7 @@ class WorldRenderer(
 
         // ToDo: Check if chunk is visible (not section, chunk)
         var queueChanges = 0
-        for (sectionHeight in chunk.lowestSection until chunk.highestSection) {
+        for (sectionHeight in chunk.minSection until chunk.maxSection) {
             val section = chunk[sectionHeight] ?: continue
             val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, false, neighbours = neighbours)
             if (queued) {

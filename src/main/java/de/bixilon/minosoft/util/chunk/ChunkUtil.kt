@@ -74,7 +74,7 @@ object ChunkUtil {
         // parse data
         var arrayPosition = 0
         val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
-        for ((sectionIndex, sectionHeight) in (dimension.minSection until dimension.maxSection).withIndex()) {
+        for ((sectionIndex, sectionHeight) in (dimension.minSection..dimension.maxSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
@@ -139,7 +139,7 @@ object ChunkUtil {
 
         var arrayPos = 0
         val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
-        for ((sectionIndex, sectionHeight) in (dimension.minSection until dimension.maxSection).withIndex()) { // max sections per chunks in chunk column
+        for ((sectionIndex, sectionHeight) in (dimension.minSection..dimension.maxSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
@@ -162,10 +162,11 @@ object ChunkUtil {
         var lightReceived = 0
         val biomes: Array<Array<Biome?>?> = arrayOfNulls(dimension.sections)
 
-        for ((sectionIndex, sectionHeight) in (dimension.minSection until (sectionBitMask?.length() ?: dimension.maxSection)).withIndex()) { // max sections per chunks in chunk column
+        for (sectionIndex in (0 until (sectionBitMask?.length() ?: dimension.sections))) { // max sections per chunks in chunk column
             if (sectionBitMask?.get(sectionIndex) == false) {
                 continue
             }
+            val sectionHeight = sectionIndex + dimension.minSection
             if (buffer.versionId >= V_18W43A) {
                 buffer.readShort() // non-air block count
             }

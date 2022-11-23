@@ -15,11 +15,11 @@ package de.bixilon.minosoft
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
+import de.bixilon.minosoft.test.IT
+import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -31,6 +31,7 @@ internal object MinosoftSIT {
     @BeforeSuite
     fun setup() {
         disableGC()
+        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Setting up integration tests...." }
         initAssetsManager()
         setupPacketRegistry()
         loadVersionsJson()
@@ -73,17 +74,7 @@ internal object MinosoftSIT {
         DefaultRegistries.load(CountUpAndDownLatch(0))
     }
 
-    private fun createResourcesProfile(): ResourcesProfile {
-        ResourcesProfileManager.currentLoadingPath = "dummy"
-        val profile = ResourcesProfile()
-        ResourcesProfileManager.currentLoadingPath = null
-        return profile
-    }
-
     fun loadPixlyzerData() {
-        val version = Versions[IT.VERSION_NAME]!!
-        IT.VERSION = version
-
-        version.load(createResourcesProfile(), CountUpAndDownLatch(0))
+        IT.VERSION = ITUtil.loadPixlyzerData(IT.TEST_VERSION_NAME)
     }
 }

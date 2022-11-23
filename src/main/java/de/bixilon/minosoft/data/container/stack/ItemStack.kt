@@ -198,11 +198,13 @@ class ItemStack {
         lock.lock()
     }
 
-    fun commit() {
+    fun commit(unlock: Boolean = true) {
         if (!_valid) {
             holder?.container?._validate()
         }
-        lock.unlock()
+        if (unlock) {
+            lock.unlock()
+        }
         revision++
         holder?.container?.apply { revision++ } // increase revision after unlock to prevent deadlock
     }

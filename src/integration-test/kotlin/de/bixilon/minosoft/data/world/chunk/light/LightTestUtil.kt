@@ -11,26 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.data.world.chunk.light
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import org.testng.annotations.Test
+import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.primitive.IntUtil.toHex
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.chunk.Chunk
+import org.testng.Assert
 
-@Test(groups = ["block"])
-class TorchTest : BlockTest<Block>() {
+object LightTestUtil {
 
-    init {
-        TorchTest0 = this
+    fun Chunk.assertLight(x: Int, y: Int, z: Int, expected: Int) {
+        val light = this.light[x, y, z] and 0xFF
+        Assert.assertEquals(light.toHex(2), expected.toHex(2))
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftBlocks.TORCH)
-    }
-
-    fun testLightProperties() {
-        state.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
+    fun World.assertLight(x: Int, y: Int, z: Int, expected: Int) {
+        val light = this.getLight(Vec3i(x, y, z)) and 0xFF
+        Assert.assertEquals(light.toHex(2), expected.toHex(2))
     }
 }
-
-var TorchTest0: TorchTest = unsafeNull()

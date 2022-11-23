@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.container
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.minosoft.data.container.IncompleteContainer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -30,22 +30,29 @@ class ContainerItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     } else {
         -1
     }
-    val slot = buffer.readUnsignedShort()
+    val slot = buffer.readShort().toInt()
     val itemStack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
         val container = connection.player.containers[containerId]
 
         if (container == null) {
-            val slots = connection.player.incompleteContainers.synchronizedGetOrPut(containerId) { synchronizedMapOf() }
-            if (itemStack == null) {
-                slots -= slot
+            val incomplete = connection.player.incompleteContainers.synchronizedGetOrPut(containerId) { IncompleteContainer() }
+            if (slot < 0) {
+                incomplete.floating = itemStack
+            } else if (itemStack == null) {
+                incomplete.slots -= slot
             } else {
-                slots[slot] = itemStack
+                incomplete.slots[slot] = itemStack
             }
+
             return
         }
-        container[slot] = itemStack
+        if (slot < 0) {
+            container.floatingItem = itemStack
+        } else {
+            container[slot] = itemStack
+        }
         container.serverRevision = revision
     }
 

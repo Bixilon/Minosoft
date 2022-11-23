@@ -62,18 +62,26 @@ class FastMoveContainerAction(
             val maxStack = source.item.item.maxStackSize
             val changes: Int2ObjectOpenHashMap<ItemStack> = Int2ObjectOpenHashMap()
             sections@ for ((type, list) in targets) {
-                for (slot in list.intIterator()) {
-                    val content = container.slots[slot] ?: break // filling will be done one step afterwards
+                val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
+                for (slot in putting) {
+                    val content = container.slots[slot] ?: continue // filling will be done one step afterwards
                     val countToPut = if (source.item._count + content.item._count > maxStack) maxStack - content.item._count else source.item._count
                     source.item._count -= countToPut
                     content.item._count += countToPut
+                    content.commit(false)
                     changes[slot] = content
-                    changes[this.slot] = source // duplicated
                     if (source.item._count <= 0) {
+                        changes[this.slot] = null
                         break@sections
                     }
+                    changes[this.slot] = source
                 }
+            }
 
+            sections@ for ((type, list) in targets) {
+                if (source.item._count <= 0) {
+                    break
+                }
                 val putting = if (type.fillReversed) list.reversed().iterator() else list.intIterator()
                 for (slot in putting) {
                     val content = container.slots[slot]

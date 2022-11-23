@@ -83,23 +83,23 @@ class BorderSectionLight(
         if (z > 0) {
             traceBlockIncrease(x, z - 1, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.NORTH)?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.NORTH]?.getBorderLight()?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Z, neighbourLuminance)
         }
-        if (z < ProtocolDefinition.SECTION_MAX_Y) {
+        if (z < ProtocolDefinition.SECTION_MAX_Z) {
             traceBlockIncrease(x, z + 1, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.SOUTH)?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.SOUTH]?.getBorderLight()?.traceBlockIncrease(x, 0, neighbourLuminance)
         }
 
         if (x > 0) {
             traceBlockIncrease(x - 1, z, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.WEST)?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.WEST]?.getBorderLight()?.traceBlockIncrease(ProtocolDefinition.SECTION_MAX_X, z, neighbourLuminance)
         }
         if (x < ProtocolDefinition.SECTION_MAX_X) {
             traceBlockIncrease(x + 1, z, neighbourLuminance)
         } else {
-            chunk.neighbours.get(ChunkNeighbours.EAST)?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
+            chunk.neighbours[ChunkNeighbours.EAST]?.getBorderLight()?.traceBlockIncrease(0, z, neighbourLuminance)
         }
     }
 
@@ -128,9 +128,9 @@ class BorderSectionLight(
         val neighbourLevel = nextLevel - 1
 
         if (top) {
-            chunk.sections?.getLast()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.highestSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
+            chunk.sections?.getLast()?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLevel, Directions.DOWN, chunk.maxSection * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y)
         } else {
-            chunk.sections?.getFirst()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.lowestSection * ProtocolDefinition.SECTION_HEIGHT_Y)
+            chunk.sections?.getFirst()?.light?.traceSkylightIncrease(x, 0, z, neighbourLevel, Directions.UP, chunk.minSection * ProtocolDefinition.SECTION_HEIGHT_Y)
         }
 
         if (z > 0) {

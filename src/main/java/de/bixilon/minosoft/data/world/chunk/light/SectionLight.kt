@@ -66,14 +66,14 @@ class SectionLight(
         val neighbours = section.neighbours ?: return
         val chunk = section.chunk
         if (y - light < 0) {
-            if (section.sectionHeight == chunk?.lowestSection) {
+            if (section.sectionHeight == chunk?.minSection) {
                 chunk.light.bottom.decreaseCheckLevel(x, z, light - y, reset)
             } else {
                 neighbours[Directions.O_DOWN]?.light?.decreaseCheckLevel(x, z, light - y, reset)
             }
         }
         if (y + light > ProtocolDefinition.SECTION_MAX_Y) {
-            if (section.sectionHeight == chunk?.highestSection) {
+            if (section.sectionHeight == chunk?.maxSection) {
                 chunk.light.top.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
             } else {
                 neighbours[Directions.O_UP]?.light?.decreaseCheckLevel(x, z, light - (ProtocolDefinition.SECTION_MAX_Y - y), reset)
@@ -159,7 +159,7 @@ class SectionLight(
         if (target == null || (target != Directions.UP && lightProperties.propagatesLight(Directions.DOWN))) {
             if (y > 0) {
                 traceBlockIncrease(x, y - 1, z, neighbourLuminance, Directions.DOWN)
-            } else if (section.sectionHeight == chunk.lowestSection) {
+            } else if (section.sectionHeight == chunk.minSection) {
                 chunk.light.bottom.traceBlockIncrease(x, z, neighbourLuminance)
             } else {
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceBlockIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, neighbourLuminance, Directions.DOWN)
@@ -168,7 +168,7 @@ class SectionLight(
         if (target == null || (target != Directions.DOWN && lightProperties.propagatesLight(Directions.UP))) {
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceBlockIncrease(x, y + 1, z, neighbourLuminance, Directions.UP)
-            } else if (section.sectionHeight == chunk.highestSection) {
+            } else if (section.sectionHeight == chunk.maxSection) {
                 chunk.light.top.traceBlockIncrease(x, z, neighbourLuminance)
             } else {
                 (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.sectionHeight + 1, false))?.light?.traceBlockIncrease(x, 0, z, neighbourLuminance, Directions.UP)
@@ -351,14 +351,14 @@ class SectionLight(
         if (target != Directions.UP && (target == null || lightProperties.propagatesLight(Directions.DOWN))) {
             if (y > 0) {
                 traceSkylightIncrease(x, y - 1, z, nextNeighbourLevel, Directions.DOWN, totalY - 1)
-            } else if (section.sectionHeight != chunk.highestSection) {
+            } else if (section.sectionHeight != chunk.maxSection) {
                 (neighbours[Directions.O_DOWN] ?: chunk.getOrPut(section.sectionHeight + 1, false))?.light?.traceSkylightIncrease(x, ProtocolDefinition.SECTION_MAX_Y, z, nextNeighbourLevel, Directions.DOWN, totalY - 1)
             }
         }
         if (target != Directions.DOWN && target != null && (lightProperties.propagatesLight(Directions.UP))) {
             if (y < ProtocolDefinition.SECTION_MAX_Y) {
                 traceSkylightIncrease(x, y + 1, z, nextNeighbourLevel, Directions.UP, totalY + 1)
-            } else if (section.sectionHeight == chunk.lowestSection) {
+            } else if (section.sectionHeight == chunk.minSection) {
                 chunk.light.bottom.traceSkyIncrease(x, z, nextLevel)
             } else {
                 (neighbours[Directions.O_UP] ?: chunk.getOrPut(section.sectionHeight - 1, false))?.light?.traceSkylightIncrease(x, 0, z, nextNeighbourLevel, Directions.UP, totalY + 1)

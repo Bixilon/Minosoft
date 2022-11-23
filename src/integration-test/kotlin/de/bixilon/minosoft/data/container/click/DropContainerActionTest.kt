@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.container.ContainerUtil.slotsOf
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.items.AppleTestO
 import de.bixilon.minosoft.data.registries.items.EggTestO
+import de.bixilon.minosoft.protocol.network.connection.play.ConnectionTestUtil.createConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertNoPacket
 import de.bixilon.minosoft.protocol.network.connection.play.PacketTestUtil.assertOnlyPacket
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionUtil.createConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.container.ContainerClickC2SP
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNull

@@ -61,8 +61,8 @@ class SolidCullSectionPreparer(
         val random = Random(0L)
 
         val randomBlockModels = profile.antiMoirePattern
-        val isLowestSection = sectionHeight == chunk.lowestSection
-        val isHighestSection = sectionHeight == chunk.highestSection
+        val isLowestSection = sectionHeight == chunk.minSection
+        val isHighestSection = sectionHeight == chunk.maxSection
         val blocks = section.blocks
         val sectionLight = section.light
         val blockEntities: MutableSet<BlockEntityRenderer<*>> = mutableSetOf()

@@ -82,6 +82,7 @@ class SimpleContainerAction(
                 target.item._count -= subtract
                 floatingItem.item._count += subtract
             }
+            target.commit(false)
 
             if (floatingItem._valid) {
                 container.floatingItem = floatingItem

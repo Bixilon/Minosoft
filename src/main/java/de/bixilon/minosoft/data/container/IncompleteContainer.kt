@@ -11,22 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft
+package de.bixilon.minosoft.data.container
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
+import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.minosoft.data.container.stack.ItemStack
 
-object IT {
-    const val VERSION_NAME = "1.18.2"
-    var VERSION: Version = unsafeNull()
-
-    val references: MutableList<Any> = mutableListOf()
-
-    init {
-        reference()
-    }
-
-    fun Any.reference() {
-        references += this
-    }
+class IncompleteContainer() {
+    val slots: SynchronizedMap<Int, ItemStack> = synchronizedMapOf()
+    var floating: ItemStack? = null
 }

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.world.view
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import kotlin.math.abs
 
-class WorldView(
+open class WorldView(
     private val connection: PlayConnection,
 ) {
     var serverViewDistance = Int.MAX_VALUE
@@ -64,7 +64,7 @@ class WorldView(
         }
 
     @Synchronized
-    fun updateServerDistance() {
+    open fun updateServerDistance() {
         val cameraPosition = connection.player.positionInfo.chunkPosition
         val max = connection.world.chunkMax - cameraPosition
         val min = connection.world.chunkMin - cameraPosition

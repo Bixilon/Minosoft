@@ -45,7 +45,7 @@ data class DimensionProperties(
     val maxY = dataHeight + minY - 1
     val sections = dataHeight / ProtocolDefinition.SECTION_HEIGHT_Y
     val minSection = minY shr 4
-    val maxSection = minSection + sections
+    val maxSection = (minSection + sections - 1)
 
     val brightness = FloatArray(16)
 

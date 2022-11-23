@@ -11,26 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import org.testng.annotations.Test
+import de.bixilon.minosoft.data.registries.versions.Version
+import org.objenesis.ObjenesisStd
 
-@Test(groups = ["block"])
-class TorchTest : BlockTest<Block>() {
+object IT {
+    val OBJENESIS = ObjenesisStd()
+    const val TEST_VERSION_NAME = "1.18.2"
+    var VERSION: Version = unsafeNull()
+
+    val references: MutableList<Any> = mutableListOf()
 
     init {
-        TorchTest0 = this
+        reference()
     }
 
-    fun getTorch() {
-        super.retrieveBlock(MinecraftBlocks.TORCH)
-    }
-
-    fun testLightProperties() {
-        state.testLightProperties(14, true, true, false, booleanArrayOf(true, true, true, true, true, true))
+    fun Any.reference() {
+        references += this
     }
 }
-
-var TorchTest0: TorchTest = unsafeNull()
