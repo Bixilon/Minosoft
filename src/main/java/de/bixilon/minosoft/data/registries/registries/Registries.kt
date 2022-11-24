@@ -186,8 +186,8 @@ class Registries {
         worker += WorkerTask(this::biomeRegistry) { biomeRegistry.rawUpdate(pixlyzerData["biomes"]?.toJsonObject(), this) }
         worker += WorkerTask(this::dimensionRegistry) { dimensionRegistry.rawUpdate(pixlyzerData["dimensions"]?.toJsonObject(), this) }
         worker += WorkerTask(this::fluidRegistry) { fluidRegistry.rawUpdate(pixlyzerData["fluids"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::blockRegistry, dependencies = arrayOf(this::materialRegistry, this::fluidRegistry, this::shapes)) { blockRegistry.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
-        worker += WorkerTask(this::itemRegistry, dependencies = arrayOf(this::materialRegistry, this::blockRegistry, this::entityTypeRegistry, this::fluidRegistry, this::statusEffectRegistry)) { itemRegistry.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::blockRegistry, dependencies = arrayOf(this::materialRegistry, this::fluidRegistry, this::shapes, this::soundGroupRegistry)) { blockRegistry.rawUpdate(pixlyzerData["blocks"]?.toJsonObject(), this) }
+        worker += WorkerTask(this::itemRegistry, dependencies = arrayOf(this::materialRegistry, this::blockRegistry, this::entityTypeRegistry, this::fluidRegistry, this::statusEffectRegistry, this::soundEventRegistry)) { itemRegistry.rawUpdate(pixlyzerData["items"]?.toJsonObject(), this) }
 
         worker += WorkerTask(this::blockEntityTypeRegistry, dependencies = arrayOf(this::blockRegistry)) { blockEntityTypeRegistry.rawUpdate(pixlyzerData["block_entities"]?.toJsonObject(), this) }
 
