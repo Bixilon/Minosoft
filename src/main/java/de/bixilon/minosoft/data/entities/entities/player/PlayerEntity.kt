@@ -14,10 +14,11 @@ package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.watchedSet
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
@@ -41,7 +42,6 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerMo
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.BitByte.isBitMask
 
 abstract class PlayerEntity(
     connection: PlayConnection,
@@ -79,7 +79,7 @@ abstract class PlayerEntity(
         get() = data.get(SCORE_DATA, 0)
 
     @get:SynchronizedEntityData
-    val skinParts: MutableSet<SkinParts> by watchedSet(mutableSetOf())
+    val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
 
 
     init {

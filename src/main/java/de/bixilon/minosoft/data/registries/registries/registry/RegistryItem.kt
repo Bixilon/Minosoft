@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.kutil.reflection.ReflectionUtil.setValue
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
 import kotlin.reflect.KProperty
@@ -44,10 +44,10 @@ abstract class RegistryItem : ResourceLocationAble {
             }
             value ?: continue
 
-            javaField.setValue(this, value)
+            javaField.forceSet(this, value)
         }
 
-        this::injects.javaField?.setValue(this, null)
+        this::injects.javaField?.forceSet(this, null)
     }
 
     open fun postInit(registries: Registries) {}

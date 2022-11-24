@@ -16,11 +16,13 @@ package de.bixilon.minosoft.gui.rendering.sky.box
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.hash.HashUtil.murmur64
 import de.bixilon.kutil.math.MathConstants.PIf
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
+import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.LightningBolt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -44,8 +46,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.interpolateLinea
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
-import de.bixilon.minosoft.util.KUtil.murmur64
-import de.bixilon.minosoft.util.KUtil.nextFloat
 import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs
@@ -63,7 +63,7 @@ class SkyboxRenderer(
     private var updateColor = true
     private var updateTexture = true
     private var updateMatrix = true
-    private var color: RGBColor by watched(ChatColors.BLUE)
+    private var color: RGBColor by observed(ChatColors.BLUE)
 
     private var time: WorldTime = sky.renderWindow.connection.world.time
 

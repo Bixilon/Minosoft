@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
-import de.bixilon.kutil.watcher.list.ListDataWatcher.Companion.watchedList
+import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
@@ -31,7 +31,7 @@ object CustomServerType : ServerType {
     override val icon: Ikon = FontAwesomeSolid.SERVER
     override val hidden: Boolean = false
     override var readOnly: Boolean = false
-    override var servers: MutableList<Server> by watchedList(ErosProfileManager.selected.server.entries)
+    override var servers: MutableList<Server> by observedList(ErosProfileManager.selected.server.entries)
         private set
     override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
 

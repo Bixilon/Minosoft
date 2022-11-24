@@ -19,7 +19,7 @@ import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -53,10 +53,11 @@ import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.nextInt
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance
-import kotlin.random.Random
+import java.util.*
 
 /**
  * Collection of chunks and more
@@ -68,15 +69,15 @@ class World(
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: LockMap<Vec2i, Chunk> = LockMap(mutableMapOf(), lock)
     val entities = WorldEntities()
-    var hardcore by watched(false)
-    var dimension: DimensionProperties? by watched(null)
-    var difficulty: WorldDifficulty? by watched(null)
+    var hardcore by observed(false)
+    var dimension: DimensionProperties? by observed(null)
+    var difficulty: WorldDifficulty? by observed(null)
     var hashedSeed = 0L
-    var time by watched(WorldTime())
-    var weather by watched(WorldWeather.NONE)
+    var time by observed(WorldTime())
+    var weather by observed(WorldWeather.NONE)
     val view = WorldView(connection)
     val border = WorldBorder()
-    private val random = Random
+    private val random = Random()
 
     override var audioPlayer: AbstractAudioPlayer? = null
     override var particleRenderer: AbstractParticleRenderer? = null
@@ -287,7 +288,7 @@ class World(
             if (!chunkPosition.isInViewDistance(simulationDistance, cameraPosition)) {
                 continue
             }
-            worker += UnconditionalTask(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition) }
+            worker += UnconditionalTask(priority = ThreadPool.HIGH) { chunk.tick(connection, chunkPosition, random) }
         }
         chunks.lock.release()
         worker.work()

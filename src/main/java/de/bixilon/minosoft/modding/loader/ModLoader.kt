@@ -16,7 +16,7 @@ package de.bixilon.minosoft.modding.loader
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.modding.loader.error.*
 import de.bixilon.minosoft.modding.loader.mod.MinosoftMod
 import de.bixilon.minosoft.modding.loader.mod.ModMain
@@ -34,9 +34,9 @@ object ModLoader {
     private val BASE_PATH = RunConfiguration.HOME_DIRECTORY + "mods/"
     private var latch: CountUpAndDownLatch? = null
     val mods = ModList()
-    var currentPhase by watched(LoadingPhases.PRE_BOOT)
+    var currentPhase by observed(LoadingPhases.PRE_BOOT)
         private set
-    var state by watched(PhaseStates.WAITING)
+    var state by observed(PhaseStates.WAITING)
         private set
 
     private val LoadingPhases.path: File get() = File(BASE_PATH + name.lowercase())

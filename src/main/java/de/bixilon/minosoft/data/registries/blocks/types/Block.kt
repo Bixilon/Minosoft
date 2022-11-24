@@ -43,7 +43,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import kotlin.random.Random
+import java.util.*
 
 open class Block(
     final override val resourceLocation: ResourceLocation,

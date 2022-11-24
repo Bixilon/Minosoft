@@ -35,7 +35,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import kotlin.random.Random
+import java.util.*
 
 class LavaFluid(
     resourceLocation: ResourceLocation,

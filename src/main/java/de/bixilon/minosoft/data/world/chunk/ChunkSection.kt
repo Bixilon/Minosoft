@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import java.util.*
 
 /**
  * Collection of 16x16x16 blocks
@@ -39,7 +40,7 @@ class ChunkSection(
     var light = SectionLight(this)
     var neighbours: Array<ChunkSection?>? = null
 
-    fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
+    fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int, random: Random) {
         if (blockEntities.isEmpty) {
             return
         }
@@ -49,7 +50,7 @@ class ChunkSection(
             blockEntity = blockEntities.unsafeGet(index) ?: continue
             val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
             val blockState = blocks.unsafeGet(index) ?: continue
-            blockEntity.tick(connection, blockState, position)
+            blockEntity.tick(connection, blockState, position, random)
         }
         release()
     }

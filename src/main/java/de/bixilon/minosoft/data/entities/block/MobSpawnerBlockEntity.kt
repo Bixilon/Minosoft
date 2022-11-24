@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.random.Random
+import java.util.*
 
 class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     private val smokeParticleType = connection.registries.particleTypeRegistry[SmokeParticle]
@@ -38,11 +38,11 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
         return connection.world.entities.getInRadius(blockPosition.center, requiredPlayerRange.toDouble(), WorldEntities.CHECK_CLOSEST_PLAYER).isNotEmpty()
     }
 
-    private fun spawnParticles(blockPosition: Vec3i) {
+    private fun spawnParticles(blockPosition: Vec3i, random: Random) {
         if (!isPlayerInRange(blockPosition)) {
             return
         }
-        val particlePosition = blockPosition.toVec3d + { Random.nextDouble() }
+        val particlePosition = blockPosition.toVec3d + { random.nextDouble() }
         smokeParticleType?.let { connection.world += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
         flameParticleType?.let { connection.world += FlameParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY, it.default()) }
     }
@@ -58,8 +58,8 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
 
-    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
-        spawnParticles(blockPosition)
+    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        spawnParticles(blockPosition, random)
     }
 
     companion object : BlockEntityFactory<MobSpawnerBlockEntity> {

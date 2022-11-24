@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.container.sections
 
-import de.bixilon.minosoft.util.SingleIntIterator
+import de.bixilon.kutil.range.SingleIntIterator
 
 class SingleSlotSection(val slot: Int) : ContainerSection {
     override val count: Int get() = 1

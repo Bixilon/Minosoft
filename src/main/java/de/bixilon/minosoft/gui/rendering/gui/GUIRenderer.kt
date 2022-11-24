@@ -18,7 +18,7 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -48,7 +48,7 @@ class GUIRenderer(
 ) : AsyncRenderer, InputHandler, OtherDrawable {
     private val profile = connection.profiles.gui
     override val renderSystem = renderWindow.renderSystem
-    var scaledSize: Vec2i by watched(renderWindow.window.size)
+    var scaledSize: Vec2i by observed(renderWindow.window.size)
     val gui = GUIManager(this)
     val hud = HUDManager(this)
     val popper = PopperManager(this)
@@ -63,7 +63,7 @@ class GUIRenderer(
     val shader = renderWindow.renderSystem.createShader("minosoft:gui".toResourceLocation()) { GUIShader(it) }
     val atlasManager = AtlasManager(renderWindow)
 
-    var currentMousePosition: Vec2i by watched(Vec2i.EMPTY)
+    var currentMousePosition: Vec2i by observed(Vec2i.EMPTY)
         private set
 
     override fun init(latch: CountUpAndDownLatch) {

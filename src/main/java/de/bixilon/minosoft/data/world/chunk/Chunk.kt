@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.inChunkPosition
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.chunk.ChunkUtil
+import java.util.*
 
 /**
  * Collection of chunks sections (from the lowest section to the highest section in y axis)
@@ -231,14 +232,14 @@ class Chunk(
         return section
     }
 
-    fun tick(connection: PlayConnection, chunkPosition: Vec2i) {
+    fun tick(connection: PlayConnection, chunkPosition: Vec2i, random: Random) {
         if (!isFullyLoaded) {
             return
         }
         val sections = sections!!
         for ((index, section) in sections.withIndex()) {
             section ?: continue
-            section.tick(connection, chunkPosition, index + minSection)
+            section.tick(connection, chunkPosition, index + minSection, random)
         }
     }
 

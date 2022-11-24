@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.effects.OverworldEffects
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -44,8 +44,8 @@ class SkyRenderer(
     override val framebuffer: Framebuffer? = null
     override val polygonMode: PolygonModes = PolygonModes.DEFAULT
     private val renderer: MutableList<SkyChildRenderer> = mutableListOf()
-    var effects by watched(connection.world.dimension?.effects ?: OverworldEffects)
-    var matrix by watched(Mat4())
+    var effects by observed(connection.world.dimension?.effects ?: OverworldEffects)
+    var matrix by observed(Mat4())
     val profile = connection.profiles.rendering.sky
     var time = connection.world.time
         private set

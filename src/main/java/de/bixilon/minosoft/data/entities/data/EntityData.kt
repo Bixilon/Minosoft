@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.entities.data
 
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -95,7 +95,7 @@ class EntityData(
 
     fun getBitMask(field: EntityDataField, bitMask: Int, default: Byte): Boolean {
         val byte: Byte = get(field, default)
-        return BitByte.isBitMask(byte.toInt(), bitMask)
+        return byte.toInt().isBitMask(bitMask)
     }
 
     fun getChatComponent(field: EntityDataField, default: Any?): ChatComponent {

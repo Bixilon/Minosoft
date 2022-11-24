@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.network.client.netty
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -49,9 +49,9 @@ import javax.crypto.Cipher
 class NettyClient(
     val connection: Connection,
 ) : SimpleChannelInboundHandler<Any>(), ClientNetwork {
-    override var connected by watched(false)
+    override var connected by observed(false)
         private set
-    override var state by watched(ProtocolStates.HANDSHAKING)
+    override var state by observed(ProtocolStates.HANDSHAKING)
     override var compressionThreshold = -1
         set(value) {
             field = value

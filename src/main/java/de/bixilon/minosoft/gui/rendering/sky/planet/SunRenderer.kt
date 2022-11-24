@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.sky.planet
 
+import de.bixilon.kutil.hash.HashUtil.murmur64
+import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.minecraft
-import de.bixilon.minosoft.util.KUtil.murmur64
-import de.bixilon.minosoft.util.KUtil.nextFloat
 import java.util.*
 import kotlin.math.pow
 

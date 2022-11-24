@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.light.updater
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.gui.rendering.world.light.LightmapBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import kotlin.random.Random
+import java.util.*
 
 object FullbrightLightUpdater : LightmapUpdater {
 

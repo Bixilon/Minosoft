@@ -18,9 +18,9 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -275,7 +275,7 @@ class GLFWWindow(
         glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
     }
 
-    override var focused by watched(false)
+    override var focused by observed(false)
 
     private fun onFocusChange(window: Long, focused: Boolean) {
         if (window != this.window) {
@@ -284,7 +284,7 @@ class GLFWWindow(
         this.focused = focused
     }
 
-    override var iconified by watched(false)
+    override var iconified by observed(false)
 
     private fun onIconify(window: Long, iconified: Boolean) {
         if (window != this.window) {

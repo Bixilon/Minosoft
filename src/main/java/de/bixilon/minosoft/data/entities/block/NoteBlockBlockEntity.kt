@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.No
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import java.util.*
 
 class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     private val noteParticleType = connection.registries.particleTypeRegistry[NoteParticle]
@@ -50,8 +51,8 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         // ToDo: Play sound?
     }
 
-    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
-        super.tick(connection, blockState, blockPosition)
+    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        super.tick(connection, blockState, blockPosition, random)
         if (!showParticleNextTick) {
             return
         }

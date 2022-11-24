@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts

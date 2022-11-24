@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.util.delegate
 
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.list.ListChange
-import de.bixilon.kutil.watcher.list.ListDataWatcher.Companion.observeList
-import de.bixilon.kutil.watcher.map.MapChange
-import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
-import de.bixilon.kutil.watcher.map.bi.BiMapDataWatcher.Companion.observeBiMap
-import de.bixilon.kutil.watcher.set.SetChange
-import de.bixilon.kutil.watcher.set.SetDataWatcher.Companion.observeSet
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.list.ListChange
+import de.bixilon.kutil.observer.list.ListObserver.Companion.observeList
+import de.bixilon.kutil.observer.map.MapChange
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
+import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observeBiMap
+import de.bixilon.kutil.observer.set.SetChange
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
 import kotlin.reflect.KProperty0

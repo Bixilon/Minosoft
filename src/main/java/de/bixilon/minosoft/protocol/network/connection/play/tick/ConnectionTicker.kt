@@ -15,8 +15,9 @@ package de.bixilon.minosoft.protocol.network.connection.play.tick
 
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
 import de.bixilon.kutil.concurrent.time.TimeWorker
+import de.bixilon.kutil.concurrent.time.TimeWorker.runLater
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.DebugOptions
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.world.time.WorldTime
@@ -37,7 +38,7 @@ class ConnectionTicker(private val connection: PlayConnection) {
             } else {
                 // Ticks are postponed 10 ticks
                 // When joining/respawning the lock on chunks, etc is the performance bottleneck and makes the game laggy.
-                TimeWorker.runIn(10 * ProtocolDefinition.TICK_TIME) { register() }
+                runLater(10 * ProtocolDefinition.TICK_TIME) { register() }
             }
         }
     }

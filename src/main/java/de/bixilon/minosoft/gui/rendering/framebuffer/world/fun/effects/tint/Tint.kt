@@ -18,14 +18,15 @@ import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
+import de.bixilon.minosoft.util.KUtil.nextInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import kotlin.random.Random
+import java.util.*
 
 class Tint(override val renderWindow: RenderWindow) : FunEffect {
     override val resourceLocation: ResourceLocation get() = RESOURCE_LOCATION
     override val shader = createShader(fragment = "minosoft:framebuffer/world/fun/tint.fsh".toResourceLocation()) { TintShader(it) }
     private var updateUniform = true
-    var color = RGBColor(Random.nextInt(20, 255), Random.nextInt(20, 255), Random.nextInt(20, 255), 0xFF)
+    var color = Random().let { RGBColor(it.nextInt(20, 255), it.nextInt(20, 255), it.nextInt(20, 255), 0xFF) }
         set(value) {
             field = value
             updateUniform = true

@@ -17,9 +17,9 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.concurrent.lock.simple.SimpleLock
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
 import de.bixilon.minosoft.data.container.click.ContainerAction
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
@@ -43,14 +43,14 @@ open class Container(
     val title: ChatComponent? = null,
 ) : Iterable<Map.Entry<Int, ItemStack>> {
     @Deprecated("Should not be accessed directly")
-    val slots: MutableMap<Int, ItemStack> by watchedMap(Int2ObjectOpenHashMap())
+    val slots: MutableMap<Int, ItemStack> by observedMap(Int2ObjectOpenHashMap())
     val lock = SimpleLock()
-    var propertiesRevision by watched(0L)
-    var revision by watched(0L)
+    var propertiesRevision by observed(0L)
+    var revision by observed(0L)
     var serverRevision = 0
     private var lastActionId = 0
     var actions: SynchronizedBiMap<Int, ContainerAction> = synchronizedBiMapOf()
-    var floatingItem: ItemStack? by watched(null)
+    var floatingItem: ItemStack? by observed(null)
 
     val id: Int?
         get() = connection.player.containers.getKey(this)

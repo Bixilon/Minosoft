@@ -30,8 +30,8 @@ import de.bixilon.minosoft.data.world.positions.BlockPositionUtil
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import java.util.*
 import kotlin.math.abs
-import kotlin.random.Random
 
 @Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
@@ -282,9 +282,9 @@ object VecUtil {
         return Vec3d(this.x + xz(), this.y + y, this.z + xz())
     }
 
-    val Double.noise: Double
-        get() = Random.nextDouble() / this * if (Random.nextBoolean()) 1.0 else -1.0
-
+    fun Double.noised(random: Random): Double {
+        return random.nextDouble() / this * if (random.nextBoolean()) 1.0 else -1.0
+    }
 
     fun Vec3d.clearZero() {
         if (abs(x) < 0.003) {

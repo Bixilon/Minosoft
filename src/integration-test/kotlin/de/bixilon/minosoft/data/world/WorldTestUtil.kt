@@ -16,7 +16,8 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil
-import de.bixilon.kutil.watcher.DataWatcher
+import de.bixilon.kutil.observer.DataObserver
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.border.WorldBorder
@@ -26,7 +27,6 @@ import de.bixilon.minosoft.data.world.view.TEST_WORLD_VIEW
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.test.IT
-import de.bixilon.minosoft.util.KUtil.forceSet
 
 object WorldTestUtil {
 
@@ -35,7 +35,7 @@ object WorldTestUtil {
         val world = IT.OBJENESIS.newInstance(World::class.java)
         world::chunks.forceSet(CollectionUtil.lockMapOf())
         world::border.forceSet(WorldBorder())
-        world::dimension.forceSet(DataWatcher.watched(DimensionProperties()))
+        world::dimension.forceSet(DataObserver(DimensionProperties()))
         world::connection.forceSet(connection)
         world.chunkMin = Vec2i.EMPTY
         world.chunkMax = Vec2i.EMPTY

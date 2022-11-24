@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.bossbar
 
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.text.ChatComponent
 
 class Bossbar(
@@ -23,9 +23,9 @@ class Bossbar(
     notches: BossbarNotches = BossbarNotches.NO_NOTCHES,
     flags: BossbarFlags,
 ) {
-    var title by watched(title)
-    var progress by watched(progress)
-    var color by watched(color)
-    var notches by watched(notches)
-    var flags by watched(flags)
+    var title by observed(title)
+    var progress by observed(progress)
+    var color by observed(color)
+    var notches by observed(notches)
+    var flags by observed(flags)
 }

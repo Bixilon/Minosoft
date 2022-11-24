@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.container.stack
 import de.bixilon.kutil.concurrent.lock.simple.ParentLock
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.property.*
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -58,7 +58,7 @@ class ItemStack {
             _nbt?.let { return it }; return NbtProperty(this).apply { _nbt = this }
         }
 
-    var revision by watched(0L)
+    var revision by observed(0L)
 
     init {
         val container = holder?.container

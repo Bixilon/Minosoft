@@ -15,22 +15,21 @@ package de.bixilon.minosoft.data.bossbar
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
-import de.bixilon.kutil.watcher.map.MapChange.Companion.values
-import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
-import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.watchedMap
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observedMap
 import java.util.*
 
 class BossbarManager {
     private val _bossbar: LockMap<UUID, Bossbar> = lockMapOf()
-    val bossbars by watchedMap(_bossbar)
-    var darkSky by watched(false)
-    var fog by watched(false)
+    val bossbars by observedMap(_bossbar)
+    var darkSky by observed(false)
+    var fog by observed(false)
 
     init {
         this::bossbars.observeMap(this) {
-            for (bossbar in it.adds.values()) {
+            for ((_, bossbar) in it.adds) {
                 processFlags(bossbar.flags, ignoreRecalculate = true)
                 bossbar::flags.observe(this) { flags -> processFlags(flags) }
             }

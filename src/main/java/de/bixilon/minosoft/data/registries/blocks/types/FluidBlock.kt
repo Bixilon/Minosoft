@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.random.Random
+import java.util.*
 
 open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFillable {
     override val fluid: Fluid = registries.fluidRegistry[data["still_fluid"]]!!

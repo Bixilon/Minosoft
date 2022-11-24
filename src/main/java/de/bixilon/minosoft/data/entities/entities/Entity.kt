@@ -69,7 +69,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
-import kotlin.random.Random
 
 abstract class Entity(
     protected val connection: PlayConnection,
@@ -78,7 +77,7 @@ abstract class Entity(
     position: Vec3d,
     var rotation: EntityRotation,
 ) : PhysicsEntity {
-    protected val random = Random
+    protected val random = Random()
     open val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
     val effects = StatusEffectProperty()
     val attributes: MutableMap<ResourceLocation, EntityAttribute> = synchronizedMapOf()

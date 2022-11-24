@@ -28,10 +28,10 @@ import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
@@ -86,9 +86,9 @@ class LocalPlayerEntity(
     connection: PlayConnection,
     val privateKey: PlayerPrivateKey?,
 ) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, EntityData(connection), Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username, account.properties) {
-    var healthCondition by watched(HealthCondition())
-    var experienceCondition by watched(ExperienceCondition())
-    var compass by watched(CompassPosition())
+    var healthCondition by observed(HealthCondition())
+    var experienceCondition by observed(ExperienceCondition())
+    var compass by observed(CompassPosition())
 
     val baseAbilities = Abilities()
 
@@ -98,7 +98,7 @@ class LocalPlayerEntity(
         ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
 
-    var selectedHotbarSlot: Int by watched(0)
+    var selectedHotbarSlot: Int by observed(0)
 
     init {
         this::selectedHotbarSlot.observe(this) {

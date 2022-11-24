@@ -19,8 +19,8 @@ import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedSet
 import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.assets.AssetsLoader
 import de.bixilon.minosoft.assets.AssetsManager
 import de.bixilon.minosoft.commands.nodes.RootNode
@@ -104,7 +104,7 @@ class PlayConnection(
     val collisionDetector = CollisionDetector(this)
     var retry = true
 
-    var state by watched(PlayConnectionStates.WAITING)
+    var state by observed(PlayConnectionStates.WAITING)
 
     var rootNode: RootNode? = null
 

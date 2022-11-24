@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.bossbar
 
-import de.bixilon.minosoft.util.BitByte.isBitMask
+import de.bixilon.kutil.bit.BitByte.isBitMask
 
 data class BossbarFlags(
     val darkSky: Boolean,

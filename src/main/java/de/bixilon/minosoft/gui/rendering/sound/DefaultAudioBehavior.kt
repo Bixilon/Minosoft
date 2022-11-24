@@ -19,16 +19,17 @@ import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import kotlin.random.Random
+import java.util.*
 
 object DefaultAudioBehavior {
+    private val random = Random()
     private val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".toResourceLocation()
 
     fun register(connection: PlayConnection) {
         val world = connection.world
         val invokers = listOf(
             CallbackEventListener.of<PlaySoundEvent> { world.playSound(it.soundEvent, it.position, it.volume, it.pitch) },
-            CallbackEventListener.of<ExplosionEvent> { world.playSound(ENTITY_GENERIC_EXPLODE, Vec3(it.position), 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
+            CallbackEventListener.of<ExplosionEvent> { world.playSound(ENTITY_GENERIC_EXPLODE, Vec3(it.position), 4.0f, (1.0f + (random.nextFloat() - random.nextFloat()) * 0.2f) * 0.7f) },
         )
 
         connection.register(*invokers.toTypedArray())

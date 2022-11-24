@@ -11,9 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util
+package de.bixilon.minosoft.data.chat.signature
 
-@Deprecated("Kutil 1.18")
-class Reference<T>(
-    var value: T,
-)
+import org.testng.annotations.Test
+
+@Test(groups = ["chat", "signature"], dependsOnGroups = ["private_key"])
+class ChatSignTest {
+
+
+}

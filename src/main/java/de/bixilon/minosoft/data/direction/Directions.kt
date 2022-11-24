@@ -23,7 +23,7 @@ import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.enums.EnumUtil
 import de.bixilon.kutil.enums.ValuesEnum
 import de.bixilon.kutil.exception.Broken
-import de.bixilon.kutil.reflection.ReflectionUtil.setValue
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
@@ -32,6 +32,7 @@ import de.bixilon.minosoft.data.world.chunk.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import kotlin.math.abs
+import kotlin.reflect.jvm.javaField
 
 enum class Directions(
     val horizontalId: Int,
@@ -259,9 +260,9 @@ enum class Directions(
 
 
         init {
-            val field = Directions::class.java.getDeclaredField("inverted")
+            val field = Directions::inverted.javaField!!
             for (direction in VALUES) {
-                field.setValue(direction, direction.invert())
+                field.forceSet(direction, direction.invert())
             }
         }
     }

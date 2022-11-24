@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasSlot

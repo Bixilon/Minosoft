@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.gui.screen.container.enchanting
 
 import de.bixilon.kotlinglm.vec2.Vec2i
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.types.EnchantingContainer
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer

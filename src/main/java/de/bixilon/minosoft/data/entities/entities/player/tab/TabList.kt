@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.tab
 
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.entities.entities.player.additional.PlayerAdditional
 import de.bixilon.minosoft.data.text.ChatComponent
 import java.util.*
@@ -21,8 +21,8 @@ import java.util.*
 class TabList {
     val uuid: MutableMap<UUID, PlayerAdditional> = mutableMapOf()
     val name: MutableMap<String, PlayerAdditional> = mutableMapOf()
-    var header by watched(ChatComponent.of(""))
-    var footer by watched(ChatComponent.of(""))
+    var header by observed(ChatComponent.of(""))
+    var footer by observed(ChatComponent.of(""))
 
 
     fun remove(uuid: UUID) {

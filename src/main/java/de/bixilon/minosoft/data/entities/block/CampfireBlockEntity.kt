@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import kotlin.random.Random
+import java.util.*
 
 class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     val items: Array<ItemStack?> = arrayOfNulls(RenderConstants.CAMPFIRE_ITEMS)
@@ -60,7 +60,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
     }
 
 
-    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         if (blockState.properties[BlockProperties.LIT] != true) {
             return
         }
@@ -68,9 +68,9 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             return
         }
 
-        if (Random.nextFloat() < 0.11f) {
-            for (i in 0 until Random.nextInt(2) + 2) {
-                blockState.block.spawnSmokeParticles(connection, blockState, blockPosition, false)
+        if (random.nextFloat() < 0.11f) {
+            for (i in 0 until random.nextInt(2) + 2) {
+                blockState.block.spawnSmokeParticles(connection, blockState, blockPosition, false, random)
             }
         }
 
@@ -78,7 +78,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
         for ((index, item) in items.withIndex()) {
             item ?: continue
-            if (!Random.chance(20)) {
+            if (!random.chance(20)) {
                 continue
             }
             val direction = Directions.byHorizontal(Math.floorMod(index + facing, Directions.SIDES.size))

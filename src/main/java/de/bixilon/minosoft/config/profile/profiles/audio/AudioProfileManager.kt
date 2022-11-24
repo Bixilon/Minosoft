@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JavaType
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedBiMapOf
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
-import de.bixilon.kutil.watcher.map.bi.BiMapDataWatcher.Companion.watchedBiMap
+import de.bixilon.kutil.observer.map.bi.BiMapObserver.Companion.observedBiMap
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -37,7 +37,7 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
 
 
     override var currentLoadingPath: String? = null
-    override val profiles: AbstractMutableBiMap<String, AudioProfile> by watchedBiMap(synchronizedBiMapOf())
+    override val profiles: AbstractMutableBiMap<String, AudioProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: AudioProfile = null.unsafeCast()
         set(value) {

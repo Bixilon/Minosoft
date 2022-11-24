@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Po
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.random.Random
+import java.util.*
 
 open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
     private val portalParticleType = registries.particleTypeRegistry[PortalParticle]

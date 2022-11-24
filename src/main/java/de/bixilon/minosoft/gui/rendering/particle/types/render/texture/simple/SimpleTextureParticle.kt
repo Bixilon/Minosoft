@@ -41,7 +41,7 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
     }
 
     fun setRandomSprite() {
-        texture = connection.rendering?.renderWindow?.textureManager?.staticTextures?.get(data.type.textures.random(random))
+        texture = connection.rendering?.renderWindow?.textureManager?.staticTextures?.get(data.type.textures.random())
     }
 
     override fun tick() {

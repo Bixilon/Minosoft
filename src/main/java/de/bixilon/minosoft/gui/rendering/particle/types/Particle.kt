@@ -29,8 +29,8 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.interpolateLinear
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import java.util.*
 import kotlin.math.abs
-import kotlin.random.Random
 import kotlin.reflect.full.companionObjectInstance
 
 abstract class Particle(
@@ -47,7 +47,7 @@ abstract class Particle(
     }
     var chunkPosition = Vec2i(position.x.toInt() shr 4, position.z.toInt() shr 4)
         private set
-    protected val random = Random
+    protected val random = Random()
     private var lastTickTime = -1L
 
     // ageing

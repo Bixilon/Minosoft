@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.kutil.bit.BitByte.isBit
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.minosoft.data.abilities.Gamemodes
@@ -32,7 +33,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
-import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -72,7 +72,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
         if (buffer.versionId < V_20W27A) {
             val gamemodeRaw = buffer.readUnsignedByte()
-            isHardcore = BitByte.isBitSet(gamemodeRaw, 3)
+            isHardcore = gamemodeRaw.isBit(3)
             // remove hardcore bit and get gamemode
             gamemode = Gamemodes[(gamemodeRaw and (0x8.inv()))]
         } else {

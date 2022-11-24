@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.du
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.random.Random
+import java.util.*
 
 open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : TorchBlock(resourceLocation, registries, data) {
     private val redstoneDustParticle = registries.particleTypeRegistry[DustParticle]

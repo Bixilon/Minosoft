@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.container.types
 
 import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
-import de.bixilon.kutil.watcher.map.MapDataWatcher.Companion.observeMap
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.additional
 
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
 import de.bixilon.minosoft.data.scoreboard.Team
@@ -31,14 +31,14 @@ class PlayerAdditional(
     publicKey: PlayerPublicKey? = null,
     listed: Boolean = true,
 ) : Comparable<PlayerAdditional> {
-    var name by watched(name)
-    var ping by watched(ping)
-    var gamemode by watched(gamemode)
-    var displayName by watched(displayName)
-    var properties by watched(properties)
-    var team by watched(team)
-    var publicKey by watched(publicKey)
-    var listed by watched(listed)
+    var name by observed(name)
+    var ping by observed(ping)
+    var gamemode by observed(gamemode)
+    var displayName by observed(displayName)
+    var properties by observed(properties)
+    var team by observed(team)
+    var publicKey by observed(publicKey)
+    var listed by observed(listed)
 
     val tabDisplayName: ChatComponent
         get() = displayName?.let { team?.decorateName(it) ?: it } ?: ChatComponent.of(name)

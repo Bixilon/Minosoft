@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.config.profile.delegate.watcher
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
-import de.bixilon.kutil.watcher.WatchUtil.identifier
+import de.bixilon.kutil.observer.ObserveUtil.identifier
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil

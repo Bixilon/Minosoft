@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.effect
 
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_18_2_PRE1
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_9_4
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_22W12A
-import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

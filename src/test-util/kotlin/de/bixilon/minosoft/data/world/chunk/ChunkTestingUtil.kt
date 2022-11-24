@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.world.chunk
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.lock.thread.ThreadLock
-import de.bixilon.kutil.reflection.ReflectionUtil.setValue
-import de.bixilon.kutil.watcher.DataWatcher
+import de.bixilon.kutil.observer.DataObserver
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.light.LightProperties
 import de.bixilon.minosoft.data.registries.blocks.light.SolidProperty
@@ -34,7 +34,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.forceSet
 import de.bixilon.minosoft.util.KUtil.minosoft
 import org.objenesis.ObjenesisStd
 import org.testng.annotations.Test
@@ -48,15 +47,15 @@ object ChunkTestingUtil {
     fun createConnection(): PlayConnection {
         val connection = ObjenesisStd().newInstance(PlayConnection::class.java)
 
-        Connection::events.javaField!!.setValue(connection, EventMaster())
+        Connection::events.javaField!!.forceSet(connection, EventMaster())
         return connection
     }
 
     fun createWorld(): World {
         val objenesis = ObjenesisStd()
         val world = objenesis.newInstance(World::class.java)
-        world::dimension.javaField!!.setValue(world, DataWatcher(DimensionProperties(hasSkyLight = true)))
-        world::connection.javaField!!.setValue(world, createConnection())
+        world::dimension.javaField!!.forceSet(world, DataObserver(DimensionProperties(hasSkyLight = true)))
+        world::connection.javaField!!.forceSet(world, createConnection())
 
         return world
     }
@@ -64,13 +63,13 @@ object ChunkTestingUtil {
     fun createEmptyChunk(position: ChunkPosition): Chunk {
         val objenesis = ObjenesisStd()
         val chunk = objenesis.newInstance(Chunk::class.java)
-        Chunk::lock.javaField!!.setValue(chunk, ThreadLock())
+        Chunk::lock.javaField!!.forceSet(chunk, ThreadLock())
         chunk::chunkPosition.forceSet(position)
-        Chunk::world.javaField!!.setValue(chunk, world)
-        Chunk::maxSection.javaField!!.setValue(chunk, chunk.world.dimension!!.maxSection)
-        Chunk::connection.javaField!!.setValue(chunk, chunk.world.connection)
-        Chunk::light.javaField!!.setValue(chunk, ChunkLight(chunk))
-        Chunk::neighbours.javaField!!.setValue(chunk, ChunkNeighbours(chunk))
+        Chunk::world.javaField!!.forceSet(chunk, world)
+        Chunk::maxSection.javaField!!.forceSet(chunk, chunk.world.dimension!!.maxSection)
+        Chunk::connection.javaField!!.forceSet(chunk, chunk.world.connection)
+        Chunk::light.javaField!!.forceSet(chunk, ChunkLight(chunk))
+        Chunk::neighbours.javaField!!.forceSet(chunk, ChunkNeighbours(chunk))
         chunk.sections = arrayOfNulls(SECTIONS)
 
         return chunk
@@ -110,8 +109,8 @@ object ChunkTestingUtil {
         val block = Block(minosoft(name), Registries(), mapOf())
         val material = Material(minosoft("dummy"), null, PushReactions.NORMAL, false, false, false, false, false, false, true)
         val state = BlockState(block, material = material, collisionShape = VoxelShape.EMPTY, outlineShape = VoxelShape.EMPTY, hardness = 1.0f, requiresTool = false, isSolid = true, luminance = luminance, lightProperties = lightProperties)
-        block::states.javaField!!.setValue(block, setOf(state))
-        block::defaultState.javaField!!.setValue(block, state)
+        block::states.javaField!!.forceSet(block, setOf(state))
+        block::defaultState.javaField!!.forceSet(block, state)
 
         return block
     }

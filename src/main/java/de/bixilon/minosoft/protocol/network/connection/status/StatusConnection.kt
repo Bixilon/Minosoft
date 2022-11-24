@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.network.connection.status
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.time.TimeWorker
 import de.bixilon.kutil.concurrent.time.TimeWorkerTask
-import de.bixilon.kutil.watcher.DataWatcher.Companion.observe
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
@@ -43,8 +43,8 @@ class StatusConnection(
     var address: String,
     var forcedVersion: Version? = null,
 ) : Connection() {
-    var lastServerStatus: ServerStatus? by watched(null)
-    var pingQuery: PingQuery? by watched(null)
+    var lastServerStatus: ServerStatus? by observed(null)
+    var pingQuery: PingQuery? by observed(null)
     var lastPongEvent: StatusPongReceiveEvent? = null
 
     var tryAddress: ServerAddress? = null
@@ -53,7 +53,7 @@ class StatusConnection(
 
     var serverVersion: Version? = null
 
-    var state by watched(StatusConnectionStates.WAITING)
+    var state by observed(StatusConnectionStates.WAITING)
 
     private var timeoutTask: TimeWorkerTask? = null
 
@@ -144,9 +144,9 @@ class StatusConnection(
         state = StatusConnectionStates.RESOLVING
 
         // timeout task
-        timeoutTask = TimeWorker.runIn(30000) {
+        timeoutTask = TimeWorker.runLater(30000) {
             if (state == StatusConnectionStates.ERROR) {
-                return@runIn
+                return@runLater
             }
             if (state != StatusConnectionStates.PING_DONE) {
                 network.disconnect()

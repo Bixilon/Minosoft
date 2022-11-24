@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.eros.util
 import com.sun.javafx.util.WeakReferenceQueue
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.reflection.ReflectionUtil.setValue
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
@@ -125,7 +125,7 @@ object JavaFXUtil {
 
         val controller = fxmlLoader.getController<T>()
 
-        controller::root.javaField!!.setValue(controller, pane)
+        controller::root.javaField!!.forceSet(controller, pane)
         controller.postInit()
 
         return controller

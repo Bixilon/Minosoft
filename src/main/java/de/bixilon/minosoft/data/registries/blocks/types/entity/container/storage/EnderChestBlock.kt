@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import kotlin.random.Random
+import java.util.*
 
 open class EnderChestBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : StorageBlock<EnderChestBlockEntity>(resourceLocation, registries, data) {
     private val portalParticle = registries.particleTypeRegistry[PortalParticle]

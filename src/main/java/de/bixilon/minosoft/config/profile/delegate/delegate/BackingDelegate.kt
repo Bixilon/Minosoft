@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.delegate.delegate
 
-import de.bixilon.kutil.watcher.WatchUtil.identifier
+import de.bixilon.kutil.observer.ObserveUtil.identifier
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.ProfilesDelegateManager

@@ -17,9 +17,9 @@ import com.google.common.base.Objects
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.MutableJsonObject
+import de.bixilon.kutil.observer.list.ListObserver.Companion.observeList
+import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.kutil.watcher.list.ListDataWatcher.Companion.observeList
-import de.bixilon.kutil.watcher.list.ListDataWatcher.Companion.watchedList
 import de.bixilon.minosoft.data.container.InventoryDelegate
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -33,7 +33,7 @@ class DisplayProperty(
     customDisplayName: ChatComponent? = null,
     dyedColor: RGBColor? = null,
 ) : Property {
-    val lore by watchedList(lore) // ToDo: Lock
+    val lore by observedList(lore) // ToDo: Lock
     var _customDisplayName = customDisplayName
     var customDisplayName by InventoryDelegate(stack, this::_customDisplayName)
     var _dyeColor = dyedColor

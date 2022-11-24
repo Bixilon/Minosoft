@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play
 
+import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.network.client.test.TestNetwork
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.IT.reference
-import de.bixilon.minosoft.util.KUtil.forceSet
 
 
 object ConnectionTestUtil {

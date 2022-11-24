@@ -33,10 +33,10 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ca
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.noise
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.noised
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import kotlin.random.Random
+import java.util.*
 
 open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : BlockWithEntity<CampfireBlockEntity>(resourceLocation, registries, data) {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
@@ -46,16 +46,16 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     private val lavaParticle = registries.particleTypeRegistry[LavaParticle]!!
     private val smokeParticle = registries.particleTypeRegistry[SmokeParticle]!!
 
-    private fun extinguish(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+    private fun extinguish(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         for (i in 0 until 20) {
-            spawnSmokeParticles(connection, blockState, blockPosition, true)
+            spawnSmokeParticles(connection, blockState, blockPosition, true, random)
         }
     }
 
-    fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean) {
+    fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean, random: Random) {
         val position = Vec3d(blockPosition).horizontalPlus(
-            { 0.5 + 3.0.noise },
-            Random.nextDouble() + Random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
+            { 0.5 + 3.0.noised(random) },
+            random.nextDouble() + random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
         )
 
         val isSignal = blockState.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE] == true
@@ -70,7 +70,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(
-                { 0.5 + 4.0.noise },
+                { 0.5 + 4.0.noised(random) },
                 0.5
             )
             connection.world += SmokeParticle(connection, position, Vec3d(0.0f, 0.005f, 0.0f), smokeParticle.default())
@@ -99,7 +99,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             return super.onUse(connection, target, hand, itemStack)
         }
         connection.world[target.blockPosition] = target.blockState.withProperties(BlockProperties.LIT to false)
-        extinguish(connection, target.blockState, target.blockPosition)
+        extinguish(connection, target.blockState, target.blockPosition, Random())
         return InteractionResults.SUCCESS
     }
 

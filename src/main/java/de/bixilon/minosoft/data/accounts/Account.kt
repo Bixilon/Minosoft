@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.watcher.DataWatcher.Companion.watched
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
@@ -42,8 +42,8 @@ abstract class Account(
     abstract val id: String
     abstract val type: ResourceLocation
     abstract val properties: PlayerProperties?
-    @get:JsonIgnore @set:JsonIgnore open var state: AccountStates by watched(AccountStates.UNCHECKED)
-    @get:JsonIgnore open var error: Throwable? by watched(null)
+    @get:JsonIgnore @set:JsonIgnore open var state: AccountStates by observed(AccountStates.UNCHECKED)
+    @get:JsonIgnore open var error: Throwable? by observed(null)
     abstract val uuid: UUID
 
 

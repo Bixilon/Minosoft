@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.entity.move
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.bit.BitByte.isBitMask
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
@@ -22,7 +23,6 @@ import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -57,23 +57,23 @@ class PositionRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         val entity = connection.player
         // correct position with flags (relative position possible)
         val position = Vec3d(this.position)
-        if (BitByte.isBitMask(flags, 0x01)) {
+        if (flags.isBitMask(0x01)) {
             position.x += entity.position.x
         }
-        if (BitByte.isBitMask(flags, 0x02)) {
+        if (flags.isBitMask(0x02)) {
             position.y += entity.position.y
         }
-        if (BitByte.isBitMask(flags, 0x04)) {
+        if (flags.isBitMask(0x04)) {
             position.z += entity.position.z
         }
 
         var yaw = rotation.yaw
-        if (BitByte.isBitMask(flags, 0x08)) {
+        if (flags.isBitMask(0x08)) {
             yaw += entity.rotation.yaw
         }
 
         var pitch = rotation.pitch
-        if (BitByte.isBitMask(flags, 0x10)) {
+        if (flags.isBitMask(0x10)) {
             pitch += entity.rotation.pitch
         }
 

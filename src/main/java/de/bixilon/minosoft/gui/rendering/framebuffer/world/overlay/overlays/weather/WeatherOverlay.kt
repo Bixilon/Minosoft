@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.wea
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.random.RandomUtil.nextFloat
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -25,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.minosoft
-import de.bixilon.minosoft.util.KUtil.nextFloat
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 

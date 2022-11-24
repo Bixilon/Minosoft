@@ -32,8 +32,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 import kotlin.math.abs
-import kotlin.random.Random
 
 open class Fluid(
     override val resourceLocation: ResourceLocation,
