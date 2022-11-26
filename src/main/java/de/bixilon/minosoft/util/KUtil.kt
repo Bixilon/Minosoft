@@ -326,7 +326,13 @@ object KUtil {
         return UUID(random.nextLong(), random.nextLong())
     }
 
-    fun Random.nextInt(start: Int, end: Int): Int {
-        TODO()
+    @Deprecated("Kutil")
+    fun Random.nextInt(min: Int, max: Int): Int {
+        return nextInt((max - min) + 1) + min
+    }
+
+    @Deprecated("Kutil")
+    fun Random.nextLong(min: Long, max: Long): Long {
+        return nextLong() % (max - min) + min
     }
 }
