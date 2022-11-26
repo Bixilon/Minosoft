@@ -11,15 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.audio.types
+package de.bixilon.minosoft.config.profile.delegate
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.formatting.TextFormattable
 
-class TypesC(profile: AudioProfile) {
+interface AbstractDelegate<T> : TextFormattable {
+    val profile: Profile
+    val name: ResourceLocation
+    val description: ResourceLocation
 
-    /**
-     * Play (custom) sounds from the server
-     */
-    var packet by BooleanDelegate(profile, true, "profile.audio.types.packet")
+    fun get(): T
+    fun set(value: T)
+
+    fun validate(value: T) = Unit
+
+    override fun toText(): Any? {
+        return get()
+    }
 }

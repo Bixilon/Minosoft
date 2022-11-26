@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2022 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.config.profile.profiles.audio.gui
 
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 
-class GuiC {
+class GuiC(profile: AudioProfile) {
 
     /**
      * Enables all gui sounds
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(profile, true, "profile.audio.gui.enabled")
 
     /**
      * Enables all sounds related to button (currently only clicking
      */
-    var button by delegate(true)
+    var button by BooleanDelegate(profile, true, "profile.audio.gui.button")
 }

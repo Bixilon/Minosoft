@@ -245,7 +245,7 @@ class LocalPlayerEntity(
         get() = inventory.equipment
 
     private fun sendMovementPackets() {
-        if (connection.profiles.rendering.movement.disablePacketSending) {
+        if (!connection.profiles.rendering.movement.packetSending) {
             return
         }
         val currentTime = millis()

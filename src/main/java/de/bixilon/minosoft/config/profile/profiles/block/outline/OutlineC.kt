@@ -13,36 +13,39 @@
 
 package de.bixilon.minosoft.config.profile.profiles.block.outline
 
-import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.ColorDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 
-class OutlineC {
+class OutlineC(profile: BlockProfile) {
 
     /**
      * Highlights the current selected block
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(profile, true, "profile.block.outline.enabled")
 
-    /**
-     * Shows the collision box of the selected block
-     */
-    var showCollisionBoxes by delegate(false)
 
     /**
      * Disables the z-buffer of the block outline
      * Makes the whole outline visible and ignores the walls
      */
-    var showThroughWalls by delegate(false)
+    var showThroughWalls by BooleanDelegate(profile, false, "profile.block.outline.through_walls")
 
     /**
      * The color of the block that is currently selected
      * Defaults to light red
      */
-    var outlineColor by delegate(ChatColors.RED)
+    var outlineColor by ColorDelegate(profile, ChatColors.RED, "profile.block.outline.color")
+
+
+    /**
+     * Shows the collision box of the selected block
+     */
+    var collisions by BooleanDelegate(profile, false, "profile.block.outline.collisions.enabled")
 
     /**
      * The color of the block collision box that is currently selected
-     * Defaults to light blue
      */
-    var collisionColor by delegate(ChatColors.RED)
+    var collisionColor by ColorDelegate(profile, ChatColors.BLUE, "profile.block.outline.collisions.color")
 }

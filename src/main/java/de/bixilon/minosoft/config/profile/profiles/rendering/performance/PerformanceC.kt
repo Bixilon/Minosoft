@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.performance
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class PerformanceC {
+class PerformanceC(profile: RenderingProfile) {
 
     /**
      * Does not render the bottom bedrock face when at minimum y.
      * Kind of xray when falling out of the world.
      */
-    var fastBedrock by delegate(true)
+    var fastBedrock by BooleanDelegate(profile, true, "")
 
     /**
      * Disables the voronoi noise for biome cache building.
@@ -30,10 +31,10 @@ class PerformanceC {
      * Only affects 19w36+ (~1.14.4)
      * ToDo: Requires rejoin to apply
      */
-    var fastBiomeNoise by delegate(true)
+    var fastBiomeNoise by BooleanDelegate(profile, true, "")
 
     /**
      * Sleeps 100 ms if the rendering window is not in focus anymore
      */
-    var slowRendering by delegate(true)
+    var slowRendering by BooleanDelegate(profile, true, "")
 }

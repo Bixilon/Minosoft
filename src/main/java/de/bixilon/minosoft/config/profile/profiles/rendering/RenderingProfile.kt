@@ -45,17 +45,17 @@ class RenderingProfile(
     override val version: Int = latestVersion
     override var description by delegate(description ?: "")
 
-    val advanced = AdvancedC()
-    val animations = AnimationsC()
-    val camera = CameraC()
-    val chunkBorder = ChunkBorderC()
-    val experimental = ExperimentalC()
-    val fog = FogC()
-    val light = LightC()
-    val movement = MovementC()
-    val performance = PerformanceC()
-    val overlay = OverlayC()
-    val sky = SkyC()
+    val advanced = AdvancedC(this)
+    val animations = AnimationsC(this)
+    val camera = CameraC(this)
+    val chunkBorder = ChunkBorderC(this)
+    val experimental = ExperimentalC(this)
+    val fog = FogC(this)
+    val light = LightC(this)
+    val movement = MovementC(this)
+    val performance = PerformanceC(this)
+    val overlay = OverlayC(this)
+    val sky = SkyC(this)
 
 
     override fun toString(): String {

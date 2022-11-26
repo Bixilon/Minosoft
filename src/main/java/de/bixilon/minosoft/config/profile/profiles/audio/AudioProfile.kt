@@ -15,6 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.audio
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.latestVersion
@@ -41,18 +42,18 @@ class AudioProfile(
      * Skips the loading od the AudioPlayer
      * Requires reloading of the whole audio subsystem to be applied
      */
-    var skipLoading by delegate(false)
+    var skipLoading by BooleanDelegate(this, false, "profile.audio.loading.skip")
 
     /**
      * Enabled or disables all audio playing
      * Does not skip loading of audio
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(this, false, "profile.audio.enabled")
 
-    val types = TypesC()
-    val volume = VolumeC()
+    val types = TypesC(this)
+    val volume = VolumeC(this)
 
-    val gui = GuiC()
+    val gui = GuiC(this)
 
 
     override fun toString(): String {

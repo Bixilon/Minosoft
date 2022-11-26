@@ -90,8 +90,8 @@ class AudioPlayer(
 
         val volumeConfig = connection.profiles.audio.volume
 
-        listener.masterVolume = volumeConfig.masterVolume
-        volumeConfig::masterVolume.profileWatch(this) { queue += { listener.masterVolume = it } }
+        listener.masterVolume = volumeConfig.master
+        volumeConfig::master.profileWatch(this) { queue += { listener.masterVolume = it } }
 
         connection.events.listen<CameraPositionChangeEvent> {
             queue += {

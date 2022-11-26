@@ -13,20 +13,22 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.sky
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.config.profile.profiles.rendering.sky.cloud.CloudC
 
-class SkyC {
+class SkyC(profile: RenderingProfile) {
 
     /**
      * Biomes to query when calculating sky color
      */
-    var biomeRadius by delegate(3) { check(it in 0..5) { "Must be in range 0..5" } }
+    var biomeRadius by IntDelegate(profile, 3, "", arrayOf(0..5))
 
     /**
      * Enables or disables the (ugly?) sun scatter
      */
-    var sunScatter by delegate(true)
+    var sunScatter by BooleanDelegate(profile, true, "")
 
-    val clouds = CloudC()
+    val clouds = CloudC(profile)
 }

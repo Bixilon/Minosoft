@@ -60,7 +60,7 @@ class BlockOutlineRenderer(
     override fun init(latch: CountUpAndDownLatch) {
         val profile = connection.profiles.block
         this.profile::enabled.profileWatch(this, profile = profile) { reload = true }
-        this.profile::showCollisionBoxes.profileWatch(this, profile = profile) { reload = true }
+        this.profile::collisions.profileWatch(this, profile = profile) { reload = true }
         this.profile::outlineColor.profileWatch(this, profile = profile) { reload = true }
         this.profile::collisionColor.profileWatch(this, profile = profile) { reload = true }
     }
@@ -123,7 +123,7 @@ class BlockOutlineRenderer(
         mesh.drawVoxelShape(target.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.outlineColor)
 
 
-        if (profile.showCollisionBoxes) {
+        if (profile.collisions) {
             mesh.drawVoxelShape(target.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, profile.collisionColor, 0.005f)
         }
         this.nextMesh = mesh

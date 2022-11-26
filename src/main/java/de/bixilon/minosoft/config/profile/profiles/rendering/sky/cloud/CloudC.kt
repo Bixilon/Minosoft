@@ -13,33 +13,36 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.sky.cloud
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class CloudC {
+class CloudC(profile: RenderingProfile) {
 
     /**
      * Renders clouds
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(profile, true, "")
 
     /**
      * Renders clouds flat and not 3d
      */
-    var flat by delegate(false)
+    var flat by BooleanDelegate(profile, false, "")
 
     /**
      * Moves clouds from time to time
      */
-    var movement by delegate(true)
+    var movement by BooleanDelegate(profile, true, "")
 
     /**
      * Max y axis distance to clouds
      */
-    var maxDistance by delegate(60.0f)
+    var maxDistance by FloatDelegate(profile, 60.0f, "")
 
 
     /**
      * Number of cloud layers
      */
-    var layers by delegate(3) { check(it in 0..10) }
+    var layers by IntDelegate(profile, 3, "", arrayOf(0..10))
 }

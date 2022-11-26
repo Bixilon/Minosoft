@@ -13,26 +13,27 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.overlay
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.fire.FireC
 import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.weather.WeatherC
 
-class OverlayC {
+class OverlayC(profile: RenderingProfile) {
     /**
      * Enables the powder snow 2d overlay if the player is frozen
      */
-    var powderSnow by delegate(true)
+    var powderSnow by BooleanDelegate(profile, true, "")
 
     /**
      * Enabled the pumpkin blur overlay if the player is waring a carved pumpkin
      */
-    var pumpkin by delegate(true)
+    var pumpkin by BooleanDelegate(profile, true, "")
 
     /**
      * Enables the world boreder overlay
      */
-    var worldBorder by delegate(true)
+    var worldBorder by BooleanDelegate(profile, true, "")
 
-    val fire = FireC()
-    val weather = WeatherC()
+    val fire = FireC(profile)
+    val weather = WeatherC(profile)
 }

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.config.profile.delegate.watcher.ProfileDelegateWatche
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import java.lang.ref.WeakReference
 
+@Deprecated("")
 object ProfilesDelegateManager {
     private val listeners: SynchronizedMap<String, SynchronizedMap<Profile?, MutableSet<Pair<WeakReference<Any>, ProfileDelegateWatcher<Any>>>>> = synchronizedMapOf()
 

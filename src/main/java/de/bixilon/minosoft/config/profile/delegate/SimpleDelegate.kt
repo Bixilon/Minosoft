@@ -11,15 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.audio.types
+package de.bixilon.minosoft.config.profile.delegate
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
+import de.bixilon.kutil.observer.DataObserver
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.util.KUtil.minosoft
 
-class TypesC(profile: AudioProfile) {
+abstract class SimpleDelegate<T>(
+    override val profile: Profile,
+    default: T,
+    name: String,
+    private val verify: ((T) -> Unit)? = null,
+) : DataObserver<T>(default), AbstractDelegate<T> {
+    override val name = minosoft(name)
+    override val description = minosoft("$name.description")
 
-    /**
-     * Play (custom) sounds from the server
-     */
-    var packet by BooleanDelegate(profile, true, "profile.audio.types.packet")
+    override fun get() = value
+    override fun set(value: T) {
+        validate(value)
+        this.value = value
+    }
+
+    override fun validate(value: T) {
+        verify?.invoke(value)
+    }
 }

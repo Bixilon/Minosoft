@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.fog
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class FogC {
+class FogC(profile: RenderingProfile) {
 
     /**
      * Enables or disables fog
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(profile, true, "profile.rendering.fog.enabled")
 }

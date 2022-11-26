@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.config.profile.profiles.audio.volume
 
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
+import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
 
-class VolumeC {
-    var masterVolume by delegate(1.0f) { check(it in 0.0f..1.0f) { "Audio volume must be non-negative and may not exceed 1.0" } }
+class VolumeC(profile: AudioProfile) {
+    var master by FloatDelegate(profile, 1.0f, "profile.audio.volume.master", arrayOf(0.0f..1.0f))
 }

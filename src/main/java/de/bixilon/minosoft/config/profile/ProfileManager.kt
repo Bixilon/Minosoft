@@ -92,10 +92,12 @@ interface ProfileManager<T : Profile> {
         return profile
     }
 
+    @Deprecated("")
     fun <V> delegate(value: V, verify: ((V) -> Unit)? = null): ProfileDelegate<V> {
         return ProfileDelegate(value, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
     }
 
+    @Deprecated("")
     fun <V> backingDelegate(verify: ((V) -> Unit)? = null, getter: () -> V, setter: (V) -> Unit): BackingDelegate<V> {
         return object : BackingDelegate<V>(this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify) {
             override fun get(): V = getter()
@@ -104,14 +106,17 @@ interface ProfileManager<T : Profile> {
         }
     }
 
+    @Deprecated("")
     fun <K, V> mapDelegate(default: MutableMap<K, V> = mutableMapOf(), verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegateProfile<K, V> {
         return MapDelegateProfile(FXCollections.synchronizedObservableMap(FXCollections.observableMap(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
+    @Deprecated("")
     fun <V> listDelegate(default: MutableList<V> = mutableListOf(), verify: ((ListChangeListener.Change<out V>) -> Unit)? = null): ListDelegateProfile<V> {
         return ListDelegateProfile(FXCollections.synchronizedObservableList(FXCollections.observableList(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
+    @Deprecated("")
     fun <V> setDelegate(default: MutableSet<V> = mutableSetOf(), verify: ((SetChangeListener.Change<out V>) -> Unit)? = null): SetDelegateProfile<V> {
         return SetDelegateProfile(FXCollections.synchronizedObservableSet(FXCollections.observableSet(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }

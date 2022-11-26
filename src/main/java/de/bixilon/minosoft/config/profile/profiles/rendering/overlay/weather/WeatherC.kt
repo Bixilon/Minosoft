@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.overlay.weather
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class WeatherC {
+class WeatherC(profile: RenderingProfile) {
 
     /**
      * Enables rain overlay
      */
-    var rain by delegate(true)
+    var rain by BooleanDelegate(profile, true, "")
 
     /**
      * Enables snow overlay
      */
-    var snow by delegate(true)
+    var snow by BooleanDelegate(profile, true, "")
 }

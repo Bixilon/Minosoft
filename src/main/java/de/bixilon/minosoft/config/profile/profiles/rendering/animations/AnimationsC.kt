@@ -13,12 +13,13 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.animations
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class AnimationsC {
+class AnimationsC(profile: RenderingProfile) {
 
     /**
      * Enables or disables sprite animations.
      */
-    var sprites by delegate(true)
+    var sprites by BooleanDelegate(profile, true, "profile.rendering.animations.sprite")
 }

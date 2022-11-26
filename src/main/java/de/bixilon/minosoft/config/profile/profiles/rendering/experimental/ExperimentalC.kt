@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.experimental
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class ExperimentalC {
+class ExperimentalC(profile: RenderingProfile) {
 
     /**
      * Does some weird magic to improve your fps by 1-4 times.
      * Recommended way to disable vsync
      */
     // For further information take a look into the code at ExperimentalRenderStats
-    var fps by delegate(false)
+    var fps by BooleanDelegate(profile, false, "profile.rendering.experimental.fps")
 }

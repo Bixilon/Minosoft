@@ -11,15 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.audio.types
+package de.bixilon.minosoft.config.profile.delegate.primitive
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
+import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
+import de.bixilon.minosoft.config.profile.profiles.Profile
 
-class TypesC(profile: AudioProfile) {
+open class DoubleDelegate(
+    override val profile: Profile,
+    default: Double,
+    name: String,
+    private val ranges: Array<ClosedFloatingPointRange<Double>>? = null,
+) : SimpleDelegate<Double>(profile, default, name) {
 
-    /**
-     * Play (custom) sounds from the server
-     */
-    var packet by BooleanDelegate(profile, true, "profile.audio.types.packet")
+    override fun validate(value: Double) {
+        if (ranges == null) {
+            return
+        }
+        for (range in ranges) {
+            if (value in range) {
+                return
+            }
+        }
+        throw IllegalArgumentException("Value out of range!")
+    }
 }

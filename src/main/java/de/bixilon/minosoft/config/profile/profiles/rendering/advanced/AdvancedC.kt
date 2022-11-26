@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.advanced
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class AdvancedC {
+class AdvancedC(profile: RenderingProfile) {
 
     /**
      * Sets the window swap interval (vsync)
@@ -23,16 +25,16 @@ class AdvancedC {
      * Every value above 0 means 1/x  * <vsync framerate>
      * Must not be negative
      */
-    var swapInterval by delegate(1) { check(it >= 0) { "Swap interval must not be negative!" } }
+    var swapInterval by IntDelegate(profile, 1, "profile.rendering.advanced.swap_interval", arrayOf(0..Int.MAX_VALUE))
 
     /**
      * Instead of using GL_TRIANGLES it tries to use GL_QUADS whenever possible.
      * Creates an 3.0 opengl context (still requires 3.3+, for geometry shaders).
      * Will be faster (on cpu and gpu).
      * Requires an AMD or NVIDIA GPU (Intel/Mesa follows the specification strict).
-     * Does not work on MacOS (MacOS requires 3.2+)
+     * Does not work on macOS (macOS requires 3.2+)
      * Violates the opengl specification.
      * Requires rendering restart to apply
      */
-    var preferQuads by delegate(false)
+    var preferQuads by BooleanDelegate(profile, false, "profile.rendering.advanced.prefer_quads")
 }

@@ -11,15 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.audio.types
+package de.bixilon.minosoft.config.profile.delegate
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfile
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 
-class TypesC(profile: AudioProfile) {
+open class ColorDelegate(
+    override val profile: Profile,
+    default: RGBColor,
+    name: String,
+) : SimpleDelegate<RGBColor>(profile, default, name) {
 
-    /**
-     * Play (custom) sounds from the server
-     */
-    var packet by BooleanDelegate(profile, true, "profile.audio.types.packet")
+    override fun validate(value: RGBColor) = Unit
 }

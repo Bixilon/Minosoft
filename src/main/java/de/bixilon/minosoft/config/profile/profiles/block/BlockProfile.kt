@@ -15,6 +15,7 @@ package de.bixilon.minosoft.config.profile.profiles.block
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfileManager.latestVersion
@@ -46,7 +47,7 @@ class BlockProfile(
      * Other profiles (like entities, ...) also have view distance, but this value is the only one that gets sent to the server.
      * The server may limit the other view distances according to this value
      */
-    var viewDistance by delegate(10) { check(it in 0..World.MAX_RENDER_DISTANCE) { "View distance must not be negative or exceed ${World.MAX_RENDER_DISTANCE}" } }
+    var viewDistance by IntDelegate(this, 10, "profile.block.view.distance", arrayOf(0..World.MAX_RENDER_DISTANCE))
 
     /**
      * Ticking (entity, block, particle) is just applied in this distance.
@@ -56,10 +57,10 @@ class BlockProfile(
      * For calculation see viewDistance
      * @see viewDistance
      */
-    var simulationDistance by delegate(8) { check(it in 0..World.MAX_RENDER_DISTANCE) { "Simulation distance must not be negative or exceed ${World.MAX_RENDER_DISTANCE}" } }
+    var simulationDistance by IntDelegate(this, 8, "profile.block.simulation.distance", arrayOf(0..World.MAX_RENDER_DISTANCE))
 
-    val outline = OutlineC()
-    val rendering = RenderingC()
+    val outline = OutlineC(this)
+    val rendering = RenderingC(this)
 
     override fun toString(): String {
         return BlockProfileManager.getName(this)

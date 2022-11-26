@@ -13,22 +13,23 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.overlay.fire
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class FireC {
+class FireC(profile: RenderingProfile) {
 
     /**
      * Enables the fire/burning overlay
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(profile, true, "")
 
     /**
      * Enables the overlay if in creative
      */
-    var creative by delegate(true)
+    var creative by BooleanDelegate(profile, true, "")
 
     /**
      * Enables the fire overlay if in lava
      */
-    var lava by delegate(true)
+    var lava by BooleanDelegate(profile, true, "")
 }

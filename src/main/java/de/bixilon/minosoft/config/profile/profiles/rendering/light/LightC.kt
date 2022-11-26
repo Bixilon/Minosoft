@@ -13,19 +13,21 @@
 
 package de.bixilon.minosoft.config.profile.profiles.rendering.light
 
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
+import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 
-class LightC {
+class LightC(profile: RenderingProfile) {
 
     /**
      * Changes the gamma value of the light map
      * In original minecraft this setting is called brightness
      * Must be non-negative and may not exceed 1
      */
-    var gamma by delegate(0.0f) { check(it in 0.0f..1.0f) { "Gamma must be non-negative and <= 1" } }
+    var gamma by FloatDelegate(profile, 0.0f, "profile.rendering.light.gamma", arrayOf(0.0f..1.0f))
 
     /**
      * Makes everything bright
      */
-    var fullbright by delegate(false)
+    var fullbright by BooleanDelegate(profile, false, "profile.rendering.light.fullbright")
 }
