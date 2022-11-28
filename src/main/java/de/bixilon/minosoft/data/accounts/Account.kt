@@ -20,7 +20,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.accounts.types.microsoft.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.mojang.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.offline.OfflineAccount
@@ -51,7 +51,7 @@ abstract class Account(
 
     @Transient
     @JsonIgnore
-    val connections: MutableMap<Server, PlayConnection> = synchronizedMapOf()
+    val connections: MutableMap<AbstractServer, PlayConnection> = synchronizedMapOf()
 
     abstract fun join(serverId: String)
 

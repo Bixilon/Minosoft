@@ -56,7 +56,7 @@ class ConnectionProfile(
     /**
      * Main arm to use
      */
-    var mainArm by EnumDelegate(this, Arms.RIGHT)
+    var mainArm by EnumDelegate(this, Arms.RIGHT, Arms)
 
     val skin = SkinC(this)
     val signature = SignatureC(this)

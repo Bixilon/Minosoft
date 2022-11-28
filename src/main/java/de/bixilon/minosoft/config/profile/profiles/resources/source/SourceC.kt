@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.config.profile.profiles.resources.source
 
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
 
-class SourceC {
-    var pixlyzer by delegate("https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false")
-    var minecraftResources by delegate("https://resources.download.minecraft.net/\${hashPrefix}/\${fullHash}")
-    var mojangPackages by delegate("https://launchermeta.mojang.com/v1/packages/\${fullHash}/\${filename}")
-    var pistonObjects by delegate("https://piston-data.mojang.com/v1/objects/\${fullHash}/\${filename}")
+class SourceC(profile: ResourcesProfile) {
+    var pixlyzer by StringDelegate(profile, "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false")
+    var minecraftResources by StringDelegate(profile, "https://resources.download.minecraft.net/\${hashPrefix}/\${fullHash}")
+    var mojangPackages by StringDelegate(profile, "https://launchermeta.mojang.com/v1/packages/\${fullHash}/\${filename}")
+    var pistonObjects by StringDelegate(profile, "https://piston-data.mojang.com/v1/objects/\${fullHash}/\${filename}")
 }

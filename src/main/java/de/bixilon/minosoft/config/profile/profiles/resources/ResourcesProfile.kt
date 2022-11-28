@@ -15,8 +15,9 @@ package de.bixilon.minosoft.config.profile.profiles.resources
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.resources.assets.AssetsC
 import de.bixilon.minosoft.config.profile.profiles.resources.source.SourceC
@@ -34,17 +35,17 @@ class ResourcesProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
-    val source = SourceC()
-    val assets = AssetsC()
+    val source = SourceC(this)
+    val assets = AssetsC(this)
 
     /**
      * If set, all downloaded assets will be checked on load.
      * Checks their size and sha1 hash.
      * Deletes and re-downloads/regenerates the asset on mismatch
      */
-    var verify by delegate(true)
+    var verify by BooleanDelegate(this, true)
 
     override fun toString(): String {
         return ResourcesProfileManager.getName(this)

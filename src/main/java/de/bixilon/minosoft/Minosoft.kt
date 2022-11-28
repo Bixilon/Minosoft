@@ -19,6 +19,7 @@ import de.bixilon.kutil.concurrent.worker.task.TaskWorker
 import de.bixilon.kutil.concurrent.worker.task.WorkerTask
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
 import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
@@ -29,7 +30,6 @@ import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.assets.file.ResourcesAssetsUtil
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.manager.MultiLanguageManager
@@ -137,7 +137,7 @@ object Minosoft {
 
     private fun loadLanguageFiles(latch: CountUpAndDownLatch) {
         val language = ErosProfileManager.selected.general.language
-        ErosProfileManager.selected.general::language.profileWatch(this, true) {
+        ErosProfileManager.selected.general::language.observe(this, true) {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading language files (${language})" }
             LANGUAGE_MANAGER.translators[ProtocolDefinition.MINOSOFT_NAMESPACE] = LanguageUtil.load(it, null, MINOSOFT_ASSETS_MANAGER, minosoft("language/"))
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Language files loaded!" }

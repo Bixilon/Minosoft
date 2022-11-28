@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileSelectEvent
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.modding.EventPriorities
-import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -31,14 +31,14 @@ object CustomServerType : ServerType {
     override val icon: Ikon = FontAwesomeSolid.SERVER
     override val hidden: Boolean = false
     override var readOnly: Boolean = false
-    override var servers: MutableList<Server> by observedList(ErosProfileManager.selected.server.entries)
+    override var servers: MutableList<ErosServer> by observedList(ErosProfileManager.selected.server.entries)
         private set
     override val translationKey: ResourceLocation = "minosoft:server_type.custom".toResourceLocation()
 
     init {
-        GlobalEventMaster.register(CallbackEventListener.of<ErosProfileSelectEvent>(priority = EventPriorities.LOW) {
+        GlobalEventMaster.listen<ErosProfileSelectEvent>(priority = EventPriorities.LOW) {
             servers = ErosProfileManager.selected.server.entries
-        })
+        }
     }
 
     override fun refresh(cards: List<ServerCard>) {

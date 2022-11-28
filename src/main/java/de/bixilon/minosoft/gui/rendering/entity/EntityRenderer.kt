@@ -18,11 +18,11 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -69,7 +69,7 @@ class EntityRenderer(
             runAsync { it.updateVisibility(visibilityGraph) }
         }
 
-        profile.hitbox::enabled.profileWatch(this, profile = profile) { this.hitboxes = it }
+        profile.hitbox::enabled.observe(this) { this.hitboxes = it }
 
         renderWindow.inputHandler.registerKeyCallback(
             HITBOX_TOGGLE_KEY_COMBINATION,

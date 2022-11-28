@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 
@@ -23,7 +23,7 @@ open class LocalPlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Pl
         get() = super.hideSkeletalModel || renderWindow.camera.renderPlayer
 
     init {
-        renderer.profile.hitbox::showLocal.profileWatch(this, true, renderer.profile) {
+        renderer.profile.hitbox::showLocal.observe(this, true) {
             hitbox.enabled = it
         }
     }

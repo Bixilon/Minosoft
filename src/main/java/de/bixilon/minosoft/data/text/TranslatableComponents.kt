@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -29,6 +29,6 @@ object TranslatableComponents {
 
     val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".toResourceLocation(), null, name, address) }
     val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".toResourceLocation(), null, count) }
-    val CONNECTION_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".toResourceLocation(), null, server.name, account.username) }
-    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".toResourceLocation(), null, server.name, account.username) }
+    val CONNECTION_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".toResourceLocation(), null, server.name, account.username) }
+    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: AbstractServer, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".toResourceLocation(), null, server.name, account.username) }
 }

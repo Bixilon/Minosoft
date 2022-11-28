@@ -19,7 +19,6 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.kutil.url.URLUtil.toURL
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.util.DesktopUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.application.HostServices
 import javafx.application.Platform
 import javafx.css.StyleableProperty
@@ -60,7 +60,7 @@ object JavaFXUtil {
             return
         }
 
-        ErosProfileManager.selected.theme::theme.profileWatchFX(this) {
+        ErosProfileManager.selected.theme::theme.observeFX(this) {
             stages.cleanup()
             for (stage in stages.iterator().unsafeCast<Iterator<Stage?>>()) {
                 stage ?: continue
@@ -119,8 +119,9 @@ object JavaFXUtil {
         }
     }
 
-    fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation): T {
+    fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation, controller: T? = null): T {
         val fxmlLoader = FXMLLoader()
+        controller?.let { fxmlLoader.setController(it) }
         val pane = fxmlLoader.load<Pane>(Minosoft.MINOSOFT_ASSETS_MANAGER[layout])
 
         val controller = fxmlLoader.getController<T>()

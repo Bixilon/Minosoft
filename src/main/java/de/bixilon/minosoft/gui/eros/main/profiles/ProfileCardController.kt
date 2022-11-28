@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.eros.main.profiles
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
@@ -46,7 +46,7 @@ class ProfileCardController : AbstractCardController<Profile>() {
 
 
         profileNameFX.text = item.name
-        item::description.profileWatchFX(this, true, item) { profileDescriptionFX.text = it }
+        item::description.observeFX(this, true) { profileDescriptionFX.text = it }
     }
 
     companion object : CardFactory<ProfileCardController> {

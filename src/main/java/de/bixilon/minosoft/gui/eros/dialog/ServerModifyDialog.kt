@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.VersionTypes
@@ -40,7 +40,7 @@ import javafx.scene.text.TextFlow
  * Used to add or edit a server
  */
 class ServerModifyDialog(
-    private val server: Server? = null,
+    private val server: ErosServer? = null,
     val onUpdate: (name: String, address: String, forcedVersion: Version?, profiles: Map<ResourceLocation, String>, queryVersion: Boolean) -> Unit,
 ) : DialogController() {
     @FXML private lateinit var descriptionFX: TextFlow
@@ -112,8 +112,8 @@ class ServerModifyDialog(
 
         val modifyConfig = ErosProfileManager.selected.server.modify
 
-        modifyConfig::showReleases.profileWatchFX(this) { showReleasesFX.isSelected = it }
-        modifyConfig::showSnapshots.profileWatchFX(this) { showSnapshotsFX.isSelected = it }
+        modifyConfig::showReleases.observe(this) { showReleasesFX.isSelected = it }
+        modifyConfig::showSnapshots.observe(this) { showSnapshotsFX.isSelected = it }
 
         showReleasesFX.apply {
             isSelected = modifyConfig.showReleases

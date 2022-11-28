@@ -19,9 +19,9 @@ import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.primitive.IntUtil.thousands
 import de.bixilon.kutil.unit.UnitFormatter.formatNanos
 import de.bixilon.minosoft.config.profile.ConnectionProfiles
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
@@ -37,6 +37,7 @@ import de.bixilon.minosoft.gui.eros.main.InfoPane
 import de.bixilon.minosoft.gui.eros.main.play.server.card.FaviconManager.saveFavicon
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
+import de.bixilon.minosoft.gui.eros.main.play.server.type.types.CustomServerType
 import de.bixilon.minosoft.gui.eros.main.play.server.type.types.ServerType
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventListener
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -83,9 +84,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     override fun init() {
         val erosProfile = ErosProfileManager.selected
         val serverConfig = erosProfile.server.list
-        serverConfig::hideOffline.profileWatchFX(this, true) { hideOfflineFX.isSelected = it;refreshList() }
-        serverConfig::hideFull.profileWatchFX(this, true) { hideFullFX.isSelected = it;refreshList() }
-        serverConfig::hideEmpty.profileWatchFX(this, true) { hideEmptyFX.isSelected = it;refreshList() }
+        serverConfig::hideOffline.observeFX(this, true) { hideOfflineFX.isSelected = it;refreshList() }
+        serverConfig::hideFull.observeFX(this, true) { hideFullFX.isSelected = it;refreshList() }
+        serverConfig::hideEmpty.observeFX(this, true) { hideEmptyFX.isSelected = it;refreshList() }
 
         hideOfflineFX.setOnAction { ErosProfileManager.selected.server.list.hideOffline = hideOfflineFX.isSelected }
         hideOfflineFX.ctext = HIDE_OFFLINE
@@ -115,8 +116,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             }
             return@setCellFactory controller
         }
-
-        accountProfile::selected.profileWatchFX(this, profile = accountProfile) { setServerInfo(serverListViewFX.selectionModel.selectedItem) }
 
         serverListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setServerInfo(new)
@@ -203,7 +202,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     }
 
     fun initWatch() {
-        serverType!!::servers.observeListFX(this) {
+        ErosProfileManager.selected.general.accountProfile::selected.observeFX(this) { setServerInfo(serverListViewFX.selectionModel.selectedItem) }
+
+        serverType!!::servers.observeListFX(this, instant = true) {
             for (remove in it.removes) {
                 serverListViewFX.items -= ServerCard.CARDS.remove(remove)
             }
@@ -232,7 +233,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         }
     }
 
-    private fun updateServer(server: Server, refreshInfo: Boolean = false) {
+    private fun updateServer(server: AbstractServer, refreshInfo: Boolean = false) {
         val serverType = serverType ?: return
         if (server !in serverType.servers) {
             return
@@ -271,20 +272,33 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             return
         }
         val account = ErosProfileManager.selected.general.accountProfile
+        val server = serverCard.server
 
         val actions: Array<Node> = arrayOf(
             Button("Delete").apply {
+                if (server !is ErosServer) {
+                    isDisable = true
+                }
                 setOnAction {
                     SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
-                        serverType.servers -= serverCard.server
+                        val type = serverType
+                        if (type !is CustomServerType) {
+                            return@SimpleErosConfirmationDialog
+                        }
+                        type.servers.remove(server)
                     }).show()
                 }
                 ctext = TranslatableComponents.GENERAL_DELETE
                 isDisable = serverType.readOnly
             },
             Button("Edit").apply {
+                if (server !is ErosServer) {
+                    isDisable = true
+                }
                 setOnAction {
-                    val server = serverCard.server
+                    if (server !is ErosServer) {
+                        return@setOnAction
+                    }
                     ServerModifyDialog(server = server, onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
                         server.name = ChatComponent.of(name)
                         server.forcedVersion = forcedVersion
@@ -377,7 +391,11 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML
     fun addServer() {
         ServerModifyDialog(onUpdate = { name, address, forcedVersion, profiles, queryVersion ->
-            serverType!!.servers += Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap(), queryVersion = queryVersion)
+            val type = serverType
+            if (type !is CustomServerType) {
+                return@ServerModifyDialog
+            }
+            type.servers += ErosServer(profile = ErosProfileManager.selected, name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion, profiles = profiles.toMutableMap(), queryVersion = queryVersion)
         }).show()
     }
 

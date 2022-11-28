@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer) {
     private val chatProfile = profile.chat.internal
@@ -40,8 +40,8 @@ class InternalChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRen
 
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.profileWatchRendering(this, profile = profile, context = renderWindow) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
-        chatProfile::height.profileWatchRendering(this, profile = profile, context = renderWindow) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
+        chatProfile::width.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
+        chatProfile::height.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
         forceSilentApply()
     }
 

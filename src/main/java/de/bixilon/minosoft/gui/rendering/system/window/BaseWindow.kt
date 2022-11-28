@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.system.window
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.assets.AssetsManager
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
@@ -53,7 +53,7 @@ interface BaseWindow {
 
     fun init(profile: RenderingProfile) {
         resizable = true
-        profile.advanced::swapInterval.profileWatchRendering(this, true, profile) { swapInterval = it }
+        profile.advanced::swapInterval.observeRendering(this, true) { swapInterval = it }
 
         if (!RunConfiguration.DISABLE_CURSOR_CATCH) {
             cursorMode = CursorModes.DISABLED

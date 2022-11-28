@@ -35,7 +35,6 @@ object ControlsProfileManager : ProfileManager<ControlsProfile> {
     override val icon = FontAwesomeSolid.KEYBOARD
 
 
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, ControlsProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: ControlsProfile = null.unsafeCast()
@@ -45,12 +44,5 @@ object ControlsProfileManager : ProfileManager<ControlsProfile> {
             GlobalEventMaster.fire(ControlsProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): ControlsProfile {
-        currentLoadingPath = name
-        val profile = ControlsProfile(description ?: "Default controls profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = ControlsProfile(description ?: "Default controls profile")
 }

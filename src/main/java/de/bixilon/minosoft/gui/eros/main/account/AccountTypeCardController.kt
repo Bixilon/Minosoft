@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.card.AbstractCardController
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeMapFX
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
@@ -44,7 +44,7 @@ class AccountTypeCardController : AbstractCardController<ErosAccountType<*>>() {
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
 
         recalculate(item)
-        ErosProfileManager.selected.general.accountProfile::entries.profileWatchMapFX(this) { recalculate(item) }
+        ErosProfileManager.selected.general.accountProfile::entries.observeMapFX(this) { recalculate(item) }
     }
 
     private fun recalculate(type: ErosAccountType<*>) {

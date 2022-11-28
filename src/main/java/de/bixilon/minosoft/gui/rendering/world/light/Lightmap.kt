@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.world.light
 
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.config.DebugOptions
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.NativeShader
 import de.bixilon.minosoft.gui.rendering.world.light.updater.DebugLightUpdater
@@ -38,7 +38,7 @@ class Lightmap(private val light: RenderLight) {
         defaultUpdater = NormalLightmapUpdater(light.renderWindow.connection, light.renderWindow.renderer[SkyRenderer])
         // defaultUpdater = LegacyLightmapUpdater(light.renderWindow.connection)
         buffer.init()
-        profile.light::fullbright.profileWatch(this, profile = profile) { setLightmapUpdater() }
+        profile.light::fullbright.observe(this) { setLightmapUpdater() }
         setLightmapUpdater()
     }
 

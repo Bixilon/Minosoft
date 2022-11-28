@@ -11,27 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.main.play.server.type.types
+package de.bixilon.minosoft.config.profile.delegate
 
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
-import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
-import org.kordamp.ikonli.Ikon
+import de.bixilon.kutil.observer.DataObserver
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-interface ServerType : Translatable {
-    val icon: Ikon
-    val hidden: Boolean
-    var readOnly: Boolean
+@Deprecated("Kutil")
+class BackingDelegate<V>(
+    private val get: () -> V,
+    private val set: (V) -> Unit,
+) : DataObserver<V>(get()), ReadWriteProperty<Any, V> {
 
-    val servers: List<AbstractServer>
+    override fun getValue(thisRef: Any, property: KProperty<*>): V {
+        return get()
+    }
 
-    fun refresh(cards: List<ServerCard>)
-
-
-    companion object {
-        val TYPES = setOf(
-            CustomServerType,
-            LANServerType,
-        )
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
+        set(value)
+        super.setValue(thisRef, property, value)
     }
 }

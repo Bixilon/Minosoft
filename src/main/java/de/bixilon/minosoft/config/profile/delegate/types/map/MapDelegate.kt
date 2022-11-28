@@ -18,7 +18,7 @@ import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.util.KUtil.minosoft
 
-abstract class MapDelegate<K, V>(
+open class MapDelegate<K, V>(
     override val profile: Profile,
     default: MutableMap<K, V>,
     name: String,

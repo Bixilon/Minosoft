@@ -22,11 +22,6 @@ import de.bixilon.kutil.file.FileUtil.read
 import de.bixilon.kutil.file.watcher.FileWatcher
 import de.bixilon.kutil.file.watcher.FileWatcherService
 import de.bixilon.kutil.primitive.IntUtil.toInt
-import de.bixilon.minosoft.config.profile.delegate.delegate.BackingDelegate
-import de.bixilon.minosoft.config.profile.delegate.delegate.ProfileDelegate
-import de.bixilon.minosoft.config.profile.delegate.delegate.entry.ListDelegateProfile
-import de.bixilon.minosoft.config.profile.delegate.delegate.entry.MapDelegateProfile
-import de.bixilon.minosoft.config.profile.delegate.delegate.entry.SetDelegateProfile
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
@@ -35,10 +30,6 @@ import de.bixilon.minosoft.util.json.Jackson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import javafx.collections.FXCollections
-import javafx.collections.ListChangeListener
-import javafx.collections.MapChangeListener
-import javafx.collections.SetChangeListener
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.io.File
@@ -63,8 +54,6 @@ interface ProfileManager<T : Profile> {
     val profiles: AbstractMutableBiMap<String, T>
     var selected: T
 
-    @Deprecated("Should not be accessed", level = DeprecationLevel.ERROR) var currentLoadingPath: String?
-
     val baseDirectory: File
         get() = File(RunConfiguration.HOME_DIRECTORY + "config/" + namespace.namespace + "/")
 
@@ -80,45 +69,14 @@ interface ProfileManager<T : Profile> {
 
 
     fun load(name: String, data: MutableMap<String, Any?>?): T {
-        currentLoadingPath = name
         val profile = if (data == null) {
-            return createProfile(name)
+            createProfile(name)
         } else {
             Jackson.MAPPER.convertValue(data, jacksonProfileType) as T
         }
         profile.saved = true
         profiles[name] = profile
-        currentLoadingPath = null
         return profile
-    }
-
-    @Deprecated("", level = DeprecationLevel.ERROR)
-    fun <V> delegate(value: V, verify: ((V) -> Unit)? = null): ProfileDelegate<V> {
-        return ProfileDelegate(value, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
-    }
-
-    @Deprecated("")
-    fun <V> backingDelegate(verify: ((V) -> Unit)? = null, getter: () -> V, setter: (V) -> Unit): BackingDelegate<V> {
-        return object : BackingDelegate<V>(this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify) {
-            override fun get(): V = getter()
-
-            override fun set(value: V) = setter(value)
-        }
-    }
-
-    @Deprecated("", level = DeprecationLevel.ERROR)
-    fun <K, V> mapDelegate(default: MutableMap<K, V> = mutableMapOf(), verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegateProfile<K, V> {
-        return MapDelegateProfile(FXCollections.synchronizedObservableMap(FXCollections.observableMap(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
-    }
-
-    @Deprecated("", level = DeprecationLevel.ERROR)
-    fun <V> listDelegate(default: MutableList<V> = mutableListOf(), verify: ((ListChangeListener.Change<out V>) -> Unit)? = null): ListDelegateProfile<V> {
-        return ListDelegateProfile(FXCollections.synchronizedObservableList(FXCollections.observableList(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
-    }
-
-    @Deprecated("", level = DeprecationLevel.ERROR)
-    fun <V> setDelegate(default: MutableSet<V> = mutableSetOf(), verify: ((SetChangeListener.Change<out V>) -> Unit)? = null): SetDelegateProfile<V> {
-        return SetDelegateProfile(FXCollections.synchronizedObservableSet(FXCollections.observableSet(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
     fun selectDefault() {
@@ -130,6 +88,7 @@ interface ProfileManager<T : Profile> {
     fun initDefaultProfile(): T {
         profiles[DEFAULT_PROFILE_NAME]?.let { return it }
         val profile = createProfile()
+        profiles[DEFAULT_PROFILE_NAME] = profile
         saveAndWatch(profile)
         this.selected = profile
         return profile

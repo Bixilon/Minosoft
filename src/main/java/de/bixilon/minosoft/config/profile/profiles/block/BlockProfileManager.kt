@@ -34,8 +34,6 @@ object BlockProfileManager : ProfileManager<BlockProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.CUBES
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, BlockProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: BlockProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object BlockProfileManager : ProfileManager<BlockProfile> {
             GlobalEventMaster.fire(BlockProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): BlockProfile {
-        currentLoadingPath = name
-        val profile = BlockProfile(description ?: "Default block profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = BlockProfile(description ?: "Default block profile")
 }

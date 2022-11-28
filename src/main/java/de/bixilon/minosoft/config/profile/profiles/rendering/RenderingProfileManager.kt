@@ -34,8 +34,6 @@ object RenderingProfileManager : ProfileManager<RenderingProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.VECTOR_SQUARE
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, RenderingProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: RenderingProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object RenderingProfileManager : ProfileManager<RenderingProfile> {
             GlobalEventMaster.fire(RenderingProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): RenderingProfile {
-        currentLoadingPath = name
-        val profile = RenderingProfile(description ?: "Default rendering profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = RenderingProfile(description ?: "Default rendering profile")
 }

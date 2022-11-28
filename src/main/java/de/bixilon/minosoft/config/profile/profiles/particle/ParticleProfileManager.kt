@@ -34,8 +34,6 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.BIRTHDAY_CAKE
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, ParticleProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: ParticleProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
             GlobalEventMaster.fire(ParticleProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): ParticleProfile {
-        currentLoadingPath = name
-        val profile = ParticleProfile(description ?: "Default particle profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = ParticleProfile(description ?: "Default particle profile")
 }

@@ -18,7 +18,6 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
@@ -78,12 +77,12 @@ class CloudRenderer(
 
     override fun postInit(latch: CountUpAndDownLatch) {
         shader.load()
-        sky.profile.clouds::movement.profileWatch(this, instant = true, profile = connection.profiles.rendering) {
+        sky.profile.clouds::movement.observe(this, instant = true) {
             for (layer in layers) {
                 layer.movement = it
             }
         }
-        sky.profile.clouds::maxDistance.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.maxDistance = it }
+        sky.profile.clouds::maxDistance.observe(this, instant = true) { this.maxDistance = it }
         connection::state.observe(this) {
             if (it == PlayConnectionStates.SPAWNING) {
                 // reset clouds
@@ -93,8 +92,8 @@ class CloudRenderer(
                 }
             }
         }
-        sky.profile.clouds::layers.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.nextLayers = it }
-        sky.profile.clouds::flat.profileWatch(this, instant = true, profile = connection.profiles.rendering) { this.flat = it }
+        sky.profile.clouds::layers.observe(this, instant = true) { this.nextLayers = it }
+        sky.profile.clouds::flat.observe(this, instant = true) { this.flat = it }
     }
 
     private fun updateLayers(layers: Int) {

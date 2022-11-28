@@ -17,7 +17,7 @@ import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.util.KUtil.minosoft
 
-abstract class SimpleDelegate<T>(
+open class SimpleDelegate<T>(
     override val profile: Profile,
     default: T,
     name: String,

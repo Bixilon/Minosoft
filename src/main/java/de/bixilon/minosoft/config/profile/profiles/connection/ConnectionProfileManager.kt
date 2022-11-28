@@ -34,8 +34,6 @@ object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.NETWORK_WIRED
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, ConnectionProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: ConnectionProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
             GlobalEventMaster.fire(ConnectionProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): ConnectionProfile {
-        currentLoadingPath = name
-        val profile = ConnectionProfile(description ?: "Default connection profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = ConnectionProfile(description ?: "Default connection profile")
 }

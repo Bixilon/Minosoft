@@ -20,7 +20,8 @@ open class NullableStringDelegate(
     override val profile: Profile,
     default: String?,
     name: String = "",
-) : SimpleDelegate<String?>(profile, default, name) {
+    verify: ((String?) -> Unit)? = null,
+) : SimpleDelegate<String?>(profile, default, name, verify) {
 
     override fun validate(value: String?) = Unit
 }

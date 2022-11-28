@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.play.server.type.types
 
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.observer.list.ListObserver.Companion.observedList
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
@@ -28,7 +28,7 @@ object LANServerType : ServerType {
     override val hidden: Boolean
         get() = !LANServerListener.listening
     override var readOnly: Boolean = true
-    override val servers: MutableList<Server> by observedList(synchronizedListOf())
+    override val servers: MutableList<AbstractServer> by observedList(synchronizedListOf())
     override val translationKey: ResourceLocation = "minosoft:server_type.lan".toResourceLocation()
 
     override fun refresh(cards: List<ServerCard>) {

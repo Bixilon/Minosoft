@@ -11,16 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.delegate.watcher
+package de.bixilon.minosoft.config.profile.delegate.types.set
 
+import de.bixilon.kutil.observer.set.SetObserver
+import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import kotlin.reflect.KProperty
+import de.bixilon.minosoft.util.KUtil.minosoft
 
-interface ProfileDelegateWatcher<T> {
-    val property: KProperty<T>
-    val fieldIdentifier: String
-    val profile: Profile?
+class SetDelegate<V>(
+    override val profile: Profile,
+    default: MutableSet<V> = mutableSetOf(),
+    name: String,
+) : SetObserver<V>(default), AbstractDelegate<MutableSet<V>> {
+    override val name = minosoft(name)
+    override val description = minosoft("$name.description")
 
+    override fun get() = value
+    override fun set(value: MutableSet<V>) {
+        validate(value)
+        this.value.unsafe = value
+    }
 
-    fun invoke(previous: Any?, value: Any?)
+    override fun validate(value: MutableSet<V>) = Unit
 }

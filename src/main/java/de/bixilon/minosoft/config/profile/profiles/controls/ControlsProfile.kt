@@ -17,9 +17,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.latestVersion
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.mapDelegate
 import de.bixilon.minosoft.config.profile.profiles.controls.interaction.InteractionC
 import de.bixilon.minosoft.config.profile.profiles.controls.mouse.MouseC
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -39,7 +39,7 @@ class ControlsProfile(
     override val version: Int = latestVersion
     override var description by StringDelegate(this, description ?: "")
 
-    var keyBindings: MutableMap<ResourceLocation, KeyBinding> by mapDelegate()
+    var keyBindings: MutableMap<ResourceLocation, KeyBinding> by MapDelegate(this, mutableMapOf(), "")
         private set
 
     val mouse = MouseC(this)

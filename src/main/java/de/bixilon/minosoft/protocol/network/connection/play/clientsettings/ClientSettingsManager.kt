@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection.play.clientsettings
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
@@ -27,34 +27,34 @@ class ClientSettingsManager(
 
     init {
         val blocks = connection.profiles.block
-        blocks::viewDistance.profileWatch(this, profile = blocks) {
+        blocks::viewDistance.observe(this) {
             connection.world.view.viewDistance = it
             sendClientSettings()
         }
 
-        blocks::simulationDistance.profileWatch(this, profile = blocks) { connection.world.view.simulationDistance = it }
+        blocks::simulationDistance.observe(this) { connection.world.view.simulationDistance = it }
 
 
         val hud = connection.profiles.gui
         val chat = hud.chat
-        chat::chatMode.profileWatch(this, profile = hud) { sendClientSettings() }
-        chat::textFiltering.profileWatch(this, profile = hud) { sendClientSettings() }
-        chat::chatColors.profileWatch(this, profile = hud) { sendClientSettings() }
+        chat::chatMode.observe(this) { sendClientSettings() }
+        chat::textFiltering.observe(this) { sendClientSettings() }
+        chat::chatColors.observe(this) { sendClientSettings() }
 
-        profile::mainArm.profileWatch(this, profile = profile) { sendClientSettings() }
-        profile::playerListing.profileWatch(this, profile = profile) { sendClientSettings() }
+        profile::mainArm.observe(this) { sendClientSettings() }
+        profile::playerListing.observe(this) { sendClientSettings() }
 
         val skin = profile.skin
-        skin::cape.profileWatch(this, profile = profile) { sendClientSettings() }
-        skin::jacket.profileWatch(this, profile = profile) { sendClientSettings() }
-        skin::leftSleeve.profileWatch(this, profile = profile) { sendClientSettings() }
-        skin::rightSleeve.profileWatch(this, profile = profile) { sendClientSettings() }
-        skin::leftPants.profileWatch(this, profile = profile) { sendClientSettings() }
-        skin::rightPants.profileWatch(this, profile = profile) { sendClientSettings() }
-        skin::hat.profileWatch(this, profile = profile) { sendClientSettings() }
+        skin::cape.observe(this) { sendClientSettings() }
+        skin::jacket.observe(this) { sendClientSettings() }
+        skin::leftSleeve.observe(this) { sendClientSettings() }
+        skin::rightSleeve.observe(this) { sendClientSettings() }
+        skin::leftPants.observe(this) { sendClientSettings() }
+        skin::rightPants.observe(this) { sendClientSettings() }
+        skin::hat.observe(this) { sendClientSettings() }
 
-        profile::language.profileWatch(this, profile = profile) { sendLanguage() }
-        connection.profiles.eros.general::language.profileWatch(this, profile = connection.profiles.eros) { sendLanguage() }
+        profile::language.observe(this) { sendLanguage() }
+        connection.profiles.eros.general::language.observe(this) { sendLanguage() }
     }
 
     @Synchronized

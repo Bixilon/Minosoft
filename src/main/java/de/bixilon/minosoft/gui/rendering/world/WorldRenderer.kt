@@ -27,7 +27,6 @@ import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
@@ -263,11 +262,11 @@ class WorldRenderer(
             )
         ) { clearChunkCache() }
 
-        profile.rendering::antiMoirePattern.profileWatch(this, false, profile) { clearChunkCache() }
+        profile.rendering::antiMoirePattern.observe(this) { clearChunkCache() }
         val rendering = connection.profiles.rendering
-        rendering.performance::fastBedrock.profileWatch(this, false, rendering) { clearChunkCache() }
+        rendering.performance::fastBedrock.observe(this) { clearChunkCache() }
 
-        profile::viewDistance.profileWatch(this) { viewDistance ->
+        profile::viewDistance.observe(this) { viewDistance ->
             val distance = maxOf(viewDistance, profile.simulationDistance)
             if (distance < this.previousViewDistance) {
                 // Unload all chunks(-sections) that are out of view distance

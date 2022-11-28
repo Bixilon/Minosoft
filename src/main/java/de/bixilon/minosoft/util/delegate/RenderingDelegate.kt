@@ -42,32 +42,27 @@ object RenderingDelegate {
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <V> KProperty0<V>.observeRendering(owner: Any, observer: (V) -> Unit) {
-        val context = requireContext()
-        this.observe(owner) { runInContext(context, it, observer) }
+    fun <V> KProperty0<V>.observeRendering(owner: Any, instant: Boolean = false, context: RenderWindow = requireContext(), observer: (V) -> Unit) {
+        this.observe(owner, instant) { runInContext(context, it, observer) }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <V> KProperty0<Set<V>>.observeSetRendering(owner: Any, observer: (SetChange<V>) -> Unit) {
-        val context = requireContext()
-        this.observeSet(owner) { runInContext(context, it, observer) }
+    fun <V> KProperty0<Set<V>>.observeSetRendering(owner: Any, instant: Boolean = false, context: RenderWindow = requireContext(), observer: (SetChange<V>) -> Unit) {
+        this.observeSet(owner, instant) { runInContext(context, it, observer) }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <V> KProperty0<List<V>>.observeListRendering(owner: Any, observer: (ListChange<V>) -> Unit) {
-        val context = requireContext()
-        this.observeList(owner) { runInContext(context, it, observer) }
+    fun <V> KProperty0<List<V>>.observeListRendering(owner: Any, instant: Boolean = false, context: RenderWindow = requireContext(), observer: (ListChange<V>) -> Unit) {
+        this.observeList(owner, instant) { runInContext(context, it, observer) }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <K, V> KProperty0<Map<K, V>>.observeMapRendering(owner: Any, observer: (MapChange<K, V>) -> Unit) {
-        val context = requireContext()
-        this.observeMap(owner) { runInContext(context, it, observer) }
+    fun <K, V> KProperty0<Map<K, V>>.observeMapRendering(owner: Any, instant: Boolean = false, context: RenderWindow = requireContext(), observer: (MapChange<K, V>) -> Unit) {
+        this.observeMap(owner, instant) { runInContext(context, it, observer) }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapRendering(owner: Any, observer: (MapChange<K, V>) -> Unit) {
-        val context = requireContext()
-        this.observeBiMap(owner) { runInContext(context, it, observer) }
+    fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapRendering(owner: Any, instant: Boolean = false, context: RenderWindow = requireContext(), observer: (MapChange<K, V>) -> Unit) {
+        this.observeBiMap(owner, instant) { runInContext(context, it, observer) }
     }
 }

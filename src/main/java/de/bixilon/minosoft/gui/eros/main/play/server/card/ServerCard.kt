@@ -16,14 +16,14 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.modding.event.listener.EventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
 class ServerCard(
-    val server: Server,
+    val server: AbstractServer,
 ) {
     val ping: StatusConnection = StatusConnection(server.address, if (server.queryVersion) null else server.forcedVersion)
     val connections: MutableSet<PlayConnection> = synchronizedSetOf()
@@ -78,6 +78,6 @@ class ServerCard(
 
 
     companion object {
-        val CARDS: SynchronizedMap<Server, ServerCard> = synchronizedMapOf()
+        val CARDS: SynchronizedMap<AbstractServer, ServerCard> = synchronizedMapOf()
     }
 }

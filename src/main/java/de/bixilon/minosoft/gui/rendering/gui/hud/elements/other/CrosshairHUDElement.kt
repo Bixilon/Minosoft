@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.entity.BlockWithEntity
@@ -40,7 +40,7 @@ class CrosshairHUDElement(guiRenderer: GUIRenderer) : CustomHUDElement(guiRender
 
     override fun init() {
         crosshairAtlasElement = guiRenderer.atlasManager[ATLAS_NAME]
-        crosshairProfile::color.profileWatch(this, profile = profile) { reapply = true }
+        crosshairProfile::color.observe(this) { reapply = true }
     }
 
     override fun draw() {

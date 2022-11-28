@@ -34,8 +34,6 @@ object GUIProfileManager : ProfileManager<GUIProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.TACHOMETER_ALT
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, GUIProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: GUIProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object GUIProfileManager : ProfileManager<GUIProfile> {
             GlobalEventMaster.fire(GUIProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): GUIProfile {
-        currentLoadingPath = name
-        val profile = GUIProfile(description ?: "Default hud profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = GUIProfile(description ?: "Default hud profile")
 }

@@ -11,32 +11,30 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.test
+package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 
-import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
+import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.data.registries.versions.Versions
+import de.bixilon.minosoft.data.text.ChatComponent
 
-object ITUtil {
-    private val profile = createResourcesProfile()
+class LANServer(
+    address: String,
+    name: ChatComponent = ChatComponent.of(address),
+) : AbstractServer {
 
-    fun createResourcesProfile(): ResourcesProfile {
-        return ResourcesProfile()
+    init {
+        check(address.isNotBlank())
+        check(name.message.isNotBlank())
     }
 
-    fun loadPixlyzerData(name: String): Version {
-        val version = Versions[name]!!
-        if (version.registries != null) {
-            // already loaded
-            return version
-        }
+    override val queryVersion: Boolean get() = true
 
-        loadPixlyzerData(version)
-        return version
-    }
+    override val address by observed(address)
 
-    fun loadPixlyzerData(version: Version) {
-        version.load(profile, CountUpAndDownLatch(0))
-    }
+    override val name by observed(name)
+    override val forcedVersion: Version? get() = null
+    override val profiles: MutableMap<ResourceLocation, String> get() = mutableMapOf()
+
+    override var faviconHash: String? by observed(null)
 }

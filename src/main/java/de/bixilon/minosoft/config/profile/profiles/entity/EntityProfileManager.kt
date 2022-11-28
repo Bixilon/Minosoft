@@ -35,7 +35,6 @@ object EntityProfileManager : ProfileManager<EntityProfile> {
     override val icon = FontAwesomeSolid.SKULL
 
 
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, EntityProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: EntityProfile = null.unsafeCast()
@@ -45,12 +44,5 @@ object EntityProfileManager : ProfileManager<EntityProfile> {
             GlobalEventMaster.fire(EntityProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): EntityProfile {
-        currentLoadingPath = name
-        val profile = EntityProfile(description ?: "Default entity profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = EntityProfile(description ?: "Default entity profile")
 }

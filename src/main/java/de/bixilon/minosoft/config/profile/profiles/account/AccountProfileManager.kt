@@ -34,8 +34,6 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.USER_CIRCLE
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, AccountProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: AccountProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object AccountProfileManager : ProfileManager<AccountProfile> {
             GlobalEventMaster.fire(AccountProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): AccountProfile {
-        currentLoadingPath = name
-        val profile = AccountProfile(description ?: "Default account profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = AccountProfile(description ?: "Default account profile")
 }

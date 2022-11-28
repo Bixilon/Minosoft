@@ -35,32 +35,32 @@ object JavaFXDelegate {
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <V> KProperty0<V>.observeFX(owner: Any, observer: (V) -> Unit) {
+    fun <V> KProperty0<V>.observeFX(owner: Any, instant: Boolean = true, observer: (V) -> Unit) {
         checkErosState()
-        this.observe(owner) { JavaFXUtil.runLater { observer(it) } }
+        this.observe(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <V> KProperty0<Set<V>>.observeSetFX(owner: Any, observer: (SetChange<V>) -> Unit) {
+    fun <V> KProperty0<Set<V>>.observeSetFX(owner: Any, instant: Boolean = true, observer: (SetChange<V>) -> Unit) {
         checkErosState()
-        this.observeSet(owner) { JavaFXUtil.runLater { observer(it) } }
+        this.observeSet(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <V> KProperty0<List<V>>.observeListFX(owner: Any, observer: (ListChange<V>) -> Unit) {
+    fun <V> KProperty0<List<V>>.observeListFX(owner: Any, instant: Boolean = true, observer: (ListChange<V>) -> Unit) {
         checkErosState()
-        this.observeList(owner) { JavaFXUtil.runLater { observer(it) } }
+        this.observeList(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <K, V> KProperty0<Map<K, V>>.observeMapFX(owner: Any, observer: (MapChange<K, V>) -> Unit) {
+    fun <K, V> KProperty0<Map<K, V>>.observeMapFX(owner: Any, instant: Boolean = true, observer: (MapChange<K, V>) -> Unit) {
         checkErosState()
-        this.observeMap(owner) { JavaFXUtil.runLater { observer(it) } }
+        this.observeMap(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 
     @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-    fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapFX(owner: Any, observer: (MapChange<K, V>) -> Unit) {
+    fun <K, V> KProperty0<AbstractBiMap<K, V>>.observeBiMapFX(owner: Any, instant: Boolean = true, observer: (MapChange<K, V>) -> Unit) {
         checkErosState()
-        this.observeBiMap(owner) { JavaFXUtil.runLater { observer(it) } }
+        this.observeBiMap(owner, instant) { JavaFXUtil.runLater { observer(it) } }
     }
 }

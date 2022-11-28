@@ -19,7 +19,6 @@ import de.bixilon.minosoft.commands.nodes.ChatNode
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.data.chat.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -37,6 +36,7 @@ import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.chat.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), LayoutedElement {
     private val chatProfile = profile.chat
@@ -67,8 +67,8 @@ class ChatElement(guiRenderer: GUIRenderer) : AbstractChatElement(guiRenderer), 
 
     init {
         messages.prefMaxSize = Vec2i(chatProfile.width, chatProfile.height)
-        chatProfile::width.profileWatchRendering(this, profile = profile, context = renderWindow) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
-        chatProfile::height.profileWatchRendering(this, profile = profile, context = renderWindow) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
+        chatProfile::width.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(it, messages.prefMaxSize.y) }
+        chatProfile::height.observeRendering(this, context = renderWindow) { messages.prefMaxSize = Vec2i(messages.prefMaxSize.x, it) }
         forceSilentApply()
         input.onChangeCallback = {
             while (input._value.startsWith(' ')) {

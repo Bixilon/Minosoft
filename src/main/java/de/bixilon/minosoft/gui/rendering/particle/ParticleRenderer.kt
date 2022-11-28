@@ -20,7 +20,6 @@ import de.bixilon.kutil.concurrent.time.TimeWorkerTask
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.particle.AbstractParticleRenderer
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -103,8 +102,8 @@ class ParticleRenderer(
         get() = particles.size
 
     override fun init(latch: CountUpAndDownLatch) {
-        profile::maxAmount.profileWatch(this, true, profile) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
-        profile::enabled.profileWatch(this, true, profile) { enabled = it }
+        profile::maxAmount.observe(this, true) { maxAmount = minOf(it, RenderConstants.MAXIMUM_PARTICLE_AMOUNT) }
+        profile::enabled.observe(this, true) { enabled = it }
 
         connection.events.listen<CameraMatrixChangeEvent> {
             matrixUpdate = true

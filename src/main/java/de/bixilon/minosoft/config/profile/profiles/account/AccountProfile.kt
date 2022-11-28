@@ -17,15 +17,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.BackingDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.backingDelegate
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
-import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.mapDelegate
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.util.KUtil
 
@@ -61,7 +62,7 @@ class AccountProfile(
      * All accounts
      */
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
-    var entries: MutableMap<String, Account> by mapDelegate()
+    var entries: MutableMap<String, Account> by MapDelegate(this, mutableMapOf(), "")
         private set
 
     /**
@@ -70,7 +71,11 @@ class AccountProfile(
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
     @get:JsonProperty("selected") private var _selected: String? by NullableStringDelegate(this, null)
 
-    @get:JsonIgnore var selected: Account? by backingDelegate(getter = { entries[_selected] }, setter = { _selected = it?.id })
+    @get:JsonIgnore var selected: Account? by BackingDelegate(get = { entries[_selected] }, set = { _selected = it?.id })
+
+    init {
+        this::_selected.observe(this) { this.selected = entries[_selected] }
+    }
 
 
     override fun toString(): String {

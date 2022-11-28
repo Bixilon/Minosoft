@@ -20,7 +20,6 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatchRendering
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasManager
@@ -41,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.RenderingDelegate.observeRendering
 
 class GUIRenderer(
     val connection: PlayConnection,
@@ -79,7 +79,7 @@ class GUIRenderer(
         shader.load()
 
         connection.events.listen<ResizeWindowEvent> { recalculateMatrices(it.size) }
-        profile::scale.profileWatchRendering(this, profile = profile) { recalculateMatrices(scale = it) }
+        profile::scale.observeRendering(this) { recalculateMatrices(scale = it) }
 
         gui.postInit()
         hud.postInit()

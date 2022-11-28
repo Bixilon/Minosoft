@@ -21,7 +21,6 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
 import de.bixilon.minosoft.gui.rendering.camera.Camera
 import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.events.WindowCloseEvent
@@ -111,14 +110,14 @@ class RenderWindow(
                 latch.dec()
             }
         }
-        profile.experimental::fps.profileWatch(this, true, profile) {
+        profile.experimental::fps.observe(this, true) {
             renderStats = if (it) {
                 ExperimentalRenderStats()
             } else {
                 RenderStats()
             }
         }
-        profile.performance::slowRendering.profileWatch(this, profile = profile) { this.slowRendering = it }
+        profile.performance::slowRendering.observe(this) { this.slowRendering = it }
         renderer.registerDefault(connection.profiles)
 
         var paused = false
@@ -200,7 +199,7 @@ class RenderWindow(
         window::focused.observeRendering(this) { state = it.decide(RenderingStates.RUNNING, RenderingStates.SLOW) }
 
         window::iconified.observeRendering(this) { state = it.decide(RenderingStates.PAUSED, RenderingStates.RUNNING) }
-        profile.animations::sprites.profileWatch(this, true, profile = profile) { textureManager.staticTextures.animator.enabled = it }
+        profile.animations::sprites.observe(this, true) { textureManager.staticTextures.animator.enabled = it }
 
 
         inputHandler.init()

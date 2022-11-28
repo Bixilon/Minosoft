@@ -34,8 +34,6 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.RANDOM
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, OtherProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: OtherProfile = null.unsafeCast()
@@ -45,14 +43,7 @@ object OtherProfileManager : ProfileManager<OtherProfile> {
             GlobalEventMaster.fire(OtherProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): OtherProfile {
-        currentLoadingPath = name
-        val profile = OtherProfile(description ?: "Default profile for various things")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = OtherProfile(description ?: "Default profile for various things")
 
     override fun migrate(from: Int, data: MutableMap<String, Any?>) {
         when (from) {

@@ -17,9 +17,9 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.collections.CollectionUtil.extend
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.map.MapChange.Companion.values
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMapFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountStates
@@ -38,6 +38,7 @@ import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeMapFX
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -95,14 +96,13 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             }
             accountListViewFX.items += account
         }
-        profile::entries.profileWatchMapFX(this, profile) {
-            if (it.wasRemoved()) {
-                accountListViewFX.items.remove(it.valueRemoved)
-            } else if (it.wasAdded()) {
-                if (it.valueAdded.type != type.resourceLocation) {
-                    return@profileWatchMapFX
+        profile::entries.observeMapFX(this) {
+            accountListViewFX.items.removeAll(it.removes.values())
+            for ((_, value) in it.adds) {
+                if (value.type != type.resourceLocation) {
+                    continue
                 }
-                accountListViewFX.items += it.valueAdded
+                accountListViewFX.items += value
             }
         }
 

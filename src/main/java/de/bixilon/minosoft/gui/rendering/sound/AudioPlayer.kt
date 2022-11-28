@@ -18,7 +18,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedListOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
 import de.bixilon.kutil.concurrent.queue.Queue
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
@@ -91,7 +91,7 @@ class AudioPlayer(
         val volumeConfig = connection.profiles.audio.volume
 
         listener.masterVolume = volumeConfig.master
-        volumeConfig::master.profileWatch(this) { queue += { listener.masterVolume = it } }
+        volumeConfig::master.observe(this) { queue += { listener.masterVolume = it } }
 
         connection.events.listen<CameraPositionChangeEvent> {
             queue += {
@@ -104,10 +104,10 @@ class AudioPlayer(
 
         Log.log(LogMessageType.AUDIO, LogLevels.INFO) { "OpenAL loaded!" }
 
-        profile::enabled.profileWatch(this, false, profile) {
+        profile::enabled.observe(this, false) {
             if (it) {
                 enabled = true
-                return@profileWatch
+                return@observe
             }
             queue += {
                 for (source in sources) {

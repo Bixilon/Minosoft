@@ -34,8 +34,6 @@ object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon = FontAwesomeSolid.DOWNLOAD
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, ResourcesProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: ResourcesProfile = null.unsafeCast()
@@ -45,12 +43,5 @@ object ResourcesProfileManager : ProfileManager<ResourcesProfile> {
             GlobalEventMaster.fire(ResourcesProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): ResourcesProfile {
-        currentLoadingPath = name
-        val profile = ResourcesProfile(description ?: "Default resources profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = ResourcesProfile(description ?: "Default resources profile")
 }

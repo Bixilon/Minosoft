@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.world.outline
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -59,10 +59,10 @@ class BlockOutlineRenderer(
 
     override fun init(latch: CountUpAndDownLatch) {
         val profile = connection.profiles.block
-        this.profile::enabled.profileWatch(this, profile = profile) { reload = true }
-        this.profile::collisions.profileWatch(this, profile = profile) { reload = true }
-        this.profile::outlineColor.profileWatch(this, profile = profile) { reload = true }
-        this.profile::collisionColor.profileWatch(this, profile = profile) { reload = true }
+        this.profile::enabled.observe(this) { reload = true }
+        this.profile::collisions.observe(this) { reload = true }
+        this.profile::outlineColor.observe(this) { reload = true }
+        this.profile::collisionColor.observe(this) { reload = true }
     }
 
 

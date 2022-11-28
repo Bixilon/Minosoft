@@ -17,22 +17,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.backingDelegate
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
+import de.bixilon.minosoft.config.profile.delegate.BackingDelegate
+import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.ChatComponent
 
-class Server(
+class ErosServer(
+    profile: ErosProfile,
     address: String,
     name: ChatComponent = ChatComponent.of(address),
     forcedVersion: Any? = null, // must be version
     profiles: MutableMap<ResourceLocation, String> = mutableMapOf(),
     queryVersion: Boolean = true,
-) {
+) : AbstractServer {
     init {
         check(forcedVersion == null || forcedVersion is Version)
     }
@@ -40,17 +45,17 @@ class Server(
     /**
      * Server-address as string. May contain the port
      */
-    var address by delegate(address) { check(it.isNotBlank()) { "Server address must not be blank!" } }
+    override var address by SimpleDelegate(profile, address, "") { check(it.isNotBlank()) { "Server address must not be blank!" } }
 
     /**
      * Server name (showed in eros)
      */
-    var name by delegate(name) { check(it.message.isNotBlank()) { "Server name must not be blank!" } }
+    override var name by SimpleDelegate(profile, name, "") { check(it.message.isNotBlank()) { "Server name must not be blank!" } }
 
     /**
      * Sends version -1 in the handshake to query the servers version
      */
-    var queryVersion by delegate(queryVersion)
+    override var queryVersion by BooleanDelegate(profile, queryVersion, "")
 
     /**
      * Profiles to use for the connection to the server.
@@ -58,15 +63,19 @@ class Server(
      * If profile is unset, defaults to eros global profiles
      */
     @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
-    var profiles: MutableMap<ResourceLocation, String> by mapDelegate(profiles)
+    override var profiles: MutableMap<ResourceLocation, String> by MapDelegate(profile, profiles, "")
 
     @get:JsonProperty("forced_version")
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    private var _forcedVersion by delegate(forcedVersion.unsafeCast<Version?>()?.name)
+    private var _forcedVersion by NullableStringDelegate(profile, forcedVersion.unsafeCast<Version?>()?.name, "")
 
     @get:JsonIgnore
-    var forcedVersion by backingDelegate(getter = { Versions[_forcedVersion] }, setter = { _forcedVersion = it?.name })
+    override var forcedVersion by BackingDelegate(get = { Versions[_forcedVersion] }, set = { _forcedVersion = it?.name })
+
+    init {
+        this::_forcedVersion.observe(this) { this.forcedVersion = Versions[it] }
+    }
 
     @get:JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    var faviconHash: String? by delegate(null) { if (it != null) check(it.length == FileAssetsUtil.HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
+    override var faviconHash: String? by NullableStringDelegate(profile, null, "") { if (it != null) check(it.length == FileAssetsUtil.HashTypes.SHA256.length) { "Not a valid sha256 hash!" } }
 }

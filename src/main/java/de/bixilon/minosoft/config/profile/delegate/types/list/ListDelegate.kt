@@ -11,19 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.delegate.delegate
+package de.bixilon.minosoft.config.profile.delegate.types.list
 
-import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.kutil.observer.list.ListObserver
+import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.util.KUtil.minosoft
 
-open class ProfileDelegate<V>(
-    private var value: V,
-    profileManager: ProfileManager<*>,
-    profileName: String,
-    verify: ((V) -> Unit)?,
-) : BackingDelegate<V>(profileManager, profileName, verify) {
+class ListDelegate<V>(
+    override val profile: Profile,
+    default: MutableList<V> = mutableListOf(),
+    name: String,
+) : ListObserver<V>(default), AbstractDelegate<MutableList<V>> {
+    override val name = minosoft(name)
+    override val description = minosoft("$name.description")
 
     override fun get() = value
-    override fun set(value: V) {
-        this.value = value
+    override fun set(value: MutableList<V>) {
+        validate(value)
+        this.value.unsafe = value
     }
+
+    override fun validate(value: MutableList<V>) = Unit
 }

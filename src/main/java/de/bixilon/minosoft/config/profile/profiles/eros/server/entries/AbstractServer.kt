@@ -11,27 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.main.play.server.type.types
+package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
-import de.bixilon.minosoft.data.language.translate.Translatable
-import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
-import org.kordamp.ikonli.Ikon
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.data.text.ChatComponent
 
-interface ServerType : Translatable {
-    val icon: Ikon
-    val hidden: Boolean
-    var readOnly: Boolean
-
-    val servers: List<AbstractServer>
-
-    fun refresh(cards: List<ServerCard>)
-
-
-    companion object {
-        val TYPES = setOf(
-            CustomServerType,
-            LANServerType,
-        )
-    }
+interface AbstractServer {
+    val address: String
+    val name: ChatComponent
+    val queryVersion: Boolean
+    val profiles: MutableMap<ResourceLocation, String>
+    val forcedVersion: Version?
+    var faviconHash: String?
 }

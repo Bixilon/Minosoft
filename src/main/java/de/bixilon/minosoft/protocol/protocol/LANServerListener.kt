@@ -14,9 +14,10 @@ package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.kutil.latch.CountUpAndDownLatch
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.string.StringUtil.getBetween
-import de.bixilon.minosoft.config.profile.delegate.watcher.SimpleProfileDelegateWatcher.Companion.profileWatch
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.LANServer
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -28,7 +29,7 @@ import java.net.*
 import java.nio.charset.StandardCharsets
 
 object LANServerListener {
-    val SERVERS: HashBiMap<InetAddress, Server> = HashBiMap.create()
+    val SERVERS: HashBiMap<InetAddress, AbstractServer> = HashBiMap.create()
     private const val MOTD_START_STRING = "[MOTD]"
     private const val MOTD_END_STRING = "[/MOTD]"
     private const val PORT_START_STRING = "[AD]"
@@ -41,7 +42,7 @@ object LANServerListener {
         get() = listeningThread != null
 
     fun listen(latch: CountUpAndDownLatch?) {
-        OtherProfileManager.selected::listenLAN.profileWatch(this) {
+        OtherProfileManager.selected::listenLAN.observe(this) {
             if (it && listeningThread == null) {
                 startListener()
             } else if (!it && listeningThread != null) {
@@ -111,7 +112,7 @@ object LANServerListener {
         this.listeningThread = thread
     }
 
-    private fun getServerByBroadcast(address: InetAddress, broadcast: String): Server {
+    private fun getServerByBroadcast(address: InetAddress, broadcast: String): AbstractServer {
         // example: [MOTD]Bixilon - New World[/MOTD][AD]41127[/AD]
         for (mustContain in BROADCAST_MUST_CONTAIN) {
             require(broadcast.contains(mustContain)) { "Broadcast is invalid!" }
@@ -124,7 +125,7 @@ object LANServerListener {
         val port = rawAddress.toInt()
         check(port in 1024 until 65535) { "Invalid port: $port" }
         val motd = broadcast.getBetween(MOTD_START_STRING, MOTD_END_STRING)
-        return Server(address = address.hostAddress + ":" + rawAddress, name = BaseComponent("LAN: #${SERVERS.size}: ", ChatComponent.of(motd)))
+        return LANServer(address = address.hostAddress + ":" + rawAddress, name = BaseComponent("LAN: #${SERVERS.size}: ", ChatComponent.of(motd)))
     }
 
 

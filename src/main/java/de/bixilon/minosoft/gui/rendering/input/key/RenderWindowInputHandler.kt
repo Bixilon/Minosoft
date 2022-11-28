@@ -17,12 +17,12 @@ import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.map.SynchronizedMap
+import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.config.profile.delegate.watcher.entry.MapProfileDelegateWatcher.Companion.profileWatchMap
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -115,14 +115,14 @@ class RenderWindowInputHandler(
             cameraInput.mouseCallback(it.delta)
         }
 
-        profile::keyBindings.profileWatchMap(this, profile = profile) {
-            val keyBinding = keyBindingCallbacks[it.key] ?: return@profileWatchMap
-            if (it.wasRemoved() && it.wasAdded()) {
-                keyBinding.keyBinding = it.valueAdded
-            } else if (it.wasRemoved()) {
-                keyBinding.keyBinding = keyBinding.default
-            } else {
-                keyBinding.keyBinding = it.valueAdded
+        profile::keyBindings.observeMap(this) {
+            for ((key, value) in it.adds) {
+                val binding = keyBindingCallbacks[key] ?: continue
+                binding.keyBinding = value
+            }
+            for ((key, value) in it.removes) {
+                val binding = keyBindingCallbacks[key] ?: continue
+                binding.keyBinding = binding.default
             }
         }
         cameraInput.init()

@@ -19,10 +19,10 @@ import de.bixilon.kutil.locale.LanguageUtil.fullName
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
 import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.map.MapDelegate
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.util.*
@@ -45,7 +45,7 @@ class GeneralC(profile: ErosProfile) {
      * Profiles to use for connections
      * If profile is not set or not found, the global default profile is used
      */
-    var profileOverrides: MutableMap<ResourceLocation, String> by mapDelegate()
+    var profileOverrides: MutableMap<ResourceLocation, String> by MapDelegate(profile, mutableMapOf(), "")
 
 
     /**

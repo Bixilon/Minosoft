@@ -17,14 +17,14 @@ import com.github.luben.zstd.ZstdOutputStream
 import de.bixilon.kutil.hash.HashUtil.sha256
 import de.bixilon.minosoft.assets.util.FileAssetsUtil
 import de.bixilon.minosoft.assets.util.FileUtil
-import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.Server
+import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.AbstractServer
 import javafx.scene.image.Image
 import java.io.File
 import java.io.FileOutputStream
 
 object FaviconManager {
 
-    val Server.favicon: Image?
+    val AbstractServer.favicon: Image?
         get() {
             val hash = this.faviconHash ?: return null
             try {
@@ -35,7 +35,7 @@ object FaviconManager {
             return null
         }
 
-    fun Server.saveFavicon(favicon: ByteArray?, faviconHash: String = favicon!!.sha256()) {
+    fun AbstractServer.saveFavicon(favicon: ByteArray?, faviconHash: String = favicon!!.sha256()) {
         if (this.faviconHash == faviconHash) {
             return
         }

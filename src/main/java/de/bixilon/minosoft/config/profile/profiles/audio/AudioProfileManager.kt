@@ -35,8 +35,6 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
     override val jacksonProfileType: JavaType = Jackson.MAPPER.typeFactory.constructType(profileClass)
     override val icon: Ikon = FontAwesomeSolid.HEADPHONES
 
-
-    override var currentLoadingPath: String? = null
     override val profiles: AbstractMutableBiMap<String, AudioProfile> by observedBiMap(synchronizedBiMapOf())
 
     override var selected: AudioProfile = null.unsafeCast()
@@ -46,12 +44,5 @@ object AudioProfileManager : ProfileManager<AudioProfile> {
             GlobalEventMaster.fire(AudioProfileSelectEvent(value))
         }
 
-    override fun createProfile(name: String, description: String?): AudioProfile {
-        currentLoadingPath = name
-        val profile = AudioProfile(description ?: "Default audio profile")
-        currentLoadingPath = null
-        profiles[name] = profile
-
-        return profile
-    }
+    override fun createProfile(name: String, description: String?) = AudioProfile(description ?: "Default audio profile")
 }
