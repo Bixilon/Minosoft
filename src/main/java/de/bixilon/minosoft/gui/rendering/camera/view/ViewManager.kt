@@ -17,13 +17,15 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.camera.Camera
+import de.bixilon.minosoft.gui.rendering.camera.view.person.FirstPersonView
+import de.bixilon.minosoft.gui.rendering.camera.view.person.ThirdPersonView
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class ViewManager(private val camera: Camera) {
     private val debug = DebugView(camera)
     private val firstPerson = FirstPersonView(camera)
-    private val thirdPerson = FirstPersonView(camera) // TODO
+    private val thirdPerson = ThirdPersonView(camera)
 
     var view: CameraView = firstPerson
         private set

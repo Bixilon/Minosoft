@@ -50,6 +50,7 @@ class TargetHandler(
         private set
 
 
+
     fun raycast() {
         val eyePosition = camera.matrixHandler.entity.eyePosition.toVec3d
         val cameraFront = camera.matrixHandler.entity.rotation.front.toVec3d
@@ -84,7 +85,7 @@ class TargetHandler(
         return currentHit
     }
 
-    private fun raycast(origin: Vec3d, direction: Vec3d, blocks: Boolean, fluids: Boolean, entities: Boolean): GenericTarget? {
+    fun raycast(origin: Vec3d, direction: Vec3d, blocks: Boolean, fluids: Boolean, entities: Boolean): GenericTarget? {
         if (!blocks && !fluids && entities) {
             // only raycast entities
             return raycastEntity(origin, direction)
