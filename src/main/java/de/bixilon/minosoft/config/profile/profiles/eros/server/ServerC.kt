@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros.server
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import de.bixilon.minosoft.config.profile.delegate.types.list.ListDelegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.server.entries.ErosServer
@@ -24,6 +23,5 @@ class ServerC(profile: ErosProfile) {
     val modify = ModifyC(profile)
     val list = ListC(profile)
 
-    @get:JsonInclude(JsonInclude.Include.NON_EMPTY)
     var entries: MutableList<ErosServer> by ListDelegate(profile, mutableListOf(), "")
 }

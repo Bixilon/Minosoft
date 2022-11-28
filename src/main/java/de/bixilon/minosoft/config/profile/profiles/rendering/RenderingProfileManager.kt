@@ -27,6 +27,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object RenderingProfileManager : ProfileManager<RenderingProfile> {
+    override val mapper = Jackson.MAPPER.copy()
     override val namespace = "minosoft:rendering".toResourceLocation()
     override val latestVersion get() = 1
     override val saveLock = ReentrantLock()

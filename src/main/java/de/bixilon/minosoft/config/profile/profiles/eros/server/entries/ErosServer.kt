@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 
+import com.fasterxml.jackson.annotation.JacksonInject
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -31,13 +32,14 @@ import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.ChatComponent
 
 class ErosServer(
-    profile: ErosProfile,
+    @JacksonInject profile: ErosProfile,
     address: String,
     name: ChatComponent = ChatComponent.of(address),
     forcedVersion: Any? = null, // must be version
     profiles: MutableMap<ResourceLocation, String> = mutableMapOf(),
     queryVersion: Boolean = true,
 ) : AbstractServer {
+
     init {
         check(forcedVersion == null || forcedVersion is Version)
     }

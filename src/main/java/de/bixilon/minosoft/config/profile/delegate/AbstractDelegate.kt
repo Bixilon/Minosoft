@@ -30,4 +30,11 @@ interface AbstractDelegate<T> : TextFormattable {
     override fun toText(): Any? {
         return get()
     }
+
+    fun queueSave() {
+        if (profile.reloading) {
+            return
+        }
+        profile.saved = false
+    }
 }

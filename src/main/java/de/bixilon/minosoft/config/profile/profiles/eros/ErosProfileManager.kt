@@ -27,6 +27,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object ErosProfileManager : ProfileManager<ErosProfile> {
+    override val mapper = Jackson.MAPPER.copy()
     override val namespace = "minosoft:eros".toResourceLocation()
     override val latestVersion get() = 1
     override val saveLock = ReentrantLock()

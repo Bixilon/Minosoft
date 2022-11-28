@@ -16,6 +16,7 @@ package de.bixilon.minosoft.config.profile.delegate
 import de.bixilon.kutil.observer.DataObserver
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.util.KUtil.minosoft
+import kotlin.reflect.KProperty
 
 open class SimpleDelegate<T>(
     override val profile: Profile,
@@ -30,6 +31,11 @@ open class SimpleDelegate<T>(
     override fun set(value: T) {
         validate(value)
         this.value = value
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: T) {
+        super.setValue(thisRef, property, value)
+        queueSave()
     }
 
     override fun validate(value: T) {

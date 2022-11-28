@@ -27,6 +27,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object ParticleProfileManager : ProfileManager<ParticleProfile> {
+    override val mapper = Jackson.MAPPER.copy()
     override val namespace = "minosoft:particle".toResourceLocation()
     override val latestVersion get() = 1
     override val saveLock = ReentrantLock()

@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.config.profile
 
+import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.databind.JavaType
+import com.fasterxml.jackson.databind.ObjectMapper
 import de.bixilon.kutil.collections.map.bi.AbstractMutableBiMap
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.exception.ExceptionUtil.tryCatch
@@ -40,6 +42,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 
 interface ProfileManager<T : Profile> {
+    val mapper: ObjectMapper
     val namespace: ResourceLocation
     val latestVersion: Int
     val saveLock: ReentrantLock
@@ -68,13 +71,19 @@ interface ProfileManager<T : Profile> {
     fun migrate(from: Int, data: MutableMap<String, Any?>) = Unit
 
 
-    fun load(name: String, data: MutableMap<String, Any?>?): T {
-        val profile = if (data == null) {
-            createProfile(name)
-        } else {
-            Jackson.MAPPER.convertValue(data, jacksonProfileType) as T
-        }
+    fun updateValue(profile: T, data: MutableMap<String, Any?>?) {
+        profile.reloading = true
+        val injectable = InjectableValues.Std()
+        injectable.addValue(profileClass, profile)
+        mapper.injectableValues = injectable
+        mapper.updateValue(profile, data)
         profile.saved = true
+        profile.reloading = false
+    }
+
+    fun load(name: String, data: MutableMap<String, Any?>?): T {
+        val profile = createProfile()
+        updateValue(profile, data)
         profiles[name] = profile
         return profile
     }
@@ -248,9 +257,7 @@ interface ProfileManager<T : Profile> {
             }
             try {
                 val data = readAndMigrate(path.path).second
-                val dataString = Jackson.MAPPER.writeValueAsString(data)
-                profile.reloading = true
-                Jackson.MAPPER.readerForUpdating(profile).readValue<T>(dataString)
+                updateValue(profile, data)
             } catch (exception: Exception) {
                 exception.printStackTrace()
                 exception.crash()

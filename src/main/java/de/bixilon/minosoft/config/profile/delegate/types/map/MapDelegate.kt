@@ -17,6 +17,7 @@ import de.bixilon.kutil.observer.map.MapObserver
 import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.util.KUtil.minosoft
+import kotlin.reflect.KProperty
 
 open class MapDelegate<K, V>(
     override val profile: Profile,
@@ -26,10 +27,19 @@ open class MapDelegate<K, V>(
     override val name = minosoft(name)
     override val description = minosoft("$name.description")
 
+    init {
+        value.addObserver { queueSave() }
+    }
+
     override fun get() = value
     override fun set(value: MutableMap<K, V>) {
         validate(value)
         this.value.unsafe = value
+    }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: MutableMap<K, V>) {
+        super.setValue(thisRef, property, value)
+        queueSave()
     }
 
     override fun validate(value: MutableMap<K, V>) = Unit

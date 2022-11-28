@@ -27,6 +27,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 import java.util.concurrent.locks.ReentrantLock
 
 object ConnectionProfileManager : ProfileManager<ConnectionProfile> {
+    override val mapper = Jackson.MAPPER.copy()
     override val namespace = "minosoft:connection".toResourceLocation()
     override val latestVersion get() = 1
     override val saveLock = ReentrantLock()
