@@ -14,51 +14,52 @@
 package de.bixilon.minosoft.config.profile.profiles.connection.skin
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 
-class SkinC {
+class SkinC(profile: ConnectionProfile) {
     /**
      * The cape of use will be hidden
      * Will be sent to the server
      */
-    var cape by delegate(true)
+    var cape by BooleanDelegate(profile, true)
 
     /**
      * The jacket of use will be hidden
      * Will be sent to the server
      */
-    var jacket by delegate(true)
+    var jacket by BooleanDelegate(profile, true)
 
     /**
      * The left sleeve of use will be hidden
      * Will be sent to the server
      */
-    var leftSleeve by delegate(true)
+    var leftSleeve by BooleanDelegate(profile, true)
 
     /**
      * The right sleeve of use will be hidden
      * Will be sent to the server
      */
-    var rightSleeve by delegate(true)
+    var rightSleeve by BooleanDelegate(profile, true)
 
     /**
      * The left pants of use will be hidden
      * Will be sent to the server
      */
-    var leftPants by delegate(true)
+    var leftPants by BooleanDelegate(profile, true)
 
     /**
      * The right pants of use will be hidden
      * Will be sent to the server
      */
-    var rightPants by delegate(true)
+    var rightPants by BooleanDelegate(profile, true)
 
     /**
      * The hat of use will be hidden
      * Will be sent to the server
      */
-    var hat by delegate(true)
+    var hat by BooleanDelegate(profile, true)
 
 
     @get:JsonIgnore val skinParts: Array<SkinParts>

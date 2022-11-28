@@ -13,20 +13,21 @@
 
 package de.bixilon.minosoft.config.profile.profiles.controls.mouse
 
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
+import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
 
-class MouseC {
+class MouseC(profile: ControlsProfile) {
 
     /**
      * Mouse sensitivity in percent
      * Controls how fast the mouse rotates the player around
      * Must be non-negative
      */
-    var sensitivity by delegate(1.0f) { check(it > 0.0f) { "Must be non-negative!" } }
+    var sensitivity by FloatDelegate(profile, 1.0f, "", arrayOf(0.01f..10.0f))
 
     /**
      * Controls how fast you scroll (e.g. in the hotbar)
      * Must be non-negative
      */
-    var scrollSensitivity by delegate(1.0) { check(it > 0.0) { "Must be non-negative!" } }
+    var scrollSensitivity by FloatDelegate(profile, 1.0f, "", arrayOf(0.01f..10.0f))
 }

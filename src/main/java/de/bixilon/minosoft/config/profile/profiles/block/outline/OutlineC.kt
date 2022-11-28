@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.config.profile.profiles.block.outline
 
-import de.bixilon.minosoft.config.profile.delegate.ColorDelegate
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.ColorDelegate
 import de.bixilon.minosoft.config.profile.profiles.block.BlockProfile
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 

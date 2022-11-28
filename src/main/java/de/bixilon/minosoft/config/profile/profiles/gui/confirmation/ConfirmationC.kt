@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.config.profile.profiles.gui.confirmation
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
 
-class ConfirmationC {
-    var copyToClipboard by delegate(true)
-    var openFile by delegate(true)
-    var openURL by delegate(true)
-    var sendMessage by delegate(true)
+class ConfirmationC(profile: GUIProfile) {
+    var copyToClipboard by BooleanDelegate(profile, true)
+    var openFile by BooleanDelegate(profile, true)
+    var openURL by BooleanDelegate(profile, true)
+    var sendMessage by BooleanDelegate(profile, true)
 }

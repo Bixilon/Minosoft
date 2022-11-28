@@ -19,9 +19,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.random.RandomStringUtil.randomString
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.backingDelegate
-import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager.mapDelegate
 import de.bixilon.minosoft.data.accounts.Account
@@ -40,20 +42,20 @@ class AccountProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     /**
      * The client token.
      * This 128 length long string is generated randomly while the profile was created
      * Will be sent to mojang when logging in/refreshing an account
      */
-    var clientToken by delegate(KUtil.RANDOM.randomString(128))
+    var clientToken by StringDelegate(this, KUtil.RANDOM.randomString(128))
 
     /**
      * Before using an account, it always tries to fetch the profile.
      * If the fetch is successful, we can be sure that the account is working.
      */
-    var alwaysFetchProfile by delegate(true)
+    var alwaysFetchProfile by BooleanDelegate(this, true)
 
     /**
      * All accounts
@@ -66,7 +68,7 @@ class AccountProfile(
      * The current id of the selected account
      */
     @get:JsonInclude(JsonInclude.Include.NON_NULL)
-    @get:JsonProperty("selected") private var _selected: String? by delegate(null)
+    @get:JsonProperty("selected") private var _selected: String? by NullableStringDelegate(this, null)
 
     @get:JsonIgnore var selected: Account? by backingDelegate(getter = { entries[_selected] }, setter = { _selected = it?.id })
 

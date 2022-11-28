@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,22 +13,24 @@
 
 package de.bixilon.minosoft.config.profile.profiles.gui.chat.internal
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
 
-class InternalC {
+class InternalC(profile: GUIProfile) {
 
     /**
      * Hides the internal chat
      */
-    var hidden by delegate(false)
+    var hidden by BooleanDelegate(profile, false)
 
     /**
      * The width of the internal chat in scaled pixels
      */
-    var width by delegate(320)
+    var width by IntDelegate(profile, 320, "", arrayOf(100..500))
 
     /**
      * The height of the internal chat in scaled pixels
      */
-    var height by delegate(180)
+    var height by IntDelegate(profile, 180, "", arrayOf(40..500))
 }

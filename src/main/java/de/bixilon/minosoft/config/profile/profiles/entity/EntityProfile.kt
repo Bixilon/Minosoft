@@ -15,8 +15,8 @@ package de.bixilon.minosoft.config.profile.profiles.entity
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.entity.hitbox.HitboxC
 
@@ -33,10 +33,10 @@ class EntityProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
 
-    val hitbox = HitboxC()
+    val hitbox = HitboxC(this)
 
     override fun toString(): String {
         return EntityProfileManager.getName(this)

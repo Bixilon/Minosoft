@@ -13,33 +13,34 @@
 
 package de.bixilon.minosoft.config.profile.profiles.entity.hitbox
 
-import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.entity.EntityProfile
 
-class HitboxC {
+class HitboxC(profile: EntityProfile) {
     /**
      * Enables or disables hit-boxes for all entities
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(profile, true)
 
     /**
      * Shows your own hit-box when in first person view
      */
-    var showLocal by delegate(false)
+    var showLocal by BooleanDelegate(profile, false)
 
     /**
      * Shows hit-boxes from invisible entities
      */
-    var showInvisible by delegate(false)
+    var showInvisible by BooleanDelegate(profile, false)
 
     /**
      * If true: Shows full colored hit-boxes (aka. lazy boxes).
      * If false: Shows just the outline of the hit-box
      */
-    var lazy by delegate(false)
+    var lazy by BooleanDelegate(profile, false)
 
     /**
      * Disables the z-buffer when rendering
      * => Shows the boxes through walls
      */
-    var showThroughWalls by delegate(false)
+    var showThroughWalls by BooleanDelegate(profile, false)
 }

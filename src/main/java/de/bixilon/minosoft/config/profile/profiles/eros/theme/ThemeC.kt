@@ -13,13 +13,14 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros.theme
 
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 
-class ThemeC {
+class ThemeC(profile: ErosProfile) {
 
     /**
      * Name of the theme css file
      * Located in minosoft:eros/themes/<name>.css
      */
-    var theme by delegate("default")
+    var theme by StringDelegate(profile, "default")
 }

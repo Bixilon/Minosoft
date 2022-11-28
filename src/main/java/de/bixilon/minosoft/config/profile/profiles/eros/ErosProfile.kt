@@ -15,8 +15,8 @@ package de.bixilon.minosoft.config.profile.profiles.eros
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
@@ -36,13 +36,13 @@ class ErosProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
 
-    val general = GeneralC()
-    val theme = ThemeC()
-    val server = ServerC()
-    val text = TextC()
+    val general = GeneralC(this)
+    val theme = ThemeC(this)
+    val server = ServerC(this)
+    val text = TextC(this)
 
     override fun toString(): String {
         return ErosProfileManager.getName(this)

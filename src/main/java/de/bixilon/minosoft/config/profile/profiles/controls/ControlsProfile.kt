@@ -16,8 +16,8 @@ package de.bixilon.minosoft.config.profile.profiles.controls
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfileManager.mapDelegate
 import de.bixilon.minosoft.config.profile.profiles.controls.interaction.InteractionC
@@ -37,13 +37,13 @@ class ControlsProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     var keyBindings: MutableMap<ResourceLocation, KeyBinding> by mapDelegate()
         private set
 
-    val mouse = MouseC()
-    val interaction = InteractionC()
+    val mouse = MouseC(this)
+    val interaction = InteractionC(this)
 
 
     override fun toString(): String {

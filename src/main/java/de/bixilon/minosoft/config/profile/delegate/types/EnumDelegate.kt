@@ -11,25 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.controls.interaction
+package de.bixilon.minosoft.config.profile.delegate.types
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
+import de.bixilon.kutil.enums.ValuesEnum
+import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
+import de.bixilon.minosoft.config.profile.profiles.Profile
 
-class InteractionC(profile: ControlsProfile) {
+open class EnumDelegate<T : Enum<*>>(
+    override val profile: Profile,
+    default: T,
+    values: ValuesEnum<T>,
+    name: String = "",
+) : SimpleDelegate<T>(profile, default, name) {
 
-    /**
-     * Enables or disables right-clicking with a shovel on grass (…) to create grass paths
-     */
-    var flattening by BooleanDelegate(profile, true)
-
-    /**
-     * Enables right-clicking with an axe on any logs to create stripped logs
-     */
-    var stripping by BooleanDelegate(profile, true)
-
-    /**
-     * Enables right-clicking with a hoe on grass (…) to create farmland
-     */
-    var tilling by BooleanDelegate(profile, true)
+    override fun validate(value: T) = Unit
 }

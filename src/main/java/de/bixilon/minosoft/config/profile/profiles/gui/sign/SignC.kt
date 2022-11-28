@@ -13,8 +13,9 @@
 
 package de.bixilon.minosoft.config.profile.profiles.gui.sign
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
 
-class SignC {
-    var limitLength by delegate(true)
+class SignC(profile: GUIProfile) {
+    var limitLength by BooleanDelegate(profile, true)
 }

@@ -11,26 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.other.log
+package de.bixilon.minosoft.config.profile.delegate.types.map
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.delegate.types.map.LogDelegate
-import de.bixilon.minosoft.config.profile.profiles.other.OtherProfile
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class LogC(profile: OtherProfile) {
-
-    /**
-     * Hides various messages (e.g. chunk receiving, entity position updates, ...)
-     * Only relevant if packet logging is on VERBOSE
-     */
-    var reducedProtocolLog by BooleanDelegate(profile, true)
-
-    /**
-     * All log message types mapped to its log level
-     * @see de.bixilon.minosoft.util.logging.LogLevels
-     * @see de.bixilon.minosoft.util.logging.LogMessageType
-     */
-    var levels by LogDelegate(profile, LogMessageType.DEFAULT_LOG_MAP.toMutableMap())
-        private set
-}
+class LogDelegate(
+    override val profile: Profile,
+    default: MutableMap<LogMessageType, LogLevels>,
+    name: String = "",
+) : MapDelegate<LogMessageType, LogLevels>(profile, default, name)

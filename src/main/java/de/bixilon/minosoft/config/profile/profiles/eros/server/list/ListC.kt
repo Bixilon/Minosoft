@@ -13,21 +13,26 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros.server.list
 
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 
-class ListC {
+class ListC(profile: ErosProfile) {
     /**
      * Hides all servers in the server list that can not be pinged
      */
-    var hideOffline by delegate(false)
+    var hideOffline by BooleanDelegate(profile, false)
 
     /**
      * Hides all servers in the server list, when the amount of online players exceeds the slots
      */
-    var hideFull by delegate(false)
+
+    /**
+     * Hides all servers in the server list, when the amount of online players exceeds the slots
+     */
+    var hideFull by BooleanDelegate(profile, false)
 
     /**
      * Hides all servers in the server list when <= 0 players are online
      */
-    var hideEmpty by delegate(false)
+    var hideEmpty by BooleanDelegate(profile, false)
 }

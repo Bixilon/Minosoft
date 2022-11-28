@@ -15,8 +15,9 @@ package de.bixilon.minosoft.config.profile.profiles.other
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.other.log.LogC
 
@@ -33,19 +34,19 @@ class OtherProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     /**
      * Use native network transport if available
      */
-    var nativeNetwork by delegate(true)
+    var nativeNetwork by BooleanDelegate(this, true)
 
     /**
      * Listens for servers on your LAN network
      */
-    var listenLAN by delegate(true)
+    var listenLAN by BooleanDelegate(this, true)
 
-    val log = LogC()
+    val log = LogC(this)
 
     override fun toString(): String {
         return OtherProfileManager.getName(this)

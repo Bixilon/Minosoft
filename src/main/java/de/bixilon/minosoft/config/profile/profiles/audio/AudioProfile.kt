@@ -16,8 +16,8 @@ package de.bixilon.minosoft.config.profile.profiles.audio
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.audio.gui.GuiC
 import de.bixilon.minosoft.config.profile.profiles.audio.types.TypesC
@@ -36,7 +36,7 @@ class AudioProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     /**
      * Skips the loading od the AudioPlayer

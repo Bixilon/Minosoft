@@ -13,27 +13,28 @@
 
 package de.bixilon.minosoft.config.profile.profiles.connection.signature
 
-import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
 
-class SignatureC {
+class SignatureC(profile: ConnectionProfile) {
 
     /**
      * Hides all bad signed messages
      */
-    val ignoreBadSignedMessages by delegate(false)
+    val ignoreBadSignedMessages by BooleanDelegate(profile, false)
 
     /**
      * Does not fetch/load the private key, thus forcing the unsigned mode
      */
-    val disableKeys by delegate(false)
+    val disableKeys by BooleanDelegate(profile, false)
 
     /**
      * Send commands as message
      */
-    val sendCommandAsMessage by delegate(false)
+    val sendCommandAsMessage by BooleanDelegate(profile, false)
 
     /**
      * Signs commands
      */
-    val signCommands by delegate(true)
+    val signCommands by BooleanDelegate(profile, true)
 }

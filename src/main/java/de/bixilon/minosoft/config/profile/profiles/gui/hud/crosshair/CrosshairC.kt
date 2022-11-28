@@ -13,17 +13,19 @@
 
 package de.bixilon.minosoft.config.profile.profiles.gui.hud.crosshair
 
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.ColorDelegate
+import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfile
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 
-class CrosshairC {
+class CrosshairC(profile: GUIProfile) {
     /**
      * Inverts the color of the crosshair according to the background color
      */
-    var complementaryColor by delegate(true)
+    var complementaryColor by BooleanDelegate(profile, true)
 
     /**
      * The color of the crosshair
      */
-    var color by delegate(ChatColors.WHITE)
+    var color by ColorDelegate(profile, ChatColors.WHITE, "")
 }

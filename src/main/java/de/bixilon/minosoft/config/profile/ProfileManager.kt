@@ -63,7 +63,7 @@ interface ProfileManager<T : Profile> {
     val profiles: AbstractMutableBiMap<String, T>
     var selected: T
 
-    @Deprecated("Should not be accessed") var currentLoadingPath: String?
+    @Deprecated("Should not be accessed", level = DeprecationLevel.ERROR) var currentLoadingPath: String?
 
     val baseDirectory: File
         get() = File(RunConfiguration.HOME_DIRECTORY + "config/" + namespace.namespace + "/")
@@ -92,7 +92,7 @@ interface ProfileManager<T : Profile> {
         return profile
     }
 
-    @Deprecated("")
+    @Deprecated("", level = DeprecationLevel.ERROR)
     fun <V> delegate(value: V, verify: ((V) -> Unit)? = null): ProfileDelegate<V> {
         return ProfileDelegate(value, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
     }
@@ -106,17 +106,17 @@ interface ProfileManager<T : Profile> {
         }
     }
 
-    @Deprecated("")
+    @Deprecated("", level = DeprecationLevel.ERROR)
     fun <K, V> mapDelegate(default: MutableMap<K, V> = mutableMapOf(), verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegateProfile<K, V> {
         return MapDelegateProfile(FXCollections.synchronizedObservableMap(FXCollections.observableMap(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
-    @Deprecated("")
+    @Deprecated("", level = DeprecationLevel.ERROR)
     fun <V> listDelegate(default: MutableList<V> = mutableListOf(), verify: ((ListChangeListener.Change<out V>) -> Unit)? = null): ListDelegateProfile<V> {
         return ListDelegateProfile(FXCollections.synchronizedObservableList(FXCollections.observableList(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }
 
-    @Deprecated("")
+    @Deprecated("", level = DeprecationLevel.ERROR)
     fun <V> setDelegate(default: MutableSet<V> = mutableSetOf(), verify: ((SetChangeListener.Change<out V>) -> Unit)? = null): SetDelegateProfile<V> {
         return SetDelegateProfile(FXCollections.synchronizedObservableSet(FXCollections.observableSet(default)), profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
     }

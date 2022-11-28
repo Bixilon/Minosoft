@@ -16,21 +16,24 @@ package de.bixilon.minosoft.config.profile.profiles.eros.general
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.kutil.locale.LanguageUtil.fullName
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.NullableStringDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfile
 import de.bixilon.minosoft.config.profile.profiles.account.AccountProfileManager
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.mapDelegate
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.util.*
 
-class GeneralC {
+class GeneralC(profile: ErosProfile) {
     /**
      * Language to use for eros. This is also the fallback language for other profiles
      */
-    var language: String by delegate(Locale.getDefault()?.fullName ?: LanguageUtil.FALLBACK_LANGUAGE)
+    var language: String by StringDelegate(profile, Locale.getDefault()?.fullName ?: LanguageUtil.FALLBACK_LANGUAGE)
 
-    @get:JsonProperty("account_profile") private var _accountProfile: String? by delegate(null)
+    @get:JsonProperty("account_profile") private var _accountProfile: String? by NullableStringDelegate(profile, null)
 
     @get:JsonIgnore var accountProfile: AccountProfile
         get() = AccountProfileManager.profiles[_accountProfile] ?: AccountProfileManager.selected
@@ -48,11 +51,11 @@ class GeneralC {
     /**
      * Renders the skin overlay (hat) above the head (used for avatars)
      */
-    var renderSkinOverlay by delegate(true)
+    var renderSkinOverlay by BooleanDelegate(profile, true)
 
     /**
      * Hides eros (all eros windows) once a connection with a server is successfully established.
      * Will also show it again, once it got disconnected
      */
-    var hideErosOnceConnected by delegate(false)
+    var hideErosOnceConnected by BooleanDelegate(profile, false)
 }

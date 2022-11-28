@@ -15,8 +15,9 @@ package de.bixilon.minosoft.config.profile.profiles.gui
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.FloatDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.gui.GUIProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.gui.chat.ChatC
 import de.bixilon.minosoft.config.profile.profiles.gui.confirmation.ConfirmationC
@@ -36,18 +37,18 @@ class GUIProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     /**
      * The scale of the hud
      * Must be non-negative
      */
-    var scale by delegate(2.0f) { check(it >= 0.0f) { "GUI scale must be non-negative" } }
+    var scale by FloatDelegate(this, 2.0f, "", arrayOf(1.0f..10.0f))
 
-    val chat = ChatC()
-    val hud = HudC()
-    val confirmation = ConfirmationC()
-    val sign = SignC()
+    val chat = ChatC(this)
+    val hud = HudC(this)
+    val confirmation = ConfirmationC(this)
+    val sign = SignC(this)
 
     override fun toString(): String {
         return GUIProfileManager.getName(this)

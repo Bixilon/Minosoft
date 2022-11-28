@@ -13,16 +13,17 @@
 
 package de.bixilon.minosoft.config.profile.profiles.particle.types
 
-import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfile
 
-class TypesC {
+class TypesC(profile: ParticleProfile) {
     /**
      * Shows particles from explosions
      */
-    var explosions by delegate(true)
+    var explosions by BooleanDelegate(profile, true)
 
     /**
      * Shows custom particles
      */
-    var packet by delegate(true)
+    var packet by BooleanDelegate(profile, true)
 }

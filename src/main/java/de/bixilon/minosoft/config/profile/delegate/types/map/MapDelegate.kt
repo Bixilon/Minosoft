@@ -11,25 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.controls.interaction
+package de.bixilon.minosoft.config.profile.delegate.types.map
 
-import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
-import de.bixilon.minosoft.config.profile.profiles.controls.ControlsProfile
+import de.bixilon.kutil.observer.map.MapObserver
+import de.bixilon.minosoft.config.profile.delegate.AbstractDelegate
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.util.KUtil.minosoft
 
-class InteractionC(profile: ControlsProfile) {
+abstract class MapDelegate<K, V>(
+    override val profile: Profile,
+    default: MutableMap<K, V>,
+    name: String,
+) : MapObserver<K, V>(default), AbstractDelegate<MutableMap<K, V>> {
+    override val name = minosoft(name)
+    override val description = minosoft("$name.description")
 
-    /**
-     * Enables or disables right-clicking with a shovel on grass (…) to create grass paths
-     */
-    var flattening by BooleanDelegate(profile, true)
+    override fun get() = value
+    override fun set(value: MutableMap<K, V>) {
+        validate(value)
+        this.value.unsafe = value
+    }
 
-    /**
-     * Enables right-clicking with an axe on any logs to create stripped logs
-     */
-    var stripping by BooleanDelegate(profile, true)
-
-    /**
-     * Enables right-clicking with a hoe on grass (…) to create farmland
-     */
-    var tilling by BooleanDelegate(profile, true)
+    override fun validate(value: MutableMap<K, V>) = Unit
 }

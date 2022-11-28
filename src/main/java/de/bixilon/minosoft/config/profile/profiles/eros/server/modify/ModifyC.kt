@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros.server.modify
 
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 
 /**
  * Configuration for the add or edit server dialog
  */
-class ModifyC {
+class ModifyC(profile: ErosProfile) {
     /**
      * Shows releases in the version select dropdown
      */
-    var showReleases by delegate(true)
+    var showReleases by BooleanDelegate(profile, true)
 
     /**
      * Shows snapshots in the version select dropdown
      */
-    var showSnapshots by delegate(false)
+    var showSnapshots by BooleanDelegate(profile, false)
 }

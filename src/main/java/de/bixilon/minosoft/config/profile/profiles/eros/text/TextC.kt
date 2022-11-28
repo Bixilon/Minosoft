@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.config.profile.profiles.eros.text
 
-import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfile
 
-class TextC {
+class TextC(profile: ErosProfile) {
 
     /**
      * Displays colored text
      * If disables it displays the css defined language (defaults to white)
      */
-    var colored by delegate(true)
+    var colored by BooleanDelegate(profile, true)
 
     /**
      * Enables the obfuscated formatting style
      * If false, the text will just blink
      */
-    var obfuscated by delegate(true)
+    var obfuscated by BooleanDelegate(profile, true)
 }

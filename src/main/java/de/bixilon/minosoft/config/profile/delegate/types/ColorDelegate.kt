@@ -11,8 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.delegate
+package de.bixilon.minosoft.config.profile.delegate.types
 
+import de.bixilon.minosoft.config.profile.delegate.SimpleDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 

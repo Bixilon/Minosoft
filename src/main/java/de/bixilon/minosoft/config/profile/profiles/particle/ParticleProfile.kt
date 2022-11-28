@@ -15,8 +15,10 @@ package de.bixilon.minosoft.config.profile.profiles.particle
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
+import de.bixilon.minosoft.config.profile.delegate.primitive.IntDelegate
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.particle.types.TypesC
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -34,18 +36,18 @@ class ParticleProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     /**
      * Skips the loading of the particle render. Requires to reload the renderer!
      */
-    var skipLoading by delegate(false)
+    var skipLoading by BooleanDelegate(this, false)
 
     /**
      * Enabled or disables particle renderer
      * Does not skip loading of particles
      */
-    var enabled by delegate(true)
+    var enabled by BooleanDelegate(this, true)
 
     /**
      * View distance for particles
@@ -53,7 +55,7 @@ class ParticleProfile(
      *
      * @see de.bixilon.minosoft.config.profile.profiles.block.BlockProfile.viewDistance
      */
-    var viewDistance by delegate(10) { check(it in 0..128) { "Distance must be non-negative and must not exceed 128" } }
+    var viewDistance by IntDelegate(this, 10, "", arrayOf(0..128))
 
     /**
      * Limits the number of particles.
@@ -61,9 +63,8 @@ class ParticleProfile(
      * Must not be negative or exceed $RenderConstants.MAXIMUM_PARTICLE_AMOUNT
      * @see RenderConstants.MAXIMUM_PARTICLE_AMOUNT
      */
-    var maxAmount by delegate(RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { check(it in 0..RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Particle amount must be non-negative and may not exceed ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" } }
-
-    val types = TypesC()
+    var maxAmount by IntDelegate(this, RenderConstants.MAXIMUM_PARTICLE_AMOUNT, "", arrayOf(0..RenderConstants.MAXIMUM_PARTICLE_AMOUNT))
+    val types = TypesC(this)
 
     override fun toString(): String {
         return ParticleProfileManager.getName(this)

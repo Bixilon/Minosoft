@@ -15,8 +15,8 @@ package de.bixilon.minosoft.config.profile.profiles.rendering
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.delegate.types.StringDelegate
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.rendering.advanced.AdvancedC
 import de.bixilon.minosoft.config.profile.profiles.rendering.animations.AnimationsC
@@ -43,7 +43,7 @@ class RenderingProfile(
     override var saved: Boolean = true
     override var ignoreNextReload: Boolean = false
     override val version: Int = latestVersion
-    override var description by delegate(description ?: "")
+    override var description by StringDelegate(this, description ?: "")
 
     val advanced = AdvancedC(this)
     val animations = AnimationsC(this)
