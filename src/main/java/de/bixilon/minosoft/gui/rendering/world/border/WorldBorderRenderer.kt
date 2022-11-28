@@ -75,7 +75,7 @@ class WorldBorderRenderer(
         }
         val textureOffset = (offsetReset - time) / ANIMATION_SPEED.toFloat()
         shader.textureOffset = 1.0f - textureOffset
-        shader.cameraHeight = renderWindow.camera.matrixHandler.eyePosition.y
+        shader.cameraHeight = renderWindow.camera.matrixHandler.entity.eyePosition.y
 
         val distance = border.getDistanceTo(renderWindow.connection.player.position)
         val strength = 1.0f - (distance.toFloat().clamp(0.0f, 100.0f) / 100.0f)

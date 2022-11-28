@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 open class LocalPlayerModel(renderer: EntityRenderer, player: PlayerEntity) : PlayerModel(renderer, player) {
 
     override val hideSkeletalModel: Boolean
-        get() = super.hideSkeletalModel || renderWindow.camera.renderPlayer
+        get() = super.hideSkeletalModel || !renderWindow.camera.view.view.renderSelf
 
     init {
         renderer.profile.hitbox::showLocal.observe(this, true) {

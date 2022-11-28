@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.kotlinglm.GLM
 import de.bixilon.kotlinglm.vec2.Vec2d
-import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -23,7 +22,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class CameraInput(
@@ -31,81 +29,55 @@ class CameraInput(
     val matrixHandler: MatrixHandler,
 ) {
     private val connection = renderWindow.connection
-    private val player = connection.player
     private val controlsProfile = connection.profiles.controls
-
-    private val ignoreInput: Boolean
-        get() {
-            val entity = matrixHandler.entity
-            if (entity != player) {
-                return true
-            }
-            if (renderWindow.camera.debugView) {
-                return true
-            }
-
-            return false
-        }
 
     private fun registerKeyBindings() {
         renderWindow.inputHandler.registerCheckCallback(
             MOVE_SPRINT_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_CONTROL),
             ),
             MOVE_FORWARDS_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_W),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_W),
             ),
             MOVE_BACKWARDS_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_S),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_S),
             ),
             MOVE_LEFT_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_A),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_A),
             ),
             MOVE_RIGHT_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_D),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_D),
             ),
             FLY_UP_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_SPACE),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_SPACE),
             ),
             FLY_DOWN_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
             ),
             JUMP_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_SPACE),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_SPACE),
             ),
             SNEAK_KEYBINDING to KeyBinding(
-                    KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
+                KeyActions.CHANGE to setOf(KeyCodes.KEY_LEFT_SHIFT),
             ),
             TOGGLE_FLY_KEYBINDING to KeyBinding(
-                    KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE),
+                KeyActions.DOUBLE_PRESS to setOf(KeyCodes.KEY_SPACE),
             ),
         )
 
 
-        renderWindow.inputHandler.registerKeyCallback(ZOOM_KEYBINDING, KeyBinding(
+        renderWindow.inputHandler.registerKeyCallback(
+            ZOOM_KEYBINDING, KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.KEY_C),
-        )) { matrixHandler.zoom = if (it) 2.0f else 0.0f }
+            )
+        ) { matrixHandler.zoom = if (it) 2.0f else 0.0f }
     }
 
     fun init() {
         registerKeyBindings()
     }
 
-    private fun updateDebugPosition(input: MovementInput, delta: Double) {
-        val cameraFront = renderWindow.camera.matrixHandler.debugRotation.front
-        val speedMultiplier = if (input.sprinting) 25 else 10
-        val movement = Vec3.EMPTY
-        if (input.movementForward != 0.0f) {
-            movement += cameraFront * input.movementForward
-        }
-        if (input.movementSideways != 0.0f) {
-            val cameraRight = (MatrixHandler.CAMERA_UP_VEC3 cross cameraFront).normalize()
-            movement += cameraRight * input.movementSideways
-        }
-        renderWindow.camera.matrixHandler.debugPosition = renderWindow.camera.matrixHandler.debugPosition + (if (movement.length2() != 0.0f) movement.normalize() else return) * delta * speedMultiplier
-    }
-
-    fun update(delta: Double) {
+    fun updateInput(delta: Double) {
         val input = MovementInput(
             pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
             pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
@@ -118,22 +90,15 @@ class CameraInput(
             flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
             toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
         )
-        if (renderWindow.camera.debugView) {
-            updateDebugPosition(input, delta)
-        }
-        connection.player.input = if (ignoreInput || renderWindow.camera.debugView) MovementInput() else input
+        renderWindow.camera.view.view.onInput(input, delta)
     }
 
-    fun mouseCallback(delta: Vec2d) {
-        if (renderWindow.camera.debugView) {
-            matrixHandler.debugRotation = mouseCallback(delta, matrixHandler.debugRotation)
-        } else if (!ignoreInput) {
-            player.rotation = mouseCallback(delta, player.rotation)
-        }
+    fun updateMouse(movement: Vec2d) {
+        renderWindow.camera.view.view.onMouse(movement)
     }
 
-    private fun mouseCallback(delta: Vec2d, rotation: EntityRotation): EntityRotation {
-        delta *= 0.1f * controlsProfile.mouse.sensitivity
+    fun calculateRotation(delta: Vec2d, rotation: EntityRotation): EntityRotation {
+        val delta = delta * 0.1f * controlsProfile.mouse.sensitivity
         var yaw = delta.x + rotation.yaw
         if (yaw > 180) {
             yaw -= 360

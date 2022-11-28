@@ -18,9 +18,11 @@ import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
+import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.FAR_PLANE
+import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.NEAR_PLANE
 import de.bixilon.minosoft.gui.rendering.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
@@ -41,26 +43,20 @@ class MatrixHandler(
     private val connection = renderWindow.connection
     private val profile = renderWindow.connection.profiles.rendering.camera
     val frustum = Frustum(this, connection.world)
+
+    @Deprecated("outsource to connection")
     var entity: Entity = renderWindow.connection.player
         set(value) {
             field = value
             upToDate = false
         }
 
-
-    var eyePosition = Vec3.EMPTY
-        private set
-    var rotation = EntityRotation(0.0, 0.0)
-        private set
+    private var eyePosition = Vec3.EMPTY
     private var previousFOV = 0.0
 
-    var cameraFront = Vec3(0.0, 0.0, -1.0)
-        private set
-    var cameraRight = Vec3(0.0, 0.0, -1.0)
-        private set
-    var cameraUp = Vec3(0.0, 1.0, 0.0)
-        private set
-
+    private var front = Vec3.EMPTY
+    private var right = Vec3(0.0, 0.0, -1.0)
+    private var up = Vec3(0.0, 1.0, 0.0)
 
     var zoom = 0.0f
         set(value) {
@@ -77,13 +73,6 @@ class MatrixHandler(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
-    private var previousDebugView = false
-    private var previousDebugPosition = Vec3.EMPTY
-    private var previousDebugRotation = EntityRotation(0.0, 0.0)
-    var debugPosition = Vec3.EMPTY
-    var debugRotation = EntityRotation(0.0, 0.0)
-
-
     private val fov: Double
         get() {
             val fov = profile.fov / (zoom + 1.0)
@@ -95,8 +84,8 @@ class MatrixHandler(
         }
 
 
-    private fun calculateViewMatrix(eyePosition: Vec3 = entity.eyePosition) {
-        viewMatrix = GLM.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
+    private fun updateViewMatrix(position: Vec3, front: Vec3) {
+        viewMatrix = GLM.lookAt(position, position + front, CAMERA_UP_VEC3)
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2 = renderWindow.window.sizef) {
@@ -112,36 +101,33 @@ class MatrixHandler(
     }
 
     fun draw() {
-        val debugView = camera.debugView
         val fov = fov
-        val eyePosition = entity.eyePosition
-        val rotation = entity.rotation
-        val debugPosition = debugPosition
-        val debugRotation = debugRotation
-        if ((upToDate && eyePosition == this.eyePosition && rotation == this.rotation && fov == previousFOV) && previousDebugView == debugView && (!debugView || (previousDebugPosition == debugPosition && previousDebugRotation == debugRotation))) {
+        val view = camera.view.view
+        val eyePosition = view.eyePosition
+        val front = view.front
+        if (upToDate && eyePosition == this.eyePosition && front == this.front && fov == previousFOV) {
             return
         }
-        this.previousDebugView = debugView
-        this.previousDebugPosition = debugPosition
-        this.previousDebugRotation = debugRotation
         this.eyePosition = eyePosition
-        this.rotation = rotation
+        this.front = front
         val cameraBlockPosition = eyePosition.blockPosition
         if (fov != previousFOV) {
             calculateProjectionMatrix()
         }
         previousFOV = fov
 
-        updateRotation(if (debugView) debugRotation else rotation)
-        updateViewMatrix(if (debugView) debugPosition else eyePosition)
+        updateFront(front)
+        updateViewMatrix(eyePosition, front)
         updateViewProjectionMatrix()
 
-        if (!debugView) {
+        val usePosition = if (view.updateFrustum) eyePosition else entity.eyePosition
+
+        if (view.updateFrustum) {
             frustum.recalculate()
             camera.visibilityGraph.updateCamera(cameraBlockPosition.chunkPosition, cameraBlockPosition.sectionHeight)
         }
 
-        connection.fire(CameraPositionChangeEvent(renderWindow, eyePosition))
+        connection.fire(CameraPositionChangeEvent(renderWindow, usePosition))
 
         connection.fire(
             CameraMatrixChangeEvent(
@@ -152,23 +138,18 @@ class MatrixHandler(
             )
         )
 
-        updateShaders(if (debugView) debugPosition else eyePosition)
+        updateShaders(usePosition)
         upToDate = true
-    }
-
-    private fun updateViewMatrix(eyePosition: Vec3) {
-        calculateViewMatrix(eyePosition)
     }
 
     private fun updateViewProjectionMatrix() {
         viewProjectionMatrix = projectionMatrix * viewMatrix
     }
 
-    private fun updateRotation(rotation: EntityRotation = entity.rotation) {
-        cameraFront = rotation.front
-
-        cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()
-        cameraUp = (cameraRight cross cameraFront).normalize()
+    private fun updateFront(front: Vec3) {
+        this.front = front
+        this.right = (front cross CAMERA_UP_VEC3).normalize()
+        this.up = (this.right cross front).normalize()
     }
 
     private fun updateShaders(cameraPosition: Vec3) {
@@ -180,11 +161,5 @@ class MatrixHandler(
                 shader.cameraPosition = cameraPosition
             }
         }
-    }
-
-    companion object {
-        const val NEAR_PLANE = 0.01f
-        const val FAR_PLANE = 10000.0f
-        val CAMERA_UP_VEC3 = Vec3(0.0, 1.0, 0.0)
     }
 }

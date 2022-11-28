@@ -22,7 +22,7 @@ import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.audio.AbstractAudioPlayer
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.gui.rendering.camera.MatrixHandler
+import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition.CAMERA_UP_VEC3
 import de.bixilon.minosoft.gui.rendering.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
@@ -96,7 +96,7 @@ class AudioPlayer(
         connection.events.listen<CameraPositionChangeEvent> {
             queue += {
                 listener.position = Vec3(it.newPosition)
-                listener.setOrientation(it.renderWindow.camera.matrixHandler.cameraFront, MatrixHandler.CAMERA_UP_VEC3)
+                listener.setOrientation(it.renderWindow.camera.view.view.front, CAMERA_UP_VEC3)
             }
         }
 

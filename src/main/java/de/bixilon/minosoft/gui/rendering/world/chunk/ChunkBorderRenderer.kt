@@ -74,7 +74,7 @@ class ChunkBorderRenderer(
             this.unload = true
             return
         }
-        val eyePosition = renderWindow.camera.matrixHandler.eyePosition.blockPosition
+        val eyePosition = renderWindow.camera.matrixHandler.entity.eyePosition.blockPosition
         val chunkPosition = eyePosition.chunkPosition
         val sectionHeight = eyePosition.sectionHeight
         if (chunkPosition == this.chunkPosition && sectionHeight == this.sectionHeight && mesh != null) {

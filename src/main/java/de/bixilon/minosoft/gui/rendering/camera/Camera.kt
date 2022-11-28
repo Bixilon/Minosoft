@@ -17,60 +17,36 @@ import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.pool.ThreadPoolRunnable
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.config.key.KeyActions
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.TargetHandler
+import de.bixilon.minosoft.gui.rendering.camera.view.ViewManager
 import de.bixilon.minosoft.gui.rendering.world.view.WorldVisibilityGraph
-import de.bixilon.minosoft.util.KUtil.format
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class Camera(
-    private val renderWindow: RenderWindow,
+    val renderWindow: RenderWindow,
 ) {
     val fogManager = FogManager(renderWindow)
     val matrixHandler = MatrixHandler(renderWindow, fogManager, this)
     val targetHandler = TargetHandler(renderWindow, this)
     val visibilityGraph = WorldVisibilityGraph(renderWindow, this)
 
-    @Deprecated("ToDo: Not yet implemented!")
-    val firstPerson: Boolean = true // ToDo
-    var debugView: Boolean = false
-        set(value) {
-            field = value
-            if (value) {
-                matrixHandler.debugRotation = matrixHandler.entity.rotation
-                matrixHandler.debugPosition = matrixHandler.entity.eyePosition
-            }
-        }
+    val view = ViewManager(this)
 
-    val renderPlayer: Boolean
-        get() = !debugView || !firstPerson
 
     fun init() {
         matrixHandler.init()
-
-        renderWindow.inputHandler.registerKeyCallback(
-            "minosoft:camera_debug_view".toResourceLocation(),
-            KeyBinding(
-                KeyActions.MODIFIER to setOf(KeyCodes.KEY_F4),
-                KeyActions.STICKY to setOf(KeyCodes.KEY_V),
-            )
-        ) {
-            debugView = it
-            renderWindow.connection.util.sendDebugMessage("Camera debug view: ${it.format()}")
-        }
+        view.init()
     }
 
     fun draw() {
         val entity = matrixHandler.entity
         entity.tryTick()
         if (entity is LocalPlayerEntity) {
-            entity._draw(TimeUtil.millis)
+            entity._draw(millis())
         }
+        view.draw()
         matrixHandler.draw()
         val latch = CountUpAndDownLatch(2)
         DefaultThreadPool += ThreadPoolRunnable(ThreadPool.Priorities.HIGHER) { visibilityGraph.draw();latch.dec() }

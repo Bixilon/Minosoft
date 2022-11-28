@@ -112,7 +112,7 @@ class RenderWindowInputHandler(
                 return@listen
             }
 
-            cameraInput.mouseCallback(it.delta)
+            cameraInput.updateMouse(it.delta)
         }
 
         profile::keyBindings.observeMap(this) {
@@ -349,7 +349,7 @@ class RenderWindowInputHandler(
     }
 
     fun draw(delta: Double) {
-        cameraInput.update(delta)
+        cameraInput.updateInput(delta)
         interactionManager.draw(delta)
     }
 }

@@ -205,7 +205,7 @@ class CloudRenderer(
 
 
     private fun setYOffset() {
-        val y = renderWindow.camera.matrixHandler.eyePosition.y
+        val y = renderWindow.camera.matrixHandler.entity.eyePosition.y
         var yOffset = 0.0f
         if (baseHeight - y > maxDistance) {
             yOffset = y - baseHeight + maxDistance

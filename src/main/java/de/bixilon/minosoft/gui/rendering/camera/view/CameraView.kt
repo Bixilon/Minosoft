@@ -11,12 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
+package de.bixilon.minosoft.gui.rendering.camera.view
 
+import de.bixilon.kotlinglm.vec2.Vec2d
+import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 
-abstract class FirstPersonOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
-    protected val player = renderWindow.connection.player
-    override val render: Boolean
-        get() = renderWindow.camera.view.view.renderOverlays
+interface CameraView {
+    val renderWindow: RenderWindow
+
+    val renderSelf: Boolean get() = true
+    val renderOverlays: Boolean get() = false
+
+    val updateFrustum: Boolean get() = true
+
+    val eyePosition: Vec3
+
+    val rotation: EntityRotation
+    val front: Vec3
+
+
+    fun onInput(input: MovementInput, delta: Double) = Unit
+    fun onMouse(delta: Vec2d) = Unit
+    fun onScroll(scroll: Double) = Unit
+
+    fun onAttach(previous: CameraView?) = Unit
+    fun onDetach(next: CameraView) = Unit
+
+
+    fun draw() = Unit
 }

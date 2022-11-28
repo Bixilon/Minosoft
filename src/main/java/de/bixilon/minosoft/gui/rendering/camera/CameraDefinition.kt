@@ -11,12 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
+package de.bixilon.minosoft.gui.rendering.camera
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.kotlinglm.vec3.Vec3
 
-abstract class FirstPersonOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
-    protected val player = renderWindow.connection.player
-    override val render: Boolean
-        get() = renderWindow.camera.view.view.renderOverlays
+object CameraDefinition {
+    const val NEAR_PLANE = 0.01f
+    const val FAR_PLANE = 10000.0f
+    val CAMERA_UP_VEC3 = Vec3(0.0, 1.0, 0.0)
+
 }
