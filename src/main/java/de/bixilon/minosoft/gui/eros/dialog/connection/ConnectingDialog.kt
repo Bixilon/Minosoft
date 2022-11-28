@@ -38,7 +38,6 @@ class ConnectingDialog(
         JavaFXUtil.openModalAsync(TITLE, LAYOUT, this) { update(connection.state) }
     }
 
-
     override fun init() {
         headerFX.text = HEADER
         cancelButtonFX.isDisable = true
