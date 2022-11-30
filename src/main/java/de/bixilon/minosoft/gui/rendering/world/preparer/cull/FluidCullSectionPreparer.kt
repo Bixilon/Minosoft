@@ -22,7 +22,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.blocks.types.FluidHolder
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -76,7 +76,7 @@ class FluidCullSectionPreparer(
                     blockState = blocks.unsafeGet(x, y, z) ?: continue
                     val block = blockState.block
                     val fluid = when {
-                        block is FluidFillable -> block.fluid
+                        block is FluidHolder -> block.fluid
                         blockState.properties[BlockProperties.WATERLOGGED] == true && water != null -> water
                         else -> continue
                     }

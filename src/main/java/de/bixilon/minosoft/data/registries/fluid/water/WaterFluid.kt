@@ -77,12 +77,12 @@ class WaterFluid(
         return false
     }
 
-    override fun getHeight(blockState: BlockState): Float {
-        val `super` = super.getHeight(blockState)
+    override fun getHeight(state: BlockState): Float {
+        val `super` = super.getHeight(state)
         if (`super` != 0.0f) {
             return `super`
         }
-        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+        if (state.properties[BlockProperties.WATERLOGGED] == true) {
             return 0.9f
         }
         return 0.0f

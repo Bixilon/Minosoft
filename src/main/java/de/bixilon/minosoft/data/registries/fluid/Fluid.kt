@@ -23,7 +23,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.blocks.types.FluidFilled
+import de.bixilon.minosoft.data.registries.blocks.types.FluidHolder
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -63,24 +64,21 @@ open class Fluid(
 
     open fun matches(other: BlockState?): Boolean {
         other ?: return false
-        if (other.block is FluidFillable && this === other.block.fluid) {
-            return true
-        }
-        if (other.block !is FluidBlock) {
+        if (other.block !is FluidHolder) {
             return false
         }
 
         return matches(other.block.fluid)
     }
 
-    open fun getHeight(blockState: BlockState): Float {
-        val level = blockState.properties[BlockProperties.FLUID_LEVEL]?.toInt()
-        if (level == null) {
-            if (blockState.block is FluidFillable && blockState.block.fluid == this) {
-                return 0.9f
-            }
-            throw IllegalArgumentException("Can not get height of non fluid: $blockState")
+    open fun getHeight(state: BlockState): Float {
+        if (state.block is FluidFilled && state.block.fluid == this) {
+            return 0.9f
         }
+        if (state.block !is FluidBlock || state.block.fluid != this) {
+            return 0.0f
+        }
+        val level = state.properties[BlockProperties.FLUID_LEVEL]?.toInt() ?: return 0.0f
         if (level < 0 || level >= 8) {
             return 0.9f
         }

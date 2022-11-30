@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,12 +16,12 @@ package de.bixilon.minosoft.data.registries.blocks.types.water
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.blocks.types.FluidFilled
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class KelpBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFillable {
+open class KelpBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFilled {
     override val fluid: Fluid = registries.fluidRegistry[DefaultFluids.WATER]!!
 
     companion object : BlockFactory<KelpBlock> {

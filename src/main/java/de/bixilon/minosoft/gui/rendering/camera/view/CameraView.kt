@@ -23,6 +23,7 @@ interface CameraView {
     val renderWindow: RenderWindow
 
     val renderSelf: Boolean get() = true
+    val renderArm: Boolean get() = false
     val renderOverlays: Boolean get() = false
 
     val updateFrustum: Boolean get() = true

@@ -18,8 +18,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.cube.CubeDirections
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.blocks.types.FluidHolder
 import de.bixilon.minosoft.data.world.OcclusionUpdateCallback
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
@@ -84,13 +83,10 @@ class BlockSectionDataProvider(
 
     private fun BlockState?.isFluid(): Boolean {
         this ?: return false
-        if (this.block is FluidBlock) {
+        if (this.block is FluidHolder) {
             return true
         }
         if (properties[BlockProperties.WATERLOGGED] == true) {
-            return true
-        }
-        if (this.block is FluidFillable) {
             return true
         }
         return false

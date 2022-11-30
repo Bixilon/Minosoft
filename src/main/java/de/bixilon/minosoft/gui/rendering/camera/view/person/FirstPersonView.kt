@@ -25,6 +25,7 @@ class FirstPersonView(override val camera: Camera) : PersonView {
     override val renderWindow: RenderWindow get() = camera.renderWindow
 
     override val renderSelf: Boolean get() = false
+    override val renderArm: Boolean get() = true
     override val renderOverlays: Boolean get() = true
 
     override var eyePosition: Vec3 = Vec3.EMPTY
