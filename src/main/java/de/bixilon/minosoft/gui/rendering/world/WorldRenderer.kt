@@ -770,8 +770,9 @@ class WorldRenderer(
                 continue
             }
 
-            for ((sectionHeight, mesh) in meshes) {
-                if (visibilityGraph.isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
+            for (entry in meshes.int2ObjectEntrySet()) {
+                val mesh = entry.value
+                if (visibilityGraph.isSectionVisible(chunkPosition, entry.intKey, mesh.minPosition, mesh.maxPosition, false)) {
                     visible.addMesh(mesh)
                 }
             }
@@ -780,11 +781,12 @@ class WorldRenderer(
 
         culledQueueLock.acquire() // The queue method needs the full lock of the culledQueue
         val nextQueue: MutableMap<Vec2i, Pair<Chunk, IntOpenHashSet>> = mutableMapOf()
+        world.chunks.lock.acquire()
         for ((chunkPosition, sectionHeights) in this.culledQueue) {
             if (!visibilityGraph.isChunkVisible(chunkPosition)) {
                 continue
             }
-            val chunk = world[chunkPosition] ?: continue
+            val chunk = world.chunks.unsafe[chunkPosition] ?: continue
             var chunkQueue: IntOpenHashSet? = null
             for (sectionHeight in sectionHeights.intIterator()) {
                 val section = chunk[sectionHeight] ?: continue
@@ -798,6 +800,7 @@ class WorldRenderer(
                 chunkQueue += sectionHeight
             }
         }
+        world.chunks.lock.release()
 
         culledQueueLock.release()
 

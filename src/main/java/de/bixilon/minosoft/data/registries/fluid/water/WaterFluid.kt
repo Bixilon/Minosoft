@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -69,15 +68,24 @@ class WaterFluid(
 
     override fun matches(other: BlockState?): Boolean {
         other ?: return false
+        if (super.matches(other)) {
+            return true
+        }
         if (other.properties[BlockProperties.WATERLOGGED] == true) {
             return true
         }
-        return super.matches(other)
+        return false
     }
 
     override fun getHeight(blockState: BlockState): Float {
-        val waterlogged = blockState.properties[BlockProperties.WATERLOGGED]?.toBoolean() ?: return super.getHeight(blockState)
-        return if (waterlogged) 0.9f else 0.0f
+        val `super` = super.getHeight(blockState)
+        if (`super` != 0.0f) {
+            return `super`
+        }
+        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+            return 0.9f
+        }
+        return 0.0f
     }
 
     override fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
