@@ -138,7 +138,7 @@ testing {
             useJUnitJupiter("5.9.1")
 
             dependencies {
-                implementation(project)
+                implementation(project())
                 // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
                 implementation("de.bixilon:kutil:$kutilVersion")
                 implementation("org.jetbrains.kotlin:kotlin-test:1.7.21")
@@ -178,8 +178,7 @@ testing {
             useTestNG("7.6.1")
 
             dependencies {
-                implementation(project)
-                // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+                implementation(project())
 
                 implementation("org.objenesis:objenesis:3.3")
 
@@ -231,8 +230,7 @@ testing {
             useTestNG("7.6.1")
 
             dependencies {
-                implementation(project)
-                // implementation("org.jetbrains.kotlin:kotlin-test:1.7.20")
+                implementation(project())
 
                 implementation("org.objenesis:objenesis:3.3")
 
