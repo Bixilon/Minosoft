@@ -409,6 +409,7 @@ class LocalPlayerEntity(
             // ToDo: Handle fluids, elytra flying
             isFlyingWithElytra -> {
             }
+
             else -> {
                 val friction = connection.world.connection.world[positionInfo.velocityPosition]?.block?.friction ?: 0.6
                 speedMultiplier = 0.91
@@ -618,7 +619,7 @@ class LocalPlayerEntity(
         get() = connection.profiles.connection.mainArm
 
     override fun createModel(renderer: EntityRenderer): LocalPlayerModel {
-        return LocalPlayerModel(renderer, this)
+        return LocalPlayerModel(renderer, this).apply { this@LocalPlayerEntity.model = this }
     }
 
     companion object {

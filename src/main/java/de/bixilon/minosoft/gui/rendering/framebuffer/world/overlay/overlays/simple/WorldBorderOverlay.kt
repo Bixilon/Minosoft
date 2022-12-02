@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WorldBorderOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
+class WorldBorderOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
     private val config = renderWindow.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
@@ -34,12 +34,8 @@ class WorldBorderOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(r
     companion object : OverlayFactory<WorldBorderOverlay> {
         private val OVERLAY_TEXTURE = "misc/vignette".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow, z: Float): WorldBorderOverlay? {
-            if (renderWindow.connection.assetsManager.getOrNull(OVERLAY_TEXTURE) == null) { // ToDo: Don't get twice
-                // overlay not yet available (< 1.17)
-                return null
-            }
-            return WorldBorderOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow): WorldBorderOverlay {
+            return WorldBorderOverlay(renderWindow)
         }
     }
 }

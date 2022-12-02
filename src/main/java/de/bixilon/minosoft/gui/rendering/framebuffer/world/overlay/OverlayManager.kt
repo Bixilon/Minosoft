@@ -23,8 +23,8 @@ class OverlayManager(
     private val overlays: MutableList<Overlay> = mutableListOf()
 
     fun init() {
-        for ((index, factory) in DefaultOverlays.OVERLAYS.withIndex()) {
-            overlays += factory.build(renderWindow, WORLD_FRAMEBUFFER_Z + (-0.01f * (index + 1))) ?: continue
+        for (factory in DefaultOverlays.OVERLAYS) {
+            overlays += factory.build(renderWindow) ?: continue
         }
 
         for (overlay in overlays) {
@@ -44,11 +44,12 @@ class OverlayManager(
             if (!overlay.render) {
                 continue
             }
+            renderWindow.renderSystem.reset(blending = true, depthMask = false)
             overlay.draw()
         }
     }
 
     companion object {
-        private const val WORLD_FRAMEBUFFER_Z = -0.1f
+        const val OVERLAY_Z = -0.1f
     }
 }

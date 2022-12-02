@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PowderSnowOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
+class PowderSnowOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
     private val config = renderWindow.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     private var ticksFrozen: Int = 0
@@ -37,12 +37,12 @@ class PowderSnowOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(re
         private const val FREEZE_DAMAGE_TICKS = 140
         private val OVERLAY_TEXTURE = "misc/powder_snow_outline".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow, z: Float): PowderSnowOverlay? {
+        override fun build(renderWindow: RenderWindow): PowderSnowOverlay? {
             if (!renderWindow.connection.assetsManager.contains(OVERLAY_TEXTURE)) {
                 // overlay not yet available (< 1.17)
                 return null
             }
-            return PowderSnowOverlay(renderWindow, z)
+            return PowderSnowOverlay(renderWindow)
         }
     }
 }

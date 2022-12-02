@@ -17,13 +17,13 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 
 abstract class SimpleOverlay(
     protected val renderWindow: RenderWindow,
-    protected var z: Float,
 ) : Overlay {
     protected abstract val texture: AbstractTexture
     protected open val shader = renderWindow.shaderManager.genericTexture2dShader
@@ -39,12 +39,11 @@ abstract class SimpleOverlay(
         }
         mesh = SimpleTextureMesh(renderWindow)
 
-        mesh.addZQuad(Vec2(-1.0f, -1.0f), z, Vec2(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
+        mesh.addZQuad(Vec2(-1.0f, -1.0f), OverlayManager.OVERLAY_Z, Vec2(+1.0f, +1.0f), uvStart, uvEnd) { position, uv -> mesh.addVertex(position, texture, uv, tintColor) }
         mesh.load()
     }
 
     override fun draw() {
-        renderWindow.renderSystem.reset(blending = true)
         updateMesh() // ToDo: Don't update every time
         shader.use()
         mesh.draw()

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class WaterOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
+class WaterOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
     private val player = renderWindow.connection.player
     override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture("minecraft:misc/underwater".toResourceLocation().texture())
     override val render: Boolean
@@ -40,8 +40,8 @@ class WaterOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderW
 
     companion object : OverlayFactory<WaterOverlay> {
 
-        override fun build(renderWindow: RenderWindow, z: Float): WaterOverlay {
-            return WaterOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow): WaterOverlay {
+            return WaterOverlay(renderWindow)
         }
     }
 }

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class PumpkinOverlay(renderWindow: RenderWindow, z: Float) : FirstPersonOverlay(renderWindow, z) {
+class PumpkinOverlay(renderWindow: RenderWindow) : FirstPersonOverlay(renderWindow) {
     private val config = renderWindow.connection.profiles.rendering.overlay
     override val texture: AbstractTexture = renderWindow.textureManager.staticTextures.createTexture(OVERLAY_TEXTURE)
     override val render: Boolean
@@ -43,8 +43,8 @@ class PumpkinOverlay(renderWindow: RenderWindow, z: Float) : FirstPersonOverlay(
     companion object : OverlayFactory<PumpkinOverlay> {
         private val OVERLAY_TEXTURE = "misc/pumpkinblur".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow, z: Float): PumpkinOverlay {
-            return PumpkinOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow): PumpkinOverlay {
+            return PumpkinOverlay(renderWindow)
         }
     }
 }

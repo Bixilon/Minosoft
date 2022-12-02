@@ -28,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import java.util.*
 
-class WallOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWindow, z) {
+class WallOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
     private val player = renderWindow.connection.player
     override var texture: AbstractTexture = unsafeNull()
     private var blockState: BlockState? = null
@@ -69,8 +69,8 @@ class WallOverlay(renderWindow: RenderWindow, z: Float) : SimpleOverlay(renderWi
 
     companion object : OverlayFactory<WallOverlay> {
 
-        override fun build(renderWindow: RenderWindow, z: Float): WallOverlay {
-            return WallOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow): WallOverlay {
+            return WallOverlay(renderWindow)
         }
     }
 }

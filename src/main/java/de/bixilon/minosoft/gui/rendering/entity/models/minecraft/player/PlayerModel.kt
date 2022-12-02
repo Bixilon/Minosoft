@@ -34,7 +34,8 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player), DynamicStateChangeCallback {
     private var properties = player.additional.properties
-    private var skin: PlayerSkin? = null
+    var skin: PlayerSkin? = null
+        private set
     protected var refreshModel = false
 
     private val legAnimator = LegAnimator(this)

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
+import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayManager.Companion.OVERLAY_Z
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -29,7 +30,7 @@ import de.bixilon.minosoft.util.KUtil.minosoft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
-class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Float) : Overlay {
+class WeatherOverlay(private val renderWindow: RenderWindow) : Overlay {
     private val world = renderWindow.connection.world
     private val config = renderWindow.connection.profiles.rendering.overlay.weather
     private val rain = renderWindow.textureManager.staticTextures.createTexture(RAIN)
@@ -69,12 +70,12 @@ class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Floa
             val offsetMultiplicator = random.nextFloat(0.8f, 1.2f)
             val alpha = random.nextFloat(0.8f, 1.0f)
             mesh.addZQuad(
-                Vec2(offset, 0), z, Vec2(offset + step, windowSize.y), Vec2(0.0f), texture.textureArrayUV
+                Vec2(offset, 0), OVERLAY_Z, Vec2(offset + step, windowSize.y), Vec2(0.0f), texture.textureArrayUV
             ) { position, uv ->
                 val transformed = Vec2()
                 transformed.x = position.x / (windowSize.x / 2) - 1.0f
                 transformed.y = position.y / (windowSize.y / 2) - 1.0f
-                mesh.addVertex(Vec3(transformed.x, transformed.y, z), uv, timeOffset, offsetMultiplicator, alpha)
+                mesh.addVertex(Vec3(transformed.x, transformed.y, OVERLAY_Z), uv, timeOffset, offsetMultiplicator, alpha)
             }
             offset += step
             if (offset > windowSize.x) {
@@ -102,7 +103,6 @@ class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Floa
     }
 
     override fun draw() {
-        renderWindow.renderSystem.reset(blending = true)
         val windowSize = renderWindow.window.sizef
         if (this.windowSize != windowSize) {
             updateMesh(windowSize)
@@ -116,8 +116,8 @@ class WeatherOverlay(private val renderWindow: RenderWindow, private val z: Floa
         private val RAIN = "environment/rain".toResourceLocation().texture()
         private val SNOW = "environment/snow".toResourceLocation().texture()
 
-        override fun build(renderWindow: RenderWindow, z: Float): WeatherOverlay {
-            return WeatherOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow): WeatherOverlay {
+            return WeatherOverlay(renderWindow)
         }
     }
 }

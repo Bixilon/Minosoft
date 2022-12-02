@@ -27,7 +27,6 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class FireOverlay(
     private val renderWindow: RenderWindow,
-    private val z: Float,
 ) : Overlay {
     private val config = renderWindow.connection.profiles.rendering.overlay.fire
     private val player = renderWindow.connection.player
@@ -84,8 +83,8 @@ class FireOverlay(
 
     companion object : OverlayFactory<FireOverlay> {
 
-        override fun build(renderWindow: RenderWindow, z: Float): FireOverlay {
-            return FireOverlay(renderWindow, z)
+        override fun build(renderWindow: RenderWindow): FireOverlay {
+            return FireOverlay(renderWindow)
         }
     }
 }
