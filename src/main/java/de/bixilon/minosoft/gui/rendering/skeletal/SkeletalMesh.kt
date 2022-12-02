@@ -21,9 +21,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
-class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, SkeletalMeshStruct, initialCacheSize = initialCacheSize) {
+class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, SkeletalMeshStruct, initialCacheSize = initialCacheSize), SkeletalVertexConsumer {
 
-    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
+    override fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int) {
         val transformedUV = texture.transformUV(uv)
         data.add(position[0])
         data.add(position[1])
@@ -36,7 +36,7 @@ class SkeletalMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
     }
 
     @Deprecated("Pretty rendering specific")
-    fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
+    override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {
         data.add(position[0])
         data.add(position[1])
         data.add(position[2])

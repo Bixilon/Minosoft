@@ -11,21 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
+package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm.ArmOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.*
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather.WeatherOverlay
-
-object DefaultOverlays {
-    val OVERLAYS = listOf(
-        ArmOverlay,
-        WallOverlay,
-        WaterOverlay,
-        PumpkinOverlay,
-        PowderSnowOverlay,
-        FireOverlay,
-        WorldBorderOverlay,
-        WeatherOverlay,
-    )
+interface AbstractVertexConsumer {
+    val order: Array<Pair<Int, Int>>
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
+#version 330 core
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm.ArmOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.*
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather.WeatherOverlay
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUV;
 
-object DefaultOverlays {
-    val OVERLAYS = listOf(
-        ArmOverlay,
-        WallOverlay,
-        WaterOverlay,
-        PumpkinOverlay,
-        PowderSnowOverlay,
-        FireOverlay,
-        WorldBorderOverlay,
-        WeatherOverlay,
-    )
+
+flat out uint finTextureIndex;
+out vec3 finTextureCoordinates;
+
+uniform uint uIndexLayer;
+uniform mat4 uTransform;
+
+void main() {
+    gl_Position = uTransform * vec4(vinPosition, 1.0f);
+
+    finTextureIndex = uIndexLayer >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
 }

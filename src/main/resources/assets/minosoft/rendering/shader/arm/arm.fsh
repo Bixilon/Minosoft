@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
+#version 330 core
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm.ArmOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.*
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather.WeatherOverlay
+out vec4 foutColor;
 
-object DefaultOverlays {
-    val OVERLAYS = listOf(
-        ArmOverlay,
-        WallOverlay,
-        WaterOverlay,
-        PumpkinOverlay,
-        PowderSnowOverlay,
-        FireOverlay,
-        WorldBorderOverlay,
-        WeatherOverlay,
-    )
+in vec2 finUV;
+flat in uint finTextureIndex;
+in vec3 finTextureCoordinates;
+
+
+#include "minosoft:texture"
+#include "minosoft:alpha"
+
+void main() {
+    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
+    foutColor = texelColor;
+    foutColor.a = 1.0f;
 }

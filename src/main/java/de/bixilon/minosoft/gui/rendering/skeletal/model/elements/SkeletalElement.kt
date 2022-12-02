@@ -16,10 +16,15 @@ package de.bixilon.minosoft.gui.rendering.skeletal.model.elements
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
+import de.bixilon.minosoft.gui.rendering.skeletal.SkeletalVertexConsumer
+import de.bixilon.minosoft.gui.rendering.skeletal.model.SkeletalModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.faces.SkeletalFace
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import java.util.*
 
 data class SkeletalElement(
@@ -35,4 +40,18 @@ data class SkeletalElement(
     val uuid: UUID,
     val inflate: Float = 0.0f,
     val transparency: Boolean = true,
-)
+) {
+
+    fun bake(model: SkeletalModel, textures: Int2ObjectOpenHashMap<ShaderTexture>, outlinerMapping: Map<UUID, Int>, consumer: SkeletalVertexConsumer) {
+        if (!visible) {
+            return
+        }
+
+        val outlinerId = outlinerMapping[uuid] ?: 0
+
+        val inflate = (inflate / UnbakedElement.BLOCK_RESOLUTION) / 2
+        for ((direction, face) in faces) {
+            face.bake(model, this, direction, inflate, outlinerId, textures, consumer)
+        }
+    }
+}

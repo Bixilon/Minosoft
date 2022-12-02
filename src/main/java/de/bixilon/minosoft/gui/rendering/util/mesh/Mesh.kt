@@ -28,8 +28,8 @@ abstract class Mesh(
     val clearOnLoad: Boolean = true,
     data: DirectArrayFloatList? = null,
     val onDemand: Boolean = false,
-) {
-    val order = renderWindow.renderSystem.primitiveMeshOrder
+) : AbstractVertexConsumer {
+    override val order = renderWindow.renderSystem.primitiveMeshOrder
     val reversedOrder = order.reversedArray()
     private var _data: DirectArrayFloatList? = data ?: if (onDemand) null else DirectArrayFloatList(initialCacheSize)
     var data: DirectArrayFloatList

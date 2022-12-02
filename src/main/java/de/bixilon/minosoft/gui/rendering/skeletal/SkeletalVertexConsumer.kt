@@ -11,21 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays
+package de.bixilon.minosoft.gui.rendering.skeletal
 
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm.ArmOverlay
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple.*
-import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.weather.WeatherOverlay
+import de.bixilon.kotlinglm.vec2.Vec2
+import de.bixilon.minosoft.gui.rendering.system.base.texture.ShaderTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.AbstractVertexConsumer
 
-object DefaultOverlays {
-    val OVERLAYS = listOf(
-        ArmOverlay,
-        WallOverlay,
-        WaterOverlay,
-        PumpkinOverlay,
-        PowderSnowOverlay,
-        FireOverlay,
-        WorldBorderOverlay,
-        WeatherOverlay,
-    )
+interface SkeletalVertexConsumer : AbstractVertexConsumer {
+
+    fun addVertex(position: FloatArray, uv: Vec2, transform: Int, texture: ShaderTexture, flags: Int)
+    fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float)
 }

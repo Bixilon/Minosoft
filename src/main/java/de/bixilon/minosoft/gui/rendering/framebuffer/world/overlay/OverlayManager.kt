@@ -44,7 +44,7 @@ class OverlayManager(
             if (!overlay.render) {
                 continue
             }
-            renderWindow.renderSystem.reset(blending = true, depthMask = false)
+            renderWindow.renderSystem.reset(blending = true, depthTest = false)
             overlay.draw()
         }
     }
