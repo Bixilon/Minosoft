@@ -18,7 +18,7 @@ import oshi.hardware.GraphicsCard
 
 class GPUSection(
     gpus: Array<GraphicsCard> = SystemInformation.HARDWARE_SYSTEM_INFO.graphicsCards.toTypedArray(),
-) : ArrayCrashSection<GraphicsCard>("Connections", gpus) {
+) : ArrayCrashSection<GraphicsCard>("Graphic Cards", gpus) {
 
     override fun format(entry: GraphicsCard, builder: StringBuilder, intent: String) {
         builder.appendProperty(intent, "Name", entry.name)
