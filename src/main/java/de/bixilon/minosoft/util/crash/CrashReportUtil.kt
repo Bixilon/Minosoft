@@ -62,6 +62,7 @@ object CrashReportUtil {
         error?.let { builder += ThrowableSection(it) }
         builder += RuntimeSection()
         builder += SystemSection()
+        builder += GPUSection()
 
         builder += ModCrashSection()
 
