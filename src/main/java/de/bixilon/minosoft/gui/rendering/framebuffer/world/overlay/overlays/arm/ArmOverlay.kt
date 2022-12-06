@@ -30,7 +30,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     private val config = renderWindow.connection.profiles.rendering.overlay
     private val shader = renderWindow.renderSystem.createShader(minosoft("arm")) { ArmOverlayShader(it) }
     override val render: Boolean
-        get() = renderWindow.camera.view.view.renderArm
+        get() = renderWindow.camera.view.view.renderArm && config.arm.render
     private var arm = renderWindow.connection.player.mainArm // TODO: camera player entity
     private var skin: DynamicTexture? = null
     private var model: PlayerModel? = null

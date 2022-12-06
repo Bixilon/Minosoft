@@ -11,31 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.profile.profiles.rendering.overlay
+package de.bixilon.minosoft.config.profile.profiles.rendering.overlay.arm
 
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.rendering.RenderingProfile
-import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.arm.ArmC
-import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.fire.FireC
-import de.bixilon.minosoft.config.profile.profiles.rendering.overlay.weather.WeatherC
 
-class OverlayC(profile: RenderingProfile) {
-    /**
-     * Enables the powder snow 2d overlay if the player is frozen
-     */
-    var powderSnow by BooleanDelegate(profile, true, "")
-
-    /**
-     * Enabled the pumpkin blur overlay if the player is waring a carved pumpkin
-     */
-    var pumpkin by BooleanDelegate(profile, true, "")
-
-    /**
-     * Enables the world boreder overlay
-     */
-    var worldBorder by BooleanDelegate(profile, true, "")
-
-    val fire = FireC(profile)
-    val weather = WeatherC(profile)
-    val arm = ArmC(profile)
+class ArmC(profile: RenderingProfile) {
+    val render by BooleanDelegate(profile, true)
 }
