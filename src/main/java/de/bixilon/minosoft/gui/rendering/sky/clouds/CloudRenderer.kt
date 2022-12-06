@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec4.Vec4
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.MoonPhases
@@ -58,6 +59,10 @@ class CloudRenderer(
     var flat: Boolean = false
         private set
     private var toUnload: MutableSet<CloudLayer> = mutableSetOf()
+
+    private var time = millis()
+    var delta = 0.0f
+        private set
 
     override val skipOpaque: Boolean
         get() = !sky.effects.clouds || !sky.profile.clouds.enabled || connection.profiles.block.viewDistance < 3 || layers.isEmpty()
@@ -113,6 +118,12 @@ class CloudRenderer(
         if (layers.size != nextLayers) {
             updateLayers(nextLayers)
         }
+
+        val time = millis()
+        val delta = time - this.time
+        this.delta = delta / 1000.0f
+        this.time = time
+
         for (layer in layers) {
             layer.prepareAsync()
         }

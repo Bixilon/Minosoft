@@ -126,7 +126,7 @@ class CloudLayer(
     }
 
     private fun getCloudSpeed(): Float {
-        return randomSpeed + 0.05f
+        return randomSpeed + 0.1f
     }
 
     private fun updateOffset() {
@@ -134,7 +134,7 @@ class CloudLayer(
             return
         }
         var offset = this.offset
-        offset += getCloudSpeed()
+        offset += getCloudSpeed() * clouds.delta * 10
         if (offset > MAX_OFFSET) {
             offset -= MAX_OFFSET
         }
