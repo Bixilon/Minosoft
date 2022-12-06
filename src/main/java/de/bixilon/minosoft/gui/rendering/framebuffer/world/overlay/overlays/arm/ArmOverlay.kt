@@ -13,15 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm
 
+import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.ArmAnimator
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
+import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.util.KUtil.minosoft
@@ -72,9 +76,26 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     }
 
     private fun calculateTransform(): Mat4 {
+        val screen = renderWindow.window.sizef
+
+
         val matrix = Mat4()
-        matrix.translateAssign(Vec3(-0.5, -0.5, 0))
-        a += 1f
+        matrix.scaleAssign(1.0f / BLOCK_RESOLUTION) // make a pixel one pixel
+
+        matrix.translateAssign(Vec3(if (arm == Arms.LEFT) 4 else -4)) // move inner side of arm to 0|0|0
+
+        matrix.scaleAssign(Vec3(1.0f) / Vec3(screen.x, screen.y, (screen.x + screen.y) / 2)) // our matrix will have the size of te screen and some value between as depth
+
+
+        // rotate arm
+        // TODO: swinging, etc
+        matrix.rotateAssign(120.0f.rad, Vec3(0, 0, 1))
+        matrix.rotateAssign(30.0f.rad, Vec3(1, 0, 0))
+
+        // left or right of hotbar
+        // this will be the rotation origin
+        val screenOrigin = Vec3i((screen.x + if (arm == Arms.LEFT) -120 else 120) / 2, screen.y - 10, 0)
+        matrix.translateAssign(Vec3(screenOrigin))
 
 
 
