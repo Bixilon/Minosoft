@@ -47,6 +47,7 @@ class PlayerAdditional(
         spareMerge(data)
         data.gamemode?.let { gamemode = it }
         data.publicKey?.let { publicKey = it }
+        data.properties?.let { properties = it }
     }
 
     fun spareMerge(data: AdditionalDataUpdate) {
@@ -60,7 +61,6 @@ class PlayerAdditional(
                 ChatComponent.of(name)
             }
         }
-        data.properties?.let { properties = it }
 
         if (data.removeFromTeam) {
             this.team = null

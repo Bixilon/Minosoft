@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player
 
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -47,6 +48,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
     init {
         entity::skinParts.observeSet(this) { refreshModel = true }
+        player.additional::properties.observe(this) { this.properties = it; refreshModel = true }
     }
 
 
@@ -87,8 +89,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     }
 
     override fun prepareAsync() {
-        val properties = entity.additional.properties // ToDo: Check for skin layers
-        if (refreshModel || this.properties != properties) {
+        if (refreshModel) {
             _instance = instance
             instance = createModel(properties)
         }
