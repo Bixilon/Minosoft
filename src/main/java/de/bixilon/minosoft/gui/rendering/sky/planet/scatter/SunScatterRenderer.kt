@@ -38,9 +38,10 @@ class SunScatterRenderer(
     private val mesh = SunScatterMesh(sky.renderWindow)
     private var matrix = Mat4()
     private var timeUpdate = true
+    private var skyMatrix = Mat4()
 
-    private fun calculateMatrix() {
-        val matrix = Mat4(sky.matrix)
+    private fun calculateMatrix(skyMatrix: Mat4) {
+        val matrix = Mat4(skyMatrix)
 
         matrix.rotateAssign((sun.calculateAngle() + 90.0f).rad, Vec3(0, 0, 1))
 
@@ -88,12 +89,16 @@ class SunScatterRenderer(
         shader.use()
         if (timeUpdate || weatherLevel > 0.0f) {
             if (timeUpdate) {
-                calculateMatrix()
-                shader.scatterMatrix = matrix
                 shader.sunPosition = calculateSunPosition()
                 timeUpdate = false
             }
             shader.intensity = (1.0f - weatherLevel) * calculateIntensity(sky.time.progress)
+        }
+        val skyMatrix = sky.matrix
+        if (this.skyMatrix !== skyMatrix) {
+            calculateMatrix(skyMatrix)
+            shader.scatterMatrix = matrix
+            this.skyMatrix = skyMatrix
         }
 
         sky.renderSystem.enable(RenderingCapabilities.BLENDING)
