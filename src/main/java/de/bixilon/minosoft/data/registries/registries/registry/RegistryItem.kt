@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.registries.registry
 
+import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.reflection.ReflectionUtil.forceSet
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -20,9 +21,13 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 
 abstract class RegistryItem : ResourceLocationAble {
-    private val injects: MutableMap<KProperty<RegistryItem?>, List<Any>> = mutableMapOf()
+    open val injectable: Boolean get() = true
+    private val injects: MutableMap<KProperty<RegistryItem?>, List<Any>> = if (injectable) mutableMapOf() else unsafeNull()
 
     fun KProperty<RegistryItem?>.inject(vararg keys: Any?) {
+        if (!injectable) {
+            throw IllegalStateException("Not injectable")
+        }
         val keyList: MutableList<Any> = mutableListOf()
         for (key in keys) {
             key ?: continue
@@ -35,6 +40,9 @@ abstract class RegistryItem : ResourceLocationAble {
     }
 
     fun inject(registries: Registries) {
+        if (!injectable) {
+            return
+        }
         for ((field, keys) in injects) {
             val javaField = field.javaField ?: continue
             var value: Any? = null

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.enchantment
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
 abstract class Enchantment : RegistryItem() {
+    override val injectable: Boolean get() = false
 
     override fun toString(): String {
         return resourceLocation.full

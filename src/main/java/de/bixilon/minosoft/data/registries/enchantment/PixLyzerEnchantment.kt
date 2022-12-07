@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLoc
 class PixLyzerEnchantment(
     override val resourceLocation: ResourceLocation,
 ) : Enchantment() {
+    override val injectable: Boolean get() = true
 
     companion object : ResourceLocationCodec<Enchantment> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Enchantment {
