@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.simple
 
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
@@ -32,7 +32,7 @@ class PumpkinOverlay(renderWindow: RenderWindow, z: Float) : FirstPersonOverlay(
             if (!super.render) {
                 return false
             }
-            val head = player.equipment[InventorySlots.EquipmentSlots.HEAD] ?: return false
+            val head = player.equipment[EquipmentSlots.HEAD] ?: return false
             if (head.item.item.resourceLocation != MinecraftBlocks.CARVED_PUMPKIN) {
                 return false
             }

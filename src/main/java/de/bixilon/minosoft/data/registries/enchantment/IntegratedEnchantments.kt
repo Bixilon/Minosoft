@@ -11,20 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.slots.equipment
+package de.bixilon.minosoft.data.registries.enchantment
 
-import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.enchantment.armor.SoulSpeedEnchantment
+import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 
-object FeetSlotType : EquipmentSlotType {
-
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (item !is ArmorItem) {
-            return false
-        }
-        return item.equipmentSlot == ArmorSlots.FEET && super.canPut(container, slot, stack)
-    }
-}
+object IntegratedEnchantments : IntegratedRegistry<Enchantment>(
+    SoulSpeedEnchantment,
+)

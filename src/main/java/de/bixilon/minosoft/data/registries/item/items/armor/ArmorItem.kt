@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.item.items.armor
 
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.item.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -28,7 +28,7 @@ open class ArmorItem(
 ) : Item(resourceLocation, registries, data) {
     val protection = data["defense"].toFloat()
     val toughness = data["toughness"].toFloat()
-    val equipmentSlot = data["equipment_slot"].unsafeCast<String>().let { InventorySlots.EquipmentSlots[it] }
+    val equipmentSlot = data["equipment_slot"].unsafeCast<String>().let { ArmorSlots[it] }
     val knockbackResistance = data["knockback_resistance"]?.toFloat() ?: 0.0f
 
     companion object : ItemFactory<ArmorItem> {

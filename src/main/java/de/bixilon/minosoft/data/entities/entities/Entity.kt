@@ -22,7 +22,7 @@ import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.container.InventorySlots.EquipmentSlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityAnimations

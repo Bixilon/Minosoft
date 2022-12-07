@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
@@ -85,7 +85,7 @@ class AttackInteractionHandler(
             return
         }
 
-        val sharpnessLevel = player.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(sharpness) ?: 0
+        val sharpnessLevel = player.equipment[EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(sharpness) ?: 0
 
         val critical = cooldown.progress > 0.9f && player.fallDistance != 0.0 && !player.onGround && !player.isClimbing && (player.fluidHeights[DefaultFluids.WATER] ?: 0.0f) <= 0.0f && player.effects[blindness] == null && player.vehicle == null && entity is LivingEntity
 

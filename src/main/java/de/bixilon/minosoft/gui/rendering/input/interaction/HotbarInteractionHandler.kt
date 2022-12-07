@@ -19,7 +19,7 @@ import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.events.input.MouseScrollEvent
@@ -56,8 +56,8 @@ class HotbarInteractionHandler(
             return
         }
         val inventory = connection.player.inventory
-        val main = inventory[InventorySlots.EquipmentSlots.MAIN_HAND]
-        val off = inventory[InventorySlots.EquipmentSlots.OFF_HAND]
+        val main = inventory[EquipmentSlots.MAIN_HAND]
+        val off = inventory[EquipmentSlots.OFF_HAND]
 
         swapLimiter += { connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND)) }
 
@@ -67,8 +67,8 @@ class HotbarInteractionHandler(
         }
 
         inventory.set(
-            InventorySlots.EquipmentSlots.MAIN_HAND to off,
-            InventorySlots.EquipmentSlots.OFF_HAND to main,
+            EquipmentSlots.MAIN_HAND to off,
+            EquipmentSlots.OFF_HAND to main,
         )
     }
 

@@ -11,24 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.slots.equipment
+package de.bixilon.minosoft.data.registries.enchantment.slots
 
-import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.entities.entities.Entity
 
-object HeadSlotType : EquipmentSlotType {
+interface SlotSpecificEnchantment {
 
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (item.resourceLocation == MinecraftBlocks.CARVED_PUMPKIN) {
-            return super.canPut(container, slot, stack)
-        }
-        if (item !is ArmorItem) {
-            return false
-        }
-        return item.equipmentSlot == ArmorSlots.HEAD && super.canPut(container, slot, stack)
-    }
+    fun canPut(entity: Entity, slot: EquipmentSlots, item: ItemStack): Boolean
 }

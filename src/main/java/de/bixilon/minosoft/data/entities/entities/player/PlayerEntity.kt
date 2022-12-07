@@ -20,7 +20,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.GlobalPosition
@@ -135,7 +135,7 @@ abstract class PlayerEntity(
             if (this.isInvisible) {
                 return ChatColors.GREEN
             }
-            val chestPlate = equipment[InventorySlots.EquipmentSlots.CHEST]
+            val chestPlate = equipment[EquipmentSlots.CHEST]
             if (chestPlate != null && chestPlate.item.item is DyeableArmorItem) {
                 chestPlate._display?.dyeColor?.let { return it }
             }

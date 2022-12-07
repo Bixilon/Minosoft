@@ -12,23 +12,11 @@
  */
 package de.bixilon.minosoft.data.registries.enchantment
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
-data class Enchantment(
-    override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem() {
+abstract class Enchantment : RegistryItem() {
 
     override fun toString(): String {
         return resourceLocation.full
-    }
-
-    companion object : ResourceLocationCodec<Enchantment> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Enchantment {
-            return Enchantment(resourceLocation)
-        }
     }
 }

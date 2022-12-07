@@ -17,7 +17,7 @@ import de.bixilon.kutil.rate.RateLimiter
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.ItemStackUtil
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
@@ -67,7 +67,7 @@ class ItemPickInteractionHandler(
             is EntityTarget -> {
                 val entity = target.entity
                 stack = entity.type.spawnEgg?.let { ItemStackUtil.of(it, connection = connection) } ?: let {
-                    entity.equipment[InventorySlots.EquipmentSlots.MAIN_HAND]?.copy()
+                    entity.equipment[EquipmentSlots.MAIN_HAND]?.copy()
                 }
             }
             else -> {

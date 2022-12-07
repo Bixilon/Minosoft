@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.chat.ChatTextPositions
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -106,7 +106,7 @@ class HotbarElement(guiRenderer: GUIRenderer) : Element(guiRenderer), LayoutedEl
 
         val size = Vec2i(core.size)
 
-        renderOffhand = guiRenderer.renderWindow.connection.player.inventory[InventorySlots.EquipmentSlots.OFF_HAND] != null
+        renderOffhand = guiRenderer.renderWindow.connection.player.inventory[EquipmentSlots.OFF_HAND] != null
 
         if (renderOffhand) {
             size.x += offhand.size.x

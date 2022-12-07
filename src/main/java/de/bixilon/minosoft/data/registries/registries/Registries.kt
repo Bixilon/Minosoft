@@ -21,7 +21,7 @@ import de.bixilon.kutil.json.JsonObject
 import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
 import de.bixilon.minosoft.data.entities.data.EntityDataField
@@ -36,6 +36,8 @@ import de.bixilon.minosoft.data.registries.chat.ChatMessageType
 import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.effects.StatusEffectType
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.enchantment.IntegratedEnchantments
+import de.bixilon.minosoft.data.registries.enchantment.PixLyzerEnchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.entities.variants.CatVariant
 import de.bixilon.minosoft.data.registries.entities.variants.FrogVariant
@@ -75,7 +77,7 @@ class Registries {
     val motifRegistry: Registry<Motif> = register("motif", Registry(codec = Motif))
     val blockRegistry: Registry<Block> = register("block", Registry(flattened = true, codec = Block, metaType = MetaTypes.BLOCKS))
     val itemRegistry: ItemRegistry = register("item", ItemRegistry())
-    val enchantmentRegistry: Registry<Enchantment> = register("enchantment", Registry(codec = Enchantment))
+    val enchantmentRegistry: Registry<Enchantment> = register("enchantment", Registry(codec = PixLyzerEnchantment, integrated = IntegratedEnchantments))
     val particleTypeRegistry: Registry<ParticleType> = register("particle_type", Registry(codec = ParticleType))
     val statusEffectRegistry: Registry<StatusEffectType> = register("mob_effect", Registry(codec = StatusEffectType))
     val statisticRegistry: Registry<Statistic> = register("custom_stat", Registry(codec = Statistic))
@@ -92,10 +94,10 @@ class Registries {
     val catVariants: Registry<CatVariant> = register("cat_variant", Registry(codec = CatVariant))
     val frogVariants: Registry<FrogVariant> = register("frog_variant", Registry(codec = FrogVariant))
 
-    val equipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
-    val handEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
-    val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
-    val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
+    val equipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val handEquipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val armorEquipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
+    val armorStandEquipmentSlotRegistry: EnumRegistry<EquipmentSlots> = EnumRegistry(values = EquipmentSlots)
 
     val entityDataTypesRegistry: EnumRegistry<EntityDataTypes> = EnumRegistry(values = EntityDataTypes, fixer = EntityDataTypesFixer)
 

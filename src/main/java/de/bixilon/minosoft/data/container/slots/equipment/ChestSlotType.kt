@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.container.slots.equipment
 
+import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 
@@ -25,6 +25,6 @@ object ChestSlotType : EquipmentSlotType {
         if (item !is ArmorItem) {
             return false
         }
-        return item.equipmentSlot == InventorySlots.EquipmentSlots.CHEST && super.canPut(container, slot, stack)
+        return item.equipmentSlot == ArmorSlots.CHEST && super.canPut(container, slot, stack)
     }
 }

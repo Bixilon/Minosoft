@@ -37,8 +37,8 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.IncompleteContainer
-import de.bixilon.minosoft.data.container.InventorySlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.container.types.PlayerInventory
 import de.bixilon.minosoft.data.direction.Directions
@@ -102,8 +102,8 @@ class LocalPlayerEntity(
 
     init {
         this::selectedHotbarSlot.observe(this) {
-            equipment.remove(InventorySlots.EquipmentSlots.MAIN_HAND)
-            equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(it) ?: return@observe
+            equipment.remove(EquipmentSlots.MAIN_HAND)
+            equipment[EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(it) ?: return@observe
         }
     }
 
@@ -241,7 +241,7 @@ class LocalPlayerEntity(
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
 
-    override val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack>
+    override val equipment: LockMap<EquipmentSlots, ItemStack>
         get() = inventory.equipment
 
     private fun sendMovementPackets() {
@@ -363,7 +363,7 @@ class LocalPlayerEntity(
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.item?.resourceLocation == MinecraftItems.LEATHER_BOOTS)) {
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[EquipmentSlots.FEET]?.item?.item?.resourceLocation == MinecraftItems.LEATHER_BOOTS)) {
             return Vec3d(velocity.x, 0.2, velocity.z)
         }
         return velocity

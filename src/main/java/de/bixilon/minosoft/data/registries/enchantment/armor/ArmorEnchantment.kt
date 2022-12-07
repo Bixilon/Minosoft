@@ -11,24 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.slots.equipment
+package de.bixilon.minosoft.data.registries.enchantment.armor
 
 import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.Container
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.enchantment.slots.SlotSpecificEnchantment
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 
-object HeadSlotType : EquipmentSlotType {
+interface ArmorEnchantment : SlotSpecificEnchantment {
+    val slots: Set<ArmorSlots>
 
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (item.resourceLocation == MinecraftBlocks.CARVED_PUMPKIN) {
-            return super.canPut(container, slot, stack)
-        }
+
+    override fun canPut(entity: Entity, slot: EquipmentSlots, item: ItemStack): Boolean {
+        val item = item.item.item
         if (item !is ArmorItem) {
             return false
         }
-        return item.equipmentSlot == ArmorSlots.HEAD && super.canPut(container, slot, stack)
+        val armorSlot = when (slot) {
+            EquipmentSlots.FEET -> ArmorSlots.FEET
+            EquipmentSlots.LEGS -> ArmorSlots.LEGS
+            EquipmentSlots.CHEST -> ArmorSlots.CHEST
+            EquipmentSlots.HEAD -> ArmorSlots.HEAD
+            else -> return false
+        }
+        if (item.equipmentSlot != armorSlot) {
+            return false
+        }
+        return armorSlot in this.slots
     }
 }

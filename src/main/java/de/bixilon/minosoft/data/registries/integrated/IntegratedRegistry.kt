@@ -11,20 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.slots.equipment
+package de.bixilon.minosoft.data.registries.integrated
 
-import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
-object FeetSlotType : EquipmentSlotType {
+abstract class IntegratedRegistry<T : RegistryItem>(vararg items: T) {
+    private val entries: MutableMap<ResourceLocation, T> = mutableMapOf()
 
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (item !is ArmorItem) {
-            return false
+    init {
+        for (item in items) {
+            entries[item.resourceLocation] = item
         }
-        return item.equipmentSlot == ArmorSlots.FEET && super.canPut(container, slot, stack)
+    }
+
+    fun add(item: T) {
+        this.entries[item.resourceLocation] = item
+    }
+
+    operator fun plusAssign(item: T) = add(item)
+
+
+    operator fun get(name: ResourceLocation): T? {
+        return entries[name]
     }
 }

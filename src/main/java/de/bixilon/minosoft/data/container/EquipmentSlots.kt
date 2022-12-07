@@ -10,21 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.container
 
-package de.bixilon.minosoft.data.container.slots.equipment
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
+import de.bixilon.kutil.enums.AliasableEnum
+import de.bixilon.kutil.enums.EnumUtil
+import de.bixilon.kutil.enums.ValuesEnum
 
-import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+    enum class EquipmentSlots(vararg names: String = arrayOf()) : AliasableEnum {
+        MAIN_HAND("mainhand"),
+        OFF_HAND("offhand"),
+        FEET,
+        LEGS,
+        CHEST,
+        HEAD,
+        ;
 
-object FeetSlotType : EquipmentSlotType {
+        override val names: Array<String> = names.unsafeCast()
 
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (item !is ArmorItem) {
-            return false
+        companion object : ValuesEnum<EquipmentSlots> {
+            override val VALUES = values()
+            override val NAME_MAP: Map<String, EquipmentSlots> = EnumUtil.getEnumValues(VALUES)
+
+
+            val ARMOR_SLOTS = arrayOf(FEET, LEGS, CHEST, HEAD)
         }
-        return item.equipmentSlot == ArmorSlots.FEET && super.canPut(container, slot, stack)
     }
-}

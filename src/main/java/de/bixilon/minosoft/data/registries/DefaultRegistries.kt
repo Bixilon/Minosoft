@@ -17,7 +17,7 @@ import de.bixilon.kutil.json.JsonUtil.asJsonObject
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJsonObject
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.EntityAnimations
 import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockDataDataType
@@ -42,10 +42,10 @@ object DefaultRegistries {
     private val REGISTRIES_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/default_registries.json")
     private var initialized = false
 
-    val EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
-    val HAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
-    val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
-    val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
+    val EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
+    val HAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
+    val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
+    val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(EquipmentSlots)
 
     val ENTITY_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityDataTypes)
 

@@ -17,7 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.kutil.observer.map.MapObserver.Companion.observeMap
 import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.InventorySlots
+import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.click.SlotSwapContainerAction
 import de.bixilon.minosoft.data.container.sections.ContainerSection
 import de.bixilon.minosoft.data.container.sections.HotbarSection
@@ -42,20 +42,20 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 // https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(connection: PlayConnection) : Container(connection = connection, type = TYPE) {
     override val sections: Array<ContainerSection> get() = SECTIONS
-    val equipment: LockMap<InventorySlots.EquipmentSlots, ItemStack> = lockMapOf()
+    val equipment: LockMap<EquipmentSlots, ItemStack> = lockMapOf()
 
     init {
         this::slots.observeMap(this) {
             for ((slotId, stack) in it.removes) {
                 if (slotId - HOTBAR_OFFSET == connection.player.selectedHotbarSlot) {
-                    this.equipment -= InventorySlots.EquipmentSlots.MAIN_HAND
+                    this.equipment -= EquipmentSlots.MAIN_HAND
                     continue
                 }
                 this.equipment -= slotId.equipmentSlot ?: continue
             }
             for ((slotId, stack) in it.adds) {
                 if (slotId - HOTBAR_OFFSET == connection.player.selectedHotbarSlot) {
-                    this.equipment[InventorySlots.EquipmentSlots.MAIN_HAND] = stack
+                    this.equipment[EquipmentSlots.MAIN_HAND] = stack
                     continue
                 }
                 this.equipment[slotId.equipmentSlot ?: continue] = stack
@@ -69,23 +69,23 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         return this[hotbarSlot + HOTBAR_OFFSET]
     }
 
-    operator fun get(slot: InventorySlots.EquipmentSlots): ItemStack? {
+    operator fun get(slot: EquipmentSlots): ItemStack? {
         return this[slot.slot]
     }
 
-    operator fun set(slot: InventorySlots.EquipmentSlots, itemStack: ItemStack?) {
+    operator fun set(slot: EquipmentSlots, itemStack: ItemStack?) {
         this[slot.slot] = itemStack
     }
 
     operator fun get(hand: Hands): ItemStack? {
         return this[(when (hand) {
-            Hands.MAIN -> InventorySlots.EquipmentSlots.MAIN_HAND
-            Hands.OFF -> InventorySlots.EquipmentSlots.OFF_HAND
+            Hands.MAIN -> EquipmentSlots.MAIN_HAND
+            Hands.OFF -> EquipmentSlots.OFF_HAND
         })]
     }
 
     @JvmName("setEquipment")
-    fun set(vararg slots: Pair<InventorySlots.EquipmentSlots, ItemStack?>) {
+    fun set(vararg slots: Pair<EquipmentSlots, ItemStack?>) {
         val realSlots: MutableList<Pair<Int, ItemStack?>> = mutableListOf()
 
         for ((slot, itemStack) in slots) {
@@ -125,25 +125,25 @@ class PlayerInventory(connection: PlayConnection) : Container(connection = conne
         }
     }
 
-    val InventorySlots.EquipmentSlots.slot: Int
+    val EquipmentSlots.slot: Int
         get() = when (this) {
-            InventorySlots.EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
-            InventorySlots.EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
-            InventorySlots.EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
-            InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
+            EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
+            EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
+            EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
+            EquipmentSlots.FEET -> ARMOR_OFFSET + 3
 
-            InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
-            InventorySlots.EquipmentSlots.OFF_HAND -> OFFHAND_SLOT
+            EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
+            EquipmentSlots.OFF_HAND -> OFFHAND_SLOT
         }
 
 
-    val Int.equipmentSlot: InventorySlots.EquipmentSlots?
+    val Int.equipmentSlot: EquipmentSlots?
         get() = when (this) {
-            ARMOR_OFFSET + 0 -> InventorySlots.EquipmentSlots.HEAD
-            ARMOR_OFFSET + 1 -> InventorySlots.EquipmentSlots.CHEST
-            ARMOR_OFFSET + 2 -> InventorySlots.EquipmentSlots.LEGS
-            ARMOR_OFFSET + 3 -> InventorySlots.EquipmentSlots.FEET
-            OFFHAND_SLOT -> InventorySlots.EquipmentSlots.OFF_HAND
+            ARMOR_OFFSET + 0 -> EquipmentSlots.HEAD
+            ARMOR_OFFSET + 1 -> EquipmentSlots.CHEST
+            ARMOR_OFFSET + 2 -> EquipmentSlots.LEGS
+            ARMOR_OFFSET + 3 -> EquipmentSlots.FEET
+            OFFHAND_SLOT -> EquipmentSlots.OFF_HAND
             // ToDo: Main hand
             else -> null
         }

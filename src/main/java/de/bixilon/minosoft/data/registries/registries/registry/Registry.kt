@@ -20,6 +20,7 @@ import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -29,6 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
     val codec: ResourceLocationCodec<T>? = null,
+    val integrated: IntegratedRegistry<T>? = null,
     val metaType: MetaTypes = MetaTypes.NONE,
     var flattened: Boolean = false,
 ) : AbstractRegistry<T> {
@@ -66,6 +68,7 @@ open class Registry<T : RegistryItem>(
                 idValueMap[any] = value
                 valueIdMap[value] = any
             }
+
             is ResourceLocation -> resourceLocationMap[any] = value
             is ResourceLocationAble -> resourceLocationMap[any.resourceLocation] = value
             is MultiResourceLocationAble -> {
@@ -73,6 +76,7 @@ open class Registry<T : RegistryItem>(
                     resourceLocationMap[resourceLocation] = value
                 }
             }
+
             else -> TODO("Can not set $any, value=$value")
         }
     }
@@ -111,11 +115,17 @@ open class Registry<T : RegistryItem>(
         }
     }
 
-    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): T? {
+    private fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): T? {
+        integrated?.get(resourceLocation)?.let { return it }
+
         if (codec == null) {
             throw IllegalStateException("codec is null!")
         }
-        val item = codec.deserialize(registries, resourceLocation, data) ?: return null
+        return codec.deserialize(registries, resourceLocation, data)
+    }
+
+    override fun addItem(resourceLocation: ResourceLocation, id: Int?, data: JsonObject, registries: Registries?): T? {
+        val item = deserialize(resourceLocation, data, registries) ?: return null
 
         if (id != null) {
             idValueMap[id] = item

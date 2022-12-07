@@ -11,24 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.container.slots.equipment
+package de.bixilon.minosoft.data.registries.enchantment.armor
 
 import de.bixilon.minosoft.data.container.ArmorSlots
-import de.bixilon.minosoft.data.container.Container
-import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-object HeadSlotType : EquipmentSlotType {
-
-    override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
-        val item = stack.item.item
-        if (item.resourceLocation == MinecraftBlocks.CARVED_PUMPKIN) {
-            return super.canPut(container, slot, stack)
-        }
-        if (item !is ArmorItem) {
-            return false
-        }
-        return item.equipmentSlot == ArmorSlots.HEAD && super.canPut(container, slot, stack)
-    }
+object SoulSpeedEnchantment : Enchantment(), ArmorEnchantment, CompanionResourceLocation {
+    override val RESOURCE_LOCATION = minecraft("soul_speed")
+    override val slots: Set<ArmorSlots> = setOf(ArmorSlots.FEET)
 }
