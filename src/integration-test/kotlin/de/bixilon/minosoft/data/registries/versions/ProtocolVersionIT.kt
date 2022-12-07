@@ -174,4 +174,9 @@ internal class ProtocolVersionIT {
     fun `1_19_2`() {
         assertEquals(ProtocolVersions.V_1_19_2, Versions["1.19.2"]!!.versionId)
     }
+
+    @Test
+    fun `1_19_3`() {
+        assertEquals(ProtocolVersions.V_1_19_3, Versions["1.19.3"]!!.versionId)
+    }
 }

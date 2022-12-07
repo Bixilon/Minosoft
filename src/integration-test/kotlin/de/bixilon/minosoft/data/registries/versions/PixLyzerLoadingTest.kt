@@ -93,6 +93,10 @@ class PixLyzerLoadingTest {
         ITUtil.loadPixlyzerData("1.19.2").test()
     }
 
+    fun `1_19_3`() {
+        ITUtil.loadPixlyzerData("1.19.3").test()
+    }
+
     fun latest() {
         val version = Versions.getById(VersionSupport.LATEST_VERSION)!!
         println("Latest version $version")

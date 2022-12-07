@@ -45,7 +45,9 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         private set
     var isFlat = false
         private set
-    var copyMetaData = false
+    var keepAttributes = false
+        private set
+    var keepFlags: Byte = 0
         private set
     var world: ResourceLocation? = null
         private set
@@ -61,9 +63,11 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                     buffer.readInt()
                 }].type
             }
+
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 || buffer.versionId >= ProtocolVersions.V_22W19A -> {
                 buffer.readLegacyRegistryItem(buffer.connection.registries.dimensionRegistry)!!.type
             }
+
             else -> {
                 DimensionProperties.deserialize(buffer.readNBT().asJsonObject()) // current dimension data
             }
@@ -89,7 +93,11 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             isFlat = buffer.readBoolean()
         }
         if (buffer.versionId >= ProtocolVersions.V_20W18A) {
-            copyMetaData = buffer.readBoolean()
+            if (buffer.versionId >= ProtocolVersions.V_1_19_3_RC3) {
+                keepFlags = buffer.readByte()
+            } else {
+                keepAttributes = buffer.readBoolean()
+            }
         }
         if (buffer.versionId >= ProtocolVersions.V_1_19_PRE2) {
             lastDeathPosition = buffer.readPlayOptional { GlobalPositionEntityDataType.read(this) }

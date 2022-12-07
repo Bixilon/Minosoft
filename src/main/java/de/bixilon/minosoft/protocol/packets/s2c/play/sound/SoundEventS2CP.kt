@@ -31,10 +31,12 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     var category: SoundCategories? = null
         private set
     val position: Vec3i
-    val soundEvent: ResourceLocation
+    val sound: ResourceLocation
     val volume: Float
     val pitch: Float
-    var magicRandom: Long = 0L
+    var seed: Long = 0L
+        private set
+    var attenuationDistance: Float? = null
         private set
 
     init {
@@ -42,7 +44,18 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             // category was moved to the top
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        soundEvent = buffer.readRegistryItem(buffer.connection.registries.soundEventRegistry)
+        if (buffer.versionId < ProtocolVersions.V_1_19_3_PRE3) {
+            sound = buffer.readRegistryItem(buffer.connection.registries.soundEventRegistry)
+        } else {
+            val id = buffer.readVarInt()
+            if (id == 0) {
+                sound = buffer.connection.registries.soundEventRegistry[id]
+            } else {
+                sound = buffer.readResourceLocation()
+                attenuationDistance = buffer.readOptional { readFloat() }
+            }
+        }
+
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             buffer.readString() // parrot entity type
         }
@@ -58,7 +71,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         }
 
         if (buffer.versionId >= ProtocolVersions.V_22W14A) {
-            magicRandom = buffer.readLong()
+            seed = buffer.readLong()
         }
     }
 
@@ -70,6 +83,6 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sound event (category=$category, position=$position, soundEvent=$soundEvent, volume=$volume, pitch=$pitch)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sound event (category=$category, position=$position, sound=$sound, volume=$volume, pitch=$pitch)" }
     }
 }
