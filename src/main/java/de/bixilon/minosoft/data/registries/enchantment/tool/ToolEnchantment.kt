@@ -11,34 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.enchantment.armor
+package de.bixilon.minosoft.data.registries.enchantment.tool
 
-import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.enchantment.slots.SlotSpecificEnchantment
-import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 
-interface ArmorEnchantment : SlotSpecificEnchantment {
-    val slots: Set<ArmorSlots>
-
+interface ToolEnchantment : SlotSpecificEnchantment {
 
     override fun canApply(entity: Entity, slot: EquipmentSlots, item: ItemStack): Boolean {
-        val item = item.item.item
-        if (item !is ArmorItem) {
-            return false
-        }
-        val armorSlot = when (slot) {
-            EquipmentSlots.FEET -> ArmorSlots.FEET
-            EquipmentSlots.LEGS -> ArmorSlots.LEGS
-            EquipmentSlots.CHEST -> ArmorSlots.CHEST
-            EquipmentSlots.HEAD -> ArmorSlots.HEAD
-            else -> return false
-        }
-        if (item.equipmentSlot != armorSlot) {
-            return false
-        }
-        return armorSlot in this.slots
+        return slot == EquipmentSlots.MAIN_HAND
     }
 }

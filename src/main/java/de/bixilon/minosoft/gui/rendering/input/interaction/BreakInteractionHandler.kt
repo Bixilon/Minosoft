@@ -18,6 +18,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -26,6 +27,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.enchantment.tool.EfficiencyEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
@@ -58,7 +60,6 @@ class BreakInteractionHandler(
 
     private val legacyAcknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
 
-    private val efficiencyEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.EFFICIENCY]
     private val aquaAffinityEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.AQUA_AFFINITY]
 
     private val hasteStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.HASTE]
@@ -79,7 +80,7 @@ class BreakInteractionHandler(
     }
 
     private fun swingArm() {
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
         if (currentTime - lastSwing <= ProtocolDefinition.TICK_TIME) {
             return
         }
@@ -88,7 +89,7 @@ class BreakInteractionHandler(
     }
 
     private fun checkBreaking(isKeyDown: Boolean, deltaTime: Double): Boolean {
-        val currentTime = TimeUtil.millis
+        val currentTime = millis()
 
         if (!isKeyDown) {
             creativeLastHoldBreakTime = 0L
@@ -192,7 +193,7 @@ class BreakInteractionHandler(
         var speedMultiplier = breakItemInHand?.let { it.item.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
 
         if (isToolEffective) {
-            breakItemInHand?._enchanting?.enchantments?.get(efficiencyEnchantment)?.let {
+            breakItemInHand?._enchanting?.enchantments?.get(EfficiencyEnchantment)?.let {
                 speedMultiplier += it.pow(2) + 1.0f
             }
         }

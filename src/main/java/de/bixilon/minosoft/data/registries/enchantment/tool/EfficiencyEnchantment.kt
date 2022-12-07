@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.enchantment
+package de.bixilon.minosoft.data.registries.enchantment.tool
 
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-object DefaultEnchantments {
-    val AQUA_AFFINITY = "minecraft:aqua_affinity".toResourceLocation()
-    val DEPTH_STRIDER = "minecraft:depth_strider".toResourceLocation()
-    val SHARPNESS = "minecraft:sharpness".toResourceLocation()
+object EfficiencyEnchantment : Enchantment(), ToolEnchantment, CompanionResourceLocation {
+    override val RESOURCE_LOCATION = minecraft("efficiency")
 }

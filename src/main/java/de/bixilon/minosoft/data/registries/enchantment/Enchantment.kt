@@ -20,4 +20,13 @@ abstract class Enchantment : RegistryItem() {
     override fun toString(): String {
         return resourceLocation.full
     }
+
+    override fun hashCode(): Int {
+        return resourceLocation.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Enchantment) return false
+        return this.resourceLocation == other.resourceLocation
+    }
 }

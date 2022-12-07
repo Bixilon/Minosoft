@@ -19,5 +19,5 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 
 interface SlotSpecificEnchantment {
 
-    fun canPut(entity: Entity, slot: EquipmentSlots, item: ItemStack): Boolean
+    fun canApply(entity: Entity, slot: EquipmentSlots, item: ItemStack): Boolean
 }
