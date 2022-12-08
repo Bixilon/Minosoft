@@ -17,7 +17,6 @@ import de.bixilon.kotlinglm.pow
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
 import de.bixilon.kutil.concurrent.pool.DefaultThreadPool
-import de.bixilon.kutil.time.TimeUtil
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyActions
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -27,7 +26,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
-import de.bixilon.minosoft.data.registries.enchantment.tool.EfficiencyEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.registries.other.world.event.handlers.BlockDestroyedHandler
@@ -193,7 +192,7 @@ class BreakInteractionHandler(
         var speedMultiplier = breakItemInHand?.let { it.item.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
 
         if (isToolEffective) {
-            breakItemInHand?._enchanting?.enchantments?.get(EfficiencyEnchantment)?.let {
+            breakItemInHand?._enchanting?.enchantments?.get(MiningEnchantment.EfficiencyEnchantment)?.let {
                 speedMultiplier += it.pow(2) + 1.0f
             }
         }
@@ -231,9 +230,11 @@ class BreakInteractionHandler(
             damage > 1.0f -> {
                 breakProgress = 1.0
             }
+
             damage <= 0.0f -> {
                 breakProgress = 0.0
             }
+
             else -> {
                 val ticks = 1.0f / damage
                 val seconds = (ticks / ProtocolDefinition.TICKS_PER_SECOND)
@@ -250,9 +251,11 @@ class BreakInteractionHandler(
     }
 
     fun init() {
-        renderWindow.inputHandler.registerCheckCallback(DESTROY_BLOCK_KEYBINDING to KeyBinding(
+        renderWindow.inputHandler.registerCheckCallback(
+            DESTROY_BLOCK_KEYBINDING to KeyBinding(
                 KeyActions.CHANGE to setOf(KeyCodes.MOUSE_BUTTON_LEFT),
-        ))
+            )
+        )
 
         connection.events.listen<LegacyBlockBreakAckEvent> {
             when (it.actions) {
@@ -266,6 +269,7 @@ class BreakInteractionHandler(
                         breakProgress = Double.NEGATIVE_INFINITY
                     }
                 }
+
                 PlayerActionC2SP.Actions.FINISHED_DIGGING -> {
                     if (legacyAcknowledgedBreakStarts[it.blockPosition] == null) {
                         // start was not acknowledged, undoing
@@ -273,6 +277,7 @@ class BreakInteractionHandler(
                     }
                     legacyAcknowledgedBreakStarts.remove(it.blockPosition)
                 }
+
                 else -> Unit
             }
         }

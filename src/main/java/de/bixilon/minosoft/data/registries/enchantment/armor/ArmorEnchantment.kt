@@ -17,8 +17,11 @@ import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.enchantment.slots.SlotSpecificEnchantment
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
+import de.bixilon.minosoft.util.KUtil.minecraft
 
 interface ArmorEnchantment : SlotSpecificEnchantment {
     val slots: Set<ArmorSlots>
@@ -40,5 +43,11 @@ interface ArmorEnchantment : SlotSpecificEnchantment {
             return false
         }
         return armorSlot in this.slots
+    }
+
+
+    object SoulSpeed : Enchantment(), ArmorEnchantment, CompanionResourceLocation {
+        override val RESOURCE_LOCATION = minecraft("soul_speed")
+        override val slots: Set<ArmorSlots> = setOf(ArmorSlots.FEET)
     }
 }

@@ -17,6 +17,9 @@ import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-object EfficiencyEnchantment : Enchantment(), ToolEnchantment, CompanionResourceLocation {
-    override val RESOURCE_LOCATION = minecraft("efficiency")
+interface MiningEnchantment : ToolEnchantment {
+
+    object EfficiencyEnchantment : Enchantment(), ToolEnchantment, CompanionResourceLocation {
+        override val RESOURCE_LOCATION = minecraft("efficiency")
+    }
 }

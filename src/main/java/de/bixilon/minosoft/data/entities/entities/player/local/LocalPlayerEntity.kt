@@ -56,7 +56,7 @@ import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
-import de.bixilon.minosoft.data.registries.enchantment.armor.SoulSpeedEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.shapes.AABB
@@ -208,7 +208,7 @@ class LocalPlayerEntity(
             }
             val onSoulSpeedBlock = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(SOUL_SPEED_BLOCKS).nullCast<Tag<Block>>()?.entries?.contains(connection.world[positionInfo.velocityPosition]?.block) ?: false
 
-            if (onSoulSpeedBlock && getEquipmentEnchant(connection.registries.enchantmentRegistry[SoulSpeedEnchantment]) > 0) {
+            if (onSoulSpeedBlock && getEquipmentEnchant(connection.registries.enchantmentRegistry[ArmorEnchantment.SoulSpeed]) > 0) {
                 // ToDo
                 return 1.0
             }

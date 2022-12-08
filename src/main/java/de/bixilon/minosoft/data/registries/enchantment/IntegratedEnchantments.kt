@@ -13,9 +13,13 @@
 
 package de.bixilon.minosoft.data.registries.enchantment
 
-import de.bixilon.minosoft.data.registries.enchantment.armor.SoulSpeedEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
+import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 
 object IntegratedEnchantments : IntegratedRegistry<Enchantment>(
-    SoulSpeedEnchantment,
+
+    ArmorEnchantment.SoulSpeed,
+
+    MiningEnchantment.EfficiencyEnchantment,
 )
