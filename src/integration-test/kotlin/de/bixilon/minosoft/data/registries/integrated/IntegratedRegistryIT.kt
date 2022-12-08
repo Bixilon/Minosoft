@@ -11,12 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.enchantment
+package de.bixilon.minosoft.data.registries.integrated
 
+import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
+import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import org.testng.Assert
+import org.testng.annotations.Test
 
-object DefaultEnchantments {
-    val AQUA_AFFINITY = "minecraft:aqua_affinity".toResourceLocation()
-    val DEPTH_STRIDER = "minecraft:depth_strider".toResourceLocation()
-    val SHARPNESS = "minecraft:sharpness".toResourceLocation()
+@Test(groups = ["registry"])
+class IntegratedRegistryIT {
+
+    fun integratedSharpness() {
+        val expected = WeaponEnchantment.Sharpness
+        val current = IT.VERSION.registries!!.enchantmentRegistry["minecraft:sharpness".toResourceLocation()]
+        Assert.assertSame(current, expected)
+    }
 }

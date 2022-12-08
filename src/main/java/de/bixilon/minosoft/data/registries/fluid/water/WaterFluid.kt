@@ -24,8 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.StatusEffectType
-import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
-import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
@@ -46,7 +45,6 @@ class WaterFluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
-    private val depthStriderEnchantment: Enchantment = unsafeNull()
     private val dolphinsGraceStatusEffect: StatusEffectType = unsafeNull()
     override val stillTextureName: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
     override val flowingTextureName: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
@@ -54,7 +52,6 @@ class WaterFluid(
 
 
     init {
-        this::depthStriderEnchantment.inject(DefaultEnchantments.DEPTH_STRIDER)
         this::dolphinsGraceStatusEffect.inject(DefaultStatusEffects.DOLPHINS_GRACE)
     }
 
@@ -92,7 +89,7 @@ class WaterFluid(
         val y = entity.position.y
         var speedMultiplier = entity.isSprinting.decide(0.9, 0.8)
 
-        var depthStriderLevel = min(entity.getEquipmentEnchant(depthStriderEnchantment), 3).toDouble()
+        var depthStriderLevel = min(entity.getEquipmentEnchant(ArmorEnchantment.DepthStrider), 3).toDouble()
 
         var speed = 0.02
 

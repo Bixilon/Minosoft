@@ -11,20 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.enchantment
+package de.bixilon.minosoft.data.registries.enchantment.tool
 
-import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
-import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
-import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
-import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.util.KUtil.minecraft
 
-object IntegratedEnchantments : IntegratedRegistry<Enchantment>(
+interface WeaponEnchantment : ToolEnchantment {
 
-    ArmorEnchantment.AquaAffinity,
-    ArmorEnchantment.DepthStrider,
-    ArmorEnchantment.SoulSpeed,
-
-    MiningEnchantment.Efficiency,
-
-    WeaponEnchantment.Sharpness,
-)
+    object Sharpness : Enchantment(), ToolEnchantment, CompanionResourceLocation {
+        override val RESOURCE_LOCATION = minecraft("sharpness")
+    }
+}

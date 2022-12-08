@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.EquipmentSlots
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
@@ -37,7 +37,6 @@ class AttackInteractionHandler(
     val renderWindow: RenderWindow,
     val interactionManager: InteractionManager,
 ) {
-    private val sharpness = renderWindow.connection.registries.enchantmentRegistry[DefaultEnchantments.SHARPNESS]
     private val blindness = renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.BLINDNESS]
     private val player = renderWindow.connection.player
     private val rateLimiter = RateLimiter()
@@ -85,7 +84,7 @@ class AttackInteractionHandler(
             return
         }
 
-        val sharpnessLevel = player.equipment[EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(sharpness) ?: 0
+        val sharpnessLevel = player.equipment[EquipmentSlots.MAIN_HAND]?._enchanting?.enchantments?.get(WeaponEnchantment.Sharpness) ?: 0
 
         val critical = cooldown.progress > 0.9f && player.fallDistance != 0.0 && !player.onGround && !player.isClimbing && (player.fluidHeights[DefaultFluids.WATER] ?: 0.0f) <= 0.0f && player.effects[blindness] == null && player.vehicle == null && entity is LivingEntity
 

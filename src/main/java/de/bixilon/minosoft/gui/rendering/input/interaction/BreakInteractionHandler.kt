@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.item.items.tools.MiningToolItem
@@ -58,8 +58,6 @@ class BreakInteractionHandler(
     private var creativeLastHoldBreakTime = 0L
 
     private val legacyAcknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
-
-    private val aquaAffinityEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.AQUA_AFFINITY]
 
     private val hasteStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.HASTE]
     private val miningFatigueStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.MINING_FATIGUE]
@@ -192,7 +190,7 @@ class BreakInteractionHandler(
         var speedMultiplier = breakItemInHand?.let { it.item.item.getMiningSpeedMultiplier(connection, target.blockState, it) } ?: 1.0f
 
         if (isToolEffective) {
-            breakItemInHand?._enchanting?.enchantments?.get(MiningEnchantment.EfficiencyEnchantment)?.let {
+            breakItemInHand?._enchanting?.enchantments?.get(MiningEnchantment.Efficiency)?.let {
                 speedMultiplier += it.pow(2) + 1.0f
             }
         }
@@ -210,7 +208,7 @@ class BreakInteractionHandler(
             }
         }
 
-        if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.getEquipmentEnchant(aquaAffinityEnchantment) == 0) {
+        if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.getEquipmentEnchant(ArmorEnchantment.AquaAffinity) == 0) {
             speedMultiplier /= 5.0f
         }
 

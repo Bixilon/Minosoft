@@ -46,6 +46,16 @@ interface ArmorEnchantment : SlotSpecificEnchantment {
     }
 
 
+    object AquaAffinity : Enchantment(), ArmorEnchantment, CompanionResourceLocation {
+        override val RESOURCE_LOCATION = minecraft("aqua_affinity")
+        override val slots: Set<ArmorSlots> = ArmorSlots.ALL
+    }
+
+    object DepthStrider : Enchantment(), ArmorEnchantment, CompanionResourceLocation {
+        override val RESOURCE_LOCATION = minecraft("depth_strider")
+        override val slots: Set<ArmorSlots> = ArmorSlots.ALL
+    }
+
     object SoulSpeed : Enchantment(), ArmorEnchantment, CompanionResourceLocation {
         override val RESOURCE_LOCATION = minecraft("soul_speed")
         override val slots: Set<ArmorSlots> = setOf(ArmorSlots.FEET)
