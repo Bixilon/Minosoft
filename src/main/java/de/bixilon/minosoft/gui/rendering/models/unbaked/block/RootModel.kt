@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -23,14 +23,10 @@ interface RootModel {
     fun getModelForState(blockState: BlockState): UnbakedModel
 
     companion object {
-        operator fun invoke(modeLoader: ModelLoader, data: Map<String, Any>): RootModel? {
-            val variants = data["variants"]
-            val multipart = data["multipart"]
-            return when {
-                variants != null -> SimpleRootModel(modeLoader, variants.unsafeCast())
-                multipart != null -> MultipartRootModel(modeLoader, multipart.unsafeCast())
-                else -> TODO("Don't know what type of block state model to choose: $data")
-            }
+        operator fun invoke(modeLoader: ModelLoader, data: Map<String, Any>): RootModel {
+            data["variants"]?.let { return SimpleRootModel(modeLoader, it.unsafeCast()) }
+            data["multipart"]?.let { return MultipartRootModel(modeLoader, it.unsafeCast()) }
+            TODO("Don't know what type of block state model to choose: $data")
         }
     }
 }
