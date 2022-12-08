@@ -19,23 +19,23 @@ import de.bixilon.minosoft.gui.rendering.skeletal.baked.SkeletalModelStates
 import de.bixilon.minosoft.gui.rendering.skeletal.instance.SkeletalInstance
 
 abstract class SkeletalEntityModel<E : Entity>(renderer: EntityRenderer, entity: E) : EntityModel<E>(renderer, entity) {
-    abstract val instance: SkeletalInstance
+    abstract val instance: SkeletalInstance?
     open val hideSkeletalModel: Boolean get() = false
 
 
     override fun prepare() {
         super.prepare()
-        if (instance.model.state != SkeletalModelStates.LOADED) {
-            instance.model.preload(renderWindow) // ToDo: load async
-            instance.model.load()
+        if (instance?.model?.state != SkeletalModelStates.LOADED) {
+            instance?.model?.preload(renderWindow) // ToDo: load async
+            instance?.model?.load()
         }
     }
 
     override fun draw() {
         super.draw()
         if (!hideSkeletalModel) {
-            instance.updatePosition(entity.cameraPosition, entity.rotation)
-            instance.draw()
+            instance?.updatePosition(entity.cameraPosition, entity.rotation)
+            instance?.draw()
         }
     }
 }

@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata
+package de.bixilon.minosoft.gui.rendering.system.base.texture.skin.vanilla
 
-import com.fasterxml.jackson.annotation.JsonInclude
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
-data class SkinMetadata(
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    val model: SkinModel = SkinModel.WIDE,
-)
+open class DefaultLegacySkin(
+    name: ResourceLocation,
+    val model: SkinModel,
+    val fallback: Boolean,
+) : DefaultSkin(name)

@@ -27,7 +27,7 @@ import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 
-@Test(groups = ["light"], dependsOnGroups = ["block"])
+@Test(groups = ["light"], dependsOnGroups = ["block"], threadPoolSize = 8)
 class BlockLightBreakIT {
 
     fun inBlock() {

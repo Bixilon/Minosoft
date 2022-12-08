@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
 import de.bixilon.minosoft.data.entities.entities.player.properties.PlayerProperties
-import de.bixilon.minosoft.data.entities.entities.player.properties.textures.PlayerTexture.Companion.isSteve
 import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
 import de.bixilon.minosoft.gui.rendering.entity.EntityRenderer
 import de.bixilon.minosoft.gui.rendering.entity.models.SkeletalEntityModel
@@ -30,11 +29,12 @@ import de.bixilon.minosoft.gui.rendering.skeletal.model.elements.SkeletalElement
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicStateChangeCallback
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTextureState
+import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : SkeletalEntityModel<PlayerEntity>(renderer, player), DynamicStateChangeCallback {
     private var properties = player.additional.properties
-    private var skin: DynamicTexture? = null
+    private var skin: PlayerSkin? = null
     protected var refreshModel = false
 
     private val legAnimator = LegAnimator(this)
@@ -52,8 +52,9 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     }
 
 
-    private fun createModel(properties: PlayerProperties?): SkeletalInstance {
-        val skinModel = properties?.textures?.skin?.metadata?.model ?: if (entity.uuid?.isSteve() == true) SkinModel.NORMAL else SkinModel.SLIM
+    private fun createModel(properties: PlayerProperties?): SkeletalInstance? {
+        val skin = renderWindow.textureManager.skins.getSkin(entity, properties) ?: return null
+        val skinModel = skin.model
         val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else NORMAL_MODEL)
 
         val elements: MutableList<SkeletalElement> = mutableListOf()
@@ -66,15 +67,14 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
             }
             elements += element
         }
-        val skin = renderWindow.textureManager.getSkin(entity, properties)
-        skin.usages.incrementAndGet()
-        this.skin?.usages?.decrementAndGet()
+        skin.texture.usages.incrementAndGet()
+        this.skin?.texture?.usages?.decrementAndGet()
         this.skin = skin
-        skin += this
+        skin.texture += this
 
-        val skinTexture = if (skin.state != DynamicTextureState.LOADED) renderWindow.textureManager.getFallbackTexture(entity.uuid) else skin
+        val skinTexture = if (skin.texture.state != DynamicTextureState.LOADED) renderWindow.textureManager.skins.default[entity.uuid] ?: return null else skin
 
-        val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skinTexture))
+        val model = unbaked.copy(elements = elements, animations = animations).bake(renderWindow, mapOf(0 to skinTexture.texture))
 
         val instance = SkeletalInstance(renderWindow, model)
 
@@ -110,13 +110,13 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     }
 
     override fun onStateChange(texture: DynamicTexture, state: DynamicTextureState) {
-        if (skin === texture) {
+        if (skin?.texture === texture) {
             refreshModel = true
         }
     }
 
     override fun unload() {
-        skin?.usages?.decrementAndGet()
+        skin?.texture?.usages?.decrementAndGet()
     }
 
     fun swingArm(arm: Arms) {

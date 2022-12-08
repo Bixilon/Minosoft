@@ -81,7 +81,7 @@ class TabListEntryElement(
 
     init {
         background = ColorElement(guiRenderer, size, RGBColor(120, 120, 120, 130))
-        DefaultThreadPool += { skinElement.texture = renderWindow.textureManager.getSkin(guiRenderer.connection.network.encrypted, uuid, item.properties) }
+        DefaultThreadPool += { skinElement.texture = renderWindow.textureManager.skins.getSkin(uuid, item.properties, fetch = guiRenderer.connection.network.encrypted)?.texture }
         forceSilentApply()
     }
 

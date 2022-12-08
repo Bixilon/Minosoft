@@ -23,7 +23,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 import java.net.URL
-import java.util.*
 
 open class PlayerTexture(
     val url: URL,
@@ -84,10 +83,6 @@ open class PlayerTexture(
                 }
             }
             return false
-        }
-
-        fun UUID.isSteve(): Boolean {
-            return hashCode() % 2 == 0
         }
     }
 }

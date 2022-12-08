@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata
 
+import com.fasterxml.jackson.annotation.JsonAlias
+
 enum class SkinModel {
     SLIM,
-    NORMAL,
+    @JsonAlias("normal")
+    WIDE,
     ;
 }

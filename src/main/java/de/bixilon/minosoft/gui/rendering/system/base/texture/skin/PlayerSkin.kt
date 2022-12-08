@@ -11,11 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata
+package de.bixilon.minosoft.gui.rendering.system.base.texture.skin
 
-import com.fasterxml.jackson.annotation.JsonInclude
+import de.bixilon.minosoft.data.entities.entities.player.properties.textures.metadata.SkinModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
 
-data class SkinMetadata(
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    val model: SkinModel = SkinModel.WIDE,
+class PlayerSkin(
+    val texture: DynamicTexture,
+    val model: SkinModel,
 )
