@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
-import de.bixilon.minosoft.gui.rendering.system.base.texture.dynamic.DynamicTexture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
 import de.bixilon.minosoft.util.KUtil.minosoft
 
 class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
@@ -36,7 +36,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     override val render: Boolean
         get() = renderWindow.camera.view.view.renderArm && config.arm.render
     private var arm = renderWindow.connection.player.mainArm // TODO: camera player entity
-    private var skin: DynamicTexture? = null
+    private var skin: PlayerSkin? = null
     private var model: PlayerModel? = null
     private var mesh: ArmMesh = unsafeNull()
     private var animator: ArmAnimator? = null
@@ -50,8 +50,11 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
 
     private fun updateMesh() {
         this.mesh = ArmMesh(renderWindow)
-        val skin = this.skin ?: renderWindow.textureManager.steveTexture
-        this.model?.instance?.model?.model?.let { this.mesh.addArm(it, arm, skin) }
+        val skin = this.skin
+        val model = this.model?.instance?.model?.model
+        if (model != null && skin != null) {
+            this.mesh.addArm(model, arm, skin.texture)
+        }
         this.mesh.load()
     }
 
@@ -66,12 +69,12 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         val model = renderWindow.connection.player.model.nullCast<PlayerModel>()
         this.model = model
         this.animator = model?.let { ArmAnimator(it) }
-        val skin = model?.skin
+        val skin = model?.skin ?: return
         if (this.skin == skin) {
             return
         }
-        this.skin?.usages?.decrementAndGet()
-        skin?.usages?.incrementAndGet()
+        this.skin?.texture?.usages?.decrementAndGet()
+        skin.texture.usages.incrementAndGet()
         this.skin = skin
     }
 
@@ -109,7 +112,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         updateMesh()
         shader.use()
         shader.transform = calculateTransform()
-        shader.textureIndexLayer = skin.shaderId
+        shader.textureIndexLayer = skin.texture.shaderId
         mesh.draw()
     }
 
