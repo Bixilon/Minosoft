@@ -38,4 +38,9 @@ interface VisionEffect {
         override val RESOURCE_LOCATION = minecraft("night_vision")
         override val color = 0x1F1FA1.asRGBColor()
     }
+
+    object Darkness : StatusEffectType(), VisionEffect, CompanionResourceLocation, Colored, HarmfulEffect {
+        override val RESOURCE_LOCATION = minecraft("darkness")
+        override val color = 0x292721.asRGBColor()
+    }
 }

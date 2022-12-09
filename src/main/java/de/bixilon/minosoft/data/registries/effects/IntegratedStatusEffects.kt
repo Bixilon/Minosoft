@@ -36,12 +36,14 @@ object IntegratedStatusEffects : IntegratedRegistry<StatusEffectType>(
     MiningEffect.MiningFatigue,
 
     VisionEffect.Blindness,
+    VisionEffect.Darkness,
     VisionEffect.Nausea,
     VisionEffect.NightVision,
 
     OtherEffects.BadOmen,
     OtherEffects.ConduitPower,
     OtherEffects.Glowing,
+    OtherEffects.HeroOfTheVillage,
     OtherEffects.Hunger,
     OtherEffects.Invisibility,
     OtherEffects.Luck,

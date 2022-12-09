@@ -69,4 +69,9 @@ interface OtherEffects {
         override val RESOURCE_LOCATION = minecraft("bad_omen")
         override val color = 0x0B6138.asRGBColor()
     }
+
+    object HeroOfTheVillage : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+        override val RESOURCE_LOCATION = minecraft("hero_of_the_village")
+        override val color = 0x44FF44.asRGBColor()
+    }
 }
