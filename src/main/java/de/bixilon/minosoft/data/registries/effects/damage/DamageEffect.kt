@@ -31,7 +31,7 @@ interface DamageEffect {
     }
 
     object InstantHealth : StatusEffectType(), DamageEffect, CompanionResourceLocation, Colored, BeneficalEffect, InstantEffect {
-        override val RESOURCE_LOCATION = minecraft("instand_health")
+        override val RESOURCE_LOCATION = minecraft("instant_health")
         override val color = 0xF82423.asRGBColor()
     }
 

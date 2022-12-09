@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.effects
 
 import de.bixilon.minosoft.data.registries.effects.damage.DamageEffect
 import de.bixilon.minosoft.data.registries.effects.mining.MiningEffect
-import de.bixilon.minosoft.data.registries.effects.other.OtherEffects
+import de.bixilon.minosoft.data.registries.effects.other.OtherEffect
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 
@@ -40,14 +40,14 @@ object IntegratedStatusEffects : IntegratedRegistry<StatusEffectType>(
     VisionEffect.Nausea,
     VisionEffect.NightVision,
 
-    OtherEffects.BadOmen,
-    OtherEffects.ConduitPower,
-    OtherEffects.Glowing,
-    OtherEffects.HeroOfTheVillage,
-    OtherEffects.Hunger,
-    OtherEffects.Invisibility,
-    OtherEffects.Luck,
-    OtherEffects.Saturation,
-    OtherEffects.Unluck,
-    OtherEffects.WaterBreathing,
+    OtherEffect.BadOmen,
+    OtherEffect.ConduitPower,
+    OtherEffect.Glowing,
+    OtherEffect.HeroOfTheVillage,
+    OtherEffect.Hunger,
+    OtherEffect.Invisibility,
+    OtherEffect.Luck,
+    OtherEffect.Saturation,
+    OtherEffect.Unluck,
+    OtherEffect.WaterBreathing,
 )

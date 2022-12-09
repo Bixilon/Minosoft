@@ -22,55 +22,55 @@ import de.bixilon.minosoft.data.text.formatting.color.Colored
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-interface OtherEffects {
+interface OtherEffect {
 
 
-    object WaterBreathing : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+    object WaterBreathing : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, BeneficalEffect {
         override val RESOURCE_LOCATION = minecraft("water_breathing")
         override val color = 0x2E5299.asRGBColor()
     }
 
-    object Invisibility : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+    object Invisibility : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, BeneficalEffect {
         override val RESOURCE_LOCATION = minecraft("invisibility")
         override val color = 0x7F8392.asRGBColor()
     }
 
-    object Hunger : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, HarmfulEffect {
+    object Hunger : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, HarmfulEffect {
         override val RESOURCE_LOCATION = minecraft("hunger")
         override val color = 0x587653.asRGBColor()
     }
 
-    object Saturation : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+    object Saturation : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, BeneficalEffect {
         override val RESOURCE_LOCATION = minecraft("saturation")
         override val color = 0xF82423.asRGBColor()
     }
 
-    object Glowing : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, NeutralEffect {
+    object Glowing : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, NeutralEffect {
         override val RESOURCE_LOCATION = minecraft("glowing")
         override val color = 0x94A061.asRGBColor()
     }
 
-    object Luck : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+    object Luck : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, BeneficalEffect {
         override val RESOURCE_LOCATION = minecraft("luck")
         override val color = 0x339900.asRGBColor()
     }
 
-    object Unluck : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, HarmfulEffect {
+    object Unluck : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, HarmfulEffect {
         override val RESOURCE_LOCATION = minecraft("unluck")
         override val color = 0xC0A44D.asRGBColor()
     }
 
-    object ConduitPower : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+    object ConduitPower : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, BeneficalEffect {
         override val RESOURCE_LOCATION = minecraft("conduit_power")
         override val color = 0x1DC2D1.asRGBColor()
     }
 
-    object BadOmen : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, NeutralEffect {
+    object BadOmen : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, NeutralEffect {
         override val RESOURCE_LOCATION = minecraft("bad_omen")
         override val color = 0x0B6138.asRGBColor()
     }
 
-    object HeroOfTheVillage : StatusEffectType(), OtherEffects, CompanionResourceLocation, Colored, BeneficalEffect {
+    object HeroOfTheVillage : StatusEffectType(), OtherEffect, CompanionResourceLocation, Colored, BeneficalEffect {
         override val RESOURCE_LOCATION = minecraft("hero_of_the_village")
         override val color = 0x44FF44.asRGBColor()
     }
