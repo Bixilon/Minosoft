@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm
 import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
-import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.entities.entities.player.Arms
@@ -83,36 +82,25 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         val screen = renderWindow.window.sizef
 
 
+        val projection = renderWindow.camera.matrixHandler.projectionMatrix
+
         val matrix = Mat4()
-
-        // rotate arm
-        // TODO: swinging, etc
-        //    matrix.rotateAssign((a).rad, Vec3(0, 0, 1))
-        // matrix.rotateAssign(180.0f, Vec3(1,0,0))
-        matrix.rotateAssign(210.0f.rad, Vec3(1, 0, 0))
-        matrix.rotateAssign(25.0f.rad, Vec3(0, 1, 0))
-        matrix.rotateAssign(-5.0f.rad, Vec3(0, 0, 1))
-        //    matrix.translateAssign(Vec3(0.0f ,0.0f, -0.5f))
+        matrix.rotateAssign(-25.0f.rad, Vec3(0, 1, 0))
+        matrix.rotateAssign(130.0f.rad, Vec3(1, 0, 0))
+        a += 1
 
 
-        matrix.scaleAssign(Vec3(1.0f) / Vec3(screen.x, screen.y, (screen.x + screen.y) / 2)) // our matrix will have the size of te screen and some value between as depth
-
-
-        // left or right of hotbar
-        // this will be the rotation origin
-        val screenOrigin = Vec3i((screen.x + if (arm == Arms.LEFT) -120 else 120) / 2, -screen.y + 300, 0)
-        matrix.translateAssign(Vec3(screenOrigin))
-
-        matrix.scaleAssign(80.0f)
-
-
-        matrix.translateAssign(Vec3(if (arm == Arms.LEFT) 4 else -4, 0, 0)) // move inner side of arm to 0|0|0
+        matrix.translateAssign(Vec3(if (arm == Arms.LEFT) 0.2f else -0.2f, 0, 0)) // move inner side of arm to 0|0|0
 
         matrix.scaleAssign(BLOCK_RESOLUTION) // make a pixel one pixel
         matrix.translateAssign(-0.5f)
 
 
         return matrix
+
+
+        // "${matrix * Vec4(Vec3(4, 12, -2).fromBlockCoordinates(), 1)} -> ${matrix * Vec4(Vec3(7, 24, 2).fromBlockCoordinates(), 1)}"
+        return projection * matrix
     }
 
     override fun draw() {

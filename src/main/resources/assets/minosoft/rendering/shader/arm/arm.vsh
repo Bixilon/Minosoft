@@ -25,6 +25,7 @@ uniform mat4 uTransform;
 
 void main() {
     gl_Position = uTransform * vec4(vinPosition, 1.0f);
+    gl_Position.w = 1.0f;
 
     finTextureIndex = uIndexLayer >> 28u;
     finTextureCoordinates = vec3(vinUV, ((uIndexLayer >> 12) & 0xFFFFu));
