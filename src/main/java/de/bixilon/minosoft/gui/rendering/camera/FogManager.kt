@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.camera
 
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil.millis
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
@@ -30,7 +30,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 class FogManager(
     private val renderWindow: RenderWindow,
 ) {
-    private val blindness = renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.BLINDNESS]
     private val player = renderWindow.connection.player
 
     private var fogChange = -1L
@@ -83,7 +82,7 @@ class FogManager(
             color = player.positionInfo.biome?.waterFogColor
             fogStart = 5.0f
             fogEnd = 10.0f
-        } else if (player.effects[blindness] != null) {
+        } else if (player.effects[VisionEffect.Blindness] != null) {
             color = ChatColors.BLACK
             fogStart = 3.0f
             fogEnd = 5.0f

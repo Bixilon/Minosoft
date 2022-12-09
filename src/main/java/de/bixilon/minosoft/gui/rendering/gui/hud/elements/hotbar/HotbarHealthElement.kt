@@ -17,8 +17,8 @@ import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.math.simple.FloatMath.rounded10
 import de.bixilon.kutil.primitive.BooleanUtil.decide
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
+import de.bixilon.minosoft.data.registries.effects.damage.DamageEffect
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -33,8 +33,6 @@ import java.lang.Float.max
 import java.lang.Float.min
 
 class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElement(guiRenderer), Pollable {
-    private val witherStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
-    private val poisonStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.POISON]
     private val atlasManager = guiRenderer.atlasManager
 
     /**
@@ -216,8 +214,8 @@ class HotbarHealthElement(guiRenderer: GUIRenderer) : AbstractHotbarHealthElemen
     override fun poll(): Boolean {
         val player = guiRenderer.renderWindow.connection.player
         val hardcode = guiRenderer.renderWindow.connection.world.hardcore
-        val poison = poisonStatusEffect?.let { player.effects[it] != null } ?: false
-        val wither = witherStatusEffect?.let { player.effects[it] != null } ?: false
+        val poison = player.effects[DamageEffect.Poison] != null
+        val wither = player.effects[DamageEffect.Wither] != null
         val frozen = player.ticksFrozen > 0
 
         val absorptionsAmount = max(0.0f, player.playerAbsorptionHearts)

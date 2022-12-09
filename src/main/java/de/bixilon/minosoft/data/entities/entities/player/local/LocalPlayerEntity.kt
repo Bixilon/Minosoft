@@ -52,10 +52,10 @@ import de.bixilon.minosoft.data.entities.entities.player.compass.CompassPosition
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
+import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.data.registries.item.items.Item
@@ -390,7 +390,7 @@ class LocalPlayerEntity(
         var gravity = PhysicsConstants.BASE_GRAVITY
         val falling = velocity.y <= 0.0
 
-        if (falling && effects[connection.registries.statusEffectRegistry[DefaultStatusEffects.SLOW_FALLING]] != null) {
+        if (falling && effects[MovementEffect.SlowFalling] != null) {
             gravity = 0.01
             fallDistance = 0.0
         }
@@ -418,7 +418,7 @@ class LocalPlayerEntity(
                 val velocity = move(sidewaysSpeed, forwardSpeed, friction)
 
 
-                effects[connection.registries.statusEffectRegistry[DefaultStatusEffects.LEVITATION]]?.let {
+                effects[MovementEffect.Levitation]?.let {
                     velocity.y += (0.05 * (it.amplifier + 1.0f) - velocity.y) * 0.2 // ToDo: This should be correct, but somehow are we to fast...
                 } ?: let {
                     if (connection.world[positionInfo.chunkPosition] == null) {
@@ -534,7 +534,7 @@ class LocalPlayerEntity(
     private fun jump() {
         var velocity = 0.42 * jumpVelocityMultiplier
 
-        effects[connection.registries.statusEffectRegistry[DefaultStatusEffects.JUMP_BOOST]]?.let {
+        effects[MovementEffect.JumpBoost]?.let {
             velocity += 0.1 * (it.amplifier + 1.0)
         }
         this.velocity.y = velocity

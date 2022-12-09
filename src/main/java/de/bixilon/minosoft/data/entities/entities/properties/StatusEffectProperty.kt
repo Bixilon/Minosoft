@@ -17,9 +17,7 @@ import de.bixilon.kutil.collections.CollectionUtil.lockMapOf
 import de.bixilon.kutil.collections.map.LockMap
 import de.bixilon.minosoft.data.Tickable
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.StatusEffectType
-import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 
 class StatusEffectProperty : Tickable {
     private val effects: LockMap<StatusEffectType, StatusEffectInstance> = lockMapOf()
@@ -58,16 +56,5 @@ class StatusEffectProperty : Tickable {
 
     operator fun contains(effect: StatusEffectType?): Boolean {
         return effect in this.effects
-    }
-
-    fun processAttribute(name: ResourceLocation): MutableMap<EntityAttributeModifier, Int> {
-        val attributes: MutableMap<EntityAttributeModifier, Int> = mutableMapOf()
-        effects.lock.acquire()
-        for ((type, instance) in this.effects) {
-            val attribute = type.attributes[name] ?: continue
-            attributes[attribute] = instance.amplifier
-        }
-        effects.lock.release()
-        return attributes
     }
 }

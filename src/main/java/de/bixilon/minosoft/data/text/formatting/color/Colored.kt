@@ -10,10 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.effects
 
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+package de.bixilon.minosoft.data.text.formatting.color
 
-abstract class StatusEffectType : RegistryItem() {
-    override val injectable: Boolean get() = false
+interface Colored {
+    val color: RGBColor
 }

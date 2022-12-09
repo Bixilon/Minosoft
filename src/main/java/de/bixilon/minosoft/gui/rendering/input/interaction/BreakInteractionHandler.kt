@@ -24,7 +24,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.effects.mining.MiningEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.enchantment.tool.MiningEnchantment
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
@@ -58,9 +58,6 @@ class BreakInteractionHandler(
     private var creativeLastHoldBreakTime = 0L
 
     private val legacyAcknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
-
-    private val hasteStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.HASTE]
-    private val miningFatigueStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.MINING_FATIGUE]
 
     private fun clearDigging() {
         breakPosition = null
@@ -195,11 +192,11 @@ class BreakInteractionHandler(
             }
         }
 
-        connection.player.effects[hasteStatusEffect]?.let {
+        connection.player.effects[MiningEffect.Haste]?.let {
             speedMultiplier *= (0.2f * (it.amplifier + 1)) + 1.0f
         }
 
-        connection.player.effects[miningFatigueStatusEffect]?.let {
+        connection.player.effects[MiningEffect.MiningFatigue]?.let {
             speedMultiplier *= when (it.amplifier) {
                 0 -> 0.3f
                 1 -> 0.09f

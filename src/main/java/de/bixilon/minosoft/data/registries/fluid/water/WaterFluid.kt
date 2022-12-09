@@ -15,15 +15,13 @@ package de.bixilon.minosoft.data.registries.fluid.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
-import de.bixilon.minosoft.data.registries.effects.StatusEffectType
+import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
@@ -45,15 +43,10 @@ class WaterFluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
-    private val dolphinsGraceStatusEffect: StatusEffectType = unsafeNull()
     override val stillTextureName: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
     override val flowingTextureName: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
     override val tintProvider: TintProvider = WaterTintProvider
 
-
-    init {
-        this::dolphinsGraceStatusEffect.inject(DefaultStatusEffects.DOLPHINS_GRACE)
-    }
 
     override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
         return VELOCITY_MULTIPLIER
@@ -102,7 +95,7 @@ class WaterFluid(
             speed += (entity.walkingSpeed - speed) * depthStriderLevel / 3.0
         }
 
-        if (entity.effects[dolphinsGraceStatusEffect] != null) {
+        if (entity.effects[MovementEffect.DolphinsGrace] != null) {
             speedMultiplier *= 0.96
         }
 

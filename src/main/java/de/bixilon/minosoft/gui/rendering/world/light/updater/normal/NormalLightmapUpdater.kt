@@ -18,7 +18,7 @@ import de.bixilon.kutil.math.MathConstants.PIf
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
 import de.bixilon.minosoft.data.world.time.DayPhases
 import de.bixilon.minosoft.data.world.time.WorldTime
 import de.bixilon.minosoft.data.world.weather.WorldWeather
@@ -44,7 +44,6 @@ class NormalLightmapUpdater(
 ) : LightmapUpdater {
     private val profile = connection.profiles.rendering.light
     private var force = true
-    private val nightVision = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
 
 
     init {
@@ -208,7 +207,7 @@ class NormalLightmapUpdater(
     }
 
     private fun getNightVisionStrength(): Float {
-        val nightVision = connection.player.effects[this.nightVision] ?: return 0.0f
+        val nightVision = connection.player.effects[VisionEffect.NightVision] ?: return 0.0f
         val time = millis()
         val end = nightVision.end
         if (time > end) {

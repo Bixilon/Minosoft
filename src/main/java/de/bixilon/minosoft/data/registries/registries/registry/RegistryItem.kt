@@ -59,4 +59,9 @@ abstract class RegistryItem : ResourceLocationAble {
     }
 
     open fun postInit(registries: Registries) {}
+
+
+    override fun toString(): String {
+        return resourceLocation.full
+    }
 }

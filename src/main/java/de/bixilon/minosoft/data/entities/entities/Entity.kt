@@ -179,10 +179,6 @@ abstract class Entity(
             }
         }
 
-        for ((attribute, amplifier) in effects.processAttribute(name)) {
-            addToValue(attribute, amplifier)
-        }
-
         return ret
     }
 

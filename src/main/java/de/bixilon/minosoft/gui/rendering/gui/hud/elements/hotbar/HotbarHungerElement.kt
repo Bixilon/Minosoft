@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
-import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.effects.other.OtherEffects
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
 import de.bixilon.minosoft.gui.rendering.gui.atlas.AtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -30,7 +30,6 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
     private val profile = guiRenderer.connection.profiles.gui
     private val hungerProfile = profile.hud.hotbar.hunger
     private var ticks = 0
-    private val hungerStatusEffect = guiRenderer.renderWindow.connection.registries.statusEffectRegistry[DefaultStatusEffects.HUNGER]
     private val atlasManager = guiRenderer.atlasManager
 
 
@@ -147,7 +146,7 @@ class HotbarHungerElement(guiRenderer: GUIRenderer) : Element(guiRenderer), Poll
         val hunger = healthCondition.hunger
         val saturation = healthCondition.saturation
 
-        val hungerEffect = guiRenderer.renderWindow.connection.player.effects.contains(hungerStatusEffect)
+        val hungerEffect = guiRenderer.renderWindow.connection.player.effects[OtherEffects.Hunger] != null
 
         if (this.hunger == hunger && this.saturation == saturation && this.hungerEffect == hungerEffect) {
             return false
