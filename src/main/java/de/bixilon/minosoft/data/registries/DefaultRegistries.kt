@@ -92,7 +92,7 @@ object DefaultRegistries {
 
         val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER[REGISTRIES_RESOURCE_LOCATION].readJsonObject().toResourceLocationMap()
 
-        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")].asJsonObject(), PluginChannel)
+        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_channels")].asJsonObject(), PluginChannel)
 
         ENTITY_OBJECT_REGISTRY.rawUpdate(registriesJson[ResourceLocation("entity_objects")].asJsonObject(), null)
 

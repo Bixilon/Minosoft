@@ -26,7 +26,7 @@ import de.bixilon.minosoft.protocol.PacketErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
-import de.bixilon.minosoft.protocol.network.connection.play.plugin.DefaultPluginHandler.sendBrand
+import de.bixilon.minosoft.protocol.network.connection.play.channel.vanila.BrandHandler.sendBrand
 import de.bixilon.minosoft.protocol.packets.c2s.play.SessionDataC2SP
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

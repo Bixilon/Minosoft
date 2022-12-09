@@ -55,9 +55,9 @@ import de.bixilon.minosoft.modding.loader.LoadingPhases
 import de.bixilon.minosoft.modding.loader.ModLoader
 import de.bixilon.minosoft.protocol.address.ServerAddress
 import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.play.clientsettings.ClientSettingsManager
-import de.bixilon.minosoft.protocol.network.connection.play.plugin.DefaultPluginHandler
-import de.bixilon.minosoft.protocol.network.connection.play.plugin.PluginManager
+import de.bixilon.minosoft.protocol.network.connection.play.channel.ConnectionChannelHandler
+import de.bixilon.minosoft.protocol.network.connection.play.channel.DefaultChannelHandlers
+import de.bixilon.minosoft.protocol.network.connection.play.settings.ClientSettingsManager
 import de.bixilon.minosoft.protocol.network.connection.play.tick.ConnectionTicker
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
@@ -85,7 +85,7 @@ class PlayConnection(
     val bossbarManager = BossbarManager()
     val util = ConnectionUtil(this)
     val ticker = ConnectionTicker(this)
-    val pluginManager = PluginManager(this)
+    val channels = ConnectionChannelHandler(this)
     val serverInfo = ServerInfo()
     val sessionId = KUtil.secureRandomUUID()
 
@@ -122,7 +122,7 @@ class PlayConnection(
 
     init {
         MinecraftRegistryFixer.register(this)
-        DefaultPluginHandler.register(this)
+        DefaultChannelHandlers.register(this)
 
         network::connected.observe(this) {
             if (it) {

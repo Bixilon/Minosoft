@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.protocol
 import de.bixilon.kutil.collections.CollectionUtil.biMapOf
 import de.bixilon.kutil.collections.map.bi.BiMap
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.ChannelC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.login.PluginC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.StartC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.PingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
@@ -39,7 +39,7 @@ object Protocol {
         ProtocolStates.LOGIN to biMapOf(
             PacketTypeRegistry.getC2S(StartC2SP::class.java)!! to 0x00,
             PacketTypeRegistry.getC2S(EncryptionC2SP::class.java)!! to 0x01,
-            PacketTypeRegistry.getC2S(PluginC2SP::class.java)!! to 0x02,
+            PacketTypeRegistry.getC2S(ChannelC2SP::class.java)!! to 0x02,
         ),
     )
     val S2C_PACKET_MAPPING: Map<ProtocolStates, BiMap<S2CPacketType, Int>> = mapOf(
@@ -52,7 +52,7 @@ object Protocol {
             PacketTypeRegistry.getS2C(EncryptionS2CP::class.java)!! to 0x01,
             PacketTypeRegistry.getS2C(SuccessS2CP::class.java)!! to 0x02,
             PacketTypeRegistry.getS2C(CompressionS2CP::class.java)!! to 0x03,
-            PacketTypeRegistry.getS2C(PluginS2CP::class.java)!! to 0x04,
+            PacketTypeRegistry.getS2C(ChannelS2CP::class.java)!! to 0x04,
         ),
     )
 }

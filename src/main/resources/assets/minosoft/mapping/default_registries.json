@@ -1,5 +1,5 @@
 {
-  "minecraft:default_plugin_channels": {
+  "minecraft:default_channels": {
     "0": {
       "minecraft:brand": {
         "name": "MC|Brand"

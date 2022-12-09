@@ -10,37 +10,28 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play
+package de.bixilon.minosoft.protocol.packets.c2s.login
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
-class PluginC2SP(
-    val channel: ResourceLocation,
-    val data: ByteArray,
+@LoadPacket(state = ProtocolStates.LOGIN)
+class ChannelC2SP(
+    val messageId: Int,
+    val data: ByteArray?,
 ) : PlayC2SPacket {
 
-    constructor(channel: ResourceLocation, buffer: OutByteBuffer) : this(channel, buffer.toArray())
-
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeResourceLocation(channel)
-        if (buffer.versionId < ProtocolVersions.V_14W29A) {
-            buffer.writeShort(data.size)
-        } else if (buffer.versionId < ProtocolVersions.V_14W31A) {
-            buffer.writeVarInt(data.size)
-        }
-        buffer.writeByteArray(data)
+        buffer.writeVarInt(messageId)
+        buffer.writeOptional(data) { buffer.writeByteArray(it) }
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Plugin (channel=$channel, data=${data.contentToString()})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Login channel (messageId=$messageId, data=$data)" }
     }
 }

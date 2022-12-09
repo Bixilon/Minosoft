@@ -10,38 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.protocol.packets.s2c.login
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket
-class PluginS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val channel: ResourceLocation = buffer.readResourceLocation()
-
-    init {
-        // "read" length prefix
-        if (buffer.versionId < ProtocolVersions.V_14W29A) {
-            buffer.readShort()
-        } else if (buffer.versionId < ProtocolVersions.V_14W31A) {
-            buffer.readVarInt()
-        }
-    }
-
-    val data = buffer.readRest()
+@LoadPacket(state = ProtocolStates.LOGIN, threadSafe = false)
+class ChannelS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val messageId = buffer.readVarInt()
+    val channel = buffer.readResourceLocation()
+    val data: ByteArray = buffer.readRest()
 
     override fun handle(connection: PlayConnection) {
-        connection.pluginManager.handleMessage(channel, data)
+        connection.channels.login.handle(messageId, channel, data)
     }
 
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Plugin (channel=$channel, size=${data.size})" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Login channel (messageId=$messageId, channel=$channel, data=$data)" }
     }
+
 }

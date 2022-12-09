@@ -10,33 +10,38 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.login
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.factory.LoadPacket
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-@LoadPacket(state = ProtocolStates.LOGIN)
-class PluginC2SP(
-    val messageId: Int,
-    val data: ByteArray?,
-) : PlayC2SPacket {
+@LoadPacket
+class ChannelS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
+    val channel: ResourceLocation = buffer.readResourceLocation()
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeVarInt(messageId)
-        data?.let {
-            buffer.writeBoolean(true)
-            buffer.writeByteArray(it)
-        } ?: let {
-            buffer.writeBoolean(false)
+    init {
+        // "read" length prefix
+        if (buffer.versionId < ProtocolVersions.V_14W29A) {
+            buffer.readShort()
+        } else if (buffer.versionId < ProtocolVersions.V_14W31A) {
+            buffer.readVarInt()
         }
     }
 
+    val data = buffer.readRest()
+
+    override fun handle(connection: PlayConnection) {
+        connection.channels.play.handle(channel, data)
+    }
+
     override fun log(reducedLog: Boolean) {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Login plugin response (messageId=$messageId, data=$data)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Channel (channel=$channel, size=${data.size})" }
     }
 }

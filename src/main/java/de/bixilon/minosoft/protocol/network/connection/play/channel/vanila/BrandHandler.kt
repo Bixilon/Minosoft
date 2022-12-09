@@ -11,40 +11,46 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.connection.play.plugin
+package de.bixilon.minosoft.protocol.network.connection.play.channel.vanila
 
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.PluginC2SP
+import de.bixilon.minosoft.protocol.network.connection.play.channel.play.PlayChannelHandler
+import de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-object DefaultPluginHandler {
+object BrandHandler {
 
     fun register(connection: PlayConnection) {
-        registerBrand(connection)
+        connection.channels.play[connection.getBrandChannel()] = BrandChannelHandler(connection)
     }
 
-    fun PlayConnection.getBrandChannel(): ResourceLocation {
+    private fun PlayConnection.getBrandChannel(): ResourceLocation {
         return DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.resourceLocation
     }
 
-    private fun registerBrand(connection: PlayConnection) {
-        connection.pluginManager[connection.getBrandChannel()] = {
-            connection.serverInfo.brand = it.readString()
-        }
-    }
-
-    fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
+    private fun PlayConnection.sendBrand(channel: ResourceLocation, brand: String) {
         val buffer = PlayOutByteBuffer(this)
         buffer.writeByteArray(brand.encodeNetwork())
-        sendPacket(PluginC2SP(channel, buffer))
+        sendPacket(ChannelC2SP(channel, buffer))
     }
 
     fun PlayConnection.sendBrand() {
         sendBrand(getBrandChannel(), if (profiles.connection.fakeBrand) ProtocolDefinition.VANILLA_BRAND else ProtocolDefinition.MINOSOFT_BRAND)
+    }
+
+
+    private class BrandChannelHandler(
+        private val connection: PlayConnection,
+    ) : PlayChannelHandler {
+
+        override fun handle(buffer: PlayInByteBuffer) {
+            connection.serverInfo.brand = buffer.readString()
+        }
     }
 }

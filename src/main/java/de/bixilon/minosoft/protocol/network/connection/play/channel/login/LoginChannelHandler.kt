@@ -10,13 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.network.connection.play.channel.login
 
-package de.bixilon.minosoft.protocol.network.connection.play.plugin;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import org.jetbrains.annotations.NotNull;
-
-public interface PluginHandler {
-
-    void handle(final @NotNull PlayInByteBuffer buffer);
+interface LoginChannelHandler {
+    fun handle(messageId: Int, buffer: PlayInByteBuffer)
 }

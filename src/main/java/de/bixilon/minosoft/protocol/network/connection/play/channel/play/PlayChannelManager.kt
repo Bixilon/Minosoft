@@ -11,31 +11,43 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.connection.play.plugin
+package de.bixilon.minosoft.protocol.network.connection.play.channel.play
 
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedMapOf
-import de.bixilon.kutil.collections.CollectionUtil.synchronizedSetOf
 import de.bixilon.kutil.collections.CollectionUtil.toSynchronizedList
-import de.bixilon.kutil.collections.map.SynchronizedMap
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.channel.ChannelManager
+import de.bixilon.minosoft.protocol.packets.c2s.play.ChannelC2SP
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 
-class PluginManager(val connection: PlayConnection) {
-    private val handlers: SynchronizedMap<ResourceLocation, MutableSet<PluginHandler>> = synchronizedMapOf()
+class PlayChannelManager(
+    private val connection: PlayConnection,
+) : ChannelManager<PlayChannelHandler>() {
 
 
-    fun handleMessage(channel: ResourceLocation, data: ByteArray) {
+    fun handle(channel: ResourceLocation, data: ByteArray) {
         val handlers = handlers[channel] ?: return
+
         for (handler in handlers.toSynchronizedList()) { // ToDo: properly lock
             val buffer = PlayInByteBuffer(data, connection)
-            handler.handle(buffer)
+            try {
+                handler.handle(buffer)
+            } catch (error: Throwable) {
+                error.printStackTrace()
+            }
         }
     }
 
-    fun register(channel: ResourceLocation, handler: PluginHandler) {
-        handlers.synchronizedGetOrPut(channel) { synchronizedSetOf() } += handler
+    fun send(channel: ResourceLocation, message: PlayOutByteBuffer) {
+        send(channel, message.toArray())
     }
 
-    operator fun set(channel: ResourceLocation, handler: PluginHandler) = register(channel, handler)
+    fun send(channel: ResourceLocation, data: ByteArray) {
+        if (connection.network.state != ProtocolStates.LOGIN) {
+            throw IllegalStateException("Not in login!")
+        }
+        connection.sendPacket(ChannelC2SP(channel, data))
+    }
 }
