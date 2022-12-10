@@ -2,6 +2,7 @@ image: openjdk:11-jdk-slim
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH/$CI_COMMIT_SHA
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle_home
