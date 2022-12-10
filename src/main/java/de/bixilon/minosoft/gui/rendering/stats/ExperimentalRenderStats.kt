@@ -17,8 +17,9 @@ import de.bixilon.kotlinglm.func.common.clamp
 import de.bixilon.kutil.avg.Average
 import de.bixilon.kutil.avg.LongAverage
 import de.bixilon.kutil.random.RandomUtil.nextFloat
+import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.kutil.time.TimeUtil
-import de.bixilon.minosoft.util.KUtil.nextInt
+import de.bixilon.kutil.time.TimeUtil.millis
 import java.util.*
 
 class ExperimentalRenderStats : AbstractRenderStats {
@@ -33,7 +34,7 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private var lastSmoothFPSCalculationTime = 0L
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = TimeUtil.millis
+            val time = millis()
             if (time - lastSmoothFPSCalculationTime > 100) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time

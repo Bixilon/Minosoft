@@ -13,13 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.kotlinglm.vec3.Vec3d
+import de.bixilon.kutil.random.RandomUtil.nextLong
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.data.EntityData
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nextLong
 
 class LightningBolt(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d) : Entity(connection, entityType, data, position, EntityRotation(0.0f, 0.0f)) {
     val duration = random.nextLong(100, 250)
@@ -27,7 +27,7 @@ class LightningBolt(connection: PlayConnection, entityType: EntityType, data: En
     companion object : EntityFactory<LightningBolt> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("lightning_bolt")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LightningBolt? {
+        override fun build(connection: PlayConnection, entityType: EntityType, data: EntityData, position: Vec3d, rotation: EntityRotation): LightningBolt {
             return LightningBolt(connection, entityType, data, position)
         }
     }

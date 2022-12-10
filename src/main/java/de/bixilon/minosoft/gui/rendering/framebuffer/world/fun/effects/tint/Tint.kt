@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.effects.tint
 
+import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.formatting.color.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffect
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.`fun`.FunEffectFactory
-import de.bixilon.minosoft.util.KUtil.nextInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 

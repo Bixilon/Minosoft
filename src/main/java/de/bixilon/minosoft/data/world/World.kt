@@ -20,6 +20,7 @@ import de.bixilon.kutil.concurrent.pool.ThreadPool
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalTask
 import de.bixilon.kutil.concurrent.worker.unconditional.UnconditionalWorker
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
+import de.bixilon.kutil.random.RandomUtil.nextInt
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -53,7 +54,6 @@ import de.bixilon.minosoft.modding.event.events.blocks.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.blocks.chunk.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nextInt
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.isInViewDistance

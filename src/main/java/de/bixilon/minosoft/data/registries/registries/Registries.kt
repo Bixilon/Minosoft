@@ -215,7 +215,7 @@ class Registries {
             if (error2 != null) {
                 throw error2
             }
-            inner.waitForChange()
+            inner.waitForChange(100L)
         }
         error?.let { throw it }
 
