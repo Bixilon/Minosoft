@@ -12,8 +12,7 @@
  */
 package de.bixilon.minosoft.util.logging
 
-import com.google.errorprone.annotations.DoNotCall
-import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.profile.profiles.other.OtherProfileSelectEvent
 import de.bixilon.minosoft.data.text.BaseComponent
@@ -34,9 +33,10 @@ import kotlin.contracts.contract
 
 @OptIn(ExperimentalContracts::class)
 object Log {
-    private val MINOSOFT_START_TIME = TimeUtil.millis
+    var ASYNC_LOGGING = true
+    private val MINOSOFT_START_TIME = millis()
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-    private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
+    private val QUEUE = LinkedBlockingQueue<QueuedMessage>()
     private val SYSTEM_ERR_STREAM = System.err
     private val SYSTEM_OUT_STREAM = System.out
     private var levels: Map<LogMessageType, LogLevels>? = null
@@ -53,55 +53,58 @@ object Log {
         }
         Thread({
             while (true) {
-                val messageToSend = LOG_QUEUE.take()
-                try {
-                    val message = BaseComponent()
-                    val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
-                    message += if (RunConfiguration.LOG_RELATIVE_TIME) {
-                        TextComponent("[${TimeUtil.millis - MINOSOFT_START_TIME}] ")
-                    } else {
-                        TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
-                    }
-                    message += TextComponent("[${messageToSend.thread.name}] ")
-                    message += TextComponent("[${messageToSend.logMessageType}] ").let {
-                        if (RunConfiguration.LOG_COLOR_TYPE) {
-                            it.color(messageColor)
-                        } else {
-                            it
-                        }
-                    }
-                    message += TextComponent("[${messageToSend.level}] ").let {
-                        if (RunConfiguration.LOG_COLOR_LEVEL) {
-                            it.color(messageToSend.level.levelColors)
-                        } else {
-                            it
-                        }
-                    }
-                    messageToSend.additionalPrefix?.let {
-                        message += it
-                    }
-                    if (RunConfiguration.LOG_COLOR_MESSAGE) {
-                        messageToSend.message.setFallbackColor(messageColor)
-                    }
-
-                    val stream = if (messageToSend.level.error) {
-                        SYSTEM_ERR_STREAM
-                    } else {
-                        SYSTEM_OUT_STREAM
-                    }
-
-                    val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
-                    for (line in messageToSend.message.ansiColoredMessage.lineSequence()) {
-                        stream.println(prefix + line)
-                    }
-
-                } catch (exception: Throwable) {
-                    SYSTEM_ERR_STREAM.println("Can not send log message $messageToSend!")
-                }
+                QUEUE.take().print()
             }
         }, "Log").start()
 
         GlobalEventMaster.register(CallbackEventListener.of<OtherProfileSelectEvent> { this.levels = it.profile.log.levels })
+    }
+
+    private fun QueuedMessage.print() {
+        try {
+            val message = BaseComponent()
+            val color = this.type.colorMap[this.level] ?: this.type.defaultColor
+            message += if (RunConfiguration.LOG_RELATIVE_TIME) {
+                TextComponent("[${millis() - MINOSOFT_START_TIME}] ")
+            } else {
+                TextComponent("[${TIME_FORMAT.format(this.time)}] ")
+            }
+            message += TextComponent("[${this.thread.name}] ")
+            message += TextComponent("[${this.type}] ").let {
+                if (RunConfiguration.LOG_COLOR_TYPE) {
+                    it.color(color)
+                } else {
+                    it
+                }
+            }
+            message += TextComponent("[${this.level}] ").let {
+                if (RunConfiguration.LOG_COLOR_LEVEL) {
+                    it.color(this.level.levelColors)
+                } else {
+                    it
+                }
+            }
+            this.prefix?.let {
+                message += it
+            }
+            if (RunConfiguration.LOG_COLOR_MESSAGE) {
+                this.message.setFallbackColor(color)
+            }
+
+            val stream = if (this.level.error) {
+                SYSTEM_ERR_STREAM
+            } else {
+                SYSTEM_OUT_STREAM
+            }
+
+            val prefix = message.ansiColoredMessage.removeSuffix("\u001b[0m") // reset suffix
+            for (line in this.message.ansiColoredMessage.lineSequence()) {
+                stream.println(prefix + line)
+            }
+
+        } catch (exception: Throwable) {
+            SYSTEM_ERR_STREAM.println("Can not send log message $this!")
+        }
     }
 
 
@@ -116,9 +119,6 @@ object Log {
         return false
     }
 
-    @DoNotCall
-    @JvmOverloads
-    @JvmStatic
     fun log(type: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any?, vararg formatting: Any) {
         if (skipLogging(type, level)) {
             return
@@ -145,14 +145,22 @@ object Log {
             else -> ChatComponent.of(message, ignoreJson = true)
         }
 
-        LOG_QUEUE += MessageToSend(
+        QueuedMessage(
             message = formattedMessage,
-            time = TimeUtil.millis,
-            logMessageType = type,
+            time = millis(),
+            type = type,
             level = level,
             thread = Thread.currentThread(),
-            additionalPrefix = additionalPrefix,
-        )
+            prefix = additionalPrefix,
+        ).queue()
+    }
+
+    private fun QueuedMessage.queue() {
+        if (!ASYNC_LOGGING) {
+            this.print()
+            return
+        }
+        QUEUE += this
     }
 
     @JvmStatic
