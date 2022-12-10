@@ -175,7 +175,7 @@ testing {
 
         val integrationTest by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.INTEGRATION_TEST)
-            useTestNG("7.6.1")
+            useTestNG("7.7.0")
 
             dependencies {
                 implementation(project())
@@ -227,7 +227,7 @@ testing {
         }
         val benchmark by registering(JvmTestSuite::class) {
             testType.set(TestSuiteType.PERFORMANCE_TEST)
-            useTestNG("7.6.1")
+            useTestNG("7.7.0")
 
             dependencies {
                 implementation(project())
@@ -314,18 +314,18 @@ fun DependencyHandler.lwjgl(name: String? = null) {
 }
 
 dependencies {
-    implementation("org.slf4j", "slf4j-api", "2.0.4")
+    implementation("org.slf4j", "slf4j-api", "2.0.5")
     implementation("com.google.guava", "guava", "31.1-jre")
     implementation("dnsjava", "dnsjava", "3.5.2")
     implementation("net.sourceforge.argparse4j", "argparse4j", "0.9.0")
     implementation("org.jline", "jline", "3.21.0")
     implementation("org.l33tlabs.twl", "pngdecoder", "1.0")
-    implementation("com.github.oshi", "oshi-core", "6.3.2")
+    implementation("com.github.oshi", "oshi-core", "6.4.0")
     implementation("com.github.luben", "zstd-jni", "1.5.2-5", classifier = zstdNatives)
     implementation("org.apache.commons", "commons-lang3", "3.12.0")
     implementation("org.kamranzafar", "jtar", "2.3")
     implementation("org.reflections", "reflections", "0.10.2")
-    implementation("it.unimi.dsi", "fastutil-core", "8.5.9")
+    implementation("it.unimi.dsi", "fastutil-core", "8.5.11")
     implementation("org.xeustechnologies", "jcl-core", "2.8")
 
 
