@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.ArmAnima
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
@@ -85,21 +84,21 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         val projection = renderWindow.camera.matrixHandler.projectionMatrix
 
         val matrix = Mat4()
-        matrix.rotateAssign(-25.0f.rad, Vec3(0, 1, 0))
+        matrix.rotateAssign(-5.0f.rad, Vec3(0, 1, 0))
         matrix.rotateAssign(130.0f.rad, Vec3(1, 0, 0))
         a += 1
 
 
         matrix.translateAssign(Vec3(if (arm == Arms.LEFT) 0.2f else -0.2f, 0, 0)) // move inner side of arm to 0|0|0
 
-        matrix.scaleAssign(BLOCK_RESOLUTION) // make a pixel one pixel
+        // matrix.scaleAssign(BLOCK_RESOLUTION) // make a pixel one pixel
         matrix.translateAssign(-0.5f)
 
 
-        return matrix
+        val a = projection * matrix
 
 
-        // "${matrix * Vec4(Vec3(4, 12, -2).fromBlockCoordinates(), 1)} -> ${matrix * Vec4(Vec3(7, 24, 2).fromBlockCoordinates(), 1)}"
+        // "${a * Vec4(Vec3(4, 12, -2).fromBlockCoordinates(), 1)} -> ${a * Vec4(Vec3(7, 24, 2).fromBlockCoordinates(), 1)}"
         return projection * matrix
     }
 
