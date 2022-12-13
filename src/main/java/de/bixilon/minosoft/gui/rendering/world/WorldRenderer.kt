@@ -29,7 +29,7 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection

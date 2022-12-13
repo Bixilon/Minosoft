@@ -72,7 +72,7 @@ open class Registry<T : RegistryItem>(
             is ResourceLocation -> resourceLocationMap[any] = value
             is ResourceLocationAble -> resourceLocationMap[any.resourceLocation] = value
             is MultiResourceLocationAble -> {
-                for (resourceLocation in any.ALIASES) {
+                for (resourceLocation in any.resourceLocations) {
                     resourceLocationMap[resourceLocation] = value
                 }
             }

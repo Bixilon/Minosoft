@@ -10,12 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.fluid
+package de.bixilon.minosoft.data.registries.fluid.fluids
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
-import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
@@ -25,34 +23,19 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.FluidHolder
-import de.bixilon.minosoft.data.registries.item.items.Item
-import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 import kotlin.math.abs
 
-open class Fluid(
-    override val resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : RegistryItem() {
+open class Fluid(override val resourceLocation: ResourceLocation) : RegistryItem() {
     open val tintProvider: TintProvider? = null
     open val stillTextureName: ResourceLocation? = null
     open val flowingTextureName: ResourceLocation? = null
     var stillTexture: AbstractTexture? = null
     var flowingTexture: AbstractTexture? = null
-    val dripParticle: ParticleType = unsafeNull()
-    val bucketItem: Item = unsafeNull()
-
-    init {
-        this::bucketItem.inject(data["bucket"])
-        this::dripParticle.inject(data["drip_particle_type"])
-    }
 
     override fun toString(): String {
         return resourceLocation.full
@@ -101,17 +84,5 @@ open class Fluid(
             }
         }
         return velocity
-    }
-
-    companion object : ResourceLocationCodec<Fluid> {
-
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Fluid {
-            check(registries != null) { "Registries is null!" }
-            DefaultFluidFactories[data["class"].nullCast<String>()]?.let {
-                return it.build(resourceLocation, registries, data)
-            }
-
-            return Fluid(resourceLocation, registries, data)
-        }
     }
 }

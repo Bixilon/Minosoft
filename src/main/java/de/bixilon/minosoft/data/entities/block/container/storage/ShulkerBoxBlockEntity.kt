@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -24,7 +24,7 @@ class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(con
 
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:shulker_box")
-        override val ALIASES: Set<ResourceLocation> = setOf(
+        override val resourceLocations: Set<ResourceLocation> = setOf(
             "minecraft:white_shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box",
             "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box",
             "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box",

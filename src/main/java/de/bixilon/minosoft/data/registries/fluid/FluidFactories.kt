@@ -14,10 +14,21 @@
 package de.bixilon.minosoft.data.registries.fluid
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.factory.DefaultFactory
+import de.bixilon.minosoft.data.registries.fluid.fluids.EmptyFluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
+import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface FluidFactory<T : Fluid> : ResourceLocationAble {
-    fun build(resourceLocation: ResourceLocation, registries: Registries): T
+object FluidFactories : DefaultFactory<FluidFactory<*>>(
+    EmptyFluid,
+    WaterFluid,
+    LavaFluid,
+), IntegratedRegistry<Fluid> {
+
+    override fun build(name: ResourceLocation, registries: Registries): Fluid? {
+        return this[name]?.build(name, registries)
+    }
 }

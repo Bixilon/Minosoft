@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test

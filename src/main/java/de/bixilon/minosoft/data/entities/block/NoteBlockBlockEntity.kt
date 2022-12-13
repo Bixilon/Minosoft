@@ -67,7 +67,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     companion object : BlockEntityFactory<NoteBlockBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:note_block")
 
-        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation())
+        override val resourceLocations: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation())
 
         override fun build(connection: PlayConnection): NoteBlockBlockEntity {
             return NoteBlockBlockEntity(connection)

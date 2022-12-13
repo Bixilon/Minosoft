@@ -30,7 +30,7 @@ open class DefaultFactory<T : ResourceLocationAble>(vararg factories: T) : Itera
         for (factory in factories) {
             ret[factory.resourceLocation] = factory
             if (factory is MultiResourceLocationAble) {
-                for (resourceLocation in factory.ALIASES) {
+                for (resourceLocation in factory.resourceLocations) {
                     ret[resourceLocation] = factory
                 }
             }

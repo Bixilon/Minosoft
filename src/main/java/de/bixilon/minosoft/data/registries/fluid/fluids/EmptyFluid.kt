@@ -11,19 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.fluid
+package de.bixilon.minosoft.data.registries.fluid.fluids
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.minecraft
 
-class EmptyFluid(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : Fluid(resourceLocation, registries, data) {
+@Deprecated("null")
+class EmptyFluid(resourceLocation: ResourceLocation = this.resourceLocation) : Fluid(resourceLocation) {
 
     override fun matches(other: Fluid): Boolean {
         return other is EmptyFluid
@@ -40,8 +38,6 @@ class EmptyFluid(
     companion object : FluidFactory<EmptyFluid> {
         override val resourceLocation = minecraft("empty")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EmptyFluid {
-            return EmptyFluid(resourceLocation, registries, data)
-        }
+        override fun build(resourceLocation: ResourceLocation, registries: Registries) = EmptyFluid()
     }
 }

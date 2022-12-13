@@ -76,7 +76,7 @@ class EnchantingContainer(connection: PlayConnection, type: ContainerType, title
 
     companion object : ContainerFactory<EnchantingContainer>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:enchantment".toResourceLocation()
-        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:enchanting_table".toResourceLocation(), "EnchantTable".toResourceLocation())
+        override val resourceLocations: Set<ResourceLocation> = setOf("minecraft:enchanting_table".toResourceLocation(), "EnchantTable".toResourceLocation())
         const val LAPISLAZULI_SLOT = 1
         const val ENCHANTING_SLOTS = 2
         const val ENCHANTING_OPTIONS = 3

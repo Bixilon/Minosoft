@@ -24,7 +24,7 @@ open class ResourceLocationMap<T : ResourceLocationAble>(vararg entries: T) : It
         for (factory in entries) {
             this.entries[factory.resourceLocation] = factory
             if (factory is MultiResourceLocationAble) {
-                for (resourceLocation in factory.ALIASES) {
+                for (resourceLocation in factory.resourceLocations) {
                     this.entries[resourceLocation] = factory
                 }
             }

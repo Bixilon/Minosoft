@@ -41,8 +41,8 @@ import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeMod
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
-import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
-import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
 import de.bixilon.minosoft.data.registries.item.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.shapes.AABB

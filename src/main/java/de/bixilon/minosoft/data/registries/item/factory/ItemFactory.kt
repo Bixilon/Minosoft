@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.data.registries.item.factory
 
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface ItemFactory<T : Item> : ClassFactory<T>, ResourceLocationAble {
+interface ItemFactory<T : Item> : ResourceLocationAble {
 
     fun build(registries: Registries): T
 }

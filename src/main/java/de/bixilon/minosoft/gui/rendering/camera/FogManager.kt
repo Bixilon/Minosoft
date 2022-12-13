@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.camera
 import de.bixilon.kutil.math.interpolation.FloatInterpolation.interpolateLinear
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
-import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.lava.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water.WaterFluid
 import de.bixilon.minosoft.data.text.formatting.color.ChatColors
 import de.bixilon.minosoft.data.text.formatting.color.ColorInterpolation.interpolateSine
 import de.bixilon.minosoft.data.text.formatting.color.Colors

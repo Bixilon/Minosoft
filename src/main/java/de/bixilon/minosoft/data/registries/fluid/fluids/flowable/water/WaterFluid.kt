@@ -11,22 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.fluid.water
+package de.bixilon.minosoft.data.registries.fluid.fluids.flowable.water
 
 import de.bixilon.kotlinglm.vec3.Vec3d
 import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.random.RandomUtil.chance
 import de.bixilon.minosoft.data.entities.entities.player.local.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.effects.movement.MovementEffect
 import de.bixilon.minosoft.data.registries.enchantment.armor.ArmorEnchantment
-import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
-import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
+import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
@@ -39,11 +39,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import kotlin.math.min
 
-class WaterFluid(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : FlowableFluid(resourceLocation, registries, data) {
+class WaterFluid(resourceLocation: ResourceLocation = this.resourceLocation) : FlowableFluid(resourceLocation) {
     override val stillTextureName: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
     override val flowingTextureName: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
     override val tintProvider: TintProvider = WaterTintProvider
@@ -128,13 +124,11 @@ class WaterFluid(
         }
     }
 
-    companion object : FluidFactory<WaterFluid>, MultiClassFactory<WaterFluid> {
+    companion object : FluidFactory<WaterFluid>, MultiResourceLocationAble {
         override val resourceLocation = minecraft("water")
+        override val resourceLocations = setOf(minecraft("flowing_water"))
         private const val VELOCITY_MULTIPLIER = 0.014
-        override val ALIASES: Set<String> = setOf("WaterFluid\$Flowing", "WaterFluid\$Still")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): WaterFluid {
-            return WaterFluid(resourceLocation, registries, data)
-        }
+        override fun build(resourceLocation: ResourceLocation, registries: Registries) = WaterFluid()
     }
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 
 interface FluidHolder {
     val fluid: Fluid

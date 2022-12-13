@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,15 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.registries.fluid.fluids
 
-package de.bixilon.minosoft.data.registries.fluid
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 
-import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
-import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
+open class PixLyzerFluid(resourceLocation: ResourceLocation) : Fluid(resourceLocation) {
 
-object DefaultFluidFactories : DefaultClassFactory<FluidFactory<*>>(
-    EmptyFluid,
-    WaterFluid,
-    LavaFluid,
-)
+    companion object : ResourceLocationCodec<Fluid> {
+
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PixLyzerFluid {
+            return PixLyzerFluid(resourceLocation)
+        }
+    }
+}

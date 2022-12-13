@@ -53,7 +53,7 @@ class CraftingContainer(connection: PlayConnection, type: ContainerType, title: 
 
     companion object : ContainerFactory<CraftingContainer>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crafting".toResourceLocation()
-        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:crafting_table".toResourceLocation())
+        override val resourceLocations: Set<ResourceLocation> = setOf("minecraft:crafting_table".toResourceLocation())
         const val CRAFTING_SLOTS = 3 * 3
         val SECTIONS: Array<ContainerSection> = arrayOf(
             // crafting slots are not shift clickable, no section
