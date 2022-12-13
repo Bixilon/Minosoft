@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kotlinglm.vec3.Vec3i
+import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.data.world.positions.BlockPositionUtil.positionHash
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.properties.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FlowableFluidModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
@@ -80,8 +82,9 @@ class FluidCullSectionPreparer(
                         blockState.properties[BlockProperties.WATERLOGGED] == true && water != null -> water
                         else -> continue
                     }
-                    val stillTexture = fluid.stillTexture ?: continue
-                    val flowingTexture = fluid.flowingTexture ?: continue
+                    val model = fluid.model ?: continue
+                    val stillTexture = model.still ?: continue
+                    val flowingTexture = model.nullCast<FlowableFluidModel>()?.flowing ?: continue // TODO: Non flowable fluids?
                     val height = fluid.getHeight(blockState)
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)

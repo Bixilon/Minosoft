@@ -29,7 +29,6 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.chunk.Chunk
 import de.bixilon.minosoft.data.world.chunk.ChunkSection
@@ -44,7 +43,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
-import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -139,10 +137,12 @@ class WorldRenderer(
         renderWindow.modelLoader.load(latch)
 
         for (fluid in connection.registries.fluidRegistry) {
-            if (fluid is FlowableFluid) {
-                fluid.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(fluid.flowingTextureName!!.texture())
+            if (fluid.model != null) {
+                continue
             }
-            fluid.stillTexture = fluid.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
+            val model = fluid.createModel() ?: continue
+            model.load(renderWindow)
+            fluid.model = model
         }
     }
 

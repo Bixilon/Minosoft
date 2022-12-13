@@ -61,7 +61,7 @@ class TintManager(private val connection: PlayConnection) {
     }
 
     fun getAverageBlockTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, fluid: Fluid, x: Int, y: Int, z: Int): IntArray? {
-        return getAverageBlockTint(chunk, neighbours, blockState, fluid.tintProvider ?: return null, x, y, z)
+        return getAverageBlockTint(chunk, neighbours, blockState, fluid.model?.tint ?: return null, x, y, z)
     }
 
     fun getBlockTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
@@ -90,7 +90,7 @@ class TintManager(private val connection: PlayConnection) {
 
     fun getFluidTint(chunk: Chunk, fluid: Fluid, height: Float, x: Int, y: Int, z: Int): Int? {
         val biome = chunk.getBiome(x and 0x0F, y, z and 0x0F)
-        return fluid.tintProvider?.getFluidTint(fluid, biome, height, x, y, z)
+        return fluid.model?.tint?.getFluidTint(fluid, biome, height, x, y, z)
     }
 
 

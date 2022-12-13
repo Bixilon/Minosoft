@@ -29,19 +29,17 @@ import de.bixilon.minosoft.data.registries.fluid.fluids.Fluid
 import de.bixilon.minosoft.data.registries.fluid.fluids.flowable.FlowableFluid
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.fluids.LavaFluidModel
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.minecraft
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
 open class LavaFluid(resourceLocation: ResourceLocation = this.resourceLocation) : FlowableFluid(resourceLocation) {
     private val lavaParticleType: ParticleType = unsafeNull()
-    override val stillTextureName: ResourceLocation = "minecraft:block/lava_still".toResourceLocation()
-    override val flowingTextureName: ResourceLocation = "minecraft:block/lava_flow".toResourceLocation()
 
     init {
         this::lavaParticleType.inject(LavaParticle)
@@ -89,6 +87,10 @@ open class LavaFluid(resourceLocation: ResourceLocation = this.resourceLocation)
 
             connection.world += LavaParticle(connection, position, lavaParticleType.default())
         }
+    }
+
+    override fun createModel(): LavaFluidModel {
+        return LavaFluidModel()
     }
 
     companion object : FluidFactory<LavaFluid>, MultiResourceLocationAble {

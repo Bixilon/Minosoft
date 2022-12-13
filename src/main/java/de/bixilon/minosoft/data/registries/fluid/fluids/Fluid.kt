@@ -24,18 +24,13 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFilled
 import de.bixilon.minosoft.data.registries.blocks.types.FluidHolder
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.models.unbaked.fluid.FluidModel
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import java.util.*
 import kotlin.math.abs
 
 open class Fluid(override val resourceLocation: ResourceLocation) : RegistryItem() {
-    open val tintProvider: TintProvider? = null
-    open val stillTextureName: ResourceLocation? = null
-    open val flowingTextureName: ResourceLocation? = null
-    var stillTexture: AbstractTexture? = null
-    var flowingTexture: AbstractTexture? = null
+    open var model: FluidModel? = null
 
     override fun toString(): String {
         return resourceLocation.full
@@ -84,5 +79,9 @@ open class Fluid(override val resourceLocation: ResourceLocation) : RegistryItem
             }
         }
         return velocity
+    }
+
+    open fun createModel(): FluidModel? {
+        return null
     }
 }
