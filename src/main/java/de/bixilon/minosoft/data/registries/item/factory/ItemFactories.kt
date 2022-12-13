@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
+import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
@@ -24,6 +26,10 @@ object ItemFactories : DefaultFactory<ItemFactory<*>>(
     AppleItem,
     AppleItem.GoldenAppleItem,
     AppleItem.EnchantedGoldenAppleItem,
+
+    BucketItem.EmptyBucketItem,
+    FilledBucketItem.LavaBucketItem,
+    FilledBucketItem.WaterBucketItem,
 ), IntegratedRegistry<Item> {
 
     override fun build(name: ResourceLocation, registries: Registries): Item? {

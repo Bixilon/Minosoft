@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.items
 import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.IT.reference
@@ -35,5 +36,13 @@ abstract class ItemTest<T : Item> {
         item!!
         assertEquals(item.resourceLocation, name)
         this.item = item.unsafeCast()
+    }
+
+    fun retrieveItem(factory: ItemFactory<T>) {
+        val item = IT.VERSION.registries!!.itemRegistry[factory]
+        Assert.assertNotNull(item)
+        item!!
+        assertEquals(item.resourceLocation, factory.resourceLocation)
+        this.item = item
     }
 }

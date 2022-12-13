@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 
@@ -95,6 +96,7 @@ class LavaFluid(
     }
 
     companion object : FluidFactory<LavaFluid>, MultiClassFactory<LavaFluid> {
+        override val resourceLocation = KUtil.minecraft("lava")
         override val ALIASES: Set<String> = setOf("LavaFluid\$Flowing", "LavaFluid\$Still")
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LavaFluid {

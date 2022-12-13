@@ -13,29 +13,24 @@
 
 package de.bixilon.minosoft.data.registries.item.items.bucket
 
-import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactory
+import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.fluid.FluidDrainable
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.util.KUtil.minecraft
 
 
-open class BucketItem(
+abstract class BucketItem(
     resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : PixLyzerItem(resourceLocation, registries, data) {
-    val fluid: Fluid = unsafeNull()
+) : Item(resourceLocation) {
 
-    init {
-        this::fluid.inject(data["bucked_fluid_type"])
-    }
+    open class EmptyBucketItem(resourceLocation: ResourceLocation = this.resourceLocation) : BucketItem(resourceLocation), FluidDrainable {
 
-    companion object : PixLyzerItemFactory<BucketItem> {
+        companion object : ItemFactory<BucketItem> {
+            override val resourceLocation = minecraft("bucket")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BucketItem {
-            return BucketItem(resourceLocation, registries, data)
+            override fun build(registries: Registries) = EmptyBucketItem()
         }
     }
 }

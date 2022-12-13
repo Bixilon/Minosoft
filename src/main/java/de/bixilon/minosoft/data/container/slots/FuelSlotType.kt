@@ -15,15 +15,14 @@ package de.bixilon.minosoft.data.container.slots
 
 import de.bixilon.minosoft.data.container.Container
 import de.bixilon.minosoft.data.container.stack.ItemStack
-import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
+import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 
 object FuelSlotType : SlotType {
 
     override fun canPut(container: Container, slot: Int, stack: ItemStack): Boolean {
         val item = stack.item.item
 
-        if (item is BucketItem && item.fluid is LavaFluid) {
+        if (item is FilledBucketItem.LavaBucketItem) {
             return true
         }
         val fuelTime = container.connection.registries.misc.getFuelTime(item)

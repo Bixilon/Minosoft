@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.integrated
 
 import de.bixilon.minosoft.data.registries.enchantment.tool.WeaponEnchantment
+import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import org.testng.Assert
@@ -26,5 +27,12 @@ class IntegratedRegistryIT {
         val expected = WeaponEnchantment.Sharpness
         val current = IT.VERSION.registries!!.enchantmentRegistry["minecraft:sharpness".toResourceLocation()]
         Assert.assertSame(current, expected)
+    }
+
+    fun goldenApple() {
+        val current = IT.VERSION.registries!!.itemRegistry["minecraft:golden_apple".toResourceLocation()]
+        if (current !is AppleItem.GoldenAppleItem) {
+            Assert.fail("Not an golden apple: $current")
+        }
     }
 }

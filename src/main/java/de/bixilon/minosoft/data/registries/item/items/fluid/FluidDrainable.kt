@@ -11,13 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.fluid
+package de.bixilon.minosoft.data.registries.item.items.fluid
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
-
-interface FluidFactory<T : Fluid> : ClassFactory<T>, ResourceLocationAble {
-    fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): T
-}
+interface FluidDrainable

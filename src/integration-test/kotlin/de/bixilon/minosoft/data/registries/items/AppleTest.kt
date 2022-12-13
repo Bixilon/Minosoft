@@ -14,19 +14,20 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.item.MinecraftItems
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.food.AppleItem
+import org.testng.Assert
 import org.testng.annotations.Test
 
 @Test(groups = ["item"])
-class AppleTest : ItemTest<Item>() {
+class AppleTest : ItemTest<AppleItem>() {
 
     init {
         AppleTestO = this
     }
 
     fun getApple() {
-        super.retrieveItem(MinecraftItems.APPLE)
+        super.retrieveItem(AppleItem)
+        Assert.assertTrue(this.item is AppleItem)
     }
 }
 

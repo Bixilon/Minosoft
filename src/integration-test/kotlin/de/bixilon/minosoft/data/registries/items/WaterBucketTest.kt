@@ -15,20 +15,20 @@ package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
-import de.bixilon.minosoft.data.registries.item.MinecraftItems
-import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
+import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["item"])
-class WaterBucketTest : ItemTest<BucketItem>() {
+class WaterBucketTest : ItemTest<FilledBucketItem.WaterBucketItem>() {
 
     init {
         WaterBucketTest0 = this
     }
 
     fun getWater() {
-        super.retrieveItem(MinecraftItems.WATER_BUCKET)
+        super.retrieveItem(FilledBucketItem.WaterBucketItem)
+        assertTrue(item is FilledBucketItem.WaterBucketItem)
         assertTrue(item.fluid is WaterFluid)
     }
 }

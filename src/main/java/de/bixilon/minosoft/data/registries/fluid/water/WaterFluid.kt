@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.tint.WaterTintProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.minecraft
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import java.util.*
 import kotlin.math.min
@@ -128,6 +129,7 @@ class WaterFluid(
     }
 
     companion object : FluidFactory<WaterFluid>, MultiClassFactory<WaterFluid> {
+        override val resourceLocation = minecraft("water")
         private const val VELOCITY_MULTIPLIER = 0.014
         override val ALIASES: Set<String> = setOf("WaterFluid\$Flowing", "WaterFluid\$Still")
 

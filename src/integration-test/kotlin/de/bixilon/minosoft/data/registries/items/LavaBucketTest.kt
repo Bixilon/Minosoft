@@ -15,20 +15,20 @@ package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
 import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.item.MinecraftItems
-import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
+import de.bixilon.minosoft.data.registries.item.items.bucket.FilledBucketItem
 import org.testng.Assert.assertTrue
 import org.testng.annotations.Test
 
 @Test(groups = ["item"])
-class LavaBucketTest : ItemTest<BucketItem>() {
+class LavaBucketTest : ItemTest<FilledBucketItem.LavaBucketItem>() {
 
     init {
         LavaBucketTest0 = this
     }
 
     fun getLava() {
-        super.retrieveItem(MinecraftItems.LAVA_BUCKET)
+        super.retrieveItem(FilledBucketItem.LavaBucketItem)
+        assertTrue(item is FilledBucketItem.LavaBucketItem)
         assertTrue(item.fluid is LavaFluid)
     }
 }

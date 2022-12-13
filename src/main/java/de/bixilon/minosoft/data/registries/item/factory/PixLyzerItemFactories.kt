@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 import de.bixilon.minosoft.data.registries.item.items.*
 import de.bixilon.minosoft.data.registries.item.items.armor.*
 import de.bixilon.minosoft.data.registries.item.items.block.*
-import de.bixilon.minosoft.data.registries.item.items.bucket.BucketItem
 import de.bixilon.minosoft.data.registries.item.items.throwable.*
 import de.bixilon.minosoft.data.registries.item.items.throwable.potion.LingeringPotionItem
 import de.bixilon.minosoft.data.registries.item.items.throwable.potion.PotionItem
@@ -33,7 +32,6 @@ object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
     ScaffoldingItem,
 
     SpawnEggItem,
-    BucketItem,
     DyeItem,
     HorseArmorItem,
     ShieldItem,
