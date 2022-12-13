@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class LilyPadItem(
@@ -24,7 +24,7 @@ open class LilyPadItem(
 ) : BlockItem(resourceLocation, registries, data) {
 
 
-    companion object : ItemFactory<LilyPadItem> {
+    companion object : PixLyzerItemFactory<LilyPadItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LilyPadItem {
             return LilyPadItem(resourceLocation, registries, data)

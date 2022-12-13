@@ -116,4 +116,9 @@ object LanguageUtil {
 
         return LanguageManager(languages)
     }
+
+
+    fun ResourceLocation.translation(name: String): ResourceLocation {
+        return ResourceLocation(this.namespace, "item.$namespace.$path")
+    }
 }

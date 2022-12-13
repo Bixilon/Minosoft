@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -48,7 +48,7 @@ open class AxeItem(
         return super.interactWithTool(connection, target.blockPosition, strippableBlocks?.get(target.blockState.block)?.withProperties(target.blockState.properties))
     }
 
-    companion object : ItemFactory<AxeItem> {
+    companion object : PixLyzerItemFactory<AxeItem> {
         val AXE_MINEABLE_TAG = "minecraft:mineable/axe".toResourceLocation()
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): AxeItem {

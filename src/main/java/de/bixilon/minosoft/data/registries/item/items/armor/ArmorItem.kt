@@ -17,21 +17,21 @@ import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.minosoft.data.container.ArmorSlots
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class ArmorItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
     val protection = data["defense"].toFloat()
     val toughness = data["toughness"].toFloat()
     val equipmentSlot = data["equipment_slot"].unsafeCast<String>().let { ArmorSlots[it] }
     val knockbackResistance = data["knockback_resistance"]?.toFloat() ?: 0.0f
 
-    companion object : ItemFactory<ArmorItem> {
+    companion object : PixLyzerItemFactory<ArmorItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ArmorItem {
             return ArmorItem(resourceLocation, registries, data)

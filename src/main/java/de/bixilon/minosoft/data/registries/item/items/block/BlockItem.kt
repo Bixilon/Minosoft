@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -35,7 +35,7 @@ open class BlockItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
     val block: Block = unsafeNull()
 
     init {
@@ -90,7 +90,7 @@ open class BlockItem(
         return InteractionResults.SUCCESS
     }
 
-    companion object : ItemFactory<BlockItem>, MultiClassFactory<BlockItem> {
+    companion object : PixLyzerItemFactory<BlockItem>, MultiClassFactory<BlockItem> {
         override val ALIASES = setOf("AliasedBlockItem")
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BlockItem {

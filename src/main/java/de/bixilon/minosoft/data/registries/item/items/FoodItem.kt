@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHungerElement
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -32,7 +32,7 @@ open class FoodItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data), UsableItem {
+) : PixLyzerItem(resourceLocation, registries, data), UsableItem {
     val nutrition: Int
     val saturationModifier: Float
     val isMeat: Boolean
@@ -65,7 +65,7 @@ open class FoodItem(
         // ToDo: Apply eating effect(s)
     }
 
-    companion object : ItemFactory<FoodItem> {
+    companion object : PixLyzerItemFactory<FoodItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): FoodItem {
             return FoodItem(resourceLocation, registries, data)

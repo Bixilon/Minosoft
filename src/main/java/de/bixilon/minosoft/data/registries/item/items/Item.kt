@@ -12,41 +12,34 @@
  */
 package de.bixilon.minosoft.data.registries.item.items
 
-import de.bixilon.kutil.primitive.BooleanUtil.toBoolean
-import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
+import de.bixilon.minosoft.data.language.LanguageUtil.translation
 import de.bixilon.minosoft.data.language.translate.Translatable
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
-import de.bixilon.minosoft.data.registries.item.ItemFactories
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.EntityTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.models.baked.item.BakedItemModel
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
-open class Item(
+abstract class Item(
     override val resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
 ) : RegistryItem(), Translatable {
-    val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
-    val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
-    val maxDurability: Int = data["max_damage"]?.toInt() ?: 1
-    val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
-    override val translationKey: ResourceLocation? = data["translation_key"]?.toResourceLocation()
+    @Deprecated("interface")
+    open val rarity: Rarities get() = Rarities.COMMON
+
+    @Deprecated("interface")
+    open val maxStackSize: Int get() = 64
+
+    @Deprecated("interface")
+    open val maxDurability: Int get() = -1
+
+    override val translationKey: ResourceLocation = resourceLocation.translation("item")
 
     open var model: BakedItemModel? = null
     var tintProvider: TintProvider? = null
@@ -73,30 +66,5 @@ open class Item(
 
     open fun interactItem(connection: PlayConnection, hand: Hands, stack: ItemStack): InteractionResults {
         return InteractionResults.PASS
-    }
-
-    companion object : ResourceLocationCodec<Item>, ItemFactory<Item>, MultiClassFactory<Item> {
-        override val ALIASES = setOf("AirBlockItem")
-
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
-            check(registries != null) { "Registries is null!" }
-
-            val className = data["class"]?.toString()
-            var factory = ItemFactories[className]
-            if (factory == null) {
-                Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Item for class $className not found, defaulting..." }
-                // ToDo: This item class got renamed or is not yet implemented
-                factory = if (data["food_properties"] != null) {
-                    FoodItem // ToDo: Remove this edge case
-                } else {
-                    Item
-                }
-            }
-            return factory.build(resourceLocation, registries, data)
-        }
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): Item {
-            return Item(resourceLocation, registries, data)
-        }
     }
 }

@@ -11,23 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.throwable
+package de.bixilon.minosoft.data.registries.item.factory
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
+import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class EnderPearlItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : ThrowableItem(resourceLocation, registries, data) {
+interface ItemFactory<T : Item> : ClassFactory<T>, ResourceLocationAble {
 
-
-    companion object : PixLyzerItemFactory<EnderPearlItem> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EnderPearlItem {
-            return EnderPearlItem(resourceLocation, registries, data)
-        }
-    }
+    fun build(registries: Registries): T
 }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.item
 
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
+@Deprecated("item factories")
 object MinecraftItems {
     val LEATHER_BOOTS = "minecraft:leather_boots".toResourceLocation()
     val LAPISLAZULI = "minecraft:lapis_lazuli".toResourceLocation()

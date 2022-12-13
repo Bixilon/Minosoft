@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.item
 
+import de.bixilon.minosoft.data.registries.item.factory.ItemFactories
 import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.registry.MetaTypes
 import de.bixilon.minosoft.data.registries.registries.registry.Registry
 
 class ItemRegistry(
     parent: Registry<Item>? = null,
     flattened: Boolean = false,
-) : Registry<Item>(parent = parent, codec = Item, flattened = flattened, metaType = MetaTypes.ITEM) {
+) : Registry<Item>(parent = parent, codec = PixLyzerItem, integrated = ItemFactories, flattened = flattened, metaType = MetaTypes.ITEM) {
 
     override fun getOrNull(id: Int): Item? {
         return if (!flattened) {

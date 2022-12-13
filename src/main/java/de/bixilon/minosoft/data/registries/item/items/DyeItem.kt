@@ -15,17 +15,17 @@ package de.bixilon.minosoft.data.registries.item.items
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class DyeItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
     val dyeColor = data["dye_color"].nullCast<String>() ?: "white"
 
-    companion object : ItemFactory<DyeItem> {
+    companion object : PixLyzerItemFactory<DyeItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeItem {
             return DyeItem(resourceLocation, registries, data)

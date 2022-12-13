@@ -11,23 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.throwable
+package de.bixilon.minosoft.data.registries.item.items.food
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
-
-open class EnderPearlItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : ThrowableItem(resourceLocation, registries, data) {
-
-
-    companion object : PixLyzerItemFactory<EnderPearlItem> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EnderPearlItem {
-            return EnderPearlItem(resourceLocation, registries, data)
-        }
-    }
+interface FoodItem {
+    val nutrition: Int
+    val alwaysEditable: Boolean get() = false
+    val eatTime: Int get() = 32
 }

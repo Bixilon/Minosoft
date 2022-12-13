@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class TallBlockItem(
@@ -24,7 +24,7 @@ open class TallBlockItem(
 ) : BlockItem(resourceLocation, registries, data) {
 
 
-    companion object : ItemFactory<TallBlockItem> {
+    companion object : PixLyzerItemFactory<TallBlockItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): TallBlockItem {
             return TallBlockItem(resourceLocation, registries, data)

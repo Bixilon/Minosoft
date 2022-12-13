@@ -116,7 +116,9 @@ open class Registry<T : RegistryItem>(
     }
 
     private fun deserialize(resourceLocation: ResourceLocation, data: JsonObject, registries: Registries?): T? {
-        integrated?.get(resourceLocation)?.let { return it }
+        if (registries != null) {
+            integrated?.build(resourceLocation, registries)?.let { return it }
+        }
 
         if (codec == null) {
             throw IllegalStateException("codec is null!")

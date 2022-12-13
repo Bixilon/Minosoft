@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.camera.target.targets.BlockTarget
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
@@ -55,7 +55,7 @@ open class HoeItem(
         return super.interactWithTool(connection, target.blockPosition, tillableBlockStates?.get(target.blockState.block))
     }
 
-    companion object : ItemFactory<HoeItem> {
+    companion object : PixLyzerItemFactory<HoeItem> {
         val HOE_MINEABLE_TAG = "minecraft:mineable/hoe".toResourceLocation()
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): HoeItem {

@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.registries.effects.damage.DamageEffect
 import de.bixilon.minosoft.data.registries.effects.mining.MiningEffect
 import de.bixilon.minosoft.data.registries.effects.other.OtherEffect
 import de.bixilon.minosoft.data.registries.effects.vision.VisionEffect
-import de.bixilon.minosoft.data.registries.integrated.IntegratedRegistry
+import de.bixilon.minosoft.data.registries.integrated.SingletonIntegratedRegistry
 
-object IntegratedStatusEffects : IntegratedRegistry<StatusEffectType>(
+object IntegratedStatusEffects : SingletonIntegratedRegistry<StatusEffectType>(
     DamageEffect.Absorption,
     DamageEffect.FireResistance,
     DamageEffect.HealthBoost,

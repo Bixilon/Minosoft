@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -37,7 +37,7 @@ open class SwordItem(
         return super.getMiningSpeedMultiplier(connection, blockState, stack)
     }
 
-    companion object : ItemFactory<SwordItem> {
+    companion object : PixLyzerItemFactory<SwordItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SwordItem {
             return SwordItem(resourceLocation, registries, data)

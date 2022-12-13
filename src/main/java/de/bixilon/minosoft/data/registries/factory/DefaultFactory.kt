@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.factory
 
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocationAble
 
-open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) : Iterable<T> {
+open class DefaultFactory<T : ResourceLocationAble>(vararg factories: T) : Iterable<T> {
     private val factories = factories
     private val factoryMap: Map<ResourceLocation, T>
 
@@ -28,7 +28,7 @@ open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) : 
 
 
         for (factory in factories) {
-            ret[factory.RESOURCE_LOCATION] = factory
+            ret[factory.resourceLocation] = factory
             if (factory is MultiResourceLocationAble) {
                 for (resourceLocation in factory.ALIASES) {
                     ret[resourceLocation] = factory

@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.registries.item.factory
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
 import de.bixilon.minosoft.data.registries.item.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface ItemFactory<T : Item> : ClassFactory<T> {
+interface PixLyzerItemFactory<T : Item> : ClassFactory<T> {
 
     fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): T
 }

@@ -11,23 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item.items.throwable
+package de.bixilon.minosoft.data.registries.integrated
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
-open class EnderPearlItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : ThrowableItem(resourceLocation, registries, data) {
+abstract class SingletonIntegratedRegistry<T : RegistryItem>(vararg items: T) : IntegratedRegistry<T> {
+    private val entries: MutableMap<ResourceLocation, T> = mutableMapOf()
 
-
-    companion object : PixLyzerItemFactory<EnderPearlItem> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EnderPearlItem {
-            return EnderPearlItem(resourceLocation, registries, data)
+    init {
+        for (item in items) {
+            entries[item.resourceLocation] = item
         }
+    }
+
+    fun add(item: T) {
+        this.entries[item.resourceLocation] = item
+    }
+
+    operator fun plusAssign(item: T) = add(item)
+
+
+    operator fun get(name: ResourceLocation): T? {
+        return entries[name]
+    }
+
+    override fun build(name: ResourceLocation, registries: Registries): T? {
+        return this[name]
     }
 }

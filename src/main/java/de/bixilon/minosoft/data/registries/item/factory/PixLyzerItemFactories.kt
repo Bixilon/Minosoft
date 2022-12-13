@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.item
+package de.bixilon.minosoft.data.registries.item.factory
 
 import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 import de.bixilon.minosoft.data.registries.item.items.*
@@ -23,9 +23,8 @@ import de.bixilon.minosoft.data.registries.item.items.throwable.potion.Lingering
 import de.bixilon.minosoft.data.registries.item.items.throwable.potion.PotionItem
 import de.bixilon.minosoft.data.registries.item.items.tools.*
 
-object ItemFactories : DefaultClassFactory<ItemFactory<*>>(
-    Item,
-
+@Deprecated("item factory")
+object PixLyzerItemFactories : DefaultClassFactory<PixLyzerItemFactory<*>>(
     BlockItem,
     TallBlockItem,
     WallStandingBlockItem,

@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.data.registries.item.items.throwable
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 abstract class ThrowableItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data)
+) : PixLyzerItem(resourceLocation, registries, data)

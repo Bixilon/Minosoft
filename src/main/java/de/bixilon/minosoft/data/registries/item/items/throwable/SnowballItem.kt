@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.throwable
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class SnowballItem(
@@ -24,7 +24,7 @@ open class SnowballItem(
 ) : ThrowableItem(resourceLocation, registries, data) {
 
 
-    companion object : ItemFactory<SnowballItem> {
+    companion object : PixLyzerItemFactory<SnowballItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SnowballItem {
             return SnowballItem(resourceLocation, registries, data)

@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.data.registries.item.items.armor
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class ElytraItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
 
 
-    companion object : ItemFactory<ElytraItem> {
+    companion object : PixLyzerItemFactory<ElytraItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ElytraItem {
             return ElytraItem(resourceLocation, registries, data)

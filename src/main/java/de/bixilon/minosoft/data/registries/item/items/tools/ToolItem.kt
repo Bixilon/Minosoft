@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.registries.item.items.tools
 import de.bixilon.kutil.primitive.FloatUtil.toFloat
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 
@@ -25,14 +25,14 @@ open class ToolItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
     val durability = data["uses"]?.toInt() ?: 1
     val speed = data["speed"]?.toFloat() ?: 1.0f
     open val attackDamage = data["attack_damage_bonus"]?.toFloat() ?: 1.0f
     val miningLevel = data["level"]?.toInt() ?: 1
     val enchantmentValue = data["enchantment_value"]?.toInt() ?: 1
 
-    companion object : ItemFactory<ToolItem> {
+    companion object : PixLyzerItemFactory<ToolItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ToolItem {
             return ToolItem(resourceLocation, registries, data)

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.tools
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -25,7 +25,7 @@ open class PickaxeItem(
 ) : MiningToolItem(resourceLocation, registries, data) {
     override val diggableTag: ResourceLocation = PICKAXE_MINEABLE_TAG
 
-    companion object : ItemFactory<PickaxeItem> {
+    companion object : PixLyzerItemFactory<PickaxeItem> {
         val PICKAXE_MINEABLE_TAG = "minecraft:mineable/pickaxe".toResourceLocation()
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): PickaxeItem {

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.throwable.potion
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.item.items.throwable.ThrowableItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
@@ -24,7 +24,7 @@ open class LingeringPotionItem(
     data: Map<String, Any>,
 ) : ThrowableItem(resourceLocation, registries, data) {
 
-    companion object : ItemFactory<LingeringPotionItem> {
+    companion object : PixLyzerItemFactory<LingeringPotionItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LingeringPotionItem {
             return LingeringPotionItem(resourceLocation, registries, data)

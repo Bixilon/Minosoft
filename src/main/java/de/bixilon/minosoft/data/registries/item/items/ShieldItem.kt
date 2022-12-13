@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.item.items
 import de.bixilon.minosoft.data.container.stack.ItemStack
 import de.bixilon.minosoft.data.entities.entities.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -25,7 +25,7 @@ open class ShieldItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data), UsableItem {
+) : PixLyzerItem(resourceLocation, registries, data), UsableItem {
     override val maxUseTime: Int = Int.MAX_VALUE
 
     override fun interactItem(connection: PlayConnection, hand: Hands, stack: ItemStack): InteractionResults {
@@ -33,7 +33,7 @@ open class ShieldItem(
         return InteractionResults.CONSUME
     }
 
-    companion object : ItemFactory<ShieldItem> {
+    companion object : PixLyzerItemFactory<ShieldItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ShieldItem {
             return ShieldItem(resourceLocation, registries, data)

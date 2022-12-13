@@ -14,25 +14,11 @@
 package de.bixilon.minosoft.data.registries.integrated
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
-abstract class IntegratedRegistry<T : RegistryItem>(vararg items: T) {
-    private val entries: MutableMap<ResourceLocation, T> = mutableMapOf()
-
-    init {
-        for (item in items) {
-            entries[item.resourceLocation] = item
-        }
-    }
-
-    fun add(item: T) {
-        this.entries[item.resourceLocation] = item
-    }
-
-    operator fun plusAssign(item: T) = add(item)
+interface IntegratedRegistry<T : RegistryItem> {
 
 
-    operator fun get(name: ResourceLocation): T? {
-        return entries[name]
-    }
+    fun build(name: ResourceLocation, registries: Registries): T?
 }

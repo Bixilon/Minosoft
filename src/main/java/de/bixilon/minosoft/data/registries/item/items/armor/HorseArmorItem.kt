@@ -16,19 +16,19 @@ package de.bixilon.minosoft.data.registries.item.items.armor
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class HorseArmorItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
     val horseProtection = data["horse_protection"]?.toInt() ?: 0
     val horseTexture = data["horse_texture"]?.nullCast<String>()
 
-    companion object : ItemFactory<HorseArmorItem> {
+    companion object : PixLyzerItemFactory<HorseArmorItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): HorseArmorItem {
             return HorseArmorItem(resourceLocation, registries, data)

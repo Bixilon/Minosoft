@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.throwable
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class ExperienceBottleItem(
@@ -23,7 +23,7 @@ open class ExperienceBottleItem(
     data: Map<String, Any>,
 ) : ThrowableItem(resourceLocation, registries, data) {
 
-    companion object : ItemFactory<ExperienceBottleItem> {
+    companion object : PixLyzerItemFactory<ExperienceBottleItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): ExperienceBottleItem {
             return ExperienceBottleItem(resourceLocation, registries, data)

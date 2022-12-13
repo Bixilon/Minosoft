@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.item.items.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class CommandBlockItem(
@@ -24,7 +24,7 @@ open class CommandBlockItem(
 ) : BlockItem(resourceLocation, registries, data) {
 
 
-    companion object : ItemFactory<CommandBlockItem> {
+    companion object : PixLyzerItemFactory<CommandBlockItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CommandBlockItem {
             return CommandBlockItem(resourceLocation, registries, data)

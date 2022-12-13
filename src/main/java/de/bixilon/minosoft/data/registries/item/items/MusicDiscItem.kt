@@ -15,18 +15,18 @@ package de.bixilon.minosoft.data.registries.item.items
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class MusicDiscItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
     val analogOutput = data["analog_output"].nullCast<Item>() ?: 0
     val sound: ResourceLocation = registries.soundEventRegistry[data["sound"]]
 
-    companion object : ItemFactory<MusicDiscItem> {
+    companion object : PixLyzerItemFactory<MusicDiscItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): MusicDiscItem {
             return MusicDiscItem(resourceLocation, registries, data)

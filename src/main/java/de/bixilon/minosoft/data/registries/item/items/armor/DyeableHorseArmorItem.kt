@@ -14,17 +14,17 @@
 package de.bixilon.minosoft.data.registries.item.items.armor
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.item.ItemFactory
-import de.bixilon.minosoft.data.registries.item.items.Item
+import de.bixilon.minosoft.data.registries.item.factory.PixLyzerItemFactory
+import de.bixilon.minosoft.data.registries.item.items.PixLyzerItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class DyeableHorseArmorItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
+) : PixLyzerItem(resourceLocation, registries, data) {
 
-    companion object : ItemFactory<DyeableHorseArmorItem> {
+    companion object : PixLyzerItemFactory<DyeableHorseArmorItem> {
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DyeableHorseArmorItem {
             return DyeableHorseArmorItem(resourceLocation, registries, data)
