@@ -57,6 +57,7 @@ import javax.net.ssl.SSLContext
 
 
 object KUtil {
+    val NULL_UUID = UUID(0L, 0L)
     val RANDOM = Random()
     val EMPTY_BYTE_ARRAY = ByteArray(0)
 

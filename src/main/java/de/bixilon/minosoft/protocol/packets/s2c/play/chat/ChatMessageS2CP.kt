@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -58,7 +59,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     override fun handle(connection: PlayConnection) {
         val type = if (overlay) connection.registries.messageTypeRegistry[DefaultMessageTypes.GAME]!! else type
         val sender = sender
-        val message: ChatMessage = if (sender == null) {
+        val message: ChatMessage = if (sender == null || sender == KUtil.NULL_UUID) {
             SimpleChatMessage(text, type)
         } else {
             PlayerChatMessage(text, type, connection.getMessageSender(sender))
