@@ -22,9 +22,6 @@ import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
 import de.bixilon.minosoft.modding.event.listener.CallbackEventListener
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
 object DefaultParticleBehavior {
 
@@ -47,11 +44,7 @@ object DefaultParticleBehavior {
             CallbackEventListener.of<ParticleSpawnEvent> {
                 DefaultThreadPool += add@{
                     fun spawn(position: Vec3d, velocity: Vec3d) {
-                        val factory = it.data.type.factory
-                        if (factory == null) {
-                            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
-                            return
-                        }
+                        val factory = it.data.type.factory ?: return
                         particleRenderer += factory.build(connection, position, velocity, it.data) ?: return
                     }
                     // ToDo: long distance = always spawn?
