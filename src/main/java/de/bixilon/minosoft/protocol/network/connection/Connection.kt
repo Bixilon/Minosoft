@@ -80,6 +80,11 @@ abstract class Connection : AbstractEventMaster {
     override val size: Int
         get() = events.size
 
+
+    open fun disconnect() {
+        network.disconnect()
+    }
+
     companion object {
         var lastConnectionId: Int = 0
     }

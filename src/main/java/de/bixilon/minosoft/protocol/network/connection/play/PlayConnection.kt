@@ -259,6 +259,10 @@ class PlayConnection(
         }
     }
 
+    override fun disconnect() {
+        state = PlayConnectionStates.DISCONNECTED
+    }
+
     companion object {
         val ACTIVE_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()
         val ERRORED_CONNECTIONS: MutableSet<PlayConnection> = synchronizedSetOf()

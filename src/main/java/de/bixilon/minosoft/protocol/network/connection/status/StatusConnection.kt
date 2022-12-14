@@ -196,4 +196,8 @@ class StatusConnection(
         }
         return invoker
     }
+
+    override fun disconnect() {
+        state = StatusConnectionStates.WAITING
+    }
 }

@@ -48,7 +48,6 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.delegate.JavaFXDelegate.observeFX
@@ -314,7 +313,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             // disconnect all ping connections, re ping
                             // ToDo: server.connections.clear()
 
-                            ping.network.disconnect()
+                            ping.disconnect()
                             ping.address = server.address
                             ping.ping()
                         }
@@ -325,12 +324,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             },
             Button("Refresh").apply {
                 setOnAction {
-                    serverCard.ping.network.disconnect()
+                    serverCard.ping.disconnect()
                     serverCard.ping.ping()
                 }
-                isDisable = serverCard.ping.state != StatusConnectionStates.PING_DONE && serverCard.ping.state != StatusConnectionStates.ERROR
                 ctext = TranslatableComponents.GENERAL_REFRESH
-                serverCard.ping::state.observeFX(this) { state -> isDisable = state != StatusConnectionStates.PING_DONE && state != StatusConnectionStates.ERROR }
             },
             Button("Connect").apply {
                 setOnAction {
