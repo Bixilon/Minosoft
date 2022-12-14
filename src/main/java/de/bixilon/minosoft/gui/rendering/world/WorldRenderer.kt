@@ -154,7 +154,7 @@ class WorldRenderer(
 
         connection.events.listen<VisibilityGraphChangeEvent> { onFrustumChange() }
 
-        connection.events.listen<RespawnEvent> { unloadWorld() }
+        connection.events.listen<RespawnEvent> { if (it.dimensionChange) unloadWorld() }
         connection.events.listen<ChunkDataChangeEvent> { queueChunk(it.chunkPosition, it.chunk) }
         connection.events.listen<BlockSetEvent> {
             val chunkPosition = it.blockPosition.chunkPosition

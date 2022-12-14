@@ -50,9 +50,9 @@ import java.util.*
 
 @LoadPacket(lowPriority = true)
 class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
-    val chunkPosition: Vec2i
-    val chunkData: ChunkData = ChunkData()
-    var unloadChunk: Boolean = false
+    val position: Vec2i
+    val data: ChunkData = ChunkData()
+    var unload: Boolean = false
         private set
     var heightMap: Map<String, Any>? = null
         private set
@@ -61,7 +61,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
     init {
         val dimension = buffer.connection.world.dimension!!
-        chunkPosition = buffer.readChunkPosition()
+        position = buffer.readChunkPosition()
         if (buffer.versionId < V_20W45A) {
             isFullChunk = !buffer.readBoolean()
         }
@@ -77,9 +77,9 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             }
             val chunkData = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, !isFullChunk, dimension.hasSkyLight)
             if (chunkData == null) {
-                unloadChunk = true
+                unload = true
             } else {
-                this.chunkData.replace(chunkData)
+                this.data.replace(chunkData)
             }
         } else {
             if (buffer.versionId in V_1_16_PRE7 until V_1_16_2_PRE2) {
@@ -96,7 +96,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 heightMap = buffer.readNBT()?.toJsonObject()
             }
             if (!isFullChunk && buffer.versionId < V_21W37A) {
-                this.chunkData.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
+                this.data.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
             readingData = ChunkReadingData(PlayInByteBuffer(buffer.readByteArray(), buffer.connection), dimension, sectionBitMask)
 
@@ -109,7 +109,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
 
                 buffer.versionId < V_21W37A -> {
                     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
-                    val positionOffset = Vec3i.of(chunkPosition, dimension.minSection, Vec3i.EMPTY)
+                    val positionOffset = Vec3i.of(position, dimension.minSection, Vec3i.EMPTY)
                     for (i in 0 until buffer.readVarInt()) {
                         val nbt = buffer.readNBT().asJsonObject()
                         val position = Vec3i(nbt["x"]?.toInt() ?: continue, nbt["y"]?.toInt() ?: continue, nbt["z"]?.toInt() ?: continue) - positionOffset
@@ -123,7 +123,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         entity.updateNBT(nbt)
                         blockEntities[position] = entity
                     }
-                    this.chunkData.blockEntities = blockEntities
+                    this.data.blockEntities = blockEntities
                 }
 
                 else -> {
@@ -141,7 +141,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                         }
                         blockEntities[Vec3i(xz shr 4, y, xz and 0x0F)] = entity
                     }
-                    this.chunkData.blockEntities = blockEntities
+                    this.data.blockEntities = blockEntities
                 }
             }
 
@@ -149,7 +149,7 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
                 if (StaticConfiguration.IGNORE_SERVER_LIGHT) {
                     buffer.pointer = buffer.size
                 } else {
-                    this.chunkData.replace(ChunkLightS2CP(buffer, chunkPosition).chunkData)
+                    this.data.replace(ChunkLightS2CP(buffer, position).chunkData)
                 }
             }
         }
@@ -159,30 +159,30 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
         if (readingData.buffer.versionId < V_21W37A) {
             val chunkData = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask!!, null, !isFullChunk, dimension.hasSkyLight)
             if (chunkData == null) {
-                unloadChunk = true
+                unload = true
             } else {
-                this@ChunkS2CP.chunkData.replace(chunkData)
+                this@ChunkS2CP.data.replace(chunkData)
             }
         } else {
-            this@ChunkS2CP.chunkData.replace(ChunkUtil.readPaletteChunk(buffer, dimension, null, isFullChunk = true, containsSkyLight = false))
+            this@ChunkS2CP.data.replace(ChunkUtil.readPaletteChunk(buffer, dimension, null, isFullChunk = true, containsSkyLight = false))
         }
     }
 
     override fun handle(connection: PlayConnection) {
-        if (unloadChunk) {
-            connection.world.unloadChunk(chunkPosition)
+        if (unload) {
+            connection.world.unloadChunk(position)
             return
         }
         readingData.readChunkData()
-        val chunk = connection.world.getOrCreateChunk(chunkPosition)
-        chunk.setData(chunkData)
+        val chunk = connection.world.getOrCreateChunk(position)
+        chunk.setData(data)
     }
 
     override fun log(reducedLog: Boolean) {
         if (reducedLog) {
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk (chunkPosition=$chunkPosition)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk (chunkPosition=$position)" }
     }
 
     private data class ChunkReadingData(

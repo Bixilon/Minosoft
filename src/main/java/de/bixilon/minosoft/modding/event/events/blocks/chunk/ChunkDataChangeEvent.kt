@@ -27,5 +27,5 @@ class ChunkDataChangeEvent(
     val chunk: Chunk,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: ChunkS2CP) : this(connection, packet.chunkPosition, connection.world[packet.chunkPosition]!!)
+    constructor(connection: PlayConnection, packet: ChunkS2CP) : this(connection, packet.position, connection.world[packet.position]!!)
 }

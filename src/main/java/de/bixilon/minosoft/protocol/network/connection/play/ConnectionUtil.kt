@@ -124,7 +124,6 @@ class ConnectionUtil(
     }
 
     fun prepareSpawn() {
-        connection.world.clear()
         connection.player.velocity = Vec3d.EMPTY
         connection.world.audioPlayer?.stopAllSounds()
         connection.world.particleRenderer?.removeAllParticles()

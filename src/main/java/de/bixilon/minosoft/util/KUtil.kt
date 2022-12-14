@@ -225,6 +225,7 @@ object KUtil {
         return null
     }
 
+    @Deprecated("Kutil")
     private inline fun String.checkInt(): Int? {
         var first = true
         for (point in codePoints()) {

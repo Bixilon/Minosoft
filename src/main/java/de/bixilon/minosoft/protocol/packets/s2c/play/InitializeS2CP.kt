@@ -146,6 +146,7 @@ class InitializeS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
     }
 
     override fun handle(connection: PlayConnection) {
+        connection.world.clear()
         connection.util.prepareSpawn()
         val playerEntity = connection.player
         val previousGamemode = playerEntity.additional.gamemode

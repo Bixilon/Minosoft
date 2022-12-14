@@ -14,12 +14,9 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP
 
 @Deprecated("Observables")
 class RespawnEvent(
     connection: PlayConnection,
-) : PlayConnectionEvent(connection) {
-
-    constructor(connection: PlayConnection, packet: RespawnS2CP) : this(connection)
-}
+    val dimensionChange: Boolean,
+) : PlayConnectionEvent(connection)
