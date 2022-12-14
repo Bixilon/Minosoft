@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerMo
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
-import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.toBlockCoordinate
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
@@ -78,18 +77,22 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
 
     private fun calculateTransform(): Mat4 {
         val screen = renderWindow.window.sizef
-        val projection = GLM.perspective(60.0f.rad, screen.x / screen.y, CameraDefinition.NEAR_PLANE, CameraDefinition.FAR_PLANE)
+        val aspect = screen.x / screen.y
+        val projection = GLM.perspective(60.0f.rad, aspect, CameraDefinition.NEAR_PLANE, CameraDefinition.FAR_PLANE)
 
         val model = this.model ?: return Mat4()
         val outliner = model.instance?.model?.model?.outliner?.find { it.name == if (arm == Arms.LEFT) "LEFT_ARM" else "RIGHT_ARM" } ?: return Mat4()
-        outliner.origin.z = 15.0f.toBlockCoordinate()
 
         val matrix = FirstPersonArmAnimator(model).calculateTransform(outliner, 0.0f)
         val screenMatrix = Mat4()
 
-        screenMatrix.translateAssign(Vec3(if (arm == Arms.LEFT) -0.2f else 0.2f, 0, 0)) // move inner side of arm to 0|0|0
+        val translation = Vec3(if (arm == Arms.LEFT) -0.10f else 0.25f, 0, 0)
+        if (aspect > 1.7f) {
+            translation.x *= aspect * 2
+        }
+        screenMatrix.translateAssign(translation) // move inner side of arm to 0|0|0
 
-        screenMatrix.translateAssign(Vec3(-18, -55, -10).fromBlockCoordinates())
+        screenMatrix.translateAssign(Vec3(if (arm == Arms.LEFT) -15 else -18, -55, -10).fromBlockCoordinates())
 
         return projection * screenMatrix * matrix
     }

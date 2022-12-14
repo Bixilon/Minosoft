@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.overlays.arm
 
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.AnimationLoops
 import de.bixilon.minosoft.gui.rendering.skeletal.model.animations.SkeletalAnimation
@@ -30,6 +31,9 @@ class FirstPersonArmAnimator(private val player: PlayerModel) : SkeletalAnimatio
     override fun get(channel: KeyframeChannels, outliner: SkeletalOutliner, time: Float): Vec3? {
         if (channel != KeyframeChannels.ROTATION) {
             return null
+        }
+        if (player.entity.mainArm == Arms.LEFT) {
+            return Vec3(120, 20, 0)
         }
         return Vec3(120, -20, -10)
     }
