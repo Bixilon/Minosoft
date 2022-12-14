@@ -78,22 +78,20 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     }
 
     private fun calculateTransform(): Mat4 {
-        val screen = renderWindow.window.sizef
-
-
         val projection = renderWindow.camera.matrixHandler.projectionMatrix
 
         val matrix = Mat4()
+        matrix.rotateAssign(45.0f.rad, Vec3(0, 0, 1))
         matrix.rotateAssign(-5.0f.rad, Vec3(0, 1, 0))
         matrix.rotateAssign(130.0f.rad, Vec3(1, 0, 0))
         a += 1
 
 
-        matrix.translateAssign(Vec3(if (arm == Arms.LEFT) 0.2f else -0.2f, 0, 0)) // move inner side of arm to 0|0|0
+        matrix.translateAssign(Vec3(if (arm == Arms.LEFT) 0.25f else -0.25f, 0, 0)) // move inner side of arm to 0|0|0
 
         // matrix.scaleAssign(BLOCK_RESOLUTION) // make a pixel one pixel
         matrix.translateAssign(-0.5f)
-
+        matrix.translateAssign(Vec3(0, 0.3, 1.0))
 
         val a = projection * matrix
 
@@ -107,6 +105,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
         renderWindow.renderSystem.disable(RenderingCapabilities.FACE_CULLING)
         renderWindow.renderSystem.enable(RenderingCapabilities.DEPTH_TEST)
+        renderWindow.renderSystem.enable(RenderingCapabilities.BLENDING)
         renderWindow.renderSystem.depthMask = true
         mesh.unload()
         updateMesh()

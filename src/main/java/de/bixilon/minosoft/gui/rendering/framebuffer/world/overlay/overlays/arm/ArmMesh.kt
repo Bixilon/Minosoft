@@ -43,15 +43,17 @@ open class ArmMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = r
 
 
     fun addArm(model: SkeletalModel, arm: Arms, skin: ShaderTexture) {
-        val element = model.elements.find {
-            it.name == when (arm) {
-                Arms.LEFT -> "LEFT_ARM"
-                Arms.RIGHT -> "RIGHT_ARM"
+        val elements = model.elements.filter {
+            when (arm) {
+                Arms.LEFT -> it.name == "LEFT_ARM" || it.name == "LEFT_SLEEVE"
+                Arms.RIGHT -> it.name == "RIGHT_ARM" || it.name == "RIGHT_SLEEVE"
             }
-        } ?: return
+        }
         val textures = Int2ObjectOpenHashMap<ShaderTexture>()
         textures[0] = skin
-        element.bake(model, textures, emptyMap(), this)
+        for (element in elements) {
+            element.bake(model, textures, emptyMap(), this)
+        }
     }
 
 

@@ -26,5 +26,5 @@ in vec3 finTextureCoordinates;
 void main() {
     vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
     foutColor = texelColor;
-    foutColor.a = 1.0f;
+    // foutColor.a = 1.0f;
 }
