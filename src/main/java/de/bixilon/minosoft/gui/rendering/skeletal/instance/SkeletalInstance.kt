@@ -17,6 +17,7 @@ import de.bixilon.kotlinglm.func.rad
 import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.renderer.drawable.DeltaDrawable
@@ -82,9 +83,8 @@ class SkeletalInstance(
         }
     }
 
-    fun calculateTransforms(): List<Mat4> {
-        val baseTransform = baseTransform
-        val time = TimeUtil.millis
+    fun calculateTransforms(base: Mat4 = this.baseTransform): List<Mat4> {
+        val time = millis()
         if (animations.isNotEmpty()) {
             val toRemove: MutableSet<SkeletalAnimationInstance> = mutableSetOf()
             for (animation in animations) {
@@ -98,7 +98,7 @@ class SkeletalInstance(
             }
         }
         if (animations.isEmpty()) {
-            if (this.transforms.isNotEmpty() && baseTransform === previousBaseTransform) {
+            if (this.transforms.isNotEmpty() && base === previousBaseTransform) {
                 return this.transforms
             }
         }
@@ -112,10 +112,10 @@ class SkeletalInstance(
         }
         val transforms: MutableList<Mat4> = mutableListOf()
         for (outliner in model.model.outliner) {
-            calculateTransform(baseTransform, animations, outliner, transforms)
+            calculateTransform(base, animations, outliner, transforms)
         }
         this.transforms = transforms
-        this.previousBaseTransform = baseTransform
+        this.previousBaseTransform = base
         return transforms
     }
 

@@ -91,7 +91,11 @@ class BakedSkeletalModel(
     companion object {
 
         fun Vec3.fromBlockCoordinates(): Vec3 {
-            return Vec3(this.x / BLOCK_RESOLUTION + 0.5f, this.y / BLOCK_RESOLUTION, this.z / BLOCK_RESOLUTION + 0.5f)
+            return Vec3(this.x.toBlockCoordinate(), this.y.toBlockCoordinate(), this.z.toBlockCoordinate())
+        }
+
+        inline fun Float.toBlockCoordinate(): Float {
+            return this / BLOCK_RESOLUTION + 0.5f
         }
     }
 }

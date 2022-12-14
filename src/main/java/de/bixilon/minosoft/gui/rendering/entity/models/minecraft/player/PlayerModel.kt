@@ -56,7 +56,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
     private fun createModel(properties: PlayerProperties?): SkeletalInstance? {
         val skin = renderWindow.textureManager.skins.getSkin(entity, properties) ?: return null
         val skinModel = skin.model
-        val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else NORMAL_MODEL)
+        val unbaked = renderWindow.modelLoader.entities.loadUnbakedModel(if (skinModel == SkinModel.SLIM) SLIM_MODEL else WIDE_MODEL)
 
         val elements: MutableList<SkeletalElement> = mutableListOf()
         elementLoop@ for (element in unbaked.elements) {
@@ -126,7 +126,7 @@ open class PlayerModel(renderer: EntityRenderer, player: PlayerEntity) : Skeleta
 
 
     companion object {
-        private val NORMAL_MODEL = "minecraft:entities/player/normal".toResourceLocation().bbModel()
+        private val WIDE_MODEL = "minecraft:entities/player/wide".toResourceLocation().bbModel()
         private val SLIM_MODEL = "minecraft:entities/player/slim".toResourceLocation().bbModel()
     }
 }

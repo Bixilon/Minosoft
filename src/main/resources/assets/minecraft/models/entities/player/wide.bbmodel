@@ -437,7 +437,6 @@
     {
       "name": "HEAD",
       "origin": [0, 24, 0],
-      "rotation": [-6, 5, 0],
       "uuid": "6da490f7-5540-bf4a-7f0a-12a5df3f3ce0",
       "children": ["842246c7-d06c-8ec1-c4d0-3dd83fd2ddfc", "be9eb8b9-9c9e-8f03-89be-623f059ad715"]
     }, {
@@ -447,26 +446,22 @@
       "children": ["9e3de0ee-4f3f-f74f-3c61-d8fe865b5103", "7d5b2fb8-9d28-f485-0b15-0241ff9171af"]
     }, {
       "name": "RIGHT_ARM",
-      "origin": [5, 22, 0],
-      "rotation": [-10, 0, 0],
+      "origin": [6, 24, 0],
       "uuid": "aa61460e-38d0-40f0-6291-3e8521bdd98c",
       "children": ["feeb8a9e-1099-d4ed-8e4b-53dd68b5357b", "a05a34bc-73df-2361-b8fc-e9cbeda48ea1"]
     }, {
       "name": "LEFT_ARM",
-      "origin": [-5, 22, 0],
-      "rotation": [12, 0, 0],
+      "origin": [-6, 24, 0],
       "uuid": "310e097e-7820-987e-7f08-9f8823e76e29",
       "children": ["1773dbda-88eb-b14d-2e53-f91077dcf6a6", "0bc9a70e-d062-27a1-4864-1ca1eef87225"]
     }, {
       "name": "RIGHT_LEG",
       "origin": [1.9, 12, 0],
-      "rotation": [11, 0, 2],
       "uuid": "ea6793ea-8198-47f1-cba7-a49ce5d18538",
       "children": ["94bb1759-86c5-f896-18d3-b5ec9de29975", "2faa3e41-dfb4-7bed-5e40-58590236f620"]
     }, {
       "name": "LEFT_LEG",
       "origin": [-1.9, 12, 0],
-      "rotation": [-10, 0, -2],
       "uuid": "75e815a2-97a3-6b0c-8529-e48852251b02",
       "children": ["0cad4dc2-fc12-43ac-0610-f5692a0764b7", "478b4925-5e2b-235f-0d95-d5d028ad624d"]
     }
