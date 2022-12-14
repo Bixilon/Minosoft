@@ -19,16 +19,19 @@ import de.bixilon.kotlinglm.mat4x4.Mat4
 import de.bixilon.kotlinglm.vec3.Vec3
 import de.bixilon.kutil.cast.CastUtil.nullCast
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.minosoft.data.entities.entities.player.Arms
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.camera.CameraDefinition
 import de.bixilon.minosoft.gui.rendering.entity.models.minecraft.player.PlayerModel
+import de.bixilon.minosoft.gui.rendering.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.Overlay
 import de.bixilon.minosoft.gui.rendering.framebuffer.world.overlay.OverlayFactory
 import de.bixilon.minosoft.gui.rendering.skeletal.baked.BakedSkeletalModel.Companion.fromBlockCoordinates
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.texture.skin.PlayerSkin
+import de.bixilon.minosoft.modding.event.listener.CallbackEventListener.Companion.listen
 import de.bixilon.minosoft.util.KUtil.minosoft
 
 class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
@@ -41,12 +44,35 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     private var model: PlayerModel? = null
     private var mesh: ArmMesh = unsafeNull()
 
-    override fun postInit() {
-        shader.load()
-        updateMesh()
+    private var refresh = false
+
+    private var refreshTransform = true
+
+    override fun init() {
+        renderWindow.connection.profiles.connection::mainArm.observe(this, true) { this.arm = it; refresh = true;refreshTransform = true }
+        renderWindow.connection.events.listen<ResizeWindowEvent> { this.refreshTransform = true }
     }
 
-    private fun updateMesh() {
+    private fun poll() {
+        val model = renderWindow.connection.player.model.nullCast<PlayerModel>()
+        val skin = model?.skin
+        if (this.model == model && this.skin == skin) {
+            return
+        }
+        this.model = model
+        skin?.texture?.usages?.incrementAndGet()
+        this.skin?.texture?.usages?.decrementAndGet()
+        this.skin = skin
+
+        refresh = true
+    }
+
+    override fun postInit() {
+        shader.load()
+        createMesh()
+    }
+
+    private fun createMesh() {
         this.mesh = ArmMesh(renderWindow)
         val skin = this.skin
         val model = this.model?.instance?.model?.model
@@ -58,21 +84,13 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
 
 
     override fun update() {
-        val arm = renderWindow.connection.player.mainArm
-        if (arm != this.arm) {
-            this.mesh.unload()
-            this.arm = arm
-            init()
-        }
-        val model = renderWindow.connection.player.model.nullCast<PlayerModel>()
-        this.model = model
-        val skin = model?.skin ?: return
-        if (this.skin == skin) {
+        poll()
+        if (!refresh) {
             return
         }
-        this.skin?.texture?.usages?.decrementAndGet()
-        skin.texture.usages.incrementAndGet()
-        this.skin = skin
+        this.mesh.unload()
+        createMesh()
+        this.refresh = false
     }
 
     private fun calculateTransform(): Mat4 {
@@ -86,29 +104,35 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         val matrix = FirstPersonArmAnimator(model).calculateTransform(outliner, 0.0f)
         val screenMatrix = Mat4()
 
-        val translation = Vec3(if (arm == Arms.LEFT) -0.10f else 0.25f, 0, 0)
-        if (aspect > 1.7f) {
-            translation.x *= aspect * 2
+        val translation = Vec3(if (arm == Arms.LEFT) -0.10f else 0.10f, 0, 0)
+
+        if (aspect > 1.8f) {
+            translation.x *= aspect * 2.0f
         }
         screenMatrix.translateAssign(translation) // move inner side of arm to 0|0|0
 
-        screenMatrix.translateAssign(Vec3(if (arm == Arms.LEFT) -15 else -18, -55, -10).fromBlockCoordinates())
+        screenMatrix.translateAssign(Vec3(-15, -55, -10).fromBlockCoordinates())
 
+        this.refreshTransform = false
         return projection * screenMatrix * matrix
     }
 
     override fun draw() {
         val skin = this.skin ?: return
         renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+
         renderWindow.renderSystem.disable(RenderingCapabilities.FACE_CULLING)
         renderWindow.renderSystem.enable(RenderingCapabilities.DEPTH_TEST)
         renderWindow.renderSystem.enable(RenderingCapabilities.BLENDING)
         renderWindow.renderSystem.depthMask = true
-        mesh.unload()
-        updateMesh()
+
         shader.use()
-        shader.transform = calculateTransform()
         shader.textureIndexLayer = skin.texture.shaderId
+
+        if (refreshTransform) {
+            shader.transform = calculateTransform()
+        }
+
         mesh.draw()
         renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
     }
