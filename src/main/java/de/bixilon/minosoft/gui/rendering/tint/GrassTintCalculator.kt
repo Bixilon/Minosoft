@@ -18,6 +18,7 @@ import de.bixilon.minosoft.assets.util.FileUtil.readRGBArray
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.GrassColorModifiers
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.text.formatting.color.Colors
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -45,7 +46,7 @@ class GrassTintCalculator : TintProvider {
         return color
     }
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    fun getBlockColor(biome: Biome?): Int {
         if (biome == null) {
             return getColor(127, 127)
         }
@@ -58,7 +59,14 @@ class GrassTintCalculator : TintProvider {
         }
     }
 
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        return getBlockColor(biome)
+    }
+
     override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
-        return Colors.WHITE
+        if (blockState.block.resourceLocation == MinecraftBlocks.GRASS_BLOCK) {
+            return Colors.WHITE
+        }
+        return getBlockColor(biome)
     }
 }

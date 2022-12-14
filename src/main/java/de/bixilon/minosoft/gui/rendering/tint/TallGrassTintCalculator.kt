@@ -20,11 +20,19 @@ import de.bixilon.minosoft.data.registries.blocks.properties.Halves
 
 class TallGrassTintCalculator(val grassTintCalculator: GrassTintCalculator) : TintProvider {
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    fun getColor(blockState: BlockState, biome: Biome?): Int {
         return if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.UPPER) {
-            grassTintCalculator.getBlockColor(blockState, biome, x, y - 1, z, tintIndex)
+            grassTintCalculator.getBlockColor(biome)
         } else {
-            grassTintCalculator.getBlockColor(blockState, biome, x, y, z, tintIndex)
+            grassTintCalculator.getBlockColor(biome)
         }
+    }
+
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        return getColor(blockState, biome)
+    }
+
+    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
+        return getColor(blockState, biome)
     }
 }

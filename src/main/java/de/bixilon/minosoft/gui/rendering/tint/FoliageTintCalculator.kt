@@ -30,12 +30,20 @@ class FoliageTintCalculator : TintProvider {
         colorMap = assetsManager["minecraft:colormap/foliage".toResourceLocation().texture()].readRGBArray()
     }
 
-    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    fun getBlockColor(biome: Biome?, y: Int): Int {
         if (biome == null) {
             return FALLBACK_COLOR
         }
         // ToDo: Override
         return colorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(y)]
+    }
+
+    override fun getBlockColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+        return getBlockColor(biome, y)
+    }
+
+    override fun getParticleColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int {
+        return getBlockColor(biome, y)
     }
 
     override fun getItemColor(item: Item, tintIndex: Int): Int {
