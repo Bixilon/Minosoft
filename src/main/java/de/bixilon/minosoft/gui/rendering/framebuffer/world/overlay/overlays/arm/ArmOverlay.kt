@@ -104,14 +104,14 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
         val matrix = FirstPersonArmAnimator(model).calculateTransform(outliner, 0.0f)
         val screenMatrix = Mat4()
 
-        val translation = Vec3(if (arm == Arms.LEFT) -0.10f else 0.10f, 0, 0)
+        val translation = Vec3(if (arm == Arms.LEFT) -0.08f else 0.08f, 0, 0)
 
         if (aspect > 1.8f) {
-            translation.x *= aspect * 2.0f
+            translation.x *= aspect * 1.8f
         }
         screenMatrix.translateAssign(translation) // move inner side of arm to 0|0|0
 
-        screenMatrix.translateAssign(Vec3(-15, -55, -10).fromBlockCoordinates())
+        screenMatrix.translateAssign(Vec3(if (arm == Arms.LEFT) -18 else -12, -54, -10).fromBlockCoordinates())
 
         this.refreshTransform = false
         return projection * screenMatrix * matrix
