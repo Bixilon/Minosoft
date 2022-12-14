@@ -218,6 +218,7 @@ class PlayConnection(
             language = LanguageUtil.load(profiles.connection.language ?: profiles.eros.general.language, version, assetsManager)
 
             player = LocalPlayerEntity(account, this, privateKey)
+            settingsManager.initSkins()
 
             if (!RunConfiguration.DISABLE_RENDERING) {
                 val rendering = Rendering(this)

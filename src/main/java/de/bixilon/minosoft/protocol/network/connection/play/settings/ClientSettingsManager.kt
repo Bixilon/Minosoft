@@ -47,7 +47,9 @@ class ClientSettingsManager(
 
         profile::language.observe(this) { sendLanguage() }
         connection.profiles.eros.general::language.observe(this) { sendLanguage() }
+    }
 
+    fun initSkins() {
         connection.profiles.connection.skin::parts.observeSet(this, true) { connection.player.skinParts += it.adds; connection.player.skinParts -= it.removes }
     }
 
