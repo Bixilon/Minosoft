@@ -33,6 +33,7 @@ class DebugView(private val camera: Camera) : CameraView {
 
 
     override fun onInput(input: MovementInput, delta: Double) {
+        camera.renderWindow.connection.player.input = MovementInput()
         var speedMultiplier = 10
         if (input.sprinting) {
             speedMultiplier *= 3
