@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.play.settings
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.SettingsC2SP
@@ -46,6 +47,8 @@ class ClientSettingsManager(
 
         profile::language.observe(this) { sendLanguage() }
         connection.profiles.eros.general::language.observe(this) { sendLanguage() }
+
+        connection.profiles.connection.skin::parts.observeSet(this, true) { connection.player.skinParts += it.adds; connection.player.skinParts -= it.removes }
     }
 
     @Synchronized

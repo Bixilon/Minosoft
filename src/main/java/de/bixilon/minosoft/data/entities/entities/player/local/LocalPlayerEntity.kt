@@ -30,7 +30,6 @@ import de.bixilon.kutil.collections.map.bi.SynchronizedBiMap
 import de.bixilon.kutil.math.interpolation.DoubleInterpolation.interpolateLinear
 import de.bixilon.kutil.observer.DataObserver.Companion.observe
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
-import de.bixilon.kutil.observer.set.SetObserver.Companion.observeSet
 import de.bixilon.kutil.primitive.BooleanUtil.decide
 import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.data.Axes
@@ -106,7 +105,6 @@ class LocalPlayerEntity(
             equipment.remove(EquipmentSlots.MAIN_HAND)
             equipment[EquipmentSlots.MAIN_HAND] = inventory.getHotbarSlot(it) ?: return@observe
         }
-        connection.profiles.connection.skin::parts.observeSet(this, true) { skinParts += it.adds; skinParts -= it.removes }
     }
 
     var openedContainer: Container? = null
