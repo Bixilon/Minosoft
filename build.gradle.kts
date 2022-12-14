@@ -14,7 +14,9 @@
 import de.bixilon.kutil.os.Architectures
 import de.bixilon.kutil.os.OSTypes
 import de.bixilon.kutil.os.PlatformInfo
+import org.ajoberstar.grgit.Commit
 import org.ajoberstar.grgit.Grgit
+import org.ajoberstar.grgit.operation.LogOp
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.configurationcache.extensions.capitalized
@@ -26,7 +28,7 @@ plugins {
     kotlin("jvm") version "1.7.21"
     `jvm-test-suite`
     application
-    id("org.ajoberstar.grgit") version "5.0.0"
+    id("org.ajoberstar.grgit.service") version "5.0.0"
     id("com.github.ben-manes.versions") version "0.44.0"
 }
 
@@ -388,10 +390,11 @@ tasks.test {
 }
 
 lateinit var git: Grgit
+lateinit var commit: Commit
 
 fun loadGit() {
     git = Grgit.open(mapOf("currentDir" to project.rootDir))
-    val commit = git.log().first()
+    commit = git.log { LogOp(git.repository).apply { maxCommits = 1 } }.first()
     val tag = git.tag.list().find { it.commit == commit }
     var nextVersion = if (tag != null) {
         stable = true
@@ -414,10 +417,7 @@ val versionJsonTask = tasks.register("versionJson") {
     outputs.upToDateWhen { false }
 
     doFirst {
-        loadGit()
-
         fun generateGit(): Map<String, Any> {
-            val commit = git.log().first()
             return mapOf(
                 "branch" to git.branch.current().name,
                 "commit" to commit.id,
