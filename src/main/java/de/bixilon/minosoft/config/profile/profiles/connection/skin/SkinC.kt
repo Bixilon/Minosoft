@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.config.profile.profiles.connection.skin
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import de.bixilon.kutil.observer.DataObserver.Companion.observe
+import de.bixilon.kutil.observer.set.SetObserver.Companion.observedSet
 import de.bixilon.minosoft.config.profile.delegate.primitive.BooleanDelegate
 import de.bixilon.minosoft.config.profile.profiles.connection.ConnectionProfile
 import de.bixilon.minosoft.data.entities.entities.player.SkinParts
@@ -62,30 +64,24 @@ class SkinC(profile: ConnectionProfile) {
     var hat by BooleanDelegate(profile, true)
 
 
-    @get:JsonIgnore val skinParts: Array<SkinParts>
-        get() {
-            val parts: MutableSet<SkinParts> = mutableSetOf()
-            if (cape) {
-                parts += SkinParts.CAPE
-            }
-            if (jacket) {
-                parts += SkinParts.JACKET
-            }
-            if (leftSleeve) {
-                parts += SkinParts.LEFT_SLEEVE
-            }
-            if (rightSleeve) {
-                parts += SkinParts.RIGHT_SLEEVE
-            }
-            if (leftPants) {
-                parts += SkinParts.LEFT_PANTS
-            }
-            if (rightPants) {
-                parts += SkinParts.RIGHT_PANTS
-            }
-            if (hat) {
-                parts += SkinParts.HAT
-            }
-            return parts.toTypedArray()
+    @get:JsonIgnore val parts: MutableSet<SkinParts> by observedSet(mutableSetOf())
+
+    private fun updateParts(part: SkinParts, add: Boolean) {
+        if (add) {
+            parts += part
+        } else {
+            parts -= part
         }
+    }
+
+
+    init {
+        this::cape.observe(this, true) { updateParts(SkinParts.CAPE, it) }
+        this::jacket.observe(this, true) { updateParts(SkinParts.JACKET, it) }
+        this::leftSleeve.observe(this, true) { updateParts(SkinParts.LEFT_SLEEVE, it) }
+        this::rightSleeve.observe(this, true) { updateParts(SkinParts.RIGHT_SLEEVE, it) }
+        this::leftPants.observe(this, true) { updateParts(SkinParts.LEFT_PANTS, it) }
+        this::rightPants.observe(this, true) { updateParts(SkinParts.RIGHT_PANTS, it) }
+        this::hat.observe(this, true) { updateParts(SkinParts.HAT, it) }
+    }
 }

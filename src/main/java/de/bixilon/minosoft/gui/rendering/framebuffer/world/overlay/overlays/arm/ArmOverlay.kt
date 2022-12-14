@@ -56,6 +56,7 @@ class ArmOverlay(private val renderWindow: RenderWindow) : Overlay {
     private fun poll() {
         val model = renderWindow.connection.player.model.nullCast<PlayerModel>()
         val skin = model?.skin
+        // TODO: check skin parts
         if (this.model == model && this.skin == skin) {
             return
         }

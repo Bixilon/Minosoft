@@ -82,20 +82,17 @@ abstract class PlayerEntity(
     val skinParts: MutableSet<SkinParts> by observedSet(mutableSetOf())
 
 
-    init {
-        data.observe(SKIN_PARTS_DATA) { raw: Any? ->
-            if (raw == null) {
-                skinParts.clear()
-                return@observe
+    protected open fun updateSkinParts(flags: Int) {
+        for (part in SkinParts.VALUES) {
+            if (!flags.isBitMask(part.bitmask)) {
+                skinParts -= part
             }
-            val flags = raw.toInt()
-            for (part in SkinParts.VALUES) {
-                if (!flags.isBitMask(part.bitmask)) {
-                    skinParts -= part
-                }
-                skinParts += part
-            }
+            skinParts += part
         }
+    }
+
+    init {
+        data.observe(SKIN_PARTS_DATA) { raw: Any? -> updateSkinParts(raw?.toInt() ?: 0) }
     }
 
     @get:SynchronizedEntityData

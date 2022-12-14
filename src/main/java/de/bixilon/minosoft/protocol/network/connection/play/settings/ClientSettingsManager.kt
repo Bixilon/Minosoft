@@ -44,15 +44,6 @@ class ClientSettingsManager(
         profile::mainArm.observe(this) { sendClientSettings() }
         profile::playerListing.observe(this) { sendClientSettings() }
 
-        val skin = profile.skin
-        skin::cape.observe(this) { sendClientSettings() }
-        skin::jacket.observe(this) { sendClientSettings() }
-        skin::leftSleeve.observe(this) { sendClientSettings() }
-        skin::rightSleeve.observe(this) { sendClientSettings() }
-        skin::leftPants.observe(this) { sendClientSettings() }
-        skin::rightPants.observe(this) { sendClientSettings() }
-        skin::hat.observe(this) { sendClientSettings() }
-
         profile::language.observe(this) { sendLanguage() }
         connection.profiles.eros.general::language.observe(this) { sendLanguage() }
     }
@@ -72,15 +63,17 @@ class ClientSettingsManager(
         if (connection.network.state != ProtocolStates.PLAY) {
             return
         }
-        connection.sendPacket(SettingsC2SP(
-            locale = language,
-            chatColors = connection.profiles.gui.chat.chatColors,
-            viewDistance = connection.profiles.block.viewDistance,
-            chatMode = connection.profiles.gui.chat.chatMode,
-            skinParts = profile.skin.skinParts,
-            mainArm = profile.mainArm,
-            disableTextFiltering = !connection.profiles.gui.chat.textFiltering,
-            allowListing = profile.playerListing,
-        ))
+        connection.sendPacket(
+            SettingsC2SP(
+                locale = language,
+                chatColors = connection.profiles.gui.chat.chatColors,
+                viewDistance = connection.profiles.block.viewDistance,
+                chatMode = connection.profiles.gui.chat.chatMode,
+                skinParts = profile.skin.parts.toTypedArray(),
+                mainArm = profile.mainArm,
+                disableTextFiltering = !connection.profiles.gui.chat.textFiltering,
+                allowListing = profile.playerListing,
+            )
+        )
     }
 }
