@@ -31,6 +31,6 @@ class FirstPersonArmAnimator(private val player: PlayerModel) : SkeletalAnimatio
         if (channel != KeyframeChannels.ROTATION) {
             return null
         }
-        return Vec3(140, -20, -10)
+        return Vec3(120, -20, -10)
     }
 }
