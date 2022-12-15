@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.kutil.exception.ExceptionUtil
-import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
+import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
 
 object FloatListUtil {
@@ -30,15 +30,8 @@ object FloatListUtil {
 
     fun FloatBuffer.finish(): FloatBuffer {
         val buffer = memAllocFloat(position())
-        if (FLOAT_PUT_METHOD == null) { // Java < 16
-            for (i in 0 until position()) {
-                buffer.put(get(i))
-            }
-        } else {
-            FLOAT_PUT_METHOD.invoke(buffer, 0, this, 0, position())
-            buffer.position(buffer.limit())
-        }
-        MemoryUtil.memFree(this)
+        this.copy(buffer)
+        memFree(this)
         return buffer
     }
 
@@ -50,6 +43,7 @@ object FloatListUtil {
             for (i in 0 until length) {
                 destination.put(destinationOffset + i, this.get(sourceOffset + i))
             }
+            destination.position(destination.position() + length)
             return
         }
         FLOAT_PUT_METHOD.invoke(destination, destinationOffset, this, sourceOffset, length)
