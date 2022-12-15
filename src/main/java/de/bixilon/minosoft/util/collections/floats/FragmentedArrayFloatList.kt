@@ -21,7 +21,8 @@ import java.nio.FloatBuffer
 class FragmentedArrayFloatList(
     initialSize: Int = FloatListUtil.DEFAULT_INITIAL_SIZE,
 ) : AbstractFloatList(), DirectArrayFloatList {
-    var fragments: MutableList<FloatBuffer> = mutableListOf()
+    var complete: MutableList<FloatBuffer> = ArrayList()
+    var incomplete: MutableList<FloatBuffer> = ArrayList()
     override var limit: Int = 0
         private set
     override var size: Int = 0
@@ -47,7 +48,7 @@ class FragmentedArrayFloatList(
     private fun grow(size: Int): FloatBuffer {
         checkFinished()
         if (limit - this.size >= size) {
-            return this.fragments.last()
+            return this.incomplete.first()
         }
         val grow = if (nextGrowStep < size) {
             (size / nextGrowStep + 1) * nextGrowStep
@@ -58,35 +59,45 @@ class FragmentedArrayFloatList(
     }
 
     private fun forceGrow(size: Int): FloatBuffer {
-        val last = fragments.lastOrNull()
         val buffer = memAllocFloat(size)
-        fragments += buffer
+        incomplete += buffer
         limit += size
         return buffer
     }
 
     override fun add(value: Float) {
         val buffer = grow(1)
-        if (buffer.position() >= buffer.limit()) {
-            println()
-        }
         buffer.put(value)
         size += 1
+        tryPush(buffer)
         invalidateOutput()
     }
 
+    private fun tryPush(fragment: FloatBuffer): Boolean {
+        if (fragment.position() != fragment.limit()) {
+            return false
+        }
+        complete += fragment
+        incomplete -= fragment
+        return true
+    }
+
     override fun add(array: FloatArray) {
+        // TODO: copy incomplete to complete
         if (array.isEmpty()) return
         invalidateOutput()
 
         var offset = 0
         size += array.size
-        if (fragments.isNotEmpty()) {
-            val fragment = fragments.last()
+        var indexOffset = 0
+        for (index in 0 until incomplete.size) {
+            val fragment = incomplete[index + indexOffset]
             val remaining = fragment.limit() - fragment.position()
-            val copy = minOf(array.size, remaining)
-            fragment.put(array, 0, copy)
+            val copy = minOf(array.size, remaining) - offset
+            fragment.put(array, offset, copy)
             offset += copy
+            if (tryPush(fragment)) indexOffset--
+
 
             if (array.size <= remaining) {
                 // everything copied
@@ -97,21 +108,25 @@ class FragmentedArrayFloatList(
         val next = grow(length)
         next.put(array, offset, length)
         next.position(length)
+        tryPush(next)
     }
 
     override fun add(buffer: FloatBuffer) {
+        // TODO: copy incomplete to complete
         if (buffer.position() == 0) return
         invalidateOutput()
 
         var offset = 0
         val position = buffer.position()
         size += position
-        if (fragments.isNotEmpty()) {
-            val fragment = fragments.last()
+        var indexOffset = 0
+        for (index in 0 until incomplete.size) {
+            val fragment = incomplete[index + indexOffset]
             val remaining = fragment.limit() - fragment.position()
-            val copy = minOf(position, remaining)
-            buffer.copy(0, fragment, fragment.position(), copy)
+            val copy = minOf(position, remaining) - offset
+            buffer.copy(offset, fragment, fragment.position(), copy)
             offset += copy
+            if (tryPush(fragment)) indexOffset--
 
             if (position <= remaining) {
                 // everything copied
@@ -122,15 +137,14 @@ class FragmentedArrayFloatList(
         val next = grow(length)
         buffer.copy(offset, next, 0, length)
         next.position(length)
+        tryPush(next)
     }
 
     override fun add(floatList: AbstractFloatList) {
         when (floatList) {
             is FragmentedArrayFloatList -> {
                 // TODO: add dirty method (just adding their fragments to our list of fragments)
-                for (buffer in floatList.fragments) {
-                    add(buffer)
-                }
+                floatList.forEach(this::add)
             }
 
             is DirectArrayFloatList -> add(floatList.toBuffer())
@@ -143,12 +157,12 @@ class FragmentedArrayFloatList(
         this.output?.let { return it }
         val output = FloatArray(size)
         var offset = 0
-        for (buffer in fragments) {
-            val position = buffer.position()
-            buffer.position(0)
-            buffer.get(output, offset, position)
+        forEach {
+            val position = it.position()
+            it.position(0)
+            it.get(output, offset, position)
             offset += position
-            buffer.position(position)
+            it.position(position)
         }
         this.output = output
         return output
@@ -162,48 +176,45 @@ class FragmentedArrayFloatList(
         check(!unloaded) { "Already unloaded!" }
         unloaded = true
         finished = true // Is unloaded
-        for (buffer in fragments) {
-            memFree(buffer)
-        }
+        forEach { memFree(it) }
         this.output = null
         val buffer = this.buffer
         if (buffer != null) {
             memFree(buffer)
             this.buffer = null
         }
-        fragments.clear()
+        complete.clear()
+        incomplete.clear()
     }
 
     override fun clear() {
         size = 0
-        for (buffer in fragments) {
-            buffer.clear()
-        }
-        if (output != null) {
-            output = null
-        }
+        forEach { it.clear() }
+        incomplete.addAll(0, complete)
+        complete.clear()
         invalidateOutput()
     }
 
     override fun finish() {
         finished = true
-        if (fragments.isEmpty()) {
+        if (complete.size + incomplete.size == 0) {
             return
         }
-        val last = fragments.removeLast()
-        val next = memAllocFloat(last.position())
-        last.copy(next)
-        fragments += next
+        for (fragment in incomplete) {
+            if (fragment.position() == 0) {
+                continue
+            }
+            val next = memAllocFloat(fragment.position())
+            fragment.copy(next)
+            complete += next
+        }
     }
 
     protected fun finalize() {
         if (unloaded) {
             return
         }
-        for (buffer in fragments) {
-            memFree(buffer)
-        }
-        fragments.clear()
+        unload()
     }
 
     private fun invalidateOutput() {
@@ -218,14 +229,21 @@ class FragmentedArrayFloatList(
 
     override fun toBuffer(): FloatBuffer {
         this.buffer?.let { return it }
-        if (fragments.size == 1) {
-            return fragments.first()
+        if (complete.size + incomplete.size == 1) {
+            return complete.firstOrNull() ?: incomplete.first()
         }
         val buffer = memAllocFloat(size)
-        for (fragment in fragments) {
-            fragment.copy(buffer)
-        }
+        forEach { it.copy(buffer) }
         this.buffer = buffer
         return buffer
+    }
+
+    inline fun forEach(callable: (FloatBuffer) -> Unit) {
+        for (buffer in this.complete) {
+            callable(buffer)
+        }
+        for (buffer in this.incomplete) {
+            callable(buffer)
+        }
     }
 }

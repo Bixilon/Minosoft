@@ -37,11 +37,19 @@ class FragmentedFloatListTest : DirectFloatListTest() {
     fun testMixed() {
         val list = FragmentedArrayFloatList(1000)
         for (i in 0 until 2000) {
-            println(i)
             list.putMixed()
         }
         assertEquals(14000, list.size)
-        assertEquals(14000, list.toArray().size)
-        assertEquals(14, list.fragments.size)
+        val array = list.toArray()
+        assertEquals(14000, array.size)
+        val buffer = list.toBuffer()
+        assertEquals(14000, buffer.position())
+        for (i in array.indices) {
+            val expected = (i % 7 + 1).toFloat()
+            assertEquals(expected, array[i])
+            assertEquals(expected, buffer[i])
+        }
+        assertEquals(14, list.complete.size)
+        assertEquals(0, list.incomplete.size)
     }
 }

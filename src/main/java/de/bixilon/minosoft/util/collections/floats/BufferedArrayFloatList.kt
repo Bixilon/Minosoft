@@ -84,9 +84,7 @@ class BufferedArrayFloatList(
         ensureSize(floatList.size)
         when (floatList) {
             is FragmentedArrayFloatList -> {
-                for (buffer in floatList.fragments) {
-                    buffer.copy(this.buffer)
-                }
+                floatList.forEach { it.copy(this.buffer) }
             }
 
             is DirectArrayFloatList -> floatList.toBuffer().copy(this.buffer)

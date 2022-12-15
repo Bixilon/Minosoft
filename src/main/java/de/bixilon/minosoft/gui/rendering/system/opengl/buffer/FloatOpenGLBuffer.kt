@@ -33,8 +33,10 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
 
     override fun initialUpload() {
         bind()
-        buffer.flip()
-        nglBufferData(type.gl, buffer, drawTypes.gl)
+        val position = buffer.position()
+        buffer.position(0)
+        nglBufferData(type.gl, buffer, position, drawTypes.gl)
+        buffer.position(position)
         unbind()
         state = RenderableBufferStates.UPLOADED
     }
@@ -45,7 +47,7 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
         unbind()
     }
 
-    private fun nglBufferData(target: Int, buffer: FloatBuffer, usage: Int) {
-        GL15C.nglBufferData(target, Integer.toUnsignedLong(buffer.remaining()) shl 2, memAddress(buffer), usage)
+    private fun nglBufferData(target: Int, buffer: FloatBuffer, length: Int, usage: Int) {
+        GL15C.nglBufferData(target, Integer.toUnsignedLong(length) shl 2, memAddress(buffer), usage)
     }
 }

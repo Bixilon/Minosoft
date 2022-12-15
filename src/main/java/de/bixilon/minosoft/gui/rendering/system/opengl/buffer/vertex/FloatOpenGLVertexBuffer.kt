@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
@@ -44,15 +43,8 @@ class FloatOpenGLVertexBuffer(
         super.init()
         glBindVertexArray(vao)
 
+        super.initialUpload()
         bind()
-        val previousLimit = buffer.limit()
-        val previousPosition = buffer.position()
-        buffer.limit(buffer.position())
-        buffer.flip()
-        glBufferData(type.gl, buffer, drawTypes.gl)
-        buffer.limit(previousLimit)
-        buffer.position(previousPosition)
-        state = RenderableBufferStates.UPLOADED
 
         _data = null
 
