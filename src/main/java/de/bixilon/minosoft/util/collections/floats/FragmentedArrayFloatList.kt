@@ -19,7 +19,7 @@ import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
 
 class FragmentedArrayFloatList(
-    initialSize: Int = FloatListUtil.DEFAULT_INITIAL_SIZE,
+    growStep: Int = FloatListUtil.DEFAULT_INITIAL_SIZE,
 ) : AbstractFloatList(), DirectArrayFloatList {
     var complete: MutableList<FloatBuffer> = ArrayList()
     var incomplete: MutableList<FloatBuffer> = ArrayList()
@@ -32,9 +32,9 @@ class FragmentedArrayFloatList(
     private var unloaded = false
 
     private val nextGrowStep = when {
-        initialSize <= 0 -> FloatListUtil.DEFAULT_INITIAL_SIZE
-        initialSize <= 100 -> 100
-        else -> initialSize
+        growStep <= 0 -> FloatListUtil.DEFAULT_INITIAL_SIZE
+        growStep <= 100 -> 100
+        else -> growStep
     }
 
     private var output: FloatArray? = null
@@ -42,6 +42,9 @@ class FragmentedArrayFloatList(
 
 
     override fun ensureSize(needed: Int) {
+        if (needed == 0) {
+            return
+        }
         grow(needed)
     }
 
@@ -83,12 +86,10 @@ class FragmentedArrayFloatList(
     }
 
     override fun add(array: FloatArray) {
-        // TODO: copy incomplete to complete
         if (array.isEmpty()) return
         invalidateOutput()
 
         var offset = 0
-        size += array.size
         var indexOffset = 0
         for (index in 0 until incomplete.size) {
             val fragment = incomplete[index + indexOffset]
@@ -99,26 +100,27 @@ class FragmentedArrayFloatList(
             if (tryPush(fragment)) indexOffset--
 
 
-            if (array.size <= remaining) {
+            if (array.size - offset <= remaining) {
                 // everything copied
+                size += array.size
                 return
             }
         }
+        size += offset
         val length = array.size - offset
         val next = grow(length)
         next.put(array, offset, length)
+        size += length
         next.position(length)
         tryPush(next)
     }
 
     override fun add(buffer: FloatBuffer) {
-        // TODO: copy incomplete to complete
         if (buffer.position() == 0) return
         invalidateOutput()
 
         var offset = 0
         val position = buffer.position()
-        size += position
         var indexOffset = 0
         for (index in 0 until incomplete.size) {
             val fragment = incomplete[index + indexOffset]
@@ -128,15 +130,18 @@ class FragmentedArrayFloatList(
             offset += copy
             if (tryPush(fragment)) indexOffset--
 
-            if (position <= remaining) {
+            if (position - offset <= remaining) {
                 // everything copied
+                size += position
                 return
             }
         }
+        size += offset
         val length = position - offset
         val next = grow(length)
         buffer.copy(offset, next, 0, length)
         next.position(length)
+        size += length
         tryPush(next)
     }
 
