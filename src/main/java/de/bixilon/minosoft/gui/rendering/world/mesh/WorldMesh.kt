@@ -28,10 +28,10 @@ class WorldMesh(
     smallMesh: Boolean = false,
 ) {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
-    var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 100000)
-    var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 10000)
-    var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
-    var textMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 50000, onDemand = true)
+    var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 3000 else 100000)
+    var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 3000 else 10000, onDemand = true)
+    var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 3000 else 20000, onDemand = true)
+    var textMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 5000 else 50000, onDemand = true)
     var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
