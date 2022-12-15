@@ -24,12 +24,11 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.orthoTimes
 import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class GUIMesh(
     renderWindow: RenderWindow,
     val matrix: Mat4,
-    data: DirectArrayFloatList,
+    data: AbstractFloatList,
 ) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, texture: ShaderIdentifiable, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
@@ -37,7 +36,7 @@ class GUIMesh(
     }
 
     override fun addCache(cache: GUIMeshCache) {
-        data.addAll(cache.data)
+        data.add(cache.data)
     }
 
     data class GUIMeshStruct(

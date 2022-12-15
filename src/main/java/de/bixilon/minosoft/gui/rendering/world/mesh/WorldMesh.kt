@@ -19,6 +19,7 @@ import de.bixilon.kotlinglm.vec3.Vec3i
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.world.entities.BlockEntityRenderer
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class WorldMesh(
     renderWindow: RenderWindow,
@@ -30,7 +31,7 @@ class WorldMesh(
     var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 100000)
     var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 10000)
     var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
-    var textMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 200000, onDemand = true)
+    var textMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 50000, onDemand = true)
     var blockEntities: Set<BlockEntityRenderer<*>>? = null
 
     // used for frustum culling
@@ -59,8 +60,11 @@ class WorldMesh(
             if (mesh == null) {
                 return false
             }
-            if (mesh.data.isEmpty) {
-                mesh.data.unload()
+            val data = mesh.data
+            if (data.isEmpty) {
+                if (data is DirectArrayFloatList) {
+                    data.unload()
+                }
                 return true
             }
             meshes++

@@ -11,13 +11,6 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.collections.floats
+package de.bixilon.minosoft.util.collections
 
-import de.bixilon.minosoft.util.collections.DirectList
-import java.nio.FloatBuffer
-
-interface DirectArrayFloatList : DirectList {
-
-    fun toBuffer(): FloatBuffer
-    fun unload()
-}
+interface DirectList

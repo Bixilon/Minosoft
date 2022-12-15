@@ -10,96 +10,88 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+
 package de.bixilon.minosoft.util.collections.floats
 
+import de.bixilon.minosoft.util.collections.floats.FloatListUtil.copy
+import de.bixilon.minosoft.util.collections.floats.FloatListUtil.finish
+import org.lwjgl.system.MemoryUtil.memAllocFloat
+import org.lwjgl.system.MemoryUtil.memFree
 import java.nio.FloatBuffer
 
-class HeapArrayFloatList(
+class BufferedArrayFloatList(
     initialSize: Int = FloatListUtil.DEFAULT_INITIAL_SIZE,
-) : AbstractFloatList() {
-    private var data: FloatArray = FloatArray(initialSize)
-    override val limit: Int
-        get() = data.size
-    override var size = 0
+) : AbstractFloatList(), DirectArrayFloatList {
+    var buffer: FloatBuffer = memAllocFloat(initialSize)
+        private set
+    override var limit: Int = buffer.limit()
+        private set
+    override val size: Int
+        get() = buffer.position()
     override val isEmpty: Boolean
         get() = size == 0
+    private var unloaded = false
 
     private val nextGrowStep = when {
         initialSize <= 0 -> FloatListUtil.DEFAULT_INITIAL_SIZE
-        initialSize <= 50 -> 50
+        initialSize <= 100 -> 100
         else -> initialSize
     }
 
     private var output: FloatArray = FloatArray(0)
     private var outputUpToDate = false
 
-    private fun checkFinalized() {
-        if (finished) {
-            throw IllegalStateException("ArrayFloatList is already finalized!")
-        }
-    }
-
-    override fun clear() {
-        checkFinalized()
-        size = 0
-        invalidateOutput()
-        output = FloatArray(0)
-    }
-
     override fun ensureSize(needed: Int) {
-        checkFinalized()
+        checkFinished()
         if (limit - size >= needed) {
             return
         }
-        var newSize = data.size
-        while (newSize - size < needed) {
-            newSize += nextGrowStep
+        var newSize = limit
+        newSize += if (nextGrowStep < needed) {
+            (needed / nextGrowStep + 1) * nextGrowStep
+        } else {
+            nextGrowStep
         }
         grow(newSize)
     }
 
     private fun grow(size: Int) {
-        val oldData = data
-        data = FloatArray(size)
-        System.arraycopy(oldData, 0, data, 0, oldData.size)
+        val buffer = buffer
+        this.buffer = memAllocFloat(size)
+        limit = size
+        buffer.copy(this.buffer)
+        memFree(buffer)
     }
 
     override fun add(value: Float) {
         ensureSize(1)
-        data[size++] = value
+        buffer.put(value)
         invalidateOutput()
     }
 
     override fun add(array: FloatArray) {
         ensureSize(array.size)
-        System.arraycopy(array, 0, data, size, array.size)
-        size += array.size
+        buffer.put(array)
         invalidateOutput()
     }
 
     override fun add(buffer: FloatBuffer) {
-        val position = buffer.position()
-        ensureSize(position)
-        for (i in 0 until position) {
-            data[size + i] = buffer.get(i)
-        }
-        size += position
-        invalidateOutput()
+        ensureSize(buffer.position())
+        buffer.copy(this.buffer)
     }
 
     override fun add(floatList: AbstractFloatList) {
         ensureSize(floatList.size)
-        val source: FloatArray = if (floatList is HeapArrayFloatList) {
-            if (floatList.finished) {
-                floatList.output
-            } else {
-                floatList.data
+        when (floatList) {
+            is FragmentedArrayFloatList -> {
+                for (buffer in floatList.fragments) {
+                    buffer.copy(this.buffer)
+                }
             }
-        } else {
-            floatList.toArray()
+
+            is DirectArrayFloatList -> floatList.toBuffer().copy(this.buffer)
+            else -> add(floatList.toArray())
         }
-        System.arraycopy(source, 0, data, size, floatList.size)
-        size += floatList.size
         invalidateOutput()
     }
 
@@ -107,8 +99,11 @@ class HeapArrayFloatList(
         if (outputUpToDate) {
             return
         }
-        output = FloatArray(size)
-        System.arraycopy(data, 0, output, 0, size)
+        val position = buffer.position()
+        output = FloatArray(position)
+        buffer.position(0)
+        buffer.get(output, 0, position)
+        buffer.position(position)
         outputUpToDate = true
     }
 
@@ -117,10 +112,36 @@ class HeapArrayFloatList(
         return output
     }
 
+    override fun unload() {
+        check(!unloaded) { "Already unloaded!" }
+        unloaded = true
+        finished = true // Is unloaded
+        memFree(buffer)
+    }
+
+    override fun clear() {
+        buffer.clear()
+        if (output.isNotEmpty()) {
+            output = FloatArray(0)
+        }
+        invalidateOutput()
+    }
+
     override fun finish() {
         finished = true
-        checkOutputArray()
-        data = FloatArray(0)
+        limit = buffer.limit()
+        this.buffer = buffer.finish()
+    }
+
+    protected fun finalize() {
+        if (unloaded) {
+            return
+        }
+        memFree(buffer)
+    }
+
+    override fun toBuffer(): FloatBuffer {
+        return this.buffer
     }
 
     private fun invalidateOutput() {

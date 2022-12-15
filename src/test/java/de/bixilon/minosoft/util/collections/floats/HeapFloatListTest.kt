@@ -13,11 +13,9 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
-import de.bixilon.minosoft.util.collections.DirectList
-import java.nio.FloatBuffer
+class HeapFloatListTest : AbstractFloatListTest() {
 
-interface DirectArrayFloatList : DirectList {
-
-    fun toBuffer(): FloatBuffer
-    fun unload()
+    override fun create(initialSize: Int): AbstractFloatList {
+        return HeapArrayFloatList(initialSize)
+    }
 }

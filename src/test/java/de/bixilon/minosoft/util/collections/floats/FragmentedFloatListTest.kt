@@ -13,11 +13,35 @@
 
 package de.bixilon.minosoft.util.collections.floats
 
-import de.bixilon.minosoft.util.collections.DirectList
-import java.nio.FloatBuffer
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-interface DirectArrayFloatList : DirectList {
+class FragmentedFloatListTest : DirectFloatListTest() {
 
-    fun toBuffer(): FloatBuffer
-    fun unload()
+    override fun create(initialSize: Int): AbstractFloatList {
+        return FragmentedArrayFloatList(initialSize)
+    }
+
+
+    private fun AbstractFloatList.putMixed() {
+        ensureSize(7)
+        add(1.0f)
+        add(2.0f)
+        add(floatArrayOf(3.0f, 4.0f))
+        add(5.0f)
+        add(6.0f)
+        add(floatArrayOf(7.0f))
+    }
+
+    @Test
+    fun testMixed() {
+        val list = FragmentedArrayFloatList(1000)
+        for (i in 0 until 2000) {
+            println(i)
+            list.putMixed()
+        }
+        assertEquals(14000, list.size)
+        assertEquals(14000, list.toArray().size)
+        assertEquals(14, list.fragments.size)
+    }
 }

@@ -23,27 +23,28 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class WorldBorderMesh(renderWindow: RenderWindow) : Mesh(renderWindow, WorldBorderMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * WorldBorderMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
-        data.addAll(floatArrayOf(
-            -1.0f, +1.0f, -1.0f, 1.buffer(),
-            +1.0f, -1.0f, -1.0f, 0.buffer(),
-            -1.0f, -1.0f, -1.0f, 3.buffer(),
-            +1.0f, -1.0f, -1.0f, 0.buffer(),
-            -1.0f, +1.0f, -1.0f, 1.buffer(),
-            +1.0f, +1.0f, -1.0f, 2.buffer(),
+        data.add(
+            floatArrayOf(
+                -1.0f, +1.0f, -1.0f, 1.buffer(),
+                +1.0f, -1.0f, -1.0f, 0.buffer(),
+                -1.0f, -1.0f, -1.0f, 3.buffer(),
+                +1.0f, -1.0f, -1.0f, 0.buffer(),
+                -1.0f, +1.0f, -1.0f, 1.buffer(),
+                +1.0f, +1.0f, -1.0f, 2.buffer(),
 
-            -1.0f, -1.0f, +1.0f, 3.buffer(),
-            -1.0f, +1.0f, -1.0f, 2.buffer(),
-            -1.0f, -1.0f, -1.0f, 0.buffer(),
-            -1.0f, +1.0f, -1.0f, 2.buffer(),
-            -1.0f, -1.0f, +1.0f, 3.buffer(),
-            -1.0f, +1.0f, +1.0f, 1.buffer(),
+                -1.0f, -1.0f, +1.0f, 3.buffer(),
+                -1.0f, +1.0f, -1.0f, 2.buffer(),
+                -1.0f, -1.0f, -1.0f, 0.buffer(),
+                -1.0f, +1.0f, -1.0f, 2.buffer(),
+                -1.0f, -1.0f, +1.0f, 3.buffer(),
+                -1.0f, +1.0f, +1.0f, 1.buffer(),
 
-            +1.0f, -1.0f, -1.0f, 3.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, -1.0f, +1.0f, 0.buffer(),
-            +1.0f, +1.0f, +1.0f, 2.buffer(),
-            +1.0f, -1.0f, -1.0f, 3.buffer(),
-            +1.0f, +1.0f, -1.0f, 1.buffer(),
+                +1.0f, -1.0f, -1.0f, 3.buffer(),
+                +1.0f, +1.0f, +1.0f, 2.buffer(),
+                +1.0f, -1.0f, +1.0f, 0.buffer(),
+                +1.0f, +1.0f, +1.0f, 2.buffer(),
+                +1.0f, -1.0f, -1.0f, 3.buffer(),
+                +1.0f, +1.0f, -1.0f, 1.buffer(),
 
             -1.0f, -1.0f, +1.0f, 0.buffer(),
             +1.0f, +1.0f, +1.0f, 1.buffer(),

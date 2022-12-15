@@ -30,7 +30,7 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDeman
         data.add(position[0])
         data.add(position[1])
         data.add(position[2])
-        data.addAll(transformedUV)
+        data.add(transformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add((tintColor or (light shl 24)).buffer())
     }
@@ -41,7 +41,7 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int, onDeman
         data.add(x)
         data.add(y)
         data.add(z)
-        data.addAll(transformedUV)
+        data.add(transformedUV)
         data.add(shaderTextureId)
         data.add(tintLight)
     }

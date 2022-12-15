@@ -23,9 +23,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 
-class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
+class ParticleMesh(renderWindow: RenderWindow, data: AbstractFloatList) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
 
     fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: FloatArray? = null, uvMax: FloatArray? = null, light: Int) {
         val minTransformedUV = if (uvMin == null) {
@@ -38,8 +38,8 @@ class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mes
         data.add(position.x.toFloat())
         data.add(position.y.toFloat())
         data.add(position.z.toFloat())
-        data.addAll(minTransformedUV)
-        data.addAll(maxTransformedUV)
+        data.add(minTransformedUV)
+        data.add(maxTransformedUV)
         data.add(texture.renderData.shaderTextureId.buffer())
         data.add(scale)
         data.add(tintColor.rgba.buffer())

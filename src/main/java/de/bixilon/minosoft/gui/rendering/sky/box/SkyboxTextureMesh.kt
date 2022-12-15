@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class SkyboxTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SkyboxTextureMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * SkyboxTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
-        data.addAll(
+        data.add(
             floatArrayOf(
                 -1.0f, +1.0f, -1.0f, 0.buffer(),
                 -1.0f, -1.0f, -1.0f, 3.buffer(),

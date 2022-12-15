@@ -18,8 +18,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferDraw
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderableBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
-import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
+import org.lwjgl.opengl.GL15C
+import org.lwjgl.system.MemoryUtil.memAddress
 import java.nio.FloatBuffer
 
 open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _data: FloatBuffer?) : OpenGLRenderableBuffer(renderSystem, RenderableBufferTypes.ARRAY_BUFFER), RenderFloatBuffer {
@@ -33,7 +34,7 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
     override fun initialUpload() {
         bind()
         buffer.flip()
-        glBufferData(type.gl, buffer, drawTypes.gl)
+        nglBufferData(type.gl, buffer, drawTypes.gl)
         unbind()
         state = RenderableBufferStates.UPLOADED
     }
@@ -42,5 +43,9 @@ open class FloatOpenGLBuffer(renderSystem: OpenGLRenderSystem, protected var _da
         bind()
         glBufferSubData(type.gl, 0, buffer)
         unbind()
+    }
+
+    private fun nglBufferData(target: Int, buffer: FloatBuffer, usage: Int) {
+        GL15C.nglBufferData(target, Integer.toUnsignedLong(buffer.remaining()) shl 2, memAddress(buffer), usage)
     }
 }

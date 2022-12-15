@@ -29,8 +29,8 @@ open class ArmMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = r
 
 
     fun addVertex(position: FloatArray, uv: Vec2) {
-        data.addAll(position)
-        data.addAll(uv.array)
+        data.add(position)
+        data.add(uv.array)
     }
 
     override fun addVertex(position: FloatArray, transformedUV: Vec2, transform: Float, textureShaderId: Float, flags: Float) {

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sky.box
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.MeshUtil.buffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
@@ -22,27 +21,28 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
 class SkyboxMesh(renderWindow: RenderWindow) : Mesh(renderWindow, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
-        data.addAll(floatArrayOf(
-            -1.0f, +1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            +1.0f, -1.0f, -1.0f,
-            +1.0f, -1.0f, -1.0f,
-            +1.0f, +1.0f, -1.0f,
-            -1.0f, +1.0f, -1.0f,
+        data.add(
+            floatArrayOf(
+                -1.0f, +1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                +1.0f, -1.0f, -1.0f,
+                +1.0f, -1.0f, -1.0f,
+                +1.0f, +1.0f, -1.0f,
+                -1.0f, +1.0f, -1.0f,
 
-            -1.0f, -1.0f, +1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, +1.0f, -1.0f,
-            -1.0f, +1.0f, -1.0f,
-            -1.0f, +1.0f, +1.0f,
-            -1.0f, -1.0f, +1.0f,
+                -1.0f, -1.0f, +1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, +1.0f, -1.0f,
+                -1.0f, +1.0f, -1.0f,
+                -1.0f, +1.0f, +1.0f,
+                -1.0f, -1.0f, +1.0f,
 
-            +1.0f, -1.0f, -1.0f,
-            +1.0f, -1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, +1.0f,
-            +1.0f, +1.0f, -1.0f,
-            +1.0f, -1.0f, -1.0f,
+                +1.0f, -1.0f, -1.0f,
+                +1.0f, -1.0f, +1.0f,
+                +1.0f, +1.0f, +1.0f,
+                +1.0f, +1.0f, +1.0f,
+                +1.0f, +1.0f, -1.0f,
+                +1.0f, -1.0f, -1.0f,
 
             -1.0f, -1.0f, +1.0f,
             -1.0f, +1.0f, +1.0f,

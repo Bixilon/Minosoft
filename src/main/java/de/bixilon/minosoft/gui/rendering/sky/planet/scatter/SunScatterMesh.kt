@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
 class SunScatterMesh(renderWindow: RenderWindow) : Mesh(renderWindow, PositionOnlyMeshStruct, PrimitiveTypes.TRIANGLE, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
-        data.addAll(
+        data.add(
             floatArrayOf(
                 -1.0f, +0.2f, -1.0f,
                 -1.0f, -0.2f, -1.0f,

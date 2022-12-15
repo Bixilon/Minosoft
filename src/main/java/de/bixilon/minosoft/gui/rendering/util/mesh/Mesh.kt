@@ -15,10 +15,13 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.kotlinglm.vec2.Vec2
 import de.bixilon.kotlinglm.vec3.Vec3
+import de.bixilon.kutil.cast.CastUtil.unsafeCast
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
 abstract class Mesh(
     val renderWindow: RenderWindow,
@@ -26,18 +29,18 @@ abstract class Mesh(
     private val primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType,
     var initialCacheSize: Int = 10000,
     val clearOnLoad: Boolean = true,
-    data: DirectArrayFloatList? = null,
+    data: AbstractFloatList? = null,
     val onDemand: Boolean = false,
 ) : AbstractVertexConsumer {
     override val order = renderWindow.renderSystem.primitiveMeshOrder
     val reversedOrder = order.reversedArray()
-    private var _data: DirectArrayFloatList? = data ?: if (onDemand) null else DirectArrayFloatList(initialCacheSize)
-    var data: DirectArrayFloatList
+    private var _data: AbstractFloatList? = data ?: if (onDemand) null else FloatListUtil.direct(initialCacheSize)
+    var data: AbstractFloatList
         get() {
             if (_data == null && onDemand) {
-                _data = DirectArrayFloatList(initialCacheSize)
+                _data = FloatListUtil.direct(initialCacheSize)
             }
-            return _data as DirectArrayFloatList
+            return _data.unsafeCast()
         }
         set(value) {
             _data = value
@@ -53,10 +56,13 @@ abstract class Mesh(
 
 
     fun load() {
-        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.buffer, primitiveType)
+        val data = this.data
+        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data, primitiveType)
         buffer.init()
         if (clearOnLoad) {
-            data.unload()
+            if (data is DirectArrayFloatList) {
+                data.unload()
+            }
             _data = null
         }
         vertices = buffer.vertices

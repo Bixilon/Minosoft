@@ -14,11 +14,16 @@
 package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.minosoft.util.collections.AbstractPrimitiveList
+import java.nio.FloatBuffer
 
 abstract class AbstractFloatList : AbstractPrimitiveList<Float>() {
 
-    abstract fun addAll(floats: FloatArray)
-    abstract fun addAll(floatList: AbstractFloatList)
+    abstract fun add(array: FloatArray)
+    operator fun plusAssign(array: FloatArray) = add(array)
+    abstract fun add(floatList: AbstractFloatList)
+    operator fun plusAssign(floatList: AbstractFloatList) = add(floatList)
+    abstract fun add(buffer: FloatBuffer)
+    operator fun plusAssign(buffer: FloatBuffer) = add(buffer)
 
     abstract fun toArray(): FloatArray
 }

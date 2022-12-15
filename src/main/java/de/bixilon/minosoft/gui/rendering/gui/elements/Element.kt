@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.min
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import de.bixilon.minosoft.util.collections.DirectList
 
 abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 1000) : InputElement, DragTarget {
     var ignoreDisplaySize = false
@@ -168,7 +168,7 @@ abstract class Element(val guiRenderer: GUIRenderer, initialCacheSize: Int = 100
             cache.offset = Vec2i(offset)
             cache.options = options
             forceRender(offset, cache, options)
-            if (cache.data !is DirectArrayFloatList) {
+            if (cache.data !is DirectList) {
                 // not raw mesh data
                 cache.data.finish()
             }

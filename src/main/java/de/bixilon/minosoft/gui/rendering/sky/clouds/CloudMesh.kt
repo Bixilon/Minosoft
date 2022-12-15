@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 class CloudMesh(renderWindow: RenderWindow) : Mesh(renderWindow, CloudMeshStruct, renderWindow.renderSystem.preferredPrimitiveType) {
 
     fun addVertex(start: Vec3, side: Directions) {
-        data.addAll(start.array)
+        data.add(start.array)
         data.add(side.ordinal.buffer())
     }
 

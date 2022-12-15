@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.gui
 import de.bixilon.kotlinglm.vec2.Vec2d
 import de.bixilon.kotlinglm.vec2.Vec2i
 import de.bixilon.kutil.time.TimeUtil
+import de.bixilon.kutil.time.TimeUtil.millis
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.GUIRenderer
@@ -33,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.renderer.drawable.Drawable
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.FloatListUtil
 
 open class GUIMeshElement<T : Element>(
     val element: T,
@@ -41,7 +42,7 @@ open class GUIMeshElement<T : Element>(
     override val guiRenderer: GUIRenderer = element.guiRenderer
     override val renderWindow: RenderWindow = guiRenderer.renderWindow
     private val clickCounter = MouseClickCounter()
-    var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, DirectArrayFloatList(1000))
+    var mesh: GUIMesh = GUIMesh(renderWindow, guiRenderer.matrix, FloatListUtil.direct(1000))
     override val skipDraw: Boolean
         get() = if (element is BaseDrawable) element.skipDraw else false
     protected var lastRevision = 0L
@@ -144,7 +145,7 @@ open class GUIMeshElement<T : Element>(
 
         val mouseAction = MouseActions[type] ?: return false
 
-        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.millis))
+        return element.onMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, millis()))
     }
 
     override fun onScroll(scrollOffset: Vec2d): Boolean {
@@ -167,7 +168,7 @@ open class GUIMeshElement<T : Element>(
 
         val mouseAction = MouseActions[type] ?: return null
 
-        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, TimeUtil.millis), dragged)
+        return element.onDragMouseAction(position, mouseButton, mouseAction, clickCounter.getClicks(mouseButton, mouseAction, position, millis()), dragged)
     }
 
     override fun onDragScroll(scrollOffset: Vec2d, dragged: Dragged): Element? {
