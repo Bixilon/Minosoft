@@ -34,7 +34,7 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.language.LanguageUtil
 import de.bixilon.minosoft.data.language.manager.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
-import de.bixilon.minosoft.data.registries.versions.Versions
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.dialog.StartingDialog

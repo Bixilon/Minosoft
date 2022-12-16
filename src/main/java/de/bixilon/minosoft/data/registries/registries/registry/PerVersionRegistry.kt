@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.kutil.json.JsonUtil.toJsonObject
 import de.bixilon.kutil.primitive.IntUtil.toInt
 import de.bixilon.minosoft.data.registries.registries.registry.codec.ResourceLocationCodec
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 import java.util.*
 
 class PerVersionRegistry<E, R : AbstractRegistry<E>>(private val registryCreator: () -> R) {

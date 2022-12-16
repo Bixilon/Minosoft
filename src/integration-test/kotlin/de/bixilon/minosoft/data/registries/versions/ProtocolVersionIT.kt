@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.versions
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.versions.Versions
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 

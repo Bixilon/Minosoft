@@ -18,8 +18,8 @@ import de.bixilon.kutil.reflection.ReflectionUtil.forceInit
 import de.bixilon.minosoft.assets.InvalidAssetException
 import de.bixilon.minosoft.assets.minecraft.JarAssetsManager
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
-import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.data.registries.versions.VersionTypes
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.VersionTypes
 import de.bixilon.minosoft.util.logging.Log
 import kotlin.system.exitProcess
 

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.data.registries.versions.Versions
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 
 object ITUtil {
     private val profile = createResourcesProfile()

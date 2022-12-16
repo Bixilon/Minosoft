@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.versions.Version
 
 interface AbstractServer {
     val address: String

@@ -16,8 +16,8 @@ package de.bixilon.minosoft.assets.properties.version
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.assets.util.FileUtil.readJson
-import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.data.registries.versions.Versions
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

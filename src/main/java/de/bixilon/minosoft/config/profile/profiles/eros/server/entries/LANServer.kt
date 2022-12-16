@@ -15,8 +15,8 @@ package de.bixilon.minosoft.config.profile.profiles.eros.server.entries
 
 import de.bixilon.kutil.observer.DataObserver.Companion.observed
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.protocol.versions.Version
 
 class LANServer(
     address: String,

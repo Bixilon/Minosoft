@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.test
 
 import de.bixilon.kutil.cast.CastUtil.unsafeNull
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 import org.objenesis.ObjenesisStd
 
 object IT {

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.network.network.client.netty.pipeline.encoding
 
 import de.bixilon.kutil.cast.CastUtil.nullCast
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.network.client.netty.NettyClient
 import de.bixilon.minosoft.protocol.network.network.client.netty.exceptions.PacketNotAvailableException

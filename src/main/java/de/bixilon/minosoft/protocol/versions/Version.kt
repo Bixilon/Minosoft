@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.versions
+package de.bixilon.minosoft.protocol.versions
 
 import de.bixilon.kutil.collections.map.bi.AbstractBiMap
 import de.bixilon.kutil.latch.CountUpAndDownLatch

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.connection
 
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent

@@ -37,8 +37,8 @@ import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.versions.MinecraftRegistryFixer
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.data.registries.fixer.MinecraftRegistryFixer
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.tags.DefaultTags
 import de.bixilon.minosoft.data.tags.Tag

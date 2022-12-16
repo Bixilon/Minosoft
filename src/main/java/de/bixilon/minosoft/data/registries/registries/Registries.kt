@@ -58,11 +58,11 @@ import de.bixilon.minosoft.data.registries.shapes.AABB
 import de.bixilon.minosoft.data.registries.shapes.VoxelShape
 import de.bixilon.minosoft.data.registries.sound.SoundGroup
 import de.bixilon.minosoft.data.registries.statistics.Statistic
-import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.datafixer.enumeration.EntityDataTypesFixer
 import de.bixilon.minosoft.datafixer.rls.RegistryFixer.fix
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.recipes.RecipeRegistry
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Stopwatch

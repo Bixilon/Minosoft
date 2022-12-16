@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.network.client.netty.exceptions
 
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.packets.factory.C2SPacketType
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 

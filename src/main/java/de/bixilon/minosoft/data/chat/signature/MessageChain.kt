@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020-2022 Moritz Zwerger and contributors
+ * Copyright (C) 2020-2022 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -16,12 +16,12 @@ package de.bixilon.minosoft.data.chat.signature
 import com.fasterxml.jackson.core.io.JsonStringEncoder
 import com.google.common.hash.Hashing
 import com.google.common.primitives.Longs
-import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.ProtocolUtil.encodeNetwork
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.encryption.CryptManager
+import de.bixilon.minosoft.protocol.versions.Version
 import java.security.PrivateKey
 import java.time.Instant
 import java.util.*

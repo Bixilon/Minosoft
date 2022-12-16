@@ -21,7 +21,7 @@ import de.bixilon.minosoft.assets.multi.PriorityAssetsManager
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperty
 import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfile
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 
 object AssetsLoader {
 

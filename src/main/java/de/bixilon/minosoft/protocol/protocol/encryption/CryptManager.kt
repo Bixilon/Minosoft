@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol.encryption
 
 import de.bixilon.kutil.base64.Base64Util.fromBase64
-import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.protocol.versions.Version
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import java.nio.charset.StandardCharsets
 import java.security.*

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.versions
+package de.bixilon.minosoft.data.registries.fixer
 
 import de.bixilon.minosoft.data.entities.block.FlowerPotBlockEntity
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType

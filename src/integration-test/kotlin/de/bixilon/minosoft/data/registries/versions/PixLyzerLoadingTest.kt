@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.entities.entities.monster.Zombie
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.item.MinecraftItems
 import de.bixilon.minosoft.protocol.protocol.VersionSupport
+import de.bixilon.minosoft.protocol.versions.Version
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.ITUtil
 import org.testng.Assert
 import org.testng.annotations.Test

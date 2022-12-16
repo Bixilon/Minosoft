@@ -16,8 +16,8 @@ package de.bixilon.minosoft
 import de.bixilon.kutil.latch.CountUpAndDownLatch
 import de.bixilon.minosoft.assets.properties.version.AssetsVersionProperties
 import de.bixilon.minosoft.data.registries.DefaultRegistries
-import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.protocol.packets.factory.PacketTypeRegistry
+import de.bixilon.minosoft.protocol.versions.Versions
 import de.bixilon.minosoft.test.IT
 import de.bixilon.minosoft.test.ITUtil
 import de.bixilon.minosoft.util.logging.Log
