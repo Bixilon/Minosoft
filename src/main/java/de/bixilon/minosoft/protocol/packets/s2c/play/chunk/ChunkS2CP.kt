@@ -173,8 +173,8 @@ class ChunkS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket {
             connection.world.unloadChunk(position)
             return
         }
-        readingData.readChunkData()
         val chunk = connection.world.getOrCreateChunk(position)
+        readingData.readChunkData()
         chunk.setData(data)
     }
 

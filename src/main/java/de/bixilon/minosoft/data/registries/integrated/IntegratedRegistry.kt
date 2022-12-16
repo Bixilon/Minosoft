@@ -19,6 +19,5 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 
 interface IntegratedRegistry<T : RegistryItem> {
 
-
     fun build(name: ResourceLocation, registries: Registries): T?
 }
