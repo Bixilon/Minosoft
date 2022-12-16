@@ -29,7 +29,8 @@ class WaterOverlay(renderWindow: RenderWindow) : SimpleOverlay(renderWindow) {
         get() = player.gamemode != Gamemodes.SPECTATOR && player.submergedFluid is WaterFluid
 
     override fun draw() {
-        val brightness = renderWindow.connection.world.getBrightness(renderWindow.connection.player.positionInfo.blockPosition)
+        // TODO: make brightness depend on ambient light (e.g. rain gradient, thunder gradient, time, ...)
+        val brightness = renderWindow.connection.world.getBrightness(renderWindow.connection.player.positionInfo.blockPosition) * 0.5f
         tintColor = RGBColor(brightness, brightness, brightness, 0.1f)
 
         // ToDo: Minecraft sets the uv coordinates according to the yaw and pitch (see InGameOverlayRenderer::renderUnderwaterOverlay)
