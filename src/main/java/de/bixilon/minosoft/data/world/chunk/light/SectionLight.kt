@@ -107,6 +107,17 @@ class SectionLight(
         }
     }
 
+    private fun Array<ChunkSection?>.invalidateLight(x: Int, y: Int, z: Int) {
+        // we can not further increase the light
+        // set neighbour update, cullface might change lighting properties
+        if (y == 0) this[Directions.O_DOWN]?.light?.update = true
+        if (y == ProtocolDefinition.SECTION_MAX_Y) this[Directions.O_UP]?.light?.update = true
+        if (z == 0) this[Directions.O_NORTH]?.light?.update = true
+        if (z == ProtocolDefinition.SECTION_MAX_Z) this[Directions.O_SOUTH]?.light?.update = true
+        if (x == 0) this[Directions.O_WEST]?.light?.update = true
+        if (x == ProtocolDefinition.SECTION_MAX_X) this[Directions.O_EAST]?.light?.update = true
+    }
+
     fun traceBlockIncrease(x: Int, y: Int, z: Int, nextLuminance: Int, target: Directions?) {
         val index = getIndex(x, y, z)
         val block = section.blocks.unsafeGet(index)
@@ -137,14 +148,7 @@ class SectionLight(
         val neighbours = section.neighbours ?: return
 
         if (nextLuminance == 1) {
-            // we can not further increase the light
-            // set neighbour update, cullface might change lighting properties
-            if (y == 0) neighbours[Directions.O_DOWN]?.light?.update = true
-            if (y == ProtocolDefinition.SECTION_MAX_Y) neighbours[Directions.O_UP]?.light?.update = true
-            if (z == 0) neighbours[Directions.O_NORTH]?.light?.update = true
-            if (z == ProtocolDefinition.SECTION_MAX_Z) neighbours[Directions.O_SOUTH]?.light?.update = true
-            if (x == 0) neighbours[Directions.O_WEST]?.light?.update = true
-            if (x == ProtocolDefinition.SECTION_MAX_X) neighbours[Directions.O_EAST]?.light?.update = true
+            neighbours.invalidateLight(x, y, z)
             return
         }
 
@@ -335,17 +339,24 @@ class SectionLight(
             return
         }
 
+        val neighbours = this.section.neighbours ?: return
+
         this.light[index] = ((currentLight and BLOCK_LIGHT_MASK) or (nextLevel shl 4)).toByte()
 
         if (!update) {
             update = true
         }
 
+
+        if (nextLevel == 1) {
+            neighbours.invalidateLight(x, y, z)
+            return
+        }
+
         if (nextLevel <= 1) {
             return
         }
 
-        val neighbours = this.section.neighbours ?: return
         val nextNeighbourLevel = nextLevel - 1
 
         if (target != Directions.UP && (target == null || lightProperties.propagatesLight(Directions.DOWN))) {
